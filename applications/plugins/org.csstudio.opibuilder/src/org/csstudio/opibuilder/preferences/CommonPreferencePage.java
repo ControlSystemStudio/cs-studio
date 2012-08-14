@@ -56,10 +56,7 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
 			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);
 		topOPIsEditor.getTextControl(parent).setToolTipText(
 				"The OPIs appeared in top opi button on toolbar");
-		addField(topOPIsEditor);	
-		
-		
-		
+		addField(topOPIsEditor);		
 		
 		WorkspaceFileFieldEditor probeOPIEditor =
 			new WorkspaceFileFieldEditor(PreferencesHelper.PROBE_OPI, 
@@ -77,7 +74,8 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
 			new BooleanFieldEditor(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS, 
 					"Disable Advanced Graphics", parent);
 		advanceGraphicsEditor.getDescriptionControl(parent).setToolTipText(
-				"Enable this may affect the 3D rendering of some widgets");
+				"This will disable alpha, anti-alias and gradient effect. " +
+				"OPI need to be re-opened to make this take effect.");
 		addField(advanceGraphicsEditor);
 		
 		BooleanFieldEditor displaySysOutEditor = 

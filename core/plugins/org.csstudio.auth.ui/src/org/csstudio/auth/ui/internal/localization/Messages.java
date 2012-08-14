@@ -60,12 +60,11 @@ public final class Messages extends NLS {
 	public static String SystemPropertyDialog_TITLE;
 	public static String SystemPropertyDialog_VALUE_LABEL;
 
-    public static String LoginDialog_Anonymous;
-	public static String LoginDialog_Login;
 	public static String LoginDialog_LoginAnonymous;
 	public static String LoginDialog_Password;
 	public static String LoginDialog_UserName;
 
+    public static String NotLoggedIn;
 
     static
     {

@@ -52,6 +52,9 @@ public class AlarmTreeItem extends TreeItem
     /** Commands */
     private GDCDataStructure commands[] = new GDCDataStructure[0];
 
+    /** Automated Actions */
+    private AADataStructure automated_actions[] = new AADataStructure[0];
+
     /** Current severity of this item/subtree */
     private SeverityLevel current_severity = SeverityLevel.OK;
 
@@ -183,6 +186,20 @@ public class AlarmTreeItem extends TreeItem
         this.commands = commands;
     }
 
+    /** @return Automated Actions */
+    public synchronized AADataStructure[] getAutomatedActions()
+    {
+        return Arrays.copyOf(automated_actions, automated_actions.length);
+    }
+
+    /** @param automated_actions Automated Actions */
+    synchronized void setAutomatedActions(final AADataStructure[] automated_actions)
+    {
+        if (automated_actions == null)
+            throw new IllegalArgumentException();
+        this.automated_actions = automated_actions;
+    }
+
     /** @return Time of last configuration change */
     public synchronized String getConfigTime()
     {
@@ -252,7 +269,7 @@ public class AlarmTreeItem extends TreeItem
         this.message = message;
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, false);
+            parent.maximizeSeverity();
         return true;
     }
 
@@ -284,14 +301,9 @@ public class AlarmTreeItem extends TreeItem
 
     /** Set severity/status of this item by maximizing over its child
      *  severities.
-     *  Recursively updates its parent items,
-     *  the root item will then notify the model,
-     *  which will notify listeners.
-     *  @param leaf PV that triggered this update
-     *  @param parent_changed A parent of the leave down to this node also changed
-     *  @return <code>true</code> if a previous parent of the leaf higher up the tree or this item changed
+     *  Recursively updates parent items.
      */
-    public synchronized boolean maximizeSeverity(final AlarmTreeLeaf leaf, boolean parent_changed)
+    public synchronized void maximizeSeverity()
     {
     	// Get maximum child severity and its status
     	SeverityLevel new_current_severity = SeverityLevel.OK;
@@ -316,7 +328,7 @@ public class AlarmTreeItem extends TreeItem
             	new_message = child.getMessage();
             }
         }
-        
+
         if (new_current_severity != current_severity  ||
             new_severity != severity  ||
             !new_message.equals(message))
@@ -324,14 +336,12 @@ public class AlarmTreeItem extends TreeItem
             current_severity = new_current_severity;
             severity = new_severity;
             message = new_message;
-        	parent_changed = true;
         }
-        
+
         // Percolate changes towards root
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-        	return parent.maximizeSeverity(leaf, parent_changed);
-        return parent_changed;
+            parent.maximizeSeverity();
     }
 
     /** {@inheritDoc} */
@@ -366,6 +376,16 @@ public class AlarmTreeItem extends TreeItem
 	        	out.println(indent1 + "Command:");
 	        	out.println(indent1 + "- Title: " + command.getTitle());
 	        	out.println(indent1 + "- Details: " + command.getDetails());
+	        }
+        }
+        if (automated_actions.length > 0)
+        {
+	        for (AADataStructure aa : automated_actions)
+	        {
+	        	out.println(indent1 + "Command:");
+	        	out.println(indent1 + "- Title: " + aa.getTitle());
+	        	out.println(indent1 + "- Details: " + aa.getDetails());
+	        	out.println(indent1 + "- Delay: " + aa.getDelay());
 	        }
         }
     }
@@ -406,6 +426,7 @@ public class AlarmTreeItem extends TreeItem
         writeGCD_XML(out, level, XMLTags.GUIDANCE, guidance);
         writeGCD_XML(out, level, XMLTags.DISPLAY, displays);
         writeGCD_XML(out, level, XMLTags.COMMAND, commands);
+        writeAA_XML(out, level, XMLTags.AUTOMATED_ACTION, automated_actions);
     }
 
     /** Write GDCDataStructure as XML
@@ -429,6 +450,27 @@ public class AlarmTreeItem extends TreeItem
             out.println();
         }
     }
+
+    /** Write AADataStructure as XML
+     *  @param out PrintWriter to which to send XML output
+     *  @param level Indentation level
+     *  @param tag XML Tag
+     *  @param aa The data
+     */
+	private void writeAA_XML(final PrintWriter out, final int level,
+			final String tag, final AADataStructure aads[]) {
+		if (aads == null || aads.length <= 0)
+			return;
+		for (AADataStructure data : aads) {
+			XMLWriter.start(out, level, tag);
+			out.println();
+			XMLWriter.XML(out, level + 1, XMLTags.TITLE, data.getTitle());
+			XMLWriter.XML(out, level + 1, XMLTags.DETAILS, data.getDetails());
+			XMLWriter.XML(out, level + 1, XMLTags.DELAY, data.getDelay());
+			XMLWriter.end(out, level, tag);
+			out.println();
+		}
+	}
 
     /** @return Short string representation for debugging */
     @SuppressWarnings("nls")

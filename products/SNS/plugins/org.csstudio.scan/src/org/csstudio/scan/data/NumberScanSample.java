@@ -4,17 +4,18 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan.data;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.csstudio.scan.server.ScanServer;
@@ -22,36 +23,52 @@ import org.csstudio.scan.server.ScanServer;
 /** Scan sample for numbers
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class NumberScanSample extends ScanSample
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private Number number;
+    final private Number[] values;
 
     /** Initialize
-     *  @param device_name Name of device that provided the sample
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
      *  @param number Number
      */
-	public NumberScanSample(final String device_name, final Date timestamp,
-	        final long serial, final Number number)
+	public NumberScanSample(final Date timestamp,
+	        final long serial, final Number[] values)
 	{
-		super(device_name, timestamp, serial);
-		this.number = number;
+		super(timestamp, serial);
+		this.values = values;
 	}
 
-	/** @return Number held in this {@link ScanSample} */
-	public Number getNumber()
+	/** @return Array size */
+	public int size()
+	{
+	    return values.length;
+	}
+
+	/** @param index Array index
+	 *  @return Number for that array index
+	 */
+	public Number getNumber(final int index)
     {
-    	return number;
+    	return values[index];
     }
 
 	/** {@inheritDoc} */
 	@Override
-    public Object getValue()
+    public Object[] getValues()
 	{
-		return number;
+		return values;
 	}
+
+    @Override
+    public String toString()
+    {
+        if (size() == 1)
+            return super.toString() + " " + values[0].toString();
+        return super.toString() + " " + Arrays.toString(values);
+    }
 }

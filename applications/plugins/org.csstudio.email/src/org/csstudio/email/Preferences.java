@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Access to preference settings.
- * 
+ *
  *  See preferences.ini for details on the available settings
  *  @author Kay Kasemir
  */
@@ -19,10 +19,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     final public static String SMTP_HOST = "smtp_host";
-    
+
+    /** @return SMTP URL */
     public static String getSMTP_Host()
     {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        return prefs.getString(Activator.ID, SMTP_HOST, "undefined.host", null);
+        String host = "localhost";
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            host = service.getString(Activator.ID, SMTP_HOST, host, null);
+        return host;
     }
 }

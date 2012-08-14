@@ -207,18 +207,24 @@ public class AlarmTreePV extends AlarmTreeLeaf
     	// to maximize the severities.
     	// To prevent deadlock, first lock the root, then this and other affected items
     	final AlarmTreeRoot root = getClientRoot();
+    	final boolean parent_changed;
     	synchronized (root)
         {
         	synchronized (this)
             {
-                if (setAlarmState(current_severity, severity, message, timestamp)  &&
-                        ! current_message.equals(this.current_message) )
-                {
+                if (setAlarmState(current_severity, severity, message, timestamp)  ||
+                    ! current_message.equals(this.current_message) )
+                {   // Alarm state or at least message changed
                     this.current_message = current_message;
                     this.value = value;
+                    parent_changed = true;
                 }
+                else
+                    parent_changed = false;
             }
         }
+    	// Send events outside of lock
+    	root.notifyListeners(this, parent_changed);
     }
 
     /** Called either directly or recursively from parent item.

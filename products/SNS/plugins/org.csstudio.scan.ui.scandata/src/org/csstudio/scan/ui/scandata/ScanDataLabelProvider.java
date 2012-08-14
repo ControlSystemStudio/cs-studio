@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scandata;
 
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanSample;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -44,6 +44,6 @@ public class ScanDataLabelProvider extends CellLabelProvider
 	{
 	    final ScanDataRow row = (ScanDataRow) cell.getElement();
 		final ScanSample sample = row.getSample(index);
-		cell.setText(DataFormatter.asString(sample));
+		cell.setText(ScanSampleFormatter.asString(sample));
 	}
 }

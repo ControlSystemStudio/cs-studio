@@ -11,8 +11,10 @@ import org.csstudio.opibuilder.datadefinition.LineStyle;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Shape;
+import org.eclipse.swt.SWT;
 
 /**
  * Abstract EditPart controller for the shape widgets.
@@ -35,6 +37,13 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 		shape.setOutline(model.getLineWidth() != 0);	
 		shape.setLineWidth(model.getLineWidth());
 		shape.setLineStyle(model.getLineStyle());
+		if(GraphicsUtil.useAdvancedGraphics()){
+			if(model.getAlpha()<255)
+				shape.setAlpha(model.getAlpha());
+			else
+				shape.setAlpha(null);
+			shape.setAntialias(model.isAntiAlias()?SWT.ON:null);
+		}
 		return shape;
 	}
 	
@@ -63,7 +72,7 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 				lineWidthHandler);
 		
 		// line style
-		IWidgetPropertyChangeHandler lineStyleHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
@@ -73,8 +82,33 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_STYLE,
-				lineStyleHandler);
+				handler);
 		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if(GraphicsUtil.useAdvancedGraphics())
+					((Shape) figure).setAntialias(((Boolean)newValue)?SWT.ON:null);
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if (GraphicsUtil.useAdvancedGraphics()) {
+					if ((Integer) newValue < 255)
+						((Shape) figure).setAlpha((Integer) newValue);
+					else
+						((Shape) figure).setAlpha(null);
+				}
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractShapeModel.PROP_ALPHA, handler);
 		
 		
 	}

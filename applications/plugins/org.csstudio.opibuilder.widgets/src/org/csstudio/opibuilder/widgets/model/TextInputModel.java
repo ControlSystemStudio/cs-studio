@@ -57,6 +57,9 @@ public class TextInputModel extends TextUpdateModel {
 	/** The default value of the maximum property. */
 	private static final double DEFAULT_MAX = Double.POSITIVE_INFINITY;	
 	
+	/** The message which will be shown on confirm dialog. */
+	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
+	
 	public TextInputModel() {
 		setPropertyValue(PROP_LIMITS_FROM_PV, false);
 	}
@@ -80,7 +83,7 @@ public class TextInputModel extends TextUpdateModel {
 				WidgetPropertyCategory.Behavior, true));
 		
 		addProperty(new BooleanProperty(PROP_MULTILINE_INPUT, "Multi-line Input",
-				WidgetPropertyCategory.Display, false));		
+				WidgetPropertyCategory.Behavior, false));		
 		
 		addProperty(new StringProperty(PROP_DATETIME_FORMAT, "Datetime Format", 
 				WidgetPropertyCategory.Display, "yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
@@ -90,6 +93,9 @@ public class TextInputModel extends TextUpdateModel {
 				WidgetPropertyCategory.Display, FileSource.stringValues(), FileSource.WORKSPACE.ordinal()));
 		addProperty(new ComboProperty(PROP_FILE_RETURN_PART, "File Return Part", 
 				WidgetPropertyCategory.Display, FileReturnPart.stringValues(), FileReturnPart.FULL_PATH.ordinal()));
+		
+		addProperty(new StringProperty(PROP_CONFIRM_MESSAGE, "Confirm Message", 
+				WidgetPropertyCategory.Behavior, "", true));	//$NON-NLS-1$
 		
 		setPropertyVisible(PROP_DATETIME_FORMAT, false);
 		setPropertyVisible(PROP_FILE_RETURN_PART, false);
@@ -143,6 +149,10 @@ public class TextInputModel extends TextUpdateModel {
 	
 	public boolean isMultilineInput(){
 		return (Boolean)getPropertyValue(PROP_MULTILINE_INPUT);
+	}
+	
+	public String getConfirmMessage(){
+		return (String)getPropertyValue(PROP_CONFIRM_MESSAGE);
 	}
 	
 	@Override

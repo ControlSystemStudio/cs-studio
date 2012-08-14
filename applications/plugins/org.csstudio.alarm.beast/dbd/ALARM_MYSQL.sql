@@ -78,6 +78,21 @@ COMMENT='Guidance information for the component.'
 ;
 
 -- 
+-- TABLE: ALARM.AUTOMATED_ACTION 
+--
+
+CREATE TABLE ALARM.AUTOMATED_ACTION(
+    COMPONENT_ID      INT              NOT NULL COMMENT 'Component Identifier: The id for identification of each component.',
+    TITLE             VARCHAR(100)     NOT NULL COMMENT 'Title: The action title.',
+    AUTO_ACTION_ORDER INT              NOT NULL COMMENT 'Order: The order by which the actions are arranged.',
+    DETAIL            VARCHAR(4000)    NOT NULL COMMENT 'Detail: The action value (send email, phone, etc.).',
+    DELAY             INT              NOT NULL COMMENT 'Delay: The action delay in seconds.',
+    PRIMARY KEY (COMPONENT_ID, TITLE)
+)ENGINE=INNODB
+COMMENT='Automated actions for the component.'
+;
+
+-- 
 -- TABLE: ALARM.PV 
 --
 
@@ -154,6 +169,12 @@ CREATE INDEX FK_DISPLAY_TO_ALARM_TREE ON ALARM.DISPLAY(COMPONENT_ID)
 CREATE INDEX FK_GUIDANCE_TO_ALARM_TREE ON ALARM.GUIDANCE(COMPONENT_ID)
 ;
 -- 
+-- INDEX: FK_AUTO_ACTION_TO_ALARM_TREE 
+--
+
+CREATE INDEX FK_AUTO_ACTION_TO_ALARM_TREE ON ALARM.AUTOMATED_ACTION(COMPONENT_ID)
+;
+-- 
 -- INDEX: FK_PV_TO_STATUS 
 --
 
@@ -212,6 +233,16 @@ ALTER TABLE ALARM.GUIDANCE ADD CONSTRAINT FK_GUIDANCE_TO_ALARM_TREE
 
 
 -- 
+-- TABLE: ALARM.AUTOMATED_ACTION 
+--
+
+ALTER TABLE ALARM.AUTOMATED_ACTION ADD CONSTRAINT FK_AUTO_ACTION_TO_ALARM_TREE 
+    FOREIGN KEY (COMPONENT_ID)
+    REFERENCES ALARM.ALARM_TREE(COMPONENT_ID)
+;
+
+
+-- 
 -- TABLE: ALARM.PV 
 --
 
@@ -245,14 +276,23 @@ ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_STATUS
 -- Example data.
 -- Skip if there is no need for an example
 --
-INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Test', now());
+
+-- This entry with PARENT_CMPNT_ID = NULL
+-- defines an alarm tree 'root'
+INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Annunciator', now());
+
+-- Following entries are below that root
 INSERT INTO ALARM.ALARM_TREE VALUES (2, 1, 'Area', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (3, 2, 'System', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (4, 3, 'PV1', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (5, 3, 'PV2', now());
 
+-- ALARM_TREE entries 'PV1', 'PV2' become PVs because of associated data in PV table:
 INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (4, 'Demo 1', true, true, true, false);
 INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (5, 'Demo 2', true, true, true, false);
+
+-- Guidance, commands, .. can be associated with Areas, systems, PVs
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (3, 1, 'System Info', 'This is info for the system and PVs below it'); 
     
 INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 1, 'Info 1', 'Do something'); 
 INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 2, 'Info 2', 'Do something else'); 

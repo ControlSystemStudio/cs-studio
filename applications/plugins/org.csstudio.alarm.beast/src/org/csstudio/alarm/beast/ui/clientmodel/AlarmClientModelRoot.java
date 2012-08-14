@@ -38,20 +38,15 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
         model.acknowledge(pv, acknowledge);
     }
 
-    /** Recursive calls from updated PV via parent items reached the root;
-     *  inform the model.
-     *  @see org.csstudio.alarm.beast.AlarmTree#maximizeSeverity()
-     */
     @Override
-    public boolean maximizeSeverity(final AlarmTreeLeaf pv, boolean parent_changed)
+    protected void notifyListeners(final AlarmTreeLeaf leaf, final boolean parent_changed)
     {
-    	parent_changed = super.maximizeSeverity(pv, parent_changed);
-        if (model != null)
-            // In the client model, the leaf items are PVs
-            if (pv instanceof AlarmTreePV)
-                model.fireNewAlarmState((AlarmTreePV) pv, parent_changed);
-            else
-                throw new IllegalArgumentException("Expected PV");
-        return parent_changed;
+        if (model == null)
+            return;
+        // In the client model, the leaf items are PVs
+        if (leaf instanceof AlarmTreePV)
+            model.fireNewAlarmState((AlarmTreePV) leaf, parent_changed);
+        else
+            throw new IllegalArgumentException("Expected PV");
     }
 }

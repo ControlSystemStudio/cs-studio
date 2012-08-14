@@ -54,7 +54,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	@Override
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure f = new LinkingContainerFigure();
-		f.setZoomToFitAll(getWidgetModel().isAutoFit());
+		f.setZoomToFitAll(getWidgetModel().isAutoFit());		
 		return f;
 	}
 
@@ -64,23 +64,22 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		super.createEditPolicies();
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, null);
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
-
 	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		loadWidgets(getWidgetModel().getOPIFilePath(), false);
-	}
+	
 
 	@Override
 	public LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
+	
 
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		
+		loadWidgets(getWidgetModel().getOPIFilePath(), false);
+
+		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
@@ -155,10 +154,19 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					}
 				}
 			}
-			DisplayModel tempDisplayModel = new DisplayModel();
+			final DisplayModel tempDisplayModel = new DisplayModel();
 			tempDisplayModel.setOpiFilePath(path);
 			tempDisplayModel.setViewer((GraphicalViewer) getViewer());
 			tempDisplayModel.setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
+			//This need to be executed after GUI created.
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {				
+				@Override
+				public void run() {
+					tempDisplayModel.setExecutionMode(getExecutionMode());
+					tempDisplayModel.setOpiRuntime(getWidgetModel().getRootDisplayModel().getOpiRuntime());					
+				}
+			});
+
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel,
 					getViewer().getControl().getDisplay());
@@ -179,11 +187,16 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
 			//It also include the macros on this linking container. It will replace the old one too.
 			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());
+			
 			for(AbstractWidgetModel child : loadTarget.getChildren()){
 				getWidgetModel().addChild(child, false); //don't change model's parent.
 			}
 			getWidgetModel().setBackgroundColor(loadTarget.getBackgroundColor());
-			getWidgetModel().setDisplayModel(tempDisplayModel);
+			getWidgetModel().setDisplayModel(tempDisplayModel);		
+			//Add scripts on display model
+			if(getExecutionMode() == ExecutionMode.RUN_MODE)
+				getWidgetModel().getScriptsInput().getScriptList().addAll(
+					loadTarget.getScriptsInput().getScriptList());
 			//tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();

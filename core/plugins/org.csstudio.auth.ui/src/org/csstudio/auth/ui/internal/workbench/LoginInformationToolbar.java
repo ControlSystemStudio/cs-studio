@@ -117,7 +117,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
             .append(Messages.LoginInformationToolbar_CSS).append(getUsername()).append(LS)
             .append(Messages.LoginInformationToolbar_Xmpp).append(xmppName).append(LS)
             .append(Messages.LoginInformationToolbar_System).append(System.getProperty("user.name")); //$NON-NLS-2$
-            
+
             Button button = new Button(composite, SWT.PUSH);
 			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
 					false));
@@ -133,7 +133,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
 					MessageDialog.openInformation(null, Messages.LoginInformationToolbar_Title, sb.toString());
 				}
 			});
-        	
+
         } else {
             Label label = new Label(composite, SWT.NONE);
             label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -170,7 +170,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
      */
     private String getUsername() {
         User user = SecurityFacade.getInstance().getCurrentUser();
-        final String username = (user != null) ? user.getUsername() : "Not logged in"; //$NON-NLS-1$
+        final String username = (user != null) ? user.getUsername() : Messages.NotLoggedIn;
         return username;
     }
 

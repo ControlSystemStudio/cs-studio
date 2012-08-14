@@ -3,8 +3,6 @@
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
-    <noisePV>sim://noise</noisePV>
-    <my_name>Best OPI Yet</my_name>
   </macros>
   <wuid>-1ba7f91e:1363666d19c:-7dec</wuid>
   <boy_version>3.1.0.qualifier</boy_version>
@@ -168,6 +166,7 @@
     <anti_alias>true</anti_alias>
     <name>Arc</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -184,7 +183,7 @@
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>113</width>
     <line_style>0</line_style>
@@ -214,6 +213,7 @@ $(pv_value)</tooltip>
     <anti_alias>true</anti_alias>
     <name>Arc_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -230,7 +230,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>113</width>
     <line_style>0</line_style>
@@ -267,6 +267,7 @@ $(pv_value)</tooltip>
     <anti_alias>true</anti_alias>
     <name>Arc_2</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -283,7 +284,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>113</width>
     <line_style>0</line_style>
@@ -320,6 +321,7 @@ $(pv_value)</tooltip>
     <anti_alias>true</anti_alias>
     <name>Arc_3</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -336,7 +338,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>113</width>
     <line_style>2</line_style>
@@ -354,59 +356,6 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>244</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>-1ba7f91e:1363666d19c:-7de4</wuid>
-    <scripts />
-    <height>28</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image>../pictures/home-16x16.png</image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>557</y>
-    <actions hook="true" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>../10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>1</replace>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
     <macros>
@@ -433,7 +382,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -510,6 +459,7 @@ $(pv_value)</tooltip>
       <anti_alias>true</anti_alias>
       <name>Polyline</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -531,7 +481,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -574,7 +524,7 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
@@ -592,5 +542,53 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>8</x>
     </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>66d1507f:138820a85e5:-7ebd</wuid>
+    <scripts />
+    <height>38</height>
+    <name>Action Button_1</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <font>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+    </font>
+    <width>97</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>552</y>
+    <actions hook="true" hook_all="false">
+      <action type="EXECUTE_JAVASCRIPT">
+        <path>../scripts/goHome.js</path>
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>17</x>
   </widget>
 </display>

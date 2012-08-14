@@ -4,11 +4,11 @@
  */
 package org.epics.pvmanager.jca;
 
+import com.cosylab.epics.caj.CAJMonitor;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
-import gov.aps.jca.Context;
 import gov.aps.jca.Monitor;
-import gov.aps.jca.dbr.DBR;
+import gov.aps.jca.dbr.*;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.GetEvent;
@@ -17,11 +17,10 @@ import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
-import org.epics.pvmanager.Collector;
-import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.ValueCache;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+import org.epics.pvmanager.*;
 
 /**
  * A ChannelHandler for the JCADataSource.
@@ -38,77 +37,142 @@ import org.epics.pvmanager.ValueCache;
  *
  * @author carcassi
  */
-public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
+class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
 
     private static final int LARGE_ARRAY = 100000;
-    private final Context context;
-    private final int monitorMask;
+    private final JCADataSource jcaDataSource;
     private volatile Channel channel;
-    private volatile ExceptionHandler connectionExceptionHandler;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
+    private boolean putCallback = false;
+    
+    private final static Pattern hasOptions = Pattern.compile(".* \\{.*\\}");
 
-    public JCAChannelHandler(String channelName, Context context, int monitorMask) {
+    public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
-        this.context = context;
-        this.monitorMask = monitorMask;
-    }
-
-    @Override
-    public synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, ExceptionHandler handler) {
-        if (cacheType == null) {
-            cacheType = cache.getType();
-        }
-        super.addMonitor(collector, cache, handler);
+        this.jcaDataSource = jcaDataSource;
+        parseParameters();
     }
     
-    /**
-     * Return the TypeFactory to use to get data from the given channel and 
-     * convert it to the given type
-     * 
-     * @param cacheType final type for the value update
-     * @param channel channel access channel from which to get the data
-     * @return the TypeFactory to use
-     */
-    protected TypeFactory matchFactoryFor(Class<?> cacheType, Channel channel) {
-        return VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
+    private void parseParameters() {
+        if (hasOptions.matcher(getChannelName()).matches()) {
+            if (getChannelName().endsWith("{\"putCallback\":true}")) {
+                putCallback = true;
+            } else if (getChannelName().endsWith("{\"putCallback\":false}")) {
+                putCallback = false;
+            } else {
+                throw new IllegalArgumentException("Option not recognized for " + getChannelName());
+            }
+        }
+    }
+
+    public boolean isPutCallback() {
+        return putCallback;
+    }
+ 
+    @Override
+    protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, Channel channel) {
+        return jcaDataSource.getTypeSupport().find(cache, channel);
     }
 
     @Override
-    public void connect(ExceptionHandler handler) {
-        connectionExceptionHandler = handler;
+    public void connect() {
         try {
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
 	    if (largeArray) {
-                channel = context.createChannel(getChannelName(), connectionListener, Channel.PRIORITY_MIN);
-		System.out.println("Connect as large");
+                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, Channel.PRIORITY_MIN);
 	    } else {
-                channel = context.createChannel(getChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
+                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
             needsMonitor = true;
         } catch (CAException ex) {
-            handler.handleException(ex);
+            throw new RuntimeException("JCA Connection failed", ex);
         }
     }
 
-    // protected (not private) to allow different type factory
-    protected void setup(Channel channel) throws CAException {
-        vTypeFactory = matchFactoryFor(cacheType, channel);
+    private void putWithCallback(Object newValue, final ChannelWriteCallback callback) throws CAException {
+        PutListener listener = new PutListener() {
+
+            @Override
+            public void putCompleted(PutEvent ev) {
+                if (ev.getStatus().isSuccessful()) {
+                    callback.channelWritten(null);
+                } else {
+                    callback.channelWritten(new Exception(ev.toString()));
+                }
+            }
+        };
+        if (newValue instanceof String) {
+            channel.put(newValue.toString(), listener);
+        } else if (newValue instanceof byte[]) {
+            channel.put((byte[]) newValue, listener);
+        } else if (newValue instanceof short[]) {
+            channel.put((short[]) newValue, listener);
+        } else if (newValue instanceof int[]) {
+            channel.put((int[]) newValue, listener);
+        } else if (newValue instanceof float[]) {
+            channel.put((float[]) newValue, listener);
+        } else if (newValue instanceof double[]) {
+            channel.put((double[]) newValue, listener);
+        } else if (newValue instanceof Byte || newValue instanceof Short
+                || newValue instanceof Integer || newValue instanceof Long) {
+            channel.put(((Number) newValue).longValue(), listener);
+        } else if (newValue instanceof Float || newValue instanceof Double) {
+            channel.put(((Number) newValue).doubleValue(), listener);
+        } else {
+            throw new RuntimeException("Unsupported type for CA: " + newValue.getClass());
+        }
+        jcaDataSource.getContext().flushIO();
+    }
+
+    private void put(Object newValue, final ChannelWriteCallback callback) throws CAException {
+        if (newValue instanceof String) {
+            channel.put(newValue.toString());
+        } else if (newValue instanceof byte[]) {
+            channel.put((byte[]) newValue);
+        } else if (newValue instanceof short[]) {
+            channel.put((short[]) newValue);
+        } else if (newValue instanceof int[]) {
+            channel.put((int[]) newValue);
+        } else if (newValue instanceof float[]) {
+            channel.put((float[]) newValue);
+        } else if (newValue instanceof double[]) {
+            channel.put((double[]) newValue);
+        } else if (newValue instanceof Byte || newValue instanceof Short
+                || newValue instanceof Integer || newValue instanceof Long) {
+            channel.put(((Number) newValue).longValue());
+        } else if (newValue instanceof Float || newValue instanceof Double) {
+            channel.put(((Number) newValue).doubleValue());
+        } else {
+            callback.channelWritten(new Exception(new RuntimeException("Unsupported type for CA: " + newValue.getClass())));
+            return;
+        }
+        jcaDataSource.getContext().flushIO();
+        callback.channelWritten(null);
+    }
+
+    private void setup(Channel channel) throws CAException {
+        processConnection(channel);
+        
+        DBRType metaType = metadataFor(channel);
 
         // If metadata is needed, get it
-        if (vTypeFactory.getEpicsMetaType() != null) {
+        if (metaType != null) {
             // Need to use callback for the listener instead of doing a synchronous get
             // (which seemed to perform better) because JCA (JNI implementation)
             // would return an empty list of labels for the Enum metadata
-            channel.get(vTypeFactory.getEpicsMetaType(), 1, new GetListener() {
+            channel.get(metaType, 1, new GetListener() {
 
                 @Override
                 public void getCompleted(GetEvent ev) {
                     synchronized(JCAChannelHandler.this) {
-                        metadata = ev.getDBR();
                         // In case the metadata arrives after the monitor
-                        dispatchValue();
+                        MonitorEvent event = null;
+                        if (getLastMessagePayload() != null) {
+                            event = getLastMessagePayload().getEvent();
+                        }
+                        processMessage(new JCAMessagePayload(ev.getDBR(), event));
                     }
                 }
             });
@@ -117,146 +181,180 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         // Start the monitor only if the channel was (re)created, and
         // not because a disconnection/reconnection
         if (needsMonitor) {
-            if (vTypeFactory.isArray()) {
-                channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
-            } else {
-                channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
-            }
+            channel.addMonitor(valueTypeFor(channel), countFor(channel), jcaDataSource.getMonitorMask(), monitorListener);
             needsMonitor = false;
+        }
+        
+        // Setup metadata monitor if required
+        if (jcaDataSource.isDbePropertySupported() && metaType != null) {
+            channel.addMonitor(metaType, 1, Monitor.PROPERTY, new MonitorListener() {
+
+                @Override
+                public void monitorChanged(MonitorEvent ev) {
+                    synchronized(JCAChannelHandler.this) {
+                        // In case the metadata arrives after the monitor
+                        MonitorEvent event = null;
+                        if (getLastMessagePayload() != null) {
+                            event = getLastMessagePayload().getEvent();
+                        }
+                        processMessage(new JCAMessagePayload(ev.getDBR(), event));
+                    }
+                }
+            });
         }
 
         // Flush the entire context (it's the best we can do)
         channel.getContext().flushIO();
     }
     
-    // protected (not private) to allow different type factory
-    protected volatile Class<?> cacheType;
-    // protected (not private) to allow different type factory
-    protected volatile TypeFactory vTypeFactory;
-    
     private final ConnectionListener connectionListener = new ConnectionListener() {
 
             @Override
             public void connectionChanged(ConnectionEvent ev) {
-                try {
-                    // Take the channel from the event so that there is no
-                    // synchronization problem
-                    Channel channel = (Channel) ev.getSource();
-		    
-		    // Check whether the channel is large and was opened
-		    // as large. Reconnect if does not match
-		    if (ev.isConnected() && channel.getElementCount() >= LARGE_ARRAY && !largeArray) {
-			disconnect(connectionExceptionHandler);
-			largeArray = true;
-			connect(connectionExceptionHandler);
-			return;
-		    }
-                    
-                    // Setup monitors on connection
-                    if (ev.isConnected()) {
-                        setup(channel);
-                        dispatchValue();
-                    } else {
-                        dispatchValue();
+                synchronized(JCAChannelHandler.this) {
+                    try {
+                        // Take the channel from the event so that there is no
+                        // synchronization problem
+                        Channel channel = (Channel) ev.getSource();
+
+                        // Check whether the channel is large and was opened
+                        // as large. Reconnect if does not match
+                        if (ev.isConnected() && channel.getElementCount() >= LARGE_ARRAY && !largeArray) {
+                            disconnect();
+                            largeArray = true;
+                            connect();
+                            return;
+                        }
+
+                        // Setup monitors on connection
+                        if (ev.isConnected()) {
+                            setup(channel);
+                            processMessage(getLastMessagePayload());
+                        } else {
+                            processMessage(getLastMessagePayload());
+                        }
+                    } catch (Exception ex) {
+                        reportExceptionToAllReadersAndWriters(ex);
                     }
-                } catch (Exception ex) {
-                    connectionExceptionHandler.handleException(ex);
                 }
             }
         };;
     
-    // The change in metadata and even has to be atomic
-    // so they are both guarded by this
-    // protected (not private) to allow different type factory
-    protected DBR metadata;
-    private MonitorEvent event;
-    
-    // protected (not private) to allow different type factory
-    protected final MonitorListener monitorListener = new MonitorListener() {
+    private final MonitorListener monitorListener = new MonitorListener() {
 
         @Override
         public void monitorChanged(MonitorEvent event) {
             synchronized(JCAChannelHandler.this) {
-                JCAChannelHandler.this.event = event;
-                dispatchValue();
+                DBR metadata = null;
+                if (getLastMessagePayload() != null) {
+                    metadata = getLastMessagePayload().getMetadata();
+                }
+                processMessage(new JCAMessagePayload(metadata, event));
             }
         }
     };
-    
-    private synchronized void dispatchValue() {
-        // Only process the value if we have both event and metadata
-        if (event != null && (vTypeFactory.getEpicsMetaType() == null || metadata != null)) {
-            processValue(event);
-        }
-    }
 
     @Override
-    public void disconnect(ExceptionHandler handler) {
+    public void disconnect() {
         try {
             // Close the channel
             channel.destroy();
         } catch (CAException ex) {
-            handler.handleException(ex);
+            throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
             channel = null;
-            synchronized(this) {
-                metadata = null;
-                event = null;
-            }
+            processConnection(null);
         }
     }
 
     @Override
     public void write(Object newValue, final ChannelWriteCallback callback) {
         try {
-            PutListener listener = new PutListener() {
-
-                @Override
-                public void putCompleted(PutEvent ev) {
-                    if (ev.getStatus().isSuccessful()) {
-                        callback.channelWritten(null);
-                    } else {
-                        callback.channelWritten(new Exception(ev.toString()));
-                    }
-                }
-            };
-            if (newValue instanceof String) {
-                channel.put(newValue.toString(), listener);
-            } else if (newValue instanceof byte[]) {
-                channel.put((byte[]) newValue, listener);
-            } else if (newValue instanceof short[]) {
-                channel.put((short[]) newValue, listener);
-            } else if (newValue instanceof int[]) {
-                channel.put((int[]) newValue, listener);
-            } else if (newValue instanceof float[]) {
-                channel.put((float[]) newValue, listener);
-            } else if (newValue instanceof double[]) {
-                channel.put((double[]) newValue, listener);
-            } else if (newValue instanceof Byte || newValue instanceof Short
-                    || newValue instanceof Integer || newValue instanceof Long) {
-                channel.put(((Number) newValue).longValue(), listener);
-            } else if (newValue instanceof Float || newValue instanceof Double) {
-                channel.put(((Number) newValue).doubleValue(), listener);
-            } else {
-                throw new RuntimeException("Unsupported type for CA: " + newValue.getClass());
-            }
-            context.flushIO();
+            if (isPutCallback())
+                putWithCallback(newValue, callback);
+            else
+                put(newValue, callback);
         } catch (CAException ex) {
             callback.channelWritten(ex);
         }
     }
-
+    
     @Override
-    public boolean updateCache(MonitorEvent event, ValueCache<?> cache) {
-        DBR rawvalue = event.getDBR();
-        @SuppressWarnings("unchecked")
-        Object newValue = cacheType.cast(vTypeFactory.createValue(rawvalue, metadata, !isConnected()));
-        cache.setValue(newValue);
-        return true;
+    protected boolean isConnected(Channel channel) {
+        return isChannelConnected(channel);
+    }
+    
+    
+    static boolean isChannelConnected(Channel channel) {
+        return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 
     @Override
-    public boolean isConnected() {
-        return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
+    public synchronized Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        if (channel != null) {
+            properties.put("Channel name", channel.getName());
+            properties.put("Hostname", channel.getHostName());
+            properties.put("Channel type", channel.getFieldType().getName());
+            properties.put("Connection state", channel.getConnectionState().getName());
+            properties.put("Element count", channel.getElementCount());
+            properties.put("Read access", channel.getReadAccess());
+            properties.put("Write access", channel.getWriteAccess());
+        }
+        return properties;
+    }
+
+    protected DBRType metadataFor(Channel channel) {
+        DBRType type = channel.getFieldType();
+        
+        if (type.isBYTE() || type.isSHORT() || type.isINT() || type.isFLOAT() || type.isDOUBLE())
+            return DBR_CTRL_Double.TYPE;
+        
+        if (type.isENUM())
+            return DBR_LABELS_Enum.TYPE;
+        
+        return null;
+    }
+
+    protected int countFor(Channel channel) {
+        if (channel.getElementCount() == 1)
+            return 1;
+        
+        if (jcaDataSource.isVarArraySupported())
+            return 0;
+        else
+            return channel.getElementCount();
+    }
+
+    protected DBRType valueTypeFor(Channel channel) {
+        DBRType type = channel.getFieldType();
+        
+        // TODO: .RTYP should not request the time
+        
+        // For scalar numbers, only use Double or Int
+        if (channel.getElementCount() == 1) {
+            if (type.isBYTE() || type.isSHORT() || type.isINT())
+                return DBR_TIME_Int.TYPE;
+            if (type.isFLOAT() || type.isDOUBLE())
+                return DBR_TIME_Double.TYPE;
+        }
+        
+        if (type.isBYTE()) {
+            return DBR_TIME_Byte.TYPE;
+        } else if (type.isSHORT()) {
+            return DBR_TIME_Short.TYPE;
+        } else if (type.isINT()) {
+            return DBR_TIME_Int.TYPE;
+        } else if (type.isFLOAT()) {
+            return DBR_TIME_Float.TYPE;
+        } else if (type.isDOUBLE()) {
+            return DBR_TIME_Double.TYPE;
+        } else if (type.isENUM()) {
+            return DBR_TIME_Enum.TYPE;
+        } else if (type.isSTRING()) {
+            return DBR_TIME_String.TYPE;
+        }
+        
+        throw new IllegalArgumentException("Unsupported type " + type);
     }
 }

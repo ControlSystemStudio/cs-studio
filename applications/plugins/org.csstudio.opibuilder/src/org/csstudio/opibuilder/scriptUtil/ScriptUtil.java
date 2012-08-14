@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -14,6 +15,7 @@ import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgetActions.OpenOPIInViewAction;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -136,5 +138,27 @@ public class ScriptUtil {
 		action.setPropertyValue(ExecuteCommandAction.PROP_WAIT_TIME, wait);
 		action.run();
 	}
+	
+	/**
+	 * @return true if it the OPI is running in WebOPI.
+	 */
+	public final static boolean isWebOPI(){
+		return OPIBuilderPlugin.isRAP();
+	}
+	
+	/**If the current OPI is running on Mobile device. This method can only be called in UI thread.
+	 * @return true if it the OPI is running in mobile device such as Android, iphone, iPad, iPod and blackberry.
+	 */
+	public final static boolean isMobile(){
+		return OPIBuilderPlugin.isMobile(Display.getCurrent());
+	}
 
+	/**If the current OPI is running on Mobile device. This method can be called in non-UI thread.
+	 * @param widget the widget on which the script is attached to. 
+	 * @return true if it the OPI is running in mobile device such as Android, iphone, iPad, iPod and blackberry.
+	 */
+	public final static boolean isMobile(AbstractBaseEditPart widget){
+		return OPIBuilderPlugin.isMobile(widget.getViewer().getControl().getDisplay());
+	}
+	
 }

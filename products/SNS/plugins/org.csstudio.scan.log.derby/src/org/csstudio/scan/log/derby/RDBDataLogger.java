@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.server.Scan;
 
 /** Base for an RDB-based sample logger
@@ -91,6 +91,35 @@ abstract public class RDBDataLogger
 		{
 			statement.close();
 		}
+    }
+
+    /** Locate scan
+     *  @param id Scan ID
+     *  @return Scan for ID or <code>null</code>
+     *  @throws Exception on error
+     */
+    public Scan getScan(final long id) throws Exception
+    {
+        final Scan scan;
+        final PreparedStatement statement = connection.prepareStatement(
+                "SELECT id, name, created FROM scans WHERE id=?");
+        try
+        {
+            statement.setLong(1, id);
+            final ResultSet result = statement.executeQuery();
+            if (result.next())
+                scan = new Scan(result.getLong(1),
+                                result.getString(2),
+                                result.getTimestamp(3));
+            else
+                scan = null;
+            result.close();
+        }
+        finally
+        {
+            statement.close();
+        }
+        return scan;
     }
 
     /** Obtain all available scans
@@ -196,24 +225,23 @@ abstract public class RDBDataLogger
 
 	/** Log a sample
 	 *  @param scan_id ID of associated scan
+	 *  @param device Device name
 	 *  @param sample Sample to log
 	 *  @throws Exception on error
 	 */
-    public void log(final long scan_id, final ScanSample sample) throws Exception
+    public void log(final long scan_id, final String device, final ScanSample sample) throws Exception
     {
-    	final int device_id = getDevice(sample.getDeviceName());
+    	final int device_id = getDevice(device);
 
     	if (insert_sample_statement == null)
 			insert_sample_statement = connection.prepareStatement(
-					"INSERT INTO samples(scan_id, device_id, serial, timestamp, number)" +
+					"INSERT INTO samples(scan_id, device_id, serial, timestamp, value)" +
 					" VALUES (?,?,?,?,?)");
 		insert_sample_statement.setLong(1, scan_id);
 		insert_sample_statement.setInt(2, device_id);
 		insert_sample_statement.setLong(3, sample.getSerial());
 		insert_sample_statement.setTimestamp(4, new Timestamp(sample.getTimestamp().getTime()));
-		if (sample instanceof NumberScanSample)
-			insert_sample_statement.setDouble(5, ((NumberScanSample)sample).getNumber().doubleValue());
-
+		insert_sample_statement.setObject(5, new SampleValue(sample.getValues()));
 		final int rows = insert_sample_statement.executeUpdate();
 		if (rows != 1)
 				throw new Exception("Sample insert affected " + rows + " rows");
@@ -251,7 +279,7 @@ abstract public class RDBDataLogger
     {
 		final List<ScanSample> samples = new ArrayList<ScanSample>();
 		final PreparedStatement statement = connection.prepareStatement(
-			"SELECT serial, timestamp, number FROM samples WHERE scan_id=? AND device_id=? ORDER BY serial");
+			"SELECT serial, timestamp, value FROM samples WHERE scan_id=? AND device_id=? ORDER BY serial");
 		try
 		{
 			statement.setLong(1, scan_id);
@@ -261,8 +289,8 @@ abstract public class RDBDataLogger
 			{
 				final long serial = result.getLong(1);
 				final Date timestamp = result.getTimestamp(2);
-				final double number = result.getDouble(3);
-				samples.add(new NumberScanSample(device_name, timestamp, serial, number));
+				final SampleValue value = (SampleValue) result.getObject(3);
+				samples.add(ScanSampleFactory.createSample(timestamp, serial, value.getValues()));
 			}
 			result.close();
 		}
@@ -296,6 +324,52 @@ abstract public class RDBDataLogger
 			statement.close();
 		}
 		return devices.toArray(new String[devices.size()]);
+    }
+
+    /** Delete logged data for a scan
+     *  @param scan_id ID of the scan
+     *  @throws SQLException on error
+     */
+    public void deleteDataLog(final long scan_id) throws SQLException
+    {
+        connection.setAutoCommit(false);
+        try
+        {
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM samples WHERE scan_id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            statement = connection.prepareStatement(
+                    "DELETE FROM scans WHERE id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            connection.commit();
+        }
+        catch (SQLException ex)
+        {
+            connection.rollback();
+            throw ex;
+        }
+        finally
+        {
+            connection.setAutoCommit(true);
+        }
     }
 
 	/** Close database.

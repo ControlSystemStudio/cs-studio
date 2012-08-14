@@ -118,4 +118,12 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 		return new ComplexDataPropertyDescriptor(prop_id, description, dialogTitle);
 	}
 
+	@Override
+	public PropertyDescriptor FilePathPropertyDescriptorWithFilter(String prop_id,
+			String description, AbstractWidgetModel widgetModel, String[] filters) {
+		return new FilePathPropertyDescriptorWithFilter(prop_id, description, widgetModel, filters);
+	}
+
+	
+
 }

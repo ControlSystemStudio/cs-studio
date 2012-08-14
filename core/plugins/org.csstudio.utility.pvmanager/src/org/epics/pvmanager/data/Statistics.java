@@ -16,7 +16,6 @@ package org.epics.pvmanager.data;
  * <p>
  * No integer statistics, since averages are not integer in general.
  *
- * @param <T> a {@link java.lang.Number} type
  * @author carcassi
  */
 public interface Statistics {
@@ -43,11 +42,16 @@ public interface Statistics {
     Double getMin();
 
     /**
-     * The maximum value
+     * The maximum value.
      *
      * @return the maximum
      */
     Double getMax();
 
+    /**
+     * The number of samples.
+     * 
+     * @return the number of samples
+     */
     Integer getNSamples();
 }

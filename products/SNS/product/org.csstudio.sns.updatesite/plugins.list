@@ -1,3 +1,5 @@
+javax.mail/**
+org.apache.batik/**
 org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
@@ -60,9 +62,11 @@ org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
 org.csstudio.opibuilder.editor/**
 org.csstudio.opibuilder.examples/**
+org.csstudio.opibuilder.imagelib/**
 org.csstudio.opibuilder.rcp/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.rcp/**
+org.csstudio.opibuilder.widgets.symbol/**
 org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**

@@ -23,7 +23,7 @@ public class RDBArchivePreferences
     public static final String PASSWORD = "password";
     public static final String SQL_TIMEOUT = "sql_timeout";
     public static final String USE_ARRAY_BLOB = "use_array_blob";
-    
+
     /** @return URL of RDB archive server */
     public static String getURL()
     {
@@ -33,7 +33,10 @@ public class RDBArchivePreferences
     /** @return Schema for RDB tables or <code>null</code> */
     public static String getSchema()
     {
-        return getString(SCHEMA);
+        final String schema = getString(SCHEMA);
+        if (schema.endsWith("."))
+            return schema.substring(0, schema.length()-1);
+        return schema;
     }
 
     /** @return User name for RDB archive server */
@@ -52,7 +55,7 @@ public class RDBArchivePreferences
         // Fall back to plain prefs
         return getString(PASSWORD);
     }
-    
+
 	/** @return SQL Timeout in seconds */
     public static int getSQLTimeoutSecs()
     {
@@ -70,7 +73,7 @@ public class RDBArchivePreferences
             return true;
         return prefs.getBoolean(Activator.ID, USE_ARRAY_BLOB, true, null);
     }
-    
+
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>

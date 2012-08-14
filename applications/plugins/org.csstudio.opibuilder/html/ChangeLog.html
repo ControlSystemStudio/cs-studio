@@ -8,42 +8,142 @@
  <body>
 <h1>BOY Changelog</h1>
 <ul>
-<li><a href="#latest">Latest</a></li>
+<li><a href="#NextVersion">Next Version</a></li>
+<li><a href="#3.1.1">Version 3.1.1</a></li>
 <li><a href="#3.1.0">Version 3.1.0</a></li>
 <li><a href="#1.2.0">Version 1.2.0</a></li>
 <li><a href="#1.1.0">Version 1.1.0</a></li>
 <li><a href="#1.0.6">Version 1.0.6</a></li>
 </ul>
 
+<A NAME="NextVersion"></A>
 
-
-<A NAME="latest"></A>
-<h2>As of 5/23/2012</h2>
+<h2>Next Version</h2>
 <ul>
-<li>For XY Graph, always show full time stamp (date and time) on the start and end of an axis which is in time format. Optimized auto time format.</li>
-<li>Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled.</li>
-<li>Add Array widget to probe OPI so Waveform PV can be probed.</li>  
-<li>WebOPI use system property <code>org.csstudio.rap.preference</code> to provide path to the preference file.</li>
-<li>Add Array widget.<p><img src="widgets/img/ArrayWidget.gif"></p>
+<li>Add <code>Confirm Message</code> property to Text Input and Text widget. 
+If the message is not empty, a confirm dialog will pop up before writing the new value to PV.
+<p><img src="img/TextInputConfirmDialog.png"></p>
 </li>
+<li>Array widget: support multiple widgets on each element by embedding grouping container.
+<p><img height=200 src="img/groupInArray.png"></p>
+
+</li>
+<li>Add <code>Next Focus</code> property to <a href="widgets/NativeText.html">Text</a> widget.</li>
+<li>XY Graph widget: Don't autoscale on invisible traces.</li> 
+<li>Enabled arrow key operations on <a href="widgets/ThumbWheel.html">ThumbWheel</a> widget.
+ Added new properties "Show Buttons" and "Focused Frame Color" to ThumbWheel widget.(Contributed by Takashi Nakamoto from CosyLab)</li>
+</ul>
+
+<A NAME="#3.1.1"></A>
+
+<h2>Version 3.1.1 (2012-07-18)</h2>
+<ul>
+<li>Add Native <a href="widgets/NativeButton.html">Button<a>, <a href="widgets/NativeText.html">Text</a> widgets. 
+Native widgets will have significantly better performance in WebOPI. 
+They also support Tab key traversing.
+The native text widget can be used as either label, text update or text input. 
+<br><b>Tip:</b>You can use context menu <code>Replace Widgets With...</code> as described below 
+to easily replace old widgets with native widgets.
+<p><img src="img/NativeButton.png"></p><p><img src="img/NativeText.png"></p></li>
+
+<li>Add <code>Replace Widgets With...</code> in context menu to replace selected widgets with other widgets. 
+Common properties will be copied to the new widgets.</li><br>
+
+<li>Add Table widget. For more details, see <a href="widgets/Table.html">Table</a>.
+<p>Example: Use table widget to show multiple PV values<br><img src = "widgets/img/Table_PVs.gif"></p>
+</li>
+
+<li>Add <a href="widgets/Array.html">Array</a> widget, which is great for reading/writing a waveform.<p><img src="widgets/img/ArrayWidget.gif"></p>
+</li>
+
+<li>Reworked BOY Examples to have better user experience and more demonstrations.
+<p><img height=400 src="img/BetterBOYExamples.png">  <img src="img/Calculator.png"></li>
+
+<li>Included the Symbol widgets provided by ITER. Symbol widgets can display/write On/Off 
+states with On/Off color on a single image or on multiple images based on image names.
+It supports SVG, PNG and GIF format of images. SVG is vector image which can keep the same definition after it is resized.
+ITER also contributed more than 200 SVG and PNG symbol images to BOY,
+ which can be imported to workspace from menu <code>File->Import...->BOY->BOY Symbol Library</code>
+<p><img height=350 src="img/SymbolsDemo.png"></li>
+
+<li>XYGraph widget performance has been improved greatly by Takashi Nakamoto from CosyLab.
+ Undersampling and drawing polyline tactics are used for line or dash line trace.</li>
+<br>
+<li>Fixed the bug that zooming a widget with gradient (or 3D) effect resulted in ugly looking.
+<img height=300 src="img/ZoomingGradient.png"></li>
+
+<li>Add alpha property to all shape widgets. <p><img src="img/AlphaEffect.png"></li>
+
+<li>Add gradient, background gradient start color, foreground gradient start color properties to Rectangle,
+Rounded Rectangle and Ellipse widgets.
+<p><img src="img/GradientEffect.png"></li>
+
+<li>Support double clicking in Font, Color and File dialog to finish resource selection</li> 
+<br>
+
+<li>Add direct editing support to button, menu button, check box widgets, so now you can
+double click these widgets to input text directly in edit mode</li>
+<br>
+<li>For macro color and font, both color/font name and value are saved in OPI file, 
+so in case of color/font file is not available, use the saved value. This will
+make OPI function normally in most cases even color/font file is not available. 
+Existing OPIs need to be re-saved to take use of this feature.</li>
+<br>
+<li>Add more predefined fonts in BOY, so even if you don't have any font file set, you still have these
+macro fonts available: <code>Default</code><code>Default Bold</code><code>Header 1</code><code>Header 2</code>
+<code>Header 3</code>. These predefined fonts will use system default font but with different styles and heights.
+These predefined fonts can be replaced from font file by defining the same font name.
+</li>
+<br>
+<li> Allow to give a different menu text rather than using file name for top opi by appending
+ a macro <code>Alias=The Menu Name</code>. It also allows to specify the top opi open position by appending 
+ a macro <code>Position</code>. 
+    The available positions are: 
+    <ul>
+    <li> <code>Left</code>: Left View</li>
+    <li> <code>Right</code>: Right View</li>
+    <li> <code>Top</code>: Top View</li>
+    <li> <code>Bottom</code>: Bottom View</li>
+    <li> <code>Default_View</code>: Default View</li>
+    <li> <code>Detached</code>: Detached View</li>
+    </ul>
+    <p>If macro <code>Position</code> is not set or is not in one of above positions, it will be opened in editor area.
+    For example:
+     
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Alias=BOY Examples", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+  </p><br>
+<li>Add <code>Round Rectangle Background Style</code> Border.
+<p><img src="img/RoundRectBorder.png"></p></li>
+<li>For XY Graph, always show full time stamp (date and time) on the start and end of an axis which is in time format. Optimized auto time format.</li>
+
+<br><li>Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled.</li>
+
+<br><li>OPI Probe is reworked to have better user experience. 
+Add Array widget to probe OPI so Waveform PV can be probed. Probe OPI will be opened as detached view.
+<p><img src="img/OPIProbe.png"></li> 
+
+<li>WebOPI use system property <code>org.csstudio.rap.preference</code> to provide path to the preference file.</li>
+<br>
+
 <li>Add <code>Buttons on Left</code> property to spinner widget.
 <p><img src="widgets/img/Spinner_Left.gif"></p></li>
+
 <li>Support OPI Search Path, so BOY can run an OPI found on search path. See <a href="PreferencePage.html">preferences</a><br>
 <p><img src="img/OPISearchPath.gif"></p>
 </li>
+
 <li>Improve intensity graph performance significantly by accepting all basic array types and using nearest neighbor image scaling technique.</li>
-<li>Add <code><a href="widgets/SashContainer.html">Sash Container</a></code> widget.
+<br><li>Add <code><a href="widgets/SashContainer.html">Sash Container</a></code> widget.
 <p><img src="widgets/img/SashContainer.gif"></p>
 </li>
+
 <li>Add <code>Auto Scale Widgets</code> property to display. If it is true, all widgets on this display may be scaled
  when display is resized. The old display property <code>Auto Zoom to Fit All</code> should be deprecated, because the advance graphics
  effects such as gradient cannot display correctly in zoom.<br>
 <img src = "img/ScaleWidgets.gif">
 </li>
-<li>Add Table widget. For more details, see <a href="widgets/Table.html">Table</a>.
-<p>Example 1: use table widget to show multiple PV values<br><img src = "widgets/img/Table_PVs.gif"></p>
-<p>Example 2: Editing table contents at runtime. <br><img src = "widgets/img/Table_Editable.gif"></p>
-</li>
+
+
 <li>Add trace visible property to XY Graph
 <p><img src ="widgets/img/XYGraph_TraceVisible.gif"></p>
 </li>

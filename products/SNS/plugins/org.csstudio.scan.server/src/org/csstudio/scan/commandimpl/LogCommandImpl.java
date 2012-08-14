@@ -22,6 +22,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.ValueConverter;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
@@ -51,15 +52,16 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 	public void execute(final ScanContext context) throws Exception
 	{
 		final Logger logger = Logger.getLogger(getClass().getName());
+		final DataLog log = context.getDataLog();
 		// Log all devices with the same serial
-		final long serial = context.getNextScanDataSerial();
+		final long serial = log.getNextScanDataSerial();
 		final String[] device_names = command.getDeviceNames();
 		for (String device_name : device_names)
 		{
 			final Device device = context.getDevice(device_name);
 			final IValue value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
-			context.logSample(ValueConverter.createSample(device_name, serial, value));
+			log.log(device_name, ValueConverter.createSample(serial, value));
 		}
         context.workPerformed(1);
 	}

@@ -24,6 +24,7 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+
 import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
@@ -38,7 +39,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
-import org.eclipse.swt.SWT;
 
 /**
  * A polyline figure.
@@ -125,7 +125,6 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	 * The fill grade (0 - 100%).
 	 */
 	private double fill = 100.0;
-	private boolean antiAlias;
 
 	private boolean horizontalFill;
 	
@@ -280,13 +279,6 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	}
 	
 	/**
-	 * @return the antiAlias
-	 */
-	public boolean isAntiAlias() {
-		return antiAlias;
-	}
-
-	/**
 	 * @return the fillArrow
 	 */
 	public boolean isFillArrow() {
@@ -307,10 +299,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void outlineShape(final Graphics graphics) {
-
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);	
-		
+	protected void outlineShape(final Graphics graphics) {		
 		Rectangle figureBounds = getBounds();
 
 		graphics.pushState();
@@ -359,13 +348,6 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 			((IFigure)getChildren().get(i)).translate(dx, dy);
 	}
 
-	public void setAntiAlias(boolean antiAlias) {
-		if(this.antiAlias == antiAlias)
-			return;
-		this.antiAlias = antiAlias;
-		repaint();
-	}
-
 	public void setArrowLineLength(int arrowLineLength) {
 		if(this.arrowLineLength == arrowLineLength)
 			return;
@@ -384,11 +366,13 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	@Override
 	public void setBounds(Rectangle rect) {
 		PointList points = getPoints();
-		int oldX = getLocation().x;
-		int oldY = getLocation().y;
-		points.translate(rect.x - oldX, rect.y - oldY);		
-		
-		setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
+		if(!points.getBounds().equals(rect)){
+			int oldX = getLocation().x;
+			int oldY = getLocation().y;
+			points.translate(rect.x - oldX, rect.y - oldY);		
+			
+			setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
+		}
 		super.setBounds(rect);
 		//figure should be forced to be moved since the bounds of a polyline might be unchanged.
 		fireFigureMoved();

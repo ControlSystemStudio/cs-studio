@@ -67,6 +67,27 @@ public class DeviceInfo implements Serializable
         return log;
     }
 
+    /** Hash on name
+     *  {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        return name.hashCode();
+    }
+
+    /** Compare by name
+     *  {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (! (obj instanceof DeviceInfo))
+            return false;
+        final DeviceInfo other = (DeviceInfo) obj;
+        return name.equals(other.name);
+    }
+
     /** @return Debug representation */
     @Override
 	public String toString()

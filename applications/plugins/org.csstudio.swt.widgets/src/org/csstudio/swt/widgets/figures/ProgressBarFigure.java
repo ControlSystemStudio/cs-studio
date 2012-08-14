@@ -307,7 +307,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 			boolean support3D = GraphicsUtil.testPatternSupported(g);
 			setOutline(effect3D && support3D);
 			if(effect3D && support3D) {
-				thumbPattern = new Pattern(Display.getCurrent(),
+				thumbPattern = GraphicsUtil.createScaledPattern(g, Display.getCurrent(),
 					leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0, 
 					fillColor, 255);
 				g.setBackgroundPattern(thumbPattern);		
@@ -349,13 +349,13 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 				super.fillShape(graphics);
 				Pattern backGroundPattern; 
 				if(horizontal)
-					backGroundPattern= new Pattern(Display.getCurrent(),
+					backGroundPattern= GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x, bounds.y + bounds.height,
 						WHITE_COLOR, 255,
 						fillBackgroundColor, 0);
 				else
-					backGroundPattern= new Pattern(Display.getCurrent(),
+					backGroundPattern= GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x + bounds.width, bounds.y,
 						WHITE_COLOR, 255,
@@ -368,13 +368,13 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 				//fill value
 				if(!indicatorMode){
 					if(horizontal)
-						backGroundPattern = new Pattern(Display.getCurrent(),
+						backGroundPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
 							bounds.x, bounds.y,
 							bounds.x, bounds.y + bounds.height,
 							WHITE_COLOR, 255,
 							fillColor, 0);
 					else
-						backGroundPattern = new Pattern(Display.getCurrent(),
+						backGroundPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
 							bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y,
 							WHITE_COLOR, 255,

@@ -237,7 +237,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 				try {
 					graphics.setBackgroundColor(thumbColor);
 					super.fillShape(graphics);
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y + bounds.height, 
 							WHITE_COLOR, 0, WHITE_COLOR, 255);
 					graphics.setBackgroundPattern(pattern);

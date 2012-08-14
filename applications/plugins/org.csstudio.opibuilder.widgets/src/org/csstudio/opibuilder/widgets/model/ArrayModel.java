@@ -108,6 +108,8 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
 			boolean changeParent) {
 		if(!getChildren().isEmpty())
 			return;
+		//child should not be scalable because their size are layoutted by the array figure.
+		child.setScaleOptions(false, false, false);
 		super.addChild(child, changeParent);
 		for(int i=1; i<getVisibleElementsCount(); i++){
 			try {

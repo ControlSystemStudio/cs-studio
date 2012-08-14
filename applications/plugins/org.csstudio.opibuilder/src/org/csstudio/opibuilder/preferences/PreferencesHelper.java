@@ -51,6 +51,7 @@ public class PreferencesHelper {
 	public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
 	public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
 	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
+	public static final String SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG = "show_opi_runtime_perspective_dialog";//$NON-NLS-1$
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
@@ -260,6 +261,15 @@ public class PreferencesHelper {
     
     public static void setShowFullScreenDialog(boolean show){
     	putBoolean(SHOW_FULLSCREEN_DIALOG, show);
+    }
+    
+    public static boolean isShowOpiRuntimePerspectiveDialog(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, true, null);
+    }
+    
+    public static void setShowOpiRuntimePerspectiveDialog(boolean show){
+    	putBoolean(SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, show);
     }
     
      public static boolean isStartWindowInCompactMode(){

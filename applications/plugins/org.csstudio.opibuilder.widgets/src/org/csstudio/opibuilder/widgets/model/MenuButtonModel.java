@@ -34,7 +34,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
  * @author Helge Rickens, Kai Meyer, Xihui Chen
  *
  */
-public final class MenuButtonModel extends AbstractPVWidgetModel {
+public final class MenuButtonModel extends AbstractPVWidgetModel implements ITextModel{
 	private static final boolean DEFAULT_ACTIONS_FROM_PV = false;
 	/**
 	 * The ID of the label property.
@@ -107,6 +107,15 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
 	}
 	
+	@Override
+	public String getText() {
+		return getLabel();
+	}
+	
+	@Override
+	public void setText(String text) {
+		setPropertyValue(PROP_LABEL, text);
+	}
 
 	public boolean isActionsFromPV(){
 		return (Boolean)getCastedPropertyValue(PROP_ACTIONS_FROM_PV);

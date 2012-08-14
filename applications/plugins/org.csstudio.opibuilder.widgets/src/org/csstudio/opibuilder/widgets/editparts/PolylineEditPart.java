@@ -48,7 +48,6 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 		PolyLineModel model = getWidgetModel();		
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFillLevel());
-		polyline.setAntiAlias(model.isAntiAlias());
 		polyline.setHorizontalFill(model.isHorizontalFill());
 		polyline.setTransparent(model.isTransparent());
 		polyline.setArrowLineLength(model.getArrowLength());
@@ -83,19 +82,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL_LEVEL, fillHandler);
-		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				PolylineFigure figure = (PolylineFigure) refreshableFigure;
-				figure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_ANTIALIAS, antiAliasHandler);
-		
+				
 		// fill orientaion
 		IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

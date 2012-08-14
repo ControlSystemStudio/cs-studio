@@ -15,9 +15,11 @@ import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComplexDataProperty;
+import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.VersionProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.GraphicalViewer;
 import org.osgi.framework.Version;
@@ -27,6 +29,7 @@ import org.osgi.framework.Version;
  * 
  * @author Alexander Will, Sven Wende, Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
+ * @author Takashi Nakamoto @ Cosylab (Property for frame rate)
  * 
  */
 public class DisplayModel extends AbstractContainerModel {
@@ -75,12 +78,22 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_AUTO_SCALE_WIDGETS = "auto_scale_widgets"; //$NON-NLS-1$
 
+	/**
+	 * Frame rate in Hz.
+	 * This is the hidden property which can be referred only from scripts. 
+	 * The value is valid only when running mode. In edit mode, it is always -1.
+	 */
+	public static final String PROP_FRAME_RATE = "frame_rate"; //$NON-NLS-1$
 
 	private GraphicalViewer viewer;
+	
+	private IOPIRuntime opiRuntime;
 
 	private IPath opiFilePath;
 
 	private int displayID;
+	
+	private boolean FreshRateEnabled= false;
 
 	public DisplayModel() {
 		super();
@@ -112,6 +125,9 @@ public class DisplayModel extends AbstractContainerModel {
 				.getVersion();
 		addProperty(new VersionProperty(PROP_BOY_VERSION, "BOY Version",
 				WidgetPropertyCategory.Basic, version.toString()));
+		
+		addProperty(new DoubleProperty(PROP_FRAME_RATE, "Frame Rate",
+				WidgetPropertyCategory.Display, -1.0));
 
 		setPropertyVisible(PROP_BORDER_COLOR, false);
 		setPropertyVisible(PROP_BORDER_STYLE, false);
@@ -121,6 +137,7 @@ public class DisplayModel extends AbstractContainerModel {
 		setPropertyVisible(PROP_TOOLTIP, false);
 		setPropertyVisible(PROP_ACTIONS, false);
 		setPropertyVisible(PROP_FONT, false);
+		setPropertyVisibleAndSavable(PROP_FRAME_RATE, false, false);
 		setPropertyVisibleAndSavable(PROP_BOY_VERSION, false, true);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
 				WidgetPropertyCategory.Behavior, false));
@@ -174,6 +191,20 @@ public class DisplayModel extends AbstractContainerModel {
 		this.opiFilePath = opiFilePath;
 	}
 
+	/**Set the {@link IOPIRuntime} on this display if it is in run mode.
+	 * @param opiRuntime
+	 */
+	public void setOpiRuntime(IOPIRuntime opiRuntime) {
+		this.opiRuntime = opiRuntime;
+	}
+	
+	/**
+	 * @return the {@link IOPIRuntime} if it is in run mode.
+	 */
+	public IOPIRuntime getOpiRuntime() {
+		return opiRuntime;
+	}
+	
 	/**
 	 * @return the opiFilePath
 	 */
@@ -275,5 +306,21 @@ public class DisplayModel extends AbstractContainerModel {
 			heightRatio = minHeight/(double)getHeight();
 		for(AbstractWidgetModel child : getChildren())
 			child.scale(widthRatio, heightRatio);
+	}
+	
+	/**!!! This is function only for test purpose. It might be removed in future!
+	 * @return true if calculating fresh rate is enabled.
+	 */
+	public boolean isFreshRateEnabled() {
+		return FreshRateEnabled;
+	}
+	
+	/**
+	 * When a new frame rate is notified by GUI toolkit side, this method
+	 * shall be called to set the up-to-date frame rate.
+	 * @param rate Frame rate in Hz
+	 */
+	public void setFrameRate(double rate) {
+		setPropertyValue(PROP_FRAME_RATE, rate);
 	}
 }

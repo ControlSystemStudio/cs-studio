@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.scan.server.ScanServer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -41,18 +42,38 @@ public class ScanSystemPreferences extends SystemSettings
     	return service.getString(Activator.ID, "simulation_config", "platform:/plugin/org.csstudio.scan/examples/simulation.xml", null);
 	}
 
-	/** @return Path to the pre-scan commands */
-    public static String getPreScanPath()
+	/** @return Paths to pre-scan commands
+     *  @throws Exception on error in path list
+     */
+    public static String[] getPreScanPaths() throws Exception
     {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getString(Activator.ID, "pre_scan", "platform:/plugin/org.csstudio.scan/examples/pre_scan.scn", null);
+        final String list = service.getString(Activator.ID, "pre_scan", "platform:/plugin/org.csstudio.scan/examples/pre_scan.scn", null);
+        if (list == null)
+            return new String[0];
+        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
     }
 
-    /** @return Path to the post-scan commands */
-    public static String getPostScanPath()
+    /** @return Paths to post-scan commands
+     *  @throws Exception on error in path list
+     */
+    public static String[] getPostScanPaths() throws Exception
     {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
+        final String list = service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
+        if (list == null)
+            return new String[0];
+        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
+    }
+
+    /** @return Scan script search paths */
+    public static String[] getScriptPaths()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return new String[0];
+        final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
+        return pref.split("\\s*,\\s*");
     }
 
     /** @return Memory threshold for removing older scans */

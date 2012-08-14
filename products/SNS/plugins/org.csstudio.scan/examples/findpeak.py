@@ -1,17 +1,20 @@
+# ScriptCommand class that fits a gaussian shape to xpos & signal,
+# then moves xpos to the center of the fit
+
 from org.csstudio.scan.command import ScanScript
 from math import sqrt, exp
 import sys
+
+#print "findpeak.py path: ", sys.path
 
 from numjy import *
 
 class FindPeak(ScanScript):
     def getDeviceNames(self):
-        return [ "fit_center" ]
+        return [ "motor_x" ]
     
     def run(self, context):
-        
-        # TODO Create Jython wrapper for Java ScanScript so that
-        #      context.getData right away returns ndarray?
+        # Turn raw python array into ndarray for easier math
         data = array(context.getData("xpos", "signal"))
         x = data[0]
         y = data[1]
@@ -20,20 +23,21 @@ class FindPeak(ScanScript):
         center = sum(x * y) / sum(y)
         print "Center: ", center
         
+        # Other parameters...
         m = max(y)
         print "Max: ", m
         
         width = sqrt( abs(sum((center-x)**2*y)/sum(y)) )
         print "Width: ", width
         
+        # Compute fit
         fit = m*exp(-(x-center)**2/(2*width**2))
         print fit
         
-        # Put 'fit' into context
+        # Log the 'fit' data for later comparison with raw data
         context.logData("fit", fit.nda)
         
         # Set PVs with result
-        context.write("fit_center", center)
+        context.write("motor_x", center)
         
-        # TODO Send signal to plot [x, y], [x, fit]
 

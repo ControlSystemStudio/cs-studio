@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1708.svg FL_EF0201 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="1.43732in"
+		height="1.43732in" viewBox="0 0 103.487 103.487" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>FL_EF0201</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
+				v:shadowOffsetY="-9"/>
+		<g id="shape3-1" v:mID="3" v:groupContext="shape" transform="translate(0.72,-0.72)">
+			<title>Feuille.3</title>
+			<path d="M17.01 103.49 L85.04 103.49 L85.04 1.44 L17.01 1.44 L17.01 103.49 Z M17.01 77.98 A8.50394 8.50394 -180 1 0 0
+						 77.98 A8.50394 8.50394 -180 1 0 17.01 77.98 Z M17.01 43.96 A8.50394 8.50394 -180 1 0 0 43.96 A8.50394 8.50394
+						 -180 1 0 17.01 43.96 Z M102.05 60.97 A8.50394 8.50394 -180 1 0 85.04 60.97 A8.50394 8.50394 -180 1 0 102.05
+						 60.97 Z M102.05 26.95 A8.50394 8.50394 -180 1 0 85.04 26.95 A8.50394 8.50394 -180 1 0 102.05 26.95 Z"
+					class="st1"/>
+		</g>
+	</g>
+</svg>

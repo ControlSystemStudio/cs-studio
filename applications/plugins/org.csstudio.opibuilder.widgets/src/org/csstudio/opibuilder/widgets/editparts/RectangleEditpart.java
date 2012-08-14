@@ -26,6 +26,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
+import org.csstudio.opibuilder.widgets.model.RoundedRectangleModel;
 import org.csstudio.swt.widgets.figures.OPIRectangleFigure;
 import org.eclipse.draw2d.IFigure;
 
@@ -45,8 +46,11 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		figure.setFill(model.getFillLevel());
 		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
-		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
+		figure.setGradient(model.isGradient());
+		figure.setBackGradientStartColor(model.getBackgroundGradientStartColor());
+		figure.setForeGradientStartColor(model.getForegroundGradientStartColor());
+
 		return figure;
 	}	
 	
@@ -95,18 +99,6 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);	
 		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
-				figure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
-		
 		// line color
 		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -119,6 +111,37 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
 				lineColorHandler);
+		
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setGradient((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_GRADIENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setBackGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_BACKGROUND_GRADIENT_START_COLOR, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setForeGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_FOREGROUND_GRADIENT_START_COLOR, handler);
+	
 		
 	}
 	

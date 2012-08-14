@@ -11,9 +11,11 @@ import java.util.List;
 
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.Comparison;
+import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 
 /** Demo scan, used in tests
@@ -26,15 +28,16 @@ public class DemoScan
     public static List<ScanCommand> createCommands()
     {
         // Note that
-        final CommandSequence commands = new CommandSequence();
-        commands.set("setpoint", 1.0);
-        commands.wait("readback", 1.0, 0.1);
-        commands.delay(5.0);
-        commands.loop("xpos", 1.0, 5.0, 1.0, new LogCommand("readback"));
-        commands.loop("xpos", 1.0, 5.0, 1.0,
+        final CommandSequence commands = new CommandSequence(
+            new SetCommand("setpoint", 1.0),
+            new WaitCommand("readback", 1.0),
+            new DelayCommand(5.0),
+            new LoopCommand("xpos", 1.0, 5.0, 1.0, new LogCommand("readback")),
+            new LoopCommand("xpos", 1.0, 5.0, 1.0,
                 new LoopCommand("ypos", 2.0, 4.0, 0.5,
                         new WaitCommand("setpoint", Comparison.EQUALS, 1.0, 0.1, 0.0),
-                        new LogCommand("readback")));
+                        new LogCommand("readback")))
+        );
         return commands.getCommands();
     }
 }

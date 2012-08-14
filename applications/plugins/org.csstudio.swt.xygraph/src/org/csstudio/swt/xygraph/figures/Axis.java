@@ -124,6 +124,9 @@ public class Axis extends LinearScale{
 		this.title = title;
 		if(yAxis)
 			setOrientation(Orientation.VERTICAL);
+		//Save drawing line operation in RAP.
+		if(GraphicsUtil.isRAP())
+			setMinorTicksVisible(false);
 
 		final AxisMouseListener panner = new AxisMouseListener();
 		addMouseListener(panner);
@@ -187,6 +190,15 @@ public class Axis extends LinearScale{
 		if(xyGraph != null)
 			xyGraph.repaint();
 		fireAxisForegroundColorChanged(oldColor, color);
+	}
+	
+	@Override
+	public void setMinorTicksVisible(boolean minorTicksVisible) {
+		//Save line operation in RAP.
+		if(GraphicsUtil.isRAP())
+			super.setMinorTicksVisible(false);
+		else
+			super.setMinorTicksVisible(minorTicksVisible);
 	}
 	
 	
@@ -289,7 +301,7 @@ public class Axis extends LinearScale{
         double high = Double.NEGATIVE_INFINITY;
         for (Trace trace : traceList)
         {
-            if (trace.getDataProvider() == null)
+            if (trace.getDataProvider() == null || !trace.isVisible())
                 continue;
             final Range range;
             if (isHorizontal())

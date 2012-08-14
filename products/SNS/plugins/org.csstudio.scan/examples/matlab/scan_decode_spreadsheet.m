@@ -5,7 +5,7 @@ function table = scan_decode_spreadsheet(sheet)
 % some device from the scan data:
 %
 %  data = server.getScanData(id)
-%  sheet = SpreadsheetScanDataIterator(data, { 'xpos', 'ypos' })
+%  sheet = ScanDataIterator(data, { 'xpos', 'ypos' })
 %  table = scan_decode_spreadsheet(sheet)
 %  plot(table(:,1), table(:,2), '-*');
 %
@@ -18,7 +18,7 @@ while sheet.hasNext()
     for i=1:length(samples)
         s = samples(i);
         if length(s) > 0
-            row(i) = s.getValue();
+            row(i) = s.getNumber(0);
         else
             row(i) = NaN;
         end

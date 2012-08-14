@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,6 +29,8 @@ import org.eclipse.core.runtime.Platform;
  *
  */
 public final class WidgetsService {
+
+	private static final String BOY_WIDGETS_PLUGIN_NAME = "org.csstudio.opibuilder.widgets";//$NON-NLS-1$
 
 	/**
 	 * The shared instance of this class.
@@ -68,7 +71,17 @@ public final class WidgetsService {
 		IExtensionRegistry extReg = Platform.getExtensionRegistry();
 		IConfigurationElement[] confElements =
 			extReg.getConfigurationElementsFor(OPIBuilderPlugin.EXTPOINT_WIDGET);
+		List<IConfigurationElement> boyElements = new LinkedList<IConfigurationElement>();
+		List<IConfigurationElement> otherElements = new LinkedList<IConfigurationElement>();
+		//Sort elements. opibuilder.widgets should always appear first.
 		for(IConfigurationElement element : confElements){
+			if(element.getContributor().getName().equals(BOY_WIDGETS_PLUGIN_NAME))
+				boyElements.add(element);
+			else
+				otherElements.add(element);
+		}
+		boyElements.addAll(otherElements);
+		for(IConfigurationElement element : boyElements){
 			String typeId = element.getAttribute("typeId"); //$NON-NLS-1$
 			String name = element.getAttribute("name"); //$NON-NLS-1$
 			String icon = element.getAttribute("icon"); //$NON-NLS-1$

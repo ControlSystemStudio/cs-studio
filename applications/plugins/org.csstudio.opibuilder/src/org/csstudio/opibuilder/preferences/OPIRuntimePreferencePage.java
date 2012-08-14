@@ -135,6 +135,10 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 			new BooleanFieldEditor(PreferencesHelper.START_WINDOW_IN_COMPACT_MODE, 
 					"Start application window in compact mode.", parent);
 		addField(startWindowInCompactEditor);
+		BooleanFieldEditor showOPIRuntimePerspectiveDialogEditor =
+				new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, 
+						"Show dialog asking about switching to OPI Runtime perspective before openning OPI in view", parent);
+		addField(showOPIRuntimePerspectiveDialogEditor);
 	}
 
 	public void init(IWorkbench workbench) {

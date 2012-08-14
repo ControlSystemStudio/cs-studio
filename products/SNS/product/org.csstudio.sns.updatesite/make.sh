@@ -17,7 +17,7 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-PRODS="config_build_Basic_CSS config_build_SNS_CSS"
+PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
 FEATS="config_build_optional config_build_scan"
 
 # Build products and features
@@ -87,6 +87,14 @@ then
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip       CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86_64.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip        CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip     CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86_64.zip
+
+    ## 'Simple' products (headless) that are not patched
+    mv $BUILDDIR/I.alarm_server_$VERSION/alarm_server_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.alarm_config_$VERSION/alarm_config_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.archive_engine_$VERSION/archive_engine_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.archive_config_$VERSION/archive_config_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.jms2rdb_$VERSION/jms2rdb_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.scan_server_$VERSION/scan_server_$VERSION* $BUILDDIR/apps
 
     ## Optional features are already in buildRepo
 

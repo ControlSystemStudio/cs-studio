@@ -42,6 +42,10 @@ public class Messages extends NLS
     public static String AlarmSeverity;
     public static String AlarmTime;
     public static String AlarmValue;
+    public static String AutoActionInfo;
+    public static String AutoActionInfoFmt;
+    public static String AutoActionError;
+    public static String AutoActionErrorFmt;
     public static String CannotUpdateConfigurationErrorFmt;
     public static String Command;
     public static String CommandError;
@@ -51,6 +55,8 @@ public class Messages extends NLS
     public static String Config_Behavior;
     public static String Config_Commands;
     public static String Config_CommandsTT;
+    public static String Config_AutomatedActions;
+    public static String Config_AutomatedActionsTT;
     public static String Config_Count;
     public static String Config_CountError;
     public static String Config_CountTT;
@@ -81,12 +87,16 @@ public class Messages extends NLS
 	public static String DefaultEMailSender;
 	public static String DefaultEMailTitle;
 	public static String Detail;
+	public static String Delay;
     public static String DuplicatePV;
     public static String DuplicatePVMesgFmt;
     public static String Duration;
     public static String DurationMsgFmt;
     public static String EditGDCItemDialog_Detail;
     public static String EditGDCItemDialog_Title;
+    public static String EditAAItemDialog_Delay;
+    public static String EditAAItemDialog_Detail;
+    public static String EditAAItemDialog_Title;
     public static String Error;
     public static String ErrorInFilter;
 	public static String Filter;
@@ -99,6 +109,7 @@ public class Messages extends NLS
     public static String MoreCommandsInfo;
     public static String MoreDisplaysInfo;
     public static String MoreGuidanceInfo;
+    public static String MoreAutoActionsInfo;
     public static String MoreTag;
     public static String MoveConfirmationFmt;
     public static String MoveItem;
@@ -131,6 +142,12 @@ public class Messages extends NLS
     public static String SendToElogAction_Message;
     public static String ServerErrorFmt;
     public static String ServerTimeout;
+    public static String StringTableEditor_AddRowText;
+    public static String StringTableEditor_AddToolTip;
+    public static String StringTableEditor_EditToolTip;
+    public static String StringTableEditor_MoveUpToolTip;
+    public static String StringTableEditor_MoveDownToolTip;
+    public static String StringTableEditor_DeleteToolTip;
     public static String Title;
     public static String UnacknowledgeAction;
     public static String Unselect;

@@ -15,9 +15,9 @@ import java.util.TreeMap;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.Timestamp;
 
 /**
  *
@@ -25,10 +25,10 @@ import org.epics.pvmanager.util.TimeStamp;
  */
 public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     
-    private NavigableMap<TimeStamp, double[]> cache = new TreeMap<TimeStamp, double[]>();
+    private NavigableMap<Timestamp, double[]> cache = new TreeMap<Timestamp, double[]>();
     private List<Function<List<VDouble>>> functions;
     private Display display;
-    private TimeDuration tolerance = TimeDuration.ms(1);
+    private TimeDuration tolerance = TimeDuration.ofMillis(1);
 
     public DoubleArrayTimeCacheFromVDoubles(List<Function<List<VDouble>>> functions) {
         this.functions = functions;
@@ -36,27 +36,27 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     
     public class Data implements DoubleArrayTimeCache.Data {
         
-        private List<TimeStamp> times = new ArrayList<TimeStamp>();
+        private List<Timestamp> times = new ArrayList<Timestamp>();
         private List<double[]> arrays = new ArrayList<double[]>();
-        private TimeStamp begin;
-        private TimeStamp end;
+        private Timestamp begin;
+        private Timestamp end;
 
-        private Data(SortedMap<TimeStamp, double[]> subMap, TimeStamp begin, TimeStamp end) {
+        private Data(SortedMap<Timestamp, double[]> subMap, Timestamp begin, Timestamp end) {
             this.begin = begin;
             this.end = end;
-            for (Map.Entry<TimeStamp, double[]> en : subMap.entrySet()) {
+            for (Map.Entry<Timestamp, double[]> en : subMap.entrySet()) {
                 times.add(en.getKey());
                 arrays.add(en.getValue());
             }
         }
 
         @Override
-        public TimeStamp getBegin() {
+        public Timestamp getBegin() {
             return begin;
         }
 
         @Override
-        public TimeStamp getEnd() {
+        public Timestamp getEnd() {
             return end;
         }
 
@@ -71,7 +71,7 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
         }
 
         @Override
-        public TimeStamp getTimeStamp(int index) {
+        public Timestamp getTimestamp(int index) {
             return times.get(index);
         }
         
@@ -85,14 +85,14 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
      * @param timeStamp a time
      * @return the array for that time
      */
-    private double[] arrayFor(TimeStamp timeStamp) {
+    private double[] arrayFor(Timestamp timeStamp) {
         // Try to find the array at the exact time
         double[] array = cache.get(timeStamp);
         if (array != null)
             return array;
         
         // See if the array after the timeStamp is in range
-        TimeStamp newTime = cache.higherKey(timeStamp);
+        Timestamp newTime = cache.higherKey(timeStamp);
         if (newTime != null && newTime.minus(tolerance).compareTo(timeStamp) <= 0) {
             return cache.get(newTime);
         }
@@ -116,19 +116,19 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     }
 
     @Override
-    public DoubleArrayTimeCache.Data getData(TimeStamp begin, TimeStamp end) {
+    public DoubleArrayTimeCache.Data getData(Timestamp begin, Timestamp end) {
         // Let's do it in a crappy way first...
         for (int n = 0; n < functions.size(); n++) {
             List<VDouble> vDoubles = functions.get(n).getValue();
             for (VDouble vDouble : vDoubles) {
                 if (display == null)
                     display = vDouble;
-                double[] array = arrayFor(vDouble.getTimeStamp());
+                double[] array = arrayFor(vDouble.getTimestamp());
                 double oldValue = array[n];
                 array[n] = vDouble.getValue();
                 
                 // Fix the following values
-                for (Map.Entry<TimeStamp, double[]> en : cache.tailMap(vDouble.getTimeStamp().plus(tolerance)).entrySet()) {
+                for (Map.Entry<Timestamp, double[]> en : cache.tailMap(vDouble.getTimestamp().plus(tolerance)).entrySet()) {
                     // If no value or same value as before, replace it
                     if (Double.isNaN(en.getValue()[n]) || en.getValue()[n] == oldValue)
                         en.getValue()[n] = vDouble.getValue();
@@ -139,7 +139,7 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
         if (cache.isEmpty())
             return null;
         
-        TimeStamp newBegin = cache.lowerKey(begin);
+        Timestamp newBegin = cache.lowerKey(begin);
         if (newBegin == null)
             newBegin = cache.firstKey();
         
@@ -150,27 +150,27 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     private List<TimeInterval> update() {
         // Let's do it in a crappy way first...
         // Only keep track of first and last change
-        TimeStamp firstChange = null;
-        TimeStamp lastChange = null;
+        Timestamp firstChange = null;
+        Timestamp lastChange = null;
         for (int n = 0; n < functions.size(); n++) {
             List<VDouble> vDoubles = functions.get(n).getValue();
             for (VDouble vDouble : vDoubles) {
                 if (display == null)
                     display = vDouble;
-                double[] array = arrayFor(vDouble.getTimeStamp());
+                double[] array = arrayFor(vDouble.getTimestamp());
                 double oldValue = array[n];
                 array[n] = vDouble.getValue();
                 if (firstChange == null) {
-                    firstChange = vDouble.getTimeStamp();
+                    firstChange = vDouble.getTimestamp();
                 }
                 if (lastChange == null) {
-                    lastChange = vDouble.getTimeStamp();
+                    lastChange = vDouble.getTimestamp();
                 }
-                firstChange = min(firstChange, vDouble.getTimeStamp());
-                lastChange = max(lastChange, vDouble.getTimeStamp());
+                firstChange = min(firstChange, vDouble.getTimestamp());
+                lastChange = max(lastChange, vDouble.getTimestamp());
                 
                 // Fix the following values
-                for (Map.Entry<TimeStamp, double[]> en : cache.tailMap(vDouble.getTimeStamp().plus(tolerance)).entrySet()) {
+                for (Map.Entry<Timestamp, double[]> en : cache.tailMap(vDouble.getTimestamp().plus(tolerance)).entrySet()) {
                     // If no value or same value as before, replace it
                     if (Double.isNaN(en.getValue()[n]) || en.getValue()[n] == oldValue)
                         en.getValue()[n] = vDouble.getValue();
@@ -185,29 +185,29 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
         return Collections.singletonList(TimeInterval.between(firstChange.minus(tolerance), lastChange));
     }
     
-    private void deleteBefore(TimeStamp timeStamp) {
+    private void deleteBefore(Timestamp timeStamp) {
         if (cache.isEmpty())
             return;
         
         // This we want to keep as we need to draw the area
         // from the timestamp to the first new value
-        TimeStamp firstEntryBeforeTimeStamp = cache.lowerKey(timeStamp);
-        if (firstEntryBeforeTimeStamp == null)
+        Timestamp firstEntryBeforeTimestamp = cache.lowerKey(timeStamp);
+        if (firstEntryBeforeTimestamp == null)
             return;
         
         // This is the last entry we want to delete
-        TimeStamp lastToDelete = cache.lowerKey(firstEntryBeforeTimeStamp);
+        Timestamp lastToDelete = cache.lowerKey(firstEntryBeforeTimestamp);
         if (lastToDelete == null)
             return;
         
-        TimeStamp firstKey = cache.firstKey();
+        Timestamp firstKey = cache.firstKey();
         while (firstKey.compareTo(lastToDelete) <= 0) {
             cache.remove(firstKey);
             firstKey = cache.firstKey();
         }
     }
     
-    private DoubleArrayTimeCache.Data data(TimeStamp begin, TimeStamp end) {
+    private DoubleArrayTimeCache.Data data(Timestamp begin, Timestamp end) {
         return new Data(cache.subMap(begin, end), begin, end);
     }
     
@@ -228,13 +228,13 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     }
 
     @Override
-    public List<DoubleArrayTimeCache.Data> newData(TimeStamp beginUpdate, TimeStamp endUpdate, TimeStamp beginNew, TimeStamp endNew) {
+    public List<DoubleArrayTimeCache.Data> newData(Timestamp beginUpdate, Timestamp endUpdate, Timestamp beginNew, Timestamp endNew) {
         List<TimeInterval> updates = update();
         if (updates.isEmpty())
             return Collections.singletonList(data(cache.lowerKey(beginNew), endNew));
         
         TimeInterval updateInterval = updates.get(0);
-        TimeStamp newBegin = max(beginUpdate, updateInterval.getStart());
+        Timestamp newBegin = max(beginUpdate, updateInterval.getStart());
         newBegin = min(newBegin, beginNew);
         deleteBefore(beginUpdate);
         return Collections.singletonList(data(newBegin, endNew));

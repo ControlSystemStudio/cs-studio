@@ -225,6 +225,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					});
 				}
 			}
+			doActivate();
 		}
 		
 		//Rap specified code
@@ -235,16 +236,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 			}
 		};
 		SingleSourceHelper.rapActivateBaseEditPart(this);
+		
 	}
 
 	/**
-	 * Subclass should do the activate things in this method.
+	 * Subclass should do the activate things in this method. 
+	 * This method is last called from {@link #activate()}.
+	 * If there is code to be called as the first thing in {@link #activate()}, it 
+	 * can be put in {@link #doCreateFigure()}.
 	 */
 	protected void doActivate() {
 	}
 
 	/**
 	 * Subclass should do the deActivate things in this method.
+	 * This is the first called in {@link #deactivate()}.
 	 */
 	protected void doDeActivate() {
 	}
@@ -284,6 +290,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	@Override
 	public void deactivate() {
 		if (isActive()) {
+			doDeActivate();
 			super.deactivate();
 			// remove listener from all properties.
 			for (String id : getWidgetModel().getAllPropertyIDs()) {
@@ -307,10 +314,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
 	/**
 	 * Create and initialize the widget figure with the property values in
-	 * model.
+	 * model. 	 
 	 * 
 	 * @return the widget figure
-	 */
+	  */
 	protected abstract IFigure doCreateFigure();
 
 	/**

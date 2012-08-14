@@ -9,11 +9,13 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
@@ -26,6 +28,7 @@ import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
 import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -37,7 +40,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -181,6 +187,20 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.setContentProvider(new AlarmTreeContentProvider(this));
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
+
+        // Double-click on item invokes configuration dialog (if allowed)
+        tree_viewer.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(final DoubleClickEvent event)
+            {
+                if (!SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false))
+                    return;
+                final IStructuredSelection selection = (IStructuredSelection)tree_viewer.getSelection();
+                final AlarmTreeItem item = (AlarmTreeItem) selection.getFirstElement();
+                ConfigureItemAction.performItemConfiguration(tree_viewer.getTree().getShell(), model, item);
+            }
+        });
 
         ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
@@ -388,7 +408,31 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
+
+                // Try to preserve the selection
+                AlarmTreeItem select =
+                        (AlarmTreeItem) ((IStructuredSelection)tree_viewer.getSelection()).getFirstElement();
+                String path = select != null ? select.getPathName() : null;
+
+                // Update GUI
                 tree_viewer.setInput(config);
+
+                if (path == null)
+                    return;
+
+                // If item is still in the configuration, select it
+                select = config.getItemByPath(path);
+                if (select == null)
+                {   // Item may have been removed, so try to select the _parent_ of the original item
+                    final String[] segments = AlarmTreePath.splitPath(path);
+                    path = AlarmTreePath.makePath(segments, segments.length - 1);
+                    select = config.getItemByPath(path);
+                }
+                if (select != null)
+                {   // Anything to restore?
+                    tree_viewer.setSelection(new StructuredSelection(select), true);
+                    tree_viewer.expandToLevel(select, 1);
+                }
             }
         });
     }

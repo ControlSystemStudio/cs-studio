@@ -1,0 +1,694 @@
+package org.csstudio.opibuilder.widgets.symbol.multistate;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.widgets.symbol.Activator;
+import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.swt.widgets.util.TextPainter;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.TextUtilities;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
+
+public abstract class CommonMultiSymbolFigure extends Figure {
+
+	// delegation pattern
+	protected AbstractSymbolImage symbolImage;
+	protected SymbolImageProperties symbolProperties;
+	protected boolean workingWithSVG = false;
+	
+	// symbol label attributes
+	protected Label label;
+	protected boolean showSymbolLabel = false;
+	protected SymbolLabelPosition labelPosition = SymbolLabelPosition.DEFAULT;
+	private Point labelLocation;
+	 
+	/**
+	 * The {@link IPath} to the states images.
+	 */
+	protected IPath symbolImagePath;
+	protected Map<String, AbstractSymbolImage> images;
+	
+	protected String currentState;
+	protected String previousState;
+	protected List<String> states;
+	
+	protected boolean fromSetState = false;
+	private ExecutionMode executionMode;
+
+	private int remainingImagesToLoad = 0;
+	private HashMap<AbstractInputStreamRunnable, String> allowedStateMap = null;
+
+	protected Color onColor = CustomMediaFactory.getInstance().getColor(
+			CommonMultiSymbolModel.DEFAULT_ON_COLOR);
+	protected Color offColor = CustomMediaFactory.getInstance().getColor(
+			CommonMultiSymbolModel.DEFAULT_OFF_COLOR);
+	
+	
+	public CommonMultiSymbolFigure(boolean runMode) {
+		this.executionMode = runMode ? ExecutionMode.RUN_MODE
+				: ExecutionMode.EDIT_MODE;
+		states = new ArrayList<String>();
+		allowedStateMap = new HashMap<AbstractInputStreamRunnable, String>();
+		images = new HashMap<String, AbstractSymbolImage>();
+		label = new Label("STATE") {
+			@Override
+			public boolean containsPoint(int x, int y) {
+				return false;
+			}
+		};
+		label.setVisible(showSymbolLabel);
+		// Add label to children
+		add(label);
+	}
+	
+	protected abstract AbstractSymbolImage createSymbolImage(boolean runMode);
+	
+	/**
+	 * Return the current displayed image. If null, returns an empty image.
+	 */
+	public AbstractSymbolImage getSymbolImage() {
+		if(ExecutionMode.RUN_MODE.equals(executionMode)) {
+			symbolImage = images.get(currentState);
+		}
+		if (symbolImage == null) { // create an empty image
+			symbolImage = createSymbolImage(executionMode == ExecutionMode.RUN_MODE);
+		}
+		return symbolImage;
+	}
+	
+	/**
+	 * Return all mapped images.
+	 */
+	public Collection<AbstractSymbolImage> getAllImages() {
+		Collection<AbstractSymbolImage> list = new ArrayList<AbstractSymbolImage>();
+		if (isEditMode() && symbolImage != null) {
+			list.add(symbolImage);
+		}
+		if (!isEditMode() && images == null && !images.isEmpty()) {
+			list = images.values();
+		}
+		return list;
+	}
+	
+	/**
+	 * Dispose all the resources used by this figure
+	 */
+	public synchronized void disposeAll() {
+		disposeCurrent();
+		for (AbstractSymbolImage img : getAllImages()) {
+			if (img != null && !img.isDisposed()) {
+				img.dispose();
+				img = null;
+			}
+		}
+		images.clear();
+	}
+	
+	/**
+	 * Dispose the current resource used by this figure
+	 */
+	public synchronized void disposeCurrent() {
+		if (symbolImage != null && !symbolImage.isDisposed()) {
+			symbolImage.dispose();
+			symbolImage = null;
+		}
+	}
+	
+	private void updateProperties() {
+		for (AbstractSymbolImage img : getAllImages()) {
+			symbolProperties.fillSymbolImage(img);
+		}
+	}
+	
+	/**
+	 * Associates a given state with an image.
+	 */
+	public synchronized void setImage(String state, AbstractSymbolImage img) {
+		if (images != null) {
+			images.put(state, img);
+		}
+	}
+
+	public void setSymbolProperties(SymbolImageProperties symbolProperties) {
+		this.symbolProperties = symbolProperties;
+	}
+
+	public void setExecutionMode(ExecutionMode executionMode) {
+		this.executionMode = executionMode;
+	}
+	
+	public boolean isEditMode() {
+		return ExecutionMode.EDIT_MODE.equals(executionMode);
+	}
+	
+	// ************************************************************
+	// States management
+	// ************************************************************
+	
+	public synchronized void setState(int stateIndex) {
+		if (stateIndex >= 0 && stateIndex < states.size()) {
+			fromSetState = true;
+			currentState = states.get(stateIndex);
+			if (currentState != null) {
+				label.setText(currentState);
+			}
+			fromSetState = false;
+			repaint();
+		} else {
+			// TODO: display alert ?
+		}
+	}
+
+	public synchronized void setState(String state) {
+		int index = states.indexOf(state);
+		if (index < 0) { // search if image exists
+			String imageBasePath = ImageUtils
+					.getMultistateBaseImagePath(symbolImagePath);
+			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
+			if (path == null)
+				return;
+			states.add(state);
+			remainingImagesToLoad = 1;
+			loadImageFromFile(path, state);
+			index = states.indexOf(state);
+		}
+		setState(index);
+	}
+
+	/**
+	 * Set all the state string values.
+	 * 
+	 * @param states the states
+	 */
+	public void setStates(List<String> states) {
+		this.states = states;
+		disposeAll();
+		// Set threads variables
+		remainingImagesToLoad = states.size();
+		
+		// Get base name
+		String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath, states);
+		if (imageBasePath == null) { // Image do not match any state
+			// TODO: alert state image missing
+			return;
+		}
+		// Retrieve & set images paths
+		for (String state : states) {
+			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
+			if (path == null) { // Test existence
+				decrementLoadingCounter();
+				// TODO: alert state image missing
+			} else {
+				// Launch loading !
+				loadImageFromFile(path, state);
+			}
+		}
+	}
+
+	public String getCurrentState() {
+		return currentState;
+	}
+
+	public synchronized String getAllowedState(
+			AbstractInputStreamRunnable uiTask) {
+		if (allowedStateMap != null) {
+			return allowedStateMap.get(uiTask);
+		}
+		return null;
+	}
+	
+	// ************************************************************
+	// Image loading
+	// ************************************************************
+	
+	public boolean isLoadingImage() {
+		return remainingImagesToLoad > 0;
+	}
+	
+	public synchronized void decrementLoadingCounter() {
+		remainingImagesToLoad--;
+	}
+
+	/**
+	 * Set user selected image path (edit mode)
+	 * 
+	 * @param model
+	 * @param imagePath
+	 */
+	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model,
+			IPath imagePath) {
+		if (imagePath.isEmpty()) {
+			return;
+		}
+		if (!imagePath.isAbsolute()) {
+			imagePath = org.csstudio.opibuilder.util.ResourceUtil
+					.buildAbsolutePath(model, imagePath);
+		}
+		symbolImagePath = imagePath;
+
+		// Load selected image
+		if (!ImageUtils.isExtensionAllowed(imagePath)) {
+			Activator.getLogger().log(
+					Level.WARNING,
+					"ERROR in loading image, extension not allowed "
+							+ imagePath);
+			return;
+		}
+		disposeCurrent();
+		remainingImagesToLoad = 1;
+		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
+			workingWithSVG = true;
+		} else {
+			workingWithSVG = false;
+		}
+		loadImageFromFile(imagePath, null);
+	}
+	
+	private synchronized void loadImageFromFile(final IPath imagePath,
+			final String state) {
+		if (imagePath != null && !imagePath.isEmpty()) {
+			loadImage(imagePath, state, new IJobErrorHandler() {
+				private int maxAttempts = 5;
+
+				public void handleError(Exception exception) {
+					if (maxAttempts-- > 0) {
+						try {
+							Thread.sleep(100);
+							loadImage(imagePath, state, this);
+							return;
+						} catch (InterruptedException e) { }
+					}
+					decrementLoadingCounter();
+					Activator.getLogger().log(Level.WARNING,
+							"ERROR in loading image " + imagePath, exception);
+				}
+			});
+		}
+	}
+
+	private synchronized void loadImage(final IPath imagePath, final String state,
+			IJobErrorHandler errorHandler) {
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				synchronized (CommonMultiSymbolFigure.this) {
+					Image tempImage = null;
+					try {
+
+						switch (executionMode) {
+						case RUN_MODE:
+							String state = getAllowedState(this);
+							if (state != null) {
+								AbstractSymbolImage asi = createSymbolImage(true);
+								asi.setImagePath(imagePath);
+								if (!workingWithSVG) {
+									tempImage = new Image(Display.getDefault(), stream);
+									ImageData imgData = tempImage.getImageData();
+									asi.setOriginalImageData(imgData);
+								}
+								setImage(state, asi);
+							}
+							break;
+						case EDIT_MODE:
+							symbolImage = createSymbolImage(false);
+							symbolImage.setImagePath(imagePath);
+							if (!workingWithSVG) {
+								tempImage = new Image(Display.getDefault(), stream);
+								ImageData imgData = tempImage.getImageData();
+								symbolImage.setOriginalImageData(imgData);
+							}
+							break;
+						}
+					} finally {
+						try {
+							stream.close();
+							if (tempImage != null && !tempImage.isDisposed()) {
+								tempImage.dispose();
+							}
+						} catch (IOException exception) {
+							Activator.getLogger()
+									.log(Level.WARNING,
+											"ERROR in closing image stream ",
+											exception);
+						}
+					}
+					decrementLoadingCounter();
+					repaint();
+				}
+			}
+		};
+		if (allowedStateMap != null && state != null) {
+			allowedStateMap.put(uiTask, state);
+		}
+		ResourceUtil.pathToInputStreamInJob(imagePath, uiTask,
+				"Loading Image...", errorHandler);
+	}
+	
+	// ************************************************************
+	// Image color & paint
+	// ************************************************************
+		
+	public Color getCurrentColor() {
+		return getSymbolImage().getCurrentColor();
+	}
+
+	public void setOffColor(Color offColor) {
+		if (this.offColor != null && this.offColor.equals(offColor))
+			return;
+		this.offColor = offColor;
+		repaint();
+	}
+
+	public void setOnColor(Color onColor) {
+		if (this.onColor != null && this.onColor.equals(onColor))
+			return;
+		this.onColor = onColor;
+		repaint();
+	}
+	
+	@Override
+	public synchronized void paintFigure(final Graphics gfx) {
+		if (isLoadingImage() || fromSetState) {
+			return;
+		}
+		if (!isEditMode()) {
+			// if run mode & state does not changes => nothing change
+			if (currentState == null || currentState.equals(previousState))
+				return;
+		}
+		Rectangle bounds = getBounds().getCopy();
+		ImageUtils.crop(bounds, this.getInsets());
+//		if (loadingError) {
+//			disposeCurrent();
+//			if (!symbolImagePath.isEmpty()) {
+//				gfx.setBackgroundColor(getBackgroundColor());
+//				gfx.setForegroundColor(getForegroundColor());
+//				gfx.fillRectangle(bounds);
+//				gfx.translate(bounds.getLocation());
+//				TextPainter.drawText(gfx, "ERROR in loading image\n"
+//						+ symbolImagePath, bounds.width / 2, bounds.height / 2,
+//						TextPainter.CENTER);
+//			}
+//			return;
+//		}
+		if (getSymbolImage().isEmpty() && isEditMode()) {
+			return;
+		} else if (getSymbolImage().isEmpty()) {
+			gfx.setBackgroundColor(getBackgroundColor());
+			gfx.setForegroundColor(getForegroundColor());
+			gfx.fillRectangle(bounds);
+			gfx.translate(bounds.getLocation());
+			TextPainter.drawText(gfx, "??", bounds.width / 2,
+					bounds.height / 2, TextPainter.CENTER);
+			return;
+		}
+		getSymbolImage().setBounds(bounds);
+		getSymbolImage().setBorder(getBorder());
+		int stateIndex = states.indexOf(currentState);
+		getSymbolImage().setCurrentColor(stateIndex == 0 ? offColor : onColor);
+		getSymbolImage().paintFigure(gfx);
+	}
+	
+	// ************************************************************
+	// Label management
+	// ************************************************************
+	
+	protected Point getLabelLocation(final int x, final int y) {
+		return getLabelLocation(new Point(x, y));
+	}
+
+	/**
+	 * @param defaultLocation The default location.
+	 * @return the location of the symbol label
+	 */
+	protected Point getLabelLocation(Point defaultLocation) {
+		if (labelLocation == null)
+			calculateLabelLocation(defaultLocation);
+		return labelLocation;
+	}
+
+	public SymbolLabelPosition getLabelPosition() {
+		return labelPosition;
+	}
+	
+	protected void calculateLabelLocation(Point defaultLocation) {
+		if (labelPosition == SymbolLabelPosition.DEFAULT) {
+			labelLocation = defaultLocation;
+			return;
+		}
+		Rectangle textArea = getClientArea();
+		Dimension textSize = TextUtilities.INSTANCE.getTextExtents(
+				label.getText(), getFont());
+		int x = 0;
+		if (textArea.width > textSize.width) {
+			switch (labelPosition) {
+			case CENTER:
+			case TOP:
+			case BOTTOM:
+				x = (textArea.width - textSize.width) / 2;
+				break;
+			case RIGHT:
+			case TOP_RIGHT:
+			case BOTTOM_RIGHT:
+				x = textArea.width - textSize.width;
+				break;
+			default:
+				break;
+			}
+		}
+
+		int y = 0;
+		if (textArea.height > textSize.height) {
+			switch (labelPosition) {
+			case CENTER:
+			case LEFT:
+			case RIGHT:
+				y = (textArea.height - textSize.height) / 2;
+				break;
+			case BOTTOM:
+			case BOTTOM_LEFT:
+			case BOTTOM_RIGHT:
+				y = textArea.height - textSize.height;
+				break;
+			default:
+				break;
+			}
+		}
+		if (useLocalCoordinates())
+			labelLocation = new Point(x, y);
+		else
+			labelLocation = new Point(x + textArea.x, y + textArea.y);
+	}
+	
+	/**
+	 * @return the showSymbolLabel
+	 */
+	public boolean isShowSymbolLabel() {
+		return showSymbolLabel;
+	}
+
+	public void setSymbolLabelPosition(SymbolLabelPosition labelPosition) {
+		this.labelPosition = labelPosition;
+		labelPosition = null;
+		revalidate();
+		repaint();
+	}
+
+	/**
+	 * @param showSymbolLabel the showSymbolLabel to set
+	 */
+	public void setShowSymbolLabel(boolean showSymbolLabel) {
+		if (this.showSymbolLabel == showSymbolLabel)
+			return;
+		this.showSymbolLabel = showSymbolLabel;
+		label.setVisible(showSymbolLabel);
+	}
+	
+	// ************************************************************
+	// Image size calculation delegation
+	// ************************************************************
+	
+	public synchronized void resizeImage() {
+		for (AbstractSymbolImage asi : getAllImages()) {
+			asi.resizeImage();
+		}
+		repaint();
+	}
+
+	public synchronized void setAutoSize(final boolean autoSize) {
+		if (symbolProperties != null) {
+			symbolProperties.setAutoSize(autoSize);
+			updateProperties();
+		}
+		repaint();
+	}
+	
+	public synchronized Dimension getAutoSizedDimension() {
+		return getSymbolImage().getAutoSizedDimension();
+	}
+	
+	// ************************************************************
+	// Image crop calculation delegation
+	// ************************************************************
+	
+	public synchronized void setLeftCrop(final int newval) {
+		if (symbolProperties != null) {
+			symbolProperties.setLeftCrop(newval);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setRightCrop(final int newval) {
+		if (symbolProperties != null) {
+			symbolProperties.setRightCrop(newval);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setBottomCrop(final int newval) {
+		if (symbolProperties != null) {
+			symbolProperties.setBottomCrop(newval);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setTopCrop(final int newval) {
+		if (symbolProperties != null) {
+			symbolProperties.setTopCrop(newval);
+			updateProperties();
+		}
+		repaint();
+	}
+	public int getLeftCrop() {
+		return getSymbolImage().getLeftCrop();
+	}
+	public int getRightCrop() {
+		return getSymbolImage().getRightCrop();
+	}
+	public int getBottomCrop() {
+		return getSymbolImage().getBottomCrop();
+	}
+	public int getTopCrop() {
+		return getSymbolImage().getTopCrop();
+	}
+	
+	// ************************************************************
+	// Image flip & degree & stretch calculation delegation
+	// ************************************************************
+	
+	public synchronized void setStretch(final boolean newval) {
+		if (symbolProperties != null) {
+			symbolProperties.setStretch(newval);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setFlipV(boolean flipV) {
+		if (symbolProperties != null) {
+			symbolProperties.setFlipV(flipV);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setFlipH(boolean flipH) {
+		if (symbolProperties != null) {
+			symbolProperties.setFlipH(flipH);
+			updateProperties();
+		}
+		repaint();
+	}
+	public synchronized void setDegree(Integer degree) {
+		if (symbolProperties != null) {
+			symbolProperties.setDegree(degree);
+			updateProperties();
+		}
+		repaint();
+	}
+	public void setImageState(String imageState) {
+		if (symbolProperties != null) {
+			symbolProperties.setDisposition(imageState);
+			updateProperties();
+		}
+		repaint();
+	}
+	public String getImageState() {
+		return getSymbolImage().getImageState();
+	}
+	public boolean isStretch() {
+		return getSymbolImage().isStretch();
+	}
+	public synchronized boolean isFlipV() {
+		return getSymbolImage().isFlipV();
+	}
+	public synchronized boolean isFlipH() {
+		return getSymbolImage().isFlipH();
+	}
+	public synchronized Integer getDegree() {
+		return getSymbolImage().getDegree();
+	}
+	
+	// ************************************************************
+	// Override Figure class methods 
+	// ************************************************************
+	
+	/**
+	 * We want to have local coordinates here.
+	 * 
+	 * @return True if here should used local coordinates
+	 */
+	@Override
+	protected boolean useLocalCoordinates() {
+		return true;
+	}
+
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		label.setFont(f);
+		revalidate();
+	}
+	
+	@Override
+	public void invalidate() {
+		labelLocation = null;
+		super.invalidate();
+	}
+	
+	@Override
+	protected void layout() {
+		Rectangle clientArea = getClientArea().getCopy();
+		if (label.isVisible()) {
+			Dimension labelSize = label.getPreferredSize();
+			label.setBounds(new Rectangle(getLabelLocation(clientArea.x
+					+ clientArea.width / 2 - labelSize.width / 2, clientArea.y
+					+ clientArea.height / 2 - labelSize.height / 2),
+					new Dimension(labelSize.width, labelSize.height)));
+		}
+		super.layout();
+	}
+}

@@ -61,7 +61,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			if(effect3D && support3D){
 				graphics.setBackgroundColor(WHITE_COLOR);	
 				graphics.fillOval(clientArea);
-				graphics.fillRectangle(new Rectangle());
+//				graphics.fillRectangle(new Rectangle());
 				Pattern pattern;
 				int a = clientArea.width/2;
 				int b = clientArea.height/2;
@@ -70,11 +70,11 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				Point ul = new Point(clientArea.x + a + (wp-w)/2 -1, clientArea.y + b - (wp+w)/2 -1);
 				Point br = new Point(clientArea.x + a + (wp+w)/2 + 5, clientArea.y + b - (wp-w)/2+5);
 				if(booleanValue){
-					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
 						DARK_GRAY_COLOR, 255, WHITE_COLOR,0);
 				}else{
-					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
 						WHITE_COLOR, 0, DARK_GRAY_COLOR, 255);
 				}
@@ -114,7 +114,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			    graphics.fillOval(ledArea);
 				if(effect3D && support3D){					
 			        //diagonal linear gradient
-			        Pattern p = new Pattern(Display.getCurrent(), ledArea.x,ledArea.y,
+			        Pattern p = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ledArea.x,ledArea.y,
 			        		ledArea.x + ledArea.width, ledArea.y + ledArea.height,
 			        		WHITE_COLOR, 255, ledColor, 0);
 			        graphics.setBackgroundPattern(p);
@@ -143,15 +143,15 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			Rectangle clientArea = getClientArea().getCopy();
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D){			
-				graphics.fillRectangle(new Rectangle());
+//				graphics.fillRectangle(new Rectangle());
 
 				//draw up border			
 				Pattern pattern;
 				if(booleanValue)
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 							clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, GRAY_COLOR, DARK_GRAY_COLOR);			
 				else
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 							clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, WHITE_COLOR, LIGHT_GRAY_COLOR);			
 				graphics.setBackgroundPattern(pattern);
 				graphics.fillPolygon(new int[]{clientArea.x, clientArea.y, 
@@ -162,10 +162,10 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				
 				//draw left border
 				if(booleanValue)
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 						clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, GRAY_COLOR, DARK_GRAY_COLOR);			
 				else
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 						clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, WHITE_COLOR, LIGHT_GRAY_COLOR);			
 				graphics.setBackgroundPattern(pattern);
 				graphics.fillPolygon(new int[]{clientArea.x, clientArea.y, 
@@ -176,12 +176,12 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				
 				//draw bottom border	
 				if(booleanValue)						
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, 
 							clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH, 
 							clientArea.x, clientArea.y+clientArea.height, 
 							LIGHT_GRAY_COLOR, WHITE_COLOR);
 				else
-					pattern = new Pattern(Display.getCurrent(), clientArea.x, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, 
 							clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH, 
 							clientArea.x, clientArea.y+clientArea.height, 
 							LIGHT_GRAY_COLOR, DARKER_GRAY_COLOR);
@@ -196,12 +196,12 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				
 				//draw right border			
 				if(booleanValue)
-					pattern = new Pattern(Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
 							clientArea.y, 
 							clientArea.x + clientArea.width, clientArea.y, 
 							LIGHT_GRAY_COLOR, WHITE_COLOR);	
 				else					
-					pattern = new Pattern(Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
 							clientArea.y, 
 							clientArea.x + clientArea.width, clientArea.y, 
 							LIGHT_GRAY_COLOR, DARKER_GRAY_COLOR);			
@@ -251,7 +251,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			    graphics.fillOval(ledArea);
 				if(effect3D && support3D){					
 			        //diagonal linear gradient
-			        Pattern p = new Pattern(Display.getCurrent(), ledArea.x,ledArea.y,
+			        Pattern p = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ledArea.x,ledArea.y,
 			        		ledArea.x + ledArea.width, ledArea.y + ledArea.height,
 			        		WHITE_COLOR, 255, ledColor, 0);
 			        graphics.setBackgroundPattern(p);

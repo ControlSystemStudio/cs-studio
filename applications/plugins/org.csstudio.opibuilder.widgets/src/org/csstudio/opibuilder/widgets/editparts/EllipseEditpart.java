@@ -44,8 +44,10 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		figure.setFill(model.getFillLevel());
 		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
-		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
+		figure.setGradient(model.isGradient());
+		figure.setBackGradientStartColor(model.getBackgroundGradientStartColor());
+		figure.setForeGradientStartColor(model.getForegroundGradientStartColor());
 		return figure;
 	}	
 	
@@ -94,17 +96,6 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
 		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				EllipseFigure ellipseFigure = (EllipseFigure) refreshableFigure;
-				ellipseFigure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
 		
 		// line color
 		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
@@ -119,6 +110,35 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
 				lineColorHandler);
 		
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((EllipseFigure)figure).setGradient((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(EllipseModel.PROP_GRADIENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((EllipseFigure)figure).setBackGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(EllipseModel.PROP_BACKGROUND_GRADIENT_START_COLOR, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((EllipseFigure)figure).setForeGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(EllipseModel.PROP_FOREGROUND_GRADIENT_START_COLOR, handler);
 	}
 
 	@Override

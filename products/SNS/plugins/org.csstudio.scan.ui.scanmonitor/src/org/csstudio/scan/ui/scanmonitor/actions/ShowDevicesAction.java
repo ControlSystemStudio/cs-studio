@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
@@ -32,18 +35,26 @@ public class ShowDevicesAction extends AbstractGUIAction
     /** Initialize
      *  @param shell Parent shell
      *  @param model
-     *  @param info
+     *  @param infos
      */
-    public ShowDevicesAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
+    public ShowDevicesAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
     {
-        super(shell, model, info, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
+        super(shell, model, infos, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
     }
 
     /** {@inheritDoc} */
     @Override
     protected void runModelAction() throws Exception
     {
-        final DeviceInfo[] devices = model.getServer().getDeviceInfos(info.getId());
+        // Collect devices from selected scans
+        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
+        for (ScanInfo info : infos)
+        {
+            final DeviceInfo[] scan_devices = model.getServer().getDeviceInfos(info.getId());
+            for (DeviceInfo device : scan_devices)
+                devices.add(device);
+        }
+        // Display
         final StringBuilder buf = new StringBuilder();
         buf.append("Devices:\n");
         for (DeviceInfo info : devices)

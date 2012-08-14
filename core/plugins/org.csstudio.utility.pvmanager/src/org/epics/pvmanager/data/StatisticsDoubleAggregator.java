@@ -10,6 +10,7 @@ import org.epics.pvmanager.Collector;
 import java.util.List;
 import static java.lang.Math.*;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
+import static org.epics.pvmanager.data.ValueFactory.*;
 
 /**
  * Aggregates statistics out of multiple VDoubles.
@@ -89,10 +90,10 @@ class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
                 default:
             }
         }
-        return ValueFactory.newVStatistics(stats.totalSum / stats.nElements,
+        return newVStatistics(stats.totalSum / stats.nElements,
                 sqrt(stats.totalSquareSum / stats.nElements - (stats.totalSum * stats.totalSum) / (stats.nElements * stats.nElements)),
                 stats.min, stats.max, stats.nElements,
-                statSeverity, AlarmStatus.NONE, null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
+                newAlarm(statSeverity, AlarmStatus.NONE), newTime(data.get(data.size() / 2).getTimestamp()), data.get(0));
     }
 
 }

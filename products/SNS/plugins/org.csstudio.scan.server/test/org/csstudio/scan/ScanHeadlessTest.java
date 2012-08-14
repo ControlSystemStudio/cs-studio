@@ -32,7 +32,7 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
@@ -60,7 +60,7 @@ public class ScanHeadlessTest
 
         // Execute the scan
         assertEquals(0, devices.getDevices().length);
-        scan.execute();
+        scan.call();
 
         // Devices should have been added by scan as needed
         final Device[] device_infos = devices.getDevices();
@@ -123,7 +123,7 @@ public class ScanHeadlessTest
         assertEquals(ScanState.Idle, info.getState());
         assertEquals(0, info.getPercentage());
         // Execute the scan
-        scan.execute();
+        scan.call();
         // Check Finish state
         info = scan.getScanInfo();
         assertEquals(ScanState.Finished, info.getState());
@@ -131,7 +131,7 @@ public class ScanHeadlessTest
 
         // Dump data
         final ScanData data = scan.getScanData();
-        new SpreadsheetScanDataIterator(data).printTable(System.out);
+        new ScanDataIterator(data).printTable(System.out);
         assertTrue(data.getSamples("xpos").size() > 1);
         assertTrue(data.getSamples("ypos").size() > 1);
     }

@@ -92,7 +92,20 @@ public class ConfigureItemAction extends AbstractUserDependentAction
             item =
                 (AlarmTreeItem) ((IStructuredSelection)selection_provider.getSelection()).getFirstElement();
         // else: Fixed item passed into constructor
+		performItemConfiguration(shell, model, item);
+	}
 
+	/** Interactively configure an item
+	 *
+	 *  <p>Can also be called from outside of the {@link ConfigureItemAction}
+	 *
+	 *  @param shell Parent shell for dialog
+	 *  @param model Model to configure
+	 *  @param item Item to configure
+	 */
+	public static void performItemConfiguration(final Shell shell,
+	        final AlarmClientModel model, final AlarmTreeItem item)
+	{
         final ItemConfigDialog dlg = new ItemConfigDialog(shell, item);
         if (dlg.open() != Window.OK)
             return;
@@ -103,10 +116,10 @@ public class ConfigureItemAction extends AbstractUserDependentAction
                         dlg.isEnabled(), dlg.isAnnunciate(), dlg.isLatch(),
                         dlg.getDelay(), dlg.getCount(),
                         dlg.getFilter(),
-                        dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands());
+                        dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands(), dlg.getAutomatedActions());
             else
                 model.configureItem(item, dlg.getGuidance(), dlg.getDisplays(),
-                        dlg.getCommands());
+                        dlg.getCommands(), dlg.getAutomatedActions());
 
         }
         catch (Throwable ex)

@@ -129,7 +129,7 @@ public class LinearScaleTickLabels extends Figure {
         	tickLabelPositions.add(scale.getMargin());        	
         }
        
-        for (int i = digitMin; minBigger? i>digitMax : i <digitMax; i+=minBigger?-1:1) {        	
+        for (int i = digitMin; minBigger? i>=digitMax : i <=digitMax; i+=minBigger?-1:1) {        	
         	 if(Math.abs(digitMax - digitMin) > 20){//if the range is too big, skip minor ticks.
         		 BigDecimal v = pow(10,i);
         		 if(v.doubleValue() > max)

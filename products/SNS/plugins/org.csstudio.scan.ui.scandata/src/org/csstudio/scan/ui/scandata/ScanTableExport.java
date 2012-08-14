@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,7 +49,7 @@ public class ScanTableExport extends Job
 		// Write text to string buffer
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		final PrintStream out = new PrintStream(buf);
-		SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+		ScanDataIterator sheet = new ScanDataIterator(data);
 		if ("csv".equals(file.getFileExtension()))
 			sheet.printCSV(out);
         else

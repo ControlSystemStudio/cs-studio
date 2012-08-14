@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /**
  * Value object for replay function. Adds introspection utilities to substitute
@@ -33,9 +33,9 @@ class ReplayValue {
 
     // TimeStamp support
     @XmlAttribute @XmlJavaTypeAdapter(value=XmlTimeStampAdapter.class)
-    TimeStamp timeStamp;
+    Timestamp timeStamp;
 
-    public TimeStamp getTimeStamp() {
+    public Timestamp getTimestamp() {
         return timeStamp;
     }
 

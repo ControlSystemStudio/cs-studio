@@ -61,6 +61,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	private Needle needle;
 	
 	private Label valueLabel;
+	private Boolean support3D;
 	
 	public GaugeFigure() {
 		super();
@@ -114,25 +115,25 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		Pattern pattern = null;
 		graphics.pushState();
 		graphics.setBackgroundColor(GRAY_COLOR);
-		boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+		if(support3D == null)
+			support3D = GraphicsUtil.testPatternSupported(graphics);
 		if(effect3D && support3D) {		
 			//add this to eliminate the repaint bug on Mac
-			graphics.fillOval(new Rectangle());
-			pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
+			//Who added this? this will cause problem in zoom.
+//			graphics.fillOval(new Rectangle());
+			pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), area.x, area.y, 
 				area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
-			graphics.setBackgroundPattern(pattern);					
+			graphics.setBackgroundPattern(pattern);				
 		}	
-		graphics.fillOval(area);
-		graphics.popState();
-		
-		if(effect3D && support3D){			
+		graphics.fillOval(area);		
+		if(effect3D && support3D){	
 			pattern.dispose();
 			area.shrink(BORDER_WIDTH, BORDER_WIDTH);
 		}else
 			area.shrink(1, 1);
+		graphics.popState();
 		
-		graphics.fillOval(area);	
-	
+		graphics.fillOval(area);
 		
 		super.paintClientArea(graphics);
 		
@@ -148,9 +149,9 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			final double DOWN_ANGLE = 35d * Math.PI/180d;
 			//add this to eliminate the repaint bug on Mac
 
-			graphics.fillOval(new Rectangle());
+//			graphics.fillOval(new Rectangle());
 
-			Pattern glossyPattern = new Pattern(Display.getCurrent(), 
+			Pattern glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 					area.x + area.width/2, (float)(area.y + area.height/2 - R * UD_FILL_PART),
 					area.x + area.width/2, (float) (area.y + area.height/2 + R * UP_DOWN_RATIO),
 					WHITE_COLOR, 90, WHITE_COLOR, 0);
@@ -162,7 +163,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			graphics.fillOval(rectangle);
 			glossyPattern.dispose();
 			
-			glossyPattern = new Pattern(Display.getCurrent(), 
+			glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 					area.x + area.width/2, (float)(area.y + area.height/2 + R * UP_DOWN_RATIO -1),
 					area.x + area.width/2, (float) (area.y + area.height/2 + R * UD_FILL_PART + 1),
 					WHITE_COLOR, 0, WHITE_COLOR, 40);
@@ -228,12 +229,13 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(GRAY_COLOR);
-			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(support3D == null)
+				support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D){		
 				//add this to eliminate the repaint bug on Mac
-				graphics.fillOval(new Rectangle());
+//				graphics.fillOval(new Rectangle());
 
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
 					graphics.setBackgroundPattern(pattern);							
 			}			

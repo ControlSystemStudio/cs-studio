@@ -29,12 +29,15 @@ ylim([0 10]);
 %% Create a scan
 % Scan x/y, at each step waiting for readback to follow setpoint
 
-seq = CommandSequence();
+scan = java.util.ArrayList;
 for i = 1:N
-    seq.set('xpos', x(i));
-    seq.set('ypos', y(i));
-    seq.log({ 'xpos', 'ypos' });
+    scan.add(SetCommand('xpos', x(i)));
+    scan.add(SetCommand('ypos', y(i)));
+    scan.add(DelayCommand(0.5));
+    scan.add(LogCommand({ 'xpos', 'ypos' }));
 end
+
+seq = CommandSequence(scan);
 seq.dump();
 
 
@@ -47,7 +50,7 @@ while 1
     scandata = server.getScanData(id);
     scandata.getDevices();
     
-    sheet = SpreadsheetScanDataIterator(scandata, { 'xpos', 'ypos' });
+    sheet = ScanDataIterator(scandata, { 'xpos', 'ypos' });
     table = scan_decode_spreadsheet(sheet);
   
     plot(x, y, 'g-', table(:,1), table(:,2), 'b-*');

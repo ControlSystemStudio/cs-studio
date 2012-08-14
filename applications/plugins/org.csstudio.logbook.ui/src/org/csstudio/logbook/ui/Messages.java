@@ -15,7 +15,7 @@ public class Messages extends NLS
     public static String Error;
     public static String LogEntry_ErrorCannotConnectFMT;
     public static String LogEntry_ErrorFMT;
-    public static String LogEntry_ErrorNoLog;
+    public static String LogEntry_ErrorNoLogFMT;
     public static String LogEntry_Logbook;
     public static String LogEntry_Logbook_TT;
     public static String LogEntry_Password;

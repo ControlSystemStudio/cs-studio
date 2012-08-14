@@ -7,22 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
-import javax.print.attribute.standard.Severity;
-
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action to send image of plot to logbook.
  *  @author Kay Kasemir, Xihui Chen
@@ -62,6 +59,7 @@ public class SendToElogAction extends SendToElogActionHelper
         // Display dialog, create entry
         try
         {
+            final Shell shell = opiRuntime.getSite().getShell();
             final ElogDialog dialog =
                 new ElogDialog(opiRuntime.getSite().getShell(), "Send To Logbook",
                         opiRuntime.getDisplayModel().getName(),
@@ -74,48 +72,34 @@ public class SendToElogAction extends SendToElogActionHelper
                         final String images[])
                         throws Exception
                 {
-                    final ILogbook logbook = getLogbook_factory()
-                                        .connect(logbook_name, user, password);
-                    try {
-						Job create = new Job("Creating log entry.") {
-
-							@Override
-							protected IStatus run(IProgressMonitor monitor) {
-								try {
-									logbook.createEntry(title, body, images);
-								} catch (final Exception e) {
-									return new Status(
-											Severity.ERROR.getValue(),
-											ID,
-											"Failed to create log entry", e);
-								}
-								return Status.OK_STATUS;
-							}
-						};
-						create.addJobChangeListener(new JobChangeAdapter() {
-							public void done(final IJobChangeEvent event) {
-								if (!event.getResult().isOK()) {
-									Display.getDefault().asyncExec(
-											new Runnable() {
-												public void run() {
-													MessageDialog.openError(
-															opiRuntime.getSite().getShell(),
-															"Error",
-															event.getResult().getException().getMessage());
-									
-
-												}
-											});
-								}
-							}
-						});
-						create.setUser(true);
-						create.schedule();
-					} 
-                    finally
+                    final Job create = new Job("Create log entry")
                     {
-                        logbook.close();
-                    }
+						@Override
+						protected IStatus run(final IProgressMonitor monitor)
+						{
+							try
+							{
+							    final ILogbook logbook = getLogbook_factory()
+							            .connect(logbook_name, user, password);
+								logbook.createEntry(title, body, images);
+                                logbook.close();
+							}
+							catch (final Exception ex)
+							{
+                                shell.getDisplay().asyncExec(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        ExceptionDetailsErrorDialog.openError(shell, "Logbook Error", ex);
+                                    }
+                                });
+							}
+							return Status.OK_STATUS;
+						}
+					};
+					create.setUser(true);
+					create.schedule();
                 }
 
             };

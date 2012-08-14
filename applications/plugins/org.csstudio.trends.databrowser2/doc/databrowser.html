@@ -507,9 +507,57 @@ to use the correct file suffix.
 
 <h3>Matlab</h3>
 <p>
-The generated data file is suitable for loading (executing) in Matlab R2006b
+The Matlab export can use two different file formats:
+</p>
+
+<ul>
+<li>To create binary Matlab data files, use a file name ending in ".mat".</li>
+<li>Matlab text files are created when the file name ends in ".m".</li>
+</ul>
+
+<h4>Binary Matlab .mat Files</h4>
+
+<p>
+The binary data file like "example.mat" is suitable for loading into Matlab 5 and newer like this:
+</p>
+<pre>
+load /path/to/the/example.mat
+</pre>
+
+<p>
+In your Matlab workspace you should then find structures named "channel0", "channel1", ..., one
+for each channel that was loaded from the file. Each structure has the following elements:
+</p>
+<ul>
+<li><b>name</b>: Channel name</li>
+<li><b>time</b>: Time stamps</li>
+<li><b>value</b>: Numeric value</li>
+<li><b>severity</b>: Severity</li>
+</ul>
+
+<p>
+The time stamps are saved as text. In reasonable modern versions of Matlab you best convert them
+to Matlab serial date numbers, which you can then for example plot over time like this:
+</p>
+<pre>
+channel0.date = datenum(channel0.time, 'yyyy/mm/dd HH:MM:SS.FFF');
+plot(channel0.date, channel0.value);
+datetick('x',0);
+title(channel0.name);
+</pre>
+
+<h4>Matlab .m Text Files</h4>
+
+<p>The text file like "example.m" is suitable for loading (executing) in Matlab R2006b
 or newer, creating one 'timeseries' object per trace.
-With previous Matlab releases, you will have to edit the generated file
+To load it into Matlab, you execute the file like this:
+</p>
+<pre>cd /path/to/the/file
+example
+</pre>
+<p>Matlab will then execute the commands in the file which define the data in the Matlab
+workspace and also plot it.
+With Matlab releases older than R2006b you will have to edit the generated file 
 to suit your needs, for example use simply "plot(v);" to show the values.
 </p>
 

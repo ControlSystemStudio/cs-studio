@@ -144,9 +144,8 @@ public class DistributeWidgetsAction extends SelectionAction {
 		int averageGap = (sortedModelArray[sortedModelArray.length-1].getY() -
 			(sortedModelArray[0].getY() + sortedModelArray[0].getHeight()) - widthSum)
 			/(sortedModelArray.length-1);
-		
 		int startX = sortedModelArray[0].getY() + sortedModelArray[0].getHeight();
-		for(int i=1; i<sortedModelArray.length-1; i++){
+		for(int i=1; i<sortedModelArray.length; i++){
 			 cmd.add(new SetWidgetPropertyCommand(
 					 sortedModelArray[i], AbstractWidgetModel.PROP_YPOS, 
 					 startX + averageGap));

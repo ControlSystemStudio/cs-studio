@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
@@ -74,27 +75,35 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				.addManualValueChangeListener(new IManualStringValueChangeListener() {
 
 					public void manualValueChanged(String newValue) {
-						if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-							setPVValue(TextInputModel.PROP_PVNAME, newValue);
-							getWidgetModel().setPropertyValue(
-									TextInputModel.PROP_TEXT, newValue, false);
-						} else {
-							getViewer()
-									.getEditDomain()
-									.getCommandStack()
-									.execute(
-											new SetWidgetPropertyCommand(
-													getWidgetModel(),
-													TextInputModel.PROP_TEXT,
-													newValue));
-						}
+						outputText(newValue);
 					}
+
+					
 				});
 
 		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
+		updatePropSheet();
+		setPropertiesVisibilities(getWidgetModel().getSelectorType());
 		return textInputFigure;
 	}
 
+	/**Call this method when user hit Enter or Ctrl+Enter for multiline input.
+	 * @param newValue
+	 */
+	protected void outputText(String newValue) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			setPVValue(TextInputModel.PROP_PVNAME, newValue);
+			getWidgetModel().setPropertyValue(TextInputModel.PROP_TEXT,
+					newValue, false);
+		} else {
+			getViewer()
+					.getEditDomain()
+					.getCommandStack()
+					.execute(
+							new SetWidgetPropertyCommand(getWidgetModel(),
+									TextInputModel.PROP_TEXT, newValue));
+		}
+	}
 	@Override
 	protected TextFigure createTextFigure() {
 		return new TextInputFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
@@ -158,6 +167,35 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 	}
 
+	/**
+	 * @param text
+	 */
+	protected void outputPVValue(String text) {
+		if(!getWidgetModel().getConfirmMessage().isEmpty())
+			if(!GUIUtil.openConfirmDialog("PV Name: " + getPVName() +
+					"\nNew Value: "+ text+ "\n\n"+
+					getWidgetModel().getConfirmMessage()))
+				return;
+		try {			
+			Object result;
+			if(getWidgetModel().getFormat() != FormatEnum.STRING
+					&& text.trim().indexOf(SPACE)!=-1){
+				result = parseStringArray(text);
+			}else
+				result = parseString(text);
+			setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
+		} catch (Exception e) {
+			String msg = NLS
+					.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
+							new String[] {
+									getPVName(),
+									getWidgetModel().getName(),
+									text })
+					+ e.toString();
+			ConsoleService.getInstance().writeError(msg);
+		}
+	}
+	
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
@@ -169,36 +207,19 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					String text = (String) newValue;
 					
 					if(getPV() == null){
-					 ((TextFigure)figure).setText(text);
+					 setFigureText(text);
 					 if(getWidgetModel().isAutoSize()){
 							Display.getCurrent().timerExec(10, new Runnable() {
 								public void run() {
-										performAutoSize(figure);
+										performAutoSize();
 								}
 							});
 						}
 					}
-
-					try {						
-						Object result;
-						if(getWidgetModel().getFormat() != FormatEnum.STRING
-								&& text.trim().indexOf(SPACE)!=-1){
-							result = parseStringArray(text);
-						}else
-							result = parseString(text);
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
-					} catch (Exception e) {
-						String msg = NLS
-								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
-										new String[] {
-												getPVName(),
-												getWidgetModel().getName(),
-												text })
-								+ e.toString();
-						ConsoleService.getInstance().writeError(msg);
-					}
+					//Output pv value even if pv name is empty, so setPVValuelistener can be triggered.
+					outputPVValue(text);
 					return false;
-				}
+				}			
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		}
@@ -213,7 +234,18 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
 				pvNameHandler);
-
+	
+		getWidgetModel().getProperty(TextInputModel.PROP_LIMITS_FROM_PV)
+			.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent arg0) {
+				updatePropSheet();
+			}
+		});
+			
+		
+		
 		IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -247,11 +279,10 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART,
-				fileReturnPartHandler);
-
-		setPropertiesVisibilities(getWidgetModel().getSelectorType());
+				fileReturnPartHandler);		
 		
-		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
+		if(getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE) != null)
+			getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
 				.addPropertyChangeListener(new PropertyChangeListener() {
 
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -334,7 +365,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	}
 
 	protected void performDirectEdit() {
-		new LabelEditManager(this, new LabelCellEditorLocator(
+		new TextEditManager(this, new LabelCellEditorLocator(
 				(Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
 	}
 	
@@ -462,7 +493,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			iString[ii] = Integer.valueOf(textChars[ii]);
 		}
 		for (int ii = text.length(); ii < currentLength; ii++) {
-			iString[ii] = (char)0;
+			iString[ii] = 0;
 		}
 		return iString;
 	}
@@ -507,11 +538,22 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
 
 	@Override
-	protected String formatValue(Object newValue, String propId, IFigure figure) {
-		String text = super.formatValue(newValue, propId, figure);
+	protected String formatValue(Object newValue, String propId) {
+		String text = super.formatValue(newValue, propId);
 		getWidgetModel()
 				.setPropertyValue(TextInputModel.PROP_TEXT, text, false);
 		return text;
+
+	}
+	
+	/**
+	 * @param newValue
+	 */
+	protected void updatePropSheet() {
+		getWidgetModel().setPropertyVisible(
+				TextInputModel.PROP_MAX, !getWidgetModel().isLimitsFromPV());
+		getWidgetModel().setPropertyVisible(
+				TextInputModel.PROP_MIN, !getWidgetModel().isLimitsFromPV());
 
 	}
 

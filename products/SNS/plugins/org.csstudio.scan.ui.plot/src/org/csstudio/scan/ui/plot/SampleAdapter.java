@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 
 /** Adapter from a {@link ScanSample} pair (x, y)
@@ -18,14 +18,16 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 @SuppressWarnings("nls")
 public class SampleAdapter implements ISample
 {
+    final private String device;
     final private ScanSample x, y;
-    
+
     /** Initialize
      *  @param x
      *  @param y
      */
-    public SampleAdapter(final ScanSample x, final ScanSample y)
+    public SampleAdapter(final String device, final ScanSample x, final ScanSample y)
     {
+        this.device = device;
         this.x = x;
         this.y = y;
     }
@@ -34,14 +36,14 @@ public class SampleAdapter implements ISample
     @Override
     public double getXValue()
     {
-        return DataFormatter.asDouble(x);
+        return ScanSampleFormatter.asDouble(x);
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYValue()
     {
-        return DataFormatter.asDouble(y);
+        return ScanSampleFormatter.asDouble(y);
     }
 
     /** {@inheritDoc} */
@@ -76,9 +78,7 @@ public class SampleAdapter implements ISample
     @Override
     public String getInfo()
     {
-        final String xinfo = x == null ? "X" : x.getDeviceName();
-        final String yinfo = y == null ? "Y" : y.getDeviceName();
-        return yinfo + " over " + xinfo;
+        return device;
     }
 
     /** @return Debug representation */

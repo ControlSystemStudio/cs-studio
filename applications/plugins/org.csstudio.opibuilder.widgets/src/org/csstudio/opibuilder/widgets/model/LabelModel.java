@@ -21,7 +21,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
  * @author Xihui Chen
  *
  */
-public class LabelModel extends AbstractPVWidgetModel {
+public class LabelModel extends AbstractPVWidgetModel implements ITextModel{
 	
 
 	
@@ -60,7 +60,7 @@ public class LabelModel extends AbstractPVWidgetModel {
 		addProperty(new ComboProperty(PROP_ALIGN_V, "Vertical Alignment", 
 				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
 		addProperty(new BooleanProperty(PROP_WRAP_WORDS, "Wrap Words", 
-				WidgetPropertyCategory.Display, true));
+				WidgetPropertyCategory.Behavior, true));
 		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar", 
 				WidgetPropertyCategory.Display, false));
 

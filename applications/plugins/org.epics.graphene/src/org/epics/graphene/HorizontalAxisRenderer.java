@@ -4,10 +4,10 @@
  */
 package org.epics.graphene;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 class HorizontalAxisRenderer {
     
     private ValueAxis axis;
-    private static Font defaultAxisFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+    private static Font defaultAxisFont = FontUtil.getLiberationSansRegular();
     private Font axisFont = defaultAxisFont;
     private int axisHeight;
     private int bottomMargin = 3;
@@ -25,7 +25,8 @@ class HorizontalAxisRenderer {
     private String[] xLabels;
     private double[] xValueTicks;
     private int[] xTicks;
-    private Color axisColor = Color.BLACK;
+    private Color axisColor = new Color(192, 192, 192);
+    private Color axisTickColor = Color.BLACK;
     private Color axisTextColor = Color.BLACK;
     private FontMetrics metrics;
 
@@ -56,6 +57,7 @@ class HorizontalAxisRenderer {
         
         // Draw x-axis
         graphics.setColor(axisColor);
+        graphics.setFont(axisFont);
         graphics.drawLine(startAxis, imageHeight - getAxisHeight(), startAxis + plotWidth, imageHeight - getAxisHeight());
         int[] drawRange = new int[] {0, imageWidth};
         
@@ -67,7 +69,7 @@ class HorizontalAxisRenderer {
         for (int i = 0; i < xLabels.length; i++) {
             graphics.setColor(axisTextColor);
             drawCenteredText(graphics, metrics, xLabels[i], xTicks[i], drawRange, imageHeight - bottomMargin, true, true);
-            graphics.setColor(axisColor);
+            graphics.setColor(axisTickColor);
             graphics.drawLine(xTicks[i], imageHeight - getAxisHeight(), xTicks[i], imageHeight - getAxisHeight() + tickSize);
         }
         

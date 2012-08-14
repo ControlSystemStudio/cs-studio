@@ -21,6 +21,8 @@
  */
 package org.csstudio.opibuilder.widgets.feedback;
 
+import java.util.ArrayList;
+
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -60,6 +62,18 @@ public final class PointListCreationTool extends TargetingTool {
 	 * The point list, which is manipulated by this tool.
 	 */
 	private PointList _points = new PointList();
+	
+	/**
+	 * List of common EditPart.
+	 *
+	 * This maintains the list of common EditParts where all
+	 * the points belong to. The first element of this
+	 * list is the descendant EditPart where all points belong
+	 * to. The second element is the parent of the first, and
+	 * the third element is the parent of the second, and so
+	 * on. The last element of this list is the root EditPart. 
+	 */
+	private ArrayList<EditPart> commonEditParts = null;
 
 	/**
 	 * A SnapToHelper.
@@ -201,7 +215,26 @@ public final class PointListCreationTool extends TargetingTool {
 			// add an additional point, which is just for previewing the next
 			// axis in the graphical feedback
 			_points.addPoint(p);
-		
+			
+			if (commonEditParts == null) {
+				// This is the first point. Register all ancestors to the list.
+				commonEditParts = new ArrayList<EditPart>();
+				EditPart ep = getTargetEditPart();
+				while (ep != null) {
+					commonEditParts.add(ep);
+					ep = ep.getParent();
+				}
+			} else {
+				// Remove all EditParts which the added point does not belong to.
+				int index = commonEditParts.indexOf(getTargetEditPart());
+				if (index == -1) {
+					commonEditParts.clear();
+				} else {
+					for (int i=0; i<index; i++) {
+						commonEditParts.remove(i);
+					}
+				}
+			}
 
 		updateTargetRequest();
 		return true;
@@ -376,5 +409,24 @@ public final class PointListCreationTool extends TargetingTool {
 			req.setSize(null);
 			req.setLocation(getLocation());
 		}
+	}
+	
+	@Override
+	protected EditPartViewer.Conditional getTargetingConditional() {
+		return new EditPartViewer.Conditional() {
+			public boolean evaluate(EditPart editpart) {
+				EditPart targetEditPart = editpart.getTargetEditPart(getTargetRequest());
+				if (targetEditPart == null)
+					return false;
+				
+				// If there is no point, the EditPart under the mouse is the target. 
+				if (commonEditParts == null)
+					return true;
+
+				// If the EditPart under the mouse is not listed in the list of EditPart,
+				// it cannot be the target.
+				return commonEditParts.contains(targetEditPart);
+			}
+		};
 	}
 }

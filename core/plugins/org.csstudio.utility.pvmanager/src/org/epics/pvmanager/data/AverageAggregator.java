@@ -4,11 +4,11 @@
  */
 package org.epics.pvmanager.data;
 
-import java.util.Collections;
+import java.util.List;
 import org.epics.pvmanager.Aggregator;
 import org.epics.pvmanager.Collector;
-import java.util.List;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
+import static org.epics.pvmanager.data.ValueFactory.*;
 
 /**
  * Aggregates the values by taking the average.
@@ -62,8 +62,8 @@ class AverageAggregator extends Aggregator<VDouble, VDouble> {
                 default:
             }
         }
-        return ValueFactory.newVDouble(totalSum / data.size(),
-                statSeverity, AlarmStatus.NONE, null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
+        return newVDouble(totalSum / data.size(), newAlarm(statSeverity, AlarmStatus.NONE),
+                newTime(data.get(data.size() / 2).getTimestamp()), data.get(0));
     }
 
 }

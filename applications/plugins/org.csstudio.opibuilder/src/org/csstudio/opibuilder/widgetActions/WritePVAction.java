@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.widgetActions;
 
 import java.util.Calendar;
 
+import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
+import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -61,6 +63,19 @@ public class WritePVAction extends AbstractWidgetAction {
 	
 	@Override
 	public void run() {
+		
+		//If it has the same nave as widget PV name, use it.
+		if(getWidgetModel() instanceof IPVWidgetModel){
+			String mainPVName=((IPVWidgetModel)getWidgetModel()).getPVName();
+			if(getPVName().equals(mainPVName)){
+				Object o = getWidgetModel().getRootDisplayModel().getViewer().getEditPartRegistry().get(getWidgetModel());
+				if(o instanceof IPVWidgetEditpart){
+					((IPVWidgetEditpart)o).setPVValue(IPVWidgetModel.PROP_PVNAME, getValue().trim());
+					return;
+				}
+			}
+		}
+		
 		
 		Job job = new Job(getDescription()){
 			@Override

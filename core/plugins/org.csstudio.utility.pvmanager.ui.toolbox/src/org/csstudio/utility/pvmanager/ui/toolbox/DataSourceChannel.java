@@ -6,9 +6,9 @@ import org.epics.pvmanager.PVManager;
 
 public class DataSourceChannel implements Comparable<DataSourceChannel> {
 	private final String dataSource;
-	private final ChannelHandler<?> channel;
+	private final ChannelHandler channel;
 	
-	public DataSourceChannel(String dataSource, ChannelHandler<?> channel) {
+	public DataSourceChannel(String dataSource, ChannelHandler channel) {
 		this.dataSource = dataSource;
 		this.channel = channel;
 	}

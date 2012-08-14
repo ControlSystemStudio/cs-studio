@@ -8,7 +8,10 @@
 package org.csstudio.scan.ui.plot;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
@@ -22,11 +25,17 @@ import org.eclipse.swt.widgets.Display;
  *  <li>Currently selected scan and its scan data
  *  <li>Current X, Y axis assignments
  *  </ul>
+ *
+ *  <p>Periodically queries {@link ScanInfoModel} for
+ *  changes in the data of selected scan,
+ *  fetches that data, and updates {@link PlotDataProvider}.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PlotDataModel implements Runnable
 {
+    final private Display display;
+
     /** Plot update period in ms */
     final private long update_period;
 
@@ -42,14 +51,26 @@ public class PlotDataModel implements Runnable
     /** Devices in current scan */
     private volatile String[] devices = null;
 
-    /** Device used for 'X' axis */
-    private volatile String x_axis_device = null;
+    /** Last sample serial on which plot data was updated
+     *  <p>Resetting it to -1 will trigger a new plot update
+     *  after scan, x or y devices are modified
+     */
+    private volatile long last_serial = -1;
 
-    /** Device used for 'Y' axis */
-    private volatile String y_axis_device = null;
+    /** Device used for the X axis
+     *  SYNC on this
+     */
+    private String x_axis_device = null;
 
-    /** Data for X/Y axes */
-    final private PlotDataProvider plot_data;
+    /** Device used for the X axis
+     *  SYNC on this
+     */
+    final private List<String> y_axis_devices = new ArrayList<String>();
+
+    /** Data for plot: x device and first y device, x and second y device, ...
+     *  SYNC on this
+     */
+    final private List<PlotDataProvider> plot_data = new ArrayList<PlotDataProvider>();
 
     /** Mostly to please FindBugs: Flag that update thread was woken early */
     private boolean wake_early = false;
@@ -60,9 +81,84 @@ public class PlotDataModel implements Runnable
      */
     public PlotDataModel(final Display display) throws Exception
     {
+        this.display = display;
         update_period = Preferences.getUpdatePeriod();
         model = ScanInfoModel.getInstance();
-        plot_data = new PlotDataProvider(display);
+    }
+
+    /** Select scan for monitoring data
+     *  @param id Scan ID
+     */
+    public void selectScan(final long id)
+    {
+        selected_scan_id = id;
+        last_serial = -1;
+        waveUpdateThread();
+    }
+
+    /** @param device_name Device to use for "X" axis */
+    public synchronized void selectXDevice(final String device_name)
+    {
+        x_axis_device = device_name;
+        updatePlotDataProviders();
+    }
+
+    /** @return Y device names */
+    public synchronized String[] getYDevices()
+    {
+        return y_axis_devices.toArray(new String[y_axis_devices.size()]);
+    }
+
+    /** @param device_name Device to use for "Y" axis */
+    public synchronized void selectYDevice(final int index, final String device_name)
+    {
+        y_axis_devices.set(index, device_name);
+        updatePlotDataProviders();
+    }
+
+    /** @param devices Devices to use for "Y" axis */
+    public synchronized void selectYDevices(final List<String> devices)
+    {
+        y_axis_devices.clear();
+        y_axis_devices.addAll(devices);
+        updatePlotDataProviders();
+    }
+
+    /** @param device_name Device to use for additional "Y" axis */
+    public synchronized void addYDevice(final String device_name)
+    {
+        y_axis_devices.add(device_name);
+        updatePlotDataProviders();
+    }
+
+    /** Remove device from "Y" axis */
+    public synchronized void removeYDevice()
+    {
+        final int last = y_axis_devices.size() - 1;
+        if (last < 0)
+            return;
+        y_axis_devices.remove(last);
+        updatePlotDataProviders();
+    }
+
+    /** Create/update plot data providers */
+    private synchronized void updatePlotDataProviders()
+    {
+        plot_data.clear();
+        for (String y_axis_device : y_axis_devices)
+            if (x_axis_device != null  &&  y_axis_device != null)
+                plot_data.add(new PlotDataProvider(display, x_axis_device, y_axis_device));
+        last_serial = -1;
+        waveUpdateThread();
+    }
+
+    /** @return Data for traces */
+    public PlotDataProvider[] getPlotDataProviders()
+    {
+        synchronized (this)
+        {
+            return plot_data.toArray(new PlotDataProvider[plot_data.size()]);
+        }
     }
 
     /** Start the model */
@@ -101,43 +197,49 @@ public class PlotDataModel implements Runnable
         while (update_thread != null)
         {
             final ScanInfo scan = getScan(selected_scan_id);
-            final String x_device = x_axis_device;
-            final String y_device = y_axis_device;
-
             if (scan == null)
+                // No scan selected
                 devices = null;
             else
             {   // Get data for scan
-                final ScanData scan_data;
                 try
-                {
-                    // Check if there is new data
+                {   // Check if there is new data
                     final ScanServer server = model.getServer();
-                    final long last_serial = server.getLastScanDataSerial(scan.getId());
-                    if (last_serial != plot_data.getLastSerial())
+                    final long current_serial = server.getLastScanDataSerial(scan.getId());
+                    if (last_serial != current_serial)
                     {
-                        scan_data = server.getScanData(scan.getId());
+                        last_serial = current_serial;
+                        final ScanData scan_data = server.getScanData(scan.getId());
                         if (scan_data == null)
                             devices = null;
                         else
                         {
                             devices = scan_data.getDevices();
-                            // Get data for selected devices from plot
-                            if (x_device == null  ||  y_device == null)
-                                plot_data.clear(last_serial);
-                            else
-                                plot_data.update(last_serial, scan_data, x_device, y_device);
+                            synchronized (this)
+                            {
+                                for (PlotDataProvider data : plot_data)
+                                    data.update(scan_data);
+                            }
                         }
                     }
                     // else: Skip fetching the same data. No plot_data.update, no events
                 }
                 catch (RemoteException ex)
                 {
+                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Plot data error", ex);
                     devices = null;
                 }
             }
+
+            // Was there any data?
             if (devices == null)
-                plot_data.clear();
+            {
+                synchronized (this)
+                {
+                    for (PlotDataProvider data : plot_data)
+                        data.clear();
+                }
+            }
 
             // Wait for next update period
             // or early wake from waveUpdateThread()
@@ -163,10 +265,6 @@ public class PlotDataModel implements Runnable
      */
     private void waveUpdateThread()
     {
-        // Not perfect:
-        // clear() will trigger a refresh of the display, which we need because device selection changed.
-        // It will also trigger a new data request because the serial is reset to -1. Not always necessary...
-        plot_data.clear();
         synchronized (this)
         {   // Findbugs gives 'naked notify' warning. Ignore.
             wake_early = true;
@@ -180,25 +278,19 @@ public class PlotDataModel implements Runnable
         return model.getInfos();
     }
 
-    /** Select scan for monitoring data
-     *  @param id Scan ID
-     */
-    public void selectScan(final long id)
-    {
-        selected_scan_id = id;
-        waveUpdateThread();
-    }
-
     /** Get scan info by ID
      *  @param id Scan ID
      *  @return {@link ScanInfo} or <code>null</code>
      */
     public ScanInfo getScan(final long id)
     {
-        final List<ScanInfo> infos = model.getInfos();
-        for (ScanInfo info : infos)
-            if (info.getId() == id)
-                return info;
+        if (id >= 0)
+        {
+            final List<ScanInfo> infos = model.getInfos();
+            for (ScanInfo info : infos)
+                if (info.getId() == id)
+                    return info;
+        }
         return null;
     }
 
@@ -206,25 +298,5 @@ public class PlotDataModel implements Runnable
     public String[] getDevices()
     {
         return devices;
-    }
-
-    /** @param device_name Device to use for "X" axis */
-    public void selectXDevice(final String device_name)
-    {
-        x_axis_device = device_name;
-        waveUpdateThread();
-    }
-
-    /** @param device_name Device to use for "Y" axis */
-    public void selectYDevice(final String device_name)
-    {
-        y_axis_device = device_name;
-        waveUpdateThread();
-    }
-
-    /** @return Data of selected scan */
-    public PlotDataProvider getPlotData()
-    {
-        return plot_data;
     }
 }

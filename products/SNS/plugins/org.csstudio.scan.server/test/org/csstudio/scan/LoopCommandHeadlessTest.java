@@ -108,10 +108,10 @@ public class LoopCommandHeadlessTest
 
         final ExecutableScan scan = new ExecutableScan("Loop Test", devices, loop1, loop2);
         assertEquals(0, scan.getScanInfo().getPerformedWorkUnits());
-        scan.execute();
+        scan.call();
 
-        // 1 WaitForDevicesCommand + loop1 + loop2
-        assertEquals(16, scan.getScanInfo().getPerformedWorkUnits());
+        // loop1 + loop2
+        assertEquals(15, scan.getScanInfo().getPerformedWorkUnits());
     }
 
 

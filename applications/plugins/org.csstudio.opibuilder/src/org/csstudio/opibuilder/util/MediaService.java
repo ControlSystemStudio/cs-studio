@@ -27,9 +27,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * A service help to maintain the color macros.
@@ -41,6 +43,11 @@ public final class MediaService {
 
 	public static final String DEFAULT_FONT = "Default"; //$NON-NLS-1$
 
+	public static final String DEFAULT_BOLD_FONT = "Default Bold"; //$NON-NLS-1$
+	
+	public static final String HEADER1 = "Header 1"; //$NON-NLS-1$
+	public static final String HEADER2 = "Header 2"; //$NON-NLS-1$
+	public static final String HEADER3 = "Header 3"; //$NON-NLS-1$
 	/**
 	 * The shared instance of this class.
 	 */
@@ -97,6 +104,15 @@ public final class MediaService {
 		//			defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
 		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
+		FontData defaultBoldFont = new FontData(defaultFont.getName(), defaultFont.getHeight(), SWT.BOLD);
+		fontMap.put(DEFAULT_BOLD_FONT, new OPIFont(DEFAULT_BOLD_FONT, defaultBoldFont));
+		FontData header1 = new FontData(defaultFont.getName(), 18, SWT.BOLD);
+		fontMap.put(HEADER1, new OPIFont(HEADER1, header1));
+		FontData header2 = new FontData(defaultFont.getName(), 14, SWT.BOLD);
+		fontMap.put(HEADER2, new OPIFont(HEADER2, header2));
+		FontData header3 = new FontData(defaultFont.getName(), 12, SWT.BOLD);
+		fontMap.put(HEADER3, new OPIFont(HEADER3, header3));
+
 	}
 
 	/**
@@ -131,10 +147,10 @@ public final class MediaService {
 	 * Reload predefined fonts from font file.
 	 */
 	public synchronized void reloadFontFile() {
-		Job job = new Job("Load Font File") {
+		UIJob job = new UIJob("Load Font File") {	
 
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
+			public IStatus runInUIThread(IProgressMonitor monitor) {
 				monitor.beginTask("Connecting to " + fontFilePath,
 						IProgressMonitor.UNKNOWN);
 				fontMap.clear();
@@ -154,9 +170,8 @@ public final class MediaService {
 
 		colorFilePath = PreferencesHelper.getColorFilePath();
 		if (colorFilePath == null || colorFilePath.isEmpty()) {
-			String message = "No color definition file was found.";
-			OPIBuilderPlugin.getLogger().warning(message);
-			ConsoleService.getInstance().writeWarning(message);
+//			String message = "No color definition file was found.";
+//			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
@@ -199,20 +214,14 @@ public final class MediaService {
 	}
 
 	private void loadFontFile() {
-		Display.getDefault().syncExec(new Runnable() {
-			
-			public void run() {
-				loadPredefinedFonts();
-				
-			}
-		});
+		
+		loadPredefinedFonts();	
 		Map<String, OPIFont> rawFontMap = new LinkedHashMap<String, OPIFont>();
 		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();
 		if (fontFilePath == null || fontFilePath.isEmpty()) {
-			String message = "No font definition file was found.";
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
-			ConsoleService.getInstance().writeWarning(message);
+//			String message = "No font definition file was found.";
+//			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
@@ -298,9 +307,18 @@ public final class MediaService {
 	}
 
 	public OPIColor getOPIColor(String name) {
+		return getOPIColor(name, DEFAULT_UNKNOWN_COLOR);
+	}
+	
+	/**Get OPIColor based on name. If no such name exist, use the rgb value as its color.
+	 * @param name name of OPIColor
+	 * @param rgb rgb value in case the name is not exist.
+	 * @return the OPIColor.
+	 */
+	public OPIColor getOPIColor(String name, RGB rgb) {
 		if (colorMap.containsKey(name))
 			return colorMap.get(name);
-		return new OPIColor(name, DEFAULT_UNKNOWN_COLOR, true);
+		return new OPIColor(name, rgb, true);
 	}
 
 	public OPIColor[] getAllPredefinedColors() {
@@ -326,11 +344,27 @@ public final class MediaService {
 			return fontMap.get(name).getFontData();
 		return DEFAULT_UNKNOWN_FONT;
 	}
+	
+	/**Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a name is found.
+	 * @param name
+	 * @return
+	 * @see #getOPIFont(String, FontData)
+	 */
+	public OPIFont getOPIFont(String name){
+		return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
+	}
+	
 
-	public OPIFont getOPIFont(String name) {
+	/**Get the OPIFont based on name. Use the provided fontData if no
+	 * such a name is found.
+	 * @param name 
+	 * @param fontData
+	 * @return
+	 */
+	public OPIFont getOPIFont(String name, FontData fontData) {
 		if (fontMap.containsKey(name))
 			return fontMap.get(name);
-		return new OPIFont(name, DEFAULT_UNKNOWN_FONT);
+		return new OPIFont(name, fontData);
 	}
 
 	public OPIFont[] getAllPredefinedFonts() {

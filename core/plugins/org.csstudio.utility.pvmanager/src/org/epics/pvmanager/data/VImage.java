@@ -5,8 +5,8 @@
 package org.epics.pvmanager.data;
 
 /**
- * Represent a buffered image. Use {@link Util#toImage(org.epics.pvmanager.data.VImage)}
- * and {@link Util#toVImage(java.awt.image.BufferedImage)} to convert objects
+ * Represent a buffered image. Use {@link ValueUtil#toImage(org.epics.pvmanager.data.VImage)}
+ * and {@link ValueUtil#toVImage(java.awt.image.BufferedImage)} to convert objects
  * of this class to and from awt images.
  * <p>
  * The data is currently encoded as 3 bytes for each pixel (RGB). To read the
@@ -35,7 +35,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VImage {
+public interface VImage extends VType {
     /**
      * Height of the image in pixels.
      *

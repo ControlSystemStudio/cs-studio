@@ -12,7 +12,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 import org.junit.Test;
 
@@ -70,7 +70,7 @@ public class ScanDataUnitTest implements ScanDataModelListener
 	@Override
     public void updateScanData(final ScanData data)
     {
-		new SpreadsheetScanDataIterator(data).printTable(System.out);
+		new ScanDataIterator(data).printTable(System.out);
 		received_data.countDown();
     }
 }

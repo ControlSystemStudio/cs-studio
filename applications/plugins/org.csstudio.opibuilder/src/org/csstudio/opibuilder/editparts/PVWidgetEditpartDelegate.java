@@ -182,7 +182,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		return widgetModel;
 	}
 	
-	public void activate(){
+	public void doActivate(){
 		if(editpart.getExecutionMode() == ExecutionMode.RUN_MODE){
 				pvMap.clear();
 				saveFigureOKStatus(editpart.getFigure());
@@ -206,25 +206,26 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
                                 "Unable to connect to PV:" + (String)sp.getPropertyValue(), e); //$NON-NLS-1$
 					}
 				}
-
-				editpart.doActivate();
-
-				//the pv should be started at the last minute
-				for(String pvPropId : pvMap.keySet()){
-					PV pv = pvMap.get(pvPropId);
-					try {
-						pv.start();
-					} catch (Exception e) {
-                        OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                "Unable to connect to PV:" + pv.getName(), e); //$NON-NLS-1$
-					}
-				}
 			}
 	}
-	
-	public void deactivate() {
 
-			editpart.doDeActivate();
+	/**Start all PVs.
+	 * This should be called as the last step in editpart.activate().
+	 */
+	public void startPVs() {
+		//the pv should be started at the last minute
+		for(String pvPropId : pvMap.keySet()){
+			PV pv = pvMap.get(pvPropId);
+			try {
+				pv.start();
+			} catch (Exception e) {
+		        OPIBuilderPlugin.getLogger().log(Level.WARNING,
+		                "Unable to connect to PV:" + pv.getName(), e); //$NON-NLS-1$
+			}
+		}
+	}
+	
+	public void doDeActivate() {
 			for(PV pv : pvMap.values())
 				pv.stop();
 
@@ -333,6 +334,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		initUpdateSuppressTimer();
 	}
 	
+	public boolean isPVControlWidget(){
+		return controlPVPropId!=null;
+	}
+	
 	public void registerBasePropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -405,7 +410,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				String newPVName = ((String)newValue).trim();
-				if(newPVName.length() < 0)
+				if(newPVName.length() <= 0)
 					return false;
 				PV oldPV = pvMap.get(pvNamePropID);
 				editpart.removeFromConnectionHandler((String)oldValue);
@@ -479,9 +484,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	}
 	
 	private void restoreFigureToOKStatus(IFigure figure) {		
-		editpart.setFigureBorder(editpart.calculateBorder());
-		figure.setBackgroundColor(saveBackColor);
-		figure.setForegroundColor(saveForeColor);
+		if(isBorderAlarmSensitive)
+			editpart.setFigureBorder(editpart.calculateBorder());
+		if(isBackColorrAlarmSensitive)
+			figure.setBackgroundColor(saveBackColor);
+		if(isForeColorAlarmSensitive)
+			figure.setForegroundColor(saveForeColor);
 	}
 
 	private void saveFigureOKStatus(IFigure figure) {

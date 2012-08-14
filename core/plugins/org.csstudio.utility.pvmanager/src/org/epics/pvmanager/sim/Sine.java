@@ -8,7 +8,8 @@ import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Function to simulate a signal shaped like a sine. The warning
@@ -43,10 +44,9 @@ public class Sine extends SimFunction<VDouble> {
         this.currentValue = 0;
         this.samplesPerCycle = samplesPerCycle;
         range = this.max - this.min;
-        lastValue = ValueFactory.newVDouble(0.0, AlarmSeverity.NONE, AlarmStatus.NONE,
-                TimeStamp.now(), null,
-                min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
-                min + range * 0.8, min + range * 0.9, max, min, max);
+        lastValue = newVDouble(0.0, alarmNone(), newTime(Timestamp.now()),
+                newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
+                min + range * 0.8, min + range * 0.9, max, min, max));
     }
     
     /**

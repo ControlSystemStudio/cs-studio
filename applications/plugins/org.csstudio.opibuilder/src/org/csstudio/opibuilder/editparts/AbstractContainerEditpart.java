@@ -168,13 +168,26 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			getWidgetModel().setMacroMap(macrosMap);
 		}
 		
-	}
+	}	
 	
 	@Override
-	public void activate() {
-		
-		
-		super.activate();
+	protected void registerBasePropertyChangeHandlers() {
+		super.registerBasePropertyChangeHandlers();
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				MacrosInput macrosInput = (MacrosInput)newValue;
+				
+				LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
+				if(macrosInput.isInclude_parent_macros()){	
+					macrosMap.putAll(getWidgetModel().getParentMacroMap());					
+				}		
+				macrosMap.putAll(macrosInput.getMacrosMap());
+				getWidgetModel().setMacroMap(macrosMap);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractContainerModel.PROP_MACROS, handler);		
 		
 		layout();
 		
@@ -224,30 +237,6 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			getWidgetModel().getSelectionProperty().addPropertyChangeListener(
 					selectionPropertyChangeListener);
 		}
-		
-		
-	}
-	
-	
-	
-	@Override
-	protected void registerBasePropertyChangeHandlers() {
-		super.registerBasePropertyChangeHandlers();
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				MacrosInput macrosInput = (MacrosInput)newValue;
-				
-				LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
-				if(macrosInput.isInclude_parent_macros()){	
-					macrosMap.putAll(getWidgetModel().getParentMacroMap());					
-				}		
-				macrosMap.putAll(macrosInput.getMacrosMap());
-				getWidgetModel().setMacroMap(macrosMap);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractContainerModel.PROP_MACROS, handler);		
 		
 	}
 	
@@ -299,6 +288,23 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			layoutter.layout(modelChildren, getFigure().getClientArea());
 		}
 	}
+	
+	@Override
+	public Object getValue() {
+		if(getChildren().size()>0){
+			return ((AbstractBaseEditPart)getChildren().get(0)).getValue();
+		}
+		return super.getValue();
+	}
+	
+	@Override
+	public void setValue(Object value) {
+		for (Object child : getChildren()) {
+			if(child instanceof AbstractBaseEditPart)
+				((AbstractBaseEditPart)child).setValue(value);
+		}
+	}
+	
 	
 
 	/**

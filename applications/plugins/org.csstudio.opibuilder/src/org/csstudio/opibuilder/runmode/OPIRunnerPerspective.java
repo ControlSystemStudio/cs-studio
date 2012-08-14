@@ -24,7 +24,8 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
 		RIGHT("Right"),
 		TOP("Top"),
 		BOTTOM("Bottom"),
-		DETACHED("Detached");
+		DETACHED("Detached"),
+		DEFAULT_VIEW("Default View");
 		
 		private String description;
 		private Position(String description) {

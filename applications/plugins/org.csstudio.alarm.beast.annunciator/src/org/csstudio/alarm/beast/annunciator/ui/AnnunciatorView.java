@@ -14,6 +14,7 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -68,8 +69,18 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 //        {
 // ...
 //        });
+        //
+        // Related: When restarting CSS, the Annunciator View could
+        // be 'hidden' behind other tabs.
+        // Such a hidden view is nothing but a title in the tab.
+        // The View is not really created, hence no annunciator is
+        // running
+        // -> Must always keep the annunciator view visible!
 
         createGUI(parent);
+
+        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        addToolbarActions(toolbar);
 
         // Fake initial message that shows up in table
         messages.add(new AnnunciationMessage(Severity.forInfo(), Messages.ConnectMsg));
@@ -181,6 +192,13 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // NOP
     }
 
+    /** @param toolbar Tool bar to which to add */
+    private void addToolbarActions(final IToolBarManager toolbar)
+    {
+        toolbar.add(new SilenceAction(this));
+        toolbar.add(new ClearAction(this));
+    }
+
     /** Called by ConnectJob on success */
     public void setAnnunciator(final JMSAnnunciator annunciator)
     {
@@ -200,6 +218,19 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 annunciator.start();
             }
         });
+    }
+
+    public void setAnnunciationsEnabled(final boolean enable)
+    {
+        if (annunciator != null)
+            annunciator.setEnabled(enable);
+
+        // Update background color
+        final Table table = message_table.getTable();
+        if (enable)
+            table.setBackground(null);
+        else
+            table.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_MAGENTA));
     }
 
     /** {@inheritDoc} */
@@ -246,5 +277,16 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 message_table.refresh();
             }
         });
+    }
+
+    /** Remove all annunciations */
+    public void clearAnnunciations()
+    {
+        synchronized (messages)
+        {
+            messages.clear();
+        }
+        message_table.setItemCount(0);
+        message_table.refresh();
     }
 }

@@ -37,7 +37,10 @@ public enum ScanState
     Failed("Failed", false, true),
 
     /** Scan ended normally, i.e. not aborted or failed */
-    Finished("Finished - OK", false, true);
+    Finished("Finished - OK", false, true),
+
+    /** Scan that executed in the past; data has been logged */
+    Logged("Logged", false, true);
 
     final private String name;
     final private boolean active;

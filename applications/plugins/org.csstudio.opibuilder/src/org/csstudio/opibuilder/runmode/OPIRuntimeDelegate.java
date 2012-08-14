@@ -1,8 +1,10 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -22,6 +24,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.draw2d.UpdateListener;
+import org.eclipse.draw2d.UpdateManager;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
@@ -53,6 +58,7 @@ import org.eclipse.ui.internal.PartStack;
  * The delegate to run an OPI in an editor or view.
  * 
  * @author Xihui Chen
+ * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate frame rate)
  * 
  */
 @SuppressWarnings("restriction")
@@ -156,6 +162,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			viewer.setContents(displayModel);
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
+			displayModel.setOpiRuntime(opiRuntime);
 		}		
 		
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
@@ -215,6 +222,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		if(displayModelFilled){
 			viewer.setContents(displayModel);
 			displayModel.setViewer(viewer);
+			displayModel.setOpiRuntime(opiRuntime);
 			updateEditorTitle();
 		}
 
@@ -240,7 +248,55 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
 				MouseWheelZoomHandler.SINGLETON);
 
-		
+		/*
+		 * When Figure instance which corresponds to RootEditPart is updated,
+		 * calculate the frame rate and set the measured rate to "frame_rate"
+		 * property of the corresponding DisplayModel instance.
+		 * 
+		 * By default, org.eclipse.draw2d.DeferredUpdateManager is used. This update
+		 * manager queues update requests from figures and others, and it repaints
+		 * requested figures at once when GUI thread is ready to repaint. notifyPainting()
+		 * method of UpdateLister is called when it repaints. The frame rate is
+		 * calculated based on the timing of notifyPainting().
+		 *
+		 * Note that the update manager repaints only requested figures. It does not 
+		 * repaint all figures at once. For example, if there are only two widgets
+		 * in one display, these widgets might be repainted alternately. In that case,
+		 * the frame rate indicates the inverse of the time between the repainting of one
+		 * widget and the repainting of the other widget, which is different from our
+		 * intuition. Thus, you have to be careful about the meaning of "frame rate"
+		 * calculated by the following code.
+		 */
+		if (displayModelFilled && displayModel.isFreshRateEnabled()){
+			UpdateManager updateManager = root.getFigure().getUpdateManager();
+			updateManager.addUpdateListener(new UpdateListener() {
+
+				private long updateCycle = -1; // in milliseconds
+				private Date previousDate = null;
+
+				@Override
+				public void notifyPainting(Rectangle damage,
+						@SuppressWarnings("rawtypes") Map dirtyRegions) {
+					Date currentDate = new Date();
+
+					if (previousDate == null) {
+						previousDate = currentDate;
+						return;
+					}
+
+					synchronized (previousDate) {
+						updateCycle = currentDate.getTime() - previousDate.getTime();
+						displayModel.setFrameRate(1000.0 / updateCycle);
+						previousDate = currentDate;
+					}
+				}
+
+				@Override
+				public void notifyValidating() {
+					// Do nothing
+				}
+			});
+		}
 	}
 
 	
@@ -311,11 +367,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		List<Double> zoomLevelList = new ArrayList<Double>();
 
 		double level = 0.1;
-		while (level < 1.0) {
+		while (level <=0.9) {
 			zoomLevelList.add(level);
 			level = level + 0.1;
 		}
-
+		zoomLevelList.add(1.0);
 		zoomLevelList.add(1.1);
 		zoomLevelList.add(1.2);
 		zoomLevelList.add(1.3);
@@ -383,6 +439,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 										if(viewer != null){
 											viewer.setContents(displayModel);
 											displayModel.setViewer(viewer);
+											displayModel.setOpiRuntime(opiRuntime);
 										}
 										updateEditorTitle();
 										hideCloseButton(site);

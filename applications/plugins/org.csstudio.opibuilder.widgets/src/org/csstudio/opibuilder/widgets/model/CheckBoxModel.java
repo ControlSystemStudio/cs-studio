@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.RGB;
  * The model for checkbox widget 
  * @author Xihui Chen
  */
-public class CheckBoxModel extends AbstractPVWidgetModel {
+public class CheckBoxModel extends AbstractPVWidgetModel implements ITextModel{
 	
 	
 	
@@ -73,6 +73,16 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	 */
 	public String getLabel() {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
+	}
+	
+	@Override
+	public String getText() {
+		return getLabel();
+	}
+	
+	@Override
+	public void setText(String text) {
+		setPropertyValue(PROP_LABEL, text);
 	}
 	
 	public boolean isAutoSize(){

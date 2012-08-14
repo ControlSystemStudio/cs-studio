@@ -98,7 +98,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				Pattern pattern = null;
 
 				if(effect3D && support3D){
-					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x+bigEndBounds.width, bigEndBounds.y, 
 						BLACK_COLOR, 10,
 						BLACK_COLOR, booleanValue ? 210 : 160);
@@ -120,7 +120,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				graphics.fillOval(bigEndBounds);	
 				if(effect3D && support3D){
 					/*
-					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 							bigEndBounds.x+bigEndBounds.width, bigEndBounds.y + bigEndBounds.height,
 							BLACK_COLOR, boolValue ? 5 : 10, BLACK_COLOR, boolValue ? 180 : 160);
 					*/
@@ -131,7 +131,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					Point ul = new Point(bigEndBounds.x + a + (wp-w)/2 -1, bigEndBounds.y + b - (wp+w)/2 -1);
 					Point br = new Point(bigEndBounds.x + a + (wp+w)/2 + 5, bigEndBounds.y + b - (wp-w)/2+5);
 					
-					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
 						BLACK_COLOR, 10, BLACK_COLOR, booleanValue ? 180 : 160);
 					
@@ -152,7 +152,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				graphics.fillOval(smallEndBounds);	
 				Pattern pattern = null;
 				if(effect3D && support3D){
-					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x, bigEndBounds.y+bigEndBounds.height, 
 						BLACK_COLOR, booleanValue ? 0 : 10,
 						BLACK_COLOR, booleanValue ? 150 : 220);
@@ -173,7 +173,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				graphics.fillOval(bigEndBounds);	
 				if(effect3D && support3D){
 					/*
-					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 							bigEndBounds.x+bigEndBounds.width, bigEndBounds.y + bigEndBounds.height,
 							BLACK_COLOR, boolValue ? 5 : 10, BLACK_COLOR, boolValue ? 180 : 160);
 					*/
@@ -184,7 +184,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					Point ul = new Point(bigEndBounds.x + a + (wp-w)/2 -1, bigEndBounds.y + b - (wp+w)/2 -1);
 					Point br = new Point(bigEndBounds.x + a + (wp+w)/2 + 5, bigEndBounds.y + b - (wp-w)/2+5);
 					
-					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
 						BLACK_COLOR, booleanValue ? 10 : 0, BLACK_COLOR, booleanValue ? 180 : 150);
 					
@@ -405,11 +405,11 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			if(effect3D && support3D) {
 				Pattern pattern;
 				if(booleanValue)
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 						bounds.x+bounds.width, bounds.y + bounds.height, WHITE_COLOR, 10, 
 						BLACK_COLOR, 100);
 				else
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 						bounds.x+bounds.width, bounds.y + bounds.height, BLACK_COLOR, 0, 
 						BLACK_COLOR, 150);
 				graphics.setBackgroundPattern(pattern);
@@ -417,11 +417,11 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				
 				if(booleanValue){
 					if(horizontal)
-						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+						pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 								bounds.x, bounds.y+bounds.height, BLACK_COLOR, 5, 
 								BLACK_COLOR, 50);
 					else	
-						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+						pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 								bounds.x+bounds.width, bounds.y, BLACK_COLOR, 5, 
 								BLACK_COLOR, 100);
 				graphics.setBackgroundPattern(pattern);

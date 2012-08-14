@@ -9,13 +9,14 @@ package org.csstudio.opibuilder.widgets.figures;
 
 import java.util.Map;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
-import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AncestorListener;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -34,10 +35,11 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Scrollable;
 
 /**
  * The abstract figure for all SWT widget based figure. Note that there are 
@@ -88,6 +90,9 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	private Rectangle oldClientArea;
 	
 	private T swtWidget;
+	
+	//The scale factor when it was last scaled.
+	private double lastScale =0;
 
 	/**Construct the figure with SWT.NONE as style bit.
 	 * @param editpart the editpart that holds this figure
@@ -103,8 +108,16 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	 */
 	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart, final int style) {
 		super();
-		this.editPart = editpart;
+		this.editPart = editpart;		
 		this.composite = (Composite) editpart.getViewer().getControl();
+		//In RAP, FigureCanvas has an inner canvas wrapped, so everything should be on the inner canvas.
+		if(OPIBuilderPlugin.isRAP()){
+			Control[] children = composite.getChildren();
+			 for(Control control : children){
+				 if(control instanceof Canvas)
+					 composite = (Composite) control;
+			 }
+		}
 		this.parentEditPart = editpart.getParent();
 		this.runmode = editpart.getExecutionMode() == ExecutionMode.RUN_MODE;
 		
@@ -146,7 +159,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
 				if (swtWidget == null || swtWidget.isDisposed()) {
-					throw new RuntimeException("getSWTWidget() is null or disposed!");
+					return;
+//					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
 				//newly created widget on top	
 				if(wrapComposite==null)
@@ -263,17 +277,33 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				getSWTWidget().setVisible(isShowing);
 		}
 	}
+	
+	@Override
+	public Color getForegroundColor() {
+		if (getSWTWidget() != null)
+			return getSWTWidget().getForeground();
+		return super.getForegroundColor();
+	}
+	
+	@Override
+	public Color getBackgroundColor() {
+		if (getSWTWidget() != null)
+			return getSWTWidget().getBackground();
+		return super.getBackgroundColor();
+	}
 
 	@Override
 	public void setForegroundColor(Color fg) {
-		super.setForegroundColor(fg);
+		if(!runmode)
+			super.setForegroundColor(fg);
 		if (getSWTWidget() != null)
 			getSWTWidget().setForeground(fg);
 	}
 
 	@Override
 	public void setBackgroundColor(Color bg) {
-		super.setBackgroundColor(bg);
+		if(!runmode)
+			super.setBackgroundColor(bg);
 		if (getSWTWidget() != null)
 			getSWTWidget().setBackground(bg);
 	}
@@ -338,8 +368,13 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	protected void relocateWidget() {
 		if (wrapComposite != null
 				&& getParent().getParent() instanceof Viewport) {
-			isIntersectViewPort = getParent().getParent().getClientArea()
-					.intersects(getClientArea());
+			Rectangle viewPortArea = getParent().getParent().getClientArea();
+			Rectangle clientArea = getClientArea();
+			getParent().translateToAbsolute(viewPortArea);
+			translateToAbsolute(clientArea);
+			isIntersectViewPort = viewPortArea.intersects(clientArea);
+//			isIntersectViewPort = getParent().getParent().getClientArea()
+//					.intersects(getClientArea());
 		}
 		
 		GUIRefreshThread.getInstance(runmode).addIgnorableTask(
@@ -355,25 +390,39 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 	private void doRelocateWidget() {
 		boolean sizeWasSet = false;
-		final Rectangle clientArea = getClientArea();
-		final Rectangle rect = clientArea.getCopy();
+		Rectangle clientArea = getClientArea();
+		Rectangle rect = clientArea.getCopy();
 		translateToAbsolute(rect);
-		if(getSWTWidget() instanceof Scrollable){
-			org.eclipse.swt.graphics.Rectangle trim = ((Scrollable)getSWTWidget()).computeTrim(0,
-					0, 0, 0);
-			rect.translate(trim.x, trim.y);
-			rect.width += trim.width;
-			rect.height += trim.height;
-		}
+		//scale the font if necessary
+		double scale = (double)rect.height/(double)clientArea.height;
+		if(Math.abs(scale-1) >0.05){
+			if(Math.abs(scale-lastScale) >=0.05){
+				FontData fontData = getFont().getFontData()[0];
+				FontData newFontData = new FontData(fontData.getName(), 
+						(int)(fontData.getHeight()*scale), fontData.getStyle());
+				getSWTWidget().setFont(CustomMediaFactory.getInstance().getFont(newFontData));
+				lastScale=scale;
+			}			
+		}else if(getSWTWidget().getFont() != getFont())
+			getSWTWidget().setFont(getFont());
+		
+		//The trim should not be added here 
+//		if(getSWTWidget() instanceof Scrollable){
+//			org.eclipse.swt.graphics.Rectangle trim = ((Scrollable)getSWTWidget()).computeTrim(0,
+//					0, 0, 0);
+//			rect.translate(trim.x, trim.y);
+//			rect.width += trim.width;
+//			rect.height += trim.height;
+//		}
 		if (wrapComposite != null
 				&& getParent().getParent() instanceof Viewport) {
 			Rectangle viewPortArea = getParent().getParent().getClientArea();
+			getParent().translateToAbsolute(viewPortArea);
+			clientArea=rect;
 			isIntersectViewPort = viewPortArea.intersects(clientArea);
 			if (isIntersectViewPort) {
 				// if the SWT widget is cut by viewPort
-				if (!viewPortArea.contains(clientArea)) {
-					translateToAbsolute(viewPortArea);
-					translateToAbsolute(clientArea);
+				if (!viewPortArea.contains(clientArea)) {					
 					Rectangle intersection = viewPortArea.getIntersection(clientArea);					
 					org.eclipse.swt.graphics.Rectangle oldBounds = wrapComposite.getBounds();
 					if (oldBounds.x != (rect.x + intersection.x	- clientArea.x) ||
@@ -432,30 +481,33 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 		if (updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
 		removeAncestorListener(ancestorListener);
+		Runnable task;
 		if (wrapComposite != null) {
-			UIBundlingThread.getInstance().addRunnable(
-					composite.getDisplay(),new Runnable() {
-						public void run() {
-							if (!wrapComposite.isDisposed()) {
-								getSWTWidget().setMenu(null);
-								wrapComposite.dispose();								
-								wrapComposite = null;		
-							}
-						}
-					});
-		}else{
-			UIBundlingThread.getInstance().addRunnable(composite.getDisplay(),
-					new Runnable() {
-						public void run() {
-							if (!getSWTWidget().isDisposed()) {
-								getSWTWidget().setMenu(null);
-								getSWTWidget().dispose();
-								composite.update();
-							}
-						}
-					});
+			task = new Runnable() {
+				public void run() {
+					if (!wrapComposite.isDisposed()) {
+						getSWTWidget().setMenu(null);
+						wrapComposite.dispose();
+						wrapComposite = null;
+					}
+				}
+			};
+		} else {
+			task = new Runnable() {
+				public void run() {
+					if (!getSWTWidget().isDisposed()) {
+						getSWTWidget().setMenu(null);
+						getSWTWidget().dispose();
+//						composite.update();
+					}
+				}
+			};
 		}
-			
+//		UIBundlingThread.getInstance().addRunnable(composite.getDisplay(), task);
+		if (composite.getDisplay().getThread() == Thread.currentThread()) {
+			task.run();
+		} else
+			composite.getDisplay().asyncExec(task);
 	}
 
 }

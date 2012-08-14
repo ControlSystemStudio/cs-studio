@@ -17,7 +17,11 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.CheckBoxFigure;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.widgets.Display;
 
 /**The editpart of a checkbox.
@@ -43,6 +47,26 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 				ExecutionMode.RUN_MODE));
 
 		return figure;
+	}
+	
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
+	}
+	
+	protected void performDirectEdit(){
+		new TextEditManager(this, 
+				new LabelCellEditorLocator(getFigure()), false).show();
+	}
+
+	@Override
+	public void performRequest(Request request){
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
+				request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
+				request.getType() == RequestConstants.REQ_OPEN))
+			performDirectEdit();
 	}
 
 	@Override
@@ -150,6 +174,14 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public Boolean getValue() {
 		return ((CheckBoxFigure)getFigure()).getBoolValue();
+	}
+	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+		if(key == ITextFigure.class)
+			return getFigure();
+
+		return super.getAdapter(key);
 	}
 
 }

@@ -8,7 +8,11 @@
 package org.csstudio.swt.xygraph.figures;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.Preferences;
@@ -22,6 +26,7 @@ import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -34,6 +39,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
  * @author Laurent PHILIPPE (Add trace listeners)
+ * @author Takashi Nakamoto @ Cosylab (performance improvement)
  */
 public class Trace extends Figure implements IDataProviderListener,
 		IAxisListener {
@@ -44,7 +50,7 @@ public class Trace extends Figure implements IDataProviderListener,
 	 * Use advanced graphics? Might not make a real performance difference, but
 	 * since this it called a lot, keep it in variable
 	 */
-	final private static boolean use_advanced_graphics = Preferences
+	final private boolean use_advanced_graphics = Preferences
 			.useAdvancedGraphics();
 
 	/**
@@ -480,6 +486,32 @@ public class Trace extends Figure implements IDataProviderListener,
 		}
 		graphics.popState();
 	}
+	
+	/**
+ 	 * Draw polyline with the line style and line width of the trace.
+ 	 * 
+	 * @param graphics
+	 * @param pl
+	 */
+	private void drawPolyline(Graphics graphics, PointList pl) {
+		graphics.pushState();
+		graphics.setLineWidth(lineWidth);
+		switch(traceType) {
+		case SOLID_LINE:
+		case STEP_HORIZONTALLY:
+		case STEP_VERTICALLY:
+			graphics.setLineStyle(SWTConstants.LINE_SOLID);
+			graphics.drawPolyline(pl);
+			break;
+		case DASH_LINE:
+			graphics.setLineStyle(SWTConstants.LINE_DASH);
+			graphics.drawPolyline(pl);
+			break;
+		default:
+			break;
+		}
+		graphics.popState();
+	}
 
 	@Override
 	protected void paintFigure(Graphics graphics) {
@@ -514,6 +546,22 @@ public class Trace extends Figure implements IDataProviderListener,
 					startIndex = 0;
 					endIndex = traceDataProvider.getSize() - 1;
 				}
+				
+				// Set of points which were already drawn
+				HashSet<Point> hsPoint = new HashSet<Point>();
+				
+				// List of points for drawing polyline. 
+				PointList plPolyline = new PointList();
+				
+				// List of bottom/top point in a certain horizontal
+				// pixel location for the BAR line type.
+				HashMap<Integer,Integer> bottomPoints = new HashMap<Integer,Integer>();
+				HashMap<Integer,Integer> topPoints = new HashMap<Integer,Integer>();
+				
+				Point maxInRegion = null;
+				Point minInRegion = null;
+				Point lastInRegion = null;
+				
 				for (int i = startIndex; i <= endIndex; i++) {
 					ISample dp = traceDataProvider.getSample(i);
 					final boolean dpInXRange = xAxis.getRange().inRange(
@@ -549,7 +597,13 @@ public class Trace extends Figure implements IDataProviderListener,
 								dp.getXValue(), false), yAxis.getValuePosition(
 								dp.getYValue(), false));
 						hotSampleist.add(dp);
-						drawPoint(graphics, dpPos);
+						
+						// Do not draw points in the same place to improve performance
+						if (!hsPoint.contains(dpPos)) {
+							drawPoint(graphics, dpPos);
+							hsPoint.add(dpPos);
+						}
+						
 						if (errorBarEnabled && !drawYErrorInArea)
 							drawErrorBar(graphics, dpPos, dp);
 					}
@@ -591,15 +645,8 @@ public class Trace extends Figure implements IDataProviderListener,
 					// continue that last value until the NaN location
 					if (valueIsNaN
 							&& !Double.isNaN(predp.getYValue())
-							&& (traceType == TraceType.STEP_HORIZONTALLY || traceType == TraceType.STEP_VERTICALLY)) { // Patch
-																														// 'y'
-																														// of
-																														// dp,
-																														// re-compute
-																														// dpInRange
-																														// for
-																														// new
-																														// 'y'
+							&& (traceType == TraceType.STEP_HORIZONTALLY || traceType == TraceType.STEP_VERTICALLY)) {
+						// Patch 'y' of dp, re-compute dpInRange for new 'y'
 						dp = new Sample(dp.getXValue(), predp.getYValue());
 						dpInRange = yAxis.getRange().inRange(dp.getYValue());
 					}
@@ -653,11 +700,209 @@ public class Trace extends Figure implements IDataProviderListener,
 						if (errorBarEnabled && drawYErrorInArea
 								&& traceType != TraceType.BAR)
 							drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
-						drawLine(graphics, predpPos, dpPos);
+						
+						switch (traceType) {
+						case SOLID_LINE:
+						case DASH_LINE:
+						case STEP_HORIZONTALLY:
+						case STEP_VERTICALLY:
+							if (plPolyline.size() == 0)
+								plPolyline.addPoint(predpPos);
+
+							if (traceDataProvider.isChronological()) {
+								// Line drawing optimization is available only when the trace data
+								// is ascending sorted on X axis. 
+								if (!predpPos.equals(plPolyline.getLastPoint())) {
+									// The line for this trace is not continuous.
+									// Draw a polylin at this point, and start to reconstruct a new
+									// polyline for the rest of the trace.
+									
+									if (lastInRegion != null) {
+										// There were several points which have the same X value.
+										// Draw lines that connect those points at once.
+										if (minInRegion != null)
+											plPolyline.addPoint(minInRegion);
+										if (maxInRegion != null)
+											plPolyline.addPoint(maxInRegion);
+
+										plPolyline.addPoint(lastInRegion);
+										
+										minInRegion = null;
+										maxInRegion = null;
+										lastInRegion = null;
+									}
+									
+									drawPolyline(graphics, plPolyline);
+									plPolyline.removeAllPoints();
+									plPolyline.addPoint(predpPos);
+									
+									switch (traceType) {
+									case STEP_HORIZONTALLY:
+										plPolyline.addPoint(dpPos.x, predpPos.y);
+										break;
+									case STEP_VERTICALLY:
+										plPolyline.addPoint(predpPos.x, dpPos.y);
+										break;
+									}
+									
+									plPolyline.addPoint(dpPos);
+								} else {
+									if (predpPos.x != dpPos.x) {
+										if (lastInRegion == null) {
+											switch (traceType) {
+											case STEP_HORIZONTALLY:
+												plPolyline.addPoint(dpPos.x, predpPos.y);
+												break;
+											case STEP_VERTICALLY:
+												plPolyline.addPoint(predpPos.x, dpPos.y);
+												break;
+											}
+											
+											plPolyline.addPoint(dpPos);
+										} else {
+											// There were several points which have the same X value.
+											// Draw lines that connect those points at once.
+											if (minInRegion != null)
+												plPolyline.addPoint(minInRegion);
+											if (maxInRegion != null)
+												plPolyline.addPoint(maxInRegion);
+
+											plPolyline.addPoint(lastInRegion);
+											
+											switch (traceType) {
+											case STEP_HORIZONTALLY:
+												plPolyline.addPoint(dpPos.x, lastInRegion.y);
+												break;
+											case STEP_VERTICALLY:
+												plPolyline.addPoint(lastInRegion.x, dpPos.y);
+												break;
+											}
+
+											// The first point of the next region is drawn anyway.
+											plPolyline.addPoint(dpPos);
+										}
+										
+										minInRegion = null;
+										maxInRegion = null;
+										lastInRegion = null;
+									} else {
+										// The current point has the same X value as the previous point.
+										if (lastInRegion == null) {
+											// At this moment, there are two points which have the same
+											// X value.
+											lastInRegion = dpPos;
+										} else if (minInRegion == null) {
+											// At this moment, there are three points which have the
+											// same X value.
+											minInRegion = lastInRegion;
+											lastInRegion = dpPos;
+										} else if (maxInRegion == null) {
+											// At this moment, there are four points which have the same
+											// X value.
+											if (minInRegion.y > lastInRegion.y) {
+												maxInRegion = minInRegion;
+												minInRegion = lastInRegion;
+											} else {
+												maxInRegion = lastInRegion;
+											}
+											lastInRegion = dpPos;
+										} else {
+											// There are more than four points which have the same X
+											// value.
+											if (lastInRegion.y > maxInRegion.y) {
+												maxInRegion = lastInRegion; 
+											} else if (lastInRegion.y < minInRegion.y) {
+												minInRegion = lastInRegion;
+											}
+											lastInRegion = dpPos;
+										}
+									}
+								}
+							} else {
+								if (!predpPos.equals(plPolyline.getLastPoint())) {
+									// The line for this trace may not be continuous.
+									// Draw a polyline at this point, and start to reconstruct a new
+									// polyline for the rest of the trace.
+									drawPolyline(graphics, plPolyline);
+									plPolyline.removeAllPoints();
+									plPolyline.addPoint(predpPos);
+								}
+								
+								switch (traceType) {
+								case STEP_HORIZONTALLY:
+									plPolyline.addPoint(dpPos.x, predpPos.y);
+									break;
+								case STEP_VERTICALLY:
+									plPolyline.addPoint(predpPos.x, dpPos.y);
+									break;
+								}
+								
+								plPolyline.addPoint(dpPos);
+							}
+							
+							break;
+						case BAR:
+							if (!use_advanced_graphics && predpPos.x() == dpPos.x()) {
+								// Stores bar line infomration in memory, and draw lines later.
+								Integer posX = new Integer(predpPos.x());
+								Integer highY;
+								Integer lowY;
+								
+								if (dpPos.y() > predpPos.y()) {
+									highY = new Integer(dpPos.y());
+									lowY = new Integer(predpPos.y());
+								} else {
+									highY = new Integer(predpPos.y());
+									lowY = new Integer(dpPos.y());
+								}
+								
+								if (bottomPoints.containsKey(posX)) {
+									if (lowY.compareTo(bottomPoints.get(posX)) < 0) { 
+										bottomPoints.put(posX, lowY);
+									}
+									if (highY.compareTo(topPoints.get(posX)) > 0) {
+										topPoints.put(posX, highY);
+									}
+								} else {
+									bottomPoints.put(posX, lowY);
+									topPoints.put(posX, highY);
+								}
+							} else {
+								// If the X value is different for some reason, or the advanced graphics is
+								// turned on, fall back to the original drawing algorithm.
+								drawLine(graphics, predpPos, dpPos);			
+							}
+							break;
+						default:
+							drawLine(graphics, predpPos, dpPos);
+							break;
+						}
 					}
 
 					predp = origin_dp;
 					predpInRange = origin_dpInRange;
+				}
+				
+				switch (traceType) {
+				case SOLID_LINE:
+				case DASH_LINE:
+				case STEP_HORIZONTALLY:
+				case STEP_VERTICALLY:
+					// Draw polyline which was not drawn yet.
+					drawPolyline(graphics, plPolyline);
+					break;
+				case BAR:
+					// Draw bar lines
+					Set<Integer> xSet = bottomPoints.keySet();
+					for (Iterator<Integer> i = xSet.iterator(); i.hasNext(); ) {
+						Integer posX = (Integer) i.next();
+						Point p1 = new Point(posX.intValue(), bottomPoints.get(posX).intValue());
+						Point p2 = new Point(posX.intValue(), topPoints.get(posX).intValue());
+						drawLine(graphics, p1, p2);
+					}
+					break;
+				default:
+					break;
 				}
 			}
 		}
@@ -894,7 +1139,6 @@ public class Trace extends Figure implements IDataProviderListener,
 	}
 
 	private void fireYAxisChanged(Axis oldName, Axis newName) {
-		System.out.println("Trace.fireYAxisChanged()");
 		for (ITraceListener listener : listeners)
 			listener.traceYAxisChanged(this, oldName, newName);
 	}

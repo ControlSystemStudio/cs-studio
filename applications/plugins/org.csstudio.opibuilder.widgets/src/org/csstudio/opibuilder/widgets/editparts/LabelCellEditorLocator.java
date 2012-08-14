@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
@@ -22,10 +22,10 @@ public class LabelCellEditorLocator
 		implements CellEditorLocator
 	{
 
-		private Figure labelFigure;
+		private IFigure labelFigure;
 	
-		public LabelCellEditorLocator(Figure stickyNote) {
-			setLabel(stickyNote);
+		public LabelCellEditorLocator(IFigure figure) {
+			setLabel(figure);
 		}
 	
 		public void relocate(CellEditor celleditor) {
@@ -44,7 +44,7 @@ public class LabelCellEditorLocator
 		/**
 		 * Returns the stickyNote figure.
 		 */
-		protected Figure getLabel() {
+		protected IFigure getLabel() {
 			return labelFigure;
 		}
 	
@@ -52,7 +52,7 @@ public class LabelCellEditorLocator
 		 * Sets the Sticky note figure.
 		 * @param stickyNote The stickyNote to set
 		 */
-		protected void setLabel(Figure stickyNote) {
+		protected void setLabel(IFigure stickyNote) {
 			this.labelFigure = stickyNote;
 		}
 

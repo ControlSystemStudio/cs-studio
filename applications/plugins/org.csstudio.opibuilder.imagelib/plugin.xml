@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="org.csstudio.opibuilder.examples.BOYcategory"
+            class="org.csstudio.opibuilder.imagelib.ImportWizard"
+            icon="icons/symbol-image.png"
+            id="org.csstudio.opibuilder.imagelib.importwizard"
+            name="BOY Image Library">
+      </wizard>
+   </extension>
+   
+</plugin>

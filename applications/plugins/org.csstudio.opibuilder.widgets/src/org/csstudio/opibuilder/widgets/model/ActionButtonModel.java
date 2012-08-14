@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Path;
  * @author Xihui Chen
  * 
  */
-public final class ActionButtonModel extends AbstractPVWidgetModel {
+public class ActionButtonModel extends AbstractPVWidgetModel implements ITextModel{
 	/**
 	 * Text on the button.
 	 */
@@ -76,7 +76,8 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	 */
     private static final boolean DEFAULT_TOGGLE_BUTTON = false;
     
-	private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "bmp", "png"};
+	private static final String[] FILE_EXTENSIONS =
+			new String[] {"jpg", "jpeg", "gif", "bmp", "png"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 
 	/**
@@ -157,6 +158,11 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	 */
 	public String getText() {
 		return (String) getProperty(PROP_TEXT).getPropertyValue();
+	}
+	
+	@Override
+	public void setText(String text) {
+		setPropertyValue(PROP_TEXT, text);
 	}
 
 

@@ -85,4 +85,13 @@ public class DataLogFactory
     {
 		return getDataLogFactory().getDataLog(scan);
     }
+
+    /** Delete logged data for a scan
+     *  @param scan Scan
+     *  @throws Exception on error
+     */
+    public static void deleteDataLog(final Scan scan) throws Exception
+    {
+        getDataLogFactory().deleteDataLog(scan);
+    }
 }

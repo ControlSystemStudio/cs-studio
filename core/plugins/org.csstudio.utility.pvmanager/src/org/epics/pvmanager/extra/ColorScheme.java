@@ -31,7 +31,7 @@ public abstract class ColorScheme {
      *
      * @param minValueColor color for the minimum value in the display range
      * @param maxValueColor color for the maximum value in the display range
-     * @return
+     * @return a new color scheme
      */
     public static ColorScheme singleRangeGradient(final Color minValueColor, final Color maxValueColor) {
         return singleRangeGradient(minValueColor, maxValueColor, Color.BLACK);

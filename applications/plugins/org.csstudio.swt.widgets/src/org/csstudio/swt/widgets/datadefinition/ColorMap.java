@@ -84,6 +84,8 @@ public class ColorMap {
 	private RGB[] colorsLookupTable;
 	private int[] pixelLookupTable;
 	private PaletteData palette = new PaletteData(0xff, 0xff00, 0xff0000);
+	private double colorMapMin;
+	private double colorMapMax;
 	
 	public ColorMap() {
 		colorMap = new LinkedHashMap<Double, RGB>();
@@ -121,7 +123,7 @@ public class ColorMap {
 	 */
 	public void setAutoScale(boolean autoScale) {
 		this.autoScale = autoScale;
-		
+		colorsLookupTable = null;		
 	}
 
 
@@ -195,8 +197,11 @@ public class ColorMap {
 			imageData = new ImageData(dataWidth,dataHeight, 24, palette);	
 		if(colorsLookupTable == null)
 			getColorsLookupTable();
-
-		if(autoScale){
+		
+		if(!autoScale){
+			min = colorMapMin;
+			max = colorMapMax;
+		}
 			if(shrink){				
 				int height = imageData.height;
 				int width = imageData.width;
@@ -210,8 +215,7 @@ public class ColorMap {
 				        for (int j=0;j<width;j++) {
 				            x2 = ((j*x_ratio)>>16) ;
 				            y2 = ((i*y_ratio)>>16) ;
-				            int index = (int) ((dataArray.get(y2 * dataWidth + x2) - min)
-									/ (max - min) * 255);
+				            int index = (int) ((dataArray.get(y2 * dataWidth + x2) - min) / (max - min) * 255);
 							if (index < 0)
 								index = 0;
 							else if (index > 255)
@@ -226,8 +230,7 @@ public class ColorMap {
 				for (int y = 0; y < dataHeight; y++) {
 					for (int x = 0; x < dataWidth; x++) {
 						// the index of the value in the color table array
-						int index = (int) ((dataArray.get(y * dataWidth + x) - min)
-								/ (max - min) * 255);
+						int index = (int) ((dataArray.get(y * dataWidth + x) - min) / (max - min) * 255);
 						if (index < 0)
 							index = 0;
 						else if (index > 255)
@@ -240,31 +243,6 @@ public class ColorMap {
 				
 			
 			return imageData;
-		}
-		//convert map to array to simplify the calculation
-		ColorTuple[] colorTupleArray = new ColorTuple[colorMap.size()];
-		
-		int i=0;
-		for(Double k : colorMap.keySet()){			
-			colorTupleArray[i++]=new ColorTuple(k, colorMap.get(k));
-		}
-		
-		//sort the array
-		Arrays.sort(colorTupleArray);
-
-		double[] keyArray = new double[colorTupleArray.length];
-		for(int j = 0; j<colorTupleArray.length; j++)
-			keyArray[j] = colorTupleArray[j].value;
-		
-		for(int y = 0; y < dataHeight; y++){
-			for(int x = 0; x<dataWidth; x++){
-				double value = dataArray.get(y*dataWidth + x);	
-				int pixel = palette.getPixel(getValueRGB(colorTupleArray, keyArray, value));
-				imageData.setPixel(x, y, pixel);
-			}
-		}
-		
-		return imageData;
 	}
 		
 	/**Calculate the image data from source data based on the color map.
@@ -301,18 +279,8 @@ public class ColorMap {
 				return colorTupleArray[colorTupleArray.length -1].rgb;
 			return getInterpolateRGB(colorTupleArray[insertPoint-1], colorTupleArray[insertPoint], value);
 		}	
-	}
-	
-	/**Scale the colorTuple array to 0~1.
-	 * @param colorTupleArray an sorted colorTupleArray
-	 */
-	private void autoScale(ColorTuple[] colorTupleArray){
-		double min = colorTupleArray[0].value;
-		double max = colorTupleArray[colorTupleArray.length-1].value;
-		for(ColorTuple t : colorTupleArray){
-			t.value = (t.value - min)/(max-min);
-		}
-	}
+	}	
+
 	
 	private RGB getInterpolateRGB(ColorTuple start, ColorTuple end, double value){
 		if(interpolate){
@@ -340,9 +308,12 @@ public class ColorMap {
 			
 			//sort the array
 			Arrays.sort(colorTupleArray);
-			//scale the color map to [0,1]
-			
-			autoScale(colorTupleArray);
+			colorMapMin = colorTupleArray[0].value;
+			colorMapMax = colorTupleArray[colorTupleArray.length-1].value;			
+			if(autoScale)
+				for(ColorTuple t : colorTupleArray){
+					t.value = (t.value - colorMapMin)/(colorMapMax-colorMapMin);
+				}
 			
 			double[] keyArray = new double[colorTupleArray.length];
 			for(int j = 0; j<colorTupleArray.length; j++)
@@ -351,11 +322,9 @@ public class ColorMap {
 			colorsLookupTable = new RGB[256];
 			pixelLookupTable = new int[256];
 			for(int k=0; k<256; k++){				
-				colorsLookupTable[k] = getValueRGB(colorTupleArray, keyArray, k/255.0);
+				colorsLookupTable[k] = getValueRGB(colorTupleArray, keyArray, autoScale? k/255.0 : colorMapMin + k*(colorMapMax-colorMapMin)/255.0);
 				pixelLookupTable[k] = palette.getPixel(colorsLookupTable[k]);
-			}
-			
-			
+			}			
 		}
 			
 		return colorsLookupTable;

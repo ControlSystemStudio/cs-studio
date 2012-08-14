@@ -20,6 +20,7 @@ public interface XMLTags
     final public static String DISPLAY = "display";
     final public static String ENABLED = "enabled";
     final public static String GUIDANCE = "guidance";
+    final public static String AUTOMATED_ACTION = "automated_action";
     final public static String TITLE = "title";
     final public static String DETAILS = "details";
     final public static String DESCRIPTION = "description";

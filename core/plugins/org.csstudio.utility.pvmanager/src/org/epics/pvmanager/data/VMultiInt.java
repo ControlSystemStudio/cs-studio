@@ -8,6 +8,6 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VMultiInt extends MultiScalar<VInt>, Alarm, Time, Display {
+public interface VMultiInt extends MultiScalar<VInt>, Alarm, Time, Display, VType {
 
 }

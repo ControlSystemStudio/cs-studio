@@ -26,12 +26,13 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -55,28 +56,29 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	 * The transparent state of the background.
 	 */
 	private boolean transparent = false;
-
-
-	/**
-	 * The antiAlias flag
-	 */
-	private boolean antiAlias = true;
 	
 	private Color lineColor = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_PURPLE);
-
+	
+	private Color backGradientStartColor =ColorConstants.white; 
+	private Color foreGradientStartColor =ColorConstants.white; 
+	private boolean gradient=false;
+	private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected synchronized void fillShape(final Graphics graphics) {
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		Rectangle figureBounds = getClientArea();
 		if (!transparent) {
 			if(isEnabled())
 				graphics.setBackgroundColor(getBackgroundColor());
-			graphics.fillRectangle(figureBounds);	
+			if(gradient && useAdvancedGraphics){
+				graphics.setForegroundColor(backGradientStartColor);
+				graphics.fillGradient(figureBounds, horizontalFill);
+			}else
+				graphics.fillRectangle(figureBounds);	
 		}
 		if(getFill() > 0){
 			if(isEnabled())
@@ -89,7 +91,11 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
 				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
 			}
-			graphics.fillRectangle(fillRectangle);
+			if(gradient && useAdvancedGraphics){
+				graphics.setForegroundColor(foreGradientStartColor);
+				graphics.fillGradient(fillRectangle, horizontalFill);
+			}else
+				graphics.fillRectangle(fillRectangle);
 		}
 	}
 	
@@ -123,12 +129,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 		return transparent;
 	}
 
-	/**
-	 * @return the antiAlias
-	 */
-	public boolean isAntiAlias() {
-		return antiAlias;
-	}
+
 	
 	/**
 	 * Gets the orientation (horizontal==true | vertical==false).
@@ -139,6 +140,46 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	public boolean isHorizontalFill() {
 		return horizontalFill;
 	}
+
+	/**
+	 * @return the gradientStartColor
+	 */
+	public Color getBackGradientStartColor() {
+		return backGradientStartColor;
+	}
+	
+	public Color getForeGradientStartColor() {
+		return foreGradientStartColor;
+	}
+
+	/**
+	 * @return the gradient
+	 */
+	public boolean isGradient() {
+		return gradient;
+	}
+
+	/**
+	 * @param gradient the gradient to set
+	 */
+	public void setGradient(boolean gradient) {
+		this.gradient = gradient;
+		repaint();
+	}
+	
+	/**Set gradient start color.
+	 * @param gradientStartColor
+	 */
+	public void setBackGradientStartColor(Color gradientStartColor) {
+		this.backGradientStartColor = gradientStartColor;
+		repaint();
+	}
+	
+	public void setForeGradientStartColor(Color foreGradientStartColor) {
+		this.foreGradientStartColor = foreGradientStartColor;
+		repaint();
+	}
+	
 
 	/**
 	 * @see Shape#outlineShape(Graphics)
@@ -156,14 +197,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	    if(isEnabled())
 	    	graphics.setForegroundColor(lineColor);
 	    graphics.drawRectangle(r);
-	}
-	
-	public void setAntiAlias(boolean antiAlias) {
-		if(this.antiAlias == antiAlias)
-			return;
-		this.antiAlias = antiAlias;
-		repaint();
-	}
+	}	
 
 	/**
 	 * Sets the fill grade.

@@ -1,0 +1,775 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<TITLE>
+ScanServer (Scan System API)
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="ScanServer (Scan System API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/csstudio/scan/server/ScanServer.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ScanServer.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.csstudio.scan.server</FONT>
+<BR>
+Interface ScanServer</H2>
+<DL>
+<DT><B>All Superinterfaces:</B> <DD>java.rmi.Remote</DD>
+</DL>
+<HR>
+<DL>
+<DT><PRE>public interface <B>ScanServer</B><DT>extends java.rmi.Remote</DL>
+</PRE>
+
+<P>
+Interface to the scan server
+
+  <p>Used by (remote) clients to communicate with the scan server.
+<P>
+
+<P>
+<HR>
+
+<P>
+<!-- =========== FIELD SUMMARY =========== -->
+
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Field Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#DEFAULT_HOST">DEFAULT_HOST</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default host for scan server</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#DEFAULT_PORT">DEFAULT_PORT</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default port used by scan server</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#HOST_PROPERTY">HOST_PROPERTY</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System property for overriding the scan server host</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#PORT_PROPERTY">PORT_PROPERTY</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System property for overriding the scan server port</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#RMI_SCAN_SERVER_NAME">RMI_SCAN_SERVER_NAME</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name under which this interface is registered with RMI</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;long</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#SERIAL_VERSION">SERIAL_VERSION</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serialization version used for all RMI interfaces</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#abort(long)">abort</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ask server to abort a scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</A>[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getDeviceInfos(long)">getDeviceInfos</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query server for devices used by a scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getInfo()">getInfo</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;long</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getLastScanDataSerial(long)">getLastScanDataSerial</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get serial of last logged sample.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getScanCommands(long)">getScanCommands</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query server for the commands in a scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data">ScanData</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getScanData(long)">getScanData</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query server for scan data</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getScanInfo(long)">getScanInfo</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query server for scan info</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getScanInfos()">getScanInfos</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query server for scans</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#pause(long)">pause</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ask server to pause a scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#remove(long)">remove</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ask server to remove a (finished) scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#removeCompletedScans()">removeCompletedScans</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remove completed scans (NOP if there aren't any)</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#resume(long)">resume</A></B>(long&nbsp;id)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ask server to resume a paused scan</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server">SimulationResult</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#simulateScan(java.lang.String)">simulateScan</A></B>(java.lang.String&nbsp;commands_as_xml)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Submit a scan for simulation</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;long</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#submitScan(java.lang.String, java.lang.String)">submitScan</A></B>(java.lang.String&nbsp;scan_name,
+           java.lang.String&nbsp;commands_as_xml)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Submit a sequence of commands as a 'scan' to be executed</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#updateScanProperty(long, long, java.lang.String, java.lang.Object)">updateScanProperty</A></B>(long&nbsp;id,
+                   long&nbsp;address,
+                   java.lang.String&nbsp;property_id,
+                   java.lang.Object&nbsp;value)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ask server to update a command parameter to a new value</TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ============ FIELD DETAIL =========== -->
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="SERIAL_VERSION"><!-- --></A><H3>
+SERIAL_VERSION</H3>
+<PRE>
+static final long <B>SERIAL_VERSION</B></PRE>
+<DL>
+<DD>Serialization version used for all RMI interfaces
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.SERIAL_VERSION">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="DEFAULT_HOST"><!-- --></A><H3>
+DEFAULT_HOST</H3>
+<PRE>
+static final java.lang.String <B>DEFAULT_HOST</B></PRE>
+<DL>
+<DD>Default host for scan server
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.DEFAULT_HOST">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="DEFAULT_PORT"><!-- --></A><H3>
+DEFAULT_PORT</H3>
+<PRE>
+static final int <B>DEFAULT_PORT</B></PRE>
+<DL>
+<DD>Default port used by scan server
+
+  <p>Default RMI port is 1099,
+  but use a different port for the scan server
+  to avoid conflicts with other RMI tools.
+
+  <p>Note that the scan server then uses the 'next'
+  port for itself.
+  So setting this to 4810 means: 4810 will be the RMI registry
+  and 4811 will be the scan server published on that registry.
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.DEFAULT_PORT">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="HOST_PROPERTY"><!-- --></A><H3>
+HOST_PROPERTY</H3>
+<PRE>
+static final java.lang.String <B>HOST_PROPERTY</B></PRE>
+<DL>
+<DD>System property for overriding the scan server host
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.HOST_PROPERTY">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="PORT_PROPERTY"><!-- --></A><H3>
+PORT_PROPERTY</H3>
+<PRE>
+static final java.lang.String <B>PORT_PROPERTY</B></PRE>
+<DL>
+<DD>System property for overriding the scan server port
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.PORT_PROPERTY">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="RMI_SCAN_SERVER_NAME"><!-- --></A><H3>
+RMI_SCAN_SERVER_NAME</H3>
+<PRE>
+static final java.lang.String <B>RMI_SCAN_SERVER_NAME</B></PRE>
+<DL>
+<DD>Name under which this interface is registered with RMI
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.csstudio.scan.server.ScanServer.RMI_SCAN_SERVER_NAME">Constant Field Values</A></DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getInfo()"><!-- --></A><H3>
+getInfo</H3>
+<PRE>
+<A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</A> <B>getInfo</B>()
+                       throws java.rmi.RemoteException</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Info about the scan server
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getDeviceInfos(long)"><!-- --></A><H3>
+getDeviceInfos</H3>
+<PRE>
+<A HREF="../../../../org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</A>[] <B>getDeviceInfos</B>(long&nbsp;id)
+                            throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Query server for devices used by a scan
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+            or -1 for default devices
+<DT><B>Returns:</B><DD>Info about devices
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="simulateScan(java.lang.String)"><!-- --></A><H3>
+simulateScan</H3>
+<PRE>
+<A HREF="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server">SimulationResult</A> <B>simulateScan</B>(java.lang.String&nbsp;commands_as_xml)
+                              throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Submit a scan for simulation
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>commands_as_xml</CODE> - Commands to simulate in XML format
+<DT><B>Returns:</B><DD><A HREF="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server"><CODE>SimulationResult</CODE></A>
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="submitScan(java.lang.String, java.lang.String)"><!-- --></A><H3>
+submitScan</H3>
+<PRE>
+long <B>submitScan</B>(java.lang.String&nbsp;scan_name,
+                java.lang.String&nbsp;commands_as_xml)
+                throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Submit a sequence of commands as a 'scan' to be executed
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>scan_name</CODE> - Name of the scan<DD><CODE>commands_as_xml</CODE> - Commands to execute within the scan in XML format
+<DT><B>Returns:</B><DD>ID that uniquely identifies the scan (within JVM of the scan engine)
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getScanInfos()"><!-- --></A><H3>
+getScanInfos</H3>
+<PRE>
+java.util.List&lt;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A>&gt; <B>getScanInfos</B>()
+                                      throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Query server for scans
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Info for each scan on the server, most recently submitted scan first
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getScanInfo(long)"><!-- --></A><H3>
+getScanInfo</H3>
+<PRE>
+<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A> <B>getScanInfo</B>(long&nbsp;id)
+                     throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Query server for scan info
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+<DT><B>Returns:</B><DD>Info for that scan on the server or <code>null</code>
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getScanCommands(long)"><!-- --></A><H3>
+getScanCommands</H3>
+<PRE>
+java.lang.String <B>getScanCommands</B>(long&nbsp;id)
+                                 throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Query server for the commands in a scan
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+<DT><B>Returns:</B><DD>Scan commands in XML format for that scan on the server or <code>null</code>
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getLastScanDataSerial(long)"><!-- --></A><H3>
+getLastScanDataSerial</H3>
+<PRE>
+long <B>getLastScanDataSerial</B>(long&nbsp;id)
+                           throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Get serial of last logged sample.
+
+  <p>Can be used to determine if there are new samples
+  that should be fetched via <code>getScanData()</code>
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+<DT><B>Returns:</B><DD>Serial of last sample in scan data
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE><DT><B>See Also:</B><DD><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getScanData(long)"><CODE>getScanData(long)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getScanData(long)"><!-- --></A><H3>
+getScanData</H3>
+<PRE>
+<A HREF="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data">ScanData</A> <B>getScanData</B>(long&nbsp;id)
+                     throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Query server for scan data
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+<DT><B>Returns:</B><DD>Data for that scan on the server or <code>null</code>
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access<DT><B>See Also:</B><DD><A HREF="../../../../org/csstudio/scan/server/ScanServer.html#getLastScanDataSerial(long)"><CODE>getLastScanDataSerial(long)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="updateScanProperty(long, long, java.lang.String, java.lang.Object)"><!-- --></A><H3>
+updateScanProperty</H3>
+<PRE>
+void <B>updateScanProperty</B>(long&nbsp;id,
+                        long&nbsp;address,
+                        java.lang.String&nbsp;property_id,
+                        java.lang.Object&nbsp;value)
+                        throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Ask server to update a command parameter to a new value
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)<DD><CODE>address</CODE> - Address of the command<DD><CODE>property_id</CODE> - Property to update<DD><CODE>value</CODE> - New value for the property
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="pause(long)"><!-- --></A><H3>
+pause</H3>
+<PRE>
+void <B>pause</B>(long&nbsp;id)
+           throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Ask server to pause a scan
+
+  <p>Note that pausing has no effect if the scan is not running.
+  It is specifically not possible to pause an idle scan, i.e.
+  one that hasn't started.
+  We consider that a feature:
+  If you don't really want your scan to start, simply don't submit it
+  in the first place.
+  You cannot submit a scan and pause it right away, i.e. block
+  all subsequent scans.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+            -1 to pause all running scans
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="resume(long)"><!-- --></A><H3>
+resume</H3>
+<PRE>
+void <B>resume</B>(long&nbsp;id)
+            throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Ask server to resume a paused scan
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+            -1 to resume all paused scans
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="abort(long)"><!-- --></A><H3>
+abort</H3>
+<PRE>
+void <B>abort</B>(long&nbsp;id)
+           throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Ask server to abort a scan
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+            -1 to abort all scans
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="remove(long)"><!-- --></A><H3>
+remove</H3>
+<PRE>
+void <B>remove</B>(long&nbsp;id)
+            throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Ask server to remove a (finished) scan
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - ID that uniquely identifies a scan (within JVM of the scan engine)
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeCompletedScans()"><!-- --></A><H3>
+removeCompletedScans</H3>
+<PRE>
+void <B>removeCompletedScans</B>()
+                          throws java.rmi.RemoteException</PRE>
+<DL>
+<DD>Remove completed scans (NOP if there aren't any)
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/csstudio/scan/server/ScanServer.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ScanServer.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>

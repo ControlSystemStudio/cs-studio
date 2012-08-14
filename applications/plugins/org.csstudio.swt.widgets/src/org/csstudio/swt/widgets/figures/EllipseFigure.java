@@ -26,12 +26,15 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Pattern;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * An ellipse figure.
@@ -54,16 +57,16 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	/**
 	 * The transparent state of the background.
 	 */
-	private boolean transparent = false;
-
+	private boolean transparent = false;	
 	
-	/**
-	 * The antiAlias flag
-	 */
-	private boolean antiAlias = true;
 	
 	private Color lineColor = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_PURPLE);
+	
+	private Color backGradientStartColor =ColorConstants.white; 
+	private Color foreGradientStartColor =ColorConstants.white; 
+	private boolean gradient=false;
+	private Boolean support3D = null;
 
 
 	/**
@@ -71,14 +74,20 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	 */
 	@Override
 	protected void fillShape(final Graphics graphics) {
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		
+		if(support3D==null)
+			support3D = GraphicsUtil.testPatternSupported(graphics);
 		Rectangle figureBounds = getClientArea();
 		if (!transparent) {
 				graphics.pushState();
 				if(isEnabled())
 					graphics.setBackgroundColor(getBackgroundColor());
+				Pattern pattern = null;
+				if(gradient && support3D && isEnabled()){
+					pattern = setGradientPattern(graphics, figureBounds, backGradientStartColor, getBackgroundColor());
+				}
 				graphics.fillOval(figureBounds);
+				if(pattern!=null)
+					pattern.dispose();
 				graphics.popState();
 		}
 		if(getFill() > 0){
@@ -100,11 +109,46 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 			if(isEnabled())
 				graphics.setBackgroundColor(getForegroundColor());
 			
+			Pattern pattern = null;
+			if(gradient && support3D && isEnabled()){
+				pattern = setGradientPattern(graphics, figureBounds, foreGradientStartColor, getForegroundColor());
+			}
 			graphics.fillOval(figureBounds);
+			if(pattern!=null)
+				pattern.dispose();
 			graphics.popState();
 		}
 	}
 
+	/**
+	 * @param graphics
+	 * @param figureBounds
+	 * @return
+	 */
+	protected Pattern setGradientPattern(final Graphics graphics,
+			Rectangle figureBounds, Color gradientStartColor, Color fillColor) {
+		Pattern pattern;		
+		int tx = figureBounds.x;
+		int ty = figureBounds.y+figureBounds.height;
+		if(!horizontalFill){
+			tx=figureBounds.x+figureBounds.width;
+			ty=figureBounds.y;
+		}
+		int alpha = getAlpha()==null?255:getAlpha();
+		//Workaround for the pattern zoom bug on ScaledGraphics:
+		//The coordinates need to be scaled for ScaledGraphics.
+		double scale = graphics.getAbsoluteScale();
+		pattern = new Pattern(Display.getCurrent(), 
+				(int)(figureBounds.x*scale),	
+				(int)(figureBounds.y*scale),
+				(int)(tx*scale),
+				(int)(ty*scale), 
+				gradientStartColor, alpha, fillColor, alpha);
+		graphics.setBackgroundPattern(pattern);
+		return pattern;
+	}
+
+	
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
 	}
@@ -117,6 +161,17 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	 */
 	public double getFill() {
 		return fill;
+	}
+	
+	/**
+	 * @return the start color of gradient.
+	 */
+	public Color getBackGradientStartColor() {
+		return backGradientStartColor;
+	}
+	
+	public Color getForeGradientStartColor() {
+		return foreGradientStartColor;
 	}
 
 	/**
@@ -136,12 +191,12 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	}
 
 	/**
-	 * @return the antiAlias
+	 * @return true if this figure is filled with gradient.
 	 */
-	public boolean isAntiAlias() {
-		return antiAlias;
+	public boolean isGradient() {
+		return gradient;
 	}
-
+	
 	/**
 	 * Gets the orientation (horizontal==true | vertical==false).
 	 * 
@@ -172,13 +227,6 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 		graphics.popState();
 	}
 
-	public void setAntiAlias(boolean antiAlias) {
-		if(this.antiAlias == antiAlias)
-			return;
-		this.antiAlias = antiAlias;
-		repaint();
-	}
-
 
 	/**
 	 * Sets the fill grade.
@@ -192,6 +240,23 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 		this.fill = fill;
 		repaint();
 	}
+	
+	public void setGradient(boolean gradient) {
+		this.gradient = gradient;
+		repaint();
+	}
+	
+	public void setBackGradientStartColor(Color gradientStartColor) {
+		this.backGradientStartColor = gradientStartColor;
+		repaint();
+	}
+	
+	public void setForeGradientStartColor(Color foreGradientStartColor) {
+		this.foreGradientStartColor = foreGradientStartColor;
+		repaint();
+	}
+	
+	
 
 	/**
 	 * Sets the orientation (horizontal==true | vertical==false).

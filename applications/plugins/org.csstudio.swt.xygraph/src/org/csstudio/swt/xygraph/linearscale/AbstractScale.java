@@ -145,7 +145,7 @@ public abstract class AbstractScale extends Figure{
 	                } 
 	                autoFormat = true;
             	}
-              	if(minOrMaxDate){
+              	if(minOrMaxDate && autoFormat){
               			if(Math.abs(max - min)<5000)
               				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
            			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj);

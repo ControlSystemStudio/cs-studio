@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
  * @author Xihui Chen
  *
  */
-public class TextFigure extends Figure implements Introspectable{	
+public class TextFigure extends Figure implements Introspectable, ITextFigure{	
 	
 	
 	protected V_ALIGN verticalAlignment = V_ALIGN.TOP;
@@ -64,37 +64,35 @@ public class TextFigure extends Figure implements Introspectable{
 		Rectangle textArea = getTextArea();		
 		Dimension textSize = getTextSize();
 			int x=0;
-			if(textArea.width > textSize.width){
 				
-				switch (horizontalAlignment) {
-				case CENTER:
-					x = (textArea.width - textSize.width)/2;
-					break;
-				case RIGHT:
-					x = textArea.width - textSize.width;
-					break;
-				case LEFT:
-				default:					
-					break;
-				}
-			}
+		switch (horizontalAlignment) {
+		case CENTER:
+			x = (textArea.width - textSize.width) / 2;
+			break;
+		case RIGHT:
+			x = textArea.width - textSize.width;
+			break;
+		case LEFT:
+		default:
+			break;
+		}
 			
-			int y=0;
-			if(textArea.height > textSize.height){
-				switch (verticalAlignment) {
-				case MIDDLE:
-					y = (textArea.height - textSize.height)/2;
-					break;
-				case BOTTOM:
-					y =textArea.height - textSize.height;
-					break;
-				case TOP:
-				default:
-					break;
-				}
+		int y = 0;
+		if (textArea.height > textSize.height) {
+			switch (verticalAlignment) {
+			case MIDDLE:
+				y = (textArea.height - textSize.height) / 2;
+				break;
+			case BOTTOM:
+				y = textArea.height - textSize.height;
+				break;
+			case TOP:
+			default:
+				break;
 			}
-			
-			textLocation = new Point(x, y);
+		}
+
+		textLocation = new Point(x, y);
 	}
 
 	protected Dimension calculateTextSize() {

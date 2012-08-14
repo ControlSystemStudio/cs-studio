@@ -59,6 +59,9 @@ public class Preferences
     final private static String CLIENT_SUFFIX = "_CLIENT";
     final private static String TALK_SUFFIX = "_TALK";
 
+    final private static String NOTIFIER_SUFFIX_EXECUTE = "_NOTIFIER_EXE";
+    final private static String NOTIFIER_SUFFIX_RETURN = "_NOTIFIER_RTN";
+    
     /** @param setting Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -83,6 +86,8 @@ public class Preferences
     public static boolean isReadOnly()
     {
         final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return true;
         return service.getBoolean(Activator.ID, READONLY, true, null);
     }
 
@@ -112,16 +117,19 @@ public class Preferences
     	return getSecureString(RDB_USER);
     }
 
-	/** @return JMS Password */
+	/** @return RDB Password */
     public static String getRDB_Password()
     {
         return getSecureString(RDB_PASSWORD);
     }
 
-	/** @return JMS Password */
+	/** @return RDB schema */
     public static String getRDB_Schema()
     {
-        return getString(RDB_SCHEMA);
+        final String schema = getString(RDB_SCHEMA);
+        if (schema.endsWith("."))
+            return schema.substring(0, schema.length()-1);
+        return schema;
     }
 
 	/** @return Configuration Name, i.e. name of alarm tree root component */
@@ -133,7 +141,7 @@ public class Preferences
     /** @return JMS URL */
     public static String getJMS_URL()
     {
-        return getString(JMS_URL);
+    	return getString(JMS_URL, "tcp://localhost:61616");
     }
 
     /** @return JMS User name */
@@ -164,6 +172,22 @@ public class Preferences
         return config + CLIENT_SUFFIX;
     }
 
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for executing automated actions
+     */
+    public static String getJMS_AlarmNotifierExeTopic(final String config)
+    {
+        return config + NOTIFIER_SUFFIX_EXECUTE;
+    }
+    
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for read automated actions result
+     */
+    public static String getJMS_AlarmNotifierRtnTopic(final String config)
+    {
+        return config + NOTIFIER_SUFFIX_RETURN;
+    }
+    
     /** @param config Alarm configuration name (root)
      *  @return JMS topic used to annunciate alarm messages
      */
@@ -274,7 +298,7 @@ public class Preferences
         }
         return rgb;
     }
-    
+
     /** @return Delay in millisecs for the initial update after trigger */
     public static long getGuiThrottleInitialMillis()
     {

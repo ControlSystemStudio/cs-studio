@@ -8,7 +8,7 @@ package org.epics.pvmanager;
  * A basic building block in the PVManager framework that can write an object
  * of a given type.
  *
- * @param <R> argument type
+ * @param <A> argument type
  * @author carcassi
  */
 public abstract class WriteFunction<A> {

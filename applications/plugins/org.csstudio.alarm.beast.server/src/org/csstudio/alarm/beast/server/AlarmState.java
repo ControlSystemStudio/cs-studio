@@ -44,23 +44,23 @@ public class AlarmState
     }
 
     /** Create alarm state that's all OK
+     *  @param value Value to use for the 'clear' state
      *  @param time Time to use for the 'OK' state
      *  @return AlarmState
      */
-    public static AlarmState createClearState(final ITimestamp time)
+    public static AlarmState createClearState(final String value, final ITimestamp time)
     {
         return new AlarmState(SeverityLevel.OK,
                 SeverityLevel.OK.getDisplayName(),
-                "", //$NON-NLS-1$
-                time);
+                value, time);
     }
 
     /** Create alarm state that's all OK with the current time stamp
      *  @return AlarmState
      */
-    public static AlarmState createClearState()
+    public static AlarmState createClearState(final String value)
     {
-        return createClearState(TimestampFactory.now());
+        return createClearState(value, TimestampFactory.now());
     }
 
     /** Create an alarm state similar to current one but with updated severity

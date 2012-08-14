@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
+import java.io.File;
+import java.net.URI;
 import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -34,7 +36,10 @@ import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.XYGraphSettings;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.osgi.util.NLS;
@@ -221,6 +226,7 @@ public class Plot
 		// Allow dropped arrays
 		new ControlSystemDropTarget(canvas, ChannelInfo[].class,
 				ProcessVariable[].class, ArchiveDataSource[].class,
+				File.class,
 				String.class)
 		{
 			@Override
@@ -250,6 +256,25 @@ public class Plot
 				}
 				else if (item instanceof String)
 					listener.droppedName(item.toString());
+				else if (item instanceof String[])
+				{
+				    final String[] files = (String[])item;
+				    if (files.length <= 0)
+				        return;
+				    try
+				    {
+				        // Only allow workspace files
+    				    final URI location = new URI("file",null, files[0], null); //$NON-NLS-1$
+    				    final IFile[] ws_files = ResourcesPlugin.getWorkspace().
+    				            getRoot().findFilesForLocationURI(location);
+    				    if (ws_files.length == 1  && ws_files[0].exists())
+    				        listener.droppedFilename(ws_files[0].getFullPath().toString());
+				    }
+				    catch (Exception ex)
+				    {
+				        ExceptionDetailsErrorDialog.openError(canvas.getShell(), Messages.Error, ex);
+				    }
+				}
 			}
 		};
 	}

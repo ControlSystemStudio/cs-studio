@@ -14,7 +14,6 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Shape;
-import org.eclipse.swt.SWT;
 
 /**The arc figure
  * 
@@ -23,19 +22,11 @@ import org.eclipse.swt.SWT;
  */
 public class ArcFigure extends Shape implements Introspectable{
 	
-	private boolean antiAlias = true;
 //	private boolean cordFill = false;
 	private int startAngle = 0;	
 	private int totalAngle = 90;
 	private boolean fill = false;
-	
 
-	/**
-	 * @return the antiAlias
-	 */
-	public boolean isAntiAlias() {
-		return antiAlias;
-	}
 
 	/**
 	 * @return the startAngle
@@ -53,7 +44,6 @@ public class ArcFigure extends Shape implements Introspectable{
 
 	@Override
 	protected void fillShape(Graphics graphics) {
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		graphics.fillArc(getClientArea().getCopy().shrink(
 				(int)(getLineWidth()*1.5), (int)(getLineWidth()*1.5)), startAngle, totalAngle);
 		
@@ -61,17 +51,9 @@ public class ArcFigure extends Shape implements Introspectable{
 
 	@Override
 	protected void outlineShape(Graphics graphics) {
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		graphics.drawArc(getClientArea().getCopy().shrink(		
 				getLineWidth(), getLineWidth()), startAngle, totalAngle);		
 
-	}
-	
-	public void setAntiAlias(boolean antiAlias) {
-		if(this.antiAlias == antiAlias)
-			return;
-		this.antiAlias = antiAlias;
-		repaint();
 	}
 	
 	public void setStartAngle(int start_angle) {

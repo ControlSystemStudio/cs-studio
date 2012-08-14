@@ -46,6 +46,16 @@ record(calc, "pcharge")
     field(CALC, "(A&B)?C+4.8611e8:C")
     field(SCAN, ".5 second")
     field(EGU,  "pC")
+    field(FLNK, "charge_hist")
+}
+
+# 'History of charge', mostly to get a small demo waveform
+record(compress, "charge_hist")
+{
+    field(ALG,  "Circular Buffer")
+    field(NSAM, "10")
+    field(INP,  "pcharge")
+    field(EGU,  "pC")
 }
 
 # Simulate accumulated neutrons
@@ -106,8 +116,13 @@ record(calc, "signal")
     field(INPB, "motor_y CP")
     field(CALC, "EXP(-((A-2.9-RNDM/5)^2)-((B-3)^2))")
     field(PREC, "3")
+    field(HIHI, "0.9")
+    field(HHSV, "MAJOR")
+    field(HOPR, "1")
 }
 
-record(ao, "fit_center")
+record(waveform, "text")
 {
+    field(FTVL, "CHAR")
+    field(NELM, "100")
 }

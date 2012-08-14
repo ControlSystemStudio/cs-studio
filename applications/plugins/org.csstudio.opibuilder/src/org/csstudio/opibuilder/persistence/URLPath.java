@@ -51,7 +51,11 @@ public class URLPath implements IPath {
 	public URLPath(String device, String[] segments, boolean hasTrailing){
 		this.device = device;
 		this.segments = segments;
-		StringBuilder sb = new StringBuilder(device);
+		StringBuilder sb;
+		if(device == null)
+			sb = new StringBuilder();
+		else 
+			sb = new StringBuilder(device); //$NON-NLS-1$
 		for (String s : segments) {
 			sb.append(s);
 			sb.append(SEPARATOR);
@@ -133,7 +137,11 @@ public class URLPath implements IPath {
 	}
 
 	public boolean isAbsolute() {
-		return device != null;
+		if(device != null)
+			return true;
+		if(!isEmpty())
+			return Character.valueOf(url.charAt(0)).equals(IPath.SEPARATOR);
+		return false;
 	}
 
 	public boolean isEmpty() {		

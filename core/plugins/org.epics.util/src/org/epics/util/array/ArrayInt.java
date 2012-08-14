@@ -24,7 +24,7 @@ public final class ArrayInt extends ListInt implements Serializable {
      * 
      * @param array an array
      */
-    public ArrayInt(int[] array) {
+    public ArrayInt(int... array) {
         this(array, true);
     }
 
@@ -85,4 +85,8 @@ public final class ArrayInt extends ListInt implements Serializable {
         
         return super.equals(obj);
     }    
+
+    int[] wrappedArray() {
+        return array;
+    }
 }

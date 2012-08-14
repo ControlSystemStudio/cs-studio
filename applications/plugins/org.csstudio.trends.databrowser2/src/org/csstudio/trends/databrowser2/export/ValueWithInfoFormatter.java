@@ -38,7 +38,7 @@ public class ValueWithInfoFormatter extends ValueFormatter
     public String format(final IValue value)
     {
         if (value == null)
-            return super.format(value) +
+            return super.format(null) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;
         return super.format(value) + Messages.Export_Delimiter +

@@ -66,7 +66,7 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
     }
 
     private static DataRecipeBuilder combineRecipes(DesiredRateExpressionList<?> expressions) {
-        if (expressions.getDesiredRateExpressions().isEmpty())
+        if (expressions == null || expressions.getDesiredRateExpressions().isEmpty())
             return new DataRecipeBuilder();
 
         DataRecipeBuilder recipe = expressions.getDesiredRateExpressions().get(0).getDesiredRateExpressionImpl().recipe;
@@ -109,8 +109,9 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
     }
 
     /**
+     * The implementation for this expression.
      * 
-     * @return
+     * @return returns the implementation for this desired rate
      */
     @Override
     public final DesiredRateExpressionImpl<R> getDesiredRateExpressionImpl() {
