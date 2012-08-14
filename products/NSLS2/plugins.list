@@ -61,6 +61,7 @@ org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
 org.csstudio.opibuilder.editor
 org.csstudio.opibuilder.examples
+org.csstudio.opibuilder.imagelib
 org.csstudio.opibuilder.performanceTest
 org.csstudio.opibuilder.pvmanager.util
 org.csstudio.opibuilder.rcp
