@@ -115,8 +115,14 @@ public void layout(IFigure parent) {
 
 	if (thumb != null)
 		thumb.setVisible(trackBounds.height > thumbHeight);
-
-	int thumbY = (int) (trackBounds.y + (trackBounds.height - thumbHeight) 
+	int thumbY;
+	if(valueRange <=0){
+		thumbHeight=0;
+		thumb.setVisible(false);
+		thumbY=trackBounds.y;
+	}
+	else
+		thumbY = (int) (trackBounds.y + (trackBounds.height - thumbHeight) 
 					* (scrollBar.getCoercedValue() - min) / valueRange);
 
 	Rectangle thumbBounds =  new Rectangle(
@@ -125,7 +131,7 @@ public void layout(IFigure parent) {
 		trackBounds.width,
 		thumbHeight);
 
-	if (thumb != null)
+	if (thumb != null && thumb.isVisible())
 		thumb.setBounds(transposer.t(thumbBounds));
 
 	if (pageUp != null)
