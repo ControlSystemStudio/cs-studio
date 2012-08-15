@@ -291,12 +291,14 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
         Map<String, Object> properties = new HashMap<String, Object>();
         if (channel != null) {
             properties.put("Channel name", channel.getName());
-            properties.put("Hostname", channel.getHostName());
-            properties.put("Channel type", channel.getFieldType().getName());
             properties.put("Connection state", channel.getConnectionState().getName());
-            properties.put("Element count", channel.getElementCount());
-            properties.put("Read access", channel.getReadAccess());
-            properties.put("Write access", channel.getWriteAccess());
+            if (channel.getConnectionState() == Channel.ConnectionState.CONNECTED) {
+                properties.put("Hostname", channel.getHostName());
+                properties.put("Channel type", channel.getFieldType().getName());
+                properties.put("Element count", channel.getElementCount());
+                properties.put("Read access", channel.getReadAccess());
+                properties.put("Write access", channel.getWriteAccess());
+            }
         }
         return properties;
     }
