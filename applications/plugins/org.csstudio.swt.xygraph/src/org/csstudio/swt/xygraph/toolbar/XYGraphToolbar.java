@@ -152,15 +152,15 @@ public class XYGraphToolbar extends Figure {
 		addButton(snapShotButton);
 		snapShotButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-			    // Prompt for file name
-			    String path = SingleSourceHelper.getImageSavePath();
-			    if (path == null || path.length() <= 0)
-			        return;
-			    // Have valid name, so get image
+				 // Have valid name, so get image
                 ImageLoader loader = new ImageLoader();
                 Image image = xyGraph.getImage();
                 loader.data = new ImageData[]{image.getImageData()};
                 image.dispose();
+			    // Prompt for file name
+			    String path = SingleSourceHelper.getImageSavePath();
+			    if (path == null || path.length() <= 0)
+			        return;			   
 				// Assert *.png at end of file name
 			    if (! path.toLowerCase().endsWith(".png"))
 			        path = path + ".png";
