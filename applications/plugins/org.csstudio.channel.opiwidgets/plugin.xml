@@ -48,7 +48,7 @@
             editpart_class="org.csstudio.channel.opiwidgets.TunerEditPart"
             icon="org.csstudio.channel.opiwidgets.widget2"
             model_class="org.csstudio.channel.opiwidgets.TunerModel"
-            name="Tuner"
+            name="Channel Orchestrator"
             typeId="org.csstudio.channel.opiwidgets.AbstractChannelWidget">
       </widget>
    </extension>
