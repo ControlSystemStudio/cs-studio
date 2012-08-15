@@ -536,6 +536,12 @@ public class PVManagerProbe extends ViewPart {
 				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
 				setTime(ValueUtil.timeOf(obj));
 				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+				if (pv.isConnected()) {
+					setStatus(Messages.Probe_statusConnected);
+				} else {
+					System.out.println("Disconnected");
+					setStatus(Messages.Probe_statusSearching);
+				}
 			}
 		});
 		
@@ -598,14 +604,6 @@ public class PVManagerProbe extends ViewPart {
 	 * @param ex an exception
 	 */
 	private void setLastError(Exception ex) {
-		if (ex == null) {
-			// If no exception, then everything is peachy
-			statusField.setText(Messages.Probe_statusConnected);
-		} else if (!(ex instanceof TimeoutException) || Messages.Probe_statusSearching.equals(statusField.getText())) {
-			// If it's an error always display message, but if it's
-			// a timeout display only if there was no previous message
-			statusField.setText("Error - " + ex.getClass().getName());
-		}
 		errorBar.setException(ex);
 	}
 
