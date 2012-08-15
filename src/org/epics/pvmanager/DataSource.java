@@ -108,26 +108,20 @@ public abstract class DataSource {
      * @param recipe the instructions for the data connection
      */
     public void connect(final DataRecipe recipe) {
-        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
-            final Collector<?> collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String channelName = entry.getKey();
-                final ChannelHandler channelHandler = channel(channelName);
-                if (channelHandler == null)
-                    throw new ReadFailException();
-                final ValueCache cache = entry.getValue();
-                final Collector<Boolean> connCollector = recipe.getConnectionCollector();
-                final ValueCache<Boolean> connCache = recipe.getConnectionCaches().get(channelName);
-
-                // Add monitor on other thread in case it triggers notifications
-                exec.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        channelHandler.addMonitor(new ChannelHandlerReadSubscription(collector, cache, recipe.getExceptionHandler(), connCollector, connCache));
-                    }
-                });
+        for (final ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
+            String channelName = channelRecipe.getChannelName();
+            final ChannelHandler channelHandler = channel(channelName);
+            if (channelHandler == null) {
+                throw new ReadFailException();
             }
+            
+            exec.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    channelHandler.addMonitor(channelRecipe.getReadSubscription());
+                }
+            });
         }
         recipes.add(recipe);
     }
@@ -147,16 +141,15 @@ public abstract class DataSource {
             return;
         }
 
-        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
-            Collector<?> collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String channelName = entry.getKey();
-                ChannelHandler channelHandler = usedChannels.get(channelName);
-                if (channelHandler == null) {
-                    log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
-                }
-                channelHandler.removeMonitor(collector);
+        
+        for (ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
+            Collector<?> collector = channelRecipe.getReadSubscription().getCollector();
+            String channelName = channelRecipe.getChannelName();
+            ChannelHandler channelHandler = usedChannels.get(channelName);
+            if (channelHandler == null) {
+                log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
             }
+            channelHandler.removeMonitor(collector);
         }
 
         recipes.remove(recipe);
