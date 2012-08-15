@@ -171,6 +171,9 @@ public class PVManagerProbe extends ViewPart {
 		topBox.setLayout(gl_topBox);
 		
 		errorBar = new ErrorBar(parent, SWT.NONE);
+		errorBar.setMarginRight(5);
+		errorBar.setMarginLeft(5);
+		errorBar.setMarginBottom(5);
 
 		Label label;
 		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
@@ -268,6 +271,12 @@ public class PVManagerProbe extends ViewPart {
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
 		fd.top = new FormAttachment(topBox);
+		fd.right = new FormAttachment(100, 0);
+		errorBar.setLayoutData(fd);
+
+		fd = new FormData();
+		fd.left = new FormAttachment(0, 0);
+		fd.top = new FormAttachment(errorBar);
 		fd.right = new FormAttachment(100, 0);
 		fd.bottom = new FormAttachment(bottomBox);
 		meter.setLayoutData(fd);
