@@ -366,10 +366,16 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 						public String getText(Object element) {
 							Item item = ((Item) element);
-							return element == null || item.getChannel() == null ? ""
-									: item.getChannel()
+							if (element != null && item.getChannel() != null) {
+								if (item.getChannel().getPropertyNames()
+										.contains(propertyName)) {
+									String value = item.getChannel()
 											.getProperty(propertyName)
 											.getValue();
+									return value != null ? value : "";
+								}
+							}
+							return "";
 						}
 					});
 			TableColumn tblclmnProp = tableViewerColumnProperty.getColumn();
