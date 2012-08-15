@@ -49,9 +49,9 @@
       </view>
       <view
             category="org.csstudio.channel.application.category"
-            class="org.csstudio.channel.views.TunerView"
-            id="org.csstudio.channel.views.TunerView"
-            name="Tuner"
+            class="org.csstudio.channel.views.ChannelOrchestratorView"
+            id="org.csstudio.channel.views.ChannelOrchestratorView"
+            name="Channel Orchestrator"
             restorable="true">
       </view>
    </extension>
@@ -112,11 +112,11 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               label="Tuner"
+               label="Channel Orchestrator"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.TunerView">
+                  value="org.csstudio.channel.views.ChannelOrchestratorView">
             </parameter>
          </command>
       </menuContribution>
@@ -151,6 +151,11 @@
                commandId="org.csstudio.channel.views.OpenLine2D"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
                label="Line2DPlot"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.channel.views.OpenChannelOrchestrator"
+               label="Channel Orchestrator"
                style="push">
          </command>
       </menuContribution>
@@ -188,9 +193,9 @@
             name="Line2DPlot">
       </command>
       <command
-            defaultHandler="org.csstudio.channel.views.OpenTuner"
-            id="org.csstudio.channel.views.command1"
-            name="Tuner">
+            defaultHandler="org.csstudio.channel.views.OpenChannelOrchestrator"
+            id="org.csstudio.channel.views.OpenChannelOrchestrator"
+            name="Channel Orchestrator">
       </command>
    </extension>
 </plugin>
