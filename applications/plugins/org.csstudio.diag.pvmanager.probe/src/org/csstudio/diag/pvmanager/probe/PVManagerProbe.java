@@ -171,6 +171,9 @@ public class PVManagerProbe extends ViewPart {
 		topBox.setLayout(gl_topBox);
 		
 		errorBar = new ErrorBar(parent, SWT.NONE);
+		errorBar.setMarginRight(5);
+		errorBar.setMarginLeft(5);
+		errorBar.setMarginBottom(5);
 
 		Label label;
 		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
@@ -268,6 +271,12 @@ public class PVManagerProbe extends ViewPart {
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
 		fd.top = new FormAttachment(topBox);
+		fd.right = new FormAttachment(100, 0);
+		errorBar.setLayoutData(fd);
+
+		fd = new FormData();
+		fd.left = new FormAttachment(0, 0);
+		fd.top = new FormAttachment(errorBar);
 		fd.right = new FormAttachment(100, 0);
 		fd.bottom = new FormAttachment(bottomBox);
 		meter.setLayoutData(fd);
@@ -527,6 +536,12 @@ public class PVManagerProbe extends ViewPart {
 				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
 				setTime(ValueUtil.timeOf(obj));
 				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+				if (pv.isConnected()) {
+					setStatus(Messages.Probe_statusConnected);
+				} else {
+					System.out.println("Disconnected");
+					setStatus(Messages.Probe_statusSearching);
+				}
 			}
 		});
 		
@@ -589,14 +604,6 @@ public class PVManagerProbe extends ViewPart {
 	 * @param ex an exception
 	 */
 	private void setLastError(Exception ex) {
-		if (ex == null) {
-			// If no exception, then everything is peachy
-			statusField.setText(Messages.Probe_statusConnected);
-		} else if (!(ex instanceof TimeoutException) || Messages.Probe_statusSearching.equals(statusField.getText())) {
-			// If it's an error always display message, but if it's
-			// a timeout display only if there was no previous message
-			statusField.setText("Error - " + ex.getClass().getName());
-		}
 		errorBar.setException(ex);
 	}
 
