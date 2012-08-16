@@ -97,6 +97,15 @@ public class ExpressionLanguage {
     public static ChannelExpression<VType, Object> vType(String name) {
         return channel(name, VType.class, Object.class);
     }
+    /**
+     * A list of channels with the given names that return any of the value type.
+     *
+     * @param names the channel names; can't be null
+     * @return a list of expressions representing the channels
+     */
+    public static ChannelExpressionList<VType, Object> vTypes(List<String> name) {
+        return channels(name, VType.class, Object.class);
+    }
 
     /**
      * A channel with the given name of type VNumber.
@@ -106,6 +115,16 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VNumber, Number> vNumber(String name) {
         return channel(name, VNumber.class, Number.class);
+    }
+
+    /**
+     * A list of channels with the given names, all of type VNumber.
+     *
+     * @param names the channel names; can't be null
+     * @return a list of expressions representing the channels
+     */
+    public static ChannelExpressionList<VNumber, Number> vNumbers(List<String> name) {
+        return channels(name, VNumber.class, Number.class);
     }
 
     /**
