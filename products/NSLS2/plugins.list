@@ -72,12 +72,10 @@ org.csstudio.opi.intro
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
-org.csstudio.platform.libs.glazedlists
 org.csstudio.platform.libs.guava
 org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jdom
 org.csstudio.platform.libs.jersey
-org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
