@@ -83,6 +83,8 @@ class DummyX509TrustManager implements X509TrustManager {
 	 * Merely pass this through.
 	 */
 	public X509Certificate[] getAcceptedIssuers() {
+		if (pkixTrustManager == null)
+			return new X509Certificate[0];
 		return pkixTrustManager.getAcceptedIssuers();
 	}
 }
