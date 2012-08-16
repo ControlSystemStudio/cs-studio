@@ -1,8 +1,6 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
@@ -241,7 +239,7 @@ implements ConfigurableWidget, ISelectionProvider {
 		
 		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
-			plot = waterfallPlotOf(vDoubleArrayOf(channel(waveformPVName))).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			plot = waterfallPlotOf(vNumberArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
 				.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
@@ -258,7 +256,7 @@ implements ConfigurableWidget, ISelectionProvider {
 		
 		if (scalarPVNames != null && !scalarPVNames.isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
-			plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			plot = waterfallPlotOf(vNumbers(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
 				.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
