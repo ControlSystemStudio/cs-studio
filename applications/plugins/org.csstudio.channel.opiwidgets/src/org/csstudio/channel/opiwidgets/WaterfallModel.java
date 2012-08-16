@@ -6,7 +6,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.swt.SWT;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 public class WaterfallModel extends AbstractChannelWidgetModel {
 	
@@ -52,7 +52,7 @@ public class WaterfallModel extends AbstractChannelWidgetModel {
 	}
 	
 	public TimeDuration getResolution() {
-		return TimeDuration.ms((Double) getCastedPropertyValue(RESOLUTION));
+		return TimeDuration.ofSeconds((Double) getCastedPropertyValue(RESOLUTION) * 1000);
 	}
 
 }
