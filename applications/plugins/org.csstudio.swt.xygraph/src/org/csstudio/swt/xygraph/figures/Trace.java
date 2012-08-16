@@ -709,7 +709,7 @@ public class Trace extends Figure implements IDataProviderListener,
 							if (plPolyline.size() == 0)
 								plPolyline.addPoint(predpPos);
 
-							if (false && traceDataProvider.isChronological()) {
+							if (traceDataProvider.isChronological()) {
 								// Line drawing optimization is available only when the trace data
 								// is ascending sorted on X axis. 
 								if (!predpPos.equals(plPolyline.getLastPoint())) {
