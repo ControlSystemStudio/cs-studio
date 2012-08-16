@@ -263,6 +263,15 @@ public class TimeDuration implements Comparable<TimeDuration> {
         
         return getSec() * NANOSEC_IN_SEC + getNanoSec();
     }
+    
+    /**
+     * Returns the duration in seconds. There may be a loss of precision.
+     * 
+     * @return the duration in seconds
+     */
+    public double toSeconds() {
+        return getSec() + getNanoSec() / (double) NANOSEC_IN_SEC;
+    }
 
     private static final DecimalFormat format = new DecimalFormat("000000000");
 
