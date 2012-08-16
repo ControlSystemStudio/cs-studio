@@ -5,7 +5,7 @@ import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.column;
 import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.util.time.TimeDuration.*;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -173,7 +173,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		// Increasing the notification rate will make the tooltips not work,
 		// so it's limited to 500 ms.
-		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
+		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).maxRate(ofMillis(500));
 		pv.addPVReaderListener(listener);
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
 	}
