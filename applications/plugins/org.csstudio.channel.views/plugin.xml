@@ -42,7 +42,7 @@
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.channel.views.Line2DPlotView"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
             id="org.csstudio.channel.views.Line2DPlotView"
             name="Line Plot"
             restorable="true">
@@ -103,7 +103,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
                label="Line 2D Plot"
                style="push">
             <parameter
@@ -151,7 +151,7 @@
          </command>
          <command
                commandId="org.csstudio.channel.views.OpenLine2D"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
                label="Line2DPlot"
                style="push">
          </command>
