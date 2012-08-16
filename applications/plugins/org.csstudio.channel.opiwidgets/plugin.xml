@@ -46,7 +46,7 @@
       <widget
             category="Multi-channel"
             editpart_class="org.csstudio.channel.opiwidgets.TunerEditPart"
-            icon="org.csstudio.channel.opiwidgets.widget2"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-orchestrator-16.png"
             model_class="org.csstudio.channel.opiwidgets.TunerModel"
             name="Channel Orchestrator"
             typeId="org.csstudio.channel.opiwidgets.AbstractChannelWidget">
