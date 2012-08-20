@@ -47,9 +47,6 @@
  *     <li><a href="#t1">Assembling a table</a></li>
  * </ol>
  * 
- *  * <h3 id="v1">Read/Write a specific type</h3>
-
- * 
  * <h3 id="c1">Using PVManager in CSS</h3>
  * 
  * In CSS, data sources are configured by adding the appropriate plug-ins,
@@ -62,7 +59,7 @@
  * import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
  * 
  * // When creating a pv, remember to ask for notification on the SWT thread
- * PVReader&lt;?&gt; pvReader = PVManager.read(...)..notifyOn(swtThread()).every(ms(100));
+ * PVReader&lt;?&gt; pvReader = PVManager.read(...)..notifyOn(swtThread()).maxRate(ofMillis(100));
  * </pre>
  * 
  * <h3 id="c2">Using PVManager in Swing</h3>
@@ -121,7 +118,7 @@
  * <pre>
  * // Let's statically import so the code looks cleaner
  * import static org.epics.pvmanager.ExpressionLanguage.*;
- * import static org.epics.pvmanager.util.TimeDuration.*;
+ * import static org.epics.util.time.TimeDuration.*;
  * 
  * // Read channel "channelName" up to every 100 ms
  * final {@link org.epics.pvmanager.PVReader}&lt;Object&gt; pvReader = PVManager.read(channel("channelName")).maxRate(ofMillis(100));
@@ -247,7 +244,7 @@
  *             public void handleException(Exception ex) {
  *                 System.out.println("Error: " + ex.getMessage());
  *             }
- *         }).every(ms(100));
+ *         }).maxRate(ofMillis(100));
  * </pre>
  * 
  * 
@@ -416,11 +413,11 @@
  * <pre>
  * // We connect to a channel that produces a VType, but we
  * // don't know which one
- * final PVReader&lt;Object&gt; pvReader = PVManager.read(channel("channelName")).maxRate(ofMillis(100));
+ * final PVReader&lt;VType&gt; pvReader = PVManager.read(vType("channelName")).maxRate(ofMillis(100));
  * pvReader.addPVReaderListener(new PVReaderListener() {
  * 
  *     public void pvChanged() {
- *         Object value = pvReader.getValue();
+ *         VType value = pvReader.getValue();
  *         // We can extract the different aspect of the read object,
  *         // so that we can work on them separately
  *         
@@ -445,7 +442,7 @@
  * <h3 id="v3">Working with an unknown type: switch on the type</h3>
  * 
  * <pre>
- * final PVReader&lt;Object&gt; pvReader = PVManager.read(channel("channelName")).maxRate(ofMillis(100));
+ * final PVReader&lt;VType&gt; pvReader = PVManager.read(vType("channelName")).maxRate(ofMillis(100));
  * pvReader.addPVReaderListener(new PVReaderListener() {
  * 
  *     public void pvChanged() {
@@ -463,7 +460,7 @@
  * <h3 id="v4">Working with an unknown type: register listener on type</h3>
  * 
  * <pre>
- * final PVReader&lt;Object&gt; pvReader = PVManager.read(channel("channelName")).maxRate(ofMillis(100));
+ * final PVReader&lt;VType&gt; pvReader = PVManager.read(vType("channelName")).maxRate(ofMillis(100));
  * pvReader.addPVReaderListener(VDouble.class, new PVReaderListener() {
  * 
  *     public void pvChanged() {
@@ -487,7 +484,7 @@
  * List&lt;String&gt; names = Arrays.asList("one", "two", "trhee");
  * final PVReader&lt;VTable&gt; pvReader = PVManager.read(vTable(
  *         column("Names", vStringConstants(names)),
- *         column("Values", latestValueOf(channels(names)))))
+ *         column("Values", latestValueOf(vType(names)))))
  *         .maxRate(ofMillis(100));
  * pvReader.addPVReaderListener(new PVReaderListener() {
  * 

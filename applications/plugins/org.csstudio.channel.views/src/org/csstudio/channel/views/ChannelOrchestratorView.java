@@ -1,16 +1,15 @@
 package org.csstudio.channel.views;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget;
 import org.csstudio.channel.widgets.TunerWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 
-public class TunerView extends AbstractChannelQueryView<TunerWidget> {
+public class ChannelOrchestratorView extends AbstractChannelQueryView<TunerWidget> {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.csstudio.channel.views.TunerView";
+	public static final String ID = "org.csstudio.channel.views.ChannelOrchestratorView";
 	
 	@Override
 	public void saveWidgetState(TunerWidget widget, IMemento memento) {

@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -266,21 +265,6 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			}
 			layoutter.layout(modelChildren, getFigure().getClientArea());
 		}
-	}
-	
-	public void performAutosize(){
-		Rectangle childrenRange = GeometryUtil.getChildrenRange(this);
-		Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
-		
-		getWidgetModel().setSize(new Dimension(
-						childrenRange.width + figure.getInsets().left + figure.getInsets().right,
-						childrenRange.height + figure.getInsets().top + figure.getInsets().bottom));
-		
-
-		for(Object editpart : getChildren()){
-			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
-			widget.setLocation(widget.getLocation().translate(tranlateSize.getNegated()));
-		}	
 	}
 	
 	@Override

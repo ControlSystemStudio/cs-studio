@@ -67,14 +67,18 @@ public class ScriptUtil {
 	 * Close current active OPI.
 	 */
 	public static void closeCurrentOPI(){
-		IWorkbenchPage activePage = 
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IWorkbenchPart activePart = activePage.getActivePart();
-		
-		if(activePart instanceof IEditorPart){
-			activePage.closeEditor((IEditorPart) activePart, false);
-		}else if(activePart instanceof IViewPart){
-			activePage.hideView((IViewPart) activePart);
+		try {
+			IWorkbenchPage activePage = 
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IWorkbenchPart activePart = activePage.getActivePart();
+			
+			if(activePart instanceof IEditorPart){
+				activePage.closeEditor((IEditorPart) activePart, false);
+			}else if(activePart instanceof IViewPart){
+				activePage.hideView((IViewPart) activePart);
+			}
+		} catch (NullPointerException e) {
+
 		}
 	}
 	
