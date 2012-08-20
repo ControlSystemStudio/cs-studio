@@ -90,6 +90,15 @@ public class Bypass implements PVListener
 		return chain;
 	}
 
+	/** @return MPS "signal" name used in RDB or <code>null</code> */
+	public String getRDBSignalName()
+	{
+	    if (listener == null)
+	        return null; // No real bypass, only message to display
+	    // Re-construct the RDB signal name
+	    return name + ":" + chain.replace(' ', '_') + "_mm";
+	}
+
 	/** @return Bypass name and chain, for example "Ring_Vac:SGV_AB (FPL Ring)" */
 	public String getFullName()
 	{
