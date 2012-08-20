@@ -249,7 +249,11 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	protected void queryExecuted(Result result) {
 		List<String> finalChannels = getResultChannels(result);
 		if (finalChannels != null && !finalChannels.isEmpty()) {
-			setYChannelNames(finalChannels);
+			if (finalChannels.size() == 1) {
+				setyWaveformChannelName(finalChannels.iterator().next());
+			} else {
+				setYChannelNames(finalChannels);
+			}
 			setProperties(ChannelUtil.getPropertyNames(result.channels));
 		} else if (finalChannels == null) {
 			// assumes the entered string to be an waveform pv
