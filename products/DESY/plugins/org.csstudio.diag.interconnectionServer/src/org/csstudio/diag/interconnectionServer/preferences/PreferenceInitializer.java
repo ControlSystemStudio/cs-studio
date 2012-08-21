@@ -41,8 +41,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.XMPP_USER_NAME, "icserver-alarm");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");
 		prefs.put(PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de");
-		prefs.put(PreferenceConstants.DATA_PORT_NUMBER, "18324");
-		prefs.put(PreferenceConstants.COMMAND_PORT_NUMBER, "18325");
+		prefs.put(PreferenceConstants.ICS_DATA_PORT_NUMBER, "18324");
+		prefs.put(PreferenceConstants.IOC_COMMAND_PORT_NUMBER, "18325");
 		prefs.put(PreferenceConstants.IOC_BROADCAST_PORT_NUMBER, "18337");
 		prefs.put(PreferenceConstants.IOC_BROADCAST_ADDRESS, "255.255.255.255");
 //		prefs.put(PreferenceConstants.IOC_BROADCAST_ADDRESS, "131.169.112.163");	// Bernd's Test IOC

@@ -22,11 +22,12 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.junit.Assert.*;
-
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -47,10 +48,10 @@ public class LegacyUtilTest {
 		GregorianCalendar cal = new GregorianCalendar(2000, 0, 1, 12, 00, 00);
 		assertEquals("2000-01-01 12:00:00.000", LegacyUtil.formatDate(cal.getTime()));
 		
-		cal.add(GregorianCalendar.MILLISECOND, 1);
+		cal.add(Calendar.MILLISECOND, 1);
 		assertEquals("2000-01-01 12:00:00.001", LegacyUtil.formatDate(cal.getTime()));
 
-		cal.add(GregorianCalendar.MILLISECOND, 99);
+		cal.add(Calendar.MILLISECOND, 99);
 		assertEquals("2000-01-01 12:00:00.100", LegacyUtil.formatDate(cal.getTime()));
 	}
 }

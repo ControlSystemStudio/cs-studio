@@ -28,13 +28,15 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
-import org.csstudio.diag.interconnectionServer.internal.LdapIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Keeps track of the connections to the IOCs. Also provides statistical
@@ -42,206 +44,186 @@ import org.csstudio.utility.ldap.service.LdapServiceException;
  *
  * @author Matthias Clausen, Joerg Rathlev
  */
-public enum IocConnectionManager {
-
-    INSTANCE;
-
+public class IocConnectionManager  implements IIocConnectionManager {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(IocConnectionManager.class);
+    
     /*
-	 * TODO: This class currently has two responsibilities, keeping track of the
-	 * connections and providing statistical information. Maybe these should
-	 * be separated.
-	 */
+     * TODO: This class currently has two responsibilities, keeping track of the
+     * connections and providing statistical information. Maybe these should
+     * be separated.
+     */
 
-	private static IocConnectionManager statisticInstance = null;
+    private Hashtable<String, IocConnection> _iocId2Connection = null; // accessed by BeaconWatchdog, InterconnectionServer
+    private int totalNumberOfIncomingMessages = 0;
+    private int totalNumberOfOutgoingMessages = 0;
+    
+    public IocConnectionManager() {
+        _iocId2Connection = new Hashtable<String, IocConnection>();
+    }
+    
+    // 2009-07-06 MCL
+    // change internal ID from hostName to hostAddress:port
+    // 2012-06-01 jp
+    // When a command is given, the ioc is identified by its name (logical name, hostname or ip address in that order), but no port
+    // is available - so multiple iocs on a single machine cannot be distinguished, ie. the port is of no use.
+    synchronized public IocConnection getIocConnection(final InetAddress iocInetAddress,
+                                                       final int port) throws NamingException, LdapServiceException {
+        final String internalId = iocInetAddress.getHostAddress() + ":" + port;
+        if (_iocId2Connection.containsKey(internalId)) {
+            return _iocId2Connection.get(internalId);
+        } else {
+            final IocNameDefinitions iocNameDefinitions = ServiceLocator.getService(ILdapServiceFacade.class).newIocNameDefinition(iocInetAddress);
+            final IocConnection connection = new IocConnection(iocNameDefinitions,
+                                                               TimeUtil.systemClock());
+            LOG.info("Add connection with id '" + internalId + "' for ioc " + connection.getNames().getHostName()
+                    + " to ioc connection manager");
+            _iocId2Connection.put(internalId, connection);
+            return connection;
+        }
+    }
+    
+    @Nonnull
+    public Enumeration<IocConnection> getIocConnectionEnumeration() {
+        return _iocId2Connection.elements();
+    }
 
-	public Hashtable<String, IocConnection> _connectionList = null; // accessed by BeaconWatchdog, InterconnectionServer
-	int totalNumberOfIncomingMessages = 0; // accessed by IocConnection
-	int totalNumberOfOutgoingMessages = 0; // accessed by IocConnection
-
-	private final IIocDirectory _iocDirectory;
-
-
-	private IocConnectionManager() {
-		_connectionList = new Hashtable<String, IocConnection>();
-		_iocDirectory = new LdapIocDirectory();
-	}
-
-	/**
-	 * Returns the IOC connection object representing the connection to the IOC
-	 * on the specified host and port.
-	 *
-	 * @param hostAddress
-	 *            the host address of the IOC.
-	 * @param port
-	 *            the port from which messages from the IOC are received.
-	 * @return the IOC connection.
-	 * @throws NamingException
-	 */
-	// 2009-07-06 MCL
-    // change internal ID from hostName to hostAddress
-    //
-	synchronized public IocConnection getIocConnection(final InetAddress iocInetAddress,
-	                                                   final int port) throws NamingException {
-		final String internalId = iocInetAddress.getHostAddress() + ":" + port;
-		if (_connectionList.containsKey(internalId)) {
-			return _connectionList.get(internalId);
-		} else {
-			final IocConnection connection = new IocConnection(iocInetAddress,
-			                                                   port,
-			                                                   TimeUtil.systemClock());
-			_connectionList.put(internalId, connection);
-			return connection;
-		}
-	}
-
-	/**
-	 * Returns the IOC connections managed by this manager.
-	 *
-	 * @return the IOC connections managed by this manager.
-	 */
-	public Collection<IocConnection> getIocConnections() {
-		return new ArrayList<IocConnection>(_connectionList.values());
-	}
-
-	public String getStatisticAsString() {
-		String result = "";
-		result += "\nTotal incomin messages     	= "
-				+ this.totalNumberOfIncomingMessages;
-		result += "\nTotal outgoing messages     	= "
-				+ this.totalNumberOfOutgoingMessages;
-		result += "\n";
-
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			result += "\n---------- statistische Auswertung ---------------\n";
-			final StringBuilder buf = new StringBuilder();
-			thisContent.appendStatisticInformationTo(buf);
-			result += buf.toString();
-		}
-		return result;
-	}
-
-	public String getNodeNames() {
-		String nodeNames = null;
-		boolean first = true;
-
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			if (first) {
-				nodeNames = thisContent.getHost() + ",";
-			} else {
-				nodeNames += thisContent.getHost() + ",";
-			}
-			first = false;
-		}
-		return nodeNames;
-
-	}
-
-
-	public String[] getNodeNameArray() {
-		final List<String> nodeNames = new ArrayList<String>();
-
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			nodeNames.add(thisContent.getHost());
-		}
-		return nodeNames.toArray(new String[0]);
-
-	}
-
-	public InetAddress[] getListOfIocInetAdresses() {
-		final List<InetAddress> nodeNames = new ArrayList<InetAddress>();
-
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			nodeNames.add(thisContent.getIocInetAddress());
-		}
-		return nodeNames.toArray(new InetAddress[0]);
-
-	}
-
-	public InetAddress getIocInetAdressByName( final String iocName) {
-
-		if (iocName == null) {
+    public Collection<IocConnection> getIocConnections() {
+        return new ArrayList<IocConnection>(_iocId2Connection.values());
+    }
+    
+    public String getStatisticAsString() {
+        String result = "";
+        result += "\nTotal incoming messages     	= " + this.totalNumberOfIncomingMessages;
+        result += "\nTotal outgoing messages     	= " + this.totalNumberOfOutgoingMessages;
+        result += "\n";
+        
+        final Enumeration<IocConnection> connections = this._iocId2Connection.elements();
+        while (connections.hasMoreElements()) {
+            final IocConnection thisContent = connections.nextElement();
+            result += "\n---------- statistische Auswertung ---------------\n";
+            final StringBuilder buf = new StringBuilder();
+            thisContent.appendStatisticInformationTo(buf);
+            result += buf.toString();
+        }
+        return result;
+    }
+    
+    @CheckForNull
+    public IocConnection getIocConnectionFromName(@CheckForNull final String iocName) {
+        IocConnection result = null;
+        
+        // guard
+        if (iocName == null) {
             return null;
         }
+        
+        result = getIocConnectionFromLogicalName(iocName);
+        if (result == null) {
+            result = getIocConnectionFromDnsName(iocName);
+            if (result == null) {
+                result = getIocConnectionFromIpAddress(iocName);
+            }
+        }
+        
+        return result;
+    }
+    
+    @CheckForNull
+    public IocConnection getIocConnectionOfPartner(@CheckForNull final IocConnection iocConnection) {
+        IocConnection partnerIocConnection = getIocConnectionFromName(iocConnection.getNames()
+                .getPartnerIpAddress());
+        return partnerIocConnection;
+    }
 
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			if ( thisContent.getHost().equals(iocName)) {
-				return thisContent.getIocInetAddress();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Refreshes the logical name of an IOC from the directory server.
-	 *
-	 * @param iocHostname
-	 *            the hostname of the IOC.
-	 * @throws NamingException
-	 * @throws LdapServiceException 
-	 */
-	public void refreshIocNameDefinition(final String iocHostname) throws NamingException, LdapServiceException {
-
-		// XXX: Why does this method have its own logic for finding the
-		// IocConnection object?
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			if ( thisContent.getHost().equals(iocHostname)) {
-				/*
-				 * in case that the IOC name was not properly stored in LDAP we need a way to reset the name
-				 */
-				final String[] iocNames =
-				    LdapServiceFacadeImpl.INSTANCE.getLogicalIocName(thisContent.getIocInetAddress(),
-				                                           iocHostname);
-				/*
-				 * these methods are synchronized in the subclass IocNameDefinitions
-				 */
-				thisContent.setLogicalIocName(iocNames[0]);
-				thisContent.setLdapIocName(iocNames[1]);
-				CentralLogger.getInstance().info(this, "Logical name of IOC " +
-						iocHostname + " refreshed, new name is: " + iocNames[0]);
-			}
-		}
-	}
-
-	public String[] getNodeNameArrayWithLogicalName() {
-		final List<String> nodeNames = new ArrayList<String>();
-
-		// just in case no enum is possible
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			nodeNames.add(thisContent.getHost() + "|"
-					+ thisContent.getLogicalIocName());
-		}
-		return nodeNames.toArray(new String[0]);
-
-	}
-
-	public String[] getNodeNameStatusArray() {
-		final List<String> nodeNames = new ArrayList<String>();
-
-		// just in case no enum is possible
-		final Enumeration<IocConnection> connections = this._connectionList.elements();
-		while (connections.hasMoreElements()) {
-			final IocConnection thisContent = connections.nextElement();
-			nodeNames.add(thisContent.getHost() + " | "
-					+ thisContent.getLogicalIocName() + "  "
-					+ thisContent.getCurrentConnectState() + "  "
-					+ thisContent.getCurrentSelectState());
-		}
-		return nodeNames.toArray(new String[0]);
-
-	}
+    @CheckForNull
+    private IocConnection getIocConnectionFromLogicalName(@Nonnull final String iocName) {
+        IocConnection result = null;
+        
+        Collection<IocConnection> iocConnections = _iocId2Connection.values();
+        for (IocConnection iocConnection : iocConnections) {
+            boolean found = iocConnection.getNames().getLogicalIocName().equals(iocName);
+            if (found) {
+                result = iocConnection;
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    @CheckForNull
+    private IocConnection getIocConnectionFromDnsName(@Nonnull final String iocName) {
+        IocConnection result = null;
+        
+        Collection<IocConnection> iocConnections = _iocId2Connection.values();
+        for (IocConnection iocConnection : iocConnections) {
+            boolean found = iocConnection.getInetAddress().getHostName().equals(iocName);
+            if (found) {
+                result = iocConnection;
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    @CheckForNull
+    private IocConnection getIocConnectionFromIpAddress(@Nonnull final String iocName) {
+        IocConnection result = null;
+        
+        Collection<IocConnection> iocConnections = _iocId2Connection.values();
+        for (IocConnection iocConnection : iocConnections) {
+            boolean found = iocConnection.getInetAddress().getHostAddress().equals(iocName);
+            if (found) {
+                result = iocConnection;
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    public void refreshIocNameDefinition(final String iocHostname) throws NamingException,
+                                                                  LdapServiceException {
+        
+        // XXX: Why does this method have its own logic for finding the
+        // IocConnection object?
+        final Enumeration<IocConnection> connections = this._iocId2Connection.elements();
+        while (connections.hasMoreElements()) {
+            final IocConnection iocConnection = connections.nextElement();
+            if (iocConnection.getNames().getHostName().equals(iocHostname)) {
+                final IocNameDefinitions iocNameDefinitions = ServiceLocator
+                        .getService(ILdapServiceFacade.class)
+                        .newIocNameDefinition(iocConnection.getInetAddress());
+                iocConnection.refreshIocNameDefinitions(iocNameDefinitions);
+                LOG.info("Logical name of IOC " + iocHostname + " refreshed, new name is: "
+                        + iocNameDefinitions.getLogicalIocName());
+            }
+        }
+    }
+    
+    public String[] getNodeNameStatusArray() {
+        final List<String> nodeNames = new ArrayList<String>();
+        
+        // just in case no enum is possible
+        final Enumeration<IocConnection> connections = this._iocId2Connection.elements();
+        while (connections.hasMoreElements()) {
+            final IocConnection thisContent = connections.nextElement();
+            nodeNames.add(thisContent.getNames().getHostName() + " | " + thisContent.getNames().getLogicalIocName() + "  "
+                    + thisContent.getCurrentConnectState() + "  "
+                    + thisContent.getCurrentSelectState());
+        }
+        return nodeNames.toArray(new String[0]);
+        
+    }
+    
+    public void incNoOfIncomingMessages() {
+        totalNumberOfIncomingMessages++;
+    }
+    
+    public void incNoOfOutgoingMessages() {
+        totalNumberOfOutgoingMessages++;
+    }
 
 }

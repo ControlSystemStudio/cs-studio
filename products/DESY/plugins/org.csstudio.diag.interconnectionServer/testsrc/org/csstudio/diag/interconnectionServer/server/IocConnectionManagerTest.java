@@ -22,42 +22,71 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.net.InetAddress;
 
-import org.junit.Ignore;
+import org.csstudio.servicelocator.ServiceLocator;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author Joerg Rathlev
  */
 public class IocConnectionManagerTest {
+    
+    private ILdapServiceFacade _ldapServiceFacade;
 
-	@Test
-	@Ignore("Test used dedicated methods in production code.")
-	public void testGetIocConnection() throws Exception {
-//		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
-//		Mockito.when(directory.getLogicalIocName(InetAddress.getByName("127.0.0.1"), "localhost"))
-//			.thenReturn(new String[] {"logicalName", "ldapName"});
+    @Before
+    public void setUp() {
+        _ldapServiceFacade = mock(ILdapServiceFacade.class);
+        ServiceLocator.registerService(ILdapServiceFacade.class, _ldapServiceFacade);
+    }
+    
+    @Test
+    public void testGetIocConnection() throws Exception {
+        final IocConnectionManager cm = new IocConnectionManager();
+        final InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+        final String hostname = ipAddress.getHostName();
+        
+        // mock the ldap lookup
+        final IocNameDefinitions iocNameDefinitions = new IocNameDefinitions(ipAddress, false, null, "logicalName", "ldapName"); 
+        when(_ldapServiceFacade.newIocNameDefinition(ipAddress)).thenReturn(iocNameDefinitions);
+        
+        // this call actually stores the ioc connection in the ioc connection manager
+        final IocConnection conn = cm.getIocConnection(ipAddress, 123);
+        assertNotNull(conn);
+        assertEquals(hostname, conn.getNames().getHostName());
+        assertEquals("logicalName", conn.getNames().getLogicalIocName());
+        assertEquals("ldapName", conn.getNames().getLdapIocName());
+        
+        // Multiple requests must return the same IocConnection instance
+        assertSame(conn, cm.getIocConnection(ipAddress, 123));
+    }
 
-	    // FIXME (bknerr) : rewrite the test that it does not utilise dedicated 'test' methods in the
-	    // production code
-		final IocConnectionManager cm = IocConnectionManager.INSTANCE;
-		final InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
-		final String hostname = ipAddress.getHostName();
-		final IocConnection conn = cm.getIocConnection(ipAddress, 123);
-		assertNotNull(conn);
-		assertEquals(hostname, conn.getHost());
-		assertEquals(123, conn.getPort());
-		assertEquals("logicalName", conn.getLogicalIocName());
-		assertEquals("ldapName", conn.getLdapIocName());
+    @Test
+    public void testGetIocConnectionFromName() throws Exception {
+        final IocConnectionManager cm = new IocConnectionManager();
+        final InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+        final String hostname = ipAddress.getHostName();
 
-		// Multiple requests must return the same IocConnection instance
-		assertSame(conn, cm.getIocConnection(ipAddress, 123));
-	}
+        // mock the ldap lookup
+        final IocNameDefinitions iocNameDefinitions = new IocNameDefinitions(ipAddress, false, null, "someLogicalName", "ldapName"); 
+        when(_ldapServiceFacade.newIocNameDefinition(ipAddress)).thenReturn(iocNameDefinitions);
+        
+        // this call actually stores the ioc connection in the ioc connection manager
+        final IocConnection storedConnection = cm.getIocConnection(ipAddress, 123);
+
+        IocConnection retrievedConnection = cm.getIocConnectionFromName("someLogicalName");
+        assertSame(retrievedConnection, storedConnection);
+
+        retrievedConnection = cm.getIocConnectionFromName(hostname);
+        assertSame(retrievedConnection, storedConnection);
+
+        retrievedConnection = cm.getIocConnectionFromName("127.0.0.1");
+        assertSame(retrievedConnection, storedConnection);
+    }
 
 }

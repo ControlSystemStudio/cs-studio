@@ -22,10 +22,11 @@
 
 package org.csstudio.diag.interconnectionServer.internal.management;
 
-import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
+import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.servicelocator.ServiceLocator;
 
 /**
  * Management command to get the list of IOCs connected to the Interconnection
@@ -39,7 +40,7 @@ public class GetListOfIocs implements IManagementCommand {
 	 * {@inheritDoc}
 	 */
 	public CommandResult execute(final CommandParameters parameters) {
-		final String[] names = IocConnectionManager.INSTANCE.getNodeNameStatusArray();
+		final String[] names = ServiceLocator.getService(IIocConnectionManager.class).getNodeNameStatusArray();
 		final StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			if (i != 0) {

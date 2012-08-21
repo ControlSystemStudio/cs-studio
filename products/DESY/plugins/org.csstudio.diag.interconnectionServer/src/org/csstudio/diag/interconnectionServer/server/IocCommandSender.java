@@ -25,15 +25,15 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-
-import javax.naming.NamingException;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The runnable which actually is sending the command.
@@ -42,10 +42,8 @@ import org.eclipse.core.runtime.Platform;
  *
  */
 public class IocCommandSender implements Runnable {
+    private static final Logger LOG = LoggerFactory.getLogger(IocCommandSender.class);
 
-	private String hostName = "iocNodeName";
-	private InetAddress iocInetAddress = null;
-	private int port = 0;
 	private String command = "NONE";
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
@@ -55,56 +53,33 @@ public class IocCommandSender implements Runnable {
 
 	/**
 	 * Send a command to the IOC in an independent thread from command thread pool.
-	 * @param hostName IOC name.
-	 * @param port Port to be used.
-	 * @param command One of the supported commands.
-	 */
-	public IocCommandSender ( final InetAddress iocInetAddress, final int port, final String command) {
-
-		this.id = InterconnectionServer.getInstance().getSendCommandId();
-		this.iocInetAddress = iocInetAddress;
-		this.port = port;
-		this.command = command;
-
-		// XXX: This has to use the data port from the preferences because that
-		// is (hopefully) the port from which the IOC sends messages and under
-		// which it is stored in the IocConnectionManager. This should be
-		// refactored and the IocConnection object passed to this object instead
-		// of this object having to search in in this way.
-		final int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
-				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		try {
-            iocConnection = IocConnectionManager.INSTANCE.getIocConnection(iocInetAddress, dataPort);
-        } catch (final NamingException e) {
-            CentralLogger.getInstance().fatal(this, "LDAP name could not be composed");
-            throw new IllegalArgumentException("LDAP name could not be composed", e);
-        }
-
-		if (this.hostName == null || this.hostName.equals(""))  {
-			// FIXME: This is not sufficient for error handling. The command
-			// will still be runnable! Throw an exception instead.
-			CentralLogger.getInstance().fatal(this, "Wrong HostName! Host: " + hostName);
-			throw new IllegalArgumentException("Wrong HostName! Host: " + hostName);
-		}
-	}
-
-	/**
-	 * Send a command to the IOC in an independent thread from command thread pool.
+	 * This is marked as a retry and only used internally.
 	 * @param connection the IOC connection
 	 * @param command The command to be sent
-	 * @param retry TRUE if it's a retry
+	 * @param retry true if this is a retry
 	 */
-	public IocCommandSender (final IocConnection connection, final String command, final boolean retry) {
-		this.id = InterconnectionServer.getInstance().getSendCommandId();
+	private IocCommandSender (final IocConnection connection, final String command, final boolean retry) {
+		this.id = ServiceLocator.getService(IInterconnectionServer.class).nextSendCommandId();
 		this.retry = retry;
 		this.command = command;
-
-		this.hostName = connection.getHost();
-		this.iocInetAddress = connection.getIocInetAddress();
-		this.port = connection.getPort();
 		this.iocConnection = connection;
 	}
+	
+	
+	private String getHostname() {
+	    return iocConnection.getNames().getHostName();
+	}
 
+    /**
+     * Send a command to the IOC in an independent thread from command thread pool.
+     * @param connection the IOC connection (used to maintain its state)
+     * @param command the command to be sent
+     */
+    public IocCommandSender(final IocConnection connection, final String command) {
+        this(connection, command, false);
+    }
+
+	
 	public void run() {
 		byte[] preparedMessage = null;
 		final byte[] buffer	=  new byte[1024];
@@ -131,10 +106,13 @@ public class IocCommandSender implements Runnable {
 //				statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
 //			}
 
-			CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+            LOG.info("Waiting " + statusMessageDelay + " until sending "
+                    + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC "
+                    + iocConnection.getNames().getLogicalIocName() + " (" + getHostname() + ")");
 			try {
 				Thread.sleep( statusMessageDelay);
 			} catch (final InterruptedException e) {
+			    // do not care
 			}
 		}
 
@@ -142,12 +120,13 @@ public class IocCommandSender implements Runnable {
 		{
 			socket = new DatagramSocket( );	// do NOT specify the port
 
-			final DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, iocInetAddress, PreferenceProperties.COMMAND_PORT_NUMBER);
+			final DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, iocConnection.getInetAddress(), commandPort());
 
-			CentralLogger.getInstance().debug(this, "Sending packet to host: " + hostName + "; packet: " + new String(preparedMessage));
+			LOG.debug("Sending packet to host: " + getHostname() + "; packet: " + new String(preparedMessage));
 			socket.send(newPacket);
 
-			try {
+			IInterconnectionServer interconnectionServer = ServiceLocator.getService(IInterconnectionServer.class);
+            try {
 				/*
 				 * set timeout period to TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND seconds
 				 */
@@ -165,22 +144,26 @@ public class IocCommandSender implements Runnable {
 				 * create log message
 				 * depending on whether this is a retry - or not
 				 */
-				if ( this.retry) {
-					CentralLogger.getInstance().warn(this, "Retry-Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " +
-							iocConnection.getLogicalIocName());
-				} else {
-					CentralLogger.getInstance().info(this, "Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " +
-							iocConnection.getLogicalIocName());
-				}
+                if (this.retry) {
+                    LOG.warn("Retry-Timeout ("
+                            + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND
+                            + ") mS  sending command: " + command + " to IOC: "
+                            + iocConnection.getNames().getLogicalIocName());
+                } else {
+                    LOG.info("Timeout ("
+                            + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND
+                            + ") mS  sending command: " + command + " to IOC: "
+                            + iocConnection.getNames().getLogicalIocName());
+                }
 
 				/*
 				 * retry to send the command just ONCE!
 				 */
 				if (!this.retry) {
 					final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection, this.command, true);
-					InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
-					CentralLogger.getInstance().info(this, "Retry to send command: " + command + " to IOC: " +
-							iocConnection.getLogicalIocName());
+					interconnectionServer.getCommandExecutor().execute(sendCommandToIoc);
+					LOG.info("Retry to send command: " + command + " to IOC: " +
+							iocConnection.getNames().getLogicalIocName());
 				}
 			}
 
@@ -190,7 +173,7 @@ public class IocCommandSender implements Runnable {
 				 * for now we only check for the string 'DONE'
 				 */
 				answerMessage = new String(packet.getData(), 0, packet.getLength());
-				CentralLogger.getInstance().debug(this, "Received answer from host: " + hostName + "; packet: " + answerMessage);
+				LOG.debug("Received answer from host: " + getHostname() + "; packet: " + answerMessage);
 
 				/*
 				 * check whether this message contains the mandatory string: REPLY
@@ -204,7 +187,7 @@ public class IocCommandSender implements Runnable {
 			}
 
 			if ( TagList.getReplyType(answer) == TagList.REPLY_TYPE_DONE) {
-				CentralLogger.getInstance().info(this, "Command accepted by IOC: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")" + " command: " + command);
+				LOG.info("Command accepted by IOC: " + iocConnection.getNames().getLogicalIocName() + " (" + getHostname()+ ")" + " command: " + command);
 			} else if (TagList.getReplyType(answer) == TagList.REPLY_TYPE_SELECTED) {
 				/*
 				 * did the select state change?
@@ -213,7 +196,7 @@ public class IocCommandSender implements Runnable {
 					//remember we're selected
 					iocConnection.setSelectState(true);
 					//create log message
-					CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					LOG.warn("IOC SELECTED this InterConnectionServer: " + iocConnection.getNames().getLogicalIocName() + " (" + getHostname()+ ")");
 					/*
 					 * OK - we are selected - so:
 					 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
@@ -225,39 +208,30 @@ public class IocCommandSender implements Runnable {
 						 * we'll have to get all alarm-states from the IOC
 						 */
 					    try {
-					        final IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-					        InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+					        final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+					        interconnectionServer.getCommandExecutor().execute(sendCommandToIoc);
 					        iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
 					        iocConnection.setDidWeSetAllChannelToDisconnect(false);
-					        CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+					        LOG.info("IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
 					    } catch (final IllegalArgumentException e) {
-					        CentralLogger.getInstance().fatal(this, "Creation of command sender failed:\n" + e.getMessage());
+					        LOG.error("Creation of command sender failed:\n" + e.getMessage());
 					    }
 					}
 					/*
 					 * send JMS message - we are selected
 					 */
-					/*
-					 * get host name of interconnection server
-					 */
-					final String localHostName = InterconnectionServer.getInstance().getLocalHostName();
-//					try {
-//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-//						localHostName = localMachine.getHostName();
-//					}
-//					catch (java.net.UnknownHostException uhe) {
-//					}
+					final String localHostName = interconnectionServer.getLocalHostName();
 					String selectMessage = "SELECTED";
 					if (iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
 						selectMessage = "SELECTED - switch over";
 					}
 					JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",					// name
 							localHostName, 														// value
 							JmsMessage.SEVERITY_NO_ALARM, 										// severity
 							selectMessage, 														// status
-							hostName, 															// host
+							getHostname(), 															// host
 							null, 																// facility
 							"virtual channel");
 					// send command to IOC - get ALL alarm states
@@ -275,12 +249,12 @@ public class IocCommandSender implements Runnable {
 					if ( !iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts() ||
 							!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
 									iocConnection.isGetAllAlarmsOnSelectChange() )  {
-						final IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+						final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						interconnectionServer.getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false); // one time is enough
-						CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
+						LOG.info("This is a fail over from one IC-Server to this one - get an update on all alarms!");
 					} else {
-						CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
+						LOG.info("Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
 					}
 				}
 			} else if (TagList.getReplyType(answer) == TagList.REPLY_TYPE_NOT_SELECTED) {
@@ -291,27 +265,18 @@ public class IocCommandSender implements Runnable {
 
 				if (iocConnection.isSelectState()) {
 					//create log message
-					CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					LOG.warn("IOC DE-selected this InterConnectionServer: " + iocConnection.getNames().getLogicalIocName() + " (" + getHostname()+ ")");
 					/*
 					 * send JMS message - we are NOT selected
 					 */
-					/*
-					 * get host name of interconnection server
-					 */
-					final String localHostName = InterconnectionServer.getInstance().getLocalHostName();
-//					try {
-//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-//						localHostName = localMachine.getHostName();
-//					}
-//					catch (java.net.UnknownHostException uhe) {
-//					}
+					final String localHostName = interconnectionServer.getLocalHostName();
 					JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",					// name
 							localHostName, 														// value
 							JmsMessage.SEVERITY_MINOR, 											// severity
 							"NOT-SELECTED", 													// status
-							hostName, 															// host
+							getHostname(), 															// host
 							null, 																// facility
 							"virtual channel");
 					}
@@ -325,27 +290,18 @@ public class IocCommandSender implements Runnable {
 
 				if (iocConnection.isSelectState()) {
 					//create log message
-					CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					LOG.warn("IOC not reachable by this InterConnectionServer: " + iocConnection.getNames().getLogicalIocName() + " (" + getHostname()+ ")");
 					/*
 					 * send JMS message - we are NOT selected
 					 */
-					/*
-					 * get host name of interconnection server
-					 */
-					final String localHostName = InterconnectionServer.getInstance().getLocalHostName();
-//					try {
-//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-//						localHostName = localMachine.getHostName();
-//					}
-//					catch (java.net.UnknownHostException uhe) {
-//					}
+					final String localHostName = interconnectionServer.getLocalHostName();
 					JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",					// name
 							localHostName, 														// value
 							JmsMessage.SEVERITY_MINOR, 											// severity
 							"NOT-SELECTED", 													// status
-							hostName, 															// host
+							getHostname(), 															// host
 							null, 																// facility
 							"virtual channel");
 				}
@@ -358,7 +314,7 @@ public class IocCommandSender implements Runnable {
 				 * because it already was in the requested state. In that case,
 				 * a different log message should be generated.
 				 */
-				CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")" + " command: " + command + " answer: " + answer);
+				LOG.info("Command not accepted by IOC: " + iocConnection.getNames().getLogicalIocName() + " (" + getHostname()+ ")" + " command: " + command + " answer: " + answer);
 			}
 		}
 		catch ( /* UnknownHostException is a */ final IOException e )
@@ -373,11 +329,24 @@ public class IocCommandSender implements Runnable {
 		}
 	}
 
-	private byte[] prepareMessage ( final String command, final int id) {
+	private byte[] prepareMessage ( final String cmd, final int ident) {
 		String message = null;
 
-		message = "COMMAND=" + command + ";" + "ID=" + id + ";";
+		message = "COMMAND=" + cmd + ";" + "ID=" + ident + ";";
 		message = message + "\0";
 		return message.getBytes();
 	}
+	
+    /**
+     * Returns the command port from the preferences.
+     *
+     * @return the port.
+     */
+    private int commandPort() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Activator.PLUGIN_ID,
+                PreferenceConstants.IOC_COMMAND_PORT_NUMBER, 0, null);
+    }
+
+
 }

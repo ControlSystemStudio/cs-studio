@@ -22,10 +22,11 @@
 
 package org.csstudio.diag.interconnectionServer.internal.management;
 
-import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
+import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.servicelocator.ServiceLocator;
 
 /**
  * Management command which returns some statistics about the IOC connections.
@@ -38,7 +39,7 @@ public class GetIocStatistics implements IManagementCommand {
 	 * {@inheritDoc}
 	 */
 	public CommandResult execute(final CommandParameters parameters) {
-		final String result = IocConnectionManager.INSTANCE.getStatisticAsString();
+		final String result = ServiceLocator.getService(IIocConnectionManager.class).getStatisticAsString();
 		return CommandResult.createMessageResult(result);
 	}
 

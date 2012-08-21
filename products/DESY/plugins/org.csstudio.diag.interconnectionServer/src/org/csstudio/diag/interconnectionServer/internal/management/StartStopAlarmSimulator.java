@@ -35,6 +35,7 @@ import org.csstudio.platform.management.IManagementCommand;
 public final class StartStopAlarmSimulator implements IManagementCommand {
 
 	public StartStopAlarmSimulator() {
+	    // nothing to do
 	}
 
 	/**

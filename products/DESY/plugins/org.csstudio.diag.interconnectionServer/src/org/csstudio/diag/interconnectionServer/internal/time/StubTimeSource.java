@@ -64,7 +64,8 @@ public final class StubTimeSource extends TimeSource {
 	 * 
 	 * @return the time in milliseconds.
 	 */
-	public long now() {
+	@Override
+    public long now() {
 		return _time;
 	}
 }
