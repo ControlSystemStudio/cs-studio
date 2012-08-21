@@ -42,7 +42,7 @@ import javax.jms.Session;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.IocControlMessageListener;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;

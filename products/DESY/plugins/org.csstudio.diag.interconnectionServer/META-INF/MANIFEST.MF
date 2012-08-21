@@ -22,6 +22,7 @@ Require-Bundle: org.csstudio.platform.libs.jms,
  org.slf4j.bridge;bundle-version="1.6.1",
  org.csstudio.servicelocator;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.csstudio.domain.common;bundle-version="1.0.0",
  org.csstudio.desy.startuphelper;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning

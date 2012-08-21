@@ -23,12 +23,12 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import java.util.concurrent.ExecutorService;
 
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Session;
 
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
+
 
 public interface IInterconnectionServer {
     boolean stopIcServer();
