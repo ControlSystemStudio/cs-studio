@@ -33,8 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Aggregates the connection states reported by multiple interconnection servers
@@ -43,7 +43,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Joerg Rathlev
  */
 public class IocMonitor {
-	
+	private static final Logger LOG = LoggerFactory.getLogger(IocMonitor.class);
+    
 	private List<IIocConnectionReporter> _reporters;
 	private final List<IReportListener> _reportListeners;
 	private MonitorReport _report;
@@ -122,6 +123,7 @@ public class IocMonitor {
 	 * services and then update its state based on the reports received.
 	 */
 	public void update() {
+	    LOG.trace("update called");
 		List<String> interconnectionServers = new ArrayList<String>();
 		List<MonitorItem> items = new ArrayList<MonitorItem>();
 		
@@ -138,37 +140,38 @@ public class IocMonitor {
 				 * that here, we can only display that an error occurred, but
 				 * we don't know on which server.
 				 */
-				CentralLogger.getInstance().error(this,
-						"Could not retrieve report from one of the " +
-						"interconnection servers.", e);
+                LOG.error("Could not retrieve report from one of the " + "interconnection servers.",
+                          e);
 			}
 		}
 
-		/*
-		 * The code below aggregates the reports from the different
-		 * interconnection servers and saves the information in instances of
-		 * type MonitorItem, which contain the information grouped by IOC (one
-		 * MonitorItem per IOC).
-		 */
-		Map<String, MonitorItem> iocStates = new HashMap<String, MonitorItem>();
-		for (IocConnectionReport report : reports) {
-			String server = report.getReportingServer();
-			interconnectionServers.add(server);
-			List<IocConnectionReportItem> reportItems = report.getItems();
-			for (IocConnectionReportItem item : reportItems) {
-				String iocHostname = item.getIocHostname();
-				String iocName = item.getIocName();
-				IocConnectionState state = item.getConnectionState();
-				MonitorItem iocState = iocStates.get(iocName);
-				if (iocState == null) {
-					iocState = new MonitorItem(iocHostname, iocName);
-					iocStates.put(iocName, iocState);
-				}
-				iocState.setIcsConnectionState(server, state);
-			}
-		}
-		items.addAll(iocStates.values());
+		Collection<MonitorItem> iocStates = createStates(interconnectionServers, reports);
+        items.addAll(iocStates);
 		_report = new MonitorReport(interconnectionServers, items);
 		fireReportUpdatedEvent();
 	}
+
+	/*
+	 * The code below aggregates the reports from the different
+	 * interconnection servers and saves the information in instances of
+	 * type MonitorItem, which contain the information grouped by IOC (one
+	 * MonitorItem per IOC).
+	 */
+    private Collection<MonitorItem> createStates(List<String> interconnectionServers,
+                                                  List<IocConnectionReport> reports) {
+        Map<String, MonitorItem> hostname2item = new HashMap<String, MonitorItem>(); // map to sort out multiples
+        for (IocConnectionReport report : reports) {
+            interconnectionServers.add(report.getReportingServer());
+            for (IocConnectionReportItem item : report.getItems()) {
+                MonitorItem iocState = hostname2item.get(item.getIocHostname());
+                if (iocState == null) {
+                    iocState = new MonitorItem(item.getIocHostname(), item.getIocName());
+                    hostname2item.put(item.getIocHostname(), iocState);
+                }
+                iocState.setIcsConnectionState(report.getReportingServer(), item.getConnectionState());
+            }
+        }
+        return hostname2item.values();
+    }
+
 }

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
@@ -38,6 +37,8 @@ import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tracks the available interconnection servers via XMPP, retrieves their
@@ -53,7 +54,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 * ID of an XMPP user, that user is recognized as an interconnection server
 	 * and tracked by this tracker.
 	 */
-	private static final String ICSERVER_NAME = "icserver-alarm";
+	private static final String ICSERVER_NAME = "icserver";
 
 	/**
 	 * The delay in milliseconds before the reporter service is requested from
@@ -64,7 +65,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	private final IocMonitor _iocMonitor;
 	private ISessionService _sessionService;
 	private final Map<ID, IIocConnectionReporter> _interconnectionServers;
-	private final CentralLogger _log = CentralLogger.getInstance();
+	private static final Logger LOG = LoggerFactory.getLogger(InterconnectionServerTracker.class);
 
 	/**
 	 * Creates a new tracker.
@@ -87,7 +88,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 		_sessionService = sessionService;
 		IRosterManager rosterManager = _sessionService.getRosterManager();
 		if (rosterManager != null) {
-			_log.debug(this, "ISessionService set, initializing");
+			LOG.debug("ISessionService set, initializing");
 			rosterManager.addPresenceListener(this);
 			initializeFromRoster();
 		}
@@ -101,7 +102,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 */
 	void unbindService(ISessionService sessionService) {
 		if (_sessionService == sessionService) {
-			_log.debug(this, "ISessionService removed");
+			LOG.debug("ISessionService removed");
 			try {
 				IRosterManager rosterManager = _sessionService.getRosterManager();
 				if (rosterManager != null) {
@@ -118,7 +119,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 * available and adds them to the list of tracked servers.
 	 */
 	private void initializeFromRoster() {
-		_log.debug(this, "Searching roster for servers which are already online");
+		LOG.debug("Searching roster for servers which are already online");
 		IRoster roster = _sessionService.getRoster();
 		if (roster != null) {
 			@SuppressWarnings("unchecked")
@@ -171,7 +172,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 * {@inheritDoc}
 	 */
 	public void handlePresence(ID fromID, IPresence presence) {
-		_log.debug(this, "Received presence event from: " + fromID + ", presence: " + presence);
+		LOG.debug("Received presence event from: " + fromID + ", presence: " + presence);
 		if (isInterconnectionServerID(fromID)) {
 			if (presence.getType() == IPresence.Type.AVAILABLE) {
 				handleInterconnectionServerAvailable(fromID);
@@ -190,7 +191,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	private void handleInterconnectionServerAvailable(ID id) {
 		synchronized (_interconnectionServers) {
 			if (!_interconnectionServers.containsKey(id)) {
-				_log.debug(this, "Server is now available: " + id);
+				LOG.debug("Server is now available: " + id);
 				try {
 					Thread.sleep(GET_REPORTER_SERVICE_DELAY);
 				} catch (InterruptedException e) {
@@ -222,10 +223,10 @@ class InterconnectionServerTracker implements IPresenceListener {
 					IIocConnectionReporter.class,
 					new ID[] {id});
 		if (remoteServiceProxies.size() > 0) {
-			_log.debug(this, "Found IIocConnectionReporter service offered by: " + id);
+			LOG.debug("Found IIocConnectionReporter service offered by: " + id);
 			return remoteServiceProxies.get(0);
 		} else {
-			_log.info(this, "ICS does not offer IIocConnectionReporter service: " + id);
+			LOG.info("ICS does not offer IIocConnectionReporter service: " + id);
 			return null;
 		}
 	}
@@ -240,7 +241,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 		synchronized (_interconnectionServers) {
 			IIocConnectionReporter service = _interconnectionServers.remove(id);
 			if (service != null) {
-				_log.debug(this, "Server no longer available: " + id);
+				LOG.debug("Server no longer available: " + id);
 				_iocMonitor.setReporterServices(_interconnectionServers.values());
 			}
 		}
