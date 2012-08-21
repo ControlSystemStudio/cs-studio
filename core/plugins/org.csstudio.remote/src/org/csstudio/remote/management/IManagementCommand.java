@@ -20,20 +20,22 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 /**
- * Receiver for the results returned by management commands.
+ * A management command. This interface must be implement by bundles that want
+ * to offer management commands via the management command service.
  * 
  * @author Joerg Rathlev
  */
-public interface IResultReceiver {
+public interface IManagementCommand {
 
 	/**
-	 * Processes the specified result.
+	 * Executes this command.
 	 * 
-	 * @param result
-	 *            a result returned by a management command.
+	 * @param parameters
+	 *            the parameters for the command. May be null if the command is
+	 *            called without parameters.
 	 */
-	public void processResult(CommandResult result);
+	public CommandResult execute(CommandParameters parameters);
 }

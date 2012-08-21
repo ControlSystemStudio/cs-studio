@@ -31,4 +31,4 @@
  * extension point.
  * </p>
  */
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;

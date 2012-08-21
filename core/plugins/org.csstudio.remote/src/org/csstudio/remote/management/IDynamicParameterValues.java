@@ -20,65 +20,20 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
-
-import java.io.Serializable;
+package org.csstudio.remote.management;
 
 /**
- * Value of a command parameter of type {@link CommandParameterType#ENUMERATION}
- * or {@link CommandParameterType#DYNAMIC_ENUMERATION}.
+ * Provides the enumeration values for a
+ * <code>dynamicEnumerationParameter</code>.
  * 
  * @author Joerg Rathlev
  */
-public final class CommandParameterEnumValue implements Serializable {
-    
-    private static final long serialVersionUID = 2L;
-    
-    private final String _label;
-    
-    private final Serializable _value;
-    
-    /**
-     * Creates a new enumeration value.
-     * 
-     * @param value
-     *            the value. Must not be null.
-     * @param label
-     *            the label to be displayed in the user interface for this
-     *            value. Must not be null.
-     */
-    public CommandParameterEnumValue(final Serializable value, final String label) {
-        if ((value == null) || (label == null)) {
-            throw new NullPointerException("value and label must not be null");
-        }
-        
-        _value = value;
-        _label = label;
-    }
-    
-    /**
-     * Returns the value.
-     * 
-     * @return the value.
-     */
-    public Serializable getValue() {
-        return _value;
-    }
-    
-    /**
-     * Returns the label.
-     * 
-     * @return the label.
-     */
-    public String getLabel() {
-        return _label;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return _label;
-    }
+public interface IDynamicParameterValues {
+
+	/**
+	 * Returns the enumeration values for the dynamic enumeration parameter.
+	 * 
+	 * @return the enumeration values.
+	 */
+	public CommandParameterEnumValue[] getEnumerationValues();
 }

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 import java.util.HashMap;
 import java.util.Map;

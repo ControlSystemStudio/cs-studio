@@ -20,20 +20,34 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 /**
- * Provides the enumeration values for a
- * <code>dynamicEnumerationParameter</code>.
+ * The type of a management command parameter. 
  * 
  * @author Joerg Rathlev
  */
-public interface IDynamicParameterValues {
+public enum CommandParameterType {
 
 	/**
-	 * Returns the enumeration values for the dynamic enumeration parameter.
-	 * 
-	 * @return the enumeration values.
+	 * Type for string parameters.
 	 */
-	public CommandParameterEnumValue[] getEnumerationValues();
+	STRING,
+	
+	/**
+	 * Type for integer parameters.
+	 */
+	INTEGER,
+	
+	/**
+	 * Type for parameters with an enumerated set of values. 
+	 */
+	ENUMERATION,
+	
+	/**
+	 * Type for parameters with an enumerated set of values which is dynamically
+	 * queried from the management service. 
+	 */
+	DYNAMIC_ENUMERATION,
+	;
 }

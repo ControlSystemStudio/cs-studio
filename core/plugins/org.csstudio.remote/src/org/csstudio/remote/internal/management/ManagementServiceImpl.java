@@ -20,22 +20,22 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.internal.management;
+package org.csstudio.remote.internal.management;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameterDefinition;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.CommandParameterType;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IDynamicParameterValues;
-import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameterDefinition;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.CommandParameterType;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IDynamicParameterValues;
+import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;

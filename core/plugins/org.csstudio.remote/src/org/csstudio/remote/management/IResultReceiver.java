@@ -20,34 +20,20 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 /**
- * The type of a management command parameter. 
+ * Receiver for the results returned by management commands.
  * 
  * @author Joerg Rathlev
  */
-public enum CommandParameterType {
+public interface IResultReceiver {
 
 	/**
-	 * Type for string parameters.
+	 * Processes the specified result.
+	 * 
+	 * @param result
+	 *            a result returned by a management command.
 	 */
-	STRING,
-	
-	/**
-	 * Type for integer parameters.
-	 */
-	INTEGER,
-	
-	/**
-	 * Type for parameters with an enumerated set of values. 
-	 */
-	ENUMERATION,
-	
-	/**
-	 * Type for parameters with an enumerated set of values which is dynamically
-	 * queried from the management service. 
-	 */
-	DYNAMIC_ENUMERATION,
-	;
+	public void processResult(CommandResult result);
 }
