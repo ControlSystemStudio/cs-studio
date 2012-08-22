@@ -155,11 +155,11 @@ public class ConfigReplicator implements AmsConstants {
 	    
 	    Log.log(Log.INFO, "Creating memory cache database.");
 	    try {
-	        // 1.8.0.10:
+	        // HSQLDB 1.8.0.10:
 	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
 	        sqlFile.execute(cacheDb, false);
 
-	        // 2.9.0:
+	        // HSQLDB 2.2.9.0:
 	        // SqlFile sqlFile = new SqlFile(sqlScript);
 	        // sqlFile.setConnection(cacheDb);
 	        // sqlFile.execute();
