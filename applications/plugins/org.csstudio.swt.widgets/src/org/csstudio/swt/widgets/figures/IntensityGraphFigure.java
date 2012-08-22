@@ -10,15 +10,14 @@ package org.csstudio.swt.widgets.figures;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.ByteArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.datadefinition.DoubleArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.FloatArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.IPrimaryArrayWrapper;
-import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.datadefinition.IntArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.LongArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ShortArrayWrapper;
@@ -30,13 +29,17 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
+import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -44,6 +47,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -54,31 +58,212 @@ import org.eclipse.swt.widgets.Display;
  */
 public class IntensityGraphFigure extends Figure implements Introspectable {
 	
+	/**
+	 * Color depth of the image data in RGB1 mode, since SWT only support 8 bit color depth,
+	 * it has to convert all data to [0,255].
+	 * @author Xihui Chen
+	 *
+	 */
+	public enum ColorDepth {
+		BIT8("8 bit"), //No need to convert
+		BIT16("16 bit"), //Convert by >>8
+		BIT24("24 bit"), //Convert by >>16
+		BIT30("30 bit"), //Convert by >>22
+		SCALE("Scaled to [Max, Min]"), //Convert by (x-min)/(max-min)*255
+		LOWER8BIT("Use only lower 8 bits"); //Convert by &0xFF
+
+		private ColorDepth(String description) {
+			this.description = description;
+		}
+
+		private String description;
+
+		@Override
+		public String toString() {
+			return description;
+		}
+
+		public static String[] stringValues() {
+			String[] sv = new String[values().length];
+			int i = 0;
+			for (ColorDepth p : values())
+				sv[i++] = p.toString();
+			return sv;
+		}
+	}
+	
 	private static final int MAX_ARRAY_SIZE = 10000000;
 
+	class SinglePixelProfileCrossHair extends Figure {
+		/**
+		 * Center coordinates 
+		 */
+		private int crossX, crossY;
+		
+		private boolean inDefaultPosition = true;
+		
+		private Polyline hLine, vLine;
+		
+		private Figure crossPoint;
+		
+		public SinglePixelProfileCrossHair() {
+			hLine = new Polyline();
+			hLine.setCursor(Cursors.SIZENS);
+			hLine.setForegroundColor(ColorConstants.yellow);
+			hLine.setTolerance(3);
+			hLine.addMouseMotionListener(new MouseMotionListener.Stub(){
+				@Override
+				public void mouseDragged(MouseEvent me) {
+					setCrossPosition(crossX, me.y);
+					me.consume();
+				}
+			});
+			hLine.addMouseListener(new MouseListener.Stub(){
+				@Override
+				public void mousePressed(MouseEvent me) {
+					me.consume();
+				}
+			});
+			vLine = new Polyline();
+			vLine.setCursor(Cursors.SIZEWE);
+			vLine.setForegroundColor(ColorConstants.yellow);
+			vLine.setTolerance(3);
+			vLine.addMouseListener(new MouseListener.Stub(){
+				@Override
+				public void mousePressed(MouseEvent me) {
+					me.consume();
+				}
+			});
+			vLine.addMouseMotionListener(new MouseMotionListener.Stub(){
+				@Override
+				public void mouseDragged(MouseEvent me) {
+					setCrossPosition(me.x, crossY);
+					me.consume();
+				}
+			});
+			
+			crossPoint = new Figure();
+			crossPoint.setCursor(Cursors.SIZEALL);
+			crossPoint.addMouseListener(new MouseListener.Stub(){
+				@Override
+				public void mousePressed(MouseEvent me) {
+					me.consume();
+				}
+			});
+			crossPoint.addMouseMotionListener(new MouseMotionListener.Stub(){
+				@Override
+				public void mouseDragged(MouseEvent me) {
+					setCrossPosition(me.x, me.y);
+					me.consume();
+				}
+			});
+			add(hLine);
+			add(vLine);	
+			add(crossPoint);
+			
+		}
+		
+		@Override
+		protected void layout() {
+			Rectangle bounds = getBounds();
+			if(inDefaultPosition){
+				crossX = bounds.x + bounds.width/2;
+				crossY = bounds.y + bounds.height/2;
+			}
+			hLine.setPoints(new PointList(new int[]{bounds.x,crossY, bounds.width+bounds.x, crossY}));
+			vLine.setPoints(new PointList(new int[]{crossX, bounds.y, crossX, bounds.y + bounds.height}));
+			crossPoint.setBounds(new Rectangle(crossX-5, crossY-5, 10,10));
+		}
+		
+		public void setCrossHairColor(Color crossHairColor) {
+			hLine.setForegroundColor(crossHairColor);
+			vLine.setForegroundColor(crossHairColor);
+		}
+		
+		public void setCrossPosition(int x, int y){
+			Rectangle bounds = getBounds();
+			if(x < bounds.x)
+				crossX = bounds.x;
+			else if(x>=bounds.x + bounds.width)
+				crossX = bounds.x + bounds.width-1;
+			else				
+				crossX = x;
+			if(y < bounds.y)
+				crossY = bounds.y;
+			else if(y>=bounds.y + bounds.height)
+				crossY = bounds.y + bounds.height-1;
+			else
+				crossY = y;
+			inDefaultPosition = false;
+			if(croppedDataArray != null)
+				fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
+			revalidate();
+		}
+		
+	}
+	
 	class GraphArea extends Figure{
 		private final static int CURSOR_SIZE = 14;
-		
+		private SinglePixelProfileCrossHair crossHair;
 		public GraphArea() {
 			if(runMode){
 				setCursor(null);
 				GraphAreaZoomer zoomer = new GraphAreaZoomer();
 				addMouseMotionListener(zoomer);
-				addMouseListener(zoomer);
+				addMouseListener(zoomer);				
 			}
+			setSinglePixelProfiling(isSingleLineProfiling());
+		}		
+		
+		protected void setSinglePixelProfiling(boolean isSinglePixelProfiling) {
+			if(!runMode)
+				return;
+			if(isSingleLineProfiling()){
+				if(crossHair == null)
+					crossHair = new SinglePixelProfileCrossHair();
+				add(crossHair);
+			}else if(crossHair != null && crossHair.getParent()==this)
+				remove(crossHair);
+			dataDirty = true;
+			repaint();
 		}
+			
+		@Override
+		protected void layout() {
+			if(runMode && isSingleLineProfiling()){
+				crossHair.setBounds(getClientArea());
+			}				
+		}
+		
+		
 		private synchronized IPrimaryArrayWrapper cropDataArray(int left, int right, int top, int bottom){
 			if((left != 0 || right != 0 || top != 0 || bottom != 0) &&
 					(dataWidth - left - right) * (dataHeight - top-bottom) >0){
 				int i=0;
 				if((dataWidth - left - right) * (dataHeight - top - bottom) > MAX_ARRAY_SIZE)
 					return dataArray;
-				double[] result = new double[(dataWidth - left - right) * (dataHeight - top - bottom)];
-				for(int y = top; y < (dataHeight-bottom); y++){
-					for(int x = left; x<(dataWidth - right); x++){
-						result[i++] = dataArray.get(y*dataWidth + x);
+				double[] result = null;
+				if (inRGBMode) {
+					result = new double[(dataWidth - left - right)
+							* (dataHeight - top - bottom)*3];
+					for (int y = top; y < (dataHeight - bottom); y++) {
+						for (int x = left; x < (dataWidth - right); x++) {
+							int p=y * dataWidth*3 + x*3;
+							result[i] = dataArray.get(p);
+							result[i+1]=dataArray.get(p+1);
+							result[i+2]=dataArray.get(p+2);
+							i+=3;
+						}
 					}
-				}
+				} else {
+					result = new double[(dataWidth - left - right)
+							* (dataHeight - top - bottom)];
+					for (int y = top; y < (dataHeight - bottom); y++) {
+						for (int x = left; x < (dataWidth - right); x++) {
+							result[i++] = dataArray.get(y * dataWidth + x);
+						}
+					}
+				}				
 				return new DoubleArrayWrapper(result);
 			}else
 				return dataArray;			
@@ -96,8 +281,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 		
 		@Override
-		protected void paintClientArea(Graphics graphics) {	
-			super.paintClientArea(graphics);
+		protected synchronized void paintClientArea(Graphics graphics) {			
 			if(dataArray == null)
 				return;
 			Rectangle clientArea = getClientArea();
@@ -110,15 +294,19 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 				}
 				if(clientArea.width <0 || clientArea.height <0)
 					return;
-				if(dataWidth == 0 || dataHeight == 0 || dataArray.getSize() < dataWidth * dataHeight){
+				if(dataWidth == 0 || dataHeight == 0 || (!isInRGBMode() && dataArray.getSize() < dataWidth * dataHeight)
+						|| (isInRGBMode() && dataArray.getSize() < 3*dataWidth * dataHeight)){
 					graphics.drawRectangle(new Rectangle(
 							clientArea.x - (yAxis.isVisible()? 1:0),
 							clientArea.y, 
 							clientArea.width-(yAxis.isVisible()? 0:1), clientArea.height - (xAxis.isVisible()? 0:1)));
 					if(dataArray.getSize() ==0)
 						graphics.drawText("No data.", clientArea.getLocation());					
-					else if(dataArray.getSize() < dataWidth * dataHeight)
+					else if(!isInRGBMode() && dataArray.getSize() < dataWidth * dataHeight)
 						graphics.drawText("Size of input data is smaller than dataWidth*dataHeight!",
+								clientArea.getLocation());
+					else if(isInRGBMode() && dataArray.getSize() < 3*dataWidth * dataHeight)
+						graphics.drawText("Size of input data is smaller than 3*dataWidth*dataHeight!",
 								clientArea.getLocation());
 					return;
 				}										
@@ -147,7 +335,19 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 					bufferedImageData = new ImageData(croppedDataWidth, croppedDataHeight, 24, colorMap.getPalette());
 
 					
-				ImageData imageData = colorMap.drawImage(croppedDataArray,
+				ImageData imageData = null;
+				if(inRGBMode)
+					try {
+						imageData = drawRGBImage(croppedDataArray,
+								croppedDataWidth, croppedDataHeight,
+								max, min, bufferedImageData, shrink);
+					} catch (IllegalArgumentException e) {
+						graphics.drawText("Drawing Exception: RGB value is not between 0 and 255." +
+					"\nPlease check if the data or color depth is correct.",
+								clientArea.getLocation());
+					}
+				else
+					imageData = colorMap.drawImage(croppedDataArray,
 								croppedDataWidth, croppedDataHeight,
 								max, min, bufferedImageData, shrink);		
 
@@ -166,6 +366,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			}
 //			System.out.println((System.nanoTime() - startTime)/1000000);
 //			startTime = System.nanoTime();
+			super.paintClientArea(graphics);
 
 		}
 		
@@ -176,16 +377,28 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 						return;
 					if(getCursor() != null)
 						getCursor().dispose();
-					double xCordinate = xAxis.getPositionValue(me.x, false);
-					double yCordinate = yAxis.getPositionValue(me.y, false);
+					double xCoordinate = xAxis.getPositionValue(me.x, false);
+					double yCoordinate = yAxis.getPositionValue(me.y, false);
 					
 					Point dataLocation = getDataLocation(me.x, me.y);		
 					if(dataLocation == null)
 						return;
 					if((dataLocation.y)*croppedDataWidth + dataLocation.x >= croppedDataArray.getSize())
 						return;
-					String text = "(" + xAxis.format(xCordinate) + ", " + yAxis.format(yCordinate) + ", "+ 
-						yAxis.format(croppedDataArray.get((dataLocation.y)*croppedDataWidth + dataLocation.x)) + ")";
+					double valueUnderMouse;
+					if(inRGBMode){
+						int index = (dataLocation.y) * croppedDataWidth * 3
+								+ dataLocation.x * 3;
+						valueUnderMouse = (croppedDataArray.get(index)
+								+ croppedDataArray.get(index + 1) + croppedDataArray
+								.get(index + 2)) / 3;
+					}
+					else
+						valueUnderMouse = croppedDataArray.get((dataLocation.y)*croppedDataWidth + dataLocation.x);
+					String text = "(" + xAxis.format(xCoordinate) + ", " + yAxis.format(yCoordinate) + ", "+ 
+						yAxis.format(valueUnderMouse) + ")";
+					text = text + getPixelInfo(dataLocation.x + cropLeft, dataLocation.y + cropTop,
+							xCoordinate, yCoordinate, valueUnderMouse);							
 					Dimension size = FigureUtilities.getTextExtents(
 							text, Display.getDefault().getSystemFont());
 					Image image = new Image(Display.getDefault(),
@@ -269,10 +482,30 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 		
 	}
-	public interface IProfileDataChangeLisenter extends EventListener{
+	public interface IProfileDataChangeLisenter{
+		/**Called whenever profile data changed. This is called in a non-UI thread.
+		 * @param xProfileData Profile data on x Axis.
+		 * @param yProfileData Profile data on y Axis.
+		 * @param xAxisRange x Axis range.
+		 * @param yAxisRange y Axis range.
+		 */
 		void profileDataChanged(double[] xProfileData, double[] yProfileData, 
 				Range xAxisRange, Range yAxisRange);
 	}
+	
+	public interface IPixelInfoProvider{
+		/**Get related information on this pixel, which will be displayed below the cursor.
+		 * @param xIndex x index of the pixel
+		 * @param yIndex y index of the pixel
+		 * @param xCoordinate x axis coordinate of the pixel
+		 * @param yCoordinate y axis coordinate of the pixel
+		 * @param pixelValue value of the pixel
+		 * @return the information about this pixel.
+		 */
+		public String getPixelInfo(int xIndex, int yIndex,
+				double xCoordinate, double yCoordinate, double pixelValue);
+	}
+	
 	private int dataWidth, dataHeight;
 	private int cropLeft, cropRight, cropTop, cropBottom;
 //	private double[] dataArray;
@@ -299,7 +532,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	private boolean dataDirty;  //true if the image need to be redrawn
 	private ImageData bufferedImageData;
 	private Image bufferedImage; //the buffered image 
-	private List<IProfileDataChangeLisenter> listeners; 
+	private List<IProfileDataChangeLisenter> profileListeners;
+	private List<IPixelInfoProvider> pixelInfoProviders;
 	private boolean runMode; 
 //	private long startTime = System.nanoTime();
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
@@ -312,6 +546,14 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	private final static Color TRANSPARENT_COLOR = CustomMediaFactory.getInstance().getColor(
 			new RGB(123,0,23));
 	
+	private boolean inRGBMode = false;
+	
+	private ColorDepth colorDepth = ColorDepth.BIT8;
+	
+	private PaletteData palette = new PaletteData(0xff, 0xff00, 0xff0000);
+	private Boolean savedShowRamp;
+	
+	private boolean isSingleLineProfiling = false;
 	
 	public IntensityGraphFigure() {
 		this(true);
@@ -323,7 +565,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		min = 0;
 		dataWidth = 0;
 		dataHeight = 0;
-		listeners = new ArrayList<IProfileDataChangeLisenter>();
+		profileListeners = new ArrayList<IProfileDataChangeLisenter>();
 		colorMap = new ColorMap(PredefinedColorMap.GrayScale, true, true);
 		colorMapRamp = new ColorMapRamp();
 		colorMapRamp.setMax(max);
@@ -342,27 +584,72 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
 	public void addProfileDataListener(IProfileDataChangeLisenter listener){
 		if(listener != null)
-			listeners.add(listener);
+			profileListeners.add(listener);
 	}
 
+	public void addPixelInfoProvider(IPixelInfoProvider pixelInfoProvider){
+		if(pixelInfoProvider != null){
+			if(pixelInfoProviders == null)
+				pixelInfoProviders = new ArrayList<IntensityGraphFigure.IPixelInfoProvider>();
+			pixelInfoProviders.add(pixelInfoProvider);
+		}			
+	}
 
 	private double[] calculateXProfileData(IPrimaryArrayWrapper data, int dw, int dh){
 		double[] output = new double[dw];
-		for(int i =0; i<dw; i++){
-			for(int j = 0; j < dh; j++)
-				output[i] += data.get(j*dw + i);
-			output[i] /= dh;
+		if(isSingleLineProfiling()){
+			Point dataloc = graphArea.getDataLocation(graphArea.crossHair.crossX, graphArea.crossHair.crossY);
+			for(int i=0; i<dw; i++){
+				if(inRGBMode){
+					int index = dataloc.y*dw*3 + i*3;
+					output[i] = (data.get(index) + data.get(index + 1) + data
+							.get(index + 2)) / 3;
+				}else
+					output[i] = data.get(dataloc.y*dw + i);
+			}
+			
+		}else {
+			for (int i = 0; i < dw; i++) {
+				for (int j = 0; j < dh; j++)
+					if (inRGBMode) {
+						int index = j * dw * 3 + i * 3;
+						output[i] += (data.get(index) + data.get(index + 1) + data
+								.get(index + 2)) / 3;
+					} else
+						output[i] += data.get(j * dw + i);
+				output[i] /= dh;
+			}
 		}
+		
 		return output;
 	}
 
-
-	private double[] calculateYProfileData(IPrimaryArrayWrapper data, int dw, int dh){
+	private double[] calculateYProfileData(IPrimaryArrayWrapper data, int dw,
+			int dh) {
 		double[] output = new double[dh];
-		for(int i =0; i<dh; i++){
-			for(int j = 0; j < dw; j++)
-				output[i] += data.get(i*dw + j);
-			output[i] /= dw;
+		if (isSingleLineProfiling()) {
+			Point dataloc = graphArea.getDataLocation(
+					graphArea.crossHair.crossX, graphArea.crossHair.crossY);
+			for (int i = 0; i < dh; i++) {
+				if (inRGBMode) {
+					int index = dataloc.x *3 + i*dw* 3;
+					output[i] = (data.get(index) + data.get(index + 1) + data
+							.get(index + 2)) / 3;
+				} else
+					output[i] = data.get(dataloc.x + i*dw);
+			}
+
+		} else {
+			for (int i = 0; i < dh; i++) {
+				for (int j = 0; j < dw; j++)
+					if (inRGBMode) {
+						int index = i * dw * 3 + j * 3;
+						output[i] += (data.get(index) + data.get(index + 1) + data
+								.get(index + 2)) / 3;
+					} else
+						output[i] += data.get(i * dw + j);
+				output[i] /= dw;
+			}
 		}
 		return output;
 	}
@@ -373,17 +660,121 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			bufferedImage = null;
 		}
 	}
+	
+	/**Calculate the image data from source RGB data array [RGBRGBRGB...].
+	 * @param dataArray the source data in RGB mode.
+	 * @param dataWidth number of columns of dataArray; This will be the width of image data.
+	 * @param dataHeight number of rows of dataArray; This will be the height of image data.
+	 * @param max the upper limit of the data in dataArray
+	 * @param min the lower limit of the data in dataArray
+	 * @param imageData the imageData to be filled. null if a new instance should be created.
+	 * @param shrink true if area size of image data is smaller than dataWidth*dataHeight. If this is true, it will use
+	 * the nearest neighbor iamge scaling algorithm as described at http://tech-algorithm.com/articles/nearest-neighbor-image-scaling/.
+	 * @return the image data. null if dataWidth or dataHeight is less than 1 or larger than the data array.
+	 */
+	private ImageData drawRGBImage(IPrimaryArrayWrapper dataArray,
+			int dataWidth, int dataHeight, double max, double min,
+			ImageData imageData, boolean shrink) {
+		if (dataWidth < 1 || dataHeight < 1
+				|| dataWidth * dataHeight * 3 > dataArray.getSize()
+				|| dataWidth * dataHeight < 0)
+			return null;
+		if (imageData == null)
+			imageData = new ImageData(dataWidth, dataHeight, 24, palette);
 
-	private void fireProfileDataChanged(IPrimaryArrayWrapper data, int dw, int dh){
-		if(listeners.size() <= 0)
-			return;
-		double[] xProfileData = calculateXProfileData(data, dw, dh);
-		double[] yProfileData = calculateYProfileData(data, dw, dh);
-		for(IProfileDataChangeLisenter lisenter : listeners)
-			lisenter.profileDataChanged(xProfileData, yProfileData, xAxis.getRange(), yAxis.getRange());
+		if (shrink) {
+			int height = imageData.height;
+			int width = imageData.width;
+			// EDIT: added +1 to account for an early rounding problem
+			int x_ratio = (int) ((dataWidth << 16) / width) + 1;
+			int y_ratio = (int) ((dataHeight << 16) / height) + 1;
+			// int x_ratio = (int)((w1<<16)/w2) ;
+			// int y_ratio = (int)((h1<<16)/h2) ;
+			int x2, y2;
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					x2 = ((j * x_ratio) >> 16);
+					y2 = ((i * y_ratio) >> 16);
+					int index = y2 * dataWidth * 3 + x2 * 3;
+					int pixel = calcRGBPixel(dataArray, max, min, index);
+					imageData.setPixel(j, i, pixel);
+					
+				}
+			}
+
+		} else {
+			for (int y = 0; y < dataHeight; y++) {
+				for (int x = 0; x < dataWidth; x++) {
+					// the index of the value in the color table array
+					int index = y * dataWidth * 3 + x * 3;					
+					int pixel = calcRGBPixel(dataArray, max, min, index);
+					imageData.setPixel(x, y, pixel);
+				}
+			}
+		}
+		return imageData;
+	}
+	/**
+	 * @param dataArray
+	 * @param max
+	 * @param min
+	 * @param index
+	 * @return
+	 */
+	protected int calcRGBPixel(IPrimaryArrayWrapper dataArray, double max,
+			double min, int index) {
+		int r = (int) dataArray.get(index);
+		int g = (int) dataArray.get(index + 1);
+		int b = (int) dataArray.get(index + 2);
+		switch (colorDepth) {
+		case BIT16:
+			r = r >> 8;
+			g = g >> 8;
+			b = b >> 8;
+			break;
+		case BIT24:
+			r = r >> 16;
+			g = g >> 16;
+			b = b >> 16;
+			break;
+		case BIT30:
+			r = r >> 22;
+			g = g >> 22;
+			b = b >> 22;
+			break;
+		case LOWER8BIT:
+			r = r & 0xFF;
+			b = b & 0xFF;
+			g = g & 0xFF;
+			break;
+		case SCALE:
+			r = (int) ((dataArray.get(index) - min) / (max - min) * 255);
+			g = (int) ((dataArray.get(index + 1) - min)	/ (max - min) * 255);
+			b = (int) ((dataArray.get(index + 2) - min)	/ (max - min) * 255);
+			break;
+		case BIT8:
+		default:
+			break;
+		}
+//		if(r>255) r=255; else if(r<0) r=0;
+//		if(g>255) g=255; else if(g<0) g=0;
+//		if(b>255) b=255; else if(b<0) b=0;
+		int pixel = palette.getPixel(new RGB(r, g, b));
+		return pixel;
 	}
 
+	private synchronized void fireProfileDataChanged(final IPrimaryArrayWrapper data,
+			final int dw, final int dh) {
+		if (profileListeners.size() <= 0)
+			return;
 
+		double[] xProfileData = calculateXProfileData(data, dw, dh);
+		double[] yProfileData = calculateYProfileData(data, dw, dh);
+		for (IProfileDataChangeLisenter lisenter : profileListeners)
+			lisenter.profileDataChanged(xProfileData, yProfileData,
+					xAxis.getRange(), yAxis.getRange());
+	}
+	
 	/**
 	 * @return the colorMap
 	 */
@@ -512,6 +903,13 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		return yAxis;
 	}
 	
+	/**
+	 * @return true if the input data is in RGB mode. For example, the input data is a 1D array of
+	 * [RGBRGBRGBRGB...]
+	 */
+	public boolean isInRGBMode() {
+		return inRGBMode;
+	}
 	
 	/**
 	 * @return the runMode
@@ -760,7 +1158,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	 * @param data the dataArray to set
 	 * 
 	 */
-	public final void setDataArray(IPrimaryArrayWrapper dataWrapper){
+	public synchronized final void setDataArray(IPrimaryArrayWrapper dataWrapper){
 		dataArray = dataWrapper;
 		croppedDataArray = null;
 		dataDirty = true;
@@ -794,7 +1192,27 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		repaint();
 	}
 
-
+	/**Set if the input data is in RGB mode. For example, the input data is a 1D array of
+	 * [RGBRGBRGBRGB...]. If it is true, the color of the pixel will come from the 
+	 * data directly and the color map will be ignored.
+	 * 
+	 * @param inRGBMode true if the input data in RGB mode.
+	 */
+	public void setInRGBMode(boolean inRGBMode) {
+		if(isInRGBMode() == inRGBMode)
+			return;
+		if(!isInRGBMode()){
+			savedShowRamp = isShowRamp();
+			setShowRamp(false);
+		}else if(savedShowRamp != null)
+			setShowRamp(savedShowRamp);
+		
+		this.inRGBMode = inRGBMode;
+		dataDirty = true;
+		repaint();
+	}
+	
+	
 	/**
 	 * @param max the max to set
 	 */
@@ -803,6 +1221,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			return;
 		this.max = max;
 		colorMapRamp.setMax(max);
+		dataDirty = true;
 		repaint();
 	}
 	
@@ -820,6 +1239,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			return;
 		this.min = min;
 		colorMapRamp.setMin(min);
+		dataDirty = true;
 		repaint();
 	}
 
@@ -833,8 +1253,11 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	public void setShowRamp(boolean show){
 		if(isShowRamp() == show)
 			return;
+		if(!isInRGBMode()){
+			colorMapRamp.setVisible(show);
+		}
+		savedShowRamp = show;
 		dataDirty = true;
-		colorMapRamp.setVisible(show);
 		revalidate();
 	}
 
@@ -879,5 +1302,47 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
+	/**
+	 * @return the colorDepth
+	 */
+	public ColorDepth getColorDepth() {
+		return colorDepth;
+	}
+	/**Set Color depth of the image.
+	 * @param colorDepth the colorDepth to set
+	 */
+	public void setColorDepth(ColorDepth colorDepth) {
+		this.colorDepth = colorDepth;
+		dataDirty = true;
+		repaint();
+	}
+	/**If it is profiling on single pixel.
+	 * @return the isSinglePixelProfiling
+	 */
+	public boolean isSingleLineProfiling() {
+		return isSingleLineProfiling;
+	}
+	/**Profile on single pixel.
+	 * @param isSingleLineProfiling the isSinglePixelProfiling to set
+	 */
+	public void setSingleLineProfiling(boolean isSingleLineProfiling) {
+		if(isSingleLineProfiling() == isSingleLineProfiling)
+			return;
+		this.isSingleLineProfiling = isSingleLineProfiling;
+		graphArea.setSinglePixelProfiling(isSingleLineProfiling);
+	}
+	
+	public String getPixelInfo(int xIndex, int yIndex,
+			double xCoordinate, double yCoordinate, double pixelValue){
+		String result = "";
+		if(pixelInfoProviders == null)
+			return result;
+		for(IPixelInfoProvider p: pixelInfoProviders){
+			result += " " + p.getPixelInfo(xIndex, yIndex, xCoordinate, yCoordinate, pixelValue);			
+		}
+		return result;
+	}
+
+	
 	
 }

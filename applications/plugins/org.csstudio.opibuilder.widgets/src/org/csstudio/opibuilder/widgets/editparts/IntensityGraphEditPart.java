@@ -58,6 +58,9 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		graph.setCropRight(model.getCropRight());
 		graph.setCropTop(model.getCropTOP());
 		graph.setCropBottom(model.getCropBottom());
+		graph.setInRGBMode(model.isRGBMode());
+		graph.setColorDepth(model.getColorDepth());
+		graph.setSingleLineProfiling(model.isSingleLineProfiling());
 		//init X-Axis
 		for(AxisProperty axisProperty : AxisProperty.values()){
 			String propID = IntensityGraphModel.makeAxisPropID(
@@ -305,6 +308,40 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 							innerTrig = false;
 					}
 		});
+		
+		getWidgetModel().getProperty(IntensityGraphModel.PROP_RGB_MODE).addPropertyChangeListener(
+				new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						((IntensityGraphFigure)getFigure()).setInRGBMode((Boolean)evt.getNewValue());
+						getWidgetModel().setPropertyVisible(IntensityGraphModel.PROP_COLOR_DEPTH,
+								(Boolean)evt.getNewValue());
+
+					}
+				});		
+
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((IntensityGraphFigure)getFigure()).setColorDepth(getWidgetModel().getColorDepth());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_COLOR_DEPTH, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((IntensityGraphFigure)getFigure()).setSingleLineProfiling((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_SINGLE_LINE_PROFILING, handler);
+		
 	}
 
 	private synchronized void innerUpdateGraphAreaSizeProperty(){
