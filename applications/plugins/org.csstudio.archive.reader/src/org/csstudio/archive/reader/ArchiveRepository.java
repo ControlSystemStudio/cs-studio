@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
 
 /** Factory class that locates {@link ArchiveReader} implementations
  *  from the Eclipse registry based on URLs.
@@ -49,8 +50,10 @@ public class ArchiveRepository
      */
     private ArchiveRepository() throws Exception
     {
-        final IConfigurationElement[] configs = Platform.getExtensionRegistry()
-                                .getConfigurationElementsFor(EXTENSION_ID);
+        final IExtensionRegistry registry = RegistryFactory.getRegistry();
+        if (registry == null)
+            throw new Exception("Not running as plugin");
+        final IConfigurationElement[] configs = registry.getConfigurationElementsFor(EXTENSION_ID);
         // Need at least one implementation
         if (configs.length < 1)
             throw new Exception("No extensions to " + EXTENSION_ID + " found");
