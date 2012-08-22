@@ -1,5 +1,10 @@
 package org.csstudio.remote.internal;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.remote.jms.command.IRemoteCommandService;
+import org.csstudio.remote.jms.command.JmsRemoteCommandService;
+import org.csstudio.servicelocator.ServiceLocatorFactory;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -27,7 +32,15 @@ public class RemoteActivator extends Plugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-	}
+        registerRemoteCommandService(context);
+    }
+    
+    private void registerRemoteCommandService(@Nonnull final BundleContext bundleContext) {
+        ServiceLocatorFactory.registerServiceWithTracker("Remote command service implementation",
+                                                         bundleContext,
+                                                         IRemoteCommandService.class,
+                                                         new JmsRemoteCommandService());
+    }
 
 	/*
 	 * (non-Javadoc)
