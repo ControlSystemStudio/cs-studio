@@ -7,41 +7,40 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.archive;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 
+import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.eclipse.osgi.util.NLS;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the SearchJob
  *  @author Kay Kasemir
- *  FIXME (kasemir) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
-@Ignore("See FIXME")
 public class SearchJobTest
 {
-    /** Archive data server URL
-     *
-     *  MUST BE ADAPTED TO YOUR SITE FOR TEST TO SUCCEED!
-     */
-    final private static String url =
-        "jdbc:oracle:thin:sns_reports/sns@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-//        "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
+    private volatile String info;
+    final private CountDownLatch done = new CountDownLatch(1);
 
-
-    final private Semaphore done = new Semaphore(0);
-
-    @Test
+    @Test(timeout=20000)
     public void testSearchJob() throws Exception
     {
+        final TestProperties settings = new TestProperties();
+        String url = settings.getString("archive_rdb_url");
+        if (url == null)
+        {
+            System.out.println("Skipped");
+            return;
+        }
         final ArchiveReader reader =
             ArchiveRepository.getInstance().getArchiveReader(url);
         final ArchiveDataSource archives[] = new ArchiveDataSource[]
@@ -54,21 +53,24 @@ public class SearchJobTest
             protected void receivedChannelInfos(final ChannelInfo[] channels)
             {
                 System.out.println("Found these channels:");
-                for (final ChannelInfo channel : channels) {
+                for (final ChannelInfo channel : channels)
                     System.out.println(channel.getArchiveDataSource().getName() + " - " + channel.getProcessVariable().getName());
-                }
-                done.release();
+                info = "Found " + channels.length + " channels";
+                done.countDown();
             }
 
             @Override
             protected void archiveServerError(final String url, final Exception ex)
             {
-                fail(NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
-                done.release();
+                info = NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage());
+                done.countDown();
             }
         }.schedule();
 
         // Wait for success or error
-        done.acquire();
+        done.await();
+        System.out.println(info);
+        assertThat(info, notNullValue());
+        assertTrue(info.startsWith("Found"));
     }
 }
