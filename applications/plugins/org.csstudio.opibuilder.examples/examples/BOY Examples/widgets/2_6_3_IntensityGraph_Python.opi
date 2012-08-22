@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-3c43</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.1.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -162,23 +162,29 @@ with Python script</text>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </y_axis_scale_font>
     <visible>true</visible>
+    <rgb_mode>false</rgb_mode>
     <x_axis_axis_title>X Axis</x_axis_axis_title>
     <scripts>
       <path pathString="../scripts/SetIntensityGraphData.py" checkConnect="true" sfe="false" seoe="false">
         <pv trig="true">sim://ramp(0,10,0.2,1)</pv>
         <pv trig="true">loc://dataSource</pv>
       </path>
+      <path pathString="../scripts/addPixelInfoListener.py" checkConnect="true" sfe="false" seoe="false">
+        <pv trig="true">1</pv>
+      </path>
     </scripts>
     <height>311</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <single_line_profiling>false</single_line_profiling>
     <y_axis_maximum>0.0</y_axis_maximum>
+    <color_depth>0</color_depth>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <enabled>true</enabled>
     <widget_type>Intensity Graph</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>371</width>
     <color_map>
@@ -202,7 +208,7 @@ with Python script</text>
     <horizon_profile_x_pv_value />
     <y_axis_visible>true</y_axis_visible>
     <crop_left>0</crop_left>
-    <graph_area_width>274</graph_area_width>
+    <graph_area_width>264</graph_area_width>
     <minimum>-1.0</minimum>
     <vertial_profile_x_pv_value />
     <data_height>256</data_height>
@@ -241,7 +247,7 @@ with Python script</text>
     <vertial_profile_y_pv_value />
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <crop_top>0</crop_top>
-    <graph_area_height>265</graph_area_height>
+    <graph_area_height>266</graph_area_height>
     <rules>
       <rule name="SelectColorMap" prop_id="color_map" out_exp="true">
         <exp bool_exp="true">
@@ -266,7 +272,7 @@ with Python script</text>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c3c</wuid>
     <scripts />
-    <height>27</height>
+    <height>31</height>
     <name>ColorMapSelector</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -356,7 +362,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c3a</wuid>
     <scripts />
-    <height>27</height>
+    <height>31</height>
     <name>Combo Box_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -704,7 +710,7 @@ In Run Mode, dragging mouse on graph area will zoom in. &#xD;
 Double clicking will return to original states.&#xD;
 The text tip right below the cursor is (X, Y, Value)</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>154</width>
     <border_style>1</border_style>
@@ -741,7 +747,7 @@ The text tip right below the cursor is (X, Y, Value)</text>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
@@ -789,7 +795,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Back</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>

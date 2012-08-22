@@ -545,7 +545,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	/**
 	 * @param currentPosition the currentPosition to set
 	 */
-	public void setCurrentPosition(Point currentPosition, boolean keepLablePosition) {
+	public void setCurrentPosition(Point currentPosition, boolean keepLablePosition, boolean calcValueFromPosition) {
 		if(keepLablePosition){
 			int deltaX = this.currentPosition.x - currentPosition.x;
 			int deltaY = this.currentPosition.y - currentPosition.y;
@@ -558,12 +558,17 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			//System.out.println(x0 + ":" + y0 +" " + dx + ": " + dy + " " + this.currentPosition + " " +currentPosition);
 		}
 		this.currentPosition = currentPosition;
-		xValue = xAxis.getPositionValue(currentPosition.x, false);
-		yValue = yAxis.getPositionValue(currentPosition.y, false);
-		
+		if(calcValueFromPosition){
+			xValue = xAxis.getPositionValue(currentPosition.x, false);
+			yValue = yAxis.getPositionValue(currentPosition.y, false);
+		}
 		updateInfoLableText(keepLablePosition);
 		
 		repaint();	
+	}
+	
+	public void setCurrentPosition(Point currentPosition, boolean keepLablePosition){
+		setCurrentPosition(currentPosition, keepLablePosition, true);
 	}
 
 	/**
@@ -581,7 +586,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			yValue = currentSnappedSample.getYValue();
 			if(Double.isNaN(currentSnappedSample.getXPlusError()))
 				yValue = Double.NaN;
-			setCurrentPosition(newPosition, keepLabelPosition);
+			setCurrentPosition(newPosition, keepLabelPosition, false);
 		}
 		repaint();
 	}
