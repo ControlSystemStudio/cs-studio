@@ -43,6 +43,7 @@
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
       <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
