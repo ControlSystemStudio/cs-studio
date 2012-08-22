@@ -28,7 +28,7 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
     private volatile boolean got_anything = false;
 
     /** Start ArchiveFetchJob, wait for its completion */
-    @Test
+    @Test(timeout=60000)
     public void testArchiveFetchJob() throws Exception
     {
         final TestProperties settings = new TestProperties();
@@ -40,6 +40,31 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         }
         item = new PVItem("DTL_LLRF:IOC1:Load", 1.0);
         item.addArchiveDataSource(new ArchiveDataSource(url, 1, "test"));
+
+        runFetchJob();
+    }
+
+    /** Start ArchiveFetchJob for multiple data sources, one that fails, wait for its completion */
+    @Test(timeout=60000)
+    public void testMultipleArchives() throws Exception
+    {
+        final TestProperties settings = new TestProperties();
+        String url = settings.getString("archive_rdb_url");
+        if (url == null)
+        {
+            System.out.println("Skipped");
+            return;
+        }
+        item = new PVItem("DTL_LLRF:IOC1:Load", 1.0);
+        // First URL is expected to fail
+        item.addArchiveDataSource(new ArchiveDataSource("Broken_URL", 1, "failed_test"));
+        // Second URL should return data
+        item.addArchiveDataSource(new ArchiveDataSource(url, 1, "test"));
+        runFetchJob();
+    }
+
+    private void runFetchJob() throws InterruptedException
+    {
         final ITimestamp end = TimestampFactory.now();
         final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - 10.0*60.0);
         final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end, this);
@@ -57,14 +82,14 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         System.out.println("Completed " + job);
         final PlotSamples samples = item.getSamples();
         System.out.println(samples);
-        assertTrue(samples.getSize() > 0);
-        got_anything = true;
+        got_anything = samples.getSize() > 0;
     }
 
     @Override
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        error.printStackTrace();
+        System.out.print("Received error: ");
+        error.printStackTrace(System.out);
     }
 }
