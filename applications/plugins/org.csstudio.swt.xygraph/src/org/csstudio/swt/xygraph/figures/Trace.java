@@ -712,7 +712,7 @@ public class Trace extends Figure implements IDataProviderListener,
 							if (traceDataProvider.isChronological()) {
 								// Line drawing optimization is available only when the trace data
 								// is ascending sorted on X axis. 
-								if (!predpPos.equals(plPolyline.getLastPoint())) {
+								if (!predpPos.equals(plPolyline.getLastPoint()) && predpPos.x != plPolyline.getLastPoint().x) {
 									// The line for this trace is not continuous.
 									// Draw a polylin at this point, and start to reconstruct a new
 									// polyline for the rest of the trace.
