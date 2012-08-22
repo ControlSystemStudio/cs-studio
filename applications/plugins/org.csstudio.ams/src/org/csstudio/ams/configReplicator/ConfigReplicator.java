@@ -155,8 +155,14 @@ public class ConfigReplicator implements AmsConstants {
 	    
 	    Log.log(Log.INFO, "Creating memory cache database.");
 	    try {
+	        // 1.8.0.10:
 	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
 	        sqlFile.execute(cacheDb, false);
+
+	        // 2.9.0:
+	        // SqlFile sqlFile = new SqlFile(sqlScript);
+	        // sqlFile.setConnection(cacheDb);
+	        // sqlFile.execute();
 	        Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
 	    } catch (IOException e) {
 	        throw new ReplicationException(e);
