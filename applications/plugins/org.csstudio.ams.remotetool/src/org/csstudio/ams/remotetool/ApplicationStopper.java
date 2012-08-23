@@ -43,8 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 16.12.2011
@@ -58,8 +56,11 @@ public class ApplicationStopper {
     
     private IRosterManager rosterManager;
     
-    public ApplicationStopper(ISessionService xmpp) {
+    private String amsRosterGroup;
+    
+    public ApplicationStopper(ISessionService xmpp, String rosterGroup) {
         xmppSession = xmpp;
+        amsRosterGroup = rosterGroup;
         rosterManager = xmppSession.getRosterManager();
     }
     
@@ -99,7 +100,7 @@ public class ApplicationStopper {
         LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
         
         // Get the group of JMS applications
-        IRosterGroup jmsApplics = getApplicationGroup(rosterItems, "jms-applications");
+        IRosterGroup jmsApplics = getApplicationGroup(rosterItems, amsRosterGroup);
         
         // Get the application
         if(jmsApplics != null) {
