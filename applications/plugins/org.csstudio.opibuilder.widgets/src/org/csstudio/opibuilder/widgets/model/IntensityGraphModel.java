@@ -19,10 +19,12 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.ColorDepth;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -122,23 +124,23 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	/**
 	 * The output PV to which the horizontal profile data on X axis will be written.
 	 */
-	public static final String PROP_HORIZON_PROFILE_X_PV_NAME = "horizon_profile_x_pv_name";
-	public static final String PROP_HORIZON_PROFILE_X_PV_VALUE = "horizon_profile_x_pv_value";
+	public static final String PROP_HORIZON_PROFILE_X_PV_NAME = "horizon_profile_x_pv_name";//$NON-NLS-1$
+	public static final String PROP_HORIZON_PROFILE_X_PV_VALUE = "horizon_profile_x_pv_value";//$NON-NLS-1$
 	/**
 	 * The output PV to which the vertical profile data on X axis will be written.
 	 */
-	public static final String PROP_VERTICAL_PROFILE_X_PV_NAME = "vertical_profile_x_pv_name";
-	public static final String PROP_VERTICAL_PROFILE_X_PV_VALUE = "vertial_profile_x_pv_value";
+	public static final String PROP_VERTICAL_PROFILE_X_PV_NAME = "vertical_profile_x_pv_name";//$NON-NLS-1$
+	public static final String PROP_VERTICAL_PROFILE_X_PV_VALUE = "vertial_profile_x_pv_value";//$NON-NLS-1$
 	/**
 	 * The output PV to which the horizontal profile data on Y axis will be written.
 	 */
-	public static final String PROP_HORIZON_PROFILE_Y_PV_NAME = "horizon_profile_y_pv_name";
-	public static final String PROP_HORIZON_PROFILE_Y_PV_VALUE = "horizon_profile_y_pv_value";
+	public static final String PROP_HORIZON_PROFILE_Y_PV_NAME = "horizon_profile_y_pv_name";//$NON-NLS-1$
+	public static final String PROP_HORIZON_PROFILE_Y_PV_VALUE = "horizon_profile_y_pv_value";//$NON-NLS-1$
 	/**
 	 * The output PV to which the vertical profile data on Y axis will be written.
 	 */
-	public static final String PROP_VERTICAL_PROFILE_Y_PV_NAME = "vertical_profile_y_pv_name";
-	public static final String PROP_VERTICAL_PROFILE_Y_PV_VALUE = "vertial_profile_y_pv_value";
+	public static final String PROP_VERTICAL_PROFILE_Y_PV_NAME = "vertical_profile_y_pv_name";//$NON-NLS-1$
+	public static final String PROP_VERTICAL_PROFILE_Y_PV_VALUE = "vertial_profile_y_pv_value"; //$NON-NLS-1$
 	
 	public static final String PROP_RGB_MODE = "rgb_mode"; //$NON-NLS-1$
 		
@@ -146,6 +148,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_SINGLE_LINE_PROFILING = "single_line_profiling"; //$NON-NLS-1$
 	
+	public static final String PROP_ROI_COLOR= "roi_color"; //$NON-NLS-1$
 	
 	/** The default value of the minimum property. */	
 	private static final double DEFAULT_MIN = 0;
@@ -225,6 +228,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new BooleanProperty(PROP_SINGLE_LINE_PROFILING, "Profile on Single Line",
 				WidgetPropertyCategory.Behavior, false),true);
 		
+		addProperty(new ColorProperty(PROP_ROI_COLOR, "ROI Color", 
+				WidgetPropertyCategory.Display, CustomMediaFactory.COLOR_CYAN), true);
 		
 		addAxisProperties();
 	}
@@ -390,6 +395,10 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public ColorDepth getColorDepth(){
 		return ColorDepth.values()[(Integer)getPropertyValue(PROP_COLOR_DEPTH)];
+	}
+	
+	public OPIColor getROIColor(){
+		return (OPIColor)getPropertyValue(PROP_ROI_COLOR);
 	}
 	
 	public boolean isSingleLineProfiling(){
