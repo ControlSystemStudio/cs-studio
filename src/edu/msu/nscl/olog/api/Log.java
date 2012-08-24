@@ -47,7 +47,7 @@ public class Log implements Comparable<Log> {
 		Map<String, Attachment> newAttachments = new HashMap<String, Attachment>();
 		for (XmlAttachment attachment : log.getXmlAttachments()
 				.getAttachments()) {
-			newAttachments.put(attachment.getUri(), new Attachment(attachment));
+			newAttachments.put(attachment.getFileName(), new Attachment(attachment));
 		}
 		this.attachments = Collections.unmodifiableMap(newAttachments);
 		Map<String, Property> newProperties = new HashMap<String, Property>();

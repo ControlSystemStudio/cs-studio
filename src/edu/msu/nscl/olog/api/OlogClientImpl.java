@@ -1,15 +1,9 @@
 package edu.msu.nscl.olog.api;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +11,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,23 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
-import net.coobird.thumbnailator.Thumbnails;
-
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.MultiStatus;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.client.methods.DavMethod;
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
-import org.apache.jackrabbit.webdav.client.methods.PutMethod;
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -57,9 +33,10 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.client.apache.ApacheHttpClient;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 
 /**
  * 
@@ -69,9 +46,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  */
 public class OlogClientImpl implements OlogClient {
 	private final WebResource service;
-	private final HttpClient webdav;
 	private final ExecutorService executor;
-	private final URI ologJCRBaseURI;
 
 	/**
 	 * Builder Class to help create a olog client.
@@ -82,8 +57,6 @@ public class OlogClientImpl implements OlogClient {
 	public static class OlogClientBuilder {
 		// required
 		private URI ologURI = null;
-
-		private URI ologJCRURI;
 
 		// optional
 		private boolean withHTTPAuthentication = false;
@@ -102,13 +75,10 @@ public class OlogClientImpl implements OlogClient {
 		private OlogProperties properties = new OlogProperties();
 
 		private static final String DEFAULT_OLOG_URL = "http://localhost:8080/Olog/resources"; //$NON-NLS-1$
-		private static final String DEFAULT_OLOG_JCR_URL = "http://localhost:8080/Olog/repository";
 
 		private OlogClientBuilder() {
 			this.ologURI = URI.create(this.properties.getPreferenceValue(
 					"olog_url", DEFAULT_OLOG_URL));
-			this.ologJCRURI = URI.create(this.properties.getPreferenceValue(
-					"olog_jcr_url", DEFAULT_OLOG_JCR_URL));
 			this.protocol = this.ologURI.getScheme();
 		}
 
@@ -147,28 +117,6 @@ public class OlogClientImpl implements OlogClient {
 		 */
 		public static OlogClientBuilder serviceURL(URI uri) {
 			return new OlogClientBuilder(uri);
-		}
-
-		/**
-		 * Set the jcr url to be used for the attachment repository.
-		 * 
-		 * @param username
-		 * @return {@link OlogClientBuilder}
-		 */
-		public OlogClientBuilder jcrURI(URI jcrURI) {
-			this.ologJCRURI = jcrURI;
-			return this;
-		}
-
-		/**
-		 * Set the jcr url to be used for the attachment repository.
-		 * 
-		 * @param username
-		 * @return {@link OlogClientBuilder}
-		 */
-		public OlogClientBuilder jcrURI(String jcrURI) {
-			this.ologJCRURI = UriBuilder.fromUri(jcrURI).build();
-			return this;
 		}
 
 		/**
@@ -276,7 +224,7 @@ public class OlogClientImpl implements OlogClient {
 					"username", "username");
 			this.password = ifNullReturnPreferenceValue(this.password,
 					"password", "password");
-			return new OlogClientImpl(this.ologURI, this.ologJCRURI,
+			return new OlogClientImpl(this.ologURI,
 					this.clientConfig, this.withHTTPAuthentication,
 					this.username, this.password, this.executor);
 		}
@@ -292,10 +240,8 @@ public class OlogClientImpl implements OlogClient {
 
 	}
 
-	private OlogClientImpl(URI ologURI, URI ologJCRURI, ClientConfig config,
-			boolean withHTTPBasicAuthFilter, String username, String password,
-			ExecutorService executor) {
-		this.ologJCRBaseURI = ologJCRURI;
+	private OlogClientImpl(URI ologURI, ClientConfig config,
+			boolean withHTTPBasicAuthFilter, String username, String password, ExecutorService executor) {
 		this.executor = executor;
 		Client client = Client.create(config);
 		if (withHTTPBasicAuthFilter) {
@@ -303,19 +249,8 @@ public class OlogClientImpl implements OlogClient {
 		}
 		client.addFilter(new RawLoggingFilter(Logger
 				.getLogger(OlogClientImpl.class.getName())));
+		client.setFollowRedirects(true);
 		service = client.resource(UriBuilder.fromUri(ologURI).build());
-
-		ApacheHttpClient client2Apache = ApacheHttpClient.create(config);
-		webdav = client2Apache.getClientHandler().getHttpClient();
-		webdav.getHostConfiguration().setHost(getJCRBaseURI().getHost(), 8181);
-		Credentials credentials = new UsernamePasswordCredentials(username,
-				password);
-		webdav.getState().setCredentials(AuthScope.ANY, credentials);
-		webdav.getParams().setAuthenticationPreemptive(true);
-	}
-
-	private URI getJCRBaseURI() {
-		return this.ologJCRBaseURI;
 	}
 
 	@Override
@@ -406,32 +341,21 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public Collection<String> getAttachments(Long logId) throws OlogException,
-			DavException {
-		Collection<String> allFiles = new HashSet<String>();
-		try {
-			URI remote = UriBuilder.fromUri(getJCRBaseURI()).path("{arg1}/")
-					.build(logId);
-			DavMethod pFind = new PropFindMethod(remote.toASCIIString(),
-					DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-			webdav.executeMethod(pFind);
-			MultiStatus multiStatus = pFind.getResponseBodyAsMultiStatus();
-			MultiStatusResponse[] responses = multiStatus.getResponses();
-			MultiStatusResponse currResponse;
+	public Collection<Attachment> listAttachments(final Long logId) throws OlogException {
+		return wrappedSubmit(new Callable<Collection<Attachment>>() {
 
-			for (int i = 0; i < responses.length; i++) {
-				currResponse = responses[i];
-				if (!currResponse.getHref().endsWith("/")) {
-					allFiles.add(currResponse.getHref());
+			@Override
+			public Collection<Attachment> call() throws Exception {
+				Collection<Attachment> allAttachments = new HashSet<Attachment>();
+				XmlAttachments allXmlAttachments = service.path("attachments").path(logId.toString())
+						.accept(MediaType.APPLICATION_XML).get(XmlAttachments.class);
+				for (XmlAttachment xmlAttachment : allXmlAttachments.getAttachments()) {
+					allAttachments.add(new Attachment(xmlAttachment));
 				}
+				return allAttachments;
 			}
-			pFind.releaseConnection();
-			return allFiles;
-		} catch (UniformInterfaceException e) {
-			throw new OlogException(e);
-		} catch (IOException e) {
-			throw new OlogException(e);
-		}
+
+		});
 	}
 
 	@Override
@@ -822,63 +746,14 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public void add(File local, Long logId) throws OlogException {
-		URI remote = UriBuilder.fromUri(getJCRBaseURI()).path("{arg1}")
-				.path("{arg2}").build(logId, local.getName());
-		URI remoteThumb = UriBuilder.fromUri(getJCRBaseURI())
-				.path("thumbnails").path("{arg1}").path("{arg2}")
-				.build(logId, local.getName());
-		URI remoteDir = UriBuilder.fromUri(getJCRBaseURI()).path("{arg1}")
-				.build(logId);
-		URI remoteThumbDir = UriBuilder.fromUri(getJCRBaseURI())
-				.path("thumbnails").path("{arg1}").build(logId);
-		final int ndx = local.getName().lastIndexOf(".");
-		final String extension = local.getName().substring(ndx + 1);
-		DavMethod mkCol = new MkColMethod(remoteDir.toASCIIString());
-		DavMethod mkColThumb = new MkColMethod(remoteThumbDir.toASCIIString());
-		PutMethod putM = new PutMethod(remote.toASCIIString());
-		PutMethod putMThumb = new PutMethod(remoteThumb.toASCIIString());
-		try {
-			PropFindMethod propM = new PropFindMethod(remoteDir.toASCIIString());
-			webdav.executeMethod(propM);
-			if (!propM.succeeded())
-				webdav.executeMethod(mkCol);
-			propM.releaseConnection();
-			mkCol.releaseConnection();
-		} catch (IOException ex) {
-			throw new OlogException(ex);
-		}
-		try {
-			FileInputStream fis = new FileInputStream(local);
-			RequestEntity requestEntity = new InputStreamRequestEntity(fis);
-			putM.setRequestEntity(requestEntity);
-			webdav.executeMethod(putM);
-			putM.releaseConnection();
-			// If image add thumbnail
-			if ((extension.equals("jpeg") || extension.equals("jpg")
-					|| extension.equals("gif") || extension.equals("png"))) {
-				PropFindMethod propMThumb = new PropFindMethod(
-						remoteThumbDir.toASCIIString());
-				webdav.executeMethod(propMThumb);
-				if (!propMThumb.succeeded())
-					webdav.executeMethod(mkColThumb);
-				propMThumb.releaseConnection();
-				mkColThumb.releaseConnection();
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				Thumbnails.of(local).size(80, 80).outputFormat("jpg")
-						.toOutputStream(outputStream);
-				InputStream fis2 = new ByteArrayInputStream(
-						outputStream.toByteArray());
-				RequestEntity requestEntity2 = new InputStreamRequestEntity(
-						fis2);
-				putMThumb.setRequestEntity(requestEntity2);
-				webdav.executeMethod(putMThumb);
-				putMThumb.releaseConnection();
-
-			}
-		} catch (IOException e) {
-			throw new OlogException(e);
-		}
+	public Attachment add(File local, Long logId) throws OlogException {
+            FormDataMultiPart form = new FormDataMultiPart();
+            form.bodyPart(new FileDataBodyPart("file", local));
+            XmlAttachment xmlAttachment = service.path("attachments").path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
+               .accept(MediaType.APPLICATION_XML)
+               .post(XmlAttachment.class,form);
+            
+            return new Attachment(xmlAttachment);
 	}
 
 	@Override
@@ -1121,9 +996,8 @@ public class OlogClientImpl implements OlogClient {
 		wrappedSubmit(new Runnable() {
 			@Override
 			public void run() {
-				URI remote = UriBuilder.fromUri(getJCRBaseURI()).path("{arg1}")
-						.path("{arg2}").build(logId, fileName);
-				service.uri(remote).accept(MediaType.APPLICATION_XML)
+				service.path("attachments").path(logId.toString()).path(fileName)
+						.accept(MediaType.TEXT_XML)
 						.accept(MediaType.APPLICATION_JSON).delete();
 			}
 		});
