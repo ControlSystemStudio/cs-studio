@@ -37,7 +37,7 @@ import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
-
+import com.sun.jersey.multipart.impl.MultiPartWriter;
 /**
  * 
  * 
@@ -243,6 +243,7 @@ public class OlogClientImpl implements OlogClient {
 	private OlogClientImpl(URI ologURI, ClientConfig config,
 			boolean withHTTPBasicAuthFilter, String username, String password, ExecutorService executor) {
 		this.executor = executor;
+		config.getClasses().add(MultiPartWriter.class);
 		Client client = Client.create(config);
 		if (withHTTPBasicAuthFilter) {
 			client.addFilter(new HTTPBasicAuthFilter(username, password));
