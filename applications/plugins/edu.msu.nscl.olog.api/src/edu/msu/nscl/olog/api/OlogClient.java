@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.jackrabbit.webdav.DavException;
 
 /**
  * 
@@ -87,8 +86,7 @@ public interface OlogClient {
 	 * @return attachments collection object
 	 * @throws OlogException
 	 */
-	public Collection<String> getAttachments(Long logId) throws OlogException,
-			DavException;
+	public Collection<Attachment> listAttachments(Long logId) throws OlogException;
 
 	/**
 	 * return the complete property <tt>property</tt>
@@ -282,7 +280,7 @@ public interface OlogClient {
 	 * @param local
 	 * @throws OlogException
 	 */
-	public void add(File local, Long logId) throws OlogException;
+	public Attachment add(File local, Long logId) throws OlogException;
 
 	/**
 	 * 
