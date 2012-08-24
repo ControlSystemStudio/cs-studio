@@ -14,19 +14,15 @@ import java.io.Writer;
 import java.util.logging.Logger;
 
 import org.csstudio.logbook.ILogbook;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.csstudio.utility.olog.Activator;
 import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.osgi.util.NLS;
 
 import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.Olog;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
-import edu.msu.nscl.olog.api.OlogException;
 
 /**
  * @author Delphy Nypaver Armstrong
@@ -55,11 +51,7 @@ public class OlogLogbook implements ILogbook {
 					org.csstudio.utility.olog.Activator.PLUGIN_ID,
 					PreferenceConstants.Olog_URL,
 					"https://localhost:8181/Olog/resources", null);
-			String jcrURI = prefs.getString(
-					org.csstudio.utility.olog.Activator.PLUGIN_ID,
-					PreferenceConstants.Olog_jcr_URL,
-					"http://localhost:8080/Olog/repository/olog", null);
-			client = OlogClientBuilder.serviceURL(url).jcrURI(jcrURI)
+			client = OlogClientBuilder.serviceURL(url)
 					.withHTTPAuthentication(true).username(user)
 					.password(password).create();
 		}

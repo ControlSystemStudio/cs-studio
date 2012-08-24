@@ -15,6 +15,7 @@ import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+import edu.msu.nscl.olog.api.Attachment;
 import edu.msu.nscl.olog.api.Level;
 import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
@@ -50,10 +51,7 @@ public class OlogClientFromPreferences implements OlogClient {
 		String url = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Olog_URL,
 				"https://localhost:8181/Olog/resources", null);
-		String jcr_url = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.Olog_jcr_URL,
-				"http://localhost:8080/Olog/repository/olog", null);
-		ologClientBuilder = OlogClientBuilder.serviceURL(url).jcrURI(jcr_url);
+		ologClientBuilder = OlogClientBuilder.serviceURL(url);
 		if (prefs.getBoolean(Activator.PLUGIN_ID,
 				PreferenceConstants.Use_authentication, false, null)) {
 			ologClientBuilder
@@ -278,8 +276,8 @@ public class OlogClientFromPreferences implements OlogClient {
 	 * @see edu.msu.nscl.olog.api.OlogClient#add(java.io.File, java.lang.Long)
 	 */
 	@Override
-	public void add(File local, Long logId) throws OlogException {
-		client.add(local, logId);
+	public Attachment add(File local, Long logId) throws OlogException {
+		return client.add(local, logId);
 
 	}
 
@@ -475,12 +473,6 @@ public class OlogClientFromPreferences implements OlogClient {
 	}
 
 	@Override
-	public Collection<String> getAttachments(Long logId) throws OlogException,
-			DavException {
-		return client.getAttachments(logId);
-	}
-
-	@Override
 	public Collection<Log> findLogs(MultivaluedMap<String, String> map)
 			throws OlogException {
 		return client.findLogs(map);
@@ -534,6 +526,12 @@ public class OlogClientFromPreferences implements OlogClient {
 	public Log update(PropertyBuilder property, Long logId)
 			throws OlogException {
 		return client.update(property, logId);
+	}
+
+	@Override
+	public Collection<Attachment> listAttachments(Long logId)
+			throws OlogException {
+		return client.listAttachments(logId);
 	}
 
 }
