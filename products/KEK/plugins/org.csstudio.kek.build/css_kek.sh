@@ -44,6 +44,9 @@ org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST}
 org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES}
 org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS}
 
+org.csstudio.opibuilder/color_file=${COLOR_DEF}
+org.csstudio.opibuilder/font_file=${FONT_DEF}
+
 org.csstudio.archive.reader.kblog/path_to_kblogrd=${PATH_TO_KBLOGRD}
 org.csstudio.archive.reader.kblog/rel_path_to_subarchive_list=${KBLOG_REL_PATH_TO_SUBARCHIVE_LIST}
 org.csstudio.archive.reader.kblog/rel_path_to_lcf_dir=${KBLOG_REL_PATH_TO_LCF_DIR}
@@ -52,4 +55,8 @@ EOF
 
 
 # Launch CSS with the temporary plugin customization file
-${CSS} -pluginCustomization ${TMP_INI}
+if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+    ${CSS} -pluginCustomization ${TMP_INI} -share_link ${SHARE_LINK_SRC}=${SHARE_LINK_DEST}
+else
+    ${CSS} -pluginCustomization ${TMP_INI} 
+fi

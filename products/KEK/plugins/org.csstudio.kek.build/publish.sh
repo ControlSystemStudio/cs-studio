@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script publishes sources
 #
@@ -55,7 +55,7 @@ PREV_DIR=$(pwd)
 
 # Copy CSS binaries
 mkdir -p ${DEST}/apps
-ACCS="jparc pfar pf linac superkekb jparc_office pfar_office pf_office linac_office superkekb_office"
+ACCS="pfar pf linac superkekb cerl pfar_office pf_office linac_office superkekb_office cerl_office jparc jparc_office"
 
 for PLATFORM in ${PLATFORMS}; do
     echo "#####################################################"
@@ -76,16 +76,11 @@ for PLATFORM in ${PLATFORMS}; do
         
         # Include common scripts required to launch CSS.
         cp ${SCRIPTDIR}/css_kek.sh ${BUILDDIR}/css_${VERSION}
-        zip ${ZIP_BINARY} css_${VERSION}/css_kek.sh
-
         cp ${SCRIPTDIR}/css_kek_functions.sh ${BUILDDIR}/css_${VERSION}
-        zip ${ZIP_BINARY} css_${VERSION}/css_kek_functions.sh
-
         cp ${SCRIPTDIR}/acc_settings.sh ${BUILDDIR}/css_${VERSION}
-        zip ${ZIP_BINARY} css_${VERSION}/acc_settings.sh
-
         cp ${SCRIPTDIR}/kblog_settings.sh ${BUILDDIR}/css_${VERSION}
-        zip ${ZIP_BINARY} css_${VERSION}/kblog_settings.sh
+
+	ADD_FILE_LIST="css_${VERSION}/css_kek.sh css_${VERSION}/css_kek_functions.sh css_${VERSION}/acc_settings.sh css_${VERSION}/kblog_settings.sh"
 
         for acc in ${ACCS}; do
             # Generate a launcher script and include it into the zip.
@@ -94,18 +89,24 @@ for PLATFORM in ${PLATFORMS}; do
             echo "sh \${SCRIPTDIR}/css_kek.sh $acc LINUX" >> ${BUILDDIR}/css_${VERSION}/css_kek_${acc}
 
             chmod a+x css_${VERSION}/css_kek_${acc}
-            zip ${ZIP_BINARY} css_${VERSION}/css_kek_${acc}
+	    ADD_FILE_LIST="${ADD_FILE_LIST} css_${VERSION}/css_kek_${acc}"
         done
+
+        zip ${ZIP_BINARY} ${ADD_FILE_LIST}
 
     elif [ "${OS}" = "WIN" ]; then
         cd ${BUILDDIR}
+
+	ADD_FILE_LIST=
 
         for acc in ${ACCS}; do
             # Generate a launcher batch file and include it into the zip.
             sh ${SCRIPTDIR}/gen_wrapper.sh ${acc} WIN | perl -pe 's/\n/\r\n/' > css_${VERSION}/css_kek_${acc}.bat
             chmod a+x css_${VERSION}/css_kek_${acc}.bat
-            zip ${ZIP_BINARY} css_${VERSION}/css_kek_${acc}.bat
+	    ADD_FILE_LIST="${ADD_FILE_LIST} css_${VERSION}/css_kek_${acc}.bat"
         done
+
+	zip ${ZIP_BINARY} ${ADD_FILE_LIST}
 
     elif [ "${OS}" = "MACOSX" ]; then
         cd ${BUILDDIR}

@@ -121,6 +121,15 @@ function css_kek_settings {
         if [ "$a" = "$ACC" ]; then
         # Set address list for channel access
             ADDR_LIST=$(eval 'echo $'$a'_ADDR_LIST')
+
+	    # Set font.def and color.def
+            COLOR_DEF=$(eval 'echo $'$a'_COLOR_DEF')
+            FONT_DEF=$(eval 'echo $'$a'_FONT_DEF')
+
+	    # Set -share_link parameters
+	    SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN')
+	    SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC')
+	    SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST')
             
         # Set archiver URLs
             prepend_urls "${URLS}"
