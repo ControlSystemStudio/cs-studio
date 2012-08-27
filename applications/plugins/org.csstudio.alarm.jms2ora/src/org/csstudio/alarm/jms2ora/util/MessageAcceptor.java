@@ -64,14 +64,17 @@ public class MessageAcceptor implements MessageListener {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String urls = prefs.getString(Jms2OraActivator.PLUGIN_ID,
-                                      PreferenceConstants.JMS_PROVIDER_URLS,
-                                      "", null);
+                                            PreferenceConstants.JMS_PROVIDER_URLS,
+                                            "",
+                                            null);
         final String topics = prefs.getString(Jms2OraActivator.PLUGIN_ID,
-                                        PreferenceConstants.JMS_TOPIC_NAMES,
-                                        "", null);
+                                              PreferenceConstants.JMS_TOPIC_NAMES,
+                                              "",
+                                              null);
         final String factoryClass = prefs.getString(Jms2OraActivator.PLUGIN_ID,
-                                              PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS,
-                                              "", null);
+                                                    PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS,
+                                                    "",
+                                                    null);
 
         final String[] urlList = this.getUrlList(urls);
         final String[] topicList = this.getTopicList(topics);
@@ -84,7 +87,7 @@ public class MessageAcceptor implements MessageListener {
 
             try {
                 receivers[i] = new JmsMessageReceiver(factoryClass, urlList[i], topicList);
-                receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
+                receivers[i].startListener(this, VersionInfo.NAME + "-MessageAcceptor@" + hostName);
                 initialized = true;
             } catch(final Exception e) {
                 LOG.error("*** Exception *** : " + e.getMessage());
@@ -96,9 +99,7 @@ public class MessageAcceptor implements MessageListener {
     }
 
     public final void closeAllReceivers() {
-
-        LOG.info("closeAllReceivers(): Closing all receivers.");
-
+        LOG.info("Closing all receivers.");
         if(receivers != null) {
             for (final JmsMessageReceiver receiver : receivers) {
                 receiver.stopListening();

@@ -72,6 +72,9 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
+    
+    /** Time to wait for the thread MessageProcessor in ms */
+    private static final long WAITFORTHREAD = 20000;
 
     /** The Database writer service */
     private IMessageWriter writerService;
@@ -129,8 +132,9 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         
         try {
             persistenceService = Jms2OraActivator.getDefault().getPersistenceWriterService();
+            LOG.info("Persistence service available.");
         } catch (final OsgiServiceUnavailableException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Persistence service NOT available.");
             throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
         }
         
@@ -206,23 +210,24 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
                 storeMe = this.getMessagesToArchive();
                 int number = storeMe.size();
-                
-                success = writerService.writeMessage(storeMe);
-                if(!success) {
-                    // Store the message in a file, if it was not possible to write it to the DB.
-                    LOG.warn("Could not store the message into the database. Try to write message(s) on disk.");
-                    int result = persistenceService.writeMessages(storeMe);
-                    if (result == number) {
-                        collector.addStoredMessages(number);
+                if (number > 0) {
+                    success = writerService.writeMessage(storeMe);
+                    if(!success) {
+                        // Store the message in a file, if it was not possible to write it to the DB.
+                        LOG.warn("Could not store the message into the database. Try to write message(s) on disk.");
+                        int result = persistenceService.writeMessages(storeMe);
+                        if (result == number) {
+                            collector.addStoredMessages(number);
+                        } else {
+                            LOG.error("Could not store the message on disk.");
+                        }
                     } else {
-                        LOG.error("Could not store the message on disk.");
+                        collector.addStoredMessages(number);
                     }
-                } else {
-                    collector.addStoredMessages(number);
+                    
+                    storeMe.clear();
+                    storeMe = null;
                 }
-                
-                storeMe.clear();
-                storeMe = null;
                 
                 if (logStatistic) {
                     LOG.info(createStatisticString());
@@ -247,16 +252,32 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             }
         }
 
+        int waitCount = 2;
+        messageConverter.stopWorking();
+        do {
+        try {
+            LOG.info("Waiting for MessageConverter.");
+            messageConverter.join(WAITFORTHREAD);
+        } catch (InterruptedException e) {
+            LOG.warn("[*** InterruptedException ***]: {}", e.getMessage());
+        }
+        } while ((waitCount-- > 0) && !messageConverter.stoppedClean());
+        
+        LOG.info("MessageConverter stopped clean: {}", messageConverter.stoppedClean());
+        
         // Process the remaining messages
-        LOG.info("Remaining messages: " + this.getCompleteQueueSize() + " -> Processing...");
-
+        LOG.info("Remaining archive messages: {}", archiveMessages.size());
+        LOG.info("Remaining   raw   messages: {}", messageConverter.getQueueSize());
+        
         int writtenToDb = 0;
         int writtenToHd = 0;
 
+        // Store the remaining archive messages
         if (!archiveMessages.isEmpty()) {
 
             storeMe = this.getMessagesToArchive();
             success = writerService.writeMessage(storeMe);
+            LOG.info("Remaining messages written to database: {}", success);
             if(!success) {
 
                 // Store the message in a file, if it was not possible to write it to the DB.
@@ -267,7 +288,13 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 writtenToDb = storeMe.size();
             }
         }
-
+        
+        // TODO
+        // Store the remaining raw messages
+//        if (messageConverter.getQueueSize() > 0) {
+//            
+//        }
+        
         if (writerService != null) {
             writerService.close();
         }
@@ -275,7 +302,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         stoppedClean = true;
 
         LOG.info("Remaining messages stored in the database: " + writtenToDb);
-        LOG.info("Remaining messages stored on disk:         " + writtenToHd);
+        LOG.info("Remaining   messages   stored   on   disk: " + writtenToHd);
     }
 
     public final boolean stoppedClean() {
@@ -347,6 +374,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
     }
 
     public final synchronized void stopWorking() {
+        LOG.info("I will stop soon.");
         running = false;
         this.notify();
     }
