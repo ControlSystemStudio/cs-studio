@@ -68,7 +68,9 @@ for PLATFORM in ${PLATFORMS}; do
     PREF=$(eval 'echo $'$PLATFORM'_PREF')
     NAME=$(eval 'echo $'$PLATFORM'_NAME')
     OS=$(echo "${PLATFORM}" | cut -f1 -d'_')
-    ZIP_BINARY=${CYGDRIVE}/${BUILDDIR}/I.css_kek_${VERSION}/css_kek_${VERSION}-${PREF}.zip
+    ZIP_BINARY=${CYGDRIVE}/${BUILDDIR}/I.css_kek_${VERSION}/css_kek_${VERSION}-${PREF}_${DATE}.zip
+
+    cp $CYGDRIVE/$BUILDDIR/I.css_kek_${VERSION}/css_kek_${VERSION}-${PREF}.zip ${ZIP_BINARY}
 
     # Adding launcher files to the archive.
     if [ "${OS}" = "LINUX" ]; then
@@ -135,7 +137,7 @@ for PLATFORM in ${PLATFORMS}; do
 
     # Append date and time to the zip file name and copy it to the destination.
     echo "Copying css_kek_$VERSION-$PREF.zip to ${DEST}/apps/css_kek_${VERSION}-${PREF}_${DATE}.zip"
-    cp $CYGDRIVE/$BUILDDIR/I.css_kek_${VERSION}/css_kek_${VERSION}-${PREF}.zip ${DEST}/apps/css_kek_${VERSION}-${PREF}_${DATE}.zip
+    cp ${ZIP_BINARY} ${DEST}/apps/
     DOWNLOAD_LINKS="$DOWNLOAD_LINKS<li><a href=\"apps/css_kek_${VERSION}-${PREF}_${DATE}.zip\">$NAME</a></li>\n"
 done
 
