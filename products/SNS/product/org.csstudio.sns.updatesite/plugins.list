@@ -132,5 +132,8 @@ org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.workspace/**
 org.epics.util/**
+org.hamcrest/**
 org.jdom/**
+org.junit-dep/**
+org.mockito/**
 org.python/**
