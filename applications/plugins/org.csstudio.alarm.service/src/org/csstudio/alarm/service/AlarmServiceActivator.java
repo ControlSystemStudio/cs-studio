@@ -17,22 +17,25 @@
  */
 package org.csstudio.alarm.service;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.IAcknowledgeService;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.service.declaration.IRemoteAcknowledgeService;
+import org.csstudio.alarm.service.declaration.TimeService;
+import org.csstudio.alarm.service.internal.AcknowledgeServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
-import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
-import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.csstudio.alarm.service.internal.AlarmServiceDalImpl;
+import org.csstudio.alarm.service.internal.AlarmServiceJmsImpl;
+import org.csstudio.servicelocator.ServiceLocatorFactory;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,19 +48,14 @@ import org.slf4j.LoggerFactory;
  * @version $Revision$
  * @since 26.04.2010
  */
-public class AlarmServiceActivator extends AbstractCssUiPlugin {
-
+public class AlarmServiceActivator extends AbstractUIPlugin {
+	private static final Logger LOG = LoggerFactory.getLogger(AlarmServiceActivator.class);    
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.alarm.service"; //$NON-NLS-1$
-
-    private static final Logger LOG = LoggerFactory.getLogger(AlarmServiceActivator.class);
-
+    
     // The shared instance.
     private static AlarmServiceActivator PLUGIN;
-
-    private LdapServiceTracker _ldapServiceTracker;
-
-
+    
     /**
      * The constructor.
      */
@@ -67,7 +65,7 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
         }
         PLUGIN = this;
     }
-
+    
     /**
      * Returns the shared instance.
      */
@@ -75,90 +73,86 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
     public static AlarmServiceActivator getDefault() {
         return PLUGIN;
     }
-
+    
     @Override
-    protected void doStart(@Nullable final BundleContext context) throws Exception {
+    public void start(@Nullable final BundleContext context) throws Exception {
+    	super.start(context);
+        LOG.debug("Starting AlarmService");
+        
         if (context == null) {
             throw new IllegalArgumentException("Bundle context is null in doStart method.");
         }
-
-        LOG.debug("Starting AlarmService");
-
-        _ldapServiceTracker = new LdapServiceTracker(context);
-        _ldapServiceTracker.open();
-
-
+        
         registerAlarmConfigurationService(context);
-
+        registerAcknowledgeService(context);
+        
         // Provide implementation for alarm service
         final boolean isDAL = AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue();
         if (isDAL) {
-            registerDALService(context, getService(context, IAlarmConfigurationService.class));
+            registerDALService(context);
         } else {
             registerJMSService(context);
         }
     }
-
+    
     @Override
-    protected void doStop(@Nullable final BundleContext context) throws Exception {
+    public void stop(@Nullable final BundleContext context) throws Exception {
+    	super.stop(context);
         LOG.debug("Stopping AlarmService");
         PLUGIN = null;
-        _ldapServiceTracker.close();
     }
-
-    /**
-     * @param context
-     * @param iLdapService
-     */
+    
+    private void registerAcknowledgeService(@Nonnull final BundleContext context) throws RemoteException,
+                                                                                 NotBoundException {
+        if (AlarmPreference.ALARMSERVICE_RUNS_AS_SERVER.getValue()) {
+            LOG.debug("Registering acknowledge service implementation");
+            AcknowledgeServiceImpl ackService = new AcknowledgeServiceImpl(new TimeService());
+            ServiceLocatorFactory.registerServiceWithTracker("Acknowledge service implementation.",
+                                                             context,
+                                                             IRemoteAcknowledgeService.class,
+                                                             ackService);
+            ServiceLocatorFactory.registerServiceWithTracker("Acknowledge connection service implementation.",
+                                                             context,
+                                                             IAcknowledgeService.class,
+                                                             ackService);
+        } else if (AlarmPreference.ALARMSERVICE_LISTENS_TO_ALARMSERVER.getValue()) {
+            LOG.debug("Registering remote acknowledge service implementation");
+            ServiceLocatorFactory.registerRemoteService("Acknowledge service implementation",
+                                           AlarmPreference.ALARMSERVICE_RMI_REGISTRY_SERVER
+                                                   .getValue(),
+                                           AlarmPreference.ALARMSERVICE_RMI_REGISTRY_PORT
+                                                   .getValue(),
+                                                   IRemoteAcknowledgeService.class);
+        }
+    }
+    
     private void registerAlarmConfigurationService(@Nonnull final BundleContext context) {
-        final Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("service.vendor", "DESY");
-        properties.put("service.description", "Alarm configuration service implementation.");
-
-        context.registerService(IAlarmConfigurationService.class.getName(),
-                                new AlarmConfigurationServiceImpl(),
-                                properties);
-
+        LOG.debug("Registering Alarm configuration service implementation");
+        
+        ServiceLocatorFactory
+                .registerServiceWithTracker("Alarm configuration service implementation.",
+                                            context,
+                                            IAlarmConfigurationService.class,
+                                            new AlarmConfigurationServiceImpl());
     }
-
+    
     private void registerJMSService(@Nonnull final BundleContext context) {
         LOG.debug("Registering JMS implementation for the alarm service");
-
-        final Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("service.vendor", "DESY");
-        properties.put("service.description", "JMS implementation of the alarm service");
-
-        context.registerService(IAlarmService.class.getName(),
-                                new AlarmServiceJMSImpl(),
-                                properties);
+        
+        ServiceLocatorFactory
+                .registerServiceWithTracker("JMS implementation of the alarm service.",
+                                            context,
+                                            IAlarmService.class,
+                                            new AlarmServiceJmsImpl());
     }
-
-    private void registerDALService(@Nonnull final BundleContext context,
-                                    @Nonnull final IAlarmConfigurationService alarmConfigService) {
+    
+    private void registerDALService(@Nonnull final BundleContext context) {
         LOG.debug("Registering DAL implementation for the alarm service");
-
-        final Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("service.vendor", "DESY");
-        properties.put("service.description", "DAL implementation of the alarm service");
-
-        context.registerService(IAlarmService.class.getName(),
-                                new AlarmServiceDALImpl(alarmConfigService),
-                                properties);
+        
+        ServiceLocatorFactory
+                .registerServiceWithTracker("DAL implementation of the alarm service.",
+                                            context,
+                                            IAlarmService.class,
+                                            new AlarmServiceDalImpl());
     }
-
-    @Nonnull
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
-    }
-
-    /**
-     * Returns the LDAP service from the service tracker.
-     * @return the LDAP service or <code>null</code> if not available.
-     */
-    @CheckForNull
-    public ILdapService getLdapService() {
-        return (ILdapService) _ldapServiceTracker.getService();
-    }
-
 }

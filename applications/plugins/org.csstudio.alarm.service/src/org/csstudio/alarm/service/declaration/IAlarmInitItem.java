@@ -52,6 +52,11 @@ public interface IAlarmInitItem {
 
     
     /**
+     * This is called to tell the client that the pv is in acknowledged state.
+     */
+    void acknowledge();
+    
+    /**
      * Is called when the lookup found out that a pv by this name is not existing in the control system. This may be temporarily.
      * 
      * @param pvName

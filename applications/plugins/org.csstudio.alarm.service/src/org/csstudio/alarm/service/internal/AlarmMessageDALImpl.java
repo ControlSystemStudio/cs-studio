@@ -18,6 +18,7 @@
 package org.csstudio.alarm.service.internal;
 
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.dal.DynamicValueCondition;
@@ -151,6 +153,9 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
             case APPLICATION_ID:
                 result = retrieveApplicationIDAsString();
                 break;
+            case ALARMUSERGROUP:
+                result = AlarmPreference.getAlarmGroup().getRepresentation();
+                break;
             default:
                 LOG.error(ERROR_MESSAGE + ". getString called for undefined key : " + key);
                 result = NOT_AVAILABLE;
@@ -164,6 +169,10 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
     public Map<String, String> getMap() {
         final Map<String, String> result = new HashMap<String, String>();
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
+            // do not enter the alarm user group into the map if none is defined
+            if ((key == AlarmMessageKey.ALARMUSERGROUP) && (getString(key).isEmpty())) {
+                continue;
+            }
             result.put(key.getDefiningName(), getString(key));
         }
         return result;
@@ -183,7 +192,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
         return _property;
     }
 
-    @Nonnull
+    @CheckForNull
     private DynamicValueCondition getCondition() {
         return getProperty().getCondition();
     }
@@ -225,7 +234,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveStatusAsString() {
-        final Severity severity = _anyData.getSeverity();
+        Severity severity = _anyData.getSeverity();
         return severity == null ? NOT_AVAILABLE : severity.descriptionToString();
     }
     @Nonnull
@@ -275,6 +284,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
         } catch (final Exception e) {
             result = "value undefined";
         }
+        LOG.trace("retrieveValueAsString {}", result);
         return result;
     }
 
@@ -292,16 +302,18 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     public EpicsAlarmSeverity getSeverity() {
         EpicsAlarmSeverity result = EpicsAlarmSeverity.UNKNOWN;
-
+        
         final DynamicValueCondition condition = getCondition();
-        if (condition.isMajor()) {
-            result = EpicsAlarmSeverity.MAJOR;
-        } else if (condition.isMinor()) {
-            result = EpicsAlarmSeverity.MINOR;
-        } else if (condition.isOK()) {
-            result = EpicsAlarmSeverity.NO_ALARM;
-        } else if (condition.isInvalid()) {
-            result = EpicsAlarmSeverity.INVALID;
+        if (condition != null) {
+            if (condition.isMajor()) {
+                result = EpicsAlarmSeverity.MAJOR;
+            } else if (condition.isMinor()) {
+                result = EpicsAlarmSeverity.MINOR;
+            } else if (condition.isOK()) {
+                result = EpicsAlarmSeverity.NO_ALARM;
+            } else if (condition.isInvalid()) {
+                result = EpicsAlarmSeverity.INVALID;
+            }
         }
         return result;
     }

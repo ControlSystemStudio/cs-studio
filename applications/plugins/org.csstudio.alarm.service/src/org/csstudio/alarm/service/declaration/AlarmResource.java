@@ -23,38 +23,46 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 /**
- * The operation of the alarm service depends on its implementation (JMS or DAL) and
- * certain parameters (topics, facilities for ldap, filename).
- *
- * Currently the parameters are defined in the clients (i.e. alarm table and alarm tree). Therefore the parameters
- * must be given to the alarm service methods. It is desirable to store the parameters as preferences internally to
- * the alarm service, because all clients depend on the same set. This will be achieved in the future. The implementation
- * of this interface collects the parameters, so they are already together in one place.
+ * This is just a container for the jms topics which will be watched by the alarm connection.
  *
  * @author jpenning
- * @author $Author$
- * @version $Revision$
  * @since 16.06.2010
  */
-public interface IAlarmResource {
-
-    // alarm resource objects are created using factory methods in the alarm service
-
+public class AlarmResource {
+    
+    private final List<String> _topics;
+    
     /**
-     * @return list of topics usable for registering at jms
+     * Constructor.
+     * Creates an alarm resource from the preferences of the alarm service.
      */
-    @Nonnull
-    List<String> getTopics();
-
+    public AlarmResource() {
+        this(AlarmPreference.getTopicNames());
+    }
+    
     /**
-     * @return path to xml file containing a content model
+     * Constructor.
+     * Creates an alarm resource from the given jms topics list.
+     * @param topics
      */
+    public AlarmResource(@Nonnull final List<String> topics) {
+        _topics = topics;
+    }
+    
     @Nonnull
-    String getFilepath();
-
+    public final List<String> getTopics() {
+        return Collections.unmodifiableList(_topics);
+    }
+    
+    @Override
+    @Nonnull
+    public final String toString() {
+        return "topics: " + _topics;
+    }
 }

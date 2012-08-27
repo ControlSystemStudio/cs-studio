@@ -23,6 +23,7 @@
 package org.csstudio.alarm.service.declaration;
 
 import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Utility methods for parsing timestamps in alarm messages.
@@ -41,15 +43,15 @@ public final class EventtimeUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventtimeUtil.class);
 
-    private static final SimpleDateFormat FORMAT =
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
     /**
      * Constructor.
      */
     private EventtimeUtil() {
         // Empty
     }
+
+	private static final SimpleDateFormat FORMAT =
+		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Parses am eventtime timestamp into a Date object. If the string cannot be

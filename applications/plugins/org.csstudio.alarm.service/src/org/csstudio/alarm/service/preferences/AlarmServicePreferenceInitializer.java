@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,58 +18,35 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.alarm.service.internal;
+package org.csstudio.alarm.service.preferences;
 
-import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
+import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * This is just a bag of parameters, which are necessary for the alarm service and alarm connection implementations.
- *
- * @author jpenning
- * @author $Author$
- * @version $Revision$
- * @since 16.06.2010
+ * Class used to initialize default preference values.
  */
-public class AlarmResource implements IAlarmResource {
+public class AlarmServicePreferenceInitializer extends AbstractPreferenceInitializer {
 
-    private final List<String> _topics;
-    private final String _filepath;
 
     /**
-     * Constructor.
-     * @param topics
-     * @param filepath
+     * {@inheritDoc}
      */
-    public AlarmResource(@CheckForNull final List<String> topics,
-                         @CheckForNull final String filepath) {
-        _topics = topics == null ? AlarmPreference.getTopicNames() : topics;
-        _filepath = filepath == null ? AlarmPreference.getConfigFilename() : filepath;
+    @Override
+    public final void initializeDefaultPreferences() {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmServiceActivator.PLUGIN_ID);
+
+        final List<AbstractPreference<?>> allPreferences = AlarmPreference.ALARMSERVICE_CONFIG_FILENAME.getAllPreferences();
+        for (final AbstractPreference<?> preference : allPreferences) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
     }
 
-    @Override
-    @Nonnull
-    public final List<String> getTopics() {
-        return Collections.unmodifiableList(_topics);
-    }
-
-    @Override
-    @Nonnull
-    public final String getFilepath() {
-        return _filepath;
-    }
-
-    @Override
-    public final String toString() {
-        return "topics: " + _topics + ", file: " + _filepath;
-    }
 }

@@ -49,7 +49,8 @@ public enum AlarmMessageKey {
     TEXT,
     TYPE,
     VALUE,
-    APPLICATION_ID("APPLICATION-ID");
+    APPLICATION_ID("APPLICATION-ID"),
+    ALARMUSERGROUP;
 
     private final String _definingName; // May be null
 
