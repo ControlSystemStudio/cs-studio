@@ -24,6 +24,7 @@
 package org.csstudio.alarm.jms2ora.util;
 
 import java.io.Serializable;
+
 import org.joda.time.DateTime;
 
 /**

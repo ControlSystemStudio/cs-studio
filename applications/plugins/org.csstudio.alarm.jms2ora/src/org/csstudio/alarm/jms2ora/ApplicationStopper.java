@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ecf.core.identity.ID;
