@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.filter.ui;
 
+
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -45,9 +46,7 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringValuesTObject;
 import org.csstudio.ams.filter.FilterConditionArrayString;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -306,31 +305,31 @@ public class FilterConditionArrayStringUI extends FilterConditionUI
 		tblValueViewer.setContentProvider(new ArrayContentProvider());
 		tblValueViewer.setLabelProvider(new TableLabelProvider());
 		tblValueViewer.setInput(arrayValues);
-
-		new ProcessVariableDropTarget(tblValueViewer.getTable())
-        {
-            @Override
-            public void handleDrop(final IProcessVariable name, final DropTargetEvent event)
-            {
-            	try
-            	{
-            		if(arrayValues.size() > 0)
-	            	{
-	            		final FilterConditionArrayStringValuesTObject item = arrayValues.get(arrayValues.size() - 1);
-	            		if(StringUtil.isBlank(item.getCompValue()))
-	            		{
-	            			item.setCompValue(name.getName());
-	            			return;
-	            		}
-	            	}
-	            	arrayValues.add(new FilterConditionArrayStringValuesTObject(-1, name.getName()));
-            	}
-            	finally
-            	{
-            		tblValueViewer.refresh();
-            	}
-            }
-        };
+//		TODO jhatje: implement new datatype
+//		new ProcessVariableDropTarget(tblValueViewer.getTable())
+//        {
+//            @Override
+//            public void handleDrop(final IProcessVariable name, final DropTargetEvent event)
+//            {
+//            	try
+//            	{
+//            		if(arrayValues.size() > 0)
+//	            	{
+//	            		final FilterConditionArrayStringValuesTObject item = arrayValues.get(arrayValues.size() - 1);
+//	            		if(StringUtil.isBlank(item.getCompValue()))
+//	            		{
+//	            			item.setCompValue(name.getName());
+//	            			return;
+//	            		}
+//	            	}
+//	            	arrayValues.add(new FilterConditionArrayStringValuesTObject(-1, name.getName()));
+//            	}
+//            	finally
+//            	{
+//            		tblValueViewer.refresh();
+//            	}
+//            }
+//        };
 	}
 
 	public void initControls()

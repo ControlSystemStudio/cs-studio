@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.dbAccess;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ import org.apache.derby.jdbc.ClientDriver;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceStore;
