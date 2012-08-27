@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.views.AlarmTreeView;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -49,8 +49,7 @@ public final class JobFactory {
     
     //    private static final Logger LOG = CentralLogger.getInstance().getLogger(JobFactory.class);
     
-    private static final IAlarmConfigurationService CONFIG_SERVICE = AlarmTreePlugin.getDefault()
-            .getAlarmConfigurationService();
+    private static final IAlarmConfigurationService CONFIG_SERVICE = ServiceLocator.getService(IAlarmConfigurationService.class);
     
     /**
      * Constructor.

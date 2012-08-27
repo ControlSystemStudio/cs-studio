@@ -21,13 +21,8 @@
  */
 package org.csstudio.alarm.treeview.ldap;
 
-import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-
 import java.sql.Date;
+
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
@@ -38,8 +33,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeview.model.Alarm;
 import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
@@ -49,13 +43,19 @@ import org.csstudio.alarm.treeview.model.ProcessVariableNode;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.csstudio.utility.ldap.service.util.LdapUtils.*;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.*;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.*;
 
 /**
  * This class provides the Alarm Tree Mgmt methods to build the alarm tree.
@@ -69,7 +69,7 @@ public final class AlarmTreeBuilder {
     /**
      * The logger that is used by this class.
      */
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeBuilder.class);
 
 
     /**
@@ -85,7 +85,7 @@ public final class AlarmTreeBuilder {
             final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), facilityName,
                                                              UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
-            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            final ILdapService service = ServiceLocator.getService(ILdapService.class);
             if (service == null) {
                 throw new ServiceUnavailableException("LDAP Service not available. Check for existing test facility failed.");
             }
@@ -182,7 +182,9 @@ public final class AlarmTreeBuilder {
                                 @Nonnull final IProcessVariableNodeListener pvNodeListener,
                                 @Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
                                 @Nonnull final IProgressMonitor monitor, @Nonnull final TreeNodeSource source) throws NamingException {
-        ensureTestFacilityExists();
+		if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
+			ensureTestFacilityExists();
+		}
 
         for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> ous : model.getVirtualRoot().getDirectChildren()) {
             // Level of ou=EpicsAlarmcfg

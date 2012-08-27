@@ -23,16 +23,17 @@
  */
 package org.csstudio.alarm.treeview.model;
 
+
 import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A pv is represented by a node in the alarm tree. To retrieve the initial state of a pv the alarm service is called.
@@ -44,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 21.07.2010
  */
 public class PVNodeItem implements IAlarmInitItem {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(PVNodeItem.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PVNodeItem.class);
 
     private final IAlarmProcessVariableNode _pvNode;
 
@@ -75,8 +76,12 @@ public class PVNodeItem implements IAlarmInitItem {
     }
 
     @Override
+    public void acknowledge() {
+        _pvNode.acknowledgeAlarm();
+    }
+    
+    @Override
     public void notFound(@Nonnull final String pvName) {
-        // the pv was not connected, therefore the alarm state could not be determined, thus it is UNKNOWN.
         final Alarm alarm = new Alarm(pvName,
                                       EpicsAlarmSeverity.UNKNOWN,
                                       new Date(System.currentTimeMillis()));

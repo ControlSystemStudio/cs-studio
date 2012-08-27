@@ -18,15 +18,14 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.ProcessVariableNode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.core.runtime.IPath;
@@ -34,6 +33,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Run Css Display Action.
@@ -44,8 +45,7 @@ import org.eclipse.jface.viewers.TreeViewer;
  * @since 17.06.2010
  */
 public final class RunCssDisplayAction extends Action {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(RunCssDisplayAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RunCssAlarmDisplayAction.class);
 
     private final TreeViewer _viewer;
 

@@ -23,6 +23,8 @@ import java.util.Queue;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
@@ -60,6 +62,7 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
 
     /**
      * {@inheritDoc}
+     * @throws AlarmServiceException 
      */
     @Override
     @CheckForNull
@@ -67,10 +70,13 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
                                                     @Nonnull final String name) {
         // the precondition of DirectoryEditor.createProcessVariableRecord has already been checked in AbstractCreateComponentAction
         // before the call to createComponent
-        ITreeModificationItem result = DirectoryEditor.createProcessVariableRecord(parent, name, _alarmTreeView.getPVNodeListener());
-        IAlarmConnection connection = _alarmTreeView.getConnection();
-        if (connection != null) {
-            connection.registerPV(name);
+        ITreeModificationItem result = DirectoryEditor
+                .createProcessVariableRecord(parent, name, _alarmTreeView.getPVNodeListener());
+        if (!AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() || (result != null)) {
+            IAlarmConnection connection = _alarmTreeView.getConnection();
+            if (connection != null) {
+                connection.registerPV(name);
+            }
         }
         return result;
     }

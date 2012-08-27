@@ -18,20 +18,22 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Saves the current tree structure under this node in an XML file format.
@@ -42,7 +44,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @since 17.06.2010
  */
 public final class SaveAsXmlAction extends Action {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveAsXmlAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SaveAsXmlAction.class);
 
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
@@ -73,10 +75,10 @@ public final class SaveAsXmlAction extends Action {
                 }
 
             } else {
-                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmcfgConfiguration.FACILITY.getObjectClass() + " type components.");
+                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmcfgConfiguration.FACILITY.getObjectClass() + " type components."); //$NON-NLS-1$ //$NON-NLS-2$
                 MessageDialog.openError(_site.getShell(),
-                                        "Save as XML file",
-                                        "Internal error: XML files can only be saved for complete facility subtrees.");
+                                        Messages.SaveAsXmlAction_Dialog_Title,
+                                        Messages.SaveAsXmlAction_Dialog_Text);
             }
         }
     }
