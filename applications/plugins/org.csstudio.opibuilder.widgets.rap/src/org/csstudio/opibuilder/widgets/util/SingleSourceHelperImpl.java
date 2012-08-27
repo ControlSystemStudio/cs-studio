@@ -55,6 +55,11 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 			MouseTrackListener listener) {
 		
 	}
+
+	@Override
+	protected void internalSWTControlTraverse(Control control, int traversal) {
+		
+	}
 	
 	
 	
