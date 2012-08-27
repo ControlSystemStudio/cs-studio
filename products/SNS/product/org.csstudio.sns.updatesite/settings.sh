@@ -4,7 +4,7 @@
 
 # Version to build
 
-export VERSION=3.2.0I
+export VERSION=3.1.2
 
 # Top of repository tree
 export TOP=/Kram/MerurialRepos/cs-studio-3.1
