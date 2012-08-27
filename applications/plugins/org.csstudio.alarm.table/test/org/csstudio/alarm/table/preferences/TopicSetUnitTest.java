@@ -32,7 +32,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 24.06.2010
  */
-public class TopicSetTest {
+public class TopicSetUnitTest {
 
     @Test
     public void testDefault() {
@@ -118,5 +118,17 @@ public class TopicSetTest {
         assertTrue(topicSet.isRetrieveInitialState());
     }
 
+    @Test
+    public void testSynchedToTree() {
+        TopicSet topicSet = new TopicSet.Builder().build();
+        assertFalse(topicSet.isSynchedToTree());
+        
+        topicSet = new TopicSet.Builder().setSynchedToTree("false").build();
+        assertFalse(topicSet.isSynchedToTree());
+        
+        topicSet = new TopicSet.Builder().setSynchedToTree("true").build();
+        assertTrue(topicSet.isSynchedToTree());
+    }
+    
 
 }

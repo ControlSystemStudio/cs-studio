@@ -46,7 +46,7 @@ public final class AlarmViewPreference<T> extends AbstractPreference<T> {
     
     //Sets of JMS topics to be monitored. List separated with ';'. The optional name for the menu is separated with '?'.
     public static final AlarmViewPreference<String> ALARMVIEW_TOPIC_SET = new AlarmViewPreference<String>("Alarm.topic_set",
-        "default?ALARM,ACK?Default?false?false?Tahoma,0,8?false;");
+        "default?ALARM,ACK?Default?false?false?Tahoma,0,8?false?false;");
     
     public static final AlarmViewPreference<Boolean> ALARMVIEW_SHOW_OUTDATED_MESSAGES =
         new AlarmViewPreference<Boolean>("showOutdatedMessages", Boolean.FALSE);

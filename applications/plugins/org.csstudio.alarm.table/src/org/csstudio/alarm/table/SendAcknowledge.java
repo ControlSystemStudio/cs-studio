@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.table;
 
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +41,7 @@ import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
-import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.desy.startuphelper.CSSPlatformInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

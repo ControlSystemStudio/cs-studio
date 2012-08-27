@@ -32,7 +32,6 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,8 @@ import org.slf4j.LoggerFactory;
  * @author jhatje
  *
  */
-public class BasicMessage extends PlatformObject implements IProcessVariable {
+//TODO jhatje: implement new datatype
+public class BasicMessage extends PlatformObject{// implements IProcessVariable {
     
     /**
      * The properties of the message.
@@ -131,16 +131,18 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
         // return SeverityMapping.getSeverityNumber(_messageProperties
         // .get(SEVERITY.getDefiningName()));
     }
-    
-    @Override
+
+//    TODO jhatje: implement new datatype
+//    @Override
     @CheckForNull
     public String getName() {
         return this.getProperty(NAME.getDefiningName()); //$NON-NLS-1$
     }
-    
-    @Override
+//    
+//    @Override
     public String getTypeId() {
-        return TYPE_ID;
+    	return null;
+//        return TYPE_ID;
     }
     
     public Map<String, String> getHashMap() {

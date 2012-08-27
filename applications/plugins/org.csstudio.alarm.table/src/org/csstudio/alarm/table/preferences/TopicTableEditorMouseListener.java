@@ -142,7 +142,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         } else {
             item.setText(column, "false");
         }
-        LOG.debug("text of column {}: {}",column, text);
+        LOG.debug("column {} toggled, was {}", column, text);
     }
 
     private void openFontDialogue(@Nonnull final TableItem item, final int column) {
@@ -186,6 +186,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         // any time it's modified
         final int col = column;
         text.addModifyListener(new ModifyListener() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void modifyText(@Nonnull final ModifyEvent event) {
                 // Set the text of the editor's control back into the cell
