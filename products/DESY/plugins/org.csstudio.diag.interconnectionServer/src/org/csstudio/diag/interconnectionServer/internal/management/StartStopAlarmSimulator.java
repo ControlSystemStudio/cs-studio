@@ -23,9 +23,9 @@
 package org.csstudio.diag.interconnectionServer.internal.management;
 
 import org.csstudio.diag.interconnectionServer.server.AlarmSimulator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * Management command for starting and stopping the alarm simulator.

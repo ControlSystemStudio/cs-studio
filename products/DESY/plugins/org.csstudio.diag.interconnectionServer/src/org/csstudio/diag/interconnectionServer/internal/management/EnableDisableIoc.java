@@ -26,9 +26,9 @@ import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
 

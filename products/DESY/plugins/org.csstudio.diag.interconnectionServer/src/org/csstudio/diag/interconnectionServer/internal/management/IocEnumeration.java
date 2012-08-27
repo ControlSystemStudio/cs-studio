@@ -28,8 +28,8 @@ import java.util.List;
 
 import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.IDynamicParameterValues;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.IDynamicParameterValues;
 import org.csstudio.servicelocator.ServiceLocator;
 
 /**
