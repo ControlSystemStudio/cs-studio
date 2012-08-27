@@ -291,7 +291,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>96</width>
+    <width>140</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../../pictures/home-16x16.png</image>
@@ -314,6 +314,6 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip></tooltip>
-    <x>97</x>
+    <x>82</x>
   </widget>
 </display>

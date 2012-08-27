@@ -234,36 +234,45 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                         String password, String title, String body, String images[])
                         throws Exception
                 {
-                    // Both the logbook entry and the PV updates can fail
-                    // for some reason.
                     // The whole elog-and-pv-update should be handled
                     // as a transaction that either succeeds or fails
                     // as a whole.
 
-                    // First, it makes the PV changes
-                    // Exceptions in here are caught by ELog dialog
-                    // and will be displayed there
-                    // (maybe not in the most obvious way...)
+                    // Check if we can connect to the logbook (user, password)
+                    final ILogbook logbook = getLogbook_factory().connect(logbook_name, user, password);
                     try
                     {
-                        model.saveUserValues(user);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(NLS.bind(Messages.PVWriteErrorFmt, ex.getMessage()));
-                    }
+                        try
+                        {   // Change PVs.
+                            model.saveUserValues(user);
+                        }
+                        catch (Exception ex)
+                        {   // At least some saves failed, to revert
+                            try
+                            {
+                                model.revertOriginalValues();
+                            }
+                            catch (Exception ignore)
+                            {
+                                // Since saving didn't work, restoral will also fail.
+                                // Hopefully those initial PVs that did get updated will
+                                // also be restored...
+                            }
 
-                    // Then it will make the elog entry.
-                    // If that fails, the PVs were still changed!
-                    // The idea is: Operationally, the PV change was
-                    // required so at least that worked.
-                    // ELog entry failed, operator knows and can look
-                    // into it later.
-                    final ILogbook logbook = getLogbook_factory()
-                        .connect(logbook_name, user, password);
-                    try
-                    {
-                        logbook.createEntry(title, body, images);
+                            // Update error to be more specific, displayed by ELog dialog
+                            throw new Exception(NLS.bind(Messages.PVWriteErrorFmt, ex.getMessage()));
+                        }
+
+                        try
+                        {   // Then make elog entry.
+                            logbook.createEntry(title, body, images);
+                            model.clearUserValues();
+                        }
+                        catch (Exception ex)
+                        {   // On error, restore the original values
+                            model.revertOriginalValues();
+                            throw ex;
+                        }
                     }
                     finally
                     {

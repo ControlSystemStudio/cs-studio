@@ -9,20 +9,17 @@ package org.epics.pvmanager.data;
  * null, even if the channel never connected. One <b>must always look</b>
  * at the alarm severity to be able to correctly interpret the value.
  * <p>
- * Coding to {@code Scalart<T extends Object>} allows to write a client that works with all
- * scalars, regardless of their type.
- * Coding to {@code Scalart<T extends Number>} allows to write a client that works with all
- * numbers, regardless of their type.
+ * As of 1.1, this class is not a generic type. This is due to a bug in 1.6
+ * compiler where generic return type clash with covariant return types.
  *
- * @param <T> the type of the scalar
  * @author carcassi
  */
-public interface Scalar<T> {
+public interface Scalar {
 
     /**
      * Returns the value. Never null.
      *
      * @return the value
      */
-    T getValue();
+    Object getValue();
 }

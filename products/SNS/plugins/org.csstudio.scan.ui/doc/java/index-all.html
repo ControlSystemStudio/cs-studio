@@ -82,12 +82,6 @@ function windowTitle()
 <DT><A HREF="./org/csstudio/scan/server/ScanServer.html#abort(long)"><B>abort(long)</B></A> - 
 Method in interface org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A>
 <DD>Ask server to abort a scan
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#add(org.csstudio.scan.command.ScanCommand)"><B>add(ScanCommand)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a command
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#add(org.csstudio.scan.command.CommandSequence)"><B>add(CommandSequence)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add all commands from other sequence
 <DT><A HREF="./org/csstudio/scan/client/ScanInfoModel.html#addListener(org.csstudio.scan.client.ScanInfoModelListener)"><B>addListener(ScanInfoModelListener)</B></A> - 
 Method in class org.csstudio.scan.client.<A HREF="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</A>
 <DD>&nbsp;
@@ -108,14 +102,13 @@ Static method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/
 <A NAME="_C_"><!-- --></A><H2>
 <B>C</B></H2>
 <DL>
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command"><B>CommandSequence</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Helper for creating a sequence of commands<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#CommandSequence()"><B>CommandSequence()</B></A> - 
-Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Initialize empty command sequence
-  to which commands can then be added.
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#CommandSequence(org.csstudio.scan.command.ScanCommand)"><B>CommandSequence(ScanCommand)</B></A> - 
+<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command"><B>CommandSequence</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Helper for creating a sequence of commands<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#CommandSequence(org.csstudio.scan.command.ScanCommand)"><B>CommandSequence(ScanCommand)</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
 <DD>Initialize with a command.
 <DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#CommandSequence(org.csstudio.scan.command.ScanCommand...)"><B>CommandSequence(ScanCommand...)</B></A> - 
+Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
+<DD>Initialize with a given sequence of commands.
+<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#CommandSequence(java.util.Collection)"><B>CommandSequence(Collection&lt;ScanCommand&gt;)</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
 <DD>Initialize with a given sequence of commands.
 <DT><A HREF="./org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command"><B>CommentCommand</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Example for a custom command, added to scan system via extension point.<DT><A HREF="./org/csstudio/scan/command/CommentCommand.html#CommentCommand()"><B>CommentCommand()</B></A> - 
@@ -141,7 +134,10 @@ Method in interface org.csstudio.scan.client.<A HREF="./org/csstudio/scan/client
 <DT><A HREF="./org/csstudio/scan/command/SimpleScanCommandFactory.html#createCommandForID(java.lang.String)"><B>createCommandForID(String)</B></A> - 
 Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/SimpleScanCommandFactory.html" title="class in org.csstudio.scan.command">SimpleScanCommandFactory</A>
 <DD>Create a <A HREF="./org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><CODE>ScanCommand</CODE></A> for a command ID
-<DT><A HREF="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object)"><B>createSample(Date, long, Object)</B></A> - 
+<DT><A HREF="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Number...)"><B>createSample(Date, long, Number...)</B></A> - 
+Static method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</A>
+<DD>Create ScanSample for plain number or text value
+<DT><A HREF="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object[])"><B>createSample(Date, long, Object[])</B></A> - 
 Static method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</A>
 <DD>Create ScanSample for plain number or text value
 </DL>
@@ -155,9 +151,6 @@ Static variable in interface org.csstudio.scan.server.<A HREF="./org/csstudio/sc
 <DT><A HREF="./org/csstudio/scan/server/ScanServer.html#DEFAULT_PORT"><B>DEFAULT_PORT</B></A> - 
 Static variable in interface org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A>
 <DD>Default port used by scan server
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#delay(double)"><B>delay(double)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'delay' command
 <DT><A HREF="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><B>DelayCommand</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Command that delays the scan for some time<DT><A HREF="./org/csstudio/scan/command/DelayCommand.html#DelayCommand()"><B>DelayCommand()</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</A>
 <DD>Initialize delay with 1 second
@@ -316,7 +309,7 @@ Method in class org.csstudio.scan.device.<A HREF="./org/csstudio/scan/device/Dev
 <DT><A HREF="./org/csstudio/scan/server/Scan.html#getName()"><B>getName()</B></A> - 
 Method in class org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</A>
 <DD>&nbsp;
-<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#getNumber()"><B>getNumber()</B></A> - 
+<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#getNumber(int)"><B>getNumber(int)</B></A> - 
 Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</A>
 <DD>&nbsp;
 <DT><A HREF="./org/csstudio/scan/server/ScanInfo.html#getPercentage()"><B>getPercentage()</B></A> - 
@@ -469,12 +462,12 @@ Method in class org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/Mem
 <DT><A HREF="./org/csstudio/scan/command/SetCommand.html#getValue()"><B>getValue()</B></A> - 
 Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</A>
 <DD>&nbsp;
-<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#getValue()"><B>getValue()</B></A> - 
+<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#getValues()"><B>getValues()</B></A> - 
 Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</A>
-<DD>Get raw value of the sample
-<DT><A HREF="./org/csstudio/scan/data/ScanSample.html#getValue()"><B>getValue()</B></A> - 
+<DD>Get raw values of the sample
+<DT><A HREF="./org/csstudio/scan/data/ScanSample.html#getValues()"><B>getValues()</B></A> - 
 Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A>
-<DD>Get raw value of the sample
+<DD>Get raw values of the sample
 <DT><A HREF="./org/csstudio/scan/server/ScanServerInfo.html#getVersion()"><B>getVersion()</B></A> - 
 Method in class org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</A>
 <DD>&nbsp;
@@ -533,9 +526,6 @@ Method in class org.csstudio.scan.device.<A HREF="./org/csstudio/scan/device/Dev
 <A NAME="_L_"><!-- --></A><H2>
 <B>L</B></H2>
 <DL>
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#log(java.lang.String...)"><B>log(String...)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'log' command
 <DT><A HREF="./org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><B>LogCommand</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Command that reads data from devices and logs it<DT><A HREF="./org/csstudio/scan/command/LogCommand.html#LogCommand()"><B>LogCommand()</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</A>
 <DD>Initialize empty log command
@@ -548,15 +538,6 @@ Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/com
 <DT><A HREF="./org/csstudio/scan/command/ScanScriptContext.html#logData(java.lang.String, java.lang.Object)"><B>logData(String, Object)</B></A> - 
 Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</A>
 <DD>Add data for a device to the log.
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, org.csstudio.scan.command.ScanCommand...)"><B>loop(String, double, double, double, ScanCommand...)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'loop' command
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, org.csstudio.scan.command.CommandSequence)"><B>loop(String, double, double, double, CommandSequence)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'loop' command
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, java.util.List)"><B>loop(String, double, double, double, List&lt;ScanCommand&gt;)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'loop' command
 <DT><A HREF="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command"><B>LoopCommand</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Command that performs a loop<DT><A HREF="./org/csstudio/scan/command/LoopCommand.html#LoopCommand()"><B>LoopCommand()</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</A>
 <DD>Initialize empty loop
@@ -582,7 +563,7 @@ Constructor for class org.csstudio.scan.server.<A HREF="./org/csstudio/scan/serv
 <A NAME="_N_"><!-- --></A><H2>
 <B>N</B></H2>
 <DL>
-<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data"><B>NumberScanSample</B></A> - Class in <A HREF="./org/csstudio/scan/data/package-summary.html">org.csstudio.scan.data</A><DD>Scan sample for numbers<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number)"><B>NumberScanSample(Date, long, Number)</B></A> - 
+<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data"><B>NumberScanSample</B></A> - Class in <A HREF="./org/csstudio/scan/data/package-summary.html">org.csstudio.scan.data</A><DD>Scan sample for numbers<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number[])"><B>NumberScanSample(Date, long, Number[])</B></A> - 
 Constructor for class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</A>
 <DD>Initialize
 </DL>
@@ -612,6 +593,9 @@ Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/ScanDat
 <A NAME="_R_"><!-- --></A><H2>
 <B>R</B></H2>
 <DL>
+<DT><A HREF="./org/csstudio/scan/command/ScanScriptContext.html#read(java.lang.String)"><B>read(String)</B></A> - 
+Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</A>
+<DD>Read value from a device
 <DT><A HREF="./org/csstudio/scan/command/ScanCommandProperty.html#READBACK"><B>READBACK</B></A> - 
 Static variable in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/ScanCommandProperty.html" title="class in org.csstudio.scan.command">ScanCommandProperty</A>
 <DD>&nbsp;
@@ -746,17 +730,6 @@ Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/com
 <DT><A HREF="./org/csstudio/scan/server/ScanServer.html#SERIAL_VERSION"><B>SERIAL_VERSION</B></A> - 
 Static variable in interface org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A>
 <DD>Serialization version used for all RMI interfaces
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object)"><B>set(String, Object)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object, boolean)"><B>set(String, Object, boolean)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object, java.lang.String, double, double)"><B>set(String, Object, String, double, double)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'set' command that writes to a device
 <DT><A HREF="./org/csstudio/scan/command/LoopCommand.html#setAddress(long)"><B>setAddress(long)</B></A> - 
 Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</A>
 <DD>Set address of loop as well as body commands
@@ -872,6 +845,9 @@ Method in interface org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server
 <DT><A HREF="./org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server"><B>SimulationResult</B></A> - Class in <A HREF="./org/csstudio/scan/server/package-summary.html">org.csstudio.scan.server</A><DD>Result of a scan simulation<DT><A HREF="./org/csstudio/scan/server/SimulationResult.html#SimulationResult(double, java.lang.String)"><B>SimulationResult(double, String)</B></A> - 
 Constructor for class org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server">SimulationResult</A>
 <DD>Initialize
+<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#size()"><B>size()</B></A> - 
+Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</A>
+<DD>&nbsp;
 <DT><A HREF="./org/csstudio/scan/server/ScanServer.html#submitScan(java.lang.String, java.lang.String)"><B>submitScan(String, String)</B></A> - 
 Method in interface org.csstudio.scan.server.<A HREF="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A>
 <DD>Submit a sequence of commands as a 'scan' to be executed
@@ -943,6 +919,9 @@ Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/S
 <DT><A HREF="./org/csstudio/scan/command/WaitCommand.html#toString()"><B>toString()</B></A> - 
 Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</A>
 <DD>
+<DT><A HREF="./org/csstudio/scan/data/NumberScanSample.html#toString()"><B>toString()</B></A> - 
+Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</A>
+<DD>&nbsp;
 <DT><A HREF="./org/csstudio/scan/data/ScanSample.html#toString()"><B>toString()</B></A> - 
 Method in class org.csstudio.scan.data.<A HREF="./org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A>
 <DD>&nbsp;
@@ -1006,15 +985,15 @@ the order they are declared.
 <A NAME="_W_"><!-- --></A><H2>
 <B>W</B></H2>
 <DL>
-<DT><A HREF="./org/csstudio/scan/command/CommandSequence.html#wait(java.lang.String, double, double)"><B>wait(String, double, double)</B></A> - 
-Method in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>
-<DD>Add a 'wait' command that delays the scan until a device reaches a certain value
 <DT><A HREF="./org/csstudio/scan/command/ScanCommandProperty.html#WAIT"><B>WAIT</B></A> - 
 Static variable in class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/ScanCommandProperty.html" title="class in org.csstudio.scan.command">ScanCommandProperty</A>
 <DD>&nbsp;
 <DT><A HREF="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command"><B>WaitCommand</B></A> - Class in <A HREF="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</A><DD>Command that delays the scan until a device reaches a certain value<DT><A HREF="./org/csstudio/scan/command/WaitCommand.html#WaitCommand()"><B>WaitCommand()</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</A>
 <DD>Initialize empty wait command
+<DT><A HREF="./org/csstudio/scan/command/WaitCommand.html#WaitCommand(java.lang.String, double)"><B>WaitCommand(String, double)</B></A> - 
+Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</A>
+<DD>Initialize with default tolerance and no timeout
 <DT><A HREF="./org/csstudio/scan/command/WaitCommand.html#WaitCommand(java.lang.String, org.csstudio.scan.command.Comparison, double)"><B>WaitCommand(String, Comparison, double)</B></A> - 
 Constructor for class org.csstudio.scan.command.<A HREF="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</A>
 <DD>Initialize with default tolerance and no timeout

@@ -17,11 +17,12 @@ package org.csstudio.scan.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /** Helper for creating a sequence of commands
  *
- *  <p>Used by the client to building a sequence of commands
+ *  <p>Used by the client to build a sequence of commands
  *  which is then submitted to the server for execution as a "scan".
  *
  *  <p>Allows both <code>List&lt;Command></code> and plain <code>Command[]</code>.
@@ -35,14 +36,6 @@ import java.util.List;
 public class CommandSequence
 {
     final private List<ScanCommand> commands;
-
-    /** Initialize empty command sequence
-     *  to which commands can then be added.
-     */
-    public CommandSequence()
-    {
-        commands = new ArrayList<ScanCommand>();
-    }
 
     /** Initialize with a command.
      *
@@ -61,12 +54,20 @@ public class CommandSequence
     }
 
     /** Initialize with a given sequence of commands.
-     *  <p>The command sequence is then immutable.
      *  @param commands Sequence of commands
      */
     public CommandSequence(final ScanCommand... commands)
     {
         this.commands = Arrays.asList(commands);
+    }
+
+    /** Initialize with a given sequence of commands.
+     *  @param commands Sequence of commands
+     */
+    public CommandSequence(final Collection<ScanCommand> commands)
+    {
+        this.commands = new ArrayList<ScanCommand>();
+        this.commands.addAll(commands);
     }
 
     /** Assign consecutive addresses
@@ -77,130 +78,6 @@ public class CommandSequence
         long next = 0;
         for (ScanCommand command : commands)
             next = command.setAddress(next);
-    }
-
-    /** Add a command
-     *  @param command {@link ScanCommand}
-     */
-    public void add(final ScanCommand command)
-    {
-        commands.add(command);
-    }
-
-    /** Add all commands from other sequence
-     *  @param command_sequence {@link CommandSequence}
-     */
-    public void add(final CommandSequence command_sequence)
-    {
-        commands.addAll(command_sequence.commands);
-    }
-
-    /** Add a 'delay' command
-     *  @param seconds Delay in seconds
-     */
-    public void delay(final double seconds)
-    {
-        add(new DelayCommand(seconds));
-    }
-
-    /** Add a 'log' command
-     *  @param device_names List of device names to log
-     */
-    public void log(final String... device_names)
-    {
-        add(new LogCommand(device_names));
-    }
-
-    /** Add a 'loop' command
-     *  @param device_name Name of device to update in loop
-     *  @param start Initial loop value
-     *  @param end Final loop value
-     *  @param stepsize Loop value step size
-     *  @param body Loop body
-     */
-    public void loop(final String device_name,
-            final double start, final double end,
-            final double stepsize,
-            final ScanCommand... body)
-    {
-        add(new LoopCommand(device_name, start, end, stepsize, body));
-    }
-
-    /** Add a 'loop' command
-     *  @param device_name Name of device to update in loop
-     *  @param start Initial loop value
-     *  @param end Final loop value
-     *  @param stepsize Loop value step size
-     *  @param body Loop body
-     */
-    public void loop(final String device_name,
-            final double start, final double end,
-            final double stepsize,
-            final CommandSequence body)
-    {
-        loop(device_name, start, end, stepsize, body.getCommands());
-    }
-
-    /** Add a 'loop' command
-     *  @param device_name Name of device to update in loop
-     *  @param start Initial loop value
-     *  @param end Final loop value
-     *  @param stepsize Loop value step size
-     *  @param body Loop body
-     */
-    public void loop(final String device_name,
-            final double start, final double end,
-            final double stepsize,
-            final List<ScanCommand> body)
-    {
-        add(new LoopCommand(device_name, start, end, stepsize,
-                            body.toArray(new ScanCommand[body.size()])));
-    }
-
-    /** Add a 'set' command that writes to a device
-     *  with default readback, tolerance and no timeout
-     *  @param device_name Name of device
-     *  @param value Value to write to the device
-     */
-    public void set(final String device_name, final Object value)
-    {
-        add(new SetCommand(device_name, value));
-    }
-
-    /** Add a 'set' command that writes to a device
-     *  with default readback, tolerance and no timeout
-     *  @param device_name Name of device
-     *  @param value Value to write to the device
-     *  @param wait Wait for readback to match?
-     */
-    public void set(final String device_name, final Object value, final boolean wait)
-    {
-        add(new SetCommand(device_name, value, wait));
-    }
-
-    /** Add a 'set' command that writes to a device
-     *  @param device_name Name of device
-     *  @param value Value to write to the device
-     *  @param readback Readback device
-     *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, 0 as "forever"
-     */
-    public void set(final String device_name, final Object value,
-            final String readback,
-            final double tolerance, final double timeout)
-    {
-        add(new SetCommand(device_name, value, readback, true, tolerance, timeout));
-    }
-
-    /** Add a 'wait' command that delays the scan until a device reaches a certain value
-     *  @param device_name Name of device to check
-     *  @param desired_value Desired value of the device
-     *  @param tolerance Numeric tolerance when checking value
-     */
-    public void wait(final String device_name, final double desired_value,
-         final double tolerance)
-    {
-        add(new WaitCommand(device_name, Comparison.EQUALS, desired_value, tolerance, 0.0));
     }
 
     // Note: This was called 'print' which causes warnings in a PyDev python

@@ -39,15 +39,8 @@ class ConverterVDoubleArrayFunction extends Function<VDoubleArray> {
             for (int i = 0; i < output.length; i++) {
                 output[i] = input[i];
             }
-            return ValueFactory.newVDoubleArray(output, vFloat.getSizes(), vFloat.getAlarmSeverity(),
-                vFloat.getAlarmStatus(),
-                vFloat.getTimeStamp(),
-                vFloat.getTimeUserTag(),
-                vFloat.getLowerDisplayLimit(), vFloat.getLowerAlarmLimit(),
-                vFloat.getLowerWarningLimit(), vFloat.getUnits(),
-                vFloat.getFormat(), vFloat.getUpperWarningLimit(),
-                vFloat.getUpperAlarmLimit(), vFloat.getUpperDisplayLimit(),
-                vFloat.getLowerCtrlLimit(), vFloat.getUpperCtrlLimit());
+            return ValueFactory.newVDoubleArray(output, vFloat.getSizes(), vFloat,
+                vFloat, vFloat);
         }
         
         // Converts VIntArray to VDoubleArray
@@ -58,15 +51,8 @@ class ConverterVDoubleArrayFunction extends Function<VDoubleArray> {
             for (int i = 0; i < output.length; i++) {
                 output[i] = input[i];
             }
-            return ValueFactory.newVDoubleArray(output, vInt.getSizes(), vInt.getAlarmSeverity(),
-                vInt.getAlarmStatus(),
-                vInt.getTimeStamp(),
-                vInt.getTimeUserTag(),
-                vInt.getLowerDisplayLimit(), vInt.getLowerAlarmLimit(),
-                vInt.getLowerWarningLimit(), vInt.getUnits(),
-                vInt.getFormat(), vInt.getUpperWarningLimit(),
-                vInt.getUpperAlarmLimit(), vInt.getUpperDisplayLimit(),
-                vInt.getLowerCtrlLimit(), vInt.getUpperCtrlLimit());
+            return ValueFactory.newVDoubleArray(output, vInt.getSizes(), vInt,
+                vInt, vInt);
         }
         
         // Converts VShortArray to VDoubleArray
@@ -77,34 +63,20 @@ class ConverterVDoubleArrayFunction extends Function<VDoubleArray> {
             for (int i = 0; i < output.length; i++) {
                 output[i] = input[i];
             }
-            return ValueFactory.newVDoubleArray(output, vShort.getSizes(), vShort.getAlarmSeverity(),
-                vShort.getAlarmStatus(),
-                vShort.getTimeStamp(),
-                vShort.getTimeUserTag(),
-                vShort.getLowerDisplayLimit(), vShort.getLowerAlarmLimit(),
-                vShort.getLowerWarningLimit(), vShort.getUnits(),
-                vShort.getFormat(), vShort.getUpperWarningLimit(),
-                vShort.getUpperAlarmLimit(), vShort.getUpperDisplayLimit(),
-                vShort.getLowerCtrlLimit(), vShort.getUpperCtrlLimit());
+            return ValueFactory.newVDoubleArray(output, vShort.getSizes(), vShort,
+                vShort, vShort);
         }
         
         // Converts VByteArray to VDoubleArray
         if (value instanceof VByteArray) {
-            final VByteArray vShort = (VByteArray) value;
-            byte[] input = vShort.getArray();
+            final VByteArray vByte = (VByteArray) value;
+            byte[] input = vByte.getArray();
             double[] output = new double[input.length];
             for (int i = 0; i < output.length; i++) {
                 output[i] = input[i];
             }
-            return ValueFactory.newVDoubleArray(output, vShort.getSizes(), vShort.getAlarmSeverity(),
-                vShort.getAlarmStatus(),
-                vShort.getTimeStamp(),
-                vShort.getTimeUserTag(),
-                vShort.getLowerDisplayLimit(), vShort.getLowerAlarmLimit(),
-                vShort.getLowerWarningLimit(), vShort.getUnits(),
-                vShort.getFormat(), vShort.getUpperWarningLimit(),
-                vShort.getUpperAlarmLimit(), vShort.getUpperDisplayLimit(),
-                vShort.getLowerCtrlLimit(), vShort.getUpperCtrlLimit());
+            return ValueFactory.newVDoubleArray(output, vByte.getSizes(), vByte,
+                vByte, vByte);
         }
         
         // No convertion available

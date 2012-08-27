@@ -8,7 +8,8 @@ import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Function to simulate a signal that increases constantly within a range
@@ -47,10 +48,9 @@ public class Ramp extends SimFunction<VDouble> {
         this.currentValue = min - step;
         this.step = step;
         range = max - min;
-        lastValue = ValueFactory.newVDouble(currentValue, AlarmSeverity.NONE, AlarmStatus.NONE,
-                TimeStamp.now(), null,
-                min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
-                min + range * 0.8, min + range * 0.9, max, min, max);
+        lastValue = newVDouble(currentValue, alarmNone(), newTime(Timestamp.now()),
+                newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
+                min + range * 0.8, min + range * 0.9, max, min, max));
     }
 
     /**

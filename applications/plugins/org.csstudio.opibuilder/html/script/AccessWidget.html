@@ -54,8 +54,12 @@
    <li><a href = "#addChildToRight(org.csstudio.opibuilder.model.AbstractWidgetModel)">addChildToRight(model)</a></li>
    <li><a href = "#addChildToBottom(org.csstudio.opibuilder.model.AbstractWidgetModel)">addChildToBottom(model)</a></li>
    <li><a href = "#removeChildByName(java.lang.String)">removeChildByName(name)</a></li>
-  <li><a href = "#removeAllChildren()">removeAllChildren()</a></li>
-                
+  <li><a href = "#removeChild(org.csstudio.opibuilder.editparts.AbstractBaseEditPart)">removeChild(widget)</a></li>
+  <li><a href = "#removeChild(int)">removeChild(index)</a></li>
+  <li><a href = "#removeAllChildren()">removeAllChildren()</a></li>   
+  <li><a href = "#performAutosize()">performAutosize()</a></li>       
+  <li><a href = "#getValue()">getValue()</a></li>  
+  <li><a href = "#setValue(java.lang.Object)">setValue()</a></li>  
    </ul>
   <a name = "PVWidgets"></a>
   <h3>Common methods to all PV widgets</h3>
@@ -64,8 +68,8 @@
    <ul>
     <li><a href = "#getPV()">getPV()</a></li>
     <li><a href = "#getPV(java.lang.String)">getPV(pvPropId)</a></li>     
-    <li><a href = "#getValue()">getValue()</a></li>
-    <li><a href = "#setValue(java.lang.Object)">setValue(value)</a></li>    
+    <li><a href = "#pgetValue()">getValue()</a></li>
+    <li><a href = "#psetValue(java.lang.Object)">setValue(value)</a></li>    
    </ul>
    
    <h3>Special methods to each widget</h3>
@@ -432,6 +436,27 @@ public void <B>removeChildByName</B>(java.lang.String&nbsp;widgetName)</PRE>
 </DL>
 <HR>
 
+<a name="removeChild(org.csstudio.opibuilder.editparts.AbstractBaseEditPart)">
+<!--   -->
+</a>
+<h3>removeChild</h3>
+<pre>public&nbsp;void&nbsp;removeChild(<a href="../../../../org/csstudio/opibuilder/editparts/AbstractBaseEditPart.html" title="class in org.csstudio.opibuilder.editparts">AbstractBaseEditPart</a>&nbsp;child)</pre>
+<div class="block">Remove a child widget.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>child</code> - the child widget.</dd></dl>
+
+<HR>
+
+<a name="removeChild(int)">
+<!--   -->
+</a>
+
+<h3>removeChild</h3>
+<pre>public&nbsp;void&nbsp;removeChild(int&nbsp;index)</pre>
+<div class="block">Remove the child at index.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>index</code> - index of the child.</dd></dl>
+
+<HR>
+
 <A NAME="removeAllChildren()"><!-- --></A><H3>
 removeAllChildren</H3>
 <PRE>
@@ -443,6 +468,46 @@ public void <B>removeAllChildren</B>()</PRE>
 </DL>
 </DD>
 </DL>
+<HR>
+
+<a name="performAutosize()">
+<!--   -->
+</a>
+
+<h3>performAutosize</h3>
+<pre>public&nbsp;void&nbsp;performAutosize()</pre>
+<div class="block">Automatically set the container size according to its children's geography size.</div>
+
+<HR>
+<a name="getValue()">
+<!--   -->
+</a>
+
+<h3>getValue</h3>
+<pre>public&nbsp;java.lang.Object&nbsp;getValue()</pre>
+<div class="block">By default, it returns an Object Array of its children's value.
+If <a href="../../../../org/csstudio/opibuilder/editparts/AbstractContainerEditpart.html#setValue(java.lang.Object)"><code>setValue(Object)</code></a> was called with a non Object[] input value, it 
+will return the value of its first child.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../org/csstudio/opibuilder/editparts/AbstractBaseEditPart.html#getValue()">getValue</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/opibuilder/editparts/AbstractBaseEditPart.html" title="class in org.csstudio.opibuilder.editparts">AbstractBaseEditPart</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The value of the widget.</dd></dl>
+
+<HR>
+<a name="setValue(java.lang.Object)">
+<!--   -->
+</a>
+<h3>setValue</h3>
+<pre>public&nbsp;void&nbsp;setValue(java.lang.Object&nbsp;value)</pre>
+<div class="block">If input value is instance of Object[] and its length is equal or larger than children size,
+ it will write each element of value to each child according children's order. Otherwise,
+ it will write the input value as an whole Object to every child.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../org/csstudio/opibuilder/editparts/AbstractBaseEditPart.html#setValue(java.lang.Object)">setValue</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/opibuilder/editparts/AbstractBaseEditPart.html" title="class in org.csstudio.opibuilder.editparts">AbstractBaseEditPart</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - the value to be set. It must be the compatible type for the widget.
+  For example, a boolean widget only accept boolean or number.</dd></dl>
+
 <HR>
 
 <h2>Common methods to all PV widgets</h2>
@@ -489,7 +554,7 @@ For example, <code>pv_name</code>, <code>trace_0_y_pv</code> for XY Graph.
 </DL>
 <HR>
 
-<A NAME="getValue()"><!-- --></A><H3>
+<A NAME="pgetValue()"><!-- --></A><H3>
 getValue</H3>
 <PRE>
 public Object <B>getValue</B>()</PRE>
@@ -509,7 +574,7 @@ public Object <B>getValue</B>()</PRE>
 </DL>
 <HR>
 
-<A NAME="setValue(java.lang.Object)"><!-- --></A><H3>
+<A NAME="psetValue(java.lang.Object)"><!-- --></A><H3>
 setValue</H3>
 <PRE>
 public void <B>setValue</B>(Object&nbsp;value)</PRE>

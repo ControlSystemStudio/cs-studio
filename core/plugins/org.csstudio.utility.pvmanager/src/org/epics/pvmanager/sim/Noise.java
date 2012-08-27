@@ -10,6 +10,8 @@ import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Function to simulate a signal that has a uniform distribution. The warning
@@ -65,10 +67,9 @@ public class Noise extends SimFunction<VDouble> {
         this.min = min;
         this.max = max;
         range = this.max - this.min;
-        lastValue = ValueFactory.newVDouble(min, AlarmSeverity.NONE, AlarmStatus.NONE,
-                TimeStamp.now(), null,
-                min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
-                min + range * 0.8, min + range * 0.9, max, min, max);
+        lastValue = newVDouble(min, alarmNone(), newTime(Timestamp.now()),
+                newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
+                min + range * 0.8, min + range * 0.9, max, min, max));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class WriteExpressionImpl<W> extends WriteExpressionListImpl<W> implement
      * @param channelName the name of the channel
      */
     public WriteExpressionImpl(String channelName) {
-        WriteCache<W> cache = new WriteCache<W>();
+        WriteCache<W> cache = new WriteCache<W>(channelName);
         writeCaches = new HashMap<String, WriteCache<?>>();
         writeCaches.put(channelName, cache);
         this.writeFunction = cache;

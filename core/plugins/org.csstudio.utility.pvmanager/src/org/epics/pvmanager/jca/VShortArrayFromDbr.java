@@ -9,6 +9,8 @@ import gov.aps.jca.dbr.DBR_TIME_Short;
 import java.util.Collections;
 import java.util.List;
 import org.epics.pvmanager.data.VShortArray;
+import org.epics.util.array.ArrayShort;
+import org.epics.util.array.ListShort;
 
 /**
  *
@@ -28,6 +30,11 @@ class VShortArrayFromDbr extends VNumberMetadata<DBR_TIME_Short, DBR_CTRL_Double
     @Override
     public List<Integer> getSizes() {
         return Collections.singletonList(dbrValue.getShortValue().length);
+    }
+
+    @Override
+    public ListShort getData() {
+        return new ArrayShort(dbrValue.getShortValue());
     }
 
 }

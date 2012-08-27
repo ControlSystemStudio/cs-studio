@@ -17,7 +17,7 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB"
+PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
 FEATS="config_build_optional config_build_scan"
 
 # Build products and features
@@ -94,6 +94,7 @@ then
     mv $BUILDDIR/I.archive_engine_$VERSION/archive_engine_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.archive_config_$VERSION/archive_config_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.jms2rdb_$VERSION/jms2rdb_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.scan_server_$VERSION/scan_server_$VERSION* $BUILDDIR/apps
 
     ## Optional features are already in buildRepo
 

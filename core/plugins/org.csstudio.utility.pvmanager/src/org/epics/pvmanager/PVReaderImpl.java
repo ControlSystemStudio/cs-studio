@@ -49,6 +49,7 @@ class PVReaderImpl<T> implements PVReader<T> {
 
     void firePvValueChanged() {
         lastExceptionToNotify = false;
+        readConnectionToNotify = false;
         boolean missed = true;
         for (PVReaderListener listener : pvReaderListeners) {
             listener.pvChanged();
@@ -198,8 +199,26 @@ class PVReaderImpl<T> implements PVReader<T> {
         return closed;
     }
     
+    // This needs to be modified on the client thread (i.e. UI)
+    // and read on the timer thread (so it knows to skip)
+    private volatile boolean paused = false;
+
+    @Override
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return paused;
+    }
+    
+    
+    
     private AtomicReference<Exception> lastException = new AtomicReference<Exception>();
     private volatile boolean lastExceptionToNotify = false;
+    private volatile boolean connected = false;
+    private volatile boolean readConnectionToNotify = false;
 
     /**
      * Whether there is an exception that needs to be notified to the client.
@@ -209,6 +228,16 @@ class PVReaderImpl<T> implements PVReader<T> {
      */
     boolean isLastExceptionToNotify() {
         return lastExceptionToNotify;
+    }
+    
+    /**
+     * Whether there is a connection state that needs to be notified.
+     * This is used to throttle back connection notifications.
+     * 
+     * @return true if this pvReader needs to notify a connection state
+     */
+    boolean isReadConnectionToNotify() {
+        return readConnectionToNotify;
     }
     
     /**
@@ -230,5 +259,19 @@ class PVReaderImpl<T> implements PVReader<T> {
     @Override
     public Exception lastException() {
         return lastException.getAndSet(null);
+    }
+    
+    void setConnectd(boolean connected) {
+        if (this.connected == connected) {
+            return;
+        }
+        
+        this.connected = connected;
+        readConnectionToNotify = true;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return connected;
     }
 }

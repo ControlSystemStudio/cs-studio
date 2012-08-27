@@ -14,7 +14,7 @@ import java.util.TreeMap;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VDoubleArray;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  *
@@ -22,7 +22,7 @@ import org.epics.pvmanager.util.TimeStamp;
  */
 public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCache {
     
-    private NavigableMap<TimeStamp, VDoubleArray> cache = new TreeMap<TimeStamp, VDoubleArray>();
+    private NavigableMap<Timestamp, VDoubleArray> cache = new TreeMap<Timestamp, VDoubleArray>();
     private Function<List<VDoubleArray>> function;
     private Display display;
 
@@ -32,27 +32,27 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
     
     public class Data implements DoubleArrayTimeCache.Data {
         
-        private List<TimeStamp> times = new ArrayList<TimeStamp>();
+        private List<Timestamp> times = new ArrayList<Timestamp>();
         private List<double[]> arrays = new ArrayList<double[]>();
-        private TimeStamp begin;
-        private TimeStamp end;
+        private Timestamp begin;
+        private Timestamp end;
 
-        private Data(SortedMap<TimeStamp, VDoubleArray> subMap, TimeStamp begin, TimeStamp end) {
+        private Data(SortedMap<Timestamp, VDoubleArray> subMap, Timestamp begin, Timestamp end) {
             this.begin = begin;
             this.end = end;
-            for (Map.Entry<TimeStamp, VDoubleArray> en : subMap.entrySet()) {
+            for (Map.Entry<Timestamp, VDoubleArray> en : subMap.entrySet()) {
                 times.add(en.getKey());
                 arrays.add(en.getValue().getArray());
             }
         }
 
         @Override
-        public TimeStamp getBegin() {
+        public Timestamp getBegin() {
             return begin;
         }
 
         @Override
-        public TimeStamp getEnd() {
+        public Timestamp getEnd() {
             return end;
         }
 
@@ -67,28 +67,28 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
         }
 
         @Override
-        public TimeStamp getTimeStamp(int index) {
+        public Timestamp getTimestamp(int index) {
             return times.get(index);
         }
         
     }
     
-    private void deleteBefore(TimeStamp timeStamp) {
+    private void deleteBefore(Timestamp timeStamp) {
         if (cache.isEmpty())
             return;
         
         // This we want to keep as we need to draw the area
         // from the timestamp to the first new value
-        TimeStamp firstEntryBeforeTimeStamp = cache.lowerKey(timeStamp);
-        if (firstEntryBeforeTimeStamp == null)
+        Timestamp firstEntryBeforeTimestamp = cache.lowerKey(timeStamp);
+        if (firstEntryBeforeTimestamp == null)
             return;
         
         // This is the last entry we want to delete
-        TimeStamp lastToDelete = cache.lowerKey(firstEntryBeforeTimeStamp);
+        Timestamp lastToDelete = cache.lowerKey(firstEntryBeforeTimestamp);
         if (lastToDelete == null)
             return;
         
-        TimeStamp firstKey = cache.firstKey();
+        Timestamp firstKey = cache.firstKey();
         while (firstKey.compareTo(lastToDelete) <= 0) {
             cache.remove(firstKey);
             firstKey = cache.firstKey();
@@ -96,15 +96,15 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
     }
 
     @Override
-    public DoubleArrayTimeCache.Data getData(TimeStamp begin, TimeStamp end) {
+    public DoubleArrayTimeCache.Data getData(Timestamp begin, Timestamp end) {
         List<VDoubleArray> newValues = function.getValue();
         for (VDoubleArray value : newValues) {
-            cache.put(value.getTimeStamp(), value);
+            cache.put(value.getTimestamp(), value);
         }
         if (cache.isEmpty())
             return null;
         
-        TimeStamp newBegin = cache.lowerKey(begin);
+        Timestamp newBegin = cache.lowerKey(begin);
         if (newBegin == null)
             newBegin = cache.firstKey();
         
@@ -112,12 +112,12 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
         return data(newBegin, end);
     }
     
-    private DoubleArrayTimeCache.Data data(TimeStamp begin, TimeStamp end) {
+    private DoubleArrayTimeCache.Data data(Timestamp begin, Timestamp end) {
         return new Data(cache.subMap(begin, end), begin, end);
     }
 
     @Override
-    public List<DoubleArrayTimeCache.Data> newData(TimeStamp beginUpdate, TimeStamp endUpdate, TimeStamp beginNew, TimeStamp endNew) {
+    public List<DoubleArrayTimeCache.Data> newData(Timestamp beginUpdate, Timestamp endUpdate, Timestamp beginNew, Timestamp endNew) {
         List<VDoubleArray> newValues = function.getValue();
         
         // No new values, just return the last value
@@ -125,21 +125,21 @@ public class DoubleArrayTimeCacheFromVDoubleArray implements DoubleArrayTimeCach
             return Collections.singletonList(data(cache.lowerKey(endNew), endNew));
         }
         
-        List<TimeStamp> newTimeStamps = new ArrayList<TimeStamp>();
+        List<Timestamp> newTimestamps = new ArrayList<Timestamp>();
         for (VDoubleArray value : newValues) {
-            cache.put(value.getTimeStamp(), value);
-            newTimeStamps.add(value.getTimeStamp());
+            cache.put(value.getTimestamp(), value);
+            newTimestamps.add(value.getTimestamp());
         }
         if (cache.isEmpty())
             return Collections.emptyList();
         
-        Collections.sort(newTimeStamps);
-        TimeStamp firstNewValue = newTimeStamps.get(0);
+        Collections.sort(newTimestamps);
+        Timestamp firstNewValue = newTimestamps.get(0);
         
         // We have just one section that start from the oldest update.
         // If the oldest update is too far, we use the start of the update region.
         // If the oldest update is too recent, we start from the being period
-        TimeStamp newBegin = firstNewValue;
+        Timestamp newBegin = firstNewValue;
         if (firstNewValue.compareTo(beginUpdate) < 0) {
             newBegin = beginUpdate;
         }

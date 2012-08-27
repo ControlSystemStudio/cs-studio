@@ -43,15 +43,15 @@
          optional="true"/>
 
    <includes
-         id="org.csstudio.display.multichannelviewer.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.olog.feature"
          version="0.0.0"/>
 
    <includes
          id="org.csstudio.opibuilder.pvmanager.util.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.alarm.beast.ui.feature"
          version="0.0.0"/>
 
 </feature>

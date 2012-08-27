@@ -4,9 +4,12 @@
  */
 package org.epics.pvmanager;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents all the information necessary to connect to a {@link DataSource}.
@@ -18,13 +21,17 @@ public class DataRecipe {
 
     private final Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector;
     private final ExceptionHandler exceptionHandler;
+    
+    private final Collector<Boolean> connectionCollector;
+    private final Map<String, ValueCache<Boolean>> connectionCaches;
+    
+    private final Collection<ChannelRecipe> channelRecipes;
 
     /**
      * Creates an empty data recipe.
      */
     public DataRecipe() {
-        channelsPerCollector = Collections.emptyMap();
-        exceptionHandler = new ExceptionHandler();
+        this(Collections.<Collector<?>, Map<String, ValueCache>>emptyMap(), new ExceptionHandler());
     }
 
     /**
@@ -34,18 +41,30 @@ public class DataRecipe {
      * @param channelsPerCollector the list of all channels needed by each collector
      */
     DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector) {
-        this.channelsPerCollector = Collections.unmodifiableMap(new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector));
-        exceptionHandler = new ExceptionHandler();
+        this(channelsPerCollector, new ExceptionHandler());
     }
 
     private DataRecipe(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
-        this.channelsPerCollector = channelsPerCollector;
+        this.channelsPerCollector = Collections.unmodifiableMap(new HashMap<Collector<?>, Map<String, ValueCache>>(channelsPerCollector));
         this.exceptionHandler = exceptionHandler;
+        connectionCaches = generateConnectionCaches();
+        connectionCollector = new ConnectionCollector(connectionCaches);
+        channelRecipes = generateChannelRecipes(channelsPerCollector, connectionCaches, connectionCollector, exceptionHandler);
     }
 
-    DataRecipe(ExceptionHandler exceptionHandler) {
-        channelsPerCollector = Collections.emptyMap();
-        this.exceptionHandler = exceptionHandler;
+    public DataRecipe(ExceptionHandler exceptionHandler) {
+        this(Collections.<Collector<?>, Map<String, ValueCache>>emptyMap(), exceptionHandler);
+    }
+
+    DataRecipe(Collection<ChannelRecipe> channelRecipes) {
+        if (channelRecipes.isEmpty()) {
+            throw new IllegalArgumentException("Channel recipes can't be empty");
+        }
+        this.channelRecipes = channelRecipes;
+        this.channelsPerCollector = null;
+        this.exceptionHandler = channelRecipes.iterator().next().getReadSubscription().getHandler();
+        connectionCaches = null;
+        connectionCollector = channelRecipes.iterator().next().getReadSubscription().getConnCollector();
     }
 
     /**
@@ -114,4 +133,42 @@ public class DataRecipe {
         return new DataRecipe(channelsPerCollector, handler);
     }
 
+    public Collector<Boolean> getConnectionCollector() {
+        return connectionCollector;
+    }
+
+    public Map<String, ValueCache<Boolean>> getConnectionCaches() {
+        return connectionCaches;
+    }
+    
+    private Map<String, ValueCache<Boolean>> generateConnectionCaches() {
+        Map<String, ValueCache<Boolean>> newCaches = new HashMap<String, ValueCache<Boolean>>();
+        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : channelsPerCollector.entrySet()) {
+            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
+                String name = entry.getKey();
+                ValueCache<Boolean> cache = new ValueCache<Boolean>(Boolean.class);
+                cache.setValue(false);
+                newCaches.put(name, cache);
+            }
+        }
+        return newCaches;
+    }
+
+    public Collection<ChannelRecipe> getChannelRecipes() {
+        return channelRecipes;
+    }
+
+    private static Collection<ChannelRecipe> generateChannelRecipes(Map<Collector<?>, Map<String, ValueCache>> channelsPerCollector, Map<String, ValueCache<Boolean>> connectionCaches, Collector<Boolean> connectionCollector, ExceptionHandler exceptionHandler) {
+        Set<ChannelRecipe> channelRecipes = new HashSet<ChannelRecipe>();
+        for (Map.Entry<Collector<?>, Map<String, ValueCache>> entry : channelsPerCollector.entrySet()) {
+            Collector<? extends Object> valueCollector = entry.getKey();
+            for (Map.Entry<String, ValueCache> collEntry : entry.getValue().entrySet()) {
+                String channelName = collEntry.getKey();
+                ValueCache valueCache = collEntry.getValue();
+                ValueCache<Boolean> connCache = connectionCaches.get(channelName);
+                channelRecipes.add(new ChannelRecipe(channelName, new ChannelHandlerReadSubscription(valueCollector, valueCache, exceptionHandler, connectionCollector, connCache)));
+            }
+        }
+        return channelRecipes;
+    }
 }

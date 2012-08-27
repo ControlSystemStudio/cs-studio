@@ -281,15 +281,15 @@ public class Controller implements ArchiveFetchJobListener
                 if (axis == null)
                     axis = new AddAxisCommand(operations_manager, model).getAxis();
 
-                // Add new PV
+                // Add archivedatasource for "import:..." and let that load the file
                 final String type = dlg.getType();
                 file_name = dlg.getFileName();
                 final String url = ImportArchiveReaderFactory.createURL(type, file_name);
                 final ArchiveDataSource imported = new ArchiveDataSource(url, 1, type);
+                // Add PV Item with data to model
                 AddModelItemCommand.forPV(shell, operations_manager,
                         model, dlg.getItemName(), Preferences.getScanPeriod(),
                         axis, imported);
-
             }
 
             @Override

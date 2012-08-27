@@ -24,6 +24,8 @@ import org.csstudio.opibuilder.scriptUtil.WidgetUtil;
 import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
@@ -44,6 +46,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
 	private PropertyChangeListener childrenPropertyChangeListener;
 	private PropertyChangeListener selectionPropertyChangeListener;
+	private boolean isArrayValue = true;
 
 	@Override
 	protected void createEditPolicies() {
@@ -146,6 +149,20 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		else
 			 throw new RuntimeException(NLS.bind(
 					 "Widget with name {0} doesn't exist!", widgetName));
+	}
+	
+	/**Remove a child widget.
+	 * @param child the child widget.
+	 */
+	public void removeChild(AbstractBaseEditPart child){
+		getWidgetModel().removeChild(child.getWidgetModel());
+	}
+	
+	/**Remove the child at index.
+	 * @param index index of the child.
+	 */
+	public void removeChild(int index){
+		removeChild((AbstractBaseEditPart) getChildren().get(index));
 	}
 	
 	/**
@@ -288,6 +305,72 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			layoutter.layout(modelChildren, getFigure().getClientArea());
 		}
 	}
+	
+	/**
+	 * Automatically set the container size according its children's geography size.  
+	 */
+	public void performAutosize(){
+		Rectangle childrenRange = GeometryUtil.getChildrenRange(this);
+		Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
+		
+		getWidgetModel().setSize(new Dimension(
+						childrenRange.width + figure.getInsets().left + figure.getInsets().right,
+						childrenRange.height + figure.getInsets().top + figure.getInsets().bottom));
+		
+
+		for(Object editpart : getChildren()){
+			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
+			widget.setLocation(widget.getLocation().translate(tranlateSize.getNegated()));
+		}	
+	}
+	
+	/**
+	 *By default, it returns an Object Array of its children's value.
+	 *If {@link #setValue(Object)} was called with a non Object[] input value, it 
+	 *will return the value of its first child. 
+	 *
+	 */
+	@Override
+	public Object getValue() {
+		if(isArrayValue && getChildren().size()>0){
+			Object[] data = new Object[getChildren().size()];
+			for(int i=0; i<data.length; i++){
+				data[i]=((AbstractBaseEditPart)getChildren().get(i)).getValue();
+			}
+			return data;
+		}else if(getChildren().size()>0){
+			return ((AbstractBaseEditPart)getChildren().get(0)).getValue();
+		}
+		return null;
+	}
+	/**
+	 * If input value is instance of Object[] and its length is equal or larger than children size,
+	 * it will write each element of value to each child according children's order. Otherwise,
+	 * it will write the input value as an whole Object to every child. 
+	 *  
+	 */
+	@Override
+	public void setValue(Object value) {	
+		//Write array to a container will write every child
+		if (value instanceof Object[]) {
+			Object[] a = (Object[]) value;
+			if (a.length >= getChildren().size()) {
+				isArrayValue=true;
+				int i = 0;
+				for (Object child : getChildren()) {
+					if (child instanceof AbstractBaseEditPart)
+						((AbstractBaseEditPart) child).setValue(a[i++]);
+				}
+			}
+		}else{ //Write None Array to a container will write every child the same value.
+			isArrayValue = false;
+			for (Object child : getChildren()) {
+				if (child instanceof AbstractBaseEditPart)
+					((AbstractBaseEditPart) child).setValue(value);
+			}
+		}
+	}
+	
 	
 
 	/**

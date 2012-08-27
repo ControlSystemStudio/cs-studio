@@ -79,6 +79,8 @@
      </topic>
      <topic href="html/widgets/ContainerWidgets.html" label="Container Widgets">
       <topic href="html/widgets/Display.html" label="Display"></topic>
+         <topic href="html/widgets/Array.html" label="Array">
+         </topic>
         <topic href="html/widgets/GroupingContainer.html" label="Grouping Container"></topic>
         <topic href="html/widgets/LinkingContainer.html" label="Linking Container"></topic>
          <topic href="html/widgets/Tab.html" label="Tabbed Container"></topic>         

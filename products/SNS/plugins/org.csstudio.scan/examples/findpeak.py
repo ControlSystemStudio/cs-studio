@@ -5,6 +5,8 @@ from org.csstudio.scan.command import ScanScript
 from math import sqrt, exp
 import sys
 
+#print "findpeak.py path: ", sys.path
+
 from numjy import *
 
 class FindPeak(ScanScript):

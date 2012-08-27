@@ -5,11 +5,16 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.util.TimeDuration.hz;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -35,6 +40,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.epics.pvmanager.ChannelHandler;
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderListener;
@@ -76,6 +84,7 @@ public class PVManagerProbe extends ViewPart {
 	private Label statusField;
 	private ComboViewer pvNameField;
 	private ComboHistoryHelper pvNameHelper;
+	private ErrorBar errorBar;
 	private MeterWidget meter;
 	private Composite topBox;
 	private Composite bottomBox;
@@ -160,6 +169,11 @@ public class PVManagerProbe extends ViewPart {
 		gl_topBox = new GridLayout();
 		gl_topBox.numColumns = 3;
 		topBox.setLayout(gl_topBox);
+		
+		errorBar = new ErrorBar(parent, SWT.NONE);
+		errorBar.setMarginRight(5);
+		errorBar.setMarginLeft(5);
+		errorBar.setMarginBottom(5);
 
 		Label label;
 		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
@@ -257,6 +271,12 @@ public class PVManagerProbe extends ViewPart {
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
 		fd.top = new FormAttachment(topBox);
+		fd.right = new FormAttachment(100, 0);
+		errorBar.setLayoutData(fd);
+
+		fd = new FormData();
+		fd.left = new FormAttachment(0, 0);
+		fd.top = new FormAttachment(errorBar);
 		fd.right = new FormAttachment(100, 0);
 		fd.bottom = new FormAttachment(bottomBox);
 		meter.setLayoutData(fd);
@@ -363,6 +383,19 @@ public class PVManagerProbe extends ViewPart {
 		meter.setVisible(show);
 		meter.getShell().layout(true, true);
 	}
+	
+	private String pvNameWithDataSource() {
+		DataSource defaultDS = PVManager.getDefaultDataSource();
+		String pvName = PVName.getName();
+		if (defaultDS instanceof CompositeDataSource) {
+			CompositeDataSource composite = (CompositeDataSource) defaultDS;
+			if (!pvName.contains(composite.getDelimiter())) {
+				pvName = composite.getDefaultDataSource() + composite.getDelimiter() + pvName;
+			}
+		}
+
+		return pvName;
+	}
 
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
@@ -377,6 +410,17 @@ public class PVManagerProbe extends ViewPart {
 			Alarm alarm = ValueUtil.alarmOf(value);
 			Display display = ValueUtil.displayOf(value);
 			Class<?> type = ValueUtil.typeOf(value);
+			ChannelHandler handler = PVManager.getDefaultDataSource().getChannels().get(pvNameWithDataSource());
+			
+			if (handler != null) {
+				SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(handler.getProperties());
+				if (!sortedProperties.isEmpty()) {
+					info.append("Channel details:").append(nl);
+					for (Map.Entry<String, Object> entry : sortedProperties.entrySet()) {
+						info.append(indent).append(entry.getKey()).append(" = ").append(entry.getValue()).append(nl);
+					}
+				}
+			}
 
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
@@ -492,6 +536,12 @@ public class PVManagerProbe extends ViewPart {
 				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
 				setTime(ValueUtil.timeOf(obj));
 				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+				if (pv.isConnected()) {
+					setStatus(Messages.Probe_statusConnected);
+				} else {
+					System.out.println("Disconnected");
+					setStatus(Messages.Probe_statusSearching);
+				}
 			}
 		});
 		
@@ -554,14 +604,7 @@ public class PVManagerProbe extends ViewPart {
 	 * @param ex an exception
 	 */
 	private void setLastError(Exception ex) {
-		if (ex == null) {
-			// If no exception, then everything is peachy
-			statusField.setText(Messages.Probe_statusConnected);
-		} else if (!(ex instanceof TimeoutException) || Messages.Probe_statusSearching.equals(statusField.getText())) {
-			// If it's an error always display message, but if it's
-			// a timeout display only if there was no previous message
-			statusField.setText(ex.getMessage());
-		}
+		errorBar.setException(ex);
 	}
 
 	/**

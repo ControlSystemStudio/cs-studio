@@ -6,9 +6,9 @@ package org.epics.pvmanager.sim;
 
 import java.util.List;
 import java.util.logging.Logger;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.Timestamp;
 
 /**
  * Base class for all simulated signals. It provides the common mechanism for
@@ -22,7 +22,7 @@ abstract class Simulation<T> {
 
     private final long intervalBetweenExecution;
     private final Class<T> classToken;
-    volatile TimeStamp lastTime;
+    volatile Timestamp lastTime;
 
     /**
      * Creates a new simulation.
@@ -50,7 +50,7 @@ abstract class Simulation<T> {
      *
      * @param lastTime new timestamp
      */
-    void setLastTime(TimeStamp lastTime) {
+    void setLastTime(Timestamp lastTime) {
         this.lastTime = lastTime;
     }
 

@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import org.epics.util.array.IteratorDouble;
+import org.epics.util.array.IteratorNumber;
 
 /**
  *
@@ -25,7 +27,7 @@ public class Iterators {
             }
 
             @Override
-            public double next() {
+            public double nextDouble() {
                 if (!hasNext())
                     throw new NoSuchElementException();
                 double value = data[index];
@@ -48,7 +50,7 @@ public class Iterators {
             }
 
             @Override
-            public double next() {
+            public double nextDouble() {
                 double value = data[index];
                 index++;
                 return value;
@@ -56,26 +58,11 @@ public class Iterators {
         };
     }
     
-    public static double[] toArray(IteratorDouble iterator) {
-        double[] buffer = new double[256];
-        int offset = 0;
-        while (iterator.hasNext()) {
-            if (offset == buffer.length) {
-                double[] newBuffer = new double[buffer.length * 2];
-                System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-                buffer = newBuffer;
-            }
-            buffer[offset] = iterator.next();
-            offset++;
-        }
-        return Arrays.copyOf(buffer, offset);
-    }
-    
-    public static IteratorDouble combine(final Collection<IteratorDouble> iterators) {
+    public static IteratorDouble combine(final Collection<IteratorNumber> iterators) {
         return new IteratorDouble() {
             
-            private IteratorDouble currentIterator = null;
-            private Iterator<IteratorDouble> iterator = iterators.iterator();
+            private IteratorNumber currentIterator = null;
+            private Iterator<IteratorNumber> iterator = iterators.iterator();
 
             @Override
             public boolean hasNext() {
@@ -92,8 +79,8 @@ public class Iterators {
             }
 
             @Override
-            public double next() {
-                return currentIterator.next();
+            public double nextDouble() {
+                return currentIterator.nextDouble();
             }
         };
     }

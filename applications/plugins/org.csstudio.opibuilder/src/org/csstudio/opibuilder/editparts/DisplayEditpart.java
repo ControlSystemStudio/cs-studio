@@ -113,14 +113,27 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		}
 		
 		if(getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isAutoZoomToFitAll()){
+			originSize = new org.eclipse.swt.graphics.Point(
+					getWidgetModel().getWidth(), getWidgetModel().getHeight());
+			oldSize=originSize;
 			zoomListener = new ControlAdapter() {
 					@Override
 					public void controlResized(ControlEvent e) {
+						if(!isActive() || getViewer() == null || getViewer().getControl().isDisposed())
+							return;
 						org.eclipse.swt.graphics.Point size = 
 								((FigureCanvas)getViewer().getControl()).getSize();
+						if(size.equals(oldSize))
+							return;
+						//In RAP, each revalidate will enlarge the shell by 1000, see  
+						//org.eclipse.rwt.internal.textsize.TextSizeRecalculation.enlargeShell(Shell shell)
+						if(OPIBuilderPlugin.isRAP() && (size.x - oldSize.x) == 1000 && (size.y - oldSize.y) == 1000)
+							return;
 						if (size.x * size.y > 0)
 							((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoomAsText(
 									ZoomManager.FIT_ALL);
+						oldSize = size;
+
 					}
 				};
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
@@ -135,7 +148,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
 			@Override
 			public void run() {
-				getViewer().getControl().forceFocus();
+				if(getViewer()!=null && getViewer().getControl() != null && !getViewer().getControl().isDisposed())
+					getViewer().getControl().forceFocus();
 			}
 		});
 		

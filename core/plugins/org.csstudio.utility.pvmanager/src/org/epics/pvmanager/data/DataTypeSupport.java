@@ -38,12 +38,7 @@ public final class DataTypeSupport {
         });
 
         // Add notification support for all immutable types
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Scalar.class));
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(MultiScalar.class));
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Array.class));
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Statistics.class));
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VImage.class));
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VTable.class));
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VType.class));
 
         installed = true;
     }

@@ -25,7 +25,7 @@ public final class ArrayFloat extends ListFloat implements Serializable {
      * @param array an array
      */
 
-    public ArrayFloat(float[] array) {
+    public ArrayFloat(float... array) {
         this(array, true);
     }
 
@@ -86,4 +86,8 @@ public final class ArrayFloat extends ListFloat implements Serializable {
         
         return super.equals(obj);
     }    
+
+    float[] wrappedArray() {
+        return array;
+    }
 }

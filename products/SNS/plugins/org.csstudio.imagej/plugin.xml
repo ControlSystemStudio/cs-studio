@@ -5,7 +5,7 @@
          point="org.eclipse.ui.editors">
       <editor
             default="false"
-            extensions="fits,png"
+            extensions="fits,png,tif,tiff,jpg,jpeg"
             icon="icons/logo.png"
             id="org.csstudio.imagej.launcher"
             launcher="org.csstudio.imagej.ImageJLauncher"

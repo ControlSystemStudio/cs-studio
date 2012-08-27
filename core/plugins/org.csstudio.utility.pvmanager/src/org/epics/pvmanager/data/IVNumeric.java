@@ -5,7 +5,7 @@
 package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * Partial implementation for numeric types.
@@ -26,11 +26,11 @@ class IVNumeric extends IVMetadata implements Display {
     private final Double upperDisplayLimit;
 
     IVNumeric(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
+            Timestamp timestamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, timeValid);
+        super(alarmSeverity, alarmStatus, timestamp, timeUserTag, timeValid);
         this.lowerDisplayLimit = lowerDisplayLimit;
         this.lowerCtrlLimit = lowerCtrlLimit;
         this.lowerAlarmLimit = lowerAlarmLimit;

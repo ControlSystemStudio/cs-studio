@@ -4,12 +4,17 @@
  */
 package org.epics.pvmanager.data;
 
+import org.epics.util.array.ListInt;
+
 /**
  * Int array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */
-public interface VIntArray extends Array<Integer>, Alarm, Time, Display {
+public interface VIntArray extends Array<Integer>, VNumberArray, VType {
     @Override
     int[] getArray();
+    
+    @Override
+    ListInt getData();
 }

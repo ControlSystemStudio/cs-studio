@@ -86,7 +86,7 @@
       <height_scalable>false</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>loc://blinkingEnable("Slow")</pv_name>
+    <pv_name>loc://blinkingEnable(Slow)</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -206,7 +206,7 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
     <show_units>true</show_units>
     <multiline_input>false</multiline_input>
     <wuid>2b59412f:138a0499f72:-6638</wuid>
@@ -274,7 +274,7 @@ $(pv_value)</tooltip>
       </rule>
     </rules>
     <pv_value />
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
     <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>1</horizontal_alignment>
@@ -290,7 +290,7 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
     <show_units>true</show_units>
     <multiline_input>false</multiline_input>
     <wuid>2b59412f:138a0499f72:-6637</wuid>
@@ -308,7 +308,7 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>loc://blinkingEnable("Slow")</pv_name>
+    <pv_name>loc://blinkingEnable(Slow)</pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -348,7 +348,7 @@ $(pv_value)</tooltip>
       </rule>
     </rules>
     <pv_value />
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
     <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>1</horizontal_alignment>
@@ -366,7 +366,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>2b59412f:138a0499f72:-6603</wuid>
     <scripts />
-    <height>34</height>
+    <height>43</height>
     <name>Action Button</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -384,7 +384,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>96</width>
+    <width>115</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../pictures/home-16x16.png</image>

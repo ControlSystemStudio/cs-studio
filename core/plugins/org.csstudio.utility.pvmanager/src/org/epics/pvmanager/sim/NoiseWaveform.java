@@ -4,13 +4,11 @@
  */
 package org.epics.pvmanager.sim;
 
-import java.util.Collections;
 import java.util.Random;
-import org.epics.pvmanager.util.TimeStamp;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Function to simulate a waveform containing a uniformly distributed
@@ -78,10 +76,9 @@ public class NoiseWaveform extends SimFunction<VDoubleArray> {
     @Override
     VDoubleArray nextValue() {
         if (lastTime == null)
-            lastTime = TimeStamp.now();
-        return ValueFactory.newVDoubleArray(generateNewValue(), Collections.singletonList(nSamples), AlarmSeverity.NONE, AlarmStatus.NONE,
-                lastTime, null,
-                min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
-                min + range * 0.8, min + range * 0.9, max, min, max);
+            lastTime = Timestamp.now();
+        return ValueFactory.newVDoubleArray(generateNewValue(), alarmNone(),
+                newTime(lastTime), newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
+                min + range * 0.8, min + range * 0.9, max, min, max));
     }
 }

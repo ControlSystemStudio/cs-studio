@@ -43,7 +43,7 @@ class VTableAggregationFunction extends Function<VTable> {
             public void addValue(Object array, int pos, Object value) {
                 double converted = Double.NaN;
                 if (value != null)
-                    converted = ((Scalar<Number>) value).getValue().doubleValue();
+                    converted = ((Number) ((Scalar) value).getValue()).doubleValue();
                 ((double[]) array)[pos] = converted;
             }
         });
@@ -54,7 +54,7 @@ class VTableAggregationFunction extends Function<VTable> {
             public void addValue(Object array, int pos, Object value) {
                 int converted = 0;
                 if (value != null)
-                    converted = ((Scalar<Number>) value).getValue().intValue();
+                    converted = ((Number) ((Scalar) value).getValue()).intValue();
                 ((int[]) array)[pos] = converted;
             }
         });

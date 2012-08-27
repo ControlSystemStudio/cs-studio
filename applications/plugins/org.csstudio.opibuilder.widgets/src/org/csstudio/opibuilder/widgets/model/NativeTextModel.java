@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 
@@ -19,6 +20,31 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
  * 
  */
 public final class NativeTextModel extends TextInputModel {
+	public enum FOCUS_TRAVERSE {
+		LOSE("Lose Focus"),
+		KEEP("Keep Focus"),
+		NEXT ("Next Widget"),
+		PREVIOUS("Previous Widget");
+		
+		private String description;
+		private FOCUS_TRAVERSE(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(FOCUS_TRAVERSE f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
 
 	public static final String PROP_SHOW_NATIVE_BORDER = "show_native_border"; //$NON-NLS-1$
 
@@ -29,6 +55,8 @@ public final class NativeTextModel extends TextInputModel {
 	public static final String PROP_SHOW_H_SCROLL = "show_h_scroll"; //$NON-NLS-1$		
 
 	public static final String PROP_SHOW_V_SCROLL = "show_v_scroll"; //$NON-NLS-1$
+	
+	public static final String PROP_NEXT_FOCUS = "next_focus"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of this widget model.
@@ -53,6 +81,8 @@ public final class NativeTextModel extends TextInputModel {
 				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_SHOW_V_SCROLL, "Show Vertical Scrollbar",
 				WidgetPropertyCategory.Display, false));
+		addProperty(new ComboProperty(PROP_NEXT_FOCUS, "Next Focus",
+				WidgetPropertyCategory.Behavior, FOCUS_TRAVERSE.stringValues(),0));
 		removeProperty(PROP_TRANSPARENT);
 		removeProperty(PROP_ROTATION);
 		removeProperty(PROP_ALIGN_V);
@@ -87,6 +117,10 @@ public final class NativeTextModel extends TextInputModel {
 	
 	public boolean isShowVScroll(){
 		return (Boolean)getPropertyValue(PROP_SHOW_V_SCROLL);
+	}
+	
+	public FOCUS_TRAVERSE getFocusTraverse(){
+		return FOCUS_TRAVERSE.values()[(Integer)getPropertyValue(PROP_NEXT_FOCUS)];
 	}
 	
 	/**

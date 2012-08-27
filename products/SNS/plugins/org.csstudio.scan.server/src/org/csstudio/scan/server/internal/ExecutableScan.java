@@ -370,7 +370,17 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Add devices that are not available (via alias)
         // in the device context
         final Set<String> required_devices = new HashSet<String>();
+        for (ScanCommandImpl<?> command : pre_scan)
+        {
+            for (String device_name : command.getDeviceNames())
+                required_devices.add(device_name);
+        }
         for (ScanCommandImpl<?> command : implementations)
+        {
+            for (String device_name : command.getDeviceNames())
+                required_devices.add(device_name);
+        }
+        for (ScanCommandImpl<?> command : post_scan)
         {
             for (String device_name : command.getDeviceNames())
                 required_devices.add(device_name);
