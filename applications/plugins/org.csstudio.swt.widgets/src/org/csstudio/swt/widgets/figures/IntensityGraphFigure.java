@@ -224,6 +224,12 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 		
 		@Override
+		public boolean containsPoint(int x, int y) {
+			return hLine.containsPoint(x, y) || vLine.containsPoint(x, y)
+					|| crossPoint.containsPoint(x, y);
+		}
+		
+		@Override
 		protected void layout() {
 			Rectangle bounds = getBounds();
 			//First time when it was created.
