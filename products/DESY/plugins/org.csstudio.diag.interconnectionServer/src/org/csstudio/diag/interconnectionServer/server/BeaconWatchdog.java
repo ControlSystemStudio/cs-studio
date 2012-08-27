@@ -23,7 +23,10 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import java.util.Enumeration;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Checking beacon frequency for each IOC connection
@@ -32,7 +35,9 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  */
 public class BeaconWatchdog extends Thread {
-	private int checkDisabledIntervalMultiplier = 10;
+    private static final Logger LOG = LoggerFactory.getLogger(BeaconWatchdog.class);
+
+    private int checkDisabledIntervalMultiplier = 10;
 	private int	checkInterval = 1000; // ms
 	private boolean isRunning = true;
 
@@ -45,7 +50,7 @@ public class BeaconWatchdog extends Thread {
 	BeaconWatchdog(final int checkInterval, final int checkDisabledIntervalMultiplier) {
 		this.checkInterval = checkInterval;
 		this.checkDisabledIntervalMultiplier = checkDisabledIntervalMultiplier;
-		CentralLogger.getInstance().info(this, "Starting new beaconWatchdog @ " + checkInterval + " ms");
+		LOG.info("Starting new beaconWatchdog @ " + checkInterval + " ms");
 		this.start();
 	}
 
@@ -82,21 +87,21 @@ public class BeaconWatchdog extends Thread {
 	 *
 	 */
 	private void checkForDisabledIOCs() {
-		final Enumeration<IocConnection> connections = IocConnectionManager.INSTANCE._connectionList.elements();
+		final Enumeration<IocConnection> connections = ServiceLocator.getService(IIocConnectionManager.class).getIocConnectionEnumeration();
 		while (connections.hasMoreElements()) {
 			final IocConnection connection = connections.nextElement();
 			if (connection.isDisabled()) {
-				CentralLogger.getInstance().warn(this, "IOC is disabled: " + connection.getHost());
+				LOG.warn("IOC is disabled: " + connection.getNames().getHostName());
 				JmsMessage.INSTANCE.sendMessage(
 						JmsMessage.JMS_MESSAGE_TYPE_LOG,					// topic
 						JmsMessage.MESSAGE_TYPE_LOG,     					// type
-						connection.getLogicalIocName() + ":disabledState",	// name
+						connection.getNames().getLogicalIocName() + ":disabledState",	// name
 						"",						 							// value
 						JmsMessage.SEVERITY_NO_ALARM,			 			// severity
 						"", 												// status
-						connection.getHost(),		 						// host
+						connection.getNames().getHostName(),				// host
 						null,			 									// facility
-						"IOC is disabled: " + connection.getLogicalIocName());  // text
+						"IOC is disabled: " + connection.getNames().getLogicalIocName());  // text
 			}
 		}
 	}
@@ -106,7 +111,7 @@ public class BeaconWatchdog extends Thread {
 	 */
 	private void checkBeaconTimeout () {
 
-		final Enumeration<IocConnection> connections = IocConnectionManager.INSTANCE._connectionList.elements();
+		final Enumeration<IocConnection> connections = ServiceLocator.getService(IIocConnectionManager.class).getIocConnectionEnumeration();
 		 while (connections.hasMoreElements()) {
 			final IocConnection connection = connections.nextElement();
 			if (connection.isTimeoutError()) {
@@ -120,13 +125,13 @@ public class BeaconWatchdog extends Thread {
 					  */
 					 connection.setConnectState( false);	// not connected
 
-					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + connection.getHost() + "|" + connection.getLogicalIocName());
+					 LOG.warn("InterconnectionServer: Beacon timeout for Host: " + connection.getNames().getHostName() + "|" + connection.getNames().getLogicalIocName());
 					 /*
 					  * do the changed state stuff in a new thread
 					  * ... but only if this InterconnectionServer is the selected one (from IOC point of view)
 					  */
 					  if ( connection.isSelectState()) {
-						  CentralLogger.getInstance().warn(this, "InterconnectionServer: trigger IOC timeout actions");
+						  LOG.warn("InterconnectionServer: trigger IOC timeout actions");
 						  new IocChangedState (connection, false);
 					  }
 

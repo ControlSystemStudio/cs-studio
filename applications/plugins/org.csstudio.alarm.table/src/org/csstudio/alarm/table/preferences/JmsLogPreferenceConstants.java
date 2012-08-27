@@ -67,8 +67,5 @@ public class JmsLogPreferenceConstants {
 	public static final String SOUND7 = "sound_7"; //$NON-NLS-1$
 	public static final String SOUND8 = "sound_8"; //$NON-NLS-1$
 	public static final String SOUND9 = "sound_9"; //$NON-NLS-1$
-	public static final String INITIAL_CONTEXT_FACTORY = "context factory"; //$NON-NLS-1$
-	public static final String URL = "provider url"; //$NON-NLS-1$
-	public static final String QUEUE = "message queue"; //$NON-NLS-1$
 
 }

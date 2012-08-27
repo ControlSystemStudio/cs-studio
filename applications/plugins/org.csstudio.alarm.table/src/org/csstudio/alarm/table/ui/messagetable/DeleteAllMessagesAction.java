@@ -23,6 +23,7 @@ package org.csstudio.alarm.table.ui.messagetable;
 
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -44,8 +45,8 @@ public class DeleteAllMessagesAction extends Action {
 			final AbstractMessageList msgList) {
 		_messageList = msgList;
 		_messageTable = messageTable;
-		setText("Delete All");
-		setToolTipText("Delete all messages");
+		setText(Messages.DeleteAllMessagesAction_Text);
+		setToolTipText(Messages.DeleteAllMessagesAction_TooltipText);
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		setDisabledImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
@@ -73,7 +74,7 @@ public class DeleteAllMessagesAction extends Action {
 				messages[i] = (BasicMessage) tableItem.getData();
 				i++;
 			} else {
-				LOG.warn("Unknown object in selection!");
+				LOG.warn("Unknown object in selection!"); //$NON-NLS-1$
 			}
 		}
 		_messageList.removeMessages(messages);

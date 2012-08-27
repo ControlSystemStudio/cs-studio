@@ -64,10 +64,10 @@ public interface ITopicSetColumnService {
     List<TopicSet> getTopicSets();
 
     /**
-     * Read the JMS Topics for the given topicSetName.
+     * Read the TopicSet for the given topicSetName.
      */
     @Nonnull
-    TopicSet getJMSTopics(@Nonnull final String topicSetName);
+    TopicSet getTopicSetByName(@Nonnull final String topicSetName);
 
     /**
      * @return the list with the column descriptions specific to the type of view

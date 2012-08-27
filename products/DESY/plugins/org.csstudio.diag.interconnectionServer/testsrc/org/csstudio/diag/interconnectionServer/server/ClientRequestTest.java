@@ -22,11 +22,6 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -38,7 +33,10 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.IocMessagePar
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Joerg Rathlev
@@ -167,7 +165,7 @@ public class ClientRequestTest {
 		
 		ClientRequest.prepareJmsMessageLogNewClientConnected(message, "foo");
 		Mockito.verify(message).setString("TYPE", "SysLog");
-		Mockito.verify(message).setString(Mockito.eq("EVENTTIME"), Mockito.anyString());
+		Mockito.verify(message).setString(Matchers.eq("EVENTTIME"), Matchers.anyString());
 		Mockito.verify(message).setString("TEXT", "new log client connected");
 		Mockito.verify(message).setString("HOST", "foo");
 		Mockito.verify(message).setString("STATUS", "on");

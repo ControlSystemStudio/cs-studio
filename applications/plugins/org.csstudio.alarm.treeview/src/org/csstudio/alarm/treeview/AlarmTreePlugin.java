@@ -19,135 +19,61 @@
 package org.csstudio.alarm.treeview;
 
 import javax.annotation.CheckForNull;
+
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.LdapServiceTracker;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class of the LdapTree-Plug-In. This manages the plug-in's lifecycle.
  *
  * @author Joerg Rathlev
  */
-public final class AlarmTreePlugin extends AbstractCssUiPlugin {
-
-    /**
-     * The plug-in id.
-     */
+public final class AlarmTreePlugin extends AbstractUIPlugin {
+    
     public static final String PLUGIN_ID = "org.csstudio.alarm.treeview";
-
-    /**
-     * The service tracker reference for the LDAP service.
-     */
-    private ServiceTracker _ldapServiceTracker;
-
-    /**
-     * The alarm service
-     */
-    private IAlarmService _alarmService;
-
-    /**
-     * The alarm configuration service
-     */
-    private IAlarmConfigurationService _alarmConfigurationService;
-
-
+    
     private static AlarmTreePlugin INSTANCE;
-
-
-    /**
-     * Returns the shared instance.
-     *
-     * @return the shared instance.
-     */
+    
+    // Returns the shared instance.
     @Nonnull
     public static AlarmTreePlugin getDefault() {
         return INSTANCE;
     }
-
+    
     /**
      * Don't instantiate.
      * Called by framework.
      */
     public AlarmTreePlugin() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID + " does already exist.");
+            throw new IllegalStateException("TreeModelActivator " + PLUGIN_ID
+                    + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
-
-    /**
-     * {@inheritDoc}
-     */
+    
     @Override
-    protected void doStart(@Nonnull final BundleContext context) throws Exception {
-
-        _alarmService = getService(context, IAlarmService.class);
-        _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
-
-        _ldapServiceTracker = new LdapServiceTracker(context);
-        _ldapServiceTracker.open();
+    public void start(@Nonnull final BundleContext context) throws Exception {
+    	super.start(context);
     }
-
-    /**
-     * {@inheritDoc}
-     */
+    
     @Override
-    protected void doStop(@Nonnull final BundleContext context) throws Exception {
-        _ldapServiceTracker.close();
+    public void stop(@Nonnull final BundleContext context) throws Exception {
+    	super.stop(context);
     }
-
+    
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
      *
      * @param path
-     *            the path
      * @return the image descriptor
      */
     @CheckForNull
     public static ImageDescriptor getImageDescriptor(@Nonnull final String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
-
-    /**
-     * @return this plug-in's id.
-     */
-    @Override
-    @Nonnull
-    public String getPluginId() {
-        return PLUGIN_ID;
-    }
-
-    /**
-     * @return the alarm service or null
-     */
-    @CheckForNull
-    public IAlarmService getAlarmService() {
-        return _alarmService;
-    }
-
-    /**
-     * @return the alarm configuration service or null
-     */
-    @CheckForNull
-    public IAlarmConfigurationService getAlarmConfigurationService() {
-        return _alarmConfigurationService;
-    }
-
-    /**
-     * @return the LDAP service or null
-     */
-    @CheckForNull
-    public ILdapService getLdapService() {
-        return (ILdapService) _ldapServiceTracker.getService();
-    }
+    
 }

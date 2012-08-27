@@ -18,22 +18,27 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.PropertySourceAdapterFactory;
 import org.csstudio.alarm.treeview.service.AlarmMessageListener;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Reloads the current tree structure from LDAP.
@@ -45,8 +50,7 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * @since 17.06.2010
  */
 public final class ReloadFromLdapAction extends Action {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ReloadFromLdapAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReloadFromLdapAction.class);
 
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
@@ -82,18 +86,22 @@ public final class ReloadFromLdapAction extends Action {
         boolean willReload = true;
         if (!_ldapModificationItems.isEmpty()) {
             willReload = MessageDialog
-                    .openConfirm(_site.getShell(), "Unsaved items", getMessageWithUnsavedItems()
-                            + "\nDo you want to reload from LDAP (Ok) or keep unsaved items (Cancel)?");
+                    .openConfirm(_site.getShell(), Messages.ReloadFromLdapAction_Dialog_Title, getMessageWithUnsavedItems()
+                            + Messages.ReloadFromLdapAction_Dialog_Question);
         }
         if (willReload) {
             reloadFromLdap();
         }
     }
     
+    @Nonnull
     private String getMessageWithUnsavedItems() {
-        boolean single = _ldapModificationItems.size() == 1;
-        String result = "There " + (single ? "is " : "are ") + _ldapModificationItems.size()
-                + " unsaved item" +  (single ? "." : "s.");
+        String result;
+        if ((_ldapModificationItems.size() == 1)) {
+            result = Messages.ReloadFromLdapAction_OneUnsavedItem;
+        } else {
+            result = NLS.bind(Messages.ReloadFromLdapAction_SomeUnsavedItems, _ldapModificationItems.size());
+        }
         return result;
     }
 
@@ -104,7 +112,11 @@ public final class ReloadFromLdapAction extends Action {
         // Reset the selection cache for the property view
         PropertySourceAdapterFactory.dirty();
 
-        LOG.debug("Starting directory reader.");
+        // Invalidate the cache of the configuration in the alarm service
+        IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
+        alarmService.invalidateConfigurationCache();
+        
+        LOG.debug("Starting directory reader."); //$NON-NLS-1$
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) _site.getAdapter(IWorkbenchSiteProgressService.class);
 

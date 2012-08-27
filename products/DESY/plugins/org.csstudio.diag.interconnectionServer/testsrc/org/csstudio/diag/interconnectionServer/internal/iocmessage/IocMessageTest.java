@@ -22,11 +22,11 @@
 
 package org.csstudio.diag.interconnectionServer.internal.iocmessage;
 
-import static org.junit.Assert.*;
-
 import java.util.Collection;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 
 /**

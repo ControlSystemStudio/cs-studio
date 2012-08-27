@@ -35,7 +35,7 @@ import org.csstudio.alarm.table.preferences.TopicSet;
  * appropriate message list is created and a connection to the underlying message system is built
  * (createAndConnectForTopicSet).<br>
  * If the user switches to another topic set, the former connection is maintained, allowing for
- * switching back quickly (retrieveing the current message list using getMessageListForTopicSet).
+ * switching back quickly (retrieving the current message list using getMessageListForTopicSet).
  *
  * @author jpenning
  * @author $Author$
@@ -93,9 +93,9 @@ public interface ITopicsetService {
     IAlarmTableListener getAlarmTableListenerForTopicSet(@Nonnull TopicSet topicSet);
 
     /**
-     * This service is intended to be local to a view. It keeps track of the connections, so they
-     * can be disconnected here at once. This is usually called from whithin the views dispose
-     * method.
+     * This service keeps track of the connections, so they can be disconnected here at once.
+     * It is intended to run as long as the plugin is alive. Therefore this is usually called from within the 
+     * stop method of the activator.
      */
     void disconnectAll();
 }

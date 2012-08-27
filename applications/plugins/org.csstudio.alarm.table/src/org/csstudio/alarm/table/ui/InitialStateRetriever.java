@@ -27,15 +27,15 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -66,29 +66,21 @@ public class InitialStateRetriever {
      * The pvs for which the initial state shall be retrieved are fetched according to preferences
      * either from ldap (based on selected facilities) or from an xml configuration file.
      */
-    public void retrieveInitialState() throws Exception {
-        final IAlarmConfigurationService configService = 
-            JmsLogsPlugin.getDefault().getAlarmConfigurationService();
-        
-        ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
-        
-        if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-            model = 
-                configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
+    public void retrieveInitialState() throws AlarmServiceException {
+        IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
+        if (alarmService != null) {
+            
+            final Set<String> pvNames = alarmService.getPvNames();
+            final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
+            
+            for (final String pvName : pvNames) {
+                initItems.add(new PVItem(pvName, _messageList));
+            }
+            
+            alarmService.retrieveInitialState(initItems);
         } else {
-            model = 
-                configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
+            throw new AlarmServiceException("Cannot retrieve initial state: Alarm Service not available");
         }
-        
-        final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
-        final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
-        
-        for (final String pvName : pvNames) {
-            initItems.add(new PVItem(pvName, _messageList));
-        }
-        
-        JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
-
     }
 
     @Nonnull
@@ -143,8 +135,20 @@ public class InitialStateRetriever {
         }
 
         @Override
+        public void acknowledge() {
+            // retrieve entry from table and set acknowledged
+            for (BasicMessage message : _messageList.getMessageList()) {
+                if (message.getName().equals(_pvName)) {
+                    message.setProperty(AlarmMessageKey.ACK.getDefiningName(), "true");
+                    _messageList.updateMessage(message); // fire
+                    break;
+                }
+            }
+        }
+
+        @Override
         public void notFound(@Nonnull final String pvName) {
-            // if the pv was not found the alarm table will not be notified
+            // TODO (jpenning) NYI notFound
         }
     }
 

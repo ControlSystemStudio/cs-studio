@@ -23,6 +23,7 @@
  */
 package org.csstudio.alarm.table;
 
+
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -37,12 +38,13 @@ import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.InitialStateRetriever;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Run at startup time of the plugin.

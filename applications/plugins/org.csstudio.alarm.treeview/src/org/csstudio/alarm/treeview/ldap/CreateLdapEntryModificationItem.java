@@ -28,7 +28,7 @@ import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.treeview.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeview.views.AlarmTreeModificationException;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
@@ -70,7 +70,7 @@ final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem
      */
     @Override
     public void apply() throws AlarmTreeModificationException {
-        final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+        final ILdapService service = ServiceLocator.getService(ILdapService.class);
         if (service == null) {
             throw new AlarmTreeModificationException("Entry creation failed.",
                                                      new ServiceUnavailableException("LDAP service unavailable."));

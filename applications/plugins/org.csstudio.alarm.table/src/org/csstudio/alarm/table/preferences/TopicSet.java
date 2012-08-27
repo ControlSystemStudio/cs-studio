@@ -17,13 +17,14 @@
 
 package org.csstudio.alarm.table.preferences;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,19 +42,15 @@ public final class TopicSet {
     private static final Logger LOG = LoggerFactory.getLogger(TopicSet.class);
 
     private boolean _defaultTopic = false;
-
     private String _name = "not set";
-
     private List<String> _topics = null;
-
     private boolean _popUp = false;
-
     private boolean _startUp = false;
-
     private Font _font = null;
-
     private boolean _retrieveInitialState = false;
+    private boolean _synchedToTree = false;
 
+    @SuppressWarnings("synthetic-access")
     private TopicSet(@Nonnull final Builder topicSetBuilder) {
 
         _defaultTopic = topicSetBuilder._defaultTopic.equals("default");
@@ -80,8 +77,12 @@ public final class TopicSet {
         if (topicSetBuilder._retrieveInitialState != null) {
             _retrieveInitialState  = Boolean.parseBoolean(topicSetBuilder._retrieveInitialState);
         }
+        if (topicSetBuilder._synchedToTree != null) {
+            _synchedToTree  = Boolean.parseBoolean(topicSetBuilder._synchedToTree);
+        }
     }
 
+    @SuppressWarnings("synthetic-access")
     private void defineFont(@Nonnull final Builder topicSetBuilder) {
         String[] fontItems = topicSetBuilder._font.split(",");
         try {
@@ -124,7 +125,9 @@ public final class TopicSet {
         return _font;
     }
 
-
+    public boolean isSynchedToTree() {
+        return _synchedToTree;
+    }
 
     /**
      * Simple builder for the topic set
@@ -137,6 +140,7 @@ public final class TopicSet {
         private String _startUp;
         private String _font;
         private String _retrieveInitialState;
+        private String _synchedToTree;
 
         public Builder() {
             _defaultTopic = "";
@@ -185,6 +189,13 @@ public final class TopicSet {
             return this;
         }
 
+        @Nonnull
+        public final Builder setSynchedToTree(@Nonnull final String synchedToTree) {
+            _synchedToTree = synchedToTree;
+            return this;
+        }
+        
+        @SuppressWarnings("synthetic-access")
         @Nonnull
         public final TopicSet build() {
             return new TopicSet(this);

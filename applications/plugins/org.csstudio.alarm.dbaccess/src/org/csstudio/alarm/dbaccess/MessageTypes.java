@@ -3,6 +3,8 @@ package org.csstudio.alarm.dbaccess;
 import java.sql.Connection;
 import java.util.ArrayList;
 
+import javax.annotation.CheckForNull;
+
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 
@@ -14,9 +16,13 @@ public class MessageTypes implements IMessageTypes {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageTypes.class);
 
-    private ArrayList<String[]> _propertyIdMapping;
+    private ArrayList<String[]> _propertyIdMapping = null;
 
     public MessageTypes() {
+        // nothing to do
+    }
+
+    private void readPropertyIdMappingFromDB() {
         LOG.debug("Read Property ID mapping from table msg_property_type");
         final String sql = "select * from msg_property_type mpt order by id";
         DBConnectionHandler connectioHandler = new DBConnectionHandler();
@@ -47,8 +53,20 @@ public class MessageTypes implements IMessageTypes {
         }
     }
 
+    @CheckForNull
     public String[][] getMsgTypes() {
-        return _propertyIdMapping.toArray(new String[0][2]);
+        String[][] result = null; // return null if retrieval fails
+
+        // get lazily from database
+        if (_propertyIdMapping == null) {
+            readPropertyIdMappingFromDB();
+        }
+
+        // return if retrieval was possible
+        if (_propertyIdMapping != null) {
+            result = _propertyIdMapping.toArray(new String[0][2]);
+        }
+        return result;
     }
 
 }

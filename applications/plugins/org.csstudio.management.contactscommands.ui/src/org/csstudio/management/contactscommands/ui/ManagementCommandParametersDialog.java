@@ -25,11 +25,11 @@ package org.csstudio.management.contactscommands.ui;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameterDefinition;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameterDefinition;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
