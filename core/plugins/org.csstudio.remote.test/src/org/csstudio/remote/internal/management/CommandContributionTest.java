@@ -20,17 +20,20 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.internal.management;
+package org.csstudio.remote.internal.management;
 
-import static org.junit.Assert.*;
 
-import org.csstudio.platform.management.CommandParameterDefinition;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.CommandParameterType;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IDynamicParameterValues;
-import org.csstudio.platform.management.IManagementCommand;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.csstudio.remote.management.CommandParameterDefinition;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.CommandParameterType;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IDynamicParameterValues;
+import org.csstudio.remote.management.IManagementCommand;
 import org.junit.Before;
 import org.junit.Test;
 
