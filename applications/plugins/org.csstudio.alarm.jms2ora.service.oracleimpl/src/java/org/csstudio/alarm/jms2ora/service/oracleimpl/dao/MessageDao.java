@@ -115,6 +115,7 @@ public class MessageDao implements IMessageArchiveDao {
     public synchronized boolean writeMessages(Vector<ArchiveMessage> messages) {
         
         if (messages.isEmpty()) {
+            LOG.info("Collection does not contain any message.");
             return true;
         }
         
@@ -225,6 +226,7 @@ public class MessageDao implements IMessageArchiveDao {
             } catch (SQLException e) {
                 logError("Rollback FAILED: " + sqle.getMessage());
             }
+            success = false;
         } finally {
             if(messageStatement!=null) {
                 try{messageStatement.close();}catch(SQLException sqle){/*Ignore Me*/}
