@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.dal2jms;
 
+
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -41,9 +42,9 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.declaration.IAlarmService.IListener;
 import org.csstudio.alarm.service.declaration.IRemoteAcknowledgeService;
 import org.csstudio.persister.declaration.IPersistenceService;
-import org.csstudio.platform.utility.jms.command.ClientGroup;
-import org.csstudio.platform.utility.jms.command.IRemoteCommandService;
-import org.csstudio.platform.utility.jms.command.RemoteCommandException;
+import org.csstudio.remote.jms.command.ClientGroup;
+import org.csstudio.remote.jms.command.IRemoteCommandService;
+import org.csstudio.remote.jms.command.RemoteCommandException;
 import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;

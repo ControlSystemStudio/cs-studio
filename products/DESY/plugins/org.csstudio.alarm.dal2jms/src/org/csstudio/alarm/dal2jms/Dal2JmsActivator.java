@@ -30,7 +30,6 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.servicelocator.ServiceLocatorFactory;
 import org.eclipse.core.runtime.FileLocator;
@@ -38,7 +37,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.epics.css.dal.spi.Plugs;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.remotercp.service.connection.session.ISessionService;
