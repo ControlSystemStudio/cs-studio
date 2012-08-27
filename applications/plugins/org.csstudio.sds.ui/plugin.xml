@@ -319,27 +319,27 @@
          </command>
       </menuContribution>
       </extension>
-  <!--extension
+  <extension
         point="org.eclipse.ui.popupMenus">
      <objectContribution
            adaptable="false"
            id="RunModeActions"
            nameFilter="*.css-sds"
            objectClass="org.eclipse.core.resources.IResource">
-auskommentiert
+<!--
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewAction"
               icon="icons/run.gif"
               id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsViewAction"
               label="Run As View"/>
-auskommentiert ende            
+-->
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsShellAction"
               icon="icons/run.gif"
               id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsShellAction2"
               label="Run As Shell"/>
      </objectContribution>
-  </extension>-->
+  </extension>
   <extension
         point="org.eclipse.ui.editorActions">
      <editorContribution
