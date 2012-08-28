@@ -27,6 +27,7 @@ package org.csstudio.ams.application.monitor.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import org.csstudio.ams.application.monitor.internal.AmsMonitorPreference;
 import org.csstudio.ams.application.monitor.util.CommonMailer;
 import org.slf4j.Logger;
