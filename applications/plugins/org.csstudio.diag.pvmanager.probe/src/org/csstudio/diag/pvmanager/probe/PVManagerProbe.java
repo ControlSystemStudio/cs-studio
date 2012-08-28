@@ -492,9 +492,7 @@ public class PVManagerProbe extends ViewPart {
 
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
-			// XXX Seems like something is clearing the combo-box,
-			// reset to the actual pv...
-			pvNameField.getCombo().setText(pvName.getName());
+			return;
 		}
 
 		// The PV is different, so disconnect and reset the visuals
@@ -539,7 +537,6 @@ public class PVManagerProbe extends ViewPart {
 				if (pv.isConnected()) {
 					setStatus(Messages.Probe_statusConnected);
 				} else {
-					System.out.println("Disconnected");
 					setStatus(Messages.Probe_statusSearching);
 				}
 			}
