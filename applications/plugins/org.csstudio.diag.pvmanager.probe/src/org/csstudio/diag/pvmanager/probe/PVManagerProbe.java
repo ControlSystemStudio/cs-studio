@@ -179,7 +179,7 @@ public class PVManagerProbe extends ViewPart {
 		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
 		pvNameLabel.setText(Messages.Probe_pvNameLabelText);
 
-		pvNameField = new ComboViewer(topBox, SWT.SINGLE | SWT.BORDER);
+		pvNameField = new ComboViewer(topBox, SWT.BORDER);
 		pvNameField.getCombo().setToolTipText(Messages.Probe_pvNameFieldToolTipText);
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
@@ -512,13 +512,10 @@ public class PVManagerProbe extends ViewPart {
 			setStatus(Messages.Probe_statusWaitingForPV);
 		}
 
-		// If new name, add to history and connect
-		pvNameHelper.addEntry(pvName.getName());
-
 		// Update displayed name, unless it's already current
 		if (!(pvNameField.getCombo().getText().equals(pvName
 				.getName()))) {
-			pvNameField.getCombo().setText(pvName.getName());
+			pvNameHelper.changeSelection(pvName.getName());
 		}
 
 		setStatus(Messages.Probe_statusSearching);
