@@ -26,9 +26,9 @@
 package org.csstudio.ams.application.deliverysystem.management;
 
 import org.csstudio.ams.application.deliverysystem.RemotelyManageable;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author mmoeller
