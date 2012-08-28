@@ -29,13 +29,13 @@ import org.eclipse.swt.widgets.Combo;
  * <li>save values via saveSettings, or use the save_on_dispose option of the
  * constructor.
  * </ul>
- * 
+ *
  * @see #newSelection(String)
  * @author Kay Kasemir
  * @author Gabriele Carcassi
  */
 public abstract class ComboHistoryHelper {
-	
+
 	private static final String TAG = "values"; //$NON-NLS-1$
 	private static final int DEFAULT_HISTORY_SIZE = 10;
 	private final IDialogSettings settings;
@@ -45,7 +45,7 @@ public abstract class ComboHistoryHelper {
 
 	/**
 	 * Attach helper to given combo box, using max list length.
-	 * 
+	 *
 	 * @param settings where to persist the combo box list
 	 * @param tag tag used for persistence
 	 * @param combo the combo box
@@ -56,7 +56,7 @@ public abstract class ComboHistoryHelper {
 
 	/**
 	 * Attach helper to given combo box, using max list length.
-	 * 
+	 *
 	 * @param settings where to persist the combo box list
 	 * @param tag tag used for persistence
 	 * @param combo the combo box
@@ -104,29 +104,43 @@ public abstract class ComboHistoryHelper {
 		}
 	}
 
+	private boolean changing_combo = false;
+
 	/**
 	 * Adds a new entry to the list. If entry already there, do nothing.
-	 * 
+	 *
 	 * @param newEntry the new value
 	 */
-	public void addEntry(String newEntry) {
-		// Avoid empty entries
-		if (newEntry.trim().isEmpty())
-			return;
-		
-		// Remove if present, so that is
-		// re-added on top
-		int entry = -1;
-		while ((entry = combo.indexOf(newEntry)) != -1) {
-			combo.remove(entry);
-		}
-		
-		// Maybe remove oldest, i.e. bottom-most, entry
-		if (combo.getItemCount() >= max)
-			combo.remove(combo.getItemCount() - 1);
-		
-		// Add at the top
-		combo.add(newEntry, 0);
+	public void addEntry(final String newEntry)
+	{
+	    // Possibly removing an entry below can trigger a selection change.
+	    // At least on Mac OS X that sometimes resulted in infinite recursion.
+	    // Avoid such recursion.
+	    if (changing_combo)
+	        return;
+	    changing_combo = true;
+	    try
+	    {
+    		// Avoid empty entries
+    		if (newEntry.trim().isEmpty())
+    			return;
+
+    		// Remove if present, so that is re-added on top
+    		int entry = -1;
+    		while ((entry = combo.indexOf(newEntry)) >= 0)
+    			combo.remove(entry);
+
+    		// Maybe remove oldest, i.e. bottom-most, entry
+    		if (combo.getItemCount() >= max)
+    			combo.remove(combo.getItemCount() - 1);
+
+    		// Add at the top
+    		combo.add(newEntry, 0);
+	    }
+	    finally
+	    {
+	        changing_combo = false;
+	    }
 	}
 
 	/** Invoked whenever a new entry was entered or selected. */
