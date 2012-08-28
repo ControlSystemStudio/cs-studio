@@ -21,6 +21,7 @@
  */
  package org.csstudio.diag.jmssender.views;
 
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,7 +29,7 @@ import java.util.Vector;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
-import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.desy.startuphelper.CSSPlatformInfo;
 
 public class PropertyList {
 
