@@ -24,9 +24,9 @@
 package org.csstudio.ams.distributor.management;
 
 import org.csstudio.ams.distributor.DistributorStart;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
