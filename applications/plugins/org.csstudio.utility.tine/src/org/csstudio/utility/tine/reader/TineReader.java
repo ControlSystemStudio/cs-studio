@@ -24,13 +24,13 @@
  */
 package org.csstudio.utility.tine.reader;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.csstudio.utility.namespace.utility.ProcessVariable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -150,10 +150,12 @@ public class TineReader extends Job {
                 if(name.endsWith("/")){
                     name = name.substring(0, name.length()-1);
                 }
+              //TODO jhatje: implement new datatypes
+
                 if(_type.endsWith(TINE_PATH_SEP) || string.startsWith(TINE_PATH_SEP)){
-                    csi.add(new ProcessVariable(name, _type + string));
+//                    csi.add(new ProcessVariable(name, _type + string));
                 }else{
-                    csi.add(new ProcessVariable(name, _type + TINE_PATH_SEP + string));
+//                    csi.add(new ProcessVariable(name, _type + TINE_PATH_SEP + string));
                 }
             }
         }else if(path.length<4){

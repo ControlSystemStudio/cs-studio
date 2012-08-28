@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.utility.tine;
@@ -27,17 +27,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.utility.tine.preference.PreferenceConstants;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 //public class Activator extends Plugin {
 
     // The plug-in ID
@@ -58,9 +58,11 @@ public class Activator extends AbstractCssPlugin {
      * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
      */
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
         System.out.println("Start "+PLUGIN_ID+" \t init tine" );
-        String configFileName = "cshosts.csv";
+
+        final String configFileName = "cshosts.csv";
         // Slash(/) is the main path of the plugin Plugins
         String prop = System.getProperty("TINE_HOME");
         if(prop == null){
@@ -76,7 +78,7 @@ public class Activator extends AbstractCssPlugin {
             prop = System.getProperty("TINE_HOME");
             path = new File( prop);
         }
-        File configFile = new File(path,configFileName);
+        final File configFile = new File(path,configFileName);
         System.out.println("configFile: "+configFile.getAbsolutePath());
         System.out.println("-----");
         try {
@@ -88,20 +90,20 @@ public class Activator extends AbstractCssPlugin {
                 if(!configFile.createNewFile()){
                     System.out.println("Can not create file!!!");
                 }
-                URL pluginURL = getBundle().getEntry("/");
+                final URL pluginURL = getBundle().getEntry("/");
                 String plugInPath;
                 plugInPath = FileLocator.resolve(pluginURL).getPath();
-                File defaultFile = new File(plugInPath,configFileName);
+                final File defaultFile = new File(plugInPath,configFileName);
                 System.out.println("defaultFile: "+defaultFile.getAbsolutePath());
-                FileInputStream in = new FileInputStream(defaultFile);
-                FileOutputStream out = new FileOutputStream(configFile);
+                final FileInputStream in = new FileInputStream(defaultFile);
+                final FileOutputStream out = new FileOutputStream(configFile);
                 try {
-                    byte[] buf = new byte[4096];
+                    final byte[] buf = new byte[4096];
                     int len;
                     while ((len = in.read(buf)) > 0) {
                         out.write(buf, 0, len);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     System.err.println(e.toString());
                 } finally{
                     if (in != null) {
@@ -116,7 +118,7 @@ public class Activator extends AbstractCssPlugin {
                     }
                 }
             }
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
@@ -128,14 +130,8 @@ public class Activator extends AbstractCssPlugin {
      * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
      */
     @Override
-    protected void doStop(BundleContext context) throws Exception { }
-
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.AbstractCssPlugin#getPluginId()
-     */
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
+    public void stop(final BundleContext context) throws Exception {
+        super.stop(context);
     }
 
     public static Activator getDefault() {
@@ -143,19 +139,19 @@ public class Activator extends AbstractCssPlugin {
     }
 
     /** Add informational message to the plugin log. */
-    public static void logInfo(String message)
+    public static void logInfo(final String message)
     {
         getDefault().log(IStatus.INFO, message, null);
     }
 
     /** Add error message to the plugin log. */
-    public static void logError(String message)
+    public static void logError(final String message)
     {
         getDefault().log(IStatus.ERROR, message, null);
     }
 
     /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
+    public static void logException(final String message, final Exception e)
     {
         getDefault().log(IStatus.ERROR, message, e);
     }
@@ -164,7 +160,7 @@ public class Activator extends AbstractCssPlugin {
      * @param type
      * @param message
      */
-    private void log(int type, String message, Exception e)
+    private void log(final int type, final String message, final Exception e)
     {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
