@@ -238,7 +238,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		if (newResourcePath.getFileExtension() == null
 				|| !ext.equals("css-pvtable")) {
 			newResourcePath = newResourcePath.removeFileExtension();
-			newResourcePath.addFileExtension("css-pvtable");
+			newResourcePath = newResourcePath.addFileExtension("css-pvtable");
 		}
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IFile newFile = root.getFile(newResourcePath);
