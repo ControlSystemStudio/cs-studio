@@ -29,8 +29,8 @@ import java.rmi.server.UnicastRemoteObject;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SocketFactory;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.StartupServiceEnumerator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -81,7 +81,7 @@ public class SaveValueServer implements IApplication, IGenericServiceListener<IS
 
 		INSTANCE = this;
 
-
+		
         for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
             LOG.debug("Running startup service: {}", s.toString());
             s.run();

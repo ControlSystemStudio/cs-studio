@@ -21,7 +21,7 @@
  */
 package org.csstudio.config.savevalue.rmiserver;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -30,7 +30,7 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
 	/**
 	 * The plug-in ID.
@@ -75,15 +75,6 @@ public class Activator extends AbstractCssPlugin {
 	public static Activator getDefault() {
 		return PLUGIN;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getPluginId() {
-		return PLUGIN_ID;
-	}
-
 	
 	public void addSessionServiceListener(
 			IGenericServiceListener<ISessionService> sessionServiceListener) {
