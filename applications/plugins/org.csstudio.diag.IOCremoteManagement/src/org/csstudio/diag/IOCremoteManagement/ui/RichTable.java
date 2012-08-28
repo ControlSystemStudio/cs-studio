@@ -27,12 +27,10 @@ package org.csstudio.diag.IOCremoteManagement.ui;
  *
  */
 
+
 import java.util.Observable;
 import java.util.Observer;
 
-import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.jface.action.IMenuListener;
@@ -194,52 +192,52 @@ public class RichTable  implements Observer {
 					editor.grabHorizontal = editor.grabVertical = true;
 					editor.setEditor(txt, Sp[j], i);
 				break;
-				
-				case MB3_member:
-					ListViewer listMB3 = new ListViewer(varTable, SWT.NONE);
-					final String[] arr = new String[1];
-					arr[0]=dataArray[i][j];
-					listMB3.setContentProvider(new IStructuredContentProvider() {
-					public void dispose() {
-					}
-					public Object[] getElements(Object inputElement) {
-					IProcessVariable[] ipv = new IProcessVariable[1];
-					ipv[0] = CentralItemFactory.createProcessVariable(arr[0]);
-					return ipv;
-					}
-					public void inputChanged(Viewer viewer,Object oldInput, Object newInput) {							
-					}
-					});
-
-					listMB3.setLabelProvider(new ILabelProvider() {
-					public Image getImage(Object element) {
-					return null;
-					}
-					public String getText(Object element) {
-					IProcessVariable ipv = (IProcessVariable) element;
-					return ipv.getName();
-					}
-					public void addListener(ILabelProviderListener listener) {							
-					}
-					public void dispose() {
-					}
-					public boolean isLabelProperty(Object element,String property) {
-					return false;
-					}
-					public void removeListener(
-						ILabelProviderListener listener) {
-					}
-					});
-					listMB3.setInput(arr);
-					editor = new TableEditor(varTable);
-					editor.grabHorizontal = editor.grabVertical = true;
-
-					List list =  listMB3.getList();
-					list.setForeground(_display.getSystemColor(SWT.COLOR_BLUE));
-					editor.setEditor( list, Sp[j], 1);
-					new ProcessVariableDragSource (listMB3.getControl(), listMB3);
-					makeContextMenu(listMB3); 	
-				break;
+//				TODO jhatje: implement new datatypes				
+//				case MB3_member:
+//					ListViewer listMB3 = new ListViewer(varTable, SWT.NONE);
+//					final String[] arr = new String[1];
+//					arr[0]=dataArray[i][j];
+//					listMB3.setContentProvider(new IStructuredContentProvider() {
+//					public void dispose() {
+//					}
+//					public Object[] getElements(Object inputElement) {
+//					IProcessVariable[] ipv = new IProcessVariable[1];
+//					ipv[0] = CentralItemFactory.createProcessVariable(arr[0]);
+//					return ipv;
+//					}
+//					public void inputChanged(Viewer viewer,Object oldInput, Object newInput) {							
+//					}
+//					});
+//
+//					listMB3.setLabelProvider(new ILabelProvider() {
+//					public Image getImage(Object element) {
+//					return null;
+//					}
+//					public String getText(Object element) {
+//					IProcessVariable ipv = (IProcessVariable) element;
+//					return ipv.getName();
+//					}
+//					public void addListener(ILabelProviderListener listener) {							
+//					}
+//					public void dispose() {
+//					}
+//					public boolean isLabelProperty(Object element,String property) {
+//					return false;
+//					}
+//					public void removeListener(
+//						ILabelProviderListener listener) {
+//					}
+//					});
+//					listMB3.setInput(arr);
+//					editor = new TableEditor(varTable);
+//					editor.grabHorizontal = editor.grabVertical = true;
+//
+//					List list =  listMB3.getList();
+//					list.setForeground(_display.getSystemColor(SWT.COLOR_BLUE));
+//					editor.setEditor( list, Sp[j], 1);
+//					new ProcessVariableDragSource (listMB3.getControl(), listMB3);
+//					makeContextMenu(listMB3); 	
+//				break;
 				
 				case Message:
 					Group textGroup = new Group(_parent, SWT.NONE);
