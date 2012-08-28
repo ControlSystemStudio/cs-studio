@@ -22,21 +22,17 @@
 package org.csstudio.utility.ldap;
 
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.servicelocator.ServiceLocatorFactory;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -52,8 +48,6 @@ public final class LdapServiceImplActivator implements BundleActivator {
     private static final Logger LOG = LoggerFactory.getLogger(LdapServiceImplActivator.class);
     
     private static LdapServiceImplActivator INSTANCE;
-
-    private LdapServiceTracker _ldapServiceTracker;
 
     /**
      * Don't instantiate.
@@ -75,18 +69,10 @@ public final class LdapServiceImplActivator implements BundleActivator {
         final boolean useLDAP = ldapURL != null && ldapURL.length() > 5;
 
         if (useLDAP) {
-            final Dictionary<String, Object> props = new Hashtable<String, Object>();
-            props.put("service.vendor", "DESY");
-            props.put("service.description", "LDAP service implementation");
-            LOG.info("Register LDAP-Service");
-            context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
-
-            _ldapServiceTracker = new LdapServiceTracker(context);
-            _ldapServiceTracker.open();
+            ServiceLocatorFactory.registerServiceWithTracker("LDAP service implementation", context, ILdapService.class, new LdapServiceImpl());
         } else {
             LOG.info("Do not register LDAP-Service");
         }
-
 
     }
 
@@ -95,9 +81,7 @@ public final class LdapServiceImplActivator implements BundleActivator {
      */
     @Override
     public void stop(@Nullable final BundleContext context) throws Exception {
-        if (_ldapServiceTracker != null) {
-            _ldapServiceTracker.close();
-        }
+        // nothing to do
     }
 
     /**
@@ -110,11 +94,4 @@ public final class LdapServiceImplActivator implements BundleActivator {
         return INSTANCE;
     }
 
-    /**
-     * @return the LDAP service or null
-     */
-    @CheckForNull
-    public ILdapService getLdapService() {
-        return (ILdapService) _ldapServiceTracker.getService();
-    }
 }

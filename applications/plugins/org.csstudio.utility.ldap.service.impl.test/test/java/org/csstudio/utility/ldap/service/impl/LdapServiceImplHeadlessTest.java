@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.service.impl;
 
-import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
@@ -41,7 +40,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
@@ -56,8 +54,6 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapSearchParams;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -104,7 +100,7 @@ public class LdapServiceImplHeadlessTest {
     private static ILdapService LDAP_SERVICE;
 
     private static Random RANDOM = new Random(System.currentTimeMillis());
-    private static String EFAN_NAME = "Test" + String.valueOf(RANDOM.nextInt()) + "Efan1";
+    private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
 
 
     @BeforeClass
@@ -129,20 +125,21 @@ public class LdapServiceImplHeadlessTest {
 
 
         try {
-            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder
+            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder 
                 = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
             Assert.assertNotNull(builder);
             builder.build();
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
-            Assert.assertNotNull(model);
             final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> records =
                 model.getByType(RECORD);
             Assert.assertEquals(4, records.size());
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created.");
-        } catch (final LdapServiceException e) {
+        } catch (LdapServiceException e) {
             Assert.fail("Content model could not be created.");
         }
+
+
     }
 
     @Test
@@ -152,7 +149,7 @@ public class LdapServiceImplHeadlessTest {
                                      UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         final Holder<Boolean> read = new Holder<Boolean>(Boolean.FALSE);
-        final ILdapReaderJob job =
+        final ILdapReaderJob job = 
             LDAP_SERVICE.createLdapReaderJob(new LdapSearchParams(name, LdapUtils.any(RECORD.getNodeTypeName())),
                                              new ILdapReadCompletedCallback() {
                                                 @Override
@@ -251,38 +248,9 @@ public class LdapServiceImplHeadlessTest {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created:\n" + e.getMessage());
-        } catch (final LdapServiceException e) {
+        } catch (LdapServiceException e) {
             Assert.fail("Content model could not be created:\n" + e.getMessage());
         }
     }
 
-
-    @Test
-    public void testLdapNameParsing() {
-        final String field = "econ";
-        final String iocValue = "berndTest";
-        final SearchResult result =
-            new SearchResult(IOC.getNodeTypeName() + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + iocValue, null, null);
-
-        final String[] oKeyValue = LdapFieldsAndAttributes.LDAP_ROOT.get(1).split(LdapFieldsAndAttributes.FIELD_ASSIGNMENT);
-        final String[] cKeyValue = LdapFieldsAndAttributes.LDAP_ROOT.get(0).split(LdapFieldsAndAttributes.FIELD_ASSIGNMENT);
-
-        final LdapName query =
-            createLdapName(IOC.getNodeTypeName(), field,
-                           COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                           FACILITY.getNodeTypeName(), "Test",
-                           UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
-                           oKeyValue[0], oKeyValue[1],
-                           cKeyValue[0], cKeyValue[1]);
-
-
-       result.setNameInNamespace(query.toString());
-
-       // access the test service, so that it is initialised to deliver an appropriate parser
-        try {
-            LdapTestHelper.LDAP_SERVICE.parseSearchResult(result);
-        } catch (final LdapServiceException e) {
-            Assert.fail();
-        }
-    }
 }

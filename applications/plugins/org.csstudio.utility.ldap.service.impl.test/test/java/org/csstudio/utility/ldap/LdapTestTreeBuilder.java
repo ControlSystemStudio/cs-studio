@@ -28,6 +28,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
+
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
@@ -52,6 +53,13 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
  * @since 23.09.2010
  */
 public final class LdapTestTreeBuilder {
+
+    /**
+     * Don't instantiate.
+     */
+    private LdapTestTreeBuilder() {
+        // EMPTY
+    }
 
     private static Attributes EC_EFAN_ATTRS = new BasicAttributes();
     private static Attributes EC_ECOM_ATTRS = new BasicAttributes();
@@ -81,14 +89,6 @@ public final class LdapTestTreeBuilder {
             EA_ECOM_ATTRS.put(attrID, ATTR_TEST_CONTENT);
             EA_EREN_ATTRS.put(attrID, ATTR_TEST_CONTENT);
         }
-    }
-
-
-    /**
-     * Don't instantiate.
-     */
-    private LdapTestTreeBuilder() {
-        // EMPTY
     }
 
     /**

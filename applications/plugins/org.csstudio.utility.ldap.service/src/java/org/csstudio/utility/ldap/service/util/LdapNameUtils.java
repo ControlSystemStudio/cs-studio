@@ -209,4 +209,25 @@ public final class LdapNameUtils {
         }
         return false;
     }
+    /**
+     * Removes double quotes from a string.
+     *
+     * @param toClean
+     *            the string to be cleaned.
+     * @return the cleaned string.
+     * @deprecated This method is a hack to work with JNDI composite names, but
+     *             it only works for names which do not contain any special
+     *             characters that need escaping. Use JNDI correctly instead.
+     */
+    @Deprecated
+    public static String removeQuotes(final String toClean) {
+        final StringBuffer tc = new StringBuffer(toClean);
+        final String grr = "\"";
+        int pos = tc.indexOf(grr);
+        while (pos>-1){
+            tc.deleteCharAt(pos);
+            pos = tc.indexOf(grr);
+        }
+        return tc.toString();
+    }
 }

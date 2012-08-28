@@ -23,15 +23,15 @@ package org.csstudio.utility.ldap.ui;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
@@ -56,7 +56,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+		super.start(context);
 	    //
 	}
 
@@ -65,7 +66,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		INSTANCE = null;
 	}
 
@@ -79,10 +81,6 @@ public class Activator extends AbstractCssUiPlugin {
 		return INSTANCE;
 	}
 
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
 	/** Add informational message to the plugin log. */
     public static void logInfo(final String message)
     {

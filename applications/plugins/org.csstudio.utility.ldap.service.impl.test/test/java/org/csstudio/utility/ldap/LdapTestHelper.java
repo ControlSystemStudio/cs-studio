@@ -29,6 +29,7 @@ import javax.naming.Context;
 
 import junit.framework.Assert;
 
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.csstudio.utility.ldap.service.ILdapService;
 
@@ -42,22 +43,14 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public final class LdapTestHelper {
 
-    // (Checkstyle bug - these constant fields shall be public)
-    // CHECKSTYLE OFF : |
+    // CHECKSTYLE:OFF (Checkstyle bug - these constant fields shall be public) 
     public static TestDataProvider PROV = createTestDataProvider();
 
     public static Map<String, String> LDAP_TEST_PREFS = createLdapTestServicePrefs();
 
     public static ILdapService LDAP_SERVICE = createLdapTestConnection();
-    // CHECKSTYLE ON : |
+    // CHECKSTYLE:ON
 
-
-    /**
-     * Don't instantiate.
-     */
-    private LdapTestHelper() {
-        // EMPTY
-    }
 
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
@@ -78,7 +71,7 @@ public final class LdapTestHelper {
         try {
             final Map<String, String> map = createLdapTestServicePrefs();
 
-            final ILdapService service = LdapServiceImplActivator.getDefault().getLdapService();
+            final ILdapService service = ServiceLocator.getService(ILdapService.class);
             Assert.assertNotNull(service);
             Assert.assertTrue(service.reInitializeLdapConnection(map));
 
@@ -101,5 +94,13 @@ public final class LdapTestHelper {
         map.put(Context.SECURITY_PRINCIPAL, dn);
         map.put(Context.SECURITY_CREDENTIALS, pw);
         return map;
+    }
+
+
+    /**
+     * Don't instantiate.
+     */
+    private LdapTestHelper() {
+        // EMPTY
     }
 }
