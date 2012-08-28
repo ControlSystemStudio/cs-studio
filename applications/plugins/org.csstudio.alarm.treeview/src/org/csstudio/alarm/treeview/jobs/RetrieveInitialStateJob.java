@@ -5,18 +5,21 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.PVNodeItem;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Retrieve the initial alarm state for the given pvs from the control system.
@@ -26,13 +29,12 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class RetrieveInitialStateJob extends Job {
     
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(RetrieveInitialStateJob.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RetrieveInitialStateJob.class);
     
     private List<IAlarmSubtreeNode> _rootNodes;
     
     public RetrieveInitialStateJob() {
-        super("Retrieve initial alarm state");
+        super(Messages.RetrieveInitialStateJob_Name);
     }
     
     public void setRootNodes(@Nonnull final List<IAlarmSubtreeNode> rootNodes) {
@@ -41,18 +43,19 @@ public class RetrieveInitialStateJob extends Job {
     
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-        monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
-
+        monitor.beginTask(Messages.RetrieveInitialStateJob_Begin_Initializing, IProgressMonitor.UNKNOWN);
         
         try {
             // guard
             if (_rootNodes == null) {
-                return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "No XML based nodes found");
+                return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, Messages.RetrieveInitialStateJob_NoXmlNodesFound);
             }
             
             for (IAlarmSubtreeNode rootNode : _rootNodes) {
                 retrieveInitialAlarmState(rootNode);
             }
+        } catch (AlarmServiceException e) {
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Cannot retrieve initial state " + e.getMessage());
         } finally {
             monitor.done();
         }
@@ -60,9 +63,9 @@ public class RetrieveInitialStateJob extends Job {
         return Status.OK_STATUS;
     }
     
-    private void retrieveInitialAlarmState(@Nonnull final IAlarmSubtreeNode rootNode) {
+    private void retrieveInitialAlarmState(@Nonnull final IAlarmSubtreeNode rootNode) throws AlarmServiceException {
         if (rootNode == null) {
-            throw new IllegalStateException("Root node must not be null");
+            throw new IllegalStateException(Messages.RetrieveInitialStateJob_RootNode_Missing);
         }
         
         final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
@@ -73,14 +76,11 @@ public class RetrieveInitialStateJob extends Job {
             initItems.add(new PVNodeItem(pvNode));
         }
         
-        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
+        final IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
         if (alarmService != null) {
-            LOG.info("Initial state retrieval for " + initItems.size() + " items starts");
-            long start = System.currentTimeMillis();
             alarmService.retrieveInitialState(initItems);
-            LOG.info("Initial state retrieval for " + initItems.size() + " items ends after " + (System.currentTimeMillis() - start) + " msec");
         } else {
-            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
+            LOG.warn(Messages.RetrieveInitialStateJob_AlarmService_Missing);
         }
     }
     

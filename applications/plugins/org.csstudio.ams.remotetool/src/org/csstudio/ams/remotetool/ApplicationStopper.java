@@ -28,10 +28,11 @@ package org.csstudio.ams.remotetool;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
+
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;

@@ -38,36 +38,36 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(JmsLogPreferenceConstants.KEY0,"INVALID"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY1,"MAJOR"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY2,"MINOR"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY3,"NO_ALARM"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY4,"4"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY5,"5"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY6,"6"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY7,"7"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY8,"8"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.KEY9,"9"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR0,"191,191,191"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR1,"252,7,14"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR2,"251,215,11"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR3,"96,251,123"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR4,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR5,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR6,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR7,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR8,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.COLOR9,"201,201,201"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE0,"INVALID"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE1,"MAJOR"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE2,"MINOR"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE3,"NO_ALARM"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE4,"NOT DEFINED"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE5,"NOT DEFINED"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE6,"NOT DEFINED"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE7,"NOT DEFINED"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE8,"NOT DEFINED"); //$NON-NLS-1$
-		store.setDefault(JmsLogPreferenceConstants.VALUE9,"NOT DEFINED"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY0,"MAJOR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY1,"MINOR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY2,"NO_ALARM"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY3,"INVALID"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY4,"QUERY"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY5,"FATAL"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY6,"ERROR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY7,"WARN"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY8,"INFO"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.KEY9,"DEBUG"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR0,"255,0,0"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR1,"251,215,11"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR2,"96,251,123"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR3,"255,0,255"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR4,"203,232,4"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR5,"53,134,255"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR6,"255,0,0"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR7,"251,215,11"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR8,"187,255,204"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.COLOR9,"0,255,255"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE0,"MAJOR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE1,"MINOR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE2,"NO_ALARM"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE3,"INVALID"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE4,"QUERY"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE5,"FATAL"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE6,"ERROR"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE7,"WARN"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE8,"INFO"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.VALUE9,"DEBUG"); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.SOUND0,""); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.SOUND1,""); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.SOUND2,""); //$NON-NLS-1$

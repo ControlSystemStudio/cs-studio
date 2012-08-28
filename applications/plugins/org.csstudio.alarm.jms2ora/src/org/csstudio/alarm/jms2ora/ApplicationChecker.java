@@ -24,6 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,9 +42,9 @@ import java.util.Vector;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CheckErrorState;
 import org.csstudio.alarm.jms2ora.util.JmsSender;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ecf.core.identity.ID;

@@ -21,28 +21,29 @@
  */
 package org.csstudio.alarm.treeview.jobs;
 
-import java.io.FileNotFoundException;
-
 import javax.annotation.Nonnull;
+
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.alarm.treeview.ldap.AlarmTreeBuilder;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.alarm.treeview.views.AlarmTreeView;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Alarm tree reader job for facilities from preferences.
@@ -53,15 +54,14 @@ import org.eclipse.core.runtime.jobs.Job;
  * @since 20.05.2010
  */
 public final class ImportInitialConfigJob extends Job {
-
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ImportInitialConfigJob.class);
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ImportInitialConfigJob.class);
+    
     private final IAlarmSubtreeNode _rootNode;
     private final IAlarmConfigurationService _configService;
-
+    
     private final AlarmTreeView _alarmTreeView;
-
+    
     /**
      * Constructor.
      * @param alarmTreeView
@@ -71,61 +71,44 @@ public final class ImportInitialConfigJob extends Job {
     public ImportInitialConfigJob(@Nonnull final AlarmTreeView alarmTreeView,
                                   @Nonnull final IAlarmSubtreeNode rootNode,
                                   @Nonnull final IAlarmConfigurationService service) {
-        super("Initialize alarm tree job.");
+        super(Messages.ImportInitialConfigJob_Name);
         _alarmTreeView = alarmTreeView;
         _configService = service;
         _rootNode = rootNode;
     }
-
+    
     @Override
+    @Nonnull
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
-        monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
-
+        monitor.beginTask(Messages.ImportInitialConfigJob_Begin_Initializing, IProgressMonitor.UNKNOWN);
+        
         final long startTime = System.currentTimeMillis();
+        IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
         try {
-            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
-
-            TreeNodeSource source;
-            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = _configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
-                source = TreeNodeSource.LDAP;
-            } else {
-                model = _configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
-                source = TreeNodeSource.XML;
-            }
-
+            ContentModel<LdapEpicsAlarmcfgConfiguration> model = alarmService.getConfiguration();
             _rootNode.clearChildren(); // removes all nodes below the root node
-
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, _alarmTreeView.getPVNodeListener(), model, monitor, source);
-
+            
+            TreeNodeSource source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? TreeNodeSource.LDAP
+                    : TreeNodeSource.XML;
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode,
+                                                            _alarmTreeView.getPVNodeListener(),
+                                                            model,
+                                                            monitor,
+                                                            source);
             if (canceled) {
                 return Status.CANCEL_STATUS;
             }
-        } catch (final CreateContentModelException e) {
-            return new Status(IStatus.ERROR,
-                              AlarmTreePlugin.PLUGIN_ID,
-                              "Building content model!\n" +
-                              "Could not properly build the content model from LDAP or XML: " + e.getMessage());
-        } catch (final NamingException e) {
-            return new Status(IStatus.ERROR,
-                              AlarmTreePlugin.PLUGIN_ID,
-                                      "Building Tree!\n" +
-                                      "Could not properly build the full tree: " + e.getMessage());
-        } catch (final FileNotFoundException e) {
-            return new Status(IStatus.ERROR,
-                              AlarmTreePlugin.PLUGIN_ID,
-                                      "Opening File!\n" +
-                                      "Could not properly open the input file stream: " + e.getMessage());
-        } catch (final LdapServiceException e) {
-            return new Status(IStatus.ERROR,
-                              AlarmTreePlugin.PLUGIN_ID,
-                              "Accessing LDAP!\n" +
-                              "Internal service error: " + e.getMessage());
+        } catch (AlarmServiceException e) {
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, e.getMessage());
+        } catch (NamingException e) {
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, Messages.ImportInitialConfigJob_Status_Title
+                    + Messages.ImportInitialConfigJob_Build_Failed + e.getMessage());
         } finally {
             final long endTime = System.currentTimeMillis();
-            LOG.debug("Directory reader time: " + (endTime - startTime) + " mecs");
+            LOG.debug("Directory reader time: " + (endTime - startTime) + " msecs"); //$NON-NLS-1$ //$NON-NLS-2$
             monitor.done();
         }
+        
         return Status.OK_STATUS;
     }
 }

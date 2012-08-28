@@ -1,12 +1,12 @@
 package org.csstudio.diag.icsiocmonitor.service.internal;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.diag.icsiocmonitor.service";
@@ -23,14 +23,16 @@ public class Activator extends AbstractCssPlugin {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doStart(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 		plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 
@@ -41,14 +43,6 @@ public class Activator extends AbstractCssPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 }

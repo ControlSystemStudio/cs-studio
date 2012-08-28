@@ -21,26 +21,18 @@
  */
 package org.csstudio.alarm.treeview.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeview.model.Alarm;
-import org.csstudio.alarm.treeview.model.IProcessVariableNodeListener;
-import org.csstudio.alarm.treeview.model.ProcessVariableNode;
-import org.csstudio.alarm.treeview.model.SubtreeNode;
-import org.csstudio.alarm.treeview.model.TreeNodeSource;
-import org.csstudio.alarm.treeview.model.ProcessVariableNode.Builder;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Test.
@@ -51,127 +43,155 @@ import org.junit.Test;
  * @since 14.06.2010
  */
 public class ProcessVariableNodeUnitTest {
-
+    
     private ProcessVariableNode _node;
     private SubtreeNode _subtreeNode;
-    private final Date t1 = new Date(1L);
-    private final Date t2 = new Date(2L);
-
+    private final Date date1 = new Date(1L);
+    private final Date date2 = new Date(2L);
+    private final Date date3 = new Date(3L);
+    
     @Before
     public void setUp() {
-        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmcfgConfiguration.UNIT, TreeNodeSource.LDAP).build();
-        _node = new ProcessVariableNode.Builder("A node", TreeNodeSource.LDAP).setParent(_subtreeNode).build();
+        _subtreeNode = new SubtreeNode.Builder("SubTree",
+                                               LdapEpicsAlarmcfgConfiguration.UNIT,
+                                               TreeNodeSource.LDAP).build();
+        _node = new ProcessVariableNode.Builder("A node", TreeNodeSource.LDAP)
+                .setParent(_subtreeNode).build();
     }
-
+    
     @Test
     public void testGetters() {
         assertEquals("A node", _node.getName());
         assertSame(_subtreeNode, _node.getParent());
         assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, _node.getTreeNodeConfiguration());
-        assertEquals(IProcessVariable.TYPE_ID, _node.getTypeId());
+     // TODO jhatje: implement new datatype
+//        assertEquals(IProcessVariable.TYPE_ID, _node.getTypeId());
         assertEquals("A node", _node.toString());
     }
-
+    
     @Test
     public void testNewlyCreatedNodeHasNoAlarm() {
         assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
     }
-
+    
     @Test
-	public void testAlarmIncreasesSeverityAndUnacknowledgedSeverity() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t1));
+    public void testAlarmIncreasesSeverityAndUnacknowledgedSeverity() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, date1));
         assertEquals(EpicsAlarmSeverity.MINOR, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.MINOR, _node.getUnacknowledgedAlarmSeverity());
-	}
-
+    }
+    
     @Test
-	public void testMajorAlarmIncreasesSeverityAfterMinorAlarm() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t2));
+    public void testMajorAlarmIncreasesSeverityAfterMinorAlarm() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, date1));
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, date2));
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
-	}
-
+    }
+    
     @Test
-	public void testMinorAfterMajorLowersSeverityButKeepsUnacknowledgedSeverity() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t2));
+    public void testMinorAfterMajorLowersSeverityButKeepsUnacknowledgedSeverity() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, date1));
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, date2));
         assertEquals(EpicsAlarmSeverity.MINOR, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
-	}
+    }
+    
+    @Test
+    public void testMinorAfterAcknowledgeMajorShowsMinor() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, date1));
+        _node.acknowledgeAlarm();
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, date3));
+        assertEquals(EpicsAlarmSeverity.MINOR, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MINOR, _node.getUnacknowledgedAlarmSeverity());
+    }
 
     @Test
-	public void testNoAlarmAfterAlarmKeepsUnacknowledged() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.NO_ALARM, t2));
+    public void testNoAlarmAfterAlarmKeepsUnacknowledged() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, date1));
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.NO_ALARM, date2));
         assertEquals(EpicsAlarmSeverity.NO_ALARM, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
-	}
-
+    }
+    
     @Test
-	public void testAcknowledgeAlarm() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
-		_node.acknowledgeAlarm();
+    public void testAcknowledgeAlarm() throws Exception {
+        _node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, date1));
+        _node.acknowledgeAlarm();
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
-	}
-
+    }
+    
     @Test
-	public void testPropertiesAreNullByDefault() throws Exception {
-		for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
-			assertNull(_node.getInheritedProperty(id));
-		}
-	}
-
+    public void testPropertiesAreNullByDefault() throws Exception {
+        for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
+            assertNull(_node.getInheritedProperty(id));
+        }
+    }
+    
     @Test
-    public void testPropertyInheritance() throws Exception {
+    public void testPropertyInheritanceNodeHasNull() throws Exception {
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
         assertEquals("foo", _node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
         assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
     }
-
+    
+    @Test
+    public void testPropertyInheritanceNodeHasValue() throws Exception {
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
+        _node.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "baz");
+        assertEquals("foo", _subtreeNode.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("foo", _subtreeNode.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("baz", _node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("baz", _node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+    }
+    
     @Test
     public void testPropertyWithUrlProtocol() throws Exception {
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
-        assertEquals("file:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
-
+        assertEquals("file:foo",
+                     _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "/foo");
-        assertEquals("file:/foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
-
+        assertEquals("file:/foo",
+                     _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "http:foo");
-        assertEquals("http:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
-
+        assertEquals("http:foo",
+                     _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "xttp:foo");
-        assertEquals("xttp:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("xttp:foo",
+                     _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
     }
-
+    
     @Test
     public void testProcessVariableNodeListener() throws Exception {
         final StringBuilder wasAddedString = new StringBuilder();
         final StringBuilder wasRemovedString = new StringBuilder();
-
+        
         final SubtreeNode subtreeNode = new SubtreeNode.Builder("SubTree",
-                                                          LdapEpicsAlarmcfgConfiguration.UNIT,
-                                                          TreeNodeSource.XML).build();
-        final ProcessVariableNode node = new ProcessVariableNode.Builder("A node", TreeNodeSource.XML)
+                                                                LdapEpicsAlarmcfgConfiguration.UNIT,
+                                                                TreeNodeSource.XML).build();
+        final ProcessVariableNode node = new ProcessVariableNode.Builder("A node",
+                                                                         TreeNodeSource.XML)
                 .setParent(subtreeNode).setListener(new IProcessVariableNodeListener() {
-
+                    
                     @Override
                     public void wasAdded(@Nonnull final String newName) {
                         wasAddedString.append(newName);
                     }
-
+                    
                     @Override
                     public void wasRemoved(@Nonnull final String newName) {
                         wasRemovedString.append(newName);
                     }
                 }).build();
         assertEquals("A node", wasAddedString.toString());
-
+        
         subtreeNode.removeChild(node);
         assertEquals("A node", wasRemovedString.toString());
     }
-
-
+    
 }

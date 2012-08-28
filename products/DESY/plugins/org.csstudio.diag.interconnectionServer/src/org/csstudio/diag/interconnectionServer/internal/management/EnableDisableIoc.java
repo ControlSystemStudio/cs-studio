@@ -22,15 +22,14 @@
 
 package org.csstudio.diag.interconnectionServer.internal.management;
 
-import javax.naming.NamingException;
-
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
+import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
-import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -54,20 +53,23 @@ public class EnableDisableIoc implements IManagementCommand {
 		}
 
 		final int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
-				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		IocConnection iocConnection;
-        try {
-            iocConnection = IocConnectionManager.INSTANCE.getIocConnection(IocConnectionManager.INSTANCE.getIocInetAdressByName(ioc), dataPort);
-        } catch (final NamingException e) {
-            return CommandResult.createFailureResult("LDAP name composition of IOC lookup failed for" + ioc);
-        }
-		boolean enabled = true;
-		if (action.equals("disable")) {
-			enabled = false;
-		}
-		iocConnection.setDisabled(!enabled);
-
+				PreferenceConstants.ICS_DATA_PORT_NUMBER, "", null));
+		IocConnection iocConnection = getIocConnection(ioc, dataPort);
+		iocConnection.setDisabled(action.equals("disable"));
 		return CommandResult.createSuccessResult();
 	}
+
+    private IocConnection getIocConnection(final String ioc, final int dataPort) {
+        return ServiceLocator.getService(IIocConnectionManager.class).getIocConnectionFromName(ioc);
+    }
+//    private IocConnection getIocConnection(final String ioc, final int dataPort) {
+//        IocConnection iocConnection;
+//        try {
+//            iocConnection = IocConnectionManager.INSTANCE.getIocConnection(IocConnectionManager.INSTANCE.getIocInetAdressByName(ioc), dataPort);
+//        } catch (final NamingException e) {
+//            return CommandResult.createFailureResult("LDAP name composition of IOC lookup failed for" + ioc);
+//        }
+//        return iocConnection;
+//    }
 
 }

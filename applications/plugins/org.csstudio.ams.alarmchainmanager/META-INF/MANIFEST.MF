@@ -9,6 +9,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.ams,
- org.csstudio.platform.ui,
  org.csstudio.platform.utility.jms
 Bundle-Vendor: Desy <css-developer@desy.de>, Markus Möller

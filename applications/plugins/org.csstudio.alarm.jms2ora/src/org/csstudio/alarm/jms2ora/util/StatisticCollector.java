@@ -25,7 +25,7 @@
 package org.csstudio.alarm.jms2ora.util;
 
 import org.csstudio.alarm.jms2ora.VersionInfo;
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 
 /**
  * @author mmoeller

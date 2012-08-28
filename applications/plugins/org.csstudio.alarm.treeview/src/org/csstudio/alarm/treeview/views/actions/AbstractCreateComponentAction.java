@@ -18,21 +18,33 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
+import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.localization.Messages;
+import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeview.model.PVNodeItem;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
 import org.csstudio.alarm.treeview.views.LdapNameInputValidator;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
@@ -69,17 +81,36 @@ public abstract class AbstractCreateComponentAction extends Action {
         if (selected instanceof SubtreeNode) {
             final SubtreeNode parent = (SubtreeNode) selected;
             final String name = promptForRecordName();
-            if ( (name != null) && !name.equals("")) {
+            if ( (name != null) && !name.equals("")) { //$NON-NLS-1$
                 if (parent.canAddChild(name)) {
-                    final ITreeModificationItem item = createComponent(parent, name);
+                    ITreeModificationItem item = null;
+                    item = createComponent(parent, name);
                     if (item != null) {
                         _ldapModificationItems.add(item);
                     }
+                    if (!AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() || (item != null)) {
+                    	try {
+                    		AlarmTreeViewActionFactory.retrieveInitialStateSynchronously(parent.getChild(name));
+                    	} catch (AlarmServiceException e) {
+                    		String message = NLS
+                    		.bind(Messages.AbstractCreateComponentAction_Create_Init_Failed,
+                    				name);
+                    		MessageDialog
+                    		.openWarning(_site.getShell(),
+                    				Messages.AbstractCreateComponentAction_Create_Failed_Title,
+                    				message);
+                    	}
+                    }
+
                     _viewer.refresh(parent);
                 } else {
-                    String message = "Node '" + name + "' cannot be added to component '"
-                            + parent.getName() + "'.\n" + "Does it already exist?";
-                    MessageDialog.openWarning(_site.getShell(), "Error adding record", message);
+                    String message = NLS.bind(Messages.AbstractCreateComponentAction_Create_Failed,
+                                              name,
+                                              parent.getName());
+                    MessageDialog
+                            .openWarning(_site.getShell(),
+                                         Messages.AbstractCreateComponentAction_Create_Failed_Title,
+                                         message);
                 }
             } // else ignore, cancel was pressed or empty string
         }
@@ -91,8 +122,8 @@ public abstract class AbstractCreateComponentAction extends Action {
     @CheckForNull
     private String promptForRecordName() {
         final InputDialog dialog = new InputDialog(_site.getShell(),
-                                                   "Create New Component",
-                                                   "Component name:",
+                                                   Messages.AbstractCreateComponentAction_CreateComponent_DialogTitle,
+                                                   Messages.AbstractCreateComponentAction_ComponentName,
                                                    null,
                                                    new LdapNameInputValidator());
         if (Window.OK == dialog.open()) {

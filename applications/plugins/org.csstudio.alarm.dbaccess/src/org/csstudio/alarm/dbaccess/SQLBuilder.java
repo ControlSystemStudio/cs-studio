@@ -24,7 +24,7 @@ public class SQLBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(SQLBuilder.class);
 
-	private final Integer _maxRowNumLimit = 50000;
+	private final Integer _maxRowNumLimit = 200000;
 	private Integer _maxRowNum = _maxRowNumLimit;
 
 	private final String _selectCommonColumnsStmtPrefix =

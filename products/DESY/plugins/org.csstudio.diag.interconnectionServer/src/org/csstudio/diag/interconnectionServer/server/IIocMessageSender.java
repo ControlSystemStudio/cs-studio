@@ -24,6 +24,8 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import javax.naming.NamingException;
 
+import org.csstudio.utility.ldap.service.LdapServiceException;
+
 /**
  * Sends messages to an IOC.
  *
@@ -38,7 +40,8 @@ public interface IIocMessageSender {
 	 * @param message
 	 *            the message to send to the IOC.
 	 * @throws NamingException
+	 * @throws LdapServiceException TODO
 	 */
-	void send(String message) throws NamingException;
+	void send(String message) throws NamingException, LdapServiceException;
 
 }

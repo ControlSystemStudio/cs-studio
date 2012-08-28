@@ -36,7 +36,7 @@ public class AlarmSimulator {
 	private static AlarmSimulator thisAlarmSimulator = null;
 
 	public AlarmSimulator () {
-		
+		// nothing to do
 	}
 	/**
 	 * 
@@ -70,8 +70,7 @@ public class AlarmSimulator {
 	 * @return array of strings with possible commands.
 	 */
 	public String[] getCommands () {
-		String[] commandList = {COMMAND_START, COMMAND_STOP};
-		return commandList;
+		return new String[] {COMMAND_START, COMMAND_STOP};
 	}
 	
 	/**

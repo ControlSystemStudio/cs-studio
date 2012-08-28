@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.filter.ui;
 
+
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -42,8 +43,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionStringDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionStringTObject;
 import org.csstudio.ams.filter.FilterConditionString;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -209,16 +208,16 @@ public class FilterConditionStringUI extends FilterConditionUI {
 				actOnKeyValueTypeChanged();
 			}
 		});
-		
-		new ProcessVariableDropTarget(txtValue)
-        {
-            @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
-            {
-            	txtValue.setText(name.getName());
-            }
-        };
+//		TODO jhatje: implement new datatype		
+//		new ProcessVariableDropTarget(txtValue)
+//        {
+//            @Override
+//            public void handleDrop(IProcessVariable name,
+//                                   DropTargetEvent event)
+//            {
+//            	txtValue.setText(name.getName());
+//            }
+//        };
 		
 		initText();
 	}

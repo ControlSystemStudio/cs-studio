@@ -17,6 +17,7 @@
 package org.csstudio.alarm.treeview.views;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -27,10 +28,13 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeview.jobs.ConnectionJob;
 import org.csstudio.alarm.treeview.jobs.JobFactory;
+import org.csstudio.alarm.treeview.localization.Messages;
+import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.IProcessVariableNodeListener;
@@ -41,7 +45,7 @@ import org.csstudio.alarm.treeview.service.AlarmMessageListener;
 import org.csstudio.alarm.treeview.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -68,6 +72,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPropertyListener;
@@ -78,6 +83,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tree view of process variables and their alarm state. This view uses LDAP to get a hierarchy of
@@ -92,9 +99,9 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     /**
      * The ID of this view.
      */
-    private static final String ID = "org.csstudio.alarm.treeview.views.AlarmTreeView";
+    private static final String ID = "org.csstudio.alarm.treeview.views.AlarmTreeView"; //$NON-NLS-1$
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeView.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeView.class);
     
     // The connection to the underlying implementation, be it DAL or JMS. Is null, if connectionJob failed.
     private IAlarmConnection _connection;
@@ -138,120 +145,50 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         return Collections.emptyList();
     }
     
-    /**
-     * The tree viewer that displays the alarm objects.
-     */
+    // The tree viewer that displays the alarm objects.
     private TreeViewer _viewer;
     
-    /**
-     * The message area above the tree viewer
-     */
+    // The message area above the tree viewer
     private MessageArea _myMessageArea;
     
-    /**
-     * The callback for the alarm messages
-     */
+    // The callback for the alarm messages
     private AlarmMessageListener _alarmListener;
     
-    /**
-     * The reload action.
-     */
     private Action _reloadAction;
+    private Action _remoteReloadAction;
     
-    /**
-     * Action to persist current Alarm Tree View in LDAP.
-     */
+    // Action to persist current Alarm Tree View in LDAP.
     private AbstractUserDependentAction _saveInLdapAction;
-    
-    /**
-     * The import xml file action.
-     */
     private Action _importXmlFileAction;
-    
-    /**
-     * The export xml file action.
-     */
     private Action _exportXmlFileAction;
     
-    /**
-     * Saves the currently configured alarm tree as xml file.
-     */
+    // Saves the currently configured alarm tree as xml file.
     private Action _saveAsXmlFileAction;
-    
-    /**
-     * The acknowledge action.
-     */
     private Action _acknowledgeAction;
-    
-    /**
-     * The Run CSS Alarm Display action.
-     */
     private Action _runCssAlarmDisplayAction;
-    
-    /**
-     * The Run CSS Display action.
-     */
     private Action _runCssDisplayAction;
-    
-    /**
-     * The Open CSS Strip Chart action.
-     */
     private Action _openCssStripChartAction;
-    
-    /**
-     * The Show Help Page action.
-     */
     private Action _showHelpPageAction;
-    
-    /**
-     * The Show Help Guidance action.
-     */
     private Action _showHelpGuidanceAction;
-    
-    /**
-     * The Create Record action.
-     */
     private Action _createRecordAction;
-    
-    /**
-     * The Create Component action.
-     */
     private Action _createComponentAction;
-    
-    /**
-     * The Rename action.
-     */
     private Action _renameAction;
-    
-    /**
-     * The Delete action.
-     */
     private Action _deleteNodeAction;
-    
-    /**
-     * The Show Property View action.
-     */
     private Action _showPropertyViewAction;
     
-    /**
-     * the action to show / hide the message area
-     */
+    // the action to show / hide the message area
     private Action _showMessageAreaAction;
     
-    /**
-     * Action to retrieve the initial state of subtrees.
-     */
+    // Action to retrieve the initial state of subtrees.
     private Action _retrieveInitialStateAction;
+    
+    // Action which toggles the filter on and off.
+    private Action _toggleFilterAction;
     
     /**
      * A filter which hides all nodes which are not currently in an alarm state.
      */
     private ViewerFilter _currentAlarmFilter;
-    
-    /**
-     * The action which toggles the filter on and off.
-     */
-    private Action _toggleFilterAction;
     
     /**
      * Whether the filter is active.
@@ -271,6 +208,9 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     
     // Listener for the life cycle of the pv-nodes in the tree. Used for de/registering pvs at the underlying system.
     private IProcessVariableNodeListener _processVariableNodeListener;
+    
+    // Listener for the remote command telling the view to reload the configuration
+    private IAlarmService.IListener _configurationUpdateListener;
     
     /**
      * Constructor.
@@ -355,6 +295,8 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                                     viewer,
                                     modificationItems);
         
+        _remoteReloadAction = AlarmTreeViewActionFactory.createRemoteReloadAction(_myMessageArea);
+        
         _saveInLdapAction = AlarmTreeViewActionFactory.createSaveInLdapAction(rootNode,
                                                                               site,
                                                                               viewer,
@@ -409,6 +351,12 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     
     // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
     
+    // requires the existence of the reload action when run
+    private void createAndRegisterReloadCommand() {
+        _configurationUpdateListener = new MyAlarmListener();
+        ServiceLocator.getService(IAlarmService.class).register(_configurationUpdateListener);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -436,6 +384,8 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                       getSite(),
                       _currentAlarmFilter,
                       _ldapModificationItems);
+        
+        createAndRegisterReloadCommand();
         
         contributeToActionBars();
         
@@ -472,8 +422,16 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     @Override
     public void dispose() {
+        tryToDeregisterReloadListener();
         tryToDisconnect();
         super.dispose();
+    }
+    
+    private void tryToDeregisterReloadListener() {
+        IAlarmService service = ServiceLocator.getService(IAlarmService.class);
+        if (service != null) {
+            service.deregister(_configurationUpdateListener);
+        }
     }
     
     private void tryToDisconnect() {
@@ -543,6 +501,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         manager.add(_showPropertyViewAction);
         manager.add(_showMessageAreaAction);
         manager.add(_saveInLdapAction);
+        manager.add(_remoteReloadAction);
         manager.add(_reloadAction);
         manager.add(new Separator());
         manager.add(_importXmlFileAction);
@@ -635,16 +594,20 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                 @Override
                 public void wasAdded(@Nonnull final String pvName) {
                     if (_connection != null) {
-                        _connection.registerPV(pvName);
-                        AlarmTreeView.LOG.trace("pv registered: " + pvName);
+                    	if (!isPresentInTree(pvName)) {
+                    		_connection.registerPV(pvName);
+                    		AlarmTreeView.LOG.trace("pv registered: " + pvName); //$NON-NLS-1$
+                    	}
                     }
                 }
                 
-                @Override
+				@Override
                 public void wasRemoved(@Nonnull final String pvName) {
                     if (_connection != null) {
-                        _connection.deregisterPV(pvName);
-                        AlarmTreeView.LOG.trace("pv deregistered: " + pvName);
+                    	if (!isPresentInTree(pvName)) {
+                    		_connection.deregisterPV(pvName);
+                    		AlarmTreeView.LOG.trace("pv deregistered: " + pvName); //$NON-NLS-1$
+                    	}
                     }
                 }
             };
@@ -652,6 +615,12 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         return _processVariableNodeListener;
     }
     
+    private boolean isPresentInTree(@Nonnull final String pvName) {
+    	List<IAlarmProcessVariableNode> alarmProcessVariableNodes = getRootNode().findProcessVariableNodes(pvName);
+		return !alarmProcessVariableNodes.isEmpty();
+	}
+
+
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm
      * display configured.
@@ -674,11 +643,11 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         return isDisplayUrl(node, EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY);
     }
     
-    private boolean isDisplayUrl(@Nonnull final Object node, @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
+    private boolean isDisplayUrl(@Nonnull final Object node,
+                                 @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
         if (node instanceof IAlarmTreeNode) {
-            String display = ((IAlarmTreeNode) node)
-                    .getInheritedPropertyWithUrlProtocol(attribute);
-            return display != null && display.matches(".+\\.css-sds");
+            String display = ((IAlarmTreeNode) node).getInheritedPropertyWithUrlProtocol(attribute);
+            return display != null && display.matches(".+\\.css-sds"); //$NON-NLS-1$
         }
         return false;
     }
@@ -694,7 +663,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
             String string = ((IAlarmTreeNode) node)
                     .getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART);
             // dot must not be checked for: .plt is valid and .sds-plt also
-            return string != null && string.endsWith("plt");
+            return string != null && string.endsWith("plt"); //$NON-NLS-1$
         }
         return false;
     }
@@ -720,11 +689,11 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     private boolean hasHelpPage(@Nonnull final Object node) {
         return isNonEmptyString(node, EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE);
     }
-
-    private boolean isNonEmptyString(@Nonnull final Object node, @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
+    
+    private boolean isNonEmptyString(@Nonnull final Object node,
+                                     @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
         if (node instanceof IAlarmTreeNode) {
-            String string = ((IAlarmTreeNode) node)
-                    .getInheritedPropertyWithUrlProtocol(attribute);
+            String string = ((IAlarmTreeNode) node).getInheritedPropertyWithUrlProtocol(attribute);
             return (string != null) && (!string.isEmpty());
         }
         return false;
@@ -734,7 +703,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      * Adds a context menu to the tree view.
      */
     private void initializeContextMenu() {
-        final MenuManager menuMgr = new MenuManager("#PopupMenu");
+        final MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
         
         // add menu items to the context menu when it is about to show
@@ -793,7 +762,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      * Starts the connection.
      */
     private void createAndScheduleConnectionJob() {
-        LOG.debug("Starting connection.");
+        LOG.debug("Starting connection."); //$NON-NLS-1$
         
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
@@ -820,7 +789,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     @Nonnull
     public Job createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
-        LOG.debug("Start import initial configuration.");
+        LOG.debug("Start import initial configuration."); //$NON-NLS-1$
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
         
@@ -847,7 +816,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     }
     
     @Override
-    public void doSave(IProgressMonitor monitor) {
+    public void doSave(@Nonnull final IProgressMonitor monitor) {
         getSaveInLdapAction().run();
     }
     
@@ -886,17 +855,12 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
             
             @SuppressWarnings("synthetic-access")
             @Override
-            public void propertyChanged(Object source, int propId) {
-                if ( (propId == ISaveablePart.PROP_DIRTY) && !_saveInLdapAction.hasPermission()) {
-                    if (_ldapModificationItems.isEmpty()) {
-                        _myMessageArea.clearMessage();
-                    } else {
-                        _myMessageArea
-                                .showMessage(SWT.ICON_WARNING,
-                                             "Warning",
-                                             "You made changes to the tree but are not allowed to save them"
-                                                     + " into LDAP (no permission). But you may save top level nodes into an xml file.");
-                    }
+            public void propertyChanged(@Nonnull final Object source, final int propId) {
+                if ( (propId == ISaveablePart.PROP_DIRTY) && !_saveInLdapAction.hasPermission()
+                        && !_ldapModificationItems.isEmpty()) {
+                    _myMessageArea.showMessage(SWT.ICON_WARNING,
+                                               Messages.AlarmTreeView_Save_Title,
+                                               Messages.AlarmTreeView_Save_FailHint);
                 }
             }
         });
@@ -925,6 +889,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         }
         
         @SuppressWarnings("synthetic-access")
+        @Nonnull
         @Override
         public ITreeModificationItem remove() {
             ITreeModificationItem result = super.remove();
@@ -945,5 +910,70 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
             }
             return result;
         }
+    }
+    
+    /**
+     * handles callbacks from remote commands
+     */
+    private class MyAlarmListener implements IAlarmService.IListener {
+        
+        public MyAlarmListener() {
+            // nothing to do
+        }
+        
+        @Override
+        public void configurationUpdated() {
+            if (AlarmPreference.ALARMSERVICE_LISTENS_TO_ALARMSERVER.getValue()) {
+                showMessage(SWT.ICON_INFORMATION, Messages.AlarmTreeView_AlarmServer_ConfigurationUpdated);
+            } else {
+                reloadTree();
+            }
+        }
+        
+        @Override
+        public void alarmServerReloaded() {
+            if (AlarmPreference.ALARMSERVICE_LISTENS_TO_ALARMSERVER.getValue()) {
+                reloadTree();
+            } // else ignore
+        }
+        
+        @Override
+        public void alarmServerStarted() {
+            showMessage(SWT.ICON_INFORMATION, Messages.AlarmTreeView_AlarmServer_Started);
+        }
+        
+        @Override
+        public void alarmServerWillStop() {
+            showMessage(SWT.ICON_ERROR, Messages.AlarmTreeView_AlarmServer_WillStop);
+        }
+        
+        private void reloadTree() {
+            // this is called from a non-ui-thread so we have to enqueue it
+            Display.getDefault().asyncExec(new Runnable() {
+                
+                @Override
+                @SuppressWarnings("synthetic-access")
+                public void run() {
+                    showMessage(SWT.ICON_INFORMATION, Messages.AlarmTreeView_AlarmServer_Calls_For_Reload);
+                    // unsaved changes are discarded without notifying the user!
+                    _ldapModificationItems.clear();
+                    _reloadAction.run();
+                    
+                }
+            });
+        }
+
+        private void showMessage(final int icon, @Nonnull final String message) {
+            // this is called from a non-ui-thread so we have to enqueue it
+            Display.getDefault().asyncExec(new Runnable() {
+                
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void run() {
+                    _myMessageArea.showMessage(icon, Messages.AlarmTreeView_AlarmServer_Title, message);
+                }
+            });
+        }
+
     }
 }

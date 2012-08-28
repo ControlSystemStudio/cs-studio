@@ -36,6 +36,7 @@ final class LegacyUtil {
 	
 	// prevent instantiation
 	private LegacyUtil() {
+	    // nothing to do
 	}
 
 	/**

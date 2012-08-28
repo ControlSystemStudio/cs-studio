@@ -18,6 +18,7 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,13 +26,15 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
 import org.csstudio.alarm.treeview.views.dialog.DetailDialog;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
-import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Saves the recent tree modifications in LDAP.
@@ -43,31 +46,30 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @since 17.06.2010
  */
 public final class SaveInLdapSecureAction extends AbstractUserDependentAction {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveInLdapSecureAction.class);
-
-    private static final String RIGHT_ID = "alarmConfiguration";
-    private static final boolean DEFAULT_PERMISSION = true;
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(SaveInLdapSecureAction.class);
+    
+    private static final String RIGHT_ID = "alarmConfiguration"; //$NON-NLS-1$
+    
     private final IWorkbenchPartSite _site;
     private final Queue<ITreeModificationItem> _ldapModifications;
-
+    
     /**
      * Constructor.
      * @param site
      * @param ldapModifications
      */
     SaveInLdapSecureAction(@Nonnull final IWorkbenchPartSite site,
-                     @Nonnull final Queue<ITreeModificationItem> ldapModifications) {
-        super(RIGHT_ID, DEFAULT_PERMISSION);
+                           @Nonnull final Queue<ITreeModificationItem> ldapModifications) {
+        super(RIGHT_ID);
         _site = site;
         _ldapModifications = ldapModifications;
     }
-
+    
     @Override
     protected void doWork() {
         final List<String> notAppliedMods= new ArrayList<String>();
-        String failedMod = "";
+        String failedMod = ""; //$NON-NLS-1$
         final List<String> appliedMods = new ArrayList<String>();
         synchronized (_ldapModifications) {
             try {
@@ -83,32 +85,31 @@ public final class SaveInLdapSecureAction extends AbstractUserDependentAction {
                     final ITreeModificationItem item = _ldapModifications.peek();
                     failedMod = item.getDescription();
                     item.apply();
-                    appliedMods.add(item.getDescription() + "\n");
+                    appliedMods.add(item.getDescription() + "\n"); //$NON-NLS-1$
                     _ldapModifications.remove();
                 }
 
-                final String summary = appliedMods.isEmpty() ? "No LDAP Modifications!" :
-                                                               "Applied Modifications:\n" + appliedMods;
-                DetailDialog.open(_site.getShell(), false, "LDAP persistence status of recent tree modification.",
-                                  appliedMods.size() + " items saved", summary);
+                final String summary = appliedMods.isEmpty() ? Messages.SaveInLdapSecureAction_NoModifications :
+                                                               Messages.SaveInLdapSecureAction_AppliedModifications + appliedMods;
+                DetailDialog.open(_site.getShell(), false, Messages.SaveInLdapSecureAction_StatusDialog_Title,
+                                  appliedMods.size() + Messages.SaveInLdapSecureAction_StatusDialog_Text, summary);
                 setEnabled(false);
 
             } catch (final AlarmTreeModificationException e) {
-
                 for (final ITreeModificationItem item : _ldapModifications) {
-                    notAppliedMods.add("\n-" + item.getDescription());
+                    notAppliedMods.add("\n-" + item.getDescription()); //$NON-NLS-1$
                 }
                 DetailDialog.open(_site.getShell(),
                                   true,
-                                  "LDAP persistence status of recent tree modification.",
-                                  "Error while saving",
-                                  "Applied Modifications:\n" + appliedMods
-                                          + "\n\nFailed Modification:\n" + failedMod
-                                          + "\n\nNot Applied Modifications:\n\n" + notAppliedMods);
+                                  Messages.SaveInLdapSecureAction_StatusDialog_Title,
+                                  Messages.SaveInLdapSecureAction_Error_Text,
+                                  NLS.bind(Messages.SaveInLdapSecureAction_10, appliedMods) + "\n"
+                                          + NLS.bind(Messages.SaveInLdapSecureAction_11, failedMod) + "\n"
+                                          + NLS.bind(Messages.SaveInLdapSecureAction_12,
+                                                     notAppliedMods));
             } catch (final NoSuchElementException e) {
-                LOG.error("Removal of first element in LDAP modification queue failed - empty queue?");
+                LOG.error("Removal of first element in LDAP modification queue failed - empty queue?"); //$NON-NLS-1$
             }
         }
     }
-
 }

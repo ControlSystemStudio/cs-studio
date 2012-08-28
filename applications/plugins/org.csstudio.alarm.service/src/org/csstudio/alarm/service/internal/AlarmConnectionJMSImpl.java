@@ -18,19 +18,22 @@
 package org.csstudio.alarm.service.internal;
 
 import javax.annotation.Nonnull;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.platform.utility.jms.IConnectionMonitor;
-import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
-import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.csstudio.alarm.service.declaration.AlarmResource;
+import org.csstudio.utility.jms.IConnectionMonitor;
+import org.csstudio.utility.jms.TransportEvent;
+import org.csstudio.utility.jms.sharedconnection.IMessageListenerSession;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,20 +47,20 @@ import org.slf4j.LoggerFactory;
  */
 public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     private static final Logger LOG = LoggerFactory.getLogger(AlarmConnectionJMSImpl.class);
-
+    
     private static final String COULD_NOT_CREATE_LISTENER_SESSION = "Could not create listener session using the shared JMS connections";
-
+    
     private AlarmListenerAdapter _listener;
     private IMessageListenerSession _listenerSession;
     private AlarmConnectionMonitorAdapter _monitor;
-
+    
     /**
      * Constructor must be called only from the AlarmService.
      */
     AlarmConnectionJMSImpl() {
         // EMPTY
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -65,71 +68,71 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     public boolean canHandleTopics() {
         return true;
     }
-
+    
     @Override
     public void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                               @Nonnull final IAlarmListener listener,
-                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
+                        @Nonnull final IAlarmListener listener,
+                        @Nonnull final AlarmResource resource) throws AlarmConnectionException {
         LOG.info("Connecting to JMS for topics " + resource.getTopics() + ".");
-
+        
         try {
             _listener = new AlarmListenerAdapter(listener);
-            _listenerSession = SharedJmsConnections.startMessageListener(_listener,
-                                                                         resource.getTopics().toArray(new String[0]),
-                                                                         Session.AUTO_ACKNOWLEDGE);
-
+            _listenerSession = SharedJmsConnections.startMessageListener(_listener, resource
+                    .getTopics().toArray(new String[0]), Session.AUTO_ACKNOWLEDGE);
+            
             _monitor = new AlarmConnectionMonitorAdapter(connectionMonitor);
             _listenerSession.addMonitor(_monitor);
             if (_listenerSession.isActive()) {
-                _monitor.onConnected();
+            	//TODO jpenning: new parameter 'TransportEvent' !!
+                _monitor.onConnected(null);
             }
         } catch (final JMSException e) {
             LOG.error(COULD_NOT_CREATE_LISTENER_SESSION);
             throw new AlarmConnectionException(COULD_NOT_CREATE_LISTENER_SESSION, e);
         }
     }
-
+    
     @Override
     public void registerPV(@Nonnull final String pvName) {
         // Nothing to do in the JMS implementation
     }
-
+    
     @Override
     public void deregisterPV(@Nonnull final String pvName) {
         // Nothing to do in the JMS implementation
     }
-
+    
     @Override
     public void reloadPVsFromResource() {
         // Nothing to do in the JMS implementation
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void disconnect() {
         LOG.info("Disconnecting from JMS.");
-
+        
         // Remove the connection monitor, so it will not be called when the connection is closed.
         _listenerSession.removeMonitor(_monitor);
-
+        
         _listenerSession.close();
-
+        
         _listener.getAlarmListener().stop();
     }
-
+    
     /**
      * Object based adapter. Adapts the IAlarmListener to the MessageListener expected by JMS.
      */
     private static final class AlarmListenerAdapter implements MessageListener {
-
+        
         private final IAlarmListener _alarmListener;
-
+        
         public AlarmListenerAdapter(@Nonnull final IAlarmListener alarmListener) {
             this._alarmListener = alarmListener;
         }
-
+        
         @SuppressWarnings("synthetic-access")
         @Override
         public void onMessage(@Nonnull final Message message) {
@@ -139,36 +142,34 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
                 LOG.warn("Could not create alarm message from " + message);
             }
         }
-
+        
         @Nonnull
         public IAlarmListener getAlarmListener() {
             return _alarmListener;
         }
-
+        
     }
-
+    
     /**
      * Object based adapter. Adapts the IAlarmConnectionMonitor to the IConnectionMonitor expected
      * by JMS.
      */
     private static final class AlarmConnectionMonitorAdapter implements IConnectionMonitor {
-
+        
         private final IAlarmConnectionMonitor _monitor;
-
+        
         public AlarmConnectionMonitorAdapter(@Nonnull final IAlarmConnectionMonitor monitor) {
             this._monitor = monitor;
         }
-
-        @Override
-        public void onConnected() {
+        
+        public void onConnected(TransportEvent e) {
             _monitor.onConnect();
         }
-
-        @Override
-        public void onDisconnected() {
+        
+        public void onDisconnected(TransportEvent e) {
             _monitor.onDisconnect();
         }
-
+        
     }
-
+    
 }

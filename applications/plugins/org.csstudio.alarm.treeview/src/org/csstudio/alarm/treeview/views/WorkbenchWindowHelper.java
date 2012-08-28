@@ -23,16 +23,17 @@
  */
 package org.csstudio.alarm.treeview.views;
 
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to offer convenience methods to control views.
@@ -44,8 +45,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class WorkbenchWindowHelper {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(WorkbenchWindowHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WorkbenchWindowHelper.class);
 
     /**
      * Constructor.

@@ -18,6 +18,7 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.Collections;
 import java.util.Queue;
 
@@ -25,18 +26,18 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditor;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.PVNodeItem;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
 import org.csstudio.alarm.treeview.views.LdapNameInputValidator;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -44,6 +45,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The rename action.
@@ -54,7 +57,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @since 14.06.2010
  */
 public final class RenameAction extends Action {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(RenameAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RenameAction.class);
     
     private final TreeViewer _viewer;
     private final IWorkbenchPartSite _site;
@@ -90,8 +93,12 @@ public final class RenameAction extends Action {
                 }
             } catch (final DirectoryEditException e) {
                 MessageDialog.openError(_site.getShell(),
-                                        "Rename",
-                                        "Could not rename the entry: " + e.getMessage());
+                                        Messages.RenameAction_Dialog_Title,
+                                        Messages.RenameAction_Dialog_Text + e.getMessage());
+            } catch (AlarmServiceException e) {
+                MessageDialog.openError(_site.getShell(),
+                                        Messages.RenameAction_Dialog_Title,
+                                        Messages.RenameAction_Dialog_Text + e.getMessage());
             }
             refreshViewer(selected);
         }
@@ -100,8 +107,8 @@ public final class RenameAction extends Action {
     @CheckForNull
     private String promptForNewName(@Nullable final String oldName) {
         final InputDialog dialog = new InputDialog(_site.getShell(),
-                                                   "Rename",
-                                                   "Name:",
+                                                   Messages.RenameAction_Dialog_Title,
+                                                   Messages.RenameAction_Name,
                                                    oldName,
                                                    new LdapNameInputValidator());
         if (Window.OK == dialog.open()) {
@@ -110,14 +117,14 @@ public final class RenameAction extends Action {
         return null;
     }
 
-    private void retrieveInitialAlarmState(@Nonnull final IAlarmProcessVariableNode pvNode) {
+    private void retrieveInitialAlarmState(@Nonnull final IAlarmProcessVariableNode pvNode) throws AlarmServiceException {
         final IAlarmInitItem initItem = new PVNodeItem(pvNode);
         
-        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
+        final IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
         if (alarmService != null) {
             alarmService.retrieveInitialState(Collections.singletonList(initItem));
         } else {
-            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
+            LOG.warn("Initial state could not be retrieved because alarm service is not available."); //$NON-NLS-1$
         }
     }
 

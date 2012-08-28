@@ -21,17 +21,19 @@
  */
 package org.csstudio.alarm.dal2jms;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The alarm handler listens to DAL messages and forwards them to the JMS-based alarm system.
@@ -45,13 +47,15 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 07.05.2010
  */
 final class AlarmHandler {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmHandler.class);
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmHandler.class);
+    
     private final IAlarmConnection _alarmConnection;
     // Local service to handle jms communication
     private final JmsMessageService _jmsMessageService;
-
+    private final MessageWorker _messageWorker;
+    private final AtomicBoolean _started = new AtomicBoolean(false);
+    
     /**
      * Constructor.
      * @param alarmConnection
@@ -61,49 +65,64 @@ final class AlarmHandler {
                         @Nonnull final JmsMessageService jmsMessageService) {
         _alarmConnection = alarmConnection;
         _jmsMessageService = jmsMessageService;
+        _messageWorker = new MessageWorker(jmsMessageService);
+        
     }
-
-    public void connect(@Nonnull final String fileName) throws AlarmConnectionException {
-        final IAlarmResource alarmResource = Activator.getDefault().getAlarmService()
-                .createAlarmResource(null, fileName);
+    
+    public void connect() throws AlarmConnectionException {
         _alarmConnection.connect(newAlarmConnectionMonitor(),
-                                                        newAlarmListener(_jmsMessageService),
-                                                        alarmResource);
+                                 newAlarmListener(_jmsMessageService),
+                                 new AlarmResource());
+        // connect waited some time to let the callback storm of the connections pass by
+        // so now we may forward alarm messages which have a true meaning (not being artifacts of the connecting dal2jms-server)
+        LOG.info("dal2jms finished connecting, now forwarding of alarm messages begins");
+        _started.set(true);
     }
-
-    // dal2jms currently provides no action on connection state changes, they are only logged.
+    
+    public void reconnect() throws AlarmConnectionException {
+        _alarmConnection.reloadPVsFromResource();
+    }
+    
+    // dal2jms currently provides no action on connection state changes, they are logged only.
     @Nonnull
     private IAlarmConnectionMonitor newAlarmConnectionMonitor() {
         return new IAlarmConnectionMonitor() {
-
+            
+            @SuppressWarnings("synthetic-access")
             @Override
             public void onDisconnect() {
-                LOG.debug("dal2jms received onDisconnect");
+                LOG.info("dal2jms monitors the jms connection: onDisconnect received");
             }
-
+            
+            @SuppressWarnings("synthetic-access")
             @Override
             public void onConnect() {
-                LOG.debug("dal2jms received onConnect");
+                LOG.info("dal2jms monitors the jms connection: onConnect received");
             }
         };
     }
-
+    
     @Nonnull
     private IAlarmListener newAlarmListener(@Nonnull final JmsMessageService jmsMessageService) {
         return new IAlarmListener() {
-
+            
+            @SuppressWarnings("synthetic-access")
             @Override
             public void onMessage(@Nonnull final IAlarmMessage message) {
-//                LOG.debug(message.getMap().toString());
-                jmsMessageService.sendAlarmMessage(message);
+                LOG.trace("dal2jms received onMessage: {}, value: {}", message, message.getString(AlarmMessageKey.VALUE));
+                if (_started.get()) {
+                    _messageWorker.enqueue(message);
+                }
             }
-
+            
             @Override
+            @SuppressWarnings("synthetic-access")
             public void stop() {
+                LOG.trace("dal2jms received stop");
                 // Nothing to do
             }
-
+            
         };
     }
-
+    
 }

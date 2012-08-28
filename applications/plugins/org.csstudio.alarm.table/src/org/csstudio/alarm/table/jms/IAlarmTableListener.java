@@ -17,6 +17,8 @@
  */
 package org.csstudio.alarm.table.jms;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 
@@ -36,20 +38,31 @@ public interface IAlarmTableListener extends IAlarmListener {
      * 
      * @param messageList .
      */
-    public void setMessageList(final AbstractMessageList messageList);
+    void setMessageList(@Nonnull final AbstractMessageList messageList);
     
     /**
      * Register an alarm listener, which is called when a message comes in.
      * 
      * @param alarmListener
      */
-    void registerAlarmListener(IAlarmListener alarmListener);
+    void registerAlarmListener(@Nonnull final IAlarmListener alarmListener);
     
     /**
      * Deregister an alarm listener. If listener is not present, nothing happens.
      * 
      * @param alarmListener
      */
-    void deRegisterAlarmListener(IAlarmListener alarmListener);
+    void deRegisterAlarmListener(@Nonnull final IAlarmListener alarmListener);
+
+    /**
+     * Enable or disable filtering
+     * 
+     * If filtering is enabled, the pv in the incoming message must be contained in the current configuration of the alarm service,
+     * otherwise the message is discarded.
+     * The default is false, no filtering takes place.
+     * 
+     * @param enable
+     */
+    void enableFilter(final boolean enable);
     
 }

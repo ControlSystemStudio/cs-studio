@@ -46,7 +46,8 @@ public final class TimeUtil {
 	 * required in the accessor method {@link #systemClock()}.
 	 */
 	private static final TimeSource SYSTEM_TIME_SOURCE = new TimeSource() {
-				public long now() {
+				@Override
+                public long now() {
 					return System.currentTimeMillis();
 				}
 			};

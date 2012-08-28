@@ -106,6 +106,13 @@ public abstract class AbstractMessageList {
 			(iterator.next()).removeJMSMessage(jmsm);
 		}
 	}
+	
+	/**
+	 * Remove all messages from the list
+	 */
+	public void removeAllMessages() {
+	    removeMessages(getMessageList().toArray(new BasicMessage[0]));
+	}
 
 	public void addChangeListener(@Nonnull final IMessageViewer viewer) {
 		changeListeners.add(viewer);
