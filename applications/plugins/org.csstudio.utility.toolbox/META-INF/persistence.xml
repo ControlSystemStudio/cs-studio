@@ -34,9 +34,14 @@
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
+			
+			<!-- 
 			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@212.1.57.24:1521:xe" />
-			<property name="javax.persistence.jdbc.user" value="asset" />
-			<property name="javax.persistence.jdbc.password" value="asset" />
+			-->
+			
+			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = desy_db.desy.de)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))" />
+			<property name="javax.persistence.jdbc.user" value="KRYKLOGT" />
+			<property name="javax.persistence.jdbc.password" value="kryklogt" />
 
 			<!-- Hibernate Konfiguration -->
 			<property name="hibernate.show_sql" value="true" />
