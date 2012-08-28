@@ -1,9 +1,9 @@
 package org.csstudio.cagateway.management;
 
 import org.csstudio.cagateway.CaServer;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * Management command which stops the Interconnection Server.
