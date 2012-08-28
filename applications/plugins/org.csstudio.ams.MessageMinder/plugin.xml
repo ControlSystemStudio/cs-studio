@@ -17,7 +17,7 @@
       </initializer>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.ams.messageminder.management.Stop"
             id="org.csstudio.ams.MessageMinder.management.Stop"

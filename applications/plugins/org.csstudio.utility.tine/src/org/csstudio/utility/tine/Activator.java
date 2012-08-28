@@ -30,14 +30,14 @@ import java.net.URL;
 import org.csstudio.utility.tine.preference.PreferenceConstants;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends Plugin {
+public class Activator extends AbstractUIPlugin {
 //public class Activator extends Plugin {
 
     // The plug-in ID

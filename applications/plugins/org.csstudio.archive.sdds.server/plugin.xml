@@ -14,7 +14,7 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.archive.sdds.server.management.StopMgmtCommand"
             id="org.csstudio.archive.sdds.server.Stop"

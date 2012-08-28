@@ -14,7 +14,7 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.tine2jms.management.Stop"
             id="org.csstudio.tine2jms.management.Stop"
