@@ -24,11 +24,10 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
+import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.annotation.Nonnull;
-
 import org.csstudio.alarm.jms2ora.IMessageConverter;
 import org.csstudio.alarm.jms2ora.IMessageProcessor;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
@@ -37,8 +36,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author mmoeller
- * @version 1.0
- * @since 29.08.2011
+ * @version 1.1
+ * @since 27.08.2012
  */
 public class MessageConverter extends Thread implements IMessageConverter {
 
@@ -58,13 +57,17 @@ public class MessageConverter extends Thread implements IMessageConverter {
     private final MessageContentCreator contentCreator;
 
     private boolean working;
+    
+    private boolean stoppedClean;
 
     public MessageConverter(@Nonnull final IMessageProcessor processor, @Nonnull final StatisticCollector c) {
         messageProcessor = processor;
-        messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator(c);
         working = true;
+        stoppedClean = false;
+        messageAcceptor = new MessageAcceptor(this, c);
+        this.setName("MessageConverter-Thread");
         this.start();
     }
 
@@ -96,6 +99,7 @@ public class MessageConverter extends Thread implements IMessageConverter {
         }
 
         messageAcceptor.closeAllReceivers();
+        stoppedClean = true;
     }
 
     public int getQueueSize() {
@@ -111,6 +115,19 @@ public class MessageConverter extends Thread implements IMessageConverter {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<RawMessage> getRawMessages() {
+        Vector<RawMessage> result = null;
+        if (rawMessages.isEmpty()) {
+            result = new Vector<RawMessage>();
+        }
+        result = new Vector<RawMessage>(rawMessages);
+        return result;
+    }
+
+    /**
      * Sets the working flag to false. The thread will leave then.
      */
     public void stopWorking() {
@@ -118,5 +135,9 @@ public class MessageConverter extends Thread implements IMessageConverter {
         synchronized (this) {
             this.notify();
         }
+    }
+    
+    public boolean stoppedClean() {
+        return stoppedClean;
     }
 }

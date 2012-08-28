@@ -59,8 +59,8 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 60000;
 
-    /** Time to sleep in ms */
-    private static final long WAITFORTHREAD = 20000;
+    /** Time to wait for the thread MessageProcessor in ms */
+    private static final long WAITFORTHREAD = 60000;
     
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
@@ -208,19 +208,17 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             // Clean stop of the working thread
             messageProcessor.stopWorking();
 
-            try {
-                messageProcessor.join(WAITFORTHREAD);
-            } catch(final InterruptedException ie) {
-                LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
-            }
-
-            if(messageProcessor.stoppedClean()) {
-                LOG.info("Restart/Exit: Thread stopped clean.");
-                messageProcessor = null;
-            } else {
-                LOG.warn("Restart/Exit: Thread did NOT stop clean.");
-                messageProcessor = null;
-            }
+            int waitCount = 2;
+            do {
+                try {
+                    LOG.info("Waiting for MessageProcessor.");
+                    messageProcessor.join(WAITFORTHREAD);
+                } catch(final InterruptedException ie) {
+                    LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
+                }
+            } while ((waitCount-- > 0) && !messageProcessor.stoppedClean());
+            
+            LOG.info("Restart/Exit: MessageProcessor stopped clean: {}", messageProcessor.stoppedClean());
         }
 
         if (xmppService != null) {
@@ -297,12 +295,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      */
     @Override
     public void stopWorking(boolean restart) {
-
         running = false;
         shutdown = !restart;
-
         LOG.info("The application will shutdown...");
-
         synchronized(lock) {
             lock.notify();
         }
@@ -313,12 +308,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      */
     @Override
     public void stop() {
-
         running = false;
         shutdown = true;
-
         LOG.info("The application will shutdown...");
-
         synchronized(lock) {
             lock.notify();
         }

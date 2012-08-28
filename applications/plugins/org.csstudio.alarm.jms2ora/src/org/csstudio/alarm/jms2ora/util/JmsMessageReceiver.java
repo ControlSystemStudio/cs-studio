@@ -71,7 +71,7 @@ public class JmsMessageReceiver {
     public final void startListener(@Nonnull final MessageListener listener,
                                     @Nonnull final String uniqueId) throws Exception {
 
-        factory = (ConnectionFactory)context.lookup("ConnectionFactory");
+        factory = (ConnectionFactory) context.lookup("ConnectionFactory");
 
         connection = factory.createConnection();
         connection.setClientID(uniqueId);
@@ -87,15 +87,13 @@ public class JmsMessageReceiver {
         receiver = new MessageConsumer[topics.length];
         for (int i = 0;i < topics.length;i++) {
 
-            /*
-             * changed from OpenJMS to ActiveMQ
-             * MCL 2007-05-23
-             */
-
             destination = session.createTopic(topics[i]);
 
-            // CHANGED BY Markus Moeller, 2007.06.28
+            // TODO
             // No durable subscription with ActiveMQ 4.x
+            // Durable subscription setzen:
+            // Die Unique ID darf nicht die Hashnumber beinhalten, weil sonst immer
+            // neue Subscriber erzeugt werden.
             // receiver[i] = session.createDurableSubscriber(destination, uniqueId + "_" + topics[i]);
             receiver[i] = session.createConsumer(destination);
             receiver[i].setMessageListener(listener);

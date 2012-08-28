@@ -64,11 +64,9 @@ public final class Environment {
 
     @Nonnull
     public static synchronized Environment getInstance() {
-
         if(INSTANCE == null) {
             INSTANCE = new Environment();
         }
-
         return INSTANCE;
     }
 

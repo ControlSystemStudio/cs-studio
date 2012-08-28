@@ -26,6 +26,7 @@ package org.csstudio.alarm.jms2ora.service;
 
 import java.io.File;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -39,12 +40,13 @@ public class DataDirectory {
     /** The path of the data directory for the serialized messages */
     private String dataDirectory;
 
+    /** The alternative path of the data directory for the serialized messages */
+    private String dataAltDirectory;
+
     /**
-     * Constructor.
-     *
      * @param dataDir - The path of the data directory for the serialized messages
      */
-    public DataDirectory(@Nonnull final String dataDir) {
+    public DataDirectory(@Nonnull final String dataDir, @CheckForNull final String dataAltDir) {
 
         dataDirectory = null;
         final File file = new File(dataDir);
@@ -62,8 +64,33 @@ public class DataDirectory {
                 dataDirectory = dataDirectory + File.separator;
             }
         }
+        
+        dataAltDirectory = null;
+        if (dataAltDir != null) {
+            if (!dataAltDir.trim().isEmpty()) {
+                final File altFile = new File(dataAltDir);
+                if (!altFile.exists()) {
+                    final boolean success = altFile.mkdirs();
+                    if (success) {
+                        dataAltDirectory = altFile.getAbsolutePath();
+                        if (!dataAltDirectory.endsWith(File.separator)) {
+                            dataAltDirectory = dataAltDirectory + File.separator;
+                        }
+                    }
+                } else {
+                    dataAltDirectory = altFile.getAbsolutePath();
+                    if (!dataAltDirectory.endsWith(File.separator)) {
+                        dataAltDirectory = dataAltDirectory + File.separator;
+                    }
+                }
+            }
+        }
     }
 
+    public DataDirectory(@Nonnull final String dataDir) {
+        this(dataDir, null);
+    }
+    
     @Nonnull
     public final File getDataDirectory() throws DataDirectoryException {
         if (dataDirectory == null) {
@@ -81,15 +108,38 @@ public class DataDirectory {
     }
 
     public final boolean existsDataDirectory() {
-
         boolean exists;
-
         try {
             exists = getDataDirectory().exists();
         } catch (final DataDirectoryException dde) {
             exists = false;
         }
+        return exists;
+    }
+    
+    @Nonnull
+    public final File getAltDataDirectory() throws DataDirectoryException {
+        if (dataAltDirectory == null) {
+            throw new DataDirectoryException("The alternative data directory does not exist.");
+        }
+        return new File(dataAltDirectory);
+    }
 
+    @Nonnull
+    public final String getAltDataDirectoryAsString() throws DataDirectoryException {
+        if (dataAltDirectory == null) {
+            throw new DataDirectoryException("The alternative data directory does not exist.");
+        }
+        return dataAltDirectory;
+    }
+
+    public final boolean existsAltDataDirectory() {
+        boolean exists;
+        try {
+            exists = getAltDataDirectory().exists();
+        } catch (final DataDirectoryException dde) {
+            exists = false;
+        }
         return exists;
     }
 }

@@ -30,24 +30,21 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 
  * @since 14.04.2010
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
     
-    /* (non-Javadoc)
+    /**
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
     @Override
     public void initializeDefaultPreferences() {
-        
         IEclipsePreferences node = new DefaultScope().getNode(Activator.PLUGIN_ID);
-
         node.put(PreferenceKeys.P_XMPP_SERVER, "");
         node.put(PreferenceKeys.P_XMPP_USER, "");
         node.put(PreferenceKeys.P_XMPP_PASSWORD, "");
+        node.put(PreferenceKeys.P_AMS_ROSTER_GROUP, "");
     }
 }

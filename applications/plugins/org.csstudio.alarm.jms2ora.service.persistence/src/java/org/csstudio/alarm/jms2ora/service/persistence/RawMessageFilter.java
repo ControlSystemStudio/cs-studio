@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,26 +19,30 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.alarm.jms2ora.service.oracleimpl.internal;
+package org.csstudio.alarm.jms2ora.service.persistence;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
- * @version 1.0
- * @since 18.08.2011
+ * @since 27.08.2012
  */
-public final class PreferenceConstants {
-
-    public static final String DATABASE_URL = "databaseUrl";
-    public static final String DATABASE_USER = "databaseUser";
-    public static final String DATABASE_PASSWORD = "databasePassword";
-    public static final String META_DATA_DIRECTORY = "metaDataDir";
-
-    private PreferenceConstants() {
-        // Avoid instantiation
+public class RawMessageFilter implements FilenameFilter {
+    
+    private String rawPrefix;
+    
+    public RawMessageFilter(String prefix) {
+        rawPrefix = prefix;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean accept(File dir, String name) {
+        return name.toLowerCase().matches(rawPrefix + "\\d{8}-\\d{9}-\\d+.ser");
     }
 }
