@@ -25,15 +25,18 @@
 
 package org.csstudio.ams.messageminder;
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
+
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -44,7 +47,7 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer.ProducerId;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
