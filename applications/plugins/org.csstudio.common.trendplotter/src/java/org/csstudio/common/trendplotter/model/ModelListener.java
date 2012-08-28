@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
-
 /** Listener interface for the Model
  *  @author Kay Kasemir
  */
@@ -15,7 +14,7 @@ public interface ModelListener
 {
     /** The update period changed */
     void changedUpdatePeriod();
-
+    
     /** The archive-rescale configuraton has changed */
     void changedArchiveRescale();
 
@@ -38,7 +37,7 @@ public interface ModelListener
 
     /** @param item Item that turned visible/invisible */
     void changedItemVisibility(ModelItem item);
-
+    
     /** @param item Item that changed its visible attributes:
      *              color, line width, display name, ...
      */
@@ -48,13 +47,7 @@ public interface ModelListener
      *              Archives, request method.
      */
     void changedItemDataConfig(PVItem item);
-
+    
     /** @param scroll_enabled <code>true</code> when scrolling was turned 'on' */
     void scrollEnabled(boolean scroll_enabled);
-
-
-    /** The annotation list changed*/
-    void changedAnnotations();
-
-    void changedXYGraphConfig();
 }

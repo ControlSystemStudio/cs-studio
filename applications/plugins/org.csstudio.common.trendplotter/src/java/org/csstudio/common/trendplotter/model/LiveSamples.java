@@ -7,10 +7,12 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+import javax.annotation.CheckForNull;
+
 import org.csstudio.domain.common.collection.LimitedArrayCircularQueue;
 
-
-/** Ring buffer for 'live' samples.
+/**
+ * Buffer for 'live' samples, i.e. those not originating from
  *  <p>
  *  New samples are always added to the end of a ring buffer.
  *
@@ -25,6 +27,7 @@ public class LiveSamples extends PlotSamples {
      */
     public LiveSamples(final int capacity) {
         _samples = new LimitedArrayCircularQueue<PlotSample>(capacity);
+
     }
 
     /** @return Maximum number of samples in ring buffer */
@@ -38,34 +41,30 @@ public class LiveSamples extends PlotSamples {
      *  @param new_capacity New sample count capacity
      *  @throws Exception on out-of-memory error
      */
-    synchronized public void setCapacity(final int new_capacity) throws Exception
-    {
+    synchronized public void setCapacity(final int new_capacity) throws Exception {
         _samples.setCapacity(new_capacity);
     }
 
-    /** @param sample Sample to add to ring buffer */
-    synchronized void add(final PlotSample sample)
-    {
+    /** @param sample Sample to add to circular buffer */
+    protected synchronized void add(final PlotSample sample) {
         sample.setDeadband(deadband);
         _samples.add(sample);
         have_new_samples = true;
     }
 
     @Override
-    synchronized public int getSize()
-    {
+    synchronized public int getSize() {
         return _samples.size();
     }
 
     @Override
-    synchronized public PlotSample getSample(final int i)
-    {
+    @CheckForNull
+    synchronized public PlotSample getSample(final int i) {
         return _samples.get(i);
     }
 
     /** Delete all samples */
-    synchronized public void clear()
-    {
+    synchronized public void clear() {
         _samples.clear();
     }
 }

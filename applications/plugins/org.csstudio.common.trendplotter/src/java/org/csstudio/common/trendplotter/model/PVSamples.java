@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -52,15 +53,21 @@ public class PVSamples extends PlotSamples
      */
     public PVSamples(@Nonnull final RequestType request_type,
                      @Nullable final IIntervalProvider prov) {
-
         updateRequestType(request_type);
 
         final int liveSampleBufferSize = Preferences.getLiveSampleBufferSize(); // 5000
-        liveSamples = new CompressedLiveSamples(new LiveSamplesCompressor(500),
+        final int uncompressedSamples = Preferences.getUncompressedLiveSampleSize();
+        liveSamples = new CompressedLiveSamples(new LiveSamplesCompressor(uncompressedSamples),
                                                 liveSampleBufferSize,
                                                 prov);
         liveSamples.setDynamicCompression(true);
-        historicSamples = new HistoricSamples(request_type);
+        historicSamples = new HistoricSamples(request_type, prov, new LiveSamplesCompressor(0));
+    }
+    /**
+     * Constructor.
+     */
+    public PVSamples(@Nonnull final RequestType request_type) {
+        this (request_type, null);
     }
 
     /** @return Maximum number of liveSamples samples in ring buffer */
@@ -190,8 +197,9 @@ public class PVSamples extends PlotSamples
     }
 
     /** Add data retrieved from an archive to the 'historic' section
-     *  @param source channel_name of the samples
-     * @param server_name
+     *  @param source Source of the samples
+     * @param reader
+     * @param requestType
      *  @param result Historic data
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
@@ -222,6 +230,7 @@ public class PVSamples extends PlotSamples
      */
     synchronized public void addLiveSample(final PlotSample sample)
     {
+//        System.out.println("----------- live size: " + liveSamples.getSize() + " - " + historicSamples.getSize());
         liveSamples.add(sample);
         // History ends before the start of 'liveSamples' samples.
         // Adding a liveSamples sample might have moved the ring buffer,
@@ -269,5 +278,20 @@ public class PVSamples extends PlotSamples
     @Nonnull
     public int getLiveSampleSize() {
         return liveSamples.getSize();
+    }
+
+    public void invalidateHistoricSamples() {
+        historicSamples.invalidateHistoricSamples();
+    }
+    
+    /**
+     * 
+     */
+    public void moveHistoricSamplesToLiveSamples() {
+        List<PlotSample> allHistoricSamples = historicSamples.getAllSamples();
+        for (PlotSample plotSample : allHistoricSamples) {
+            liveSamples.add(plotSample);
+        }
+        historicSamples.clear();
     }
 }

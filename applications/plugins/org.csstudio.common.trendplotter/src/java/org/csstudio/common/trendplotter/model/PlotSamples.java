@@ -35,21 +35,21 @@ abstract public class PlotSamples implements IDataProvider
      *  @see #testAndClearNewSamplesFlag()
      */
     protected boolean have_new_samples = false;
-    
+
     protected RequestType request_type;
-    
+
     protected Number deadband = null;
 
     /** {@inheritDoc} */
     @Override
-    public void addDataProviderListener(IDataProviderListener listener)
+    public void addDataProviderListener(final IDataProviderListener listener)
     {
         // NOP
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean removeDataProviderListener(IDataProviderListener listener)
+    public boolean removeDataProviderListener(final IDataProviderListener listener)
     {
         // NOP
         return false;
@@ -75,8 +75,9 @@ abstract public class PlotSamples implements IDataProvider
     synchronized public Range getXDataMinMax()
     {
         final int n = getSize();
-        if (n <= 0)
+        if (n <= 0) {
             return null;
+        }
         // X data is really time data. Min/max = start/end.
         final double min = getSample(0).getXValue();
         final double max = getSample(n-1).getXValue();
@@ -91,21 +92,25 @@ abstract public class PlotSamples implements IDataProvider
         // Keep last range until new samples are added?
         double min = Double.MAX_VALUE;
         double max = -Double.MAX_VALUE;
-        for (int i=getSize()-1; i>=0; --i)
+        for (int i = getSize()-1; i >= 0; --i)
         {
             final PlotSample sample = getSample(i);
             final double val = sample.getYValue();
-            if (Double.isNaN(val) || Double.isInfinite(val))
+            if (Double.isNaN(val) || Double.isInfinite(val)) {
                 continue;
+            }
             // Include min/max error in range
-            if (val-sample.getYMinusError() < min)
+            if (val-sample.getYMinusError() < min) {
                 min = val-sample.getYMinusError();
-            if (val+sample.getYPlusError() > max)
+            }
+            if (val+sample.getYPlusError() > max) {
                 max = val+sample.getYPlusError();
+            }
         }
         // No valid range because no samples, all NaN, or with outrageous values?
-        if (min == Double.MAX_VALUE  ||  max == -Double.MAX_VALUE)
+        if (min == Double.MAX_VALUE  ||  max == -Double.MAX_VALUE) {
             return null;
+        }
         return new Range(min, max);
     }
 
@@ -140,27 +145,27 @@ abstract public class PlotSamples implements IDataProvider
         final StringBuilder buf = new StringBuilder(n + " Plot Samples");
         if (n < 100)
         {
-            for (int i=0; i<n; ++i)
+            for (int i=0; i<n; ++i) {
                 buf.append(String.format("\n%3d: ", i) + getSample(i).getValue());
+            }
         }
         return buf.toString();
     }
-    
-    synchronized public void updateRequestType(RequestType type) {
+
+    synchronized public void updateRequestType(final RequestType type) {
         request_type = type;
     }
-    
+
     synchronized public RequestType getRequestType() {
         return request_type;
     }
-    
-    synchronized public void setDeadband(Number db) {
 
+    synchronized public void setDeadband(final Number db) {
         deadband = db;
     }
     synchronized public Number getDeadband() {
         return deadband;
     }
-    
-    
+
+
 }

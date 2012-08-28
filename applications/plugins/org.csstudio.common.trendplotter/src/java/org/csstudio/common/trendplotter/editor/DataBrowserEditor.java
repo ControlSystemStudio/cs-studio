@@ -7,10 +7,6 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.editor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -38,7 +34,6 @@ import org.csstudio.common.trendplotter.ui.Plot;
 import org.csstudio.common.trendplotter.ui.ToggleToolbarAction;
 import org.csstudio.common.trendplotter.waveformview.WaveformView;
 import org.csstudio.email.EMailSender;
-import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -65,7 +60,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -91,9 +85,6 @@ public class DataBrowserEditor extends EditorPart
     /** Data model */
     private Model model;
 
-    /** Listener to model that updates this editor*/
-    private ModelListener model_listener;
-
     /** GUI for the plot */
     private Plot plot;
 
@@ -103,19 +94,18 @@ public class DataBrowserEditor extends EditorPart
     /** @see #isDirty() */
     private boolean is_dirty = false;
 
-    /** Create data browser editor
-     *  @param input Input for editor, must be data browser config file
+    /** Create an empty data browser editor
      *  @return DataBrowserEditor or <code>null</code> on error
      */
-    public static DataBrowserEditor createInstance(final IEditorInput input)
+    public static DataBrowserEditor createInstance()
     {
         final DataBrowserEditor editor;
         try
         {
-            final IWorkbench workbench = PlatformUI.getWorkbench();
-            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            final IWorkbenchPage page = window.getActivePage();
-            editor = (DataBrowserEditor) page.openEditor(input, ID);
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+            editor = (DataBrowserEditor) page.openEditor(new EmptyEditorInput(), ID);
         }
         catch (Exception ex)
         {
@@ -123,14 +113,6 @@ public class DataBrowserEditor extends EditorPart
             return null;
         }
         return editor;
-    }
-
-    /** Create an empty data browser editor
-     *  @return DataBrowserEditor or <code>null</code> on error
-     */
-    public static DataBrowserEditor createInstance()
-    {
-        return createInstance(new EmptyEditorInput());
     }
 
     /** @return Model displayed/edited by this EditorPart */
@@ -147,46 +129,28 @@ public class DataBrowserEditor extends EditorPart
             throws PartInitException
     {
         setSite(site);
+        setInput(input);
         // Update the editor's name from "Data Browser" to file name
         setPartName(input.getName());
-
-        if (input instanceof DataBrowserModelEditorInput)
-        {   // Received model with input
-            model = ((DataBrowserModelEditorInput)input).getModel();
-            setInput(input);
-        }
-        else
-        {   // Create new model
-            model = new Model();
-            setInput(new DataBrowserModelEditorInput(input, model));
-
-            if (! (input instanceof EmptyEditorInput))
+        model = new Model();
+        // If it's a file, load content into Model
+        final IFile file = getInputFile();
+        if (file != null)
+        {
+            try
             {
-                // Load model content from file
-                InputStream stream = null;
-                try
-                {
-                    final IFile workspace_file = getWorkspaceFile();
-                    if (workspace_file != null)
-                        stream = workspace_file.getContents(true);
-                    else
-                    {
-                        final File file = getInputFile();
-                        if (file != null)
-                            stream = new FileInputStream(file);
-                    }
-                    if (stream == null)
-                        throw new PartInitException("Cannot handle " + input.getName()); //$NON-NLS-1$
-                    model.read(stream);
-                }
-                catch (Exception ex)
-                {
-                    throw new PartInitException(NLS.bind(Messages.ConfigFileErrorFmt, input.getName()), ex);
-                }
+                model.read(file.getContents(true));
+            }
+            catch (Exception ex)
+            {
+                throw new PartInitException(NLS.bind(Messages.ConfigFileErrorFmt, input.getName()), ex);
             }
         }
+        else if (! (input instanceof EmptyEditorInput))
+            throw new PartInitException("Cannot handle " + input.getName()); //$NON-NLS-1$
 
-        model_listener = new ModelListener()
+        // Update 'dirty' state when model changes in any way
+        model.addListener(new ModelListener()
         {
             @Override
             public void changedUpdatePeriod()
@@ -231,17 +195,7 @@ public class DataBrowserEditor extends EditorPart
             @Override
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
-
-
-            @Override
-            public void changedAnnotations()
-            {   setDirty(true);   }
-
-            @Override
-            public void changedXYGraphConfig()
-            {   setDirty(true);   }
-        };
-        model.addListener(model_listener);
+        });
     }
 
     /** Provide custom property sheet for this editor */
@@ -372,7 +326,6 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void dispose()
     {
-        model.removeListener(model_listener);
         if (controller != null)
         {
             controller.stop();
@@ -404,33 +357,16 @@ public class DataBrowserEditor extends EditorPart
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
-    /** Get workspace for input
-     *  <p>The file is 'relative' to the workspace, not 'absolute' in the
+    /** @return IFile for the current editor input or <code>null</code>
+     *  The file is 'relative' to the workspace, not 'absolute' in the
      *  file system. However, the file might be a linked resource to a
      *  file that physically resides outside of the workspace tree.
-     *
-     *  <p>Using this IFile is preferred because it allows the Navigator to update
-     *
-     *  @return IFile for the current editor input or <code>null</code> if file is outside the workspace
      */
-    private IFile getWorkspaceFile()
+    private IFile getInputFile()
     {
         return (IFile) getEditorInput().getAdapter(IFile.class);
     }
 
-    /** Get plain file for input
-     *
-     *  <p>This has to be used for files outside of the workspace.
-     *
-     *  @return File for the current editor input or <code>null</code>
-     */
-    private File getInputFile()
-    {
-        final IPathEditorInput path_input = (IPathEditorInput) getEditorInput().getAdapter(IPathEditorInput.class);
-        if (path_input == null)
-            return null;
-        return path_input.getPath().toFile();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -443,10 +379,7 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void doSave(final IProgressMonitor monitor)
     {
-        final IFile file = getWorkspaceFile();
-        // Only allow saving to workspace.
-        // Use Save-As to create new workspace file for
-        // empty or out-of-workspace inputs
+        final IFile file = getInputFile();
         if (file == null)
             doSaveAs();
         else
@@ -464,7 +397,7 @@ public class DataBrowserEditor extends EditorPart
             return;
         // Set that file as editor's input, so that just 'save' instead of
         // 'save as' is possible from now on
-        setInput(new DataBrowserModelEditorInput(new FileEditorInput(file), model));
+        setInput(new FileEditorInput(file));
         setPartName(file.getName());
     }
 
@@ -505,47 +438,35 @@ public class DataBrowserEditor extends EditorPart
         monitor.beginTask(Messages.Save, IProgressMonitor.UNKNOWN);
         try
         {
-            // Update model with info that's kept in plot
+            // Create pipes so that model can write its content to pipe,
+            // while IFile API reads other end and in turn write that to the file.
+            final PipedOutputStream out = new PipedOutputStream();
+            final InputStream in = new PipedInputStream(out);
 
-            // TODO Review. Why update the model when _saving_?
-            // The model should always have the correct info
-            // because it's listening to the plot,
-            // and here the data is simply written.
-
-            //TIME AXIS
-            Axis timeAxis = plot.getXYGraph().getXAxisList().get(0);
-            AxisConfig confTime = model.getTimeAxis();
-            if(confTime == null)
+            // Writer thread to avoid pipe deadlock
+            final Thread write_thread = new Thread(new Runnable()
             {
-                confTime = new AxisConfig(timeAxis.getTitle());
-                model.setTimeAxis(confTime);
-            }
-            setAxisConfig(confTime, timeAxis);
-
-            for (int i=0; i<model.getAxisCount(); i++)
-            {
-                AxisConfig conf = model.getAxis(i);
-                int axisIndex = model.getAxisIndex(conf);
-                Axis axis = plot.getXYGraph().getYAxisList().get(axisIndex);
-                setAxisConfig(conf, axis);
-            }
-
-            model.setGraphSettings(plot.getGraphSettings());
-            model.setAnnotations(plot.getAnnotations(), false);
-
-            // Write model to string
-            ByteArrayOutputStream buf = new ByteArrayOutputStream();
-
-            model.write(buf);
-            buf.close();
-
-            final ByteArrayInputStream in = new ByteArrayInputStream(buf.toByteArray());
-            // Write buffer to file
+                  @Override
+                public void run()
+                  {
+                      try
+                      {
+                          model.write(out);
+                      }
+                      catch (Exception ex)
+                      {
+                          ex.printStackTrace();
+                      }
+                  }
+            });
+            write_thread.start();
+            // IFile reads other end of pipe, writes into file
             if (file.exists())
                 file.setContents(in, IResource.FORCE, monitor);
             else
                 file.create(in, true, monitor);
-
+            // Write thread should have finished...
+            write_thread.join();
             setDirty(false);
         }
         catch (Exception ex)
@@ -560,37 +481,5 @@ public class DataBrowserEditor extends EditorPart
             monitor.done();
         }
         return true;
-    }
-
-
-    /**
-     * Set AxisConfigProperties from Axis
-     * @param conf
-     * @param axis
-     */
-    private void setAxisConfig(AxisConfig conf , Axis axis){
-
-         //Don't fire axis change event to avoid SWT Illegal Thread Access
-         conf.setFireEvent(false);
-
-         conf.setFontData(axis.getTitleFontData());
-         conf.setColor(axis.getForegroundColorRGB());
-         conf.setScaleFontData(axis.getScaleFontData());
-
-
-         //MIN MAX RANGE
-         conf.setRange(axis.getRange().getLower(), axis.getRange().getUpper());
-
-         //GRID
-         conf.setShowGridLine(axis.isShowMajorGrid());
-         conf.setDashGridLine(axis.isDashGridLine());
-         conf.setGridLineColor(axis.getMajorGridColorRGB());
-
-         //FORMAT
-         conf.setAutoFormat(axis.isAutoFormat());
-         conf.setTimeFormatEnabled(axis.isDateEnabled());
-         conf.setFormat(axis.getFormatPattern());
-
-         conf.setFireEvent(true);
     }
 }

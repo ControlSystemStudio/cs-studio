@@ -7,35 +7,35 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+
 import java.io.Serializable;
 
 /** Archive data source
  *  @author Kay Kasemir
  */
-public class ArchiveDataSource implements Serializable
-{
+public class ArchiveDataSource extends AbstractControlSystemItem implements Serializable,
+        IArchiveDataSource {
     /** Default ID for {@link Serializable} */
     private static final long serialVersionUID = 1L;
 
     /** URL of the archive data server. */
-    final private String url;
+    private final String url;
 
     /** Key of the archive under the url. */
-    final private int key;
+    private final int key;
 
     /** Archive name, derived from key. */
-    final private String name;
+    private final String name;
 
     /** Description of the data source. */
-    final private String description;
+    private final String description;
 
     /** Initialize
      *  @param url Data server URL.
      *  @param key Archive key.
      *  @param name Archive name, derived from key.
      */
-    public ArchiveDataSource(final String url, final int key, final String name)
-    {
+    public ArchiveDataSource(final String url, final int key, final String name) {
         this(url, key, name, name);
     }
 
@@ -45,36 +45,36 @@ public class ArchiveDataSource implements Serializable
      *  @param name Archive name, derived from key.
      *  @param description Description, up to archive data server
      */
-    public ArchiveDataSource(final String url, final int key, final String name,
-            final String description)
-    {
+    public ArchiveDataSource(final String url,
+                             final int key,
+                             final String name,
+                             final String description) {
+        super(name);
         this.url = url;
         this.key = key;
         this.name = name;
         this.description = description;
     }
 
+    /** Initialize this IArchiveDataSource from generic interface */
+    public ArchiveDataSource(final IArchiveDataSource archive) {
+        this(archive.getUrl(), archive.getKey(), archive.getName());
+    }
+
     /** @return URL of the archive data server. */
-    public final String getUrl()
-    {
+    @Override
+    public final String getUrl() {
         return url;
     }
 
     /** @return Key of the archive under the url. */
-    public final int getKey()
-    {
+    @Override
+    public final int getKey() {
         return key;
     }
 
-    /** @return Archive name, derived from key. */
-    public String getName()
-    {
-        return name;
-    }
-
     /** @return Description */
-    public final String getDescription()
-    {
+    public final String getDescription() {
         return description;
     }
 
@@ -82,12 +82,13 @@ public class ArchiveDataSource implements Serializable
      *  {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object obj)
-    {
-        if (! (obj instanceof ArchiveDataSource))
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ArchiveDataSource)) {
             return false;
-        if (obj == this)
+        }
+        if (obj == this) {
             return true;
+        }
         final ArchiveDataSource other = (ArchiveDataSource) obj;
         return key == other.key && url.equals(other.url);
     }
@@ -96,19 +97,23 @@ public class ArchiveDataSource implements Serializable
      *  {@inheritDoc}
      */
     @Override
-    public int hashCode()
-    {
-	    final int prime = 31;
-	    int result = prime + key;
-	    result = prime * result + url.hashCode();
-	    return result;
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + key;
+        result = prime * result + url.hashCode();
+        return result;
     }
 
-	/** Debug string representation */
+    /** Debug string representation */
     @SuppressWarnings("nls")
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return "Archive '" + url + "' (" + key + ", '" + getName() + "')";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final String getTypeId() {
+        return TYPE_ID;
     }
 }

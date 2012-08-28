@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.ui;
 
+
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.AxisConfig;
 import org.csstudio.common.trendplotter.model.FormulaInput;
 import org.csstudio.common.trendplotter.model.FormulaItem;
+import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 import org.csstudio.common.trendplotter.model.Model;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PVItem;
@@ -24,11 +26,10 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to add a ModelItem to the Model
  *  @author Kay Kasemir
  */
-public class AddModelItemCommand implements IUndoableCommand
-{
-    final private Shell shell;
-    final private Model model;
-    final private ModelItem item;
+public class AddModelItemCommand implements IUndoableCommand {
+    private final Shell shell;
+    private final Model model;
+    private final ModelItem item;
 
     /** Create PV via undo-able AddModelItemCommand,
      *  displaying errors in dialog
@@ -42,30 +43,27 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @return AddModelItemCommand or <code>null</code> on error
      */
     public static AddModelItemCommand forPV(final Shell shell,
-            final OperationsManager operations_manager,
-            final Model model,
-            final String pv_name,
-            final double period,
-            final AxisConfig axis,
-            final ArchiveDataSource archive)
-    {
+                                            final OperationsManager operations_manager,
+                                            final Model model,
+                                            final String pv_name,
+                                            final double period,
+                                            final AxisConfig axis,
+                                            final IArchiveDataSource archive) {
         // Create item
         final PVItem item;
-        try
-        {
+        try {
             item = new PVItem(pv_name, period);
-            if (archive != null)
-                item.addArchiveDataSource(archive);
-            else
+            if (archive != null) {
+                item.addArchiveDataSource(new ArchiveDataSource(archive));
+            } else {
                 item.useDefaultArchiveDataSources();
-            
+            }
+
             item.setAxis(axis);
-        }
-        catch (Exception ex)
-        {
+        } catch (final Exception ex) {
             MessageDialog.openError(shell,
-                    Messages.Error,
-                    NLS.bind(Messages.AddItemErrorFmt, pv_name, ex.getMessage()));
+                                    Messages.Error,
+                                    NLS.bind(Messages.AddItemErrorFmt, pv_name, ex.getMessage()));
             return null;
         }
         // Add to model via undo-able command
@@ -81,29 +79,26 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @return AddModelItemCommand or <code>null</code> on error
      */
     public static AddModelItemCommand forFormula(final Shell shell,
-            final OperationsManager operations_manager,
-            final Model model,
-            final String formula_name,
-            final AxisConfig axis)
-    {
+                                                 final OperationsManager operations_manager,
+                                                 final Model model,
+                                                 final String formula_name,
+                                                 final AxisConfig axis) {
         // Create item
         final FormulaItem item;
-        try
-        {
+        try {
             item = new FormulaItem(formula_name, "0", new FormulaInput[0]); //$NON-NLS-1$
             item.setAxis(axis);
-        }
-        catch (Exception ex)
-        {
+        } catch (final Exception ex) {
             MessageDialog.openError(shell,
-                    Messages.Error,
-                    NLS.bind(Messages.AddItemErrorFmt, formula_name, ex.getMessage()));
+                                    Messages.Error,
+                                    NLS.bind(Messages.AddItemErrorFmt,
+                                             formula_name,
+                                             ex.getMessage()));
             return null;
         }
         // Add to model via undo-able command
         return new AddModelItemCommand(shell, operations_manager, model, item);
     }
-
 
     /** Register and perform the command
      *  @param shell Shell used for error dialogs
@@ -112,60 +107,53 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param item Item to add
      */
     public AddModelItemCommand(final Shell shell,
-            final OperationsManager operations_manager,
-            final Model model,
-            final ModelItem item)
-    {
+                               final OperationsManager operations_manager,
+                               final Model model,
+                               final ModelItem item) {
         this.shell = shell;
         this.model = model;
         this.item = item;
-        try
-        {
+        try {
             model.addItem(item);
-        }
-        catch (Exception ex)
-        {
+        } catch (final Exception ex) {
             MessageDialog.openError(shell,
-                    Messages.Error,
-                    NLS.bind(Messages.AddItemErrorFmt, item.getName(), ex.getMessage()));
+                                    Messages.Error,
+                                    NLS.bind(Messages.AddItemErrorFmt,
+                                             item.getName(),
+                                             ex.getMessage()));
             // Exit before registering for undo because there's nothing to undo
             return;
         }
         operations_manager.addCommand(this);
     }
 
-    public ModelItem getItem()
-    {
+    public ModelItem getItem() {
         return item;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
-    {
-        try
-        {
+    public void redo() {
+        try {
             model.addItem(item);
-        }
-        catch (Exception ex)
-        {
+        } catch (final Exception ex) {
             MessageDialog.openError(shell,
-                    Messages.Error,
-                    NLS.bind(Messages.AddItemErrorFmt, item.getName(), ex.getMessage()));
+                                    Messages.Error,
+                                    NLS.bind(Messages.AddItemErrorFmt,
+                                             item.getName(),
+                                             ex.getMessage()));
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void undo()
-    {
+    public void undo() {
         model.removeItem(item);
     }
 
     /** @return Command name that appears in undo/redo menu */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return Messages.AddPV;
     }
 }

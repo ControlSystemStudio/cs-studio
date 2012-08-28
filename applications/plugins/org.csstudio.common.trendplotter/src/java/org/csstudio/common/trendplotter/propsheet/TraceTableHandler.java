@@ -8,7 +8,6 @@
 package org.csstudio.common.trendplotter.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
-import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
@@ -31,7 +30,6 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ILazyContentProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -48,10 +46,10 @@ import com.google.common.collect.ImmutableSet;
  *  Each 'row' in the table is a ModelItem.
  *  @author Kay Kasemir
  */
-public class TraceTableHandler implements IStructuredContentProvider
+public class TraceTableHandler implements ILazyContentProvider
 {
     /** Prompt for the 'raw request' warning? */
-    static private boolean prompt_for_raw_data_request = true;
+    static boolean prompt_for_raw_data_request = true;
 
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
@@ -83,7 +81,7 @@ public class TraceTableHandler implements IStructuredContentProvider
         public void itemAdded(final ModelItem item)
         {
             trace_table.cancelEditing();
-            trace_table.refresh();
+            trace_table.setItemCount(model.getItemCount());
         }
 
         @Override
@@ -94,6 +92,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             // To get a clear table update, all of this seems to be required
             trace_table.cancelEditing();
             trace_table.setSelection(null);
+            trace_table.setItemCount(model.getItemCount());
             trace_table.refresh();
         }
 
@@ -110,24 +109,9 @@ public class TraceTableHandler implements IStructuredContentProvider
         }
 
         @Override
-        public void changedItemDataConfig(final PVItem item)
-        {
-            trace_table.refresh(item);
-        }
-        
+        public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
-    
-        @Override
-        public void changedAnnotations() {
-            // TODO Auto-generated method stub
-            
-        }
-        @Override
-        public void changedXYGraphConfig() {
-            // TODO Auto-generated method stub
-            
-        }
     };
 
     /** Create table columns: Auto-sizable, with label provider and editor
@@ -135,8 +119,9 @@ public class TraceTableHandler implements IStructuredContentProvider
      *  @param operations_manager
      *  @param table_viewer
      */
-    public void createColumns(final TableColumnLayout table_layout, final OperationsManager operations_manager,
-            final TableViewer table_viewer)
+    public void createColumns(final TableColumnLayout table_layout, 
+                              final OperationsManager operations_manager,
+                              final TableViewer table_viewer)
     {
         final Shell shell = table_viewer.getTable().getShell();
 
@@ -159,19 +144,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                 return Messages.TraceVisibilityTT;
             }
         });
-        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
-        {
-            @Override
-            public int compare(final ModelItem item1, final ModelItem item2)
-            {
-                final int v1 = item1.isVisible() ? 1 : 0;
-                final int v2 = item2.isVisible() ? 1 : 0;
-                final int cmp = v1 - v2;
-                if (cmp != 0)
-                    return cmp;
-                return item1.getName().compareTo(item2.getName());
-            }
-        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -220,14 +192,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                 return Messages.ItemNameTT;
             }
         });
-        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
-        {
-            @Override
-            public int compare(final ModelItem item1, final ModelItem item2)
-            {
-                return item1.getName().compareTo(item2.getName());
-            }
-        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -264,14 +228,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                 return Messages.TraceDisplayNameTT;
             }
         });
-        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
-        {
-            @Override
-            public int compare(final ModelItem item1, final ModelItem item2)
-            {
-                return item1.getDisplayName().compareTo(item2.getDisplayName());
-            }
-        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -513,17 +469,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                 return Messages.AxisTT;
             }
         });
-        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
-        {
-            @Override
-            public int compare(final ModelItem item1, final ModelItem item2)
-            {
-                final int cmp = item1.getAxis().getName().compareTo(item2.getAxis().getName());
-                if (cmp != 0)
-                    return cmp;
-                return item1.getDisplayName().compareTo(item2.getDisplayName());
-            }
-        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -596,8 +541,23 @@ public class TraceTableHandler implements IStructuredContentProvider
             }
         });
 
+        
+        createAndAddRequestTypeColumn(table_layout, operations_manager, table_viewer, shell);
+
+        //createAndAddShowDeadbandColumn(table_layout, operations_manager, table_viewer, shell);
+        
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
+    }
+    
+    /**
+     * Request Type Column  
+     */
+    private void createAndAddRequestTypeColumn(final TableColumnLayout table_layout,
+                                               final OperationsManager operations_manager,
+                                               final TableViewer table_viewer,
+                                               final Shell shell) {
         // Request Type Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
+        TableViewerColumn view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -653,89 +613,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
             }
         });
-
-        // Waveform Index Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.WaveformIndexCol, 40, 10);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final ModelItem item = (ModelItem) cell.getElement();
-                cell.setText(Integer.toString(item.getWaveformIndex()));
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.WaveformIndexColTT;
-            }
-
-        });
-        view_col.setEditingSupport(new EditSupportBase(table_viewer)
-        {
-            @Override
-            protected Object getValue(final Object element)
-            {
-                return Integer.toString(((ModelItem) element).getWaveformIndex());
-            }
-
-            @Override
-            protected void setValue(final Object element, final Object value)
-            {
-                int index;
-                try
-                {
-                    index = Integer.parseInt(value.toString().trim());
-                    if (index < 0)
-                        return;
-                }
-                catch (NumberFormatException ex)
-                {
-                    return;
-                }
-                
-                final ModelItem item = (ModelItem)element;
-                if (index != item.getWaveformIndex())
-                    new ChangeWaveformIndexCommand(operations_manager, item, index);
-            }
-        });
-        
-        ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
-    {
-        if (old_model != null)
-            ((Model)old_model).removeListener(model_listener);
-
-        trace_table = (TableViewer) viewer;
-        model = (Model) new_model;
-        if (trace_table == null  ||  model == null)
-            return;
-
-        model.addListener(model_listener);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object[] getElements(final Object inputElement)
-    {
-        final ModelItem[] items = new ModelItem[model.getItemCount()];
-        for (int i=0; i<items.length; ++i)
-            items[i] = model.getItem(i);
-        return items;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose()
-    {
-        // NOP
-    }
-
 
 //    private void createAndAddShowDeadbandColumn(final TableColumnLayout table_layout,
 //                                           final OperationsManager operations_manager,
@@ -817,4 +695,37 @@ public class TraceTableHandler implements IStructuredContentProvider
 //        
 //    }
 
+    /** Set input to a Model
+     *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
+     */
+    @Override
+    public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
+    {
+        if (old_model != null)
+            ((Model)old_model).removeListener(model_listener);
+
+        trace_table = (TableViewer) viewer;
+        model = (Model) new_model;
+        if (trace_table == null  ||  model == null)
+            return;
+
+        trace_table.setItemCount(model.getItemCount());
+        model.addListener(model_listener);
+    }
+
+    /** Called by ILazyContentProvider to get the ModelItem for a table row
+     *  {@inheritDoc}
+     */
+    @Override
+    public void updateElement(int index)
+    {
+        trace_table.replace(model.getItem(index), index);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dispose()
+    {
+        // NOP
+    }
 }

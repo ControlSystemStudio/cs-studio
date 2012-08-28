@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ArchiveFetchJob extends Job
 {
-    private static final Logger LOG = LoggerFactory.getLogger(ArchiveFetchJob.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
 
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
@@ -134,29 +134,35 @@ public class ArchiveFetchJob extends Job
                     }
 
                     final ValueIterator value_iter;
-                    final RequestType currentRequestType = item.getRequestType();
-
-                    if (currentRequestType == RequestType.RAW) {
-                        value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                    String name = item.getName();
+                    if (!item.getName().contains(".")) {
+                       name = name + ".VAL";
+                    }
+                    if (item.getRequestType() == RequestType.RAW) {
+                        value_iter = reader.getRawValues(archive.getKey(), name, start, end);
                     }
                     else {
-                        value_iter = reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
+                        value_iter = reader.getOptimizedValues(archive.getKey(), name, start, end, bins);
                     }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-                    
+
                     while (value_iter.hasNext()) {
-                        final IValue next = value_iter.next();
-                        result.add(next);
+                        result.add(value_iter.next());
                     }
-                    LOG.debug(result.size() + " samples from source " + url);
-                    item.mergeArchivedSamples(reader, result, currentRequestType);
+                    LOG.debug("-------- ArchSource: " + url + "  bins: " + bins);
+                    LOG.debug("-------- from: " + start.toCalendar().getTime().toString() +
+                              "  to: " + end.toCalendar().getTime().toString());
+                    LOG.debug("-------- resultSize: " + result.size());
+                    final int j = 0;
+                    item.mergeArchivedSamples(reader, result);
                     if (cancelled) {
                         break;
                     }
                     value_iter.close();
                 }
-                catch (final Exception ex) {   // Tell listener unless it's the result of a 'cancel'?
+                catch (final Exception ex)
+                {   // Tell listener unless it's the result of a 'cancel'?
                     if (! cancelled) {
                         listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
                     }
