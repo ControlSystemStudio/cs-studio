@@ -27,9 +27,9 @@ package org.csstudio.nams.application.department.decision.management;
 
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
 import org.csstudio.nams.service.logging.declaration.ILogger;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author mmoeller

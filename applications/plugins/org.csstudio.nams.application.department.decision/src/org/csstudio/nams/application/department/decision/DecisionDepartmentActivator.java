@@ -25,11 +25,13 @@
 
 package org.csstudio.nams.application.department.decision;
 
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.domain.common.statistic.Collector;
 import org.csstudio.nams.application.department.decision.management.Restart;
 import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
@@ -68,7 +70,6 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceManagementKeys;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
-import org.csstudio.platform.statistic.Collector;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
