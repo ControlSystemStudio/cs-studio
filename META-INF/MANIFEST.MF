@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Layout
+Eclipse-BuddyPolicy: registered
+Bundle-SymbolicName: net.miginfocom.layout
+Bundle-Version: 1.0.0
+Export-Package: net.miginfocom.layout,
+ net.miginfocom.swt
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
