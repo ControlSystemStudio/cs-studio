@@ -24,10 +24,11 @@
 package org.csstudio.ams.delivery.sms;
 
 import java.util.Hashtable;
-import org.csstudio.platform.statistic.Collector;
+
+import org.csstudio.domain.common.statistic.Collector;
 import org.smslib.AGateway;
-import org.smslib.IGatewayStatusNotification;
 import org.smslib.AGateway.GatewayStatuses;
+import org.smslib.IGatewayStatusNotification;
 
 /**
  * @author Markus Moeller
