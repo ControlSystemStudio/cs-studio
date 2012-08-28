@@ -72,11 +72,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
     public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException, LdapServiceException {
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
-        try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException("Error creating empty content model.", e);
-        }
+        model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
 
         final ILdapService ldapService = ServiceLocator.getService(ILdapService.class);
         if (ldapService == null) {
