@@ -6,31 +6,40 @@
 #
 
 # Version number of CSS
-export VERSION=3.1.0
+export VERSION=3.1.1
 
 # Root of CSS source tree.
-export TOP=${HOME}/work/cs-studio
+#export TOP=${HOME}/work/cs-studio
+export TOP='/work/cs-studio-3.1'
 
 # Root directory of the drive on cygwin.
 #
 # On Windows with cygwin, this needs to be set to something like /cygdrive/c.
 # On Linux, this needs to be empty.
-export CYGDRIVE=
+#export CYGDRIVE=
+export CYGDRIVE=/cygdrive/c
 
 # Directory where the built CSS and temporary files will be stored.
-export BUILDDIR=${HOME}/work/CSSBuild
+#export BUILDDIR=${HOME}/work/CSSBuild
+export BUILDDIR='/work/CSSBuild/BuildDir'
 
 # Directory which contains the root of Eclipse RCP.
-export ECLIPSE_BASE=${HOME}/work
+#export ECLIPSE_BASE=${HOME}/work
+export ECLIPSE_BASE='/work/CSSBuild'
 
 # Root directory of Delta pack
-export DELTAPACK=${HOME}/work/delta/eclipse
+#export DELTAPACK=${HOME}/work/delta/eclipse
+export DELTAPACK='/work/CSSBuild/delta/eclipse'
+
+# Workspace that might have 'local' sources beyond repository
+export WORKSPACE='/work/CSSBuild/Workspace_cs-studio-3-1_3.7'
 
 # Root directory of JDK SE 6.
 #
 # On Windows with cygwin, this needs to be set in the form like
 # "c:\Program Files\Java\jdk1.6.0_26".
-export JAVA_HOME=${HOME}/work/jdk1.6.0_27
+#export JAVA_HOME=${HOME}/work/jdk1.6.0_27
+export JAVA_HOME="c:\Program Files\Java\jdk1.6.0_31"
 
 ###################################################################
 # Following parts should NOT be edited without a particuar reason.
@@ -53,6 +62,6 @@ QUALIFIER=`date "+%Y%m%d"`
 
 # This can be '*' unless you happen to have more than one version of
 # org.eclipse.pde.build_*, as can happen after installing updates
-PDE_VER=*
-#PDE_VER=3.6.2.R36x_20110203
+#PDE_VER=*
+PDE_VER=3.7.0.v20111116-2009
 

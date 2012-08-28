@@ -1,10 +1,17 @@
 package org.csstudio.sns.mpsbypasses.model;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.TimeDuration;
 
 /** Info about one Bypass
  *
@@ -22,14 +29,18 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Bypass implements PVListener
+public class Bypass
 {
+    final private static Logger logger = Logger.getLogger(Bypass.class.getName());
+
+    final private String pv_basename;
 	final private String name;
 	final private String chain;
 	final private Request request;
 	final private BypassListener listener;
 
-	final private PV jumper_pv, mask_pv;
+	private PVReader<VType> jumper_pv, mask_pv;
+    private volatile VType jumper, mask;
 	private volatile BypassState state = BypassState.Disconnected;
 
 	/** Initialize
@@ -41,6 +52,7 @@ public class Bypass implements PVListener
 	public Bypass(final String pv_basename, final Request request,
 			final BypassListener listener) throws Exception
 	{
+	    this.pv_basename = pv_basename;
 		// Given a name like "Ring_Vac:SGV_AB:FPL_Ring",
 		// extract the bypass name "Ring_Vac:SGV_AB"
 		// and the MPS chain "FPL Ring"
@@ -58,9 +70,6 @@ public class Bypass implements PVListener
 
 		this.request = request;
 		this.listener = listener;
-
-		jumper_pv = PVFactory.createPV(pv_basename + "_sw_jump_status");
-		mask_pv = PVFactory.createPV(pv_basename + "_swmask");
 	}
 
 	/** Create a pseudo-Bypass that is used to display
@@ -70,6 +79,7 @@ public class Bypass implements PVListener
 	 */
 	public Bypass(final String message, final String detail)
 	{
+	    pv_basename = null;
 		name = message;
 		chain = detail;
 		request = null;
@@ -132,24 +142,51 @@ public class Bypass implements PVListener
 	/** Connect to PVs */
 	public void start() throws Exception
 	{
-		if (jumper_pv == null)
+		if (pv_basename == null)
 			return;
-		jumper_pv.addListener(this);
-		mask_pv.addListener(this);
 
-		jumper_pv.start();
-		mask_pv.start();
+        jumper_pv = PVManager.read(vType(pv_basename + "_sw_jump_status")).maxRate(TimeDuration.ofSeconds(0.5));
+        mask_pv = PVManager.read(vType(pv_basename + "_swmask")).maxRate(TimeDuration.ofSeconds(0.5));
+
+		jumper_pv.addPVReaderListener(new PVReaderListener()
+        {
+            @Override
+            public void pvChanged()
+            {
+                final Exception error = jumper_pv.lastException();
+                if (error != null)
+                {
+                    logger.log(Level.WARNING, "Jumper PV Error", error);
+                    updateState(null, mask);
+                }
+                else
+                    updateState(jumper_pv.getValue(), mask);
+            }
+        });
+		mask_pv.addPVReaderListener(new PVReaderListener()
+        {
+            @Override
+            public void pvChanged()
+            {
+                final Exception error = mask_pv.lastException();
+                if (error != null)
+                {
+                    logger.log(Level.WARNING, "Mask PV Error", error);
+                    updateState(jumper, null);
+                }
+                else
+                    updateState(jumper, mask_pv.getValue());
+            }
+        });
 	}
 
 	/** Disconnect PVs */
 	public void stop()
 	{
-		if (jumper_pv == null)
+		if (pv_basename == null)
 			return;
-		jumper_pv.removeListener(this);
-		mask_pv.removeListener(this);
-		jumper_pv.stop();
-		mask_pv.stop();
+		jumper_pv.close();
+		mask_pv.close();
 
 		state = BypassState.Disconnected;
 		// Does NOT notify listener
@@ -159,36 +196,21 @@ public class Bypass implements PVListener
 		// Either way, no update needed.
 	}
 
-	/** @see PVListener */
-	@Override
-    public void pvValueUpdate(final PV pv)
-    {
-		updateState(jumper_pv.getValue(), mask_pv.getValue());
-    }
-
-	/** @see PVListener */
-	@Override
-    public void pvDisconnected(final PV pv)
-    {
-		updateState(jumper_pv.getValue(), mask_pv.getValue());
-    }
-
 	/** Update alarm state from current values of PVs
-	 * @param jumper
-	 * @param mask
+	 *  @param jumper Value of jumper PV
+	 *  @param mask Value of mask PV
 	 */
-	private void updateState(final IValue jumper, final IValue mask)
+	private void updateState(final VType jumper, final VType mask)
     {
+	    this.jumper = jumper;
+	    this.mask = mask;
 		// Anything unknown?
-		if (mask == null  ||  jumper == null  ||
-			!mask_pv.isConnected()  ||  !jumper_pv.isConnected())
-		{
+		if (mask == null  ||  jumper == null)
 			state = BypassState.Disconnected;
-		}
 		else
 		{	// Determine state
-			final boolean jumpered = ValueUtil.getDouble(jumper) > 0.0;
-			final boolean masked = ValueUtil.getDouble(mask) > 0.0;
+			final boolean jumpered = getNumber(jumper) > 0;
+			final boolean masked = getNumber(mask) > 0;
 
 			if (jumpered)
 			{
@@ -210,7 +232,19 @@ public class Bypass implements PVListener
 		listener.bypassChanged(this);
     }
 
-	/** @return Debug representation */
+	/** @param value {@link VType}
+	 *  @return Integer extracted from VType
+	 */
+	private int getNumber(final VType value)
+    {
+	    if (value instanceof VNumber)
+	        return ((VNumber)value).getValue().intValue();
+	    else if (value instanceof VEnum)
+	        return ((VEnum)value).getIndex();
+        return -1;
+    }
+
+    /** @return Debug representation */
 	@Override
     public String toString()
     {

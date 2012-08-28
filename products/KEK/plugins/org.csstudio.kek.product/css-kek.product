@@ -47,7 +47,7 @@ http://www-linac.kek.jp/cont/css/
       <macosx icon="/org.csstudio.utility.product/icons/css.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/org.csstudio.utility.product/icons/css.ico"/>
+         <ico path="../plugins/org.csstudio.utility.product/icons/css.ico"/>
          <bmp/>
       </win>
    </launcher>

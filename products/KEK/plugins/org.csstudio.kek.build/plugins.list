@@ -92,3 +92,10 @@ org.csstudio.utility.pvmanager/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.workspace/**
 org.jdom/**
+javax.mail/**
+org.python/**
+org.apache.batik/**
+org.csstudio.utility.product/**
+org.csstudio.opibuilder.widgets.symbol/**
+org.csstudio.opibuilder.imagelib/**
+org.csstudio.sns.startuphelper/**
