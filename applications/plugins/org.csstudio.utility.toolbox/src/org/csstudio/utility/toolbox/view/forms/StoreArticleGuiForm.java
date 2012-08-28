@@ -1,0 +1,174 @@
+package org.csstudio.utility.toolbox.view.forms;
+
+import static org.csstudio.utility.toolbox.framework.property.Property.P;
+import net.miginfocom.swt.MigLayout;
+
+import org.apache.commons.lang.StringUtils;
+import org.csstudio.utility.toolbox.common.Dialogs;
+import org.csstudio.utility.toolbox.entities.ArticleDescription;
+import org.csstudio.utility.toolbox.entities.LagerArtikel;
+import org.csstudio.utility.toolbox.framework.SimpleSelectionListener;
+import org.csstudio.utility.toolbox.framework.template.AbstractGuiFormTemplate;
+import org.csstudio.utility.toolbox.func.Func1Void;
+import org.csstudio.utility.toolbox.func.Option;
+import org.csstudio.utility.toolbox.func.Some;
+import org.csstudio.utility.toolbox.services.LagerArtikelService;
+import org.csstudio.utility.toolbox.services.LagerService;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
+
+import com.google.inject.Inject;
+
+public class StoreArticleGuiForm extends AbstractGuiFormTemplate<LagerArtikel> {
+
+	@Inject
+	private StoreArticleGuiFormActionHandler storeArticleGuiFormActionHandler;
+
+	@Inject
+	private LagerService lagerService;
+
+	@Inject
+	private LagerArtikelService lagerArtikelService;
+
+	@Inject
+	private LookupDataAutoCreator lookupDataAutoCreator;
+
+	@Override
+	protected void createEditComposite(Composite composite) {
+		createPart(composite);
+	}
+
+	@Override
+	protected void createSearchComposite(Composite composite) {
+		createPart(composite);
+	}
+
+	@Override
+	protected TableViewer createSearchResultComposite(Composite composite) {
+
+		String[] titles = { "Stock-ID", "Description", "Actual" };
+		int[] bounds = { 33, 33, 33 };
+
+		setSearchResultTableViewer(createTableViewer(composite, SEARCH_RESULT_TABLE_VIEWER, titles, bounds));
+
+		final Table table = getSearchResultTableViewer().getTable();
+
+		table.setLayoutData("spanx 7, ay top, growy, growx, height 250:259:1250, width 500:800:2000, wrap");
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		return getSearchResultTableViewer();
+
+	}
+
+	@Override
+	protected CanSaveAction canSave() {
+		final Option<ArticleDescription> selectedArticleDescription = storeArticleGuiFormActionHandler
+					.getSelectedArticleDescription();
+		
+		if (getEditorInput().isNewData()) {
+			String id = wf.getText(P("id"));
+			if (StringUtils.isNotEmpty(id)) {
+				Option<LagerArtikel> order = lagerArtikelService.findById(id);
+				if (order.hasValue()) {
+					Dialogs.message("Error", "Store-ID " + id + " already exists.");
+					return CanSaveAction.ABORT_SAVE;
+				}
+			}
+		}
+	
+		getEditorInput().processData(new Func1Void<Some<LagerArtikel>>() {
+			@Override
+			public void apply(Some<LagerArtikel> lagerArtikel) {
+				if (selectedArticleDescription.hasValue()) {
+					if (lagerArtikel.hasValue()) {
+						lagerArtikel.get().setArticleDescription(selectedArticleDescription.get());
+					}
+				}
+				lookupDataAutoCreator
+							.autoCreateLocation(lagerArtikel.get().getLagerName(), lagerArtikel.get().getOrt());
+				lookupDataAutoCreator.autoCreateShelf(lagerArtikel.get().getLagerName(), lagerArtikel.get().getFach());
+				lookupDataAutoCreator.autoCreateBox(lagerArtikel.get().getLagerName(), lagerArtikel.get().getBox());
+			}
+		});
+		
+		return super.canSave();
+	}
+
+	private void createPart(Composite composite) {
+
+		storeArticleGuiFormActionHandler.init(isSearchMode(), getEditorInput(), wf);
+
+		String rowLayout;
+
+		if (isSearchMode()) {
+			rowLayout = "[][][][][][][][][][]12[][][][grow, fill]";
+		} else {
+			rowLayout = "[][][][][][][][][][]12[fill][]";
+		}
+
+		MigLayout ml = new MigLayout("ins 10, gapy 4, wrap 2", "[90][300, fill][grow]", rowLayout);
+
+		composite.setLayout(ml);
+
+		wf.label(composite).text(getEditorInput().getTitle()).titleStyle().build();
+
+		Combo lagerName = wf.combo(composite, "lagerName").label("Stock name:").data(lagerService.findAll())
+					.hint("w 250!, ay top, wrap").build();
+
+		lagerName.addSelectionListener(new SimpleSelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				storeArticleGuiFormActionHandler.lagerNameSelected();
+			}
+		});
+
+		wf.text(composite, "id").label("Stock ID:").build();
+
+		wf.text(composite, "ort").label("Stock location:").emptyData().build();
+
+		wf.text(composite, "fach").label("Stock shelf:").emptyData().build();
+
+		wf.text(composite, "box").label("Stock box:").emptyData().build();
+
+		wf.text(composite, "sollBestand").label("Min quantity:").limitInputToDigits().useBigDecimalConverter()
+					.hint("split 2").build();
+
+		wf.label(composite).text("pieces").hint("ax left, wrap").build();
+
+		final Text beschreibung;
+
+		if (isSearchMode()) {
+			beschreibung = wf.text(composite, "beschreibung").label("Description:", "gaptop 5, wrap").multiLine()
+						.hint("h 50!, spanx 7, growx, wrap").isJoined().build();
+		} else {
+			beschreibung = wf.text(composite, "beschreibung").label("Description:", "gaptop 5, wrap").multiLine()
+						.hint("h 50!, spanx 7, growx, wrap").noBinding().readOnly().build();
+		}
+
+		wf.button(composite, "selectArticleDescription").hint("w 130!, gapbottom 5, ay top, wrap")
+					.text("Select Article").listener(new SimpleSelectionListener() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							storeArticleGuiFormActionHandler.selectArticle(beschreibung);
+						}
+					}).build();
+
+		wf.text(composite, "note").label("Article note:", "wrap").multiLine().hint("h 60!, spanx 7, growx, wrap")
+					.build();
+
+		wf.notifyListenersWithSelectionEvent(P("lagerName"));
+
+		getEditorInput().processData(new Func1Void<Some<LagerArtikel>>() {
+			@Override
+			public void apply(Some<LagerArtikel> lagerArtikel) {
+				beschreibung.setText(lagerArtikel.get().getBeschreibung());
+			}
+		});
+
+	}
+}

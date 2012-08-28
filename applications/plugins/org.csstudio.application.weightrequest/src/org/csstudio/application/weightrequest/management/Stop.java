@@ -27,19 +27,16 @@ package org.csstudio.application.weightrequest.management;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.csstudio.application.weightrequest.Activator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.application.ApplicationHandle;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 01.12.2011

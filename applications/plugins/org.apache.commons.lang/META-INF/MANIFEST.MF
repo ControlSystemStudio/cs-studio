@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.apache.commons.lang
+Bundle-SymbolicName: org.apache.commons.lang
+Bundle-Version: 2.6.0
+Bundle-ClassPath: org.apache.commons.lang_2.6.0.v201205030909.jar
+Export-Package: org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.apache.commons.lang.enums,
+ org.apache.commons.lang.exception,
+ org.apache.commons.lang.math,
+ org.apache.commons.lang.mutable,
+ org.apache.commons.lang.reflect,
+ org.apache.commons.lang.text,
+ org.apache.commons.lang.time
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
