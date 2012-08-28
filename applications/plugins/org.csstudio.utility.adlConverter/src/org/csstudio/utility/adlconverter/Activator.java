@@ -21,14 +21,15 @@
  */
  package org.csstudio.utility.adlconverter;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssUiPlugin{
+public class Activator extends AbstractUIPlugin {
 
 	/**
 	 *  The plug-in ID.
@@ -55,7 +56,8 @@ public class Activator extends AbstractCssUiPlugin{
      * @param context The Context.
      * @exception Exception The Thrown excepton
      */
-    public void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+    	super.start(context);
     }
 
     /*
@@ -66,7 +68,8 @@ public class Activator extends AbstractCssUiPlugin{
      * @param context The Context.
      * @exception Exception The Thrown excepton.
      */
-    public final void doStop(final BundleContext context) throws Exception {
+    public final void stop(final BundleContext context) throws Exception {
+    	super.stop(context);
         _plugin = null;
     }
 
@@ -88,13 +91,5 @@ public class Activator extends AbstractCssUiPlugin{
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
-    }
-
-    /**
-     * @return The PlugIn Id
-     */
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
 }

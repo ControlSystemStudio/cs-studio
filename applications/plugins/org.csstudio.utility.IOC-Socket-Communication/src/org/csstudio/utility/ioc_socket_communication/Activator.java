@@ -21,15 +21,16 @@
  */
 package org.csstudio.utility.ioc_socket_communication;
 
+
 import org.osgi.framework.BundleContext;
-import org.csstudio.platform.AbstractCssPlugin;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.IOC_Socket_Communication"; //$NON-NLS-1$
@@ -48,16 +49,17 @@ public class Activator extends AbstractCssPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
 
-		//		super.start(context);
+				super.start(context);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		System.out.println("inside doStop");
 		RMTControl.getInstance().closeAll();
 		plugin = null;
@@ -71,11 +73,6 @@ public class Activator extends AbstractCssPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-	}
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 	/** Add informational message to the plugin log. */

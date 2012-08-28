@@ -34,7 +34,6 @@
 		*/
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.platform.model.IProcessVariable;
 
 /**
  * TODO (hrickens) :
@@ -44,72 +43,74 @@ import org.csstudio.platform.model.IProcessVariable;
  * @version $Revision: 1.1 $
  * @since 16.08.2010
  */
-public class ProcessVariable implements IProcessVariable {
+//TODO jhatje: implement new datatype
+public class ProcessVariable {//implements IProcessVariable {
 
-    private final String _name;
-    private final String _typeId;
-
-    /**
-     * Constructor.
-     */
-    public ProcessVariable(final String name) {
-        _name = name;
-        _typeId = TYPE_ID;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName() {
-        return _name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTypeId() {
-        return TYPE_ID;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object getAdapter(final Class adapter) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ( (_name == null) ? 0 : _name.hashCode());
-        result = prime * result + ( (_typeId == null) ? 0 : _typeId.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (! (obj instanceof IProcessVariable)) {
-            return false;
-        }
-        IProcessVariable other = (IProcessVariable) obj;
-        if((other.getName()==null)||(other.getTypeId()==null)) {
-            return false;
-        }
-        return getName().equals(other.getName())&&getTypeId().equals(other.getTypeId());
-    }
-
+	//TODO jhatje: implement new datatype
+//    private final String _name;
+//    private final String _typeId;
+//
+//    /**
+//     * Constructor.
+//     */
+//    public ProcessVariable(final String name) {
+//        _name = name;
+//        _typeId = TYPE_ID;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public String getName() {
+//        return _name;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public String getTypeId() {
+//        return TYPE_ID;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public Object getAdapter(final Class adapter) {
+//        return null;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ( (_name == null) ? 0 : _name.hashCode());
+//        result = prime * result + ( (_typeId == null) ? 0 : _typeId.hashCode());
+//        return result;
+//    }
+//
+//    @Override
+//    public boolean equals(final Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (! (obj instanceof IProcessVariable)) {
+//            return false;
+//        }
+//        IProcessVariable other = (IProcessVariable) obj;
+//        if((other.getName()==null)||(other.getTypeId()==null)) {
+//            return false;
+//        }
+//        return getName().equals(other.getName())&&getTypeId().equals(other.getTypeId());
+//    }
+//
 
 }
