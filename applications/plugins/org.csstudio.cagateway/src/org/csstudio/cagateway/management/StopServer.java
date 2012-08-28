@@ -15,5 +15,4 @@ public class StopServer implements IManagementCommand {
         CaServer.getGatewayInstance().stop();
         return CommandResult.createSuccessResult();
     }
-
 }

@@ -1,0 +1,4 @@
+.settings
+.sonar
+.project
+bin/**/*
