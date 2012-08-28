@@ -45,7 +45,7 @@ public class ChannelCollector {
 	
 	private ChannelCollector(){
 		IPreferencesService prefs = Platform.getPreferencesService();
-		Integer.parseInt(prefs.getString(Activator.getDefault().getPluginId(),
+		Integer.parseInt(prefs.getString(Activator.PLUGIN_ID,
 	    		PreferenceConstants.UPDATE_TIME, "", null));
 	}
 

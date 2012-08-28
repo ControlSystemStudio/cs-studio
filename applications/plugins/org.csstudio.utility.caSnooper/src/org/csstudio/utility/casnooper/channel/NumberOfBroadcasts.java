@@ -14,8 +14,6 @@
 
 package org.csstudio.utility.casnooper.channel;
 
-import org.csstudio.utility.casnooper.SnooperServer;
-
 import gov.aps.jca.CAException;
 import gov.aps.jca.CAStatus;
 import gov.aps.jca.Monitor;
@@ -32,7 +30,7 @@ import gov.aps.jca.dbr.Status;
 import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.dbr.TimeStamp;
 
-//import org.csstudio.utility.caSnooperWithPv.SnooperServer;
+import org.csstudio.utility.casnooper.SnooperServer;
 
 import com.cosylab.epics.caj.cas.handlers.AbstractCASResponseHandler;
 import com.cosylab.epics.caj.cas.util.NumericProcessVariable;

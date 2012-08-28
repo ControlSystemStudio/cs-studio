@@ -3,10 +3,10 @@ package org.csstudio.utility.caSnooperUi.parser;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
+//TODO jhatje: implement new datatypes
 
-public class ChannelStructure extends PlatformObject implements IProcessVariable,Serializable	{
+public class ChannelStructure extends PlatformObject implements Serializable { //IProcessVariable,Serializable	{
 	private int repeats;
 	private String clientAddress;
 	private String aliasName;
@@ -90,8 +90,10 @@ public class ChannelStructure extends PlatformObject implements IProcessVariable
 		return aliasName;
 	}
 
+	//TODO jhatje: implement new datatypes
 	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
+//		return IProcessVariable.TYPE_ID;
+		return null;
 	}
 
 	public int getInterval() {

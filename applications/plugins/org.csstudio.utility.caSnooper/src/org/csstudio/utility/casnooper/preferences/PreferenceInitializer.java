@@ -38,7 +38,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences prefs = new DefaultScope().getNode(
-				Activator.getDefault().getPluginId());
+				Activator.PLUGIN_ID);
 
 		prefs.put(PreferenceConstants.XMPP_USER_NAME, "casnooper");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "casnooper");
