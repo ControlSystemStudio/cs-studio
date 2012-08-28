@@ -1,8 +1,7 @@
 
 package org.csstudio.utility.screenshot.desy.dialog;
 
-import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariable;
+
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.events.SelectionEvent;
@@ -73,7 +72,8 @@ public abstract class ComboHistoryHelper {
         
     	if (debug)
             System.out.println("ComboHelper: Add "+new_entry);
-    	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
+//    	TODO jhatje: implement new datatype
+//    	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
 
         // Locate & remove the entry to avoid duplicates.
         // A simple remove() would throw exception in case the elem isn't found.
@@ -82,18 +82,20 @@ public abstract class ComboHistoryHelper {
         for (int i=0; i<ctrl.getItemCount(); ++i) {
             
         	final Object obj = combo.getElementAt(i);
-            IProcessVariable elem = (IProcessVariable) obj;
-            if (elem.getName().equals(new_entry)) {
-                combo.remove(obj);
-                only_a_reorg = true;
-            }
+//        	TODO jhatje: implement new datatype
+//            IProcessVariable elem = (IProcessVariable) obj;
+//            if (elem.getName().equals(new_entry)) {
+//                combo.remove(obj);
+//                only_a_reorg = true;
+//            }
         }
         // Maybe remove oldest (first) entry to keep list size <= max
         if (ctrl.getItemCount() >= max)
         	combo.remove(combo.getElementAt(0));
 
         // Add new entry to the end
-        combo.add(pv);
+//    	TODO jhatje: implement new datatype
+//        combo.add(pv);
         if (! only_a_reorg)
             ctrl.select(ctrl.getItemCount()-1);
 
@@ -120,8 +122,10 @@ public abstract class ComboHistoryHelper {
             return;
         String values[] = pvs.getArray(TAG);
         if (values != null)
-            for (int i = 0; i < values.length; i++)
-                combo.add(CentralItemFactory.createProcessVariable(values[i]));
+            for (int i = 0; i < values.length; i++) {
+//            	TODO jhatje: implement new datatype
+//                combo.add(CentralItemFactory.createProcessVariable(values[i]));
+            }
     }
 
     /** Save list values to persistent storage. */

@@ -23,16 +23,16 @@
 
 package org.csstudio.utility.screenshot.desy;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DestinationPlugin  extends AbstractCssUiPlugin {
+public class DestinationPlugin  extends AbstractUIPlugin {
 	
     /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.utility.screenshot.desy";
@@ -67,7 +67,8 @@ public class DestinationPlugin  extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
+    	super.start(context);
         plugin = this;
         bundleContext = context;
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -75,14 +76,10 @@ public class DestinationPlugin  extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
+    	super.stop(context);
         plugin = null;
         bundleContext = null;
-    }
-
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
 
     public IWorkbenchWindow getWindow() {
