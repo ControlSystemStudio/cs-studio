@@ -40,7 +40,7 @@ public interface LogbookClient {
 	 * @param attachment
 	 * @return
 	 */
-	public InputStream getAttachment(Object logId, Attachment attachment);
+	public InputStream getAttachment(Object logId, String attachmentFileName);
 	
 	/**
 	 * @param logId
@@ -57,19 +57,29 @@ public interface LogbookClient {
 	
 	/**
 	 * @param logEntry
+	 * @return 
 	 * @throws Exception 
 	 */
-	public void createLogEntry(LogEntry logEntry) throws Exception;
+	public LogEntry createLogEntry(LogEntry logEntry) throws Exception;
 	
 	/**
 	 * @param logEntry
+	 * @return 
 	 * @throws Exception
 	 */
-	public void updateLogEntry(LogEntry logEntry) throws Exception;
+	public LogEntry updateLogEntry(LogEntry logEntry) throws Exception;
 	
 	/**
 	 * @param logEntires
 	 */
 	public void updateLogEntries(Collection<LogEntry> logEntires);
 
+	/**
+	 * Attach the file to the log
+	 * 
+	 * @param logId
+	 * @param attachment
+	 * @return
+	 */
+	public Attachment addAttachment(Object logId, InputStream file);
 }

@@ -7,6 +7,8 @@ package org.csstudio.logbook;
 
 /**
  *
+ * A builder for a default implementation of the Tag interface.
+ *
  * @author shroffk
  */
 public class TagBuilder {
@@ -44,6 +46,11 @@ public class TagBuilder {
 			return new TagImpl(name, state);
 		}
 
+		/**
+		 * A Default implementation for the Tag interface
+		 * @author shroffk
+		 *
+		 */
 		private class TagImpl implements Tag{
 
 			private final String name;

@@ -1,6 +1,8 @@
 package org.csstudio.logbook;
 
 /**
+ * A builder for a default implementation of the Logbook interface.
+ * 
  * @author shroffk
  *
  */

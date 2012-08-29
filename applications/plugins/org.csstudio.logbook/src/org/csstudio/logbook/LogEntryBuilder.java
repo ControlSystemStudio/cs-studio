@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A builder for a default implementation on the LogEntry interface
+ * 
  * @author shroffk
  * 
  */
@@ -82,6 +84,8 @@ public class LogEntryBuilder {
 	}
 
 	/**
+	 * A Default implementation of the LogEntry interface
+	 * 
 	 * @author shroffk
 	 * 
 	 */

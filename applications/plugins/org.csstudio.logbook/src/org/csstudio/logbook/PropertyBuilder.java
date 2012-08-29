@@ -11,6 +11,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
+ * 
+ * A builder for a default implementation of the Property interface.
+ * 
  * @author shroffk
  * 
  */
@@ -40,7 +43,7 @@ public class PropertyBuilder {
 	}
 
 	public PropertyBuilder attribute(String attribute) {
-		this.attributes.put(attribute, null);
+		this.attributes.put(attribute, "");
 		return this;
 	}
 
@@ -53,6 +56,11 @@ public class PropertyBuilder {
 		return new PropertyImpl(name, attributes);
 	}
 
+	/**
+	 * A Default implementation of the Property Interface
+	 * @author shroffk
+	 *
+	 */
 	private class PropertyImpl implements Property {
 
 		private final String name;
