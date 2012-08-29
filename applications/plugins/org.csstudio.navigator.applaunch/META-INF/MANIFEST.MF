@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Application Launch from Navigator
 Bundle-Description: Support launching (external) applications from the navigator
 Bundle-SymbolicName: org.csstudio.navigator.applaunch;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.2.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

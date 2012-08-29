@@ -26,11 +26,12 @@ public class Messages extends NLS
 	public static String IconLbl;
 	public static String LaunchConfigTitle;
 	public static String LaunchConfigUpdateErrorFmt;
+    public static String LaunchErrorApp;
 	public static String LaunchErrorProgram;
 	public static String LaunchErrorCmd;
 	public static String NoProgramFoundError;
-	
-	
+
+
 	static
 	{
 		// initialize resource bundle

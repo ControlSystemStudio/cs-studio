@@ -9,7 +9,12 @@ One example is starting a shell window for entering such commands.
 <p>On Linux, it could be <code class="code">xterm</code> if on the <code class="code">$PATH</code>,
 or better <code class="code">/usr/bin/X11/xterm</code> or a similar complete path.
 </p>
-<p>On Mac OS X, one could use <code class="code">/Applications/Utilities/Terminal.app</code>
+<p>On Mac OS X, one could use <code class="code">/Applications/Utilities/Terminal.app</code>.
+Beware: Both the Launch configuration file names and the Mac OS application directories
+use an extension <code class="code">*.app</code>. In your CSS workspace you can create a file
+<code class="code">Terminal.app</code> that contains the launch configuration for the Mac OS X
+terminal window application <code class="code">/Applications/Utilities/Terminal.app</code>.
+Running that launcher in CSS will then start the Mac OS X terminal application.
 </p>
 <p>If you want to launch a program that requires additional command-line
 arguments, you can create a batch file or shell script to invoke
@@ -19,8 +24,8 @@ as the launcher command.
 <p>On Windows or Mac OS X the command can also be the path to
 a file where the operating system knows how to handle that file.
 For example, if double-clicking on a <code class="filename">*.doc</code>
-file will open MS Word on your computer, you can use the path
-to <code class="filename">*.doc</code> files as launcher commands.
+file will open MS Word on your computer, you can use the full path
+to such <code class="filename">*.doc</code> files as launcher commands.
 When activating such a command, the operating system will open
 MS Word with the document.
 </p>
