@@ -2,11 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.csstudio.logbook.logbookfactory">
-      <logbookfactory
-            class="org.csstudio.logbook.olog.OlogLogbookFactory"
-            name="org.csstudio.logbook.olog.logbookfactory">
-      </logbookfactory>
+         point="org.csstudio.logbook.logbookclientfactory">
+      <logbookclientfactory
+            class="org.csstudio.logbook.olog.OlogLogbookClientFactory"
+            name="org.csstudio.logbook.olog.logbookclientfactory">
+      </logbookclientfactory>
    </extension>
 
 </plugin>
