@@ -1,7 +1,5 @@
 package org.csstudio.logbook;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 

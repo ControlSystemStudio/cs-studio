@@ -3,8 +3,6 @@
  */
 package org.csstudio.logbook;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +25,7 @@ public class LogEntryBuilder {
 	private Collection<TagBuilder> tags = new ArrayList<TagBuilder>();
 	private Collection<LogbookBuilder> logbooks = new ArrayList<LogbookBuilder>();
 	private Collection<PropertyBuilder> properties = new ArrayList<PropertyBuilder>();	
-	private Collection<Attachment> attachements = new ArrayList<Attachment>();
+	private Collection<Attachment> attachments = new ArrayList<Attachment>();
 
 	private LogEntryBuilder(String text) {
 		this.text = text;
@@ -53,7 +51,7 @@ public class LogEntryBuilder {
 	}
 	
 	public LogEntryBuilder attach(Attachment attachment){
-		this.attachements.add(attachment);
+		this.attachments.add(attachment);
 		return this;
 	}
 
@@ -74,13 +72,13 @@ public class LogEntryBuilder {
 		for (Property property : logEntry.getProperties()) {
 			logEntryBuilder.properties.add(PropertyBuilder.property(property));
 		}
-		logEntryBuilder.attachements = logEntry.getAttachment();
+		logEntryBuilder.attachments = logEntry.getAttachment();
 		return logEntryBuilder;
 	}
 
 	public LogEntry build() {
 		return new LogEntryImpl(id, text, owner, createdDate, modifiedDate,
-				tags, logbooks, properties, attachements);
+				tags, logbooks, properties, attachments);
 	}
 
 	/**
@@ -190,7 +188,7 @@ public class LogEntryBuilder {
 
 		@Override
 		public Collection<Attachment> getAttachment() {
-			return attachements;
+			return attachments;
 		}
 
 	}
