@@ -9,7 +9,7 @@ public class Environment {
 	
 	private static boolean lastValidationFailed;
 
-	private static boolean hadException = false;;
+	private static boolean hadException = false;
 
 	public static void enableTest() {
 		Environment.executionMode = ExecutionMode.TEST;

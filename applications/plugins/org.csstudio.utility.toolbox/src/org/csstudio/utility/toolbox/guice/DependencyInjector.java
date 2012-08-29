@@ -24,5 +24,4 @@ public enum  DependencyInjector {
 	public Injector getInjector() {
 		return injector;
 	}
-
 }

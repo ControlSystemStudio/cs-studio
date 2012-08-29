@@ -1,6 +1,5 @@
 package org.csstudio.utility.toolbox;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.toolbox.common.Constant;
 import org.csstudio.utility.toolbox.guice.DependencyInjector;
 import org.csstudio.utility.toolbox.guice.EntityManagerWrapper;
@@ -11,9 +10,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class ToolboxPlugin extends AbstractCssUiPlugin {
+public class ToolboxPlugin extends AbstractUIPlugin {
 
 	private static ToolboxPlugin plugin;
 
@@ -30,20 +30,19 @@ public class ToolboxPlugin extends AbstractCssUiPlugin {
 	}
 
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
-
+    public void start(BundleContext context) throws Exception {
+	    super.start(context);
 		DependencyInjector.INSTANCE.startPersistService();
-
 		EntityManagerWrapper emWrapper = DependencyInjector.INSTANCE.getInjector().getInstance(EntityManagerWrapper.class);
 		PersistenceContextClearer.persistenceContextClearer.setEm(emWrapper);
-		
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		window = workbench.getActiveWorkbenchWindow();
 		display = window.getShell().getDisplay();
 	}
 
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
+	    super.stop(context);
 		plugin = null;
 	}
 
@@ -51,7 +50,6 @@ public class ToolboxPlugin extends AbstractCssUiPlugin {
 		return imageDescriptorFromPlugin(Constant.PLUGIN_ID, path);
 	}
 
-	@Override
 	public String getPluginId() {
 		return Constant.PLUGIN_ID;
 	}
