@@ -374,10 +374,10 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public InputStream getAttachment(final Long logId, Attachment attachment) {
+	public InputStream getAttachment(final Long logId, String attachmentFileName) {
 		try {
 			ClientResponse response = service.path("attachments")
-					.path(logId.toString()).path(attachment.getFileName())
+					.path(logId.toString()).path(attachmentFileName)
 					.get(ClientResponse.class);
 			return response.getEntity(InputStream.class);
 		} catch (Exception e) {
