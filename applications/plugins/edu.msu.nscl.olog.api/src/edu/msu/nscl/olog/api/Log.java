@@ -134,8 +134,11 @@ public class Log implements Comparable<Log> {
 		return logbooks.keySet();
 	}
 
-	// @deprecated not really deprecated, but javadoc doesn't have future
-	@Deprecated
+	/**
+	 * Get all the attachments associated with this log.
+	 * 	
+	 * @return
+	 */
 	public Collection<Attachment> getAttachments() {
 		return attachments.values();
 	}

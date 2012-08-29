@@ -1,6 +1,7 @@
 package edu.msu.nscl.olog.api;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -88,6 +89,9 @@ public interface OlogClient {
 	 */
 	public Collection<Attachment> listAttachments(Long logId) throws OlogException;
 
+
+	public InputStream getAttachment(Long logId, Attachment attachment);
+	
 	/**
 	 * return the complete property <tt>property</tt>
 	 * 
@@ -483,5 +487,6 @@ public interface OlogClient {
 	 * @throws OlogException
 	 */
 	public void delete(String fileName, Long logId) throws OlogException;
+
 
 }

@@ -1,9 +1,15 @@
 package edu.msu.nscl.olog.api;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,9 +25,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
@@ -38,6 +46,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
+
 /**
  * 
  * 
@@ -224,9 +233,9 @@ public class OlogClientImpl implements OlogClient {
 					"username", "username");
 			this.password = ifNullReturnPreferenceValue(this.password,
 					"password", "password");
-			return new OlogClientImpl(this.ologURI,
-					this.clientConfig, this.withHTTPAuthentication,
-					this.username, this.password, this.executor);
+			return new OlogClientImpl(this.ologURI, this.clientConfig,
+					this.withHTTPAuthentication, this.username, this.password,
+					this.executor);
 		}
 
 		private String ifNullReturnPreferenceValue(String value, String key,
@@ -241,7 +250,8 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	private OlogClientImpl(URI ologURI, ClientConfig config,
-			boolean withHTTPBasicAuthFilter, String username, String password, ExecutorService executor) {
+			boolean withHTTPBasicAuthFilter, String username, String password,
+			ExecutorService executor) {
 		this.executor = executor;
 		config.getClasses().add(MultiPartWriter.class);
 		Client client = Client.create(config);
@@ -342,21 +352,37 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public Collection<Attachment> listAttachments(final Long logId) throws OlogException {
+	public Collection<Attachment> listAttachments(final Long logId)
+			throws OlogException {
 		return wrappedSubmit(new Callable<Collection<Attachment>>() {
 
 			@Override
 			public Collection<Attachment> call() throws Exception {
 				Collection<Attachment> allAttachments = new HashSet<Attachment>();
-				XmlAttachments allXmlAttachments = service.path("attachments").path(logId.toString())
-						.accept(MediaType.APPLICATION_XML).get(XmlAttachments.class);
-				for (XmlAttachment xmlAttachment : allXmlAttachments.getAttachments()) {
+				XmlAttachments allXmlAttachments = service.path("attachments")
+						.path(logId.toString())
+						.accept(MediaType.APPLICATION_XML)
+						.get(XmlAttachments.class);
+				for (XmlAttachment xmlAttachment : allXmlAttachments
+						.getAttachments()) {
 					allAttachments.add(new Attachment(xmlAttachment));
 				}
 				return allAttachments;
 			}
 
 		});
+	}
+
+	@Override
+	public InputStream getAttachment(final Long logId, Attachment attachment) {
+		try {
+			ClientResponse response = service.path("attachments")
+					.path(logId.toString()).path(attachment.getFileName())
+					.get(ClientResponse.class);
+			return response.getEntity(InputStream.class);
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	@Override
@@ -748,13 +774,14 @@ public class OlogClientImpl implements OlogClient {
 
 	@Override
 	public Attachment add(File local, Long logId) throws OlogException {
-            FormDataMultiPart form = new FormDataMultiPart();
-            form.bodyPart(new FileDataBodyPart("file", local));
-            XmlAttachment xmlAttachment = service.path("attachments").path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
-               .accept(MediaType.APPLICATION_XML)
-               .post(XmlAttachment.class,form);
-            
-            return new Attachment(xmlAttachment);
+		FormDataMultiPart form = new FormDataMultiPart();
+		form.bodyPart(new FileDataBodyPart("file", local));
+		XmlAttachment xmlAttachment = service.path("attachments")
+				.path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
+				.accept(MediaType.APPLICATION_XML)
+				.post(XmlAttachment.class, form);
+
+		return new Attachment(xmlAttachment);
 	}
 
 	@Override
@@ -935,12 +962,13 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public void delete(final TagBuilder tag, final Long logId) throws OlogException {
+	public void delete(final TagBuilder tag, final Long logId)
+			throws OlogException {
 		wrappedSubmit(new Runnable() {
 			@Override
 			public void run() {
-				service.path("tags").path(tag.build().getName()).path(logId.toString())
-						.accept(MediaType.TEXT_XML)
+				service.path("tags").path(tag.build().getName())
+						.path(logId.toString()).accept(MediaType.TEXT_XML)
 						.accept(MediaType.APPLICATION_JSON).delete();
 			}
 		});
@@ -954,12 +982,13 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public void delete(final LogbookBuilder logbook, final Long logId) throws OlogException {
+	public void delete(final LogbookBuilder logbook, final Long logId)
+			throws OlogException {
 		wrappedSubmit(new Runnable() {
 			@Override
 			public void run() {
-				service.path("logbooks").path(logbook.build().getName()).path(logId.toString())
-						.accept(MediaType.TEXT_XML)
+				service.path("logbooks").path(logbook.build().getName())
+						.path(logId.toString()).accept(MediaType.TEXT_XML)
 						.accept(MediaType.APPLICATION_JSON).delete();
 			}
 		});
@@ -978,9 +1007,10 @@ public class OlogClientImpl implements OlogClient {
 		wrappedSubmit(new Runnable() {
 			@Override
 			public void run() {
-				service.path("properties").path(property.build().getName()).path(logId.toString())
-						.accept(MediaType.TEXT_XML)
-						.accept(MediaType.APPLICATION_JSON).delete(property.toXml());
+				service.path("properties").path(property.build().getName())
+						.path(logId.toString()).accept(MediaType.TEXT_XML)
+						.accept(MediaType.APPLICATION_JSON)
+						.delete(property.toXml());
 			}
 		});
 	}
@@ -997,8 +1027,8 @@ public class OlogClientImpl implements OlogClient {
 		wrappedSubmit(new Runnable() {
 			@Override
 			public void run() {
-				service.path("attachments").path(logId.toString()).path(fileName)
-						.accept(MediaType.TEXT_XML)
+				service.path("attachments").path(logId.toString())
+						.path(fileName).accept(MediaType.TEXT_XML)
 						.accept(MediaType.APPLICATION_JSON).delete();
 			}
 		});
