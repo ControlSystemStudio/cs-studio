@@ -11,6 +11,7 @@ package org.csstudio.logbook;
  *  @author nypaver
  *  @author Kay Kasemir
  */
+@Deprecated
 public interface ILogbook
 {
     /** Add new entry to the logbook.

@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Platform;
  *  @author nypaver
  *  @author Kay Kasemir
  */
+@Deprecated
 public class LogbookFactory
 {
     /** Get a logbook factory

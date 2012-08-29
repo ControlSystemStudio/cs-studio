@@ -11,6 +11,7 @@ package org.csstudio.logbook;
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
+@Deprecated
 public interface ILogbookFactory
 {
     /** ID of the extension point for providing an ILogbookFactory */
