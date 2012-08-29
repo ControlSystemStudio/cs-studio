@@ -1,6 +1,8 @@
 package org.csstudio.logbook;
 
 /**
+ * A Tag consists of an unique name and state
+ * 
  * @author shroffk
  *
  */

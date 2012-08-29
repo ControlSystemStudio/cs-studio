@@ -5,17 +5,20 @@ package org.csstudio.logbook;
  * 
  */
 public interface LogbookClientFactory {
-	
+
 	/** ID of the extension point for providing an LogbookClientFactory */
-    final public static String EXTENSION_ID =
-        "org.csstudio.logbook.logbookclientfactory"; //$NON-NLS-1$
-    
+	final public static String EXTENSION_ID = "org.csstudio.logbook.logbookclientfactory"; //$NON-NLS-1$
+
 	/**
+	 * Get an instance of the client object used to make log entries
+	 * 
 	 * @return
 	 */
 	public LogbookClient getClient();
-	
+
 	/**
+	 * Get an instance of the logbookClient with the usercredentails.
+	 * 
 	 * @param username
 	 * @param password
 	 * @return

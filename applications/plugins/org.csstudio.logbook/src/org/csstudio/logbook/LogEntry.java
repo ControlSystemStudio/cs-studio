@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
+ * This interface represents a entry in the logbook service.
+ * 
  * @author shroffk
  *
  */
