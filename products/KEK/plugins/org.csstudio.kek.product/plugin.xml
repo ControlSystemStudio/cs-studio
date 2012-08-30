@@ -73,6 +73,12 @@
       </workbench>
    </extension>
    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="tocChangelog.xml">
+      </toc>
+   </extension>
+   <extension
          point="org.eclipse.ui.intro">
       <introProductBinding
             introId="org.eclipse.ui.intro.universal"
