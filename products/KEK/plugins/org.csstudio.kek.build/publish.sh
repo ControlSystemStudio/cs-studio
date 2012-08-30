@@ -170,13 +170,6 @@ echo "Copying css_kek_$VERSION-src.zip to ${DEST}/apps"
 cp ${CYGDRIVE}${BUILDDIR}/css_kek_$VERSION-src.zip ${DEST}/apps/css_kek_${VERSION}-src_${DATE}.zip
 DOWNLOAD_LINKS="$DOWNLOAD_LINKS<li><a href=\"apps/css_kek_$VERSION-src_${DATE}.zip\">Source</a></li>\n"
 
-# Generate the download page from index.html.template
-echo "#####################################################"
-echo " Generating the download page"
-echo "#####################################################"
-echo "Generating ${DEST}/index.html from ${SCRIPTDIR}/index.html.template"
-sed -e 's|<!--DOWNLOAD_LINKS-->|'"${DOWNLOAD_LINKS}"'|' ${SCRIPTDIR}/index.html.template > ${DEST}/index.html
-
 # Archive built plugins
 echo "#####################################################"
 echo " Publishing built plugins for online update"
