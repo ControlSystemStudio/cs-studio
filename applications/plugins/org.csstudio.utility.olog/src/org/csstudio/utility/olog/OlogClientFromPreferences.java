@@ -4,13 +4,13 @@
 package org.csstudio.utility.olog;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.jackrabbit.webdav.DavException;
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -532,6 +532,11 @@ public class OlogClientFromPreferences implements OlogClient {
 	public Collection<Attachment> listAttachments(Long logId)
 			throws OlogException {
 		return client.listAttachments(logId);
+	}
+
+	@Override
+	public InputStream getAttachment(Long logId, String attachmentFileName) {
+		return client.getAttachment(logId, attachmentFileName);
 	}
 
 }
