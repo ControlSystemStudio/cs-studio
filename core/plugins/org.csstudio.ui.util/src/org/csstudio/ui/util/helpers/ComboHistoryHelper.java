@@ -80,16 +80,14 @@ public abstract class ComboHistoryHelper {
 				String new_entry = ComboHistoryHelper.this.combo.getText();
 				addEntry(new_entry);
 				ComboHistoryHelper.this.combo.select(0);
-				newSelection(new_entry);
+				notifySelection(new_entry);
 			}
 
 			// Called after existing entry was picked from list
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String name = ComboHistoryHelper.this.combo.getText();
-				addEntry(name);
-				ComboHistoryHelper.this.combo.select(0);
-				newSelection(name);
+				notifySelection(name);
 			}
 		});
 
@@ -105,6 +103,15 @@ public abstract class ComboHistoryHelper {
 	}
 
 	private boolean changing_combo = false;
+	
+	public void changeSelection(final String entry) {
+		int index = combo.indexOf(entry);
+		if (index != -1) {
+			combo.select(index);
+		} else {
+			addEntry(entry);
+		}
+	}
 
 	/**
 	 * Adds a new entry to the list. If entry already there, do nothing.
@@ -141,6 +148,21 @@ public abstract class ComboHistoryHelper {
 	    {
 	        changing_combo = false;
 	    }
+	}
+	
+	private String oldSelection = null;
+	
+	private void notifySelection(String newSelection) {
+		if (oldSelection == null) {
+			if (newSelection == null) {
+				return;
+			}
+		} else if (oldSelection.equals(newSelection)) {
+			return;
+		}
+		
+		oldSelection = newSelection;
+		newSelection(newSelection);
 	}
 
 	/** Invoked whenever a new entry was entered or selected. */
