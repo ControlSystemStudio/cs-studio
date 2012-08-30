@@ -85,6 +85,11 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 		return WidgetFactory.focusedWidgetFactory;
 	}
 
+	public void init() {
+		this.isSearchMode = true;
+		this.editorInput = null;
+	}
+	
 	public void init(GenericEditorInput<T> editorInput, Option<CrudController<T>> crudController, boolean isSearchMode,
 				Binder<T> binder) {
 		this.isSearchMode = isSearchMode;
@@ -98,6 +103,16 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 			((Text) widget).setText(StringUtils.trimToEmpty(text));
 		} else if (widget instanceof Combo) {
 			((Combo) widget).setText(StringUtils.trimToEmpty(text));
+		} else {
+			throw new IllegalStateException("Unsupported widget for setText");
+		}
+	}
+
+	public void setReadOnly(Property property) {
+		Widget widget = getWidget(property);
+		if (widget instanceof Text) {			
+			((Text) widget).setBackground(AbstractControlWithLabelBuilder.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+			((Text) widget).setEditable(false);
 		} else {
 			throw new IllegalStateException("Unsupported widget for setText");
 		}

@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.csstudio.utility.toolbox.framework.property.Property;
+import org.csstudio.utility.toolbox.func.Func2;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.viewers.ViewerCell;
 
 public final class GenericTableViewProvider<E> {
 
@@ -36,12 +37,14 @@ public final class GenericTableViewProvider<E> {
 
 	}
 
-	private static final class GenericLabelProvider implements ITableLabelProvider {
+	private static final class GenericLabelProvider extends StyledCellLabelProvider {
 
 		private List<Property> properties;
+		private Func2<Boolean, ViewerCell, String> cellUpdateCallback;
 
-		private GenericLabelProvider(List<Property> properties) {
+		private GenericLabelProvider(List<Property> properties, Func2<Boolean, ViewerCell, String> cellUpdateCallback) {
 			this.properties = properties;
+			this.cellUpdateCallback = cellUpdateCallback;
 		}
 
 		@Override
@@ -69,28 +72,29 @@ public final class GenericTableViewProvider<E> {
 		}
 
 		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
-			// TODO Auto-generated method stub
-			return null;
+		public void update(ViewerCell cell) {
+			Property property = properties.get(cell.getColumnIndex());
+			try {
+				String value = BeanUtils.getProperty(cell.getElement(), property.getName());
+				if (!(cellUpdateCallback.apply(cell, value))) {
+					cell.setText(value);
+				}
+				super.update(cell);
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+			super.update(cell);
 		}
 
-		@Override
-		public String getColumnText(Object element, int columnIndex) {
-			Property property = properties.get(columnIndex);
-			try {
-				return BeanUtils.getProperty(element, property.getName());
-			} catch (Exception e) {
-				throw new IllegalStateException(e);	
-			}
-		}
 	}
 
 	public IStructuredContentProvider createStructuredContentProvider(List<E> data) {
 		return new StructuredContentProvider<E>(data);
 	}
 
-	public ITableLabelProvider createTableLableProvider(List<Property> properties) {
-		return new GenericLabelProvider(properties);
+	public StyledCellLabelProvider createTableLableProvider(List<Property> properties,
+				Func2<Boolean, ViewerCell, String> cellUpdateCallback) {
+		return new GenericLabelProvider(properties, cellUpdateCallback);
 	}
 
 }

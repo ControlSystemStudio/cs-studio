@@ -23,7 +23,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
 import org.csstudio.utility.toolbox.framework.validator.ValidDate;
-import org.csstudio.utility.toolbox.services.OrderPosService;
 
 @Table(name = "BA")
 @NamedQueries({ @NamedQuery(name = Order.FIND_ALL, query = "from Order l order by l.nummer desc") ,
@@ -64,6 +63,9 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 
 	@Column(name = "text")
 	private String text;
+
+	@Column(name = "ba_type")
+	private String baType;
 
 	@Column(name = "kostenstelle")
 	private String kostenstelle;
@@ -111,10 +113,10 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 		pcs.firePropertyChange("nummer", null, nummer);
 	}
 
-	public List<OrderPos> getOrderPositions(OrderPosService orderPosService) {
+	public List<OrderPos> getOrderPositions(OrderPosFinder orderPosFinder) {
 		if (orderPositions == null) {
 			if (nummer != null) {
-				orderPositions = orderPosService.findByBaNr(nummer);
+				orderPositions = orderPosFinder.findByBaNr(nummer);
 			}
 		}
 		return orderPositions;
@@ -203,6 +205,14 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 	public void setText(String text) {
 		pcs.firePropertyChange("text", this.text, text);
 		this.text = text;
+	}
+
+	public String getBaType() {
+		return baType;
+	}
+
+	public void setBaType(String baType) {
+		this.baType = baType;
 	}
 
 	public BigDecimal getVorherigeBa() {
@@ -338,6 +348,7 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 			clone.desyauftragsNr = desyauftragsNr;
 			clone.beschreibung = beschreibung;
 			clone.text = text;
+			clone.baType = baType;
 			clone.kostenstelle = kostenstelle;
 			clone.vorherigeBa =vorherigeBa ;
 			clone.zuInventarNr = zuInventarNr;

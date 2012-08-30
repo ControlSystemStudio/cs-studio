@@ -34,7 +34,7 @@ import org.hibernate.annotations.Immutable;
 @NamedQueries({
 			@NamedQuery(name = Article.FIND_IN_GROUP, query = "from Article a where a.gruppeArtikel = ? order by a.id"),
 			@NamedQuery(name = Article.FIND_WITH_INTERN_ID, query = "from Article a where a.internId = ?"),
-			@NamedQuery(name = Article.FIND_BY_ID, query = "from Article a where a.id = ?"),			
+			@NamedQuery(name = Article.FIND_BY_ID, query = "from Article a where a.id = ?"),
 			@NamedQuery(name = Article.FIND_ALL_INSTALLED, query = "from ArticleInstalled a where a.artikelDatenId = ? order by id") })
 @Entity
 public class Article extends BindingEntity implements TextValue, Cloneable<Article> {

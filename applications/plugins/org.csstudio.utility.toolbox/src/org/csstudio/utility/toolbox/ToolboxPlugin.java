@@ -13,6 +13,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+/*
+ * Version 1.0.RC1
+ */
 public class ToolboxPlugin extends AbstractUIPlugin {
 
 	private static ToolboxPlugin plugin;
@@ -34,7 +37,7 @@ public class ToolboxPlugin extends AbstractUIPlugin {
 	    super.start(context);
 		DependencyInjector.INSTANCE.startPersistService();
 		EntityManagerWrapper emWrapper = DependencyInjector.INSTANCE.getInjector().getInstance(EntityManagerWrapper.class);
-		PersistenceContextClearer.persistenceContextClearer.setEm(emWrapper);
+		PersistenceContextClearer.PERSISTENCE_CONTEXT_CLEARER.setEm(emWrapper);
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		window = workbench.getActiveWorkbenchWindow();
 		display = window.getShell().getDisplay();
@@ -65,5 +68,4 @@ public class ToolboxPlugin extends AbstractUIPlugin {
 	public Shell getShell() {
 		return window.getShell();
 	}
-
 }

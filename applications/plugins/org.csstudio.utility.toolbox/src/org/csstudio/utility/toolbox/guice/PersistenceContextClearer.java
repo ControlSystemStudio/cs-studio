@@ -5,7 +5,7 @@ import org.aopalliance.intercept.MethodInvocation;
 
 public class PersistenceContextClearer implements MethodInterceptor {
 
-	public static PersistenceContextClearer  persistenceContextClearer = new PersistenceContextClearer();
+	public static final PersistenceContextClearer PERSISTENCE_CONTEXT_CLEARER = new PersistenceContextClearer();
 	
 	private EntityManagerWrapper emWrapper;
 

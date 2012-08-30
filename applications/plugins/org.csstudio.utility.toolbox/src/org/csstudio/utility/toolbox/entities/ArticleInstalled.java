@@ -23,14 +23,16 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_eingebaut")
 @NamedQueries({
-	@NamedQuery(name = ArticleInstalled.FIND_RECORD, query = "from ArticleInstalled a where a.artikelDatenId = ? order by id desc")}
+	@NamedQuery(name = ArticleInstalled.FIND_RECORD, query = "from ArticleInstalled a where a.artikelDatenId = ? order by id desc"),
+	@NamedQuery(name = ArticleInstalled.FIND_INSTALLED_IN, query = "from ArticleInstalled a where a.eingebautInArtikel = ?")}
 )
 @Entity
-public class ArticleInstalled extends BindingEntity {
+public class ArticleInstalled extends BindingEntity implements ArticleHistoryInfo {
 		
 	private static final long serialVersionUID = 1L;
 
 	public static final String FIND_RECORD = "ArticleInstalled.findRecord";
+	public static final String FIND_INSTALLED_IN = "ArticleInstalled.findInstalledIn";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "GBP")
@@ -181,6 +183,16 @@ public class ArticleInstalled extends BindingEntity {
 	
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	@Override
+	public Date getDate() {
+		return eingebautAm;
+	}
+
+	@Override
+	public String getStatus() {
+		return "Eingebaut";
 	}
 	
 }

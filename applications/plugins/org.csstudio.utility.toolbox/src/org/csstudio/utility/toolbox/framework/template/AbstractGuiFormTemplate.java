@@ -14,7 +14,6 @@ import org.csstudio.utility.toolbox.common.Environment;
 import org.csstudio.utility.toolbox.framework.ColumnCreator;
 import org.csstudio.utility.toolbox.framework.GenericTableViewProvider;
 import org.csstudio.utility.toolbox.framework.SearchTermCollector;
-import org.csstudio.utility.toolbox.framework.SimpleSelectionListener;
 import org.csstudio.utility.toolbox.framework.TestHelper;
 import org.csstudio.utility.toolbox.framework.WidgetFactory;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
@@ -24,8 +23,10 @@ import org.csstudio.utility.toolbox.framework.controller.SearchController;
 import org.csstudio.utility.toolbox.framework.editor.DataChangeSupport;
 import org.csstudio.utility.toolbox.framework.editor.EditorMode;
 import org.csstudio.utility.toolbox.framework.editor.GenericEditorInput;
+import org.csstudio.utility.toolbox.framework.listener.SimpleSelectionListener;
 import org.csstudio.utility.toolbox.framework.property.Property;
 import org.csstudio.utility.toolbox.framework.searchterm.SearchTerm;
+import org.csstudio.utility.toolbox.func.Func2;
 import org.csstudio.utility.toolbox.func.None;
 import org.csstudio.utility.toolbox.func.Option;
 import org.csstudio.utility.toolbox.func.Some;
@@ -37,6 +38,7 @@ import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -164,6 +166,7 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 					if (crudController.isValid()) {
 						binder.updateModels();
 						crudController.save();
+						saveComplete();
 					} else {
 						crudController.markErrors();
 						Environment.setLastValidationFailed(true);
@@ -192,6 +195,7 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 					if (crudController.isValid()) {
 						binder.updateModels();
 						crudController.save();
+						saveComplete();
 						IWorkbenchPage page = pageProvider.get();
 						page.closeEditor(page.getActiveEditor(), false);
 					} else {
@@ -254,6 +258,7 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 							List<SearchTerm> searchTerms = searchTermCollector.collect(wf);
 							beforeExecuteSearch(searchTerms);
 							searchController.executeSearch(searchTerms);
+							afterExecuteSearch(searchTerms);
 						}
 					}).build();
 
@@ -316,6 +321,10 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 		// for customization purposes
 	}
 
+	protected void afterExecuteSearch(List<SearchTerm> searchTerms) {
+		// for customization purposes
+	}
+
 	protected void createAdditionalSearchResultButtons(Composite composite, TableViewer viewer) {
 		// for customization purposes
 	}
@@ -325,6 +334,14 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 		return CanSaveAction.CONTINUE;
 	}
 
+	protected void saveComplete() {
+		// for customization purposes
+	}
+
+	protected boolean searchCellUpdate(ViewerCell cell, String text) {
+		return false;
+	}
+	
 	protected boolean isSearchMode() {
 		return editorMode == EditorMode.SEARCH;
 	}
@@ -392,13 +409,20 @@ public abstract class AbstractGuiFormTemplate<T extends BindingEntity> implement
 		this.focusWidget = focusWidget;
 	}
 
+	
 	public void createSearchResultTableView(GenericTableViewProvider<T> tableViewProvider, List<T> data,
 				List<Property> properties) {
 		if (searchResultTableViewer == null) {
 			throw new IllegalStateException("searchResultTableViewer must not be null");
 		}
+		
 		searchResultTableViewer.setContentProvider(tableViewProvider.createStructuredContentProvider(data));
-		searchResultTableViewer.setLabelProvider(tableViewProvider.createTableLableProvider(properties));
+		searchResultTableViewer.setLabelProvider(tableViewProvider.createTableLableProvider(properties, new Func2<Boolean, ViewerCell, String>() {
+			@Override
+			public Boolean apply(ViewerCell viewerCell, String text) {
+				return searchCellUpdate(viewerCell, text);
+			}			
+		}));
 		searchResultTableViewer.setInput(data);
 		searchResultTableViewer.refresh();
 	}

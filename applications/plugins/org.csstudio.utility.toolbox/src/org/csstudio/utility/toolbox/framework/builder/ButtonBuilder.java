@@ -3,13 +3,14 @@ package org.csstudio.utility.toolbox.framework.builder;
 import java.util.Map;
 
 import org.csstudio.utility.toolbox.ToolboxPlugin;
-import org.csstudio.utility.toolbox.framework.SimpleSelectionListener;
+import org.csstudio.utility.toolbox.framework.listener.SimpleSelectionListener;
 import org.csstudio.utility.toolbox.framework.property.Property;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 public class ButtonBuilder {
@@ -21,8 +22,11 @@ public class ButtonBuilder {
 	private String text = "";
 	private String hint = "";
 	private SimpleSelectionListener listener;
-	private boolean withSearchImage;
-	
+	private boolean withSearchImage = false;
+	private boolean defaultButton = false;
+
+	private boolean disable = false;
+
 	public ButtonBuilder(Composite composite, String property, Map<Property, Widget> properties) {
 		this.composite = composite;
 		this.property = new Property(property);
@@ -41,6 +45,16 @@ public class ButtonBuilder {
 
 	public ButtonBuilder withSearchImage() {
 		this.withSearchImage = true;
+		return this;
+	}
+
+	public ButtonBuilder disable() {
+		this.disable = true;
+		return this;
+	}
+
+	public ButtonBuilder defaultButton() {
+		this.defaultButton = true;
 		return this;
 	}
 
@@ -69,6 +83,17 @@ public class ButtonBuilder {
 			}
 		} else {
 			button.setLayoutData(hint);
+		}
+		
+		if (disable) {
+			button.setEnabled(false);
+		}
+		
+		if (defaultButton) {
+			Shell shell = composite.getShell();
+			if (shell != null) {
+				shell.setDefaultButton(button);
+			}
 		}
 
 		properties.put(property, button);

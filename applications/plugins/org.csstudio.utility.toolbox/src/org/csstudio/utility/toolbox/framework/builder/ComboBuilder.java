@@ -28,6 +28,7 @@ public class ComboBuilder extends AbstractControlWithLabelBuilder<ComboBuilder> 
 	private WritableList observableData = null;
 
 	private boolean isJoined = false;
+	private boolean selectFirst = false;
 	private Object selectObject = null;
 	private Property accessor = null;
 
@@ -43,6 +44,11 @@ public class ComboBuilder extends AbstractControlWithLabelBuilder<ComboBuilder> 
 
 	public ComboBuilder isJoined() {
 		this.isJoined = true;
+		return this;
+	}
+
+	public ComboBuilder selectFirst() {
+		this.selectFirst = true;
 		return this;
 	}
 
@@ -132,6 +138,12 @@ public class ComboBuilder extends AbstractControlWithLabelBuilder<ComboBuilder> 
 		// set flag if we use binding or not
 		combo.setData(BuilderConstant.NO_BINDING, Boolean.valueOf(isNoBinding()));
 
+		if (selectFirst) {
+			if (combo.getSelectionIndex() == -1) {
+				combo.select(0);
+			}
+		}
+		
 		getProperties().put(getProperty(), combo);
 		viewers.put(getProperty(), comboViewer);
 

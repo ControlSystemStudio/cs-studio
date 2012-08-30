@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -76,7 +75,7 @@ public class OrderPos extends BindingEntity implements Cloneable<OrderPos> {
 	@JoinColumn(name = "artikel_daten_id", referencedColumnName = "id")
 	private Article article;
 
-	public static OrderPos buildNewOrderPos(EntityManager em, BigDecimal positionNr) {
+	public static OrderPos buildNewOrderPos(BigDecimal positionNr) {
 		OrderPos orderPos = new OrderPos();
 		orderPos.article = new Article();
 		orderPos.article.setStatus("nicht definiert");

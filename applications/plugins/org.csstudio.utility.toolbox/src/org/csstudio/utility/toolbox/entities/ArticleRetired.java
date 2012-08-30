@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 	@NamedQuery(name = ArticleRetired.FIND_RECORD, query = "from ArticleRetired a where a.artikelDatenId = ? order by id desc")}
 )
 @Entity
-public class ArticleRetired extends BindingEntity {
+public class ArticleRetired extends BindingEntity implements ArticleHistoryInfo  {
 
 	private static final long serialVersionUID = -1;
 	
@@ -101,6 +101,16 @@ public class ArticleRetired extends BindingEntity {
 	public void setBegruendung(String begruendung) {
 		pcs.firePropertyChange("begruendung", this.begruendung, begruendung);
 		this.begruendung = begruendung;
+	}
+
+	@Override
+	public Date getDate() {
+		return ausgemustertAm;
+	}
+
+	@Override
+	public String getStatus() {
+		return "Ausgemustert";
 	}
 
 }

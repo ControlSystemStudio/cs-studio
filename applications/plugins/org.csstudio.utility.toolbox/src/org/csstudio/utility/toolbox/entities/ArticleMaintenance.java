@@ -20,11 +20,9 @@ import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_in_wartung")
-@NamedQueries({
-	@NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = ? order by id desc")}
-)
+@NamedQueries({ @NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = ? order by id desc") })
 @Entity
-public class ArticleMaintenance extends BindingEntity {
+public class ArticleMaintenance extends BindingEntity implements ArticleHistoryInfo {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,11 +31,11 @@ public class ArticleMaintenance extends BindingEntity {
 	@Id
 	@ReadOnly
 	private String id;
-	
+
 	@Column(name = "artikel_daten_id")
 	@NotNull
 	private BigDecimal artikelDatenId;
-	
+
 	@Column(name = "bei_firma")
 	@Size(max = 30)
 	private String beiFirma;
@@ -89,13 +87,13 @@ public class ArticleMaintenance extends BindingEntity {
 
 	@Column(name = "start_request")
 	private Date startRequest;
-	
+
 	@Column(name = "finish_request")
 	private Date finishRequest;
-	
+
 	@Transient
 	private String repair;
-	
+
 	@Transient
 	private boolean software;
 
@@ -335,9 +333,19 @@ public class ArticleMaintenance extends BindingEntity {
 		pcs.firePropertyChange("repairCompany", this.repairCompany, repairCompany);
 		this.repairCompany = repairCompany;
 	}
-	
+
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+
 	}
-	
+
+	@Override
+	public Date getDate() {
+		return startRequest;
+	}
+
+	@Override
+	public String getStatus() {
+		return "In Reparatur";
+	}
 }

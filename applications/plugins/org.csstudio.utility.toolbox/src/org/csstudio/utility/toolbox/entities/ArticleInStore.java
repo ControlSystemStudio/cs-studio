@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 	@NamedQuery(name = ArticleInStore.FIND_RECORD, query = "from ArticleInStore a where a.artikelDatenId = ? order by id desc")}
 )
 @Entity
-public class ArticleInStore  extends BindingEntity {
+public class ArticleInStore  extends BindingEntity implements ArticleHistoryInfo {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -123,6 +123,16 @@ public class ArticleInStore  extends BindingEntity {
 
 	public void setFlagExist(String flagExist) {
 		this.flagExist = flagExist;
+	}
+
+	@Override
+	public Date getDate() {
+		return inLagerAm;
+	}
+
+	@Override
+	public String getStatus() {
+		return "In Lager";
 	}
 	
 }

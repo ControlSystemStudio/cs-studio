@@ -5,7 +5,13 @@ import java.text.SimpleDateFormat;
 import javax.validation.Validator;
 
 import org.csstudio.utility.toolbox.entities.Article;
+import org.csstudio.utility.toolbox.entities.ArticleDelivered;
 import org.csstudio.utility.toolbox.entities.ArticleDescription;
+import org.csstudio.utility.toolbox.entities.ArticleInStore;
+import org.csstudio.utility.toolbox.entities.ArticleInstalled;
+import org.csstudio.utility.toolbox.entities.ArticleMaintenance;
+import org.csstudio.utility.toolbox.entities.ArticleRented;
+import org.csstudio.utility.toolbox.entities.ArticleRetired;
 import org.csstudio.utility.toolbox.entities.Firma;
 import org.csstudio.utility.toolbox.entities.Lager;
 import org.csstudio.utility.toolbox.entities.LagerArtikel;
@@ -36,33 +42,69 @@ public class GuiceModule extends AbstractModule {
 		bind(Display.class).toProvider(DisplayProvider.class);
 		bind(SimpleDateFormat.class).toProvider(SimpleDateFormatProvider.class);
 		bind(Validator.class).toProvider(ValidatorProvider.class);
+		
 		bind(new TypeLiteral<EditorInputProvider<Order>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<Order>>() {
 		}); // NOSONAR
+		
 		bind(new TypeLiteral<EditorInputProvider<Article>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<Article>>() {
 		}); // NOSONAR
+		
 		bind(new TypeLiteral<EditorInputProvider<Firma>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<Firma>>() {
 		}); // NOSONAR
+		
 		bind(new TypeLiteral<EditorInputProvider<ArticleDescription>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<ArticleDescription>>() {
 		}); // NOSONAR
+		
 		bind(new TypeLiteral<EditorInputProvider<Lager>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<Lager>>() {
 		}); // NOSONAR
+		
 		bind(new TypeLiteral<EditorInputProvider<LagerArtikel>>() {
 		}) // NOSONAR
 		.to(new TypeLiteral<GenericEditorInputProvider<LagerArtikel>>() {
 		}); // NOSONAR
-	 
+
+		bind(new TypeLiteral<EditorInputProvider<ArticleDelivered>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleDelivered>>() {
+		}); // NOSONAR
+
+		bind(new TypeLiteral<EditorInputProvider<ArticleInstalled>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleInstalled>>() {
+		}); // NOSONAR
+
+		bind(new TypeLiteral<EditorInputProvider<ArticleInStore>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleInStore>>() {
+		}); // NOSONAR
+
+		bind(new TypeLiteral<EditorInputProvider<ArticleMaintenance>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleMaintenance>>() {
+		}); // NOSONAR
+
+		bind(new TypeLiteral<EditorInputProvider<ArticleRented>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleRented>>() {
+		}); // NOSONAR
+		
+		bind(new TypeLiteral<EditorInputProvider<ArticleRetired>>() {
+		}) // NOSONAR
+		.to(new TypeLiteral<GenericEditorInputProvider<ArticleRetired>>() {
+		}); // NOSONAR
+
 		bindInterceptor(Matchers.any(), Matchers.annotatedWith(ClearPersistenceContextOnReturn.class),
-					PersistenceContextClearer.persistenceContextClearer);
+					PersistenceContextClearer.PERSISTENCE_CONTEXT_CLEARER);
 
 	}
 

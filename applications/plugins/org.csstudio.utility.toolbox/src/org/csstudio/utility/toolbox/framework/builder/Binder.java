@@ -3,7 +3,6 @@ package org.csstudio.utility.toolbox.framework.builder;
 import java.util.Map;
 
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.controller.CrudController;
 import org.csstudio.utility.toolbox.framework.converter.BigDecimalToStringConverter;
 import org.csstudio.utility.toolbox.framework.converter.DateToStringConverter;
 import org.csstudio.utility.toolbox.framework.converter.NullToStringConverter;
@@ -36,7 +35,7 @@ public class Binder<T extends BindingEntity> {
 	
 	private GenericEditorInput<T> editorInput;
 	
-	private DirtyFlag dirtyFlag;
+	private DirtyFlag dirtyFlagSupporter;
 	
 	private  boolean isSearchMode;
 		
@@ -58,14 +57,14 @@ public class Binder<T extends BindingEntity> {
 	@Inject
 	private StringToNullConverter stringToNullConverter;
 	
-	public void init (GenericEditorInput<T> editorInput, Option<CrudController<T>> crudController, boolean isSearchMode) {
+	public void init (GenericEditorInput<T> editorInput, Option<? extends DirtyFlag> dirtyFlagSupporter, boolean isSearchMode) {
 		this.ctx = new DataBindingContext();
 		this.editorInput = editorInput;
 		this.isSearchMode = isSearchMode;
-		if (crudController.hasValue()) {
-			this.dirtyFlag = crudController.get();
+		if (dirtyFlagSupporter.hasValue()) {
+			this.dirtyFlagSupporter = dirtyFlagSupporter.get();
 		} else {
-			this.dirtyFlag = new DirtyFlag() {				
+			this.dirtyFlagSupporter = new DirtyFlag() {				
 				@Override
 				public void setDirty(boolean value) {
 					throw new IllegalStateException("Trying to set dirty flag, but that is currently unexpected.");
@@ -89,7 +88,7 @@ public class Binder<T extends BindingEntity> {
 			targetToModel.setAfterConvertValidator(new DateValidator(controlDecoration, new Func1Void<IStatus>() {
 				@Override
 				public void apply(IStatus status) {
-					dirtyFlag.setDirty(true);
+					dirtyFlagSupporter.setDirty(true);
 				}
 			}));
 

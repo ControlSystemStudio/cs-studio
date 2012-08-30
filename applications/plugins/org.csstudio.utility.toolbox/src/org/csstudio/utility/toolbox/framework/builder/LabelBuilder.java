@@ -1,6 +1,7 @@
 package org.csstudio.utility.toolbox.framework.builder;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.csstudio.utility.toolbox.framework.editor.GenericEditorInput;
 import org.csstudio.utility.toolbox.func.Func1Void;
 import org.csstudio.utility.toolbox.func.Some;
@@ -80,7 +81,7 @@ public class LabelBuilder {
 				}
 			});
 		} else {
-			label.setText(text);
+			label.setText(StringUtils.trimToEmpty(text));
 		}
 
 		if (bold || fontSize > 0) {

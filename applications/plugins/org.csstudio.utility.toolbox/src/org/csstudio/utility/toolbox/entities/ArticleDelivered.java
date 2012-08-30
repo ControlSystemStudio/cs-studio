@@ -26,7 +26,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 	@NamedQuery(name = ArticleDelivered.FIND_RECORD, query = "from ArticleDelivered a where a.artikelDatenId = ? order by id desc")}
 )
 @Entity
-public class ArticleDelivered extends BindingEntity {
+public class ArticleDelivered extends BindingEntity implements ArticleHistoryInfo {
 	
 	private static final long serialVersionUID = -1;
 
@@ -93,6 +93,16 @@ public class ArticleDelivered extends BindingEntity {
 
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	@Override
+	public Date getDate() {
+		return eingegangenAm;
+	}
+
+	@Override
+	public String getStatus() {
+		return "Eingang";
 	}
 	
 }

@@ -1,7 +1,10 @@
 package org.csstudio.utility.toolbox.services;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,6 +13,7 @@ import javax.persistence.TypedQuery;
 
 import org.csstudio.utility.toolbox.entities.Article;
 import org.csstudio.utility.toolbox.entities.ArticleDelivered;
+import org.csstudio.utility.toolbox.entities.ArticleHistoryInfo;
 import org.csstudio.utility.toolbox.entities.ArticleInStore;
 import org.csstudio.utility.toolbox.entities.ArticleInstalled;
 import org.csstudio.utility.toolbox.entities.ArticleMaintenance;
@@ -98,6 +102,9 @@ public class ArticleService {
 
 	@ClearPersistenceContextOnReturn
 	public Option<Article> findById(BigDecimal articleDatenId) {
+		if (articleDatenId == null) {
+			return new None<Article>();
+		}
 		TypedQuery<Article> query = em.createNamedQuery(Article.FIND_BY_ID, Article.class);
 		query.setParameter(1, articleDatenId);
 		List<Article> articles = query.getResultList();
@@ -111,6 +118,26 @@ public class ArticleService {
 		}
 	}
 
+	private static class DateComparator implements Comparator<ArticleHistoryInfo>, Serializable {
+		private static final long serialVersionUID = 1L;
+		public int compare(ArticleHistoryInfo t1, ArticleHistoryInfo t2) { 
+	    	  return t2.getDate().compareTo(t1.getDate());
+	      }
+	}
+	
+	@ClearPersistenceContextOnReturn
+	public List<ArticleHistoryInfo> buildArticleHistory(BigDecimal articleDatenId) {
+		List<ArticleHistoryInfo> articleHistory = new ArrayList<ArticleHistoryInfo>();
+		articleHistory.addAll(findArticleInstalled(articleDatenId));
+		articleHistory.addAll(findArticleRetired(articleDatenId));
+		articleHistory.addAll(findArticleMaintenance(articleDatenId));
+		articleHistory.addAll(findArticleInStore(articleDatenId));
+		articleHistory.addAll(findArticleRented(articleDatenId));
+		articleHistory.addAll(findArticleDelivered(articleDatenId));
+		Collections.sort(articleHistory, new DateComparator());
+		return articleHistory;
+	}
+	
 	@ClearPersistenceContextOnReturn
 	public List<ArticleInstalled> findAllInstalledData(BigDecimal articleDatenId) {
 		TypedQuery<ArticleInstalled> query = em.createNamedQuery(Article.FIND_ALL_INSTALLED, ArticleInstalled.class);
@@ -119,7 +146,24 @@ public class ArticleService {
 	}
 
 	@ClearPersistenceContextOnReturn
+	public List<Article> findContains(BigDecimal articleDatenId) {
+		TypedQuery<ArticleInstalled> query = em.createNamedQuery(ArticleInstalled.FIND_INSTALLED_IN, ArticleInstalled.class);
+		query.setParameter(1, articleDatenId);
+		List<Article> installedArticle = new ArrayList<Article>();
+		for (ArticleInstalled articleInstalled : query.getResultList()) {
+			Option<Article> article = findById(articleInstalled.getArtikelDatenId());
+			if (article.hasValue()) {
+				installedArticle.add(article.get());
+			}
+		}
+		return installedArticle;
+	}
+
+	@ClearPersistenceContextOnReturn
 	public List<ArticleInstalled> findArticleInstalled(BigDecimal articleDatenId) {
+		if (articleDatenId == null) {
+			return new ArrayList<ArticleInstalled>();
+		}
 		TypedQuery<ArticleInstalled> query = em.createNamedQuery(ArticleInstalled.FIND_RECORD, ArticleInstalled.class);
 		query.setParameter(1, articleDatenId);
 		return query.getResultList();
@@ -145,6 +189,17 @@ public class ArticleService {
 		TypedQuery<ArticleInStore> query = em.createNamedQuery(ArticleInStore.FIND_RECORD, ArticleInStore.class);
 		query.setParameter(1, articleDatenId);
 		return query.getResultList();
+	}
+
+	@ClearPersistenceContextOnReturn
+	public Option<ArticleInStore> findNewestEntryInStore(BigDecimal articleDatenId) {
+		TypedQuery<ArticleInStore> query = em.createNamedQuery(ArticleInStore.FIND_RECORD, ArticleInStore.class);
+		query.setParameter(1, articleDatenId);
+		List<ArticleInStore> articlesInStrore = query.getResultList();
+		if (articlesInStrore.isEmpty()) {
+			return new None<ArticleInStore>();
+		}
+		return new Some<ArticleInStore>(articlesInStrore.get(0));
 	}
 
 	@ClearPersistenceContextOnReturn

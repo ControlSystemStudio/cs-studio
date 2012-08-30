@@ -26,4 +26,6 @@ public final class Dialogs {
 		ErrorDialog.openError(PlatformUI.getWorkbench().getModalDialogShellProvider()
 					.getShell(), title, null,status);
 	}
+
+	
 }

@@ -7,11 +7,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.csstudio.utility.toolbox.entities.OrderPos;
+import org.csstudio.utility.toolbox.entities.OrderPosFinder;
 import org.csstudio.utility.toolbox.guice.ClearPersistenceContextOnReturn;
 
 import com.google.inject.Inject;
 
-public class OrderPosService {
+public class OrderPosService implements OrderPosFinder {
 	
 	@Inject
 	private EntityManager em;
@@ -24,6 +25,7 @@ public class OrderPosService {
 	}
 	
 	@ClearPersistenceContextOnReturn
+	@Override
 	public List<OrderPos> findByBaNr(BigDecimal baNr) {
 		TypedQuery<OrderPos> query = em.createNamedQuery(OrderPos.FIND_BY_BA_NR, OrderPos.class);
 		query.setParameter(1, baNr);

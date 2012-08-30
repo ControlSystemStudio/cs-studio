@@ -7,6 +7,7 @@ import net.miginfocom.swt.MigLayout;
 
 import org.csstudio.utility.toolbox.entities.Article;
 import org.csstudio.utility.toolbox.framework.WidgetFactory;
+import org.csstudio.utility.toolbox.framework.action.EditorInputProvider;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.builder.Binder;
 import org.csstudio.utility.toolbox.framework.controller.CrudController;
@@ -15,7 +16,6 @@ import org.csstudio.utility.toolbox.func.Func1Void;
 import org.csstudio.utility.toolbox.func.None;
 import org.csstudio.utility.toolbox.func.Option;
 import org.csstudio.utility.toolbox.func.Some;
-import org.csstudio.utility.toolbox.view.forms.GenericEditorInputProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 public class AbstractSubView<T extends BindingEntity>  implements PropertyChangeListener{
 	
 	@Inject
-	private GenericEditorInputProvider<T> genericEditorInputProvider;
+	private EditorInputProvider<T> genericEditorInputProvider;
 	
 	@Inject
 	protected WidgetFactory<T> wf;
