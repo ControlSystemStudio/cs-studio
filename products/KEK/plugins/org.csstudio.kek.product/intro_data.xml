@@ -9,7 +9,7 @@
 <extensions>
    <page id="whatsnew">
       <group path="page-content/top-left">
-         <extension id="org.csstudio.sns.product.whatsnew" importance="high"/>
+         <extension id="org.csstudio.kek.product.intro.whatsnew" importance="high"/>
       </group>
    </page>
    <page id="firststeps">
@@ -22,7 +22,7 @@
    </page>
    <page id="overview">
       <group path="page-content/top-left">
-         <extension id="org.csstudio.sns.product.overview" importance="high"/>
+         <extension id="org.csstudio.kek.product.intro.overview" importance="high"/>
       </group>
    </page>
 </extensions>

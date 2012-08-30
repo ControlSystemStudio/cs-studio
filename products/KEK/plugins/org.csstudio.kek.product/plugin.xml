@@ -91,5 +91,10 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="intro/overview.xml">
       </configExtension>
+      <configExtension
+            content="intro/whatsnew.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
    </extension>
+
 </plugin>
