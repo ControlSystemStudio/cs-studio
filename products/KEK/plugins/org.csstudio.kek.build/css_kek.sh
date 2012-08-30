@@ -55,7 +55,7 @@ EOF
 
 
 # Launch CSS with the temporary plugin customization file
-if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
     ${CSS} -pluginCustomization ${TMP_INI} -share_link ${SHARE_LINK_SRC}=${SHARE_LINK_DEST}
 else
     ${CSS} -pluginCustomization ${TMP_INI} 
