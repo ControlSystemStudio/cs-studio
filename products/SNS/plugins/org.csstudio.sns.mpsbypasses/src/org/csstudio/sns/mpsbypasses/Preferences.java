@@ -4,25 +4,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Preference settings
- * 
+ *
  *  <p>See <code>preferences.ini</code> for details
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Preferences
 {
-    final private static String DEFAULT_RDB_URL =
-        "jdbc:oracle:thin:@" +
-        "(DESCRIPTION=(SOURCE_ROUTE=YES)" +
-         "(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)"+
-         "(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))" +
-         "(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))" +
-         "(ADDRESS_LIST=(LOAD_BALANCE=OFF)" +
-         "(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))" +
-         "(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))" +
-         "(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93)(PORT=1521)))" +
-        "(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-
+    final private static String DEFAULT_RDB_URL = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
     final private static String DEFAULT_RDB_USER = "sns_reports";
     final private static String DEFAULT_RDB_PASSWORD = "sns";
     final private static String DEFAULT_WEB_URL = "http://snsapp1.sns.ornl.gov";
@@ -44,7 +33,7 @@ public class Preferences
     {
         return DEFAULT_RDB_PASSWORD;
     }
-    
+
     public static String getEnterBypassURL()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();

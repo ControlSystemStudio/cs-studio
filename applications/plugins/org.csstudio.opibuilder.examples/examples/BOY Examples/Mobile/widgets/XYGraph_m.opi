@@ -54,7 +54,7 @@
     <visible>true</visible>
     <trace_0_x_pv_value />
     <axis_1_visible>true</axis_1_visible>
-    <height>230</height>
+    <height>240</height>
     <axis_1_maximum>100.0</axis_1_maximum>
     <trace_2_x_pv></trace_2_x_pv>
     <axis_1_title_font>
@@ -216,7 +216,7 @@ $(trace_0_y_pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>96</width>
+    <width>174</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../../pictures/home-16x16.png</image>
@@ -227,7 +227,7 @@ $(trace_0_y_pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>252</y>
+    <y>253</y>
     <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../Widgets_m.opi</path>
@@ -239,6 +239,6 @@ $(trace_0_y_pv_value)</tooltip>
       </action>
     </actions>
     <tooltip></tooltip>
-    <x>82</x>
+    <x>63</x>
   </widget>
 </display>

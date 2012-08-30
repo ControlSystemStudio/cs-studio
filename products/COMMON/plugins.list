@@ -2,6 +2,7 @@ com.google.common
 gov.bnl.channelfinder.api
 javax.annotation
 javax.mail
+org.antlr.runtime
 org.apache.log4j
 org.apache.tools.ant
 org.apache.tools.ant.junit
@@ -109,6 +110,8 @@ org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
 org.csstudio.workspace
+org.epics.graphene
+org.epics.util
 org.jdom
 org.joda.time
 org.python

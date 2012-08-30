@@ -25,7 +25,7 @@
   <show_edit_range>true</show_edit_range>
   <grid_space>6</grid_space>
   <auto_scale_widgets>
-    <auto_scale_widgets>true</auto_scale_widgets>
+    <auto_scale_widgets>false</auto_scale_widgets>
     <min_width>-1</min_width>
     <min_height>-1</min_height>
   </auto_scale_widgets>

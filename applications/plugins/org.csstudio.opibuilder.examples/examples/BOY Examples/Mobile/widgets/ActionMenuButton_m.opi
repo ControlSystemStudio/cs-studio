@@ -643,7 +643,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>2b59412f:138a0499f72:-6c81</wuid>
     <scripts />
-    <height>34</height>
+    <height>39</height>
     <name>Action Button</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -661,7 +661,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>96</width>
+    <width>123</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../../pictures/home-16x16.png</image>

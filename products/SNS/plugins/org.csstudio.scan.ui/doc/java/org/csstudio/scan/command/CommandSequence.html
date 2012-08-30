@@ -100,7 +100,7 @@ java.lang.Object
 <P>
 Helper for creating a sequence of commands
 
-  <p>Used by the client to building a sequence of commands
+  <p>Used by the client to build a sequence of commands
   which is then submitted to the server for execution as a "scan".
 
   <p>Allows both <code>List&lt;Command></code> and plain <code>Command[]</code>.
@@ -124,11 +124,10 @@ Helper for creating a sequence of commands
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#CommandSequence()">CommandSequence</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#CommandSequence(java.util.Collection)">CommandSequence</A></B>(java.util.Collection&lt;<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&gt;&nbsp;commands)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize empty command sequence
-  to which commands can then be added.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize with a given sequence of commands.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#CommandSequence(org.csstudio.scan.command.ScanCommand...)">CommandSequence</A></B>(<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>...&nbsp;commands)</CODE>
@@ -151,30 +150,6 @@ Helper for creating a sequence of commands
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#add(org.csstudio.scan.command.CommandSequence)">add</A></B>(<A HREF="../../../../org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>&nbsp;command_sequence)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add all commands from other sequence</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#add(org.csstudio.scan.command.ScanCommand)">add</A></B>(<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&nbsp;command)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a command</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#delay(double)">delay</A></B>(double&nbsp;seconds)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'delay' command</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -202,98 +177,11 @@ Helper for creating a sequence of commands
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#log(java.lang.String...)">log</A></B>(java.lang.String...&nbsp;device_names)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'log' command</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, org.csstudio.scan.command.CommandSequence)">loop</A></B>(java.lang.String&nbsp;device_name,
-     double&nbsp;start,
-     double&nbsp;end,
-     double&nbsp;stepsize,
-     <A HREF="../../../../org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>&nbsp;body)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'loop' command</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, java.util.List)">loop</A></B>(java.lang.String&nbsp;device_name,
-     double&nbsp;start,
-     double&nbsp;end,
-     double&nbsp;stepsize,
-     java.util.List&lt;<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&gt;&nbsp;body)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'loop' command</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#loop(java.lang.String, double, double, double, org.csstudio.scan.command.ScanCommand...)">loop</A></B>(java.lang.String&nbsp;device_name,
-     double&nbsp;start,
-     double&nbsp;end,
-     double&nbsp;stepsize,
-     <A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>...&nbsp;body)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'loop' command</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object)">set</A></B>(java.lang.String&nbsp;device_name,
-    java.lang.Object&nbsp;value)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object, boolean)">set</A></B>(java.lang.String&nbsp;device_name,
-    java.lang.Object&nbsp;value,
-    boolean&nbsp;wait)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#set(java.lang.String, java.lang.Object, java.lang.String, double, double)">set</A></B>(java.lang.String&nbsp;device_name,
-    java.lang.Object&nbsp;value,
-    java.lang.String&nbsp;readback,
-    double&nbsp;tolerance,
-    double&nbsp;timeout)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'set' command that writes to a device</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#setAddresses(java.util.List)">setAddresses</A></B>(java.util.List&lt;<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&gt;&nbsp;commands)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign consecutive addresses</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/CommandSequence.html#wait(java.lang.String, double, double)">wait</A></B>(java.lang.String&nbsp;device_name,
-     double&nbsp;desired_value,
-     double&nbsp;tolerance)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a 'wait' command that delays the scan until a device reaches a certain value</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -317,17 +205,6 @@ Helper for creating a sequence of commands
 <B>Constructor Detail</B></FONT></TH>
 </TR>
 </TABLE>
-
-<A NAME="CommandSequence()"><!-- --></A><H3>
-CommandSequence</H3>
-<PRE>
-public <B>CommandSequence</B>()</PRE>
-<DL>
-<DD>Initialize empty command sequence
-  to which commands can then be added.
-<P>
-</DL>
-<HR>
 
 <A NAME="CommandSequence(org.csstudio.scan.command.ScanCommand)"><!-- --></A><H3>
 CommandSequence</H3>
@@ -354,7 +231,18 @@ CommandSequence</H3>
 public <B>CommandSequence</B>(<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>...&nbsp;commands)</PRE>
 <DL>
 <DD>Initialize with a given sequence of commands.
-  <p>The command sequence is then immutable.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>commands</CODE> - Sequence of commands</DL>
+</DL>
+<HR>
+
+<A NAME="CommandSequence(java.util.Collection)"><!-- --></A><H3>
+CommandSequence</H3>
+<PRE>
+public <B>CommandSequence</B>(java.util.Collection&lt;<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&gt;&nbsp;commands)</PRE>
+<DL>
+<DD>Initialize with a given sequence of commands.
 <P>
 <DL>
 <DT><B>Parameters:</B><DD><CODE>commands</CODE> - Sequence of commands</DL>
@@ -379,172 +267,6 @@ public static void <B>setAddresses</B>(java.util.List&lt;<A HREF="../../../../or
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>commands</CODE> - Commands where addresses need to be set</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.csstudio.scan.command.ScanCommand)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public void <B>add</B>(<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&nbsp;command)</PRE>
-<DL>
-<DD>Add a command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>command</CODE> - <A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><CODE>ScanCommand</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.csstudio.scan.command.CommandSequence)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public void <B>add</B>(<A HREF="../../../../org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>&nbsp;command_sequence)</PRE>
-<DL>
-<DD>Add all commands from other sequence
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>command_sequence</CODE> - <A HREF="../../../../org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command"><CODE>CommandSequence</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="delay(double)"><!-- --></A><H3>
-delay</H3>
-<PRE>
-public void <B>delay</B>(double&nbsp;seconds)</PRE>
-<DL>
-<DD>Add a 'delay' command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>seconds</CODE> - Delay in seconds</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(java.lang.String...)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public void <B>log</B>(java.lang.String...&nbsp;device_names)</PRE>
-<DL>
-<DD>Add a 'log' command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_names</CODE> - List of device names to log</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="loop(java.lang.String, double, double, double, org.csstudio.scan.command.ScanCommand...)"><!-- --></A><H3>
-loop</H3>
-<PRE>
-public void <B>loop</B>(java.lang.String&nbsp;device_name,
-                 double&nbsp;start,
-                 double&nbsp;end,
-                 double&nbsp;stepsize,
-                 <A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>...&nbsp;body)</PRE>
-<DL>
-<DD>Add a 'loop' command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device to update in loop<DD><CODE>start</CODE> - Initial loop value<DD><CODE>end</CODE> - Final loop value<DD><CODE>stepsize</CODE> - Loop value step size<DD><CODE>body</CODE> - Loop body</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="loop(java.lang.String, double, double, double, org.csstudio.scan.command.CommandSequence)"><!-- --></A><H3>
-loop</H3>
-<PRE>
-public void <B>loop</B>(java.lang.String&nbsp;device_name,
-                 double&nbsp;start,
-                 double&nbsp;end,
-                 double&nbsp;stepsize,
-                 <A HREF="../../../../org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</A>&nbsp;body)</PRE>
-<DL>
-<DD>Add a 'loop' command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device to update in loop<DD><CODE>start</CODE> - Initial loop value<DD><CODE>end</CODE> - Final loop value<DD><CODE>stepsize</CODE> - Loop value step size<DD><CODE>body</CODE> - Loop body</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="loop(java.lang.String, double, double, double, java.util.List)"><!-- --></A><H3>
-loop</H3>
-<PRE>
-public void <B>loop</B>(java.lang.String&nbsp;device_name,
-                 double&nbsp;start,
-                 double&nbsp;end,
-                 double&nbsp;stepsize,
-                 java.util.List&lt;<A HREF="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</A>&gt;&nbsp;body)</PRE>
-<DL>
-<DD>Add a 'loop' command
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device to update in loop<DD><CODE>start</CODE> - Initial loop value<DD><CODE>end</CODE> - Final loop value<DD><CODE>stepsize</CODE> - Loop value step size<DD><CODE>body</CODE> - Loop body</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="set(java.lang.String, java.lang.Object)"><!-- --></A><H3>
-set</H3>
-<PRE>
-public void <B>set</B>(java.lang.String&nbsp;device_name,
-                java.lang.Object&nbsp;value)</PRE>
-<DL>
-<DD>Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device<DD><CODE>value</CODE> - Value to write to the device</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="set(java.lang.String, java.lang.Object, boolean)"><!-- --></A><H3>
-set</H3>
-<PRE>
-public void <B>set</B>(java.lang.String&nbsp;device_name,
-                java.lang.Object&nbsp;value,
-                boolean&nbsp;wait)</PRE>
-<DL>
-<DD>Add a 'set' command that writes to a device
-  with default readback, tolerance and no timeout
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device<DD><CODE>value</CODE> - Value to write to the device<DD><CODE>wait</CODE> - Wait for readback to match?</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="set(java.lang.String, java.lang.Object, java.lang.String, double, double)"><!-- --></A><H3>
-set</H3>
-<PRE>
-public void <B>set</B>(java.lang.String&nbsp;device_name,
-                java.lang.Object&nbsp;value,
-                java.lang.String&nbsp;readback,
-                double&nbsp;tolerance,
-                double&nbsp;timeout)</PRE>
-<DL>
-<DD>Add a 'set' command that writes to a device
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device<DD><CODE>value</CODE> - Value to write to the device<DD><CODE>readback</CODE> - Readback device<DD><CODE>tolerance</CODE> - Numeric tolerance when checking value<DD><CODE>timeout</CODE> - Timeout in seconds, 0 as "forever"</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="wait(java.lang.String, double, double)"><!-- --></A><H3>
-wait</H3>
-<PRE>
-public void <B>wait</B>(java.lang.String&nbsp;device_name,
-                 double&nbsp;desired_value,
-                 double&nbsp;tolerance)</PRE>
-<DL>
-<DD>Add a 'wait' command that delays the scan until a device reaches a certain value
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device to check<DD><CODE>desired_value</CODE> - Desired value of the device<DD><CODE>tolerance</CODE> - Numeric tolerance when checking value</DL>
 </DD>
 </DL>
 <HR>

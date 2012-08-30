@@ -87,7 +87,7 @@ public class Cell implements PVListener
 	        this.pv = PVFactory.createPV(pv_name);
 	        pv.addListener(this);
         }
-        
+
         // Create the optional comment pvs.
         // No listener. Their value is fetched on demand.
         String name=MacroUtil.replaceMacros(column.getNamePvWithMacros(), instance.getMacros());
@@ -181,14 +181,15 @@ public class Cell implements PVListener
         return user_value;
     }
 
-    /** Clear a user-specified value, revert to the PV's original value. */
-    public void clearUserValue()
-    {
-        user_value = null;
-        instance.getModel().fireCellUpdate(this);
-    }
+    private String original_pv_value = null;
+    private String original_name_value = null;
+    private String original_date_value = null;
 
     /** Save value entered by user to PV
+     *
+     *  <p>On success, this should be followed by a call to <code>clearUserValue</code>,
+     *  or rolled back via a call to <code>revertOriginalValue</code>
+     *
      *  @param user_name Name of the user to be logged for cells with
      *                   a last user meta PV
      *  @throws Exception on error
@@ -198,11 +199,43 @@ public class Cell implements PVListener
         if (!isEdited())
             return;
         if (pv != null)
+        {
+            original_pv_value = ValueUtil.getString(pv.getValue());
         	pv.setValue(user_value);
+        }
         if (last_name_pv != null)
+        {
+            original_name_value = ValueUtil.getString(pv.getValue());
             last_name_pv.setValue(user_name);
+        }
         if (last_date_pv != null)
+        {
+            original_date_value = ValueUtil.getString(pv.getValue());
             last_date_pv.setValue(date_format.format(new Date()));
+        }
+    }
+
+    /** Revert to the state before a user value was saved
+     *  @throws Exception on error
+     */
+    public void revertOriginalValue() throws Exception
+    {
+        if (pv != null  &&  original_pv_value != null)
+            pv.setValue(original_pv_value);
+        if (last_name_pv != null  &&  original_name_value != null)
+            last_name_pv.setValue(original_name_value);
+        if (last_date_pv != null  &&  original_date_value != null)
+            last_date_pv.setValue(original_date_value);
+    }
+
+    /** Clear a user-specified value */
+    public void clearUserValue()
+    {
+        user_value = null;
+        original_pv_value = null;
+        original_name_value = null;
+        original_date_value = null;
+        instance.getModel().fireCellUpdate(this);
     }
 
     /** @return <code>true</code> if user entered a value */

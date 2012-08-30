@@ -15,6 +15,11 @@ The user can edit the values, review the changes, revert changes,
 and finally write changes back to the PVs with an automated electronic
 logbook (ELog) entry that lists the modified PVs and their values.
 
+<p>
+The changes and the associated logbook entry are as much as possible
+treated as one transaction: If values cannot be written, there will be no logbook entry.
+If the logbook entry failes, PVs are restored to their original value.
+
 <ol>
 <li> <a href=open_config.html>Starting the PACE Editor</a>
 <li> <a href=edit_limits.html>Editing Values</a>

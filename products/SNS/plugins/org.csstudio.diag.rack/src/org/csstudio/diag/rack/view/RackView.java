@@ -25,11 +25,8 @@ import org.eclipse.ui.part.ViewPart;
 public class RackView extends ViewPart
 	{
 	    final public static String ID = RackView.class.getName();
-	    //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
-	    public static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod"; //$NON-NLS-1$
 	    private RackModel control = null;
 	    private GUI gui;
-
 
 	    public RackView()
 	    {

@@ -4,10 +4,7 @@
  */
 package org.epics.pvmanager;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -47,7 +44,7 @@ public abstract class DataSource {
     }
 
     // Keeps track of the currently created channels
-    private Map<String, ChannelHandler<?>> usedChannels = new ConcurrentHashMap<String, ChannelHandler<?>>();
+    private Map<String, ChannelHandler> usedChannels = new ConcurrentHashMap<String, ChannelHandler>();
 
     /**
      * Returns a channel from the given name, either cached or it
@@ -56,15 +53,30 @@ public abstract class DataSource {
      * @param channelName name of a channel
      * @return a new or cached handler
      */
-    ChannelHandler<?> channel(String channelName) {
-        ChannelHandler<?> channel = usedChannels.get(channelName);
+    ChannelHandler channel(String channelName) {
+        String channelHandlerName = channelHandlerFor(channelName);
+        ChannelHandler channel = usedChannels.get(channelHandlerName);
         if (channel == null) {
-            channel = createChannel(channelName);
+            channel = createChannel(channelHandlerName);
             if (channel == null)
                 return null;
-            usedChannels.put(channelName, channel);
+            usedChannels.put(channelHandlerName, channel);
         }
         return channel;
+    }
+    
+    /**
+     * Returns the channel handler name to be used for the given channel.
+     * By default, it returns the channel name itself. If a datasource
+     * needs to multiple different channels to the same channel handler
+     * (e.g. parts of the channel name are parameters for the read/write)
+     * then it can override this method to do the appropriate mapping.
+     * 
+     * @param channelName
+     * @return the channel handler name
+     */
+    String channelHandlerFor(String channelName) {
+        return channelName;
     }
 
     /**
@@ -74,7 +86,7 @@ public abstract class DataSource {
      * @param channelName the name for a new channel
      * @return a new handler
      */
-    protected abstract ChannelHandler<?> createChannel(String channelName);
+    protected abstract ChannelHandler createChannel(String channelName);
 
     // The executor used by the data source to perform asynchronous operations,
     // such as connections and writes. I am current using a single thread for
@@ -96,24 +108,20 @@ public abstract class DataSource {
      * @param recipe the instructions for the data connection
      */
     public void connect(final DataRecipe recipe) {
-        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
-            final Collector<?> collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String channelName = entry.getKey();
-                final ChannelHandler<?> channelHandler = channel(channelName);
-                if (channelHandler == null)
-                    throw new ReadFailException();
-                final ValueCache cache = entry.getValue();
-
-                // Add monitor on other thread in case it triggers notifications
-                exec.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        channelHandler.addMonitor(collector, cache, recipe.getExceptionHandler());
-                    }
-                });
+        for (final ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
+            String channelName = channelRecipe.getChannelName();
+            final ChannelHandler channelHandler = channel(channelName);
+            if (channelHandler == null) {
+                throw new ReadFailException();
             }
+            
+            exec.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    channelHandler.addMonitor(channelRecipe.getReadSubscription());
+                }
+            });
         }
         recipes.add(recipe);
     }
@@ -133,16 +141,15 @@ public abstract class DataSource {
             return;
         }
 
-        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
-            Collector<?> collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String channelName = entry.getKey();
-                ChannelHandler<?> channelHandler = usedChannels.get(channelName);
-                if (channelHandler == null) {
-                    log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
-                }
-                channelHandler.removeMonitor(collector);
+        
+        for (ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
+            Collector<?> collector = channelRecipe.getReadSubscription().getCollector();
+            String channelName = channelRecipe.getChannelName();
+            ChannelHandler channelHandler = usedChannels.get(channelName);
+            if (channelHandler == null) {
+                log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
             }
+            channelHandler.removeMonitor(collector);
         }
 
         recipes.remove(recipe);
@@ -161,21 +168,23 @@ public abstract class DataSource {
         if (!isWriteable())
             throw new WriteFailException("Data source is read only");
         
-        final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
+        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
             ChannelHandler handler = channel(channelName);
             if (handler == null)
                 throw new WriteFailException("Channel " + channelName + " does not exist");
             handlers.add(handler);
-            }
+            caches.add(writeBuffer.getWriteCaches().get(channelName));
+        }
 
         // Connect using another thread
         exec.execute(new Runnable() {
 
             @Override
             public void run() {
-                for (ChannelHandler channelHandler : handlers) {
-                    channelHandler.addWriter(exceptionHandler);
+                for (int i = 0; i < handlers.size(); i++) {
+                    handlers.get(i).addWriter(caches.get(i), exceptionHandler);
                 }
             }
         });
@@ -200,9 +209,11 @@ public abstract class DataSource {
         }
 
         registeredBuffers.remove(writeBuffer);
-        final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
+        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
             handlers.add(channel(channelName));
+            caches.add(writeBuffer.getWriteCaches().get(channelName));
         }
 
         // Connect using another thread
@@ -210,8 +221,8 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (ChannelHandler channelHandler : handlers) {
-                    channelHandler.removeWrite(exceptionHandler);
+                for (int i = 0; i < handlers.size(); i++) {
+                    handlers.get(i).removeWrite(caches.get(i), exceptionHandler);
                 }
             }
         });
@@ -234,7 +245,7 @@ public abstract class DataSource {
         
         final WritePlanner planner = new WritePlanner();
         for (Map.Entry<String, WriteCache<?>> entry : writeBuffer.getWriteCaches().entrySet()) {
-            ChannelHandler<?> channel = channel(entry.getKey());
+            ChannelHandler channel = channel(entry.getKey());
             planner.addChannel(channel, entry.getValue().getValue(), entry.getValue().getPrecedingChannels());
         }
 
@@ -274,7 +285,7 @@ public abstract class DataSource {
      * 
      * @return an unmodifiable collection
      */
-    public Map<String, ChannelHandler<?>> getChannels() {
+    public Map<String, ChannelHandler> getChannels() {
         return Collections.unmodifiableMap(usedChannels);
     }
 

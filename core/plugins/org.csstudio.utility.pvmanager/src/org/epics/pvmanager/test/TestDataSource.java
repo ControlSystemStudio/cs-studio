@@ -29,12 +29,15 @@ public final class TestDataSource extends DataSource {
     }
 
     @Override
-    protected ChannelHandler<?> createChannel(String channelName) {
+    protected ChannelHandler createChannel(String channelName) {
         if ("delayedWrite".equals(channelName)) {
             return new DelayedWriteChannel(channelName);
         }
         if ("delayedConnection".equals(channelName)) {
             return new DelayedConnectionChannel(channelName);
+        }
+        if ("delayedConnectionError".equals(channelName)) {
+            return new DelayedConnectionErrorChannel(channelName);
         }
         return null;
     }

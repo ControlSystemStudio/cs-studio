@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
@@ -166,7 +167,34 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 	}
 
-
+	/**
+	 * @param text
+	 */
+	protected void outputPVValue(String text) {
+		if(!getWidgetModel().getConfirmMessage().isEmpty())
+			if(!GUIUtil.openConfirmDialog("PV Name: " + getPVName() +
+					"\nNew Value: "+ text+ "\n\n"+
+					getWidgetModel().getConfirmMessage()))
+				return;
+		try {			
+			Object result;
+			if(getWidgetModel().getFormat() != FormatEnum.STRING
+					&& text.trim().indexOf(SPACE)!=-1){
+				result = parseStringArray(text);
+			}else
+				result = parseString(text);
+			setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
+		} catch (Exception e) {
+			String msg = NLS
+					.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
+							new String[] {
+									getPVName(),
+									getWidgetModel().getName(),
+									text })
+					+ e.toString();
+			ConsoleService.getInstance().writeError(msg);
+		}
+	}
 	
 	@Override
 	protected void registerPropertyChangeHandlers() {
@@ -188,29 +216,10 @@ public class TextInputEditpart extends TextUpdateEditPart {
 							});
 						}
 					}
-
-					try {						
-						Object result;
-						if(getWidgetModel().getFormat() != FormatEnum.STRING
-								&& text.trim().indexOf(SPACE)!=-1){
-							result = parseStringArray(text);
-						}else
-							result = parseString(text);
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
-					} catch (Exception e) {
-						String msg = NLS
-								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
-										new String[] {
-												getPVName(),
-												getWidgetModel().getName(),
-												text })
-								+ e.toString();
-						ConsoleService.getInstance().writeError(msg);
-					}
+					//Output pv value even if pv name is empty, so setPVValuelistener can be triggered.
+					outputPVValue(text);
 					return false;
-				}
-
-			
+				}			
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		}
@@ -484,7 +493,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			iString[ii] = Integer.valueOf(textChars[ii]);
 		}
 		for (int ii = text.length(); ii < currentLength; ii++) {
-			iString[ii] = (char)0;
+			iString[ii] = 0;
 		}
 		return iString;
 	}

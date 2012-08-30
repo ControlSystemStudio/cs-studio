@@ -72,15 +72,6 @@ public class Histogram1DRenderer {
         }
         ValueAxis yAxis = ValueAxis.createAutoAxis(yValueMin, yValueMax, Math.max(4, nYTicks), 1.0);
         VerticalAxisRenderer yAxisRenderer = new VerticalAxisRenderer(yAxis, margin, graphics);
-
-        // Labels
-        Font axisFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-        graphics.setFont(axisFont);
-        
-        // Compute axis size
-        
-        FontMetrics metrics = graphics.getFontMetrics();
-        
         
         // Compute plot size
         

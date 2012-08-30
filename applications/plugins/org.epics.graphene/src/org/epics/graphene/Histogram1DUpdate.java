@@ -10,14 +10,14 @@ package org.epics.graphene;
  */
 public class Histogram1DUpdate {
 
-    private Dataset1D recalculateFrom;
+    private Point1DDataset recalculateFrom;
     
-    public Histogram1DUpdate recalculateFrom(Dataset1D dataset) {
+    public Histogram1DUpdate recalculateFrom(Point1DDataset dataset) {
         recalculateFrom = dataset;
         return this;
     }
 
-    public Dataset1D getDataset() {
+    public Point1DDataset getDataset() {
         return recalculateFrom;
     }
     

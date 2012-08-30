@@ -44,6 +44,7 @@ import org.csstudio.swt.widgets.datadefinition.LongArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ShortArrayWrapper;
 import org.csstudio.swt.widgets.figures.ArrayFigure;
 import org.csstudio.swt.widgets.figures.ITextFigure;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
@@ -83,11 +84,13 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	PVListener pvDataTypeListener;
 
 	private static List<String> NONE_SYNCABLE_PROPIDS = Arrays.asList(
-			AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS);
+			AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS,
+			IPVWidgetModel.PROP_PVVALUE, AbstractWidgetModel.PROP_TOOLTIP);
 	
 	private static List<String> INVISIBLE_CHILD_PROPIDS = Arrays.asList(
 			AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS,
 			AbstractWidgetModel.PROP_SCALE_OPTIONS, IPVWidgetModel.PROP_PVNAME,
+			AbstractWidgetModel.PROP_TOOLTIP,
 			IPVWidgetModel.PROP_BACKCOLOR_ALARMSENSITIVE,
 			IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE,
 			IPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE);
@@ -261,24 +264,65 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 		for (String propId : child.getAllPropertyIDs())
 			child.getProperty(propId).addPropertyChangeListener(syncPropertiesListener);
 		final EditPart result = super.createChild(model);
-		AbstractWidgetModel childModel = ((AbstractBaseEditPart)result).getWidgetModel();
-		if(getExecutionMode() == ExecutionMode.EDIT_MODE){
-			for(String propId: INVISIBLE_CHILD_PROPIDS)
+		UIBundlingThread.getInstance().addRunnable(getViewer().getControl().getDisplay(), new Runnable() {
+			
+			@Override
+			public void run() {
+				hookChild(result, getChildren().indexOf(result), true);	
+			}
+		});
+			
+		return result;
+	}
+	
+	@Override
+	protected void removeChild(EditPart child) {
+		super.removeChild(child);
+		AbstractWidgetModel childModel = ((AbstractBaseEditPart)child).getWidgetModel();
+		//recover property visibility
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+			for (String propId : INVISIBLE_CHILD_PROPIDS)
 				try {
-					childModel.setPropertyVisibleAndSavable(propId, false, true);
-				} catch (NonExistPropertyException e) {					
-				}						
+					childModel.setPropertyVisibleAndSavable(propId, true, true);
+				} catch (NonExistPropertyException e) {
+				}
 		}
-		if (childModel.getProperty(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE) != null) {
-			childModel.setPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
+	}
+
+	/**Hook child with array index
+	 * @param editPart
+	 */
+	protected void hookChild(final EditPart editPart, final int indexOfArrayChild, boolean directChild) {
+		if(editPart instanceof AbstractContainerEditpart){
+			for(Object grandChild: ((AbstractContainerEditpart)editPart).getChildren())
+				hookChild((EditPart) grandChild, indexOfArrayChild, false);
 		}
-		if (getExecutionMode() == ExecutionMode.RUN_MODE && result instanceof IPVWidgetEditpart) {			
-			((IPVWidgetEditpart) result).addSetPVValueListener(new ISetPVValueListener() {
+		AbstractWidgetModel childModel = ((AbstractBaseEditPart)editPart).getWidgetModel();
+		if(directChild){
+			if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+				for (String propId : INVISIBLE_CHILD_PROPIDS)
+					try {
+						childModel.setPropertyVisibleAndSavable(propId, false,
+								true);
+					} catch (NonExistPropertyException e) {
+					}
+			}
+			try {
+				childModel.setScaleOptions(false, false, false);
+				childModel.setPropertyValue(IPVWidgetModel.PROP_PVNAME, ""); //$NON-NLS-1$				
+				childModel.setPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);				
+			} catch (NonExistPropertyException e) {
+			}
+		}
+		
+		
+		if (getExecutionMode() == ExecutionMode.RUN_MODE && editPart instanceof IPVWidgetEditpart) {			
+			((IPVWidgetEditpart) editPart).addSetPVValueListener(new ISetPVValueListener() {
 				// Capture set PV value event on children and write to the PV on
 				// the array widget
 				@Override
 				public void beforeSetPVValue(String pvPropId, Object value) {
-					int index = getArrayFigure().getIndex() + getChildren().indexOf(result);
+					int index = getArrayFigure().getIndex() + indexOfArrayChild;
 					try {
 						ArrayDataType dataType = getWidgetModel().getDataType();
 						switch (dataType) {
@@ -366,7 +410,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				}
 			});
 		}
-		return result;
 	}
 
 	@Override
@@ -820,13 +863,15 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 							w?((IPrimaryArrayWrapper)dataList).get(index++) : ((List<?>)dataList).get(index++);
 				try {					
 					((AbstractBaseEditPart) child).setValue(o);
+					((AbstractBaseEditPart) child).getWidgetModel().setTooltip(o.toString());
 				} catch (Exception e2) {
 					continue;
 				}
 			}
 			else
 				try {
-					((AbstractBaseEditPart) child).setValue(EMPTY_STRING);
+					((AbstractBaseEditPart) child).getWidgetModel().setTooltip(EMPTY_STRING);
+					((AbstractBaseEditPart) child).setValue(EMPTY_STRING);					
 				} catch (Exception e) {
 					try {
 						((AbstractBaseEditPart) child).setValue(0);

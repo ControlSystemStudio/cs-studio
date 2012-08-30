@@ -52,9 +52,10 @@ public class NativeTextFigure extends AbstractSWTWidgetFigure<Text> implements I
 				if(OPIBuilderPlugin.isRAP())
 					text.getParent().setEnabled(true);
 				text.setEnabled(true);
+				if(!readOnly)
+					getSWTWidget().setEditable(value);
 			}
-			if(!readOnly)
-				getSWTWidget().setEditable(value);
+			
 	}
 
 	@Override

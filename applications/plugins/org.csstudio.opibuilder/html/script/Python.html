@@ -45,8 +45,7 @@
  	able to debug/run the python script in the IDE.</p>
  	<p>PyDev is also a bunch of Eclipse Plugins, so they can be easily integrated to your CSS
  	by following these steps:</p>
- 	<ol>
- 		<li>Install <a href = "http://jython.org/">Jython</a> to your operating system.</li>
+ 	<ol> 		
  		<li>Go to CSS menu <code>Help->Install New Software...</code> to open the dialog as below.
  		In this dialog, click <code>Add...</code> button to add two update site locations(name can be arbitrary):
 	 		<ul>
@@ -61,17 +60,19 @@
  		</li>
  		<li>Restart CSS.</li>
  		<li>Go to <code>CSS->Preferences->PyDev->Interpreter-Jython</code> and select <code>New...</code>
- 		to add the jython interpreter <code>jython.jar</code> from where your Jython was installed.
+ 		to add the jython interpreter <code>jython.jar</code> from <code>&lt;CSS_Installation&gt;/plugin/org.python_&lt;version&gt;/</code>.
+ 		In the next dialog, deselect all folders and click OK. If you see any warning, just ignore it and proceed anyway.</li>
+ 		<li>
  		Select the button <code>New Jar/Zips</code> in <code>Libraries</code> tab and add <code>
  		org.csstudio.opibuilder.jar </code> from  your_CSS_path/plugins folder. Adding this jar file to
  		PYTHONPATH will give you the capability to make code auto-completion to
  		BOY <a href="ScriptUtil.html">ScriptUtil</a>. You can also add other plugins if
  		you want to get code auto-completion to 
  		other plugins, for example, add <code>org.eclipse.jface.jar</code> and <code>org.eclipse.swt.jar</code>
- 		will give you the power of code auto-completion to SWT and JFace code. But this doesn't mean you can run/debug
- 		its code directly from PyDev. 
+ 		will give you the code auto-completion to SWT and JFace code. But this doesn't mean you can run/debug
+ 		its code directly from PyDev. The script is only executable as a BOY script.
  		Remember, only pure Java or Python code are able to run/debug from PyDev.
- 		 <p><img src="img/PyDevPreference.gif" alt="PyDev Preference Dialog"></p>
+ 		 <p><img src="img/PyDevPreferences.png" alt="PyDev Preference Dialog"></p>
  		</li>
  		
  		<li>In CSS Navigator view, right click the project which includes your python script files and 

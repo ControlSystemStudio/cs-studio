@@ -644,19 +644,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH,	borderHandler);
 		
 
-		IWidgetPropertyChangeHandler nameHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler labelBorderHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				if (figure.getBorder() instanceof LabeledBorder)
 					figure.setBorder(BorderFactory.createBorder(
 							getWidgetModel().getBorderStyle(), getWidgetModel()
 									.getBorderWidth(), getWidgetModel()
-									.getBorderColor(), (String) newValue));
+									.getBorderColor(), getWidgetModel().getName()));
 				return true;
 			}
 		};
 
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_NAME, nameHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_NAME, labelBorderHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, labelBorderHandler);
 
 		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,

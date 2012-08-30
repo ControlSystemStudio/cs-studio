@@ -4,9 +4,8 @@
  */
 package org.epics.pvmanager;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -132,29 +131,23 @@ public class CompositeDataSource extends DataSource {
 
         // Iterate through the recipe to understand how to distribute
         // the calls
-        for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
-            Map<String, Map<String, ValueCache>> routingCaches = new HashMap<String, Map<String, ValueCache>>();
-            Collector collector = collEntry.getKey();
-            for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                String name = nameOf(entry.getKey());
-                String dataSource = sourceOf(entry.getKey());
+        Map<String, Collection<ChannelRecipe>> routingRecipes = new HashMap<String, Collection<ChannelRecipe>>();
+        for (ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
+            String name = nameOf(channelRecipe.getChannelName());
+            String dataSource = sourceOf(channelRecipe.getChannelName());
 
-                if (dataSource == null)
-                    throw new IllegalArgumentException("Channel " + name + " uses the default data source but one was never set.");
+            if (dataSource == null)
+                throw new IllegalArgumentException("Channel " + name + " uses the default data source but one was never set.");
 
-                // Add recipe for the target dataSource
-                if (routingCaches.get(dataSource) == null)
-                    routingCaches.put(dataSource, new HashMap<String, ValueCache>());
-                routingCaches.get(dataSource).put(name, entry.getValue());
-            }
-
-            // Add to the recipes
-            for (Map.Entry<String, Map<String, ValueCache>> entry : routingCaches.entrySet()) {
-                if (splitRecipe.get(entry.getKey()) == null)
-                    splitRecipe.put(entry.getKey(), new DataRecipe(recipe.getExceptionHandler()));
-                splitRecipe.put(entry.getKey(), splitRecipe.get(entry.getKey()).includeCollector(collector, entry.getValue()));
-            }
-
+            // Add recipe for the target dataSource
+            if (routingRecipes.get(dataSource) == null)
+                routingRecipes.put(dataSource, new HashSet<ChannelRecipe>());
+            routingRecipes.get(dataSource).add(new ChannelRecipe(name, channelRecipe.getReadSubscription()));
+        }
+        
+        // Create the recipes
+        for (Entry<String, Collection<ChannelRecipe>> entry : routingRecipes.entrySet()) {
+            splitRecipe.put(entry.getKey(), new DataRecipe(entry.getValue()));
         }
 
         splitRecipes.put(recipe, splitRecipe);
@@ -239,14 +232,14 @@ public class CompositeDataSource extends DataSource {
     
 
     @Override
-    ChannelHandler<?> channel(String channelName) {
+    ChannelHandler channel(String channelName) {
         String name = nameOf(channelName);
         String dataSource = sourceOf(channelName);
         return dataSources.get(dataSource).channel(name);
     }
     
     @Override
-    protected ChannelHandler<?> createChannel(String channelName) {
+    protected ChannelHandler createChannel(String channelName) {
         throw new UnsupportedOperationException("Composite data source can't create channels directly.");
     }
 
@@ -258,6 +251,22 @@ public class CompositeDataSource extends DataSource {
         for (DataSource dataSource : dataSources.values()) {
             dataSource.close();
         }
+    }
+
+    @Override
+    public Map<String, ChannelHandler> getChannels() {
+        Map<String, ChannelHandler> channels = new HashMap<String, ChannelHandler>();
+        for (Entry<String, DataSource> entry : dataSources.entrySet()) {
+            String dataSourceName = entry.getKey();
+            DataSource dataSource = entry.getValue();
+            for (Entry<String, ChannelHandler> channelEntry : dataSource.getChannels().entrySet()) {
+                String channelName = channelEntry.getKey();
+                ChannelHandler channelHandler = channelEntry.getValue();
+                channels.put(dataSourceName + delimiter + channelName, channelHandler);
+            }
+        }
+        
+        return channels;
     }
 
 }

@@ -10,18 +10,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.ValueCache;
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.pvmanager.*;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.Timestamp;
 
 /**
  *
  * @author carcassi
  */
-class SimulationChannelHandler<T> extends ChannelHandler<T> {
+class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T>, T> {
 
     private final Simulation<T> simulation;
     private final ScheduledExecutorService exec;
@@ -32,12 +29,12 @@ class SimulationChannelHandler<T> extends ChannelHandler<T> {
             // Protect the timer thread for possible problems.
             try {
                 if (simulation.lastTime == null) {
-                    simulation.lastTime = TimeStamp.now();
+                    simulation.lastTime = Timestamp.now();
                 }
-                List<T> newValues = simulation.createValues(TimeInterval.between(simulation.lastTime, TimeStamp.now()));
+                List<T> newValues = simulation.createValues(TimeInterval.between(simulation.lastTime, Timestamp.now()));
 
                 for (T newValue : newValues) {
-                    processValue(newValue);
+                    processMessage(newValue);
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, "Data simulation problem", ex);
@@ -54,16 +51,18 @@ class SimulationChannelHandler<T> extends ChannelHandler<T> {
     }
 
     @Override
-    public void connect(ExceptionHandler handler) {
-        simulation.lastTime = TimeStamp.now();
+    public void connect() {
+        simulation.lastTime = Timestamp.now();
         taskFuture = exec.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MILLISECONDS);
+        processConnection(simulation);
     }
 
     @Override
-    public void disconnect(ExceptionHandler handler) {
+    public void disconnect() {
         taskFuture.cancel(false);
         taskFuture = null;
         simulation.lastTime = null;
+        processConnection(null);
     }
 
     @Override
@@ -72,13 +71,7 @@ class SimulationChannelHandler<T> extends ChannelHandler<T> {
     }
 
     @Override
-    public boolean updateCache(T event, ValueCache<?> cache) {
-        cache.setValue(event);
-        return true;
-    }
-
-    @Override
-    public boolean isConnected() {
+    public boolean isConnected(Simulation<T> sim) {
         return taskFuture != null;
     }
 }

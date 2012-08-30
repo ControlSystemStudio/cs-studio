@@ -8,7 +8,7 @@ import org.epics.pvmanager.expression.WriteExpressionImpl;
 import org.epics.pvmanager.expression.WriteExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.Executors;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * An expression used to set the final parameters on how the pv expression
@@ -42,6 +42,21 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         super.timeout(timeout, timeoutMessage);
         return this;
     }
+
+    @Override
+    @Deprecated
+    public PVWriterConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
+        super.timeout(timeout);
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public PVWriterConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
+        super.timeout(timeout, timeoutMessage);
+        return this;
+    }
+    
     private WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
 

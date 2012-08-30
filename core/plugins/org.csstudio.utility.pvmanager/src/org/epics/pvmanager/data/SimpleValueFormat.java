@@ -29,7 +29,7 @@ public class SimpleValueFormat extends ValueFormat {
     }
 
     @Override
-    protected StringBuffer format(Scalar<?> scalar, StringBuffer toAppendTo, FieldPosition pos) {
+    protected StringBuffer format(Scalar scalar, StringBuffer toAppendTo, FieldPosition pos) {
         if (scalar == null || scalar.getValue() == null) {
             return toAppendTo;
         }

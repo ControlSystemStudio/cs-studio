@@ -153,7 +153,6 @@ public class ArrayFigure extends Figure implements Introspectable {
 
 	private boolean enabilityDirty;
 	private ListenerList listeners;
-	private Cursor paneCursor;
 	
 	public ArrayFigure() {
 		listeners = new ListenerList();
@@ -422,25 +421,20 @@ public class ArrayFigure extends Figure implements Introspectable {
 		this.arrayLength = arrayLength;
 		scrollbar.setMaximum(arrayLength - 1);
 		spinner.setMax(arrayLength - 1);
-		if(getIndex() >=arrayLength)
+		if(arrayLength > 0 && getIndex() >=arrayLength)
 			setIndex(0);
 		enabilityDirty = true;
 		updateElementsEnability();
 	}
-	@Override
-	public Cursor getCursor() {
-		return paneCursor;
-	}
+
 	
 	@Override
 	public void setCursor(Cursor cursor) {
 		pane.setCursor(cursor);
-		this.paneCursor = cursor;
 	}
 	
 	@Override
 	public void setEnabled(boolean value) {
-		super.setEnabled(value);
 		pane.setEnabled(value);
 		enabilityDirty=true;
 		updateElementsEnability();

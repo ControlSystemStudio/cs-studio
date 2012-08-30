@@ -189,13 +189,17 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 
 	}
 
-	public void writeString(String s){
-		if(infoStream == null){
-			infoStream = console.newOutputStream();
-			infoStream.setColor(CustomMediaFactory.getInstance().getColor(
-					CustomMediaFactory.COLOR_BLACK));
-		}
-		writeToConsole(infoStream, s);
+	public void writeString(final String s){
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				if (infoStream == null) {
+					infoStream = console.newOutputStream();
+					infoStream.setColor(CustomMediaFactory.getInstance()
+							.getColor(CustomMediaFactory.COLOR_BLACK));
+				}
+				writeToConsole(infoStream, s);
+			}
+		});
 	}
 
 

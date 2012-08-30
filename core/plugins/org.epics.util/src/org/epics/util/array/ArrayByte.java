@@ -24,7 +24,7 @@ public final class ArrayByte extends ListByte implements Serializable {
      * 
      * @param array an array
      */
-    public ArrayByte(byte[] array) {
+    public ArrayByte(byte... array) {
         this(array, true);
     }
     
@@ -84,6 +84,10 @@ public final class ArrayByte extends ListByte implements Serializable {
         }
         
         return super.equals(obj);
+    }
+
+    byte[] wrappedArray() {
+        return array;
     }
     
 }

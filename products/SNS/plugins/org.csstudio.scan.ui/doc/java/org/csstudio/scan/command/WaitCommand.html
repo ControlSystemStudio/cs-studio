@@ -139,6 +139,13 @@ Command that delays the scan until a device reaches a certain value
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize</TD>
 </TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/WaitCommand.html#WaitCommand(java.lang.String, double)">WaitCommand</A></B>(java.lang.String&nbsp;device_name,
+            double&nbsp;desired_value)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize with default tolerance and no timeout</TD>
+</TR>
 </TABLE>
 &nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
@@ -302,6 +309,19 @@ public <B>WaitCommand</B>()</PRE>
 <DL>
 <DD>Initialize empty wait command
 <P>
+</DL>
+<HR>
+
+<A NAME="WaitCommand(java.lang.String, double)"><!-- --></A><H3>
+WaitCommand</H3>
+<PRE>
+public <B>WaitCommand</B>(java.lang.String&nbsp;device_name,
+                   double&nbsp;desired_value)</PRE>
+<DL>
+<DD>Initialize with default tolerance and no timeout
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device to check<DD><CODE>desired_value</CODE> - Desired value of the device for equality comparison</DL>
 </DL>
 <HR>
 

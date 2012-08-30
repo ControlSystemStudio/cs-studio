@@ -11,7 +11,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VTable {
+public interface VTable extends VType {
 
     /**
      * The number of columns in the table.

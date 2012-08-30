@@ -16,8 +16,6 @@ import org.junit.Test;
 /** Standalone "main" test of the PVUtilDataAPI and the GUI */
 public class TestMain
 {
-    //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
-    //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod";
     @SuppressWarnings("nls")
     @Test
 	public void test() throws Exception

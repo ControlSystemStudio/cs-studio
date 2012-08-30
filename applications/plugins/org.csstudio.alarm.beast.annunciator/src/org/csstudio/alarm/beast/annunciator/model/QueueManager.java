@@ -40,6 +40,9 @@ public class QueueManager implements Runnable
     /** Set to <code>false</code> to stop thread */
     private volatile boolean run = true;
 
+    /** Enable the voice annunciations, or silence them? */
+    private volatile boolean enabled = true;
+
     /** Initialize Queue Manager
      *  @param listener Listener to notify about progress
      *  @param queue SpeechPriorityQueue where the messages and Severity information will arrive
@@ -90,8 +93,9 @@ public class QueueManager implements Runnable
                     // Exit requested?
                     if (!run)
                         return;
-                    // Speak message off queue
-                    speech.say(message);
+                    // Speak message off queue (may be silenced)
+                    if (enabled)
+                        speech.say(message);
                     // .. then notify listener
                     listener.performedAnnunciation(qc);
 
@@ -158,5 +162,11 @@ public class QueueManager implements Runnable
         {
             // NOPs
         }
+    }
+
+    /** @param enabled Enable the voice annunciations? */
+    public void setEnabled(final boolean enabled)
+    {
+        this.enabled = enabled;
     }
 }
