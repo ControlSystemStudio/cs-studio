@@ -40,7 +40,7 @@ BUILD_HOST=lcba03
 
 case "${BUILD_HOST}" in
     lcba03 | abco4)
-        export TOP=${HOME}/work/cs-studio
+        export TOP=${HOME}/work/cs-studio-3.1
         export CYGDRIVE=
         export BUILDDIR=${HOME}/work/CSSBuild
         export ECLIPSE_BASE=${HOME}/work
