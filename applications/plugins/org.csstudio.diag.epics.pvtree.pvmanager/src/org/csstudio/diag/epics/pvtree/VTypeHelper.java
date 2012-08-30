@@ -52,7 +52,14 @@ public class VTypeHelper
         else if (value instanceof VString)
         {
             final VString text = (VString) value;
-            buf.append(text.getValue());
+            try
+            {   // org.epics.pvmanager.jca.VStringFromDbr.getValue(VStringFromDbr.java:39) can create NullPointerException
+                buf.append(text.getValue());
+            }
+            catch (NullPointerException ex)
+            {
+                buf.append("'null'");
+            }
         }
         else if (value instanceof VEnum)
         {
