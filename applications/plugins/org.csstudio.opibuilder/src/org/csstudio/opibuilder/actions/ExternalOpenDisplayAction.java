@@ -36,13 +36,17 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 			MacrosInput macrosInput = null;
 			//parse macros
 			if(data != null && data.trim().length() > 0){
-				macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
+				macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 				 final String pairs[] = StringSplitter.splitIgnoreInQuotes(data, ',', true); //$NON-NLS-1$
 			     for (String pair : pairs){
 			        final String name_value[] = StringSplitter.splitIgnoreInQuotes(pair, '=', true); //$NON-NLS-1$
-			        if (name_value.length != 2)
-			                throw new Exception("Input '" + pair + "' does not match 'name=value'");
-			            macrosInput.getMacrosMap().put(name_value[0], name_value[1]);
+			        if (name_value.length == 2)
+			        	macrosInput.getMacrosMap().put(name_value[0], name_value[1]);
+			        else if(name_value.length == 1)
+			        	macrosInput.getMacrosMap().put(name_value[0], ""); 
+			        else
+			            throw new Exception("Input '" + pair + "' does not match 'name=value'");
+			            
 			     }		     
 			}
 			IPath originPath = ResourceUtil.getPathFromString(path);
