@@ -27,7 +27,6 @@
       <plugin id="org.csstudio.application.weightrequest"/>
       <plugin id="org.csstudio.common.log4j" fragment="true"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
@@ -49,7 +48,6 @@
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.datashare"/>
