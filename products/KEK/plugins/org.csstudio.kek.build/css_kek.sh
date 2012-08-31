@@ -17,6 +17,7 @@ SCRIPTDIR=$(cd $(dirname $0) && pwd)
 
 ACC=$(echo "$1" | tr "[a-z]" "[A-Z]")
 OS=$(echo "$2" | tr "[a-z]" "[A-Z]")
+shift 2;
 
 # Temporary plugin customization file.
 # This file must be writable by the user who run this script.
@@ -56,7 +57,7 @@ EOF
 
 # Launch CSS with the temporary plugin customization file
 if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
-    ${CSS} -pluginCustomization ${TMP_INI} -share_link ${SHARE_LINK_SRC}=${SHARE_LINK_DEST}
+    ${CSS} -pluginCustomization ${TMP_INI} -share_link ${SHARE_LINK_SRC}=${SHARE_LINK_DEST} "$@"
 else
-    ${CSS} -pluginCustomization ${TMP_INI} 
+    ${CSS} -pluginCustomization ${TMP_INI} "$@"
 fi

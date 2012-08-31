@@ -88,7 +88,7 @@ for PLATFORM in ${PLATFORMS}; do
             # Generate a launcher script and include it into the zip.
             echo "#!/bin/sh" > css_${VERSION}/css_kek_${acc}
             echo "SCRIPTDIR=\$(cd \$(dirname \$0) && pwd)" >> css_${VERSION}/css_kek_${acc}
-            echo "sh \${SCRIPTDIR}/css_kek.sh $acc LINUX" >> css_${VERSION}/css_kek_${acc}
+            echo "sh \${SCRIPTDIR}/css_kek.sh $acc LINUX \"\$@\"" >> css_${VERSION}/css_kek_${acc}
 
             chmod a+x css_${VERSION}/css_kek_${acc}
 	    ADD_FILE_LIST="${ADD_FILE_LIST} css_${VERSION}/css_kek_${acc}"
@@ -143,7 +143,7 @@ for PLATFORM in ${PLATFORMS}; do
 
             echo "#!/bin/sh" > css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
             echo "SCRIPTDIR=\$(cd \$(dirname \$0) && pwd)" >> css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
-            echo "sh \${SCRIPTDIR}/css_kek.sh $acc MACOSX" >> css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
+            echo "sh \${SCRIPTDIR}/css_kek.sh $acc MACOSX \"\$@\"" >> css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
 
             chmod a+x css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
             
