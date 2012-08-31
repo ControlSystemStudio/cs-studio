@@ -387,14 +387,14 @@ CREATE TABLE "WARTUNG_STATUS"
 );
 
 REM INSERTING into WARTUNG_STATUS
--- Insert into WARTUNG_STATUS (STATUS) values ('Rueckfrage');
--- Insert into WARTUNG_STATUS (STATUS) values ('angeliefert');
--- Insert into WARTUNG_STATUS (STATUS) values ('ausgeliefert');
--- Insert into WARTUNG_STATUS (STATUS) values ('definiert');
--- Insert into WARTUNG_STATUS (STATUS) values ('in Arbeit');
--- Insert into WARTUNG_STATUS (STATUS) values ('nicht definiert');
--- Insert into WARTUNG_STATUS (STATUS) values ('nicht reparabel');
--- Insert into WARTUNG_STATUS (STATUS) values ('repariert');
+Insert into WARTUNG_STATUS (STATUS) values ('Rueckfrage');
+Insert into WARTUNG_STATUS (STATUS) values ('angeliefert');
+Insert into WARTUNG_STATUS (STATUS) values ('ausgeliefert');
+Insert into WARTUNG_STATUS (STATUS) values ('definiert');
+Insert into WARTUNG_STATUS (STATUS) values ('in Arbeit');
+Insert into WARTUNG_STATUS (STATUS) values ('nicht definiert');
+Insert into WARTUNG_STATUS (STATUS) values ('nicht reparabel');
+Insert into WARTUNG_STATUS (STATUS) values ('repariert');
 
 Insert into ARTIKEL_STATUS (STATUS) values ('angeliefert');
 Insert into ARTIKEL_STATUS (STATUS) values ('ausgeliehen');
@@ -404,7 +404,7 @@ Insert into ARTIKEL_STATUS (STATUS) values ('bestellt');
 Insert into ARTIKEL_STATUS (STATUS) values ('definiert');
 Insert into ARTIKEL_STATUS (STATUS) values ('eingebaut');
 Insert into ARTIKEL_STATUS (STATUS) values ('in Lager');
-Insert into ARTIKEL_STATUS (STATUS) values ('in Repartur');
+Insert into ARTIKEL_STATUS (STATUS) values ('in Reparatur');
 Insert into ARTIKEL_STATUS (STATUS) values ('nicht definiert');
 
 --------------------------------------------------------
