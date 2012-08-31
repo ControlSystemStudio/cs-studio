@@ -61,7 +61,7 @@ public class IocViewServlet extends HttpServlet {
     }
 
     private void createPage(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         StringBuilder page = null;
         String iocName = null;
         
