@@ -133,9 +133,19 @@ Factory for <A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;<A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object)">createSample</A></B>(java.util.Date&nbsp;timestamp,
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Number...)">createSample</A></B>(java.util.Date&nbsp;timestamp,
              long&nbsp;serial,
-             java.lang.Object&nbsp;value)</CODE>
+             java.lang.Number...&nbsp;numbers)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create ScanSample for plain number or text value</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object[])">createSample</A></B>(java.util.Date&nbsp;timestamp,
+             long&nbsp;serial,
+             java.lang.Object[]&nbsp;values)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create ScanSample for plain number or text value</TD>
@@ -180,18 +190,37 @@ public <B>ScanSampleFactory</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="createSample(java.util.Date, long, java.lang.Object)"><!-- --></A><H3>
+<A NAME="createSample(java.util.Date, long, java.lang.Number...)"><!-- --></A><H3>
 createSample</H3>
 <PRE>
 public static <A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A> <B>createSample</B>(java.util.Date&nbsp;timestamp,
                                       long&nbsp;serial,
-                                      java.lang.Object&nbsp;value)
+                                      java.lang.Number...&nbsp;numbers)
                                throws java.lang.IllegalArgumentException</PRE>
 <DL>
 <DD>Create ScanSample for plain number or text value
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - Time stamp<DD><CODE>serial</CODE> - Serial to identify when the sample was taken<DD><CODE>value</CODE> - Value (Number, String)
+<DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - Time stamp<DD><CODE>serial</CODE> - Serial to identify when the sample was taken<DD><CODE>numbers</CODE> - <CODE>Number</CODE>s
+<DT><B>Returns:</B><DD><A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><CODE>ScanSample</CODE></A>
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.IllegalArgumentException</CODE> - if the value type is not handled</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="createSample(java.util.Date, long, java.lang.Object[])"><!-- --></A><H3>
+createSample</H3>
+<PRE>
+public static <A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A> <B>createSample</B>(java.util.Date&nbsp;timestamp,
+                                      long&nbsp;serial,
+                                      java.lang.Object[]&nbsp;values)
+                               throws java.lang.IllegalArgumentException</PRE>
+<DL>
+<DD>Create ScanSample for plain number or text value
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - Time stamp<DD><CODE>serial</CODE> - Serial to identify when the sample was taken<DD><CODE>values</CODE> - Values
 <DT><B>Returns:</B><DD><A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><CODE>ScanSample</CODE></A>
 <DT><B>Throws:</B>
 <DD><CODE>java.lang.IllegalArgumentException</CODE> - if the value type is not handled</DL>

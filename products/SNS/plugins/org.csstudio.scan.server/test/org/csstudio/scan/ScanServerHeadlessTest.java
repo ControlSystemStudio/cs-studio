@@ -27,6 +27,7 @@ import java.util.List;
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LogCommand;
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanData;
@@ -58,10 +59,11 @@ public class ScanServerHeadlessTest implements Runnable
     /** @return Demo scan sequence */
     private CommandSequence createCommands() throws Exception
     {
-        final CommandSequence commands = new CommandSequence();
-        commands.log("ypos", "readback");
-        commands.loop("xpos", 1, 5, 1,
-                new LogCommand("xpos"));
+        final CommandSequence commands = new CommandSequence(
+            new LogCommand("ypos", "readback"),
+            new LoopCommand("xpos", 1, 5, 1,
+                new LogCommand("xpos"))
+        );
         return commands;
     }
 

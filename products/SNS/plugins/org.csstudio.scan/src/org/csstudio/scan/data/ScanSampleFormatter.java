@@ -17,6 +17,7 @@ package org.csstudio.scan.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 /** Helper for formatting {@link ScanSample}s
@@ -36,7 +37,7 @@ public class ScanSampleFormatter
 	public static double asDouble(final ScanSample sample)
 	{
 	    if (sample instanceof NumberScanSample)
-	        return ((NumberScanSample) sample).getNumber().doubleValue();
+	        return ((NumberScanSample) sample).getNumber(0).doubleValue();
 	    return Double.NaN;
 	}
 
@@ -46,11 +47,14 @@ public class ScanSampleFormatter
 	 */
 	public static String asString(final ScanSample sample)
 	{
-	    if (sample instanceof NumberScanSample)
-	    	return ((NumberScanSample) sample).getNumber().toString();
 	    if (sample == null)
 	    	return "";
-	    return sample.toString();
+	    final Object[] values = sample.getValues();
+	    if (values == null)
+	        return "";
+	    if (values.length == 1)
+	        return values[0].toString();
+        return Arrays.toString(values);
 	}
 
 	/** @param timestamp {@link Date}

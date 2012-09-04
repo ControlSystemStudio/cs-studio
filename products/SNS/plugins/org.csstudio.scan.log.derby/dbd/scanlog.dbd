@@ -11,6 +11,8 @@
 DROP TABLE scans;
 DROP TABLE devices;
 DROP TABLE samples;
+DROP FUNCTION createSampleValue;
+DROP TYPE SampleValue RESTRICT;
 
 -- Create tables
 CREATE TABLE scans
@@ -26,13 +28,17 @@ CREATE TABLE devices
 	name VARCHAR(100)
 );
 
+CREATE TYPE SampleValue EXTERNAL NAME 'org.csstudio.scan.log.derby.SampleValue' LANGUAGE JAVA;
+
+CREATE FUNCTION createSampleValue (FLOAT) RETURNS SampleValue NO SQL LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME 'org.csstudio.scan.log.derby.SampleValue.create';
+
 CREATE TABLE samples
 (
 	scan_id BIGINT NOT NULL,
 	device_id BIGINT NOT NULL,
 	serial BIGINT,
 	timestamp TIMESTAMP,
-	number DOUBLE
+    value SampleValue
 );
 
 -- Indices

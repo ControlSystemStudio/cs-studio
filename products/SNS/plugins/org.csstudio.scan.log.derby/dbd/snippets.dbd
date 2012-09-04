@@ -26,8 +26,11 @@ INSERT INTO devices(name) VALUES ('setpoint'), ('readback'), ('xpos'), ('ypos');
 
 SELECT * FROM devices;
 
-INSERT INTO samples(scan_id, device_id, serial, timestamp, number)
- VALUES(1, 3, 1, '2012-04-01 13:03:20', 3.14), (1, 3, 2, '2012-04-01 13:03:21', 3.15);
+VALUES createSampleValue(3.14);
+
+INSERT INTO samples(scan_id, device_id, serial, timestamp, value)
+  VALUES(1, 3, 1, '2012-04-01 13:03:20', createSampleValue(3.14)),
+         (1, 3, 2, '2012-04-01 13:03:21', createSampleValue(3.15));
  
 SELECT * FROM samples;
 
@@ -36,12 +39,7 @@ SELECT DISTINCT d.name
   JOIN devices d ON s.device_id = d.id
   WHERE scan_id=1;
 
-SELECT serial, timestamp, number
- FROM samples
- WHERE scan_id=9 AND device_id=1
- ORDER BY serial;
- 
-SELECT serial, timestamp, number, d.name 
+SELECT serial, timestamp, value, d.name 
  FROM samples s
  JOIN devices d ON s.device_id = d.id
  WHERE scan_id=1

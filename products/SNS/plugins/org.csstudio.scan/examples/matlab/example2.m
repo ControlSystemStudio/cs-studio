@@ -29,12 +29,15 @@ ylim([0 10]);
 %% Create a scan
 % Scan x/y, at each step waiting for readback to follow setpoint
 
-seq = CommandSequence();
+scan = java.util.ArrayList;
 for i = 1:N
-    seq.set('xpos', x(i));
-    seq.set('ypos', y(i));
-    seq.log({ 'xpos', 'ypos' });
+    scan.add(SetCommand('xpos', x(i)));
+    scan.add(SetCommand('ypos', y(i)));
+    scan.add(DelayCommand(0.5));
+    scan.add(LogCommand({ 'xpos', 'ypos' }));
 end
+
+seq = CommandSequence(scan);
 seq.dump();
 
 

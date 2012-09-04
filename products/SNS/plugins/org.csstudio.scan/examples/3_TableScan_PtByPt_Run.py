@@ -20,16 +20,16 @@ if widget.getVar(counter)== None:
 else:
     widget.setVar(counter, widget.getVar(counter)+1)
 
-seq = CommandSequence()
+cmds = []
 for i in range(table.getRowCount()):
     table.setRowBackground(i, ColorFontUtil.WHITE)
-    seq.set('xpos', float(table.getCellText(i, 1)))
-    seq.set('ypos', float(table.getCellText(i, 2)))
-    seq.set('setpoint', float(table.getCellText(i, 3)), 'readback', 0.1, 0)
-    seq.log([ 'xpos', 'ypos', 'readback' ])    
+    cmds.append(SetCommand('xpos', float(table.getCellText(i, 1))))
+    cmds.append(SetCommand('ypos', float(table.getCellText(i, 2))))
+    cmds.append(SetCommand('setpoint', float(table.getCellText(i, 3)), 'readback'))
+    cmds.append(LogCommand([ 'xpos', 'ypos', 'readback' ]))
     
+seq = CommandSequence(cmds)
 id = client.submit("Point by Point Scan " + str(widget.getVar(counter)), seq)
-
 
 display.setVar("LatestPointScanID", id)
 
