@@ -8,6 +8,9 @@
 package org.csstudio.utility.product;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -67,4 +70,15 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
     }
+    
+    @Override
+	public boolean preShutdown() {
+    	try {
+			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 }
