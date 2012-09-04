@@ -19,7 +19,8 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.export.ExportErrorHandler;
-import org.csstudio.trends.databrowser2.export.MatlabExportJob;
+import org.csstudio.trends.databrowser2.export.MatlabFileExportJob;
+import org.csstudio.trends.databrowser2.export.MatlabScriptExportJob;
 import org.csstudio.trends.databrowser2.export.PlainExportJob;
 import org.csstudio.trends.databrowser2.export.Source;
 import org.csstudio.trends.databrowser2.export.SpreadsheetExportJob;
@@ -27,11 +28,14 @@ import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -180,6 +184,23 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         optimize.setLayoutData(new GridData());
         // Enable only when using optimized export
         optimize.setEnabled(source_opt.getSelection());
+
+        source_plot.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                min_max_col.setEnabled(minMaxAllowed());
+            }
+        });
+        source_raw.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                min_max_col.setEnabled(minMaxAllowed());
+            }
+        });
         source_opt.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -187,7 +208,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 final boolean use_optimized = source_opt.getSelection();
                 optimize.setEnabled(use_optimized);
-                min_max_col.setEnabled(use_optimized &&  !type_matlab.getSelection());
+                min_max_col.setEnabled(minMaxAllowed());
                 if (use_optimized)
                     optimize.setFocus();
             }
@@ -272,7 +293,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(true);
                 format_expo.setEnabled(true);
                 format_digits.setEnabled(!format_default.getSelection());
-                min_max_col.setEnabled(source_opt.getSelection());
+                min_max_col.setEnabled(!source_raw.getSelection());
             }
         });
         type_matlab.addSelectionListener(new SelectionAdapter()
@@ -286,7 +307,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(false);
                 format_expo.setEnabled(false);
                 format_digits.setEnabled(false);
-                min_max_col.setEnabled(false);
+                min_max_col.setEnabled(minMaxAllowed());
             }
         });
         final SelectionAdapter digit_enabler = new SelectionAdapter()
@@ -320,6 +341,15 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         filename.setToolTipText(Messages.ExportFilenameTT);
         filename.setText(Messages.ExportDefaultFilename);
         filename.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        filename.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyPressed(final KeyEvent e)
+            {
+                if (e.character == '\r')
+                    startExportJob();
+            }
+        });
 
         final Button sel_filename = new Button(group, SWT.PUSH);
         sel_filename.setText(Messages.ExportBrowse);
@@ -349,6 +379,12 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 startExportJob();
             }
         });
+    }
+
+    /** @return <code>true</code> if the min/max (error) column option should be enabled */
+    private boolean minMaxAllowed()
+    {
+        return !type_matlab.getSelection()  &&   !source_raw.getSelection();
     }
 
     /** {@inheritDoc} */
@@ -481,8 +517,19 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         final Job export;
         if (type_matlab.getSelection())
         {   // Matlab file export
-            export = new MatlabExportJob(model, start_time, end_time, source,
-                    optimize_count, filename, this);
+
+            if (filename.endsWith(".m")) //$NON-NLS-1$
+                export = new MatlabScriptExportJob(model, start_time, end_time, source,
+                        optimize_count, filename, this);
+            else if (filename.endsWith(".mat")) //$NON-NLS-1$
+                export = new MatlabFileExportJob(model, start_time, end_time, source,
+                        optimize_count, filename, this);
+            else
+            {
+                MessageDialog.openError(type_matlab.getShell(), Messages.Error,
+                        Messages.ExportMatlabFilenameError);
+                return;
+            }
         }
         else
         {   // Spreadsheet file export
@@ -514,8 +561,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 formatter = new ValueWithInfoFormatter(format, precision);
             else
                 formatter = new ValueFormatter(format, precision);
-            formatter.useMinMaxColumn(source == Source.OPTIMIZED_ARCHIVE  &&
-                                      min_max_col.getSelection());
+            formatter.useMinMaxColumn(minMaxAllowed() && min_max_col.getSelection());
             if (tabular.getSelection())
                 export = new SpreadsheetExportJob(model, start_time, end_time, source,
                         optimize_count, formatter, filename, this);
@@ -541,10 +587,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 if (start.isDisposed())
                     return;
-                MessageDialog.openError(start.getShell(),
-                        Messages.Error,
-                        NLS.bind(Messages.ExportErrorFmt, ex.getMessage()));
-                ex.printStackTrace();
+                ExceptionDetailsErrorDialog.openError(start.getShell(), Messages.Error, ex);
             }
         });
     }

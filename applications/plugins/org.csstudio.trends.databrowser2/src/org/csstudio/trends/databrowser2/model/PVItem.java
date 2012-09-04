@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -392,30 +394,12 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Add data retrieved from an archive to the 'historic' section
      *  @param server_name Archive server that provided these samples
-     *  @param result Historic data
+     *  @param new_samples Historic data
      */
     synchronized public void mergeArchivedSamples(final String server_name,
-            final ArrayList<IValue> result)
+            final List<IValue> new_samples)
     {
-        samples.mergeArchivedData(server_name, result);
-
-//        // Order check
-//        final int N = samples.getSize();
-//        if (N <= 0)
-//            return;
-//        ITimestamp prev = samples.getSample(0).getTime();
-//        for (int i=1;  i<N;  ++i)
-//        {
-//            final ITimestamp time = samples.getSample(i).getTime();
-//            if (time.isLessThan(prev))
-//            {
-//                System.out.println("Time stamp problem at " + i);
-//                System.out.println(samples.getSample(i));
-//                return;
-//            }
-//            prev = time;
-//        }
-//        System.out.println(N + " Samples in order");
+        samples.mergeArchivedData(server_name, new_samples);
     }
 
     /** Write XML formatted PV configuration
@@ -472,20 +456,28 @@ public class PVItem extends ModelItem implements PVListener
 
         item.configureFromDocument(model, node);
 
-        if (Preferences.useDefaultArchives())
-            item.useDefaultArchiveDataSources();
-        else
-        {   // Load archives from saved configuration
-            Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
-            while (archive != null)
-            {
-                final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
-                final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
-                final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
-                item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
-                archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
-            }
+        // Load archives from saved configuration
+        boolean have_imported_data = false;
+        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
+        while (archive != null)
+        {
+            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
+            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
+            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
+
+            if (url.startsWith(ImportArchiveReaderFactory.PREFIX))
+                have_imported_data = true;
+
+            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
+            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
         }
+
+        // When requested, use default archive sources for 'real' archives (RDB, ...)
+        // Do not clobber an imported archive data source, a specific file which was
+        // probably not meant to be replaced by a default.
+        if (Preferences.useDefaultArchives()  &&  !have_imported_data)
+            item.useDefaultArchiveDataSources();
+
         return item;
     }
 }

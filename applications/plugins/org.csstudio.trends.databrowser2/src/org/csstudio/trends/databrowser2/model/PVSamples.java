@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
@@ -56,13 +57,13 @@ public class PVSamples extends PlotSamples
         	return listeners.remove(listener);
         }
     }
-    
+
     /** @param index Waveform index to show */
-    public void setWaveformIndex(final int index)
+    public void setWaveformIndex(int index)
     {
     	live.setWaveformIndex(index);
     	history.setWaveformIndex(index);
-    	
+
     	synchronized (listeners)
     	{
     		for (IDataProviderListener listener : listeners)
@@ -199,7 +200,7 @@ public class PVSamples extends PlotSamples
      *  @param result Historic data
      */
     synchronized public void mergeArchivedData(final String source,
-            final ArrayList<IValue> result)
+            final List<IValue> result)
     {
         history.mergeArchivedData(source, result);
     }

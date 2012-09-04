@@ -27,7 +27,6 @@ public class Perspective implements IPerspectiveFactory
     /** Perspective ID (same ID as original Data Browser) registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.Perspective";
 
-    final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
 
     /** Try to switch to the DataBrowser perspective
      *  @throws WorkbenchException on error
@@ -58,7 +57,6 @@ public class Perspective implements IPerspectiveFactory
         // Stuff for 'left'
         left.addView(SearchView.ID);
         left.addView(IPageLayout.ID_RES_NAV);
-        left.addPlaceholder(ID_SNS_PV_UTIL);
 
         // Stuff for 'bottom'
         bottom.addView(IPageLayout.ID_PROP_SHEET);

@@ -7,67 +7,68 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.archive;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 
+import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.osgi.util.NLS;
-import org.junit.Ignore;
 import org.junit.Test;
 
-/** [Headless] JUnit Plug-in test of the ConnectJob
+/** [Headless] JUnit Plug-in test of the {@link ConnectJob}
  *  @author Kay Kasemir
- *  FIXME (kasemir) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
-@Ignore("See FIXME")
 public class ConnectJobTest
 {
-    /** Archive data server URL
-     *
-     *  MUST BE ADAPTED TO YOUR SITE FOR TEST TO SUCCEED!
-     */
-    final private String url =
-        "jdbc:oracle:thin:sns_reports/sns@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-//        "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
+    private volatile String info = null;
+    final private CountDownLatch done = new CountDownLatch(1);
 
-
-    final private Semaphore done = new Semaphore(0);
-
-    @Test
+    @Test(timeout=20000)
     public void testConnectJob() throws Exception
     {
+        final TestProperties settings = new TestProperties();
+        String url = settings.getString("archive_rdb_url");
+        if (url == null)
+        {
+            System.out.println("Skipped");
+            return;
+        }
+        System.out.println("Connecting to " + url);
         new ConnectJob(url)
         {
             @Override
             protected void archiveServerConnected(final ArchiveReader reader,
                     final ArchiveInfo infos[])
             {
-                //System.out.println("Connected to " + reader.getServerName());
-                //System.out.println(infos.length + " archives:");
+                System.out.println("Connected to " + reader.getServerName());
+                System.out.println(infos.length + " archives:");
                 for (final ArchiveInfo info : infos)
                 {
                     System.out.println(info.getKey() + ": " + info.getName() + " (" + info.getDescription() + ")");
                 }
-                done.release();
+                info = "Connected";
+                done.countDown();
             }
 
             @Override
             protected void archiveServerError(final String url, final Exception ex)
             {
-                fail(NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
-                done.release();
+                info = NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage());
+                done.countDown();
             }
         }.schedule();
 
         // Wait for success or error
-        done.acquire();
+        done.await();
+        assertThat(info, equalTo("Connected"));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testError() throws Exception
     {
         new ConnectJob("bad_url")
@@ -76,19 +77,21 @@ public class ConnectJobTest
             protected void archiveServerConnected(final ArchiveReader reader,
                     final ArchiveInfo infos[])
             {
-                fail("It connected??");
-                done.release();
+                info = "Connected to bad URL?";
+                done.countDown();
             }
 
             @Override
             protected void archiveServerError(final String url, final Exception ex)
             {
-                //System.out.println(NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
-                done.release();
+                System.out.println(NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
+                info = "Failed as expected";
+                done.countDown();
             }
         }.schedule();
 
         // Wait for success or error
-        done.acquire();
+        done.await();
+        assertThat(info, equalTo("Failed as expected"));
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="SampleImporter" name="Data Importer" schema="schema/importer.exsd"/>
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
@@ -218,5 +219,21 @@
             class="org.csstudio.trends.databrowser2.OpenDisplayFile"
             file_extension="plt">
       </openDisplay>
+   </extension>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory"
+            name="org.csstudio.trends.databrowser2.import_archive_reader"
+            prefix="import">
+      </ArchiveReader>
+   </extension>
+   <extension
+         point="org.csstudio.trends.databrowser2.SampleImporter">
+      <importer
+            type="csv"
+            description="CSV Data File"
+            class="org.csstudio.trends.databrowser2.imports.CSVSampleImporter">
+      </importer>
    </extension>
 </plugin>
