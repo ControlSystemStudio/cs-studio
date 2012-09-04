@@ -51,7 +51,7 @@ public class AlarmTreeItem extends TreeItem
 
     /** Commands */
     private GDCDataStructure commands[] = new GDCDataStructure[0];
-    
+
     /** Automated Actions */
     private AADataStructure automated_actions[] = new AADataStructure[0];
 
@@ -185,7 +185,7 @@ public class AlarmTreeItem extends TreeItem
             throw new IllegalArgumentException();
         this.commands = commands;
     }
-    
+
     /** @return Automated Actions */
     public synchronized AADataStructure[] getAutomatedActions()
     {
@@ -269,7 +269,7 @@ public class AlarmTreeItem extends TreeItem
         this.message = message;
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, false);
+            parent.maximizeSeverity();
         return true;
     }
 
@@ -301,14 +301,9 @@ public class AlarmTreeItem extends TreeItem
 
     /** Set severity/status of this item by maximizing over its child
      *  severities.
-     *  Recursively updates its parent items,
-     *  the root item will then notify the model,
-     *  which will notify listeners.
-     *  @param leaf PV that triggered this update
-     *  @param parent_changed A parent of the leave down to this node also changed
-     *  @return <code>true</code> if a previous parent of the leaf higher up the tree or this item changed
+     *  Recursively updates parent items.
      */
-    public synchronized boolean maximizeSeverity(final AlarmTreeLeaf leaf, boolean parent_changed)
+    public synchronized void maximizeSeverity()
     {
     	// Get maximum child severity and its status
     	SeverityLevel new_current_severity = SeverityLevel.OK;
@@ -333,7 +328,7 @@ public class AlarmTreeItem extends TreeItem
             	new_message = child.getMessage();
             }
         }
-        
+
         if (new_current_severity != current_severity  ||
             new_severity != severity  ||
             !new_message.equals(message))
@@ -341,14 +336,12 @@ public class AlarmTreeItem extends TreeItem
             current_severity = new_current_severity;
             severity = new_severity;
             message = new_message;
-        	parent_changed = true;
         }
-        
+
         // Percolate changes towards root
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-        	return parent.maximizeSeverity(leaf, parent_changed);
-        return parent_changed;
+            parent.maximizeSeverity();
     }
 
     /** {@inheritDoc} */
@@ -457,7 +450,7 @@ public class AlarmTreeItem extends TreeItem
             out.println();
         }
     }
-    
+
     /** Write AADataStructure as XML
      *  @param out PrintWriter to which to send XML output
      *  @param level Indentation level

@@ -27,6 +27,7 @@ import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.logging.JMSLogMessage;
+import org.eclipse.osgi.util.NLS;
 
 /** Alarm Server
  *
@@ -53,18 +54,21 @@ public class AlarmServer
     /** Messenger to communicate with clients */
     final private ServerCommunicator messenger;
 
+    /** {@link NagTimer} or <code>null</code> if not used */
+    private volatile NagTimer nag_timer;
+
     /** Hierarchical alarm configuration
-     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
+     *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
      */
 	private TreeItem alarm_tree;
 
     /** All the PVs in the alarm_tree, sorted by name
-     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
+     *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
      */
     private AlarmPV pv_list[] = new AlarmPV[0];
 
     /** All the PVs in the model, mapping PV name (not path name!) to AlarmPV
-     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
+     *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
      */
     private Map<String, AlarmPV> pv_map = new HashMap<String, AlarmPV>();
 
@@ -75,7 +79,7 @@ public class AlarmServer
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
      *  @param work_queue Work queue of the 'main' thread
-     *  @param root_name 
+     *  @param root_name
      *  @throws Exception on error
      */
     public AlarmServer(final WorkQueue work_queue, final String root_name) throws Exception
@@ -134,7 +138,7 @@ public class AlarmServer
         }
 
         System.out.println("Work queue size: " + work_queue.size());
-        
+
         // Log memory usage in MB
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
         final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);
@@ -158,6 +162,50 @@ public class AlarmServer
         messenger.start();
         messenger.sendAnnunciation(Messages.StartupMessage);
         startPVs();
+
+        // Conditionally enable nagging
+        double nag_period;
+        try
+        {
+            nag_period = AlarmServerPreferences.getNagPeriod();
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING,
+                    "Invalid '" + AlarmServerPreferences.NAG_PERIOD + "', repeated annunciations disabled", ex);
+            nag_period = 0.0;
+        }
+        if (nag_period > 0)
+        {
+            nag_timer = new NagTimer(Math.round(nag_period * 1000), new NagTimerHandler()
+            {
+                @Override
+                public int getActiveAlarmCount()
+                {
+                    int active = 0;
+                    // Sync on access to pv_list
+                    synchronized (AlarmServer.this)
+                    {
+                        for (AlarmPV pv : pv_list)
+                            if (pv.getAlarmLogic().getAlarmState().getSeverity().isActive())
+                                ++active;
+                    }
+                    return active;
+                }
+
+                @Override
+                public void nagAboutActiveAlarms(final int active)
+                {
+                    final String message;
+                    if (active == 1)
+                        message = "There is 1 active alarm";
+                    else
+                        message = NLS.bind("There are {0} active alarms", active);
+                    messenger.sendAnnunciation(message);
+                }
+            });
+            nag_timer.start();
+        }
     }
 
     /** Start PVs */
@@ -196,6 +244,11 @@ public class AlarmServer
     /** Stop all the PVs, disconnect from JMS */
     public void stop()
     {
+        if (nag_timer != null)
+        {
+            nag_timer.cancel();
+            nag_timer = null;
+        }
         messenger.sendAnnunciation("Alarm server exiting");
         stopPVs();
         messenger.stop();
@@ -268,11 +321,26 @@ public class AlarmServer
     		findPVs(node.getChild(i), pvs);
     }
 
+    /** Reset the {@link NagTimer} - if we're using one
+     *
+     *  <p>To be called in response to any user action
+     *  (ack, config) or when performing other annunciation,
+     *  so that the nag will only happen if there are active
+     *  alarms while nobody does anything about them.
+     */
+    private void resetNagTimer()
+    {
+        final NagTimer safe_copy = nag_timer;
+        if (safe_copy != null)
+            safe_copy.reset();
+    }
+
     /** Read updated configuration for PV from RDB
      *  @param path_name PV name or <code>null</code> to reload complete configuration
      */
     void updateConfig(final String path_name) throws Exception
     {
+        resetNagTimer();
         AlarmPV pv = null;
         if (path_name != null)
         {
@@ -302,6 +370,7 @@ public class AlarmServer
      */
     public void acknowledge(final String pv_name, final boolean acknowledge)
     {
+        resetNagTimer();
         final AlarmPV pv = findPV(pv_name);
         if (pv != null)
             pv.getAlarmLogic().acknowledge(acknowledge);
@@ -339,7 +408,7 @@ public class AlarmServer
     	        severity, message, value, timestamp);
         // Move the persistence of states into separate queue & thread
         // so that it won't delay the alarm server from updating.
-    	
+
     	// ReplacableRunnable:
     	// If there is already an update request for this PV on the queue,
     	// replace it with the new one because it's out of date and no
@@ -435,6 +504,7 @@ public class AlarmServer
      */
     public void sendAnnunciation(final SeverityLevel level, final String message)
     {
+        resetNagTimer();
         messenger.sendAnnunciation(level, message);
     }
 

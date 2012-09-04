@@ -5,12 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.msghist.model;
+package org.csstudio.alarm.beast.msghist;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 
+import org.csstudio.alarm.beast.msghist.model.Message;
+import org.csstudio.alarm.beast.msghist.model.Model;
+import org.csstudio.alarm.beast.msghist.model.ModelListener;
 import org.junit.Test;
 
 /** JUnit test of the Model
@@ -19,30 +22,25 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ModelDemo implements ModelListener
 {
-    private static final String URL = "jdbc:oracle:thin:@//172.31.75.138:1521/prod";
-    private static final String USER = "css_msg_user";
-    private static final String PASSWORD = "sns";
-    private static final String SCHEMA = "MSG_LOG";
-
-	private Semaphore got_response = new Semaphore(0);
+	private CountDownLatch got_response = new CountDownLatch(1);
 
     // ModelListener
     @Override
     public void modelChanged(final Model model)
     {
         System.out.println("Received model update");
-        got_response.release();
+        got_response.countDown();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testGetMessages() throws Exception
     {
-        final Model model = new Model(URL, USER, PASSWORD, SCHEMA, 1000);
+        final Model model = new Model(MessageRDBTest.URL, MessageRDBTest.USER, MessageRDBTest.PASSWORD, MessageRDBTest.SCHEMA, 1000);
         model.addListener(this);
 
         System.out.println("Starting query");
         model.setTimerange("-1day", "now");
-        got_response.acquire();
+        got_response.await();
         final Message[] messages = model.getMessages();
         System.out.println("Got " + messages.length + " messages");
         assertTrue(messages.length > 0);

@@ -840,9 +840,9 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, true);
-        else
-            fireNewAlarmState(pv, true);
+            parent.maximizeSeverity();
+        // Update alarm display
+        fireNewAlarmState(pv, true);
     }
 
 	/** Update the enablement of a PV in model.
@@ -868,12 +868,11 @@ public class AlarmClientModel
             pv.setEnabled(enabled);
         }
         // This could change the alarm tree after a PV was disabled or enabled.
-        // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, true);
-        else
-            fireNewAlarmState(pv, true);
+            parent.maximizeSeverity();
+        // Update alarm display
+        fireNewAlarmState(pv, true);
 	}
 
 	/** Update the state of a PV in model.

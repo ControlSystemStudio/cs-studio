@@ -969,8 +969,15 @@ Quotes (") can be used to include spaces inside an argument.
 <p>
 The command will be executed with the "current directory"
 set to the "Command Directory" that is configured
-in the alarm system preferences.
+in the alarm system preferences <pre>org.csstudio.alarm.beast/command_directory</pre>.
+Note that the commands are executed by the operating system that runs the notfier.
+Commands in the <pre>command_directory</pre> may not be executed unless
+the PATH variable of the operating system includes the current directory ".",
+the command itself is specified as "./the_command" to select the current directory as set via the <pre>command_directory</pre>,
+or the PATH lists the full path to the <pre>command_directory</pre>.
 </p>
+
+
 <p>
 A suggested setup would probably place all alarm system related
 commands in a directory like <code>/usr/local/css/alarm_scripts</code>,
@@ -988,6 +995,88 @@ As with guidance and related displays, each command item is separated
 into "Title" and the "Command" which in this case is the actual
 command to invoke.
 </p>
+
+
+<h3>Automated Notifications</h3>
+<p>
+If alarms persist for a certain time without being acknowledged or cleared,
+and automated notification can be generated.
+</p>
+<p>
+If you configure a notification for an alarm trigger PV, the default message will
+contain the alarm info for that PV.
+If you configure a notification for a system or area, the default message will list
+the PVs in alarm below that section of the alarm tree.
+</p>
+<p>
+The configuration of an automated notification has three parts:
+<ol>
+<li>Title: The title to be displayed as a context menu item. The max length of title is 30 characters.
+</li>
+<li>Delay: Delay in seconds before the notification is performed.
+    If the alarm is acknowledged or clears before this delay, no notification will be performed.</li>
+<li>Details: Details of the automated action to be executed.
+    The exact format of the notification detail depends on the type of notification,
+    for example email, as listed below.
+</li>
+</li>
+</ol>
+</p>
+
+<p>
+The automated notifications are performed by a designated "alarm-notifier"
+that must be running in parallel to the alarm server.
+</p>
+
+
+<h4>Email Notifications</h4>
+<p>
+Email notifications start with "mailto:", using the RFC 6068 URL schema.
+</p>
+<p>
+Examples:
+</p>
+<pre>
+mailto:user@my.org
+mailto:list1@example.com,list2@example.fr
+mailto:user1@my.org?cc=support@my.org&bcc=john.doe@gmail.com
+mailto:user@my.org?cc=rf@my.org&subject=*RF Source 1 in error&body={0} Alarm raised - Water below {1} m3
+</pre>
+
+<p>
+Within the configuration, the text <code>{0}</code> will be replaced with the alarm severity
+and <code>{1}</code> with the value that triggered the alarm.
+</p>
+
+
+<h4>External Command</h4>
+<p>
+The prefix "cmd:" selects an external command to be executed. Examples:
+</p>
+<p>
+Examples:
+</p>
+<pre>cmd:caput SomePV 1
+cmd:my_notifier *
+</pre>
+
+<p>
+Within the configuration, the text <code>*</code> will be replaced with a list
+of alarm PVs and alarm severities.
+</p>
+
+<p>
+The command is executed with the working directory defined by the preference
+<pre>org.csstudio.alarm.beast/command_directory</pre> of the notifier.
+</p>
+
+
+<!-- Not implemented:
+SMS: sms URL scheme (RFC 5724). Example: "sms:+15105550101,+15105550102"
+Phone: tel URL scheme (RFC 2806). Example: "tel:+15105550101,+15105550102"s
+ -->
+
+
 
 
 

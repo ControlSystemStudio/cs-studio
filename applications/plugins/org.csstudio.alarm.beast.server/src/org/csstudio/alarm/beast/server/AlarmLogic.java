@@ -160,7 +160,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             {   // Remember current PV state in case we're re-enabled
                 disabled_state = current_state;
                 // Otherwise pretend all is OK, using special message
-                current_state = AlarmState.createClearState();
+                current_state = AlarmState.createClearState(current_state.getValue());
                 alarm_state = new AlarmState(SeverityLevel.OK,
                         Messages.AlarmMessageDisabled, "", //$NON-NLS-1$
                         TimestampFactory.now());
@@ -297,7 +297,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
                         current_state.getSeverity() != SeverityLevel.INVALID);
             return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
             if (return_to_ok)
-                alarm_state = AlarmState.createClearState(received_state.getTime());
+                alarm_state = AlarmState.createClearState(received_state.getValue(), received_state.getTime());
         }
         // Out of sync'ed section
         if (return_to_ok)
@@ -479,7 +479,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             {   // Does this actually 'clear' an acknowledged severity?
                 if (current_state.getSeverity() == SeverityLevel.OK)
                 {
-                    alarm_state = AlarmState.createClearState();
+                    alarm_state = AlarmState.createClearState(current_state.getValue());
                     clear_global_alarm = true;
                 }
                 else

@@ -276,14 +276,23 @@ ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_STATUS
 -- Example data.
 -- Skip if there is no need for an example
 --
-INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Test', now());
+
+-- This entry with PARENT_CMPNT_ID = NULL
+-- defines an alarm tree 'root'
+INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Annunciator', now());
+
+-- Following entries are below that root
 INSERT INTO ALARM.ALARM_TREE VALUES (2, 1, 'Area', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (3, 2, 'System', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (4, 3, 'PV1', now());
 INSERT INTO ALARM.ALARM_TREE VALUES (5, 3, 'PV2', now());
 
+-- ALARM_TREE entries 'PV1', 'PV2' become PVs because of associated data in PV table:
 INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (4, 'Demo 1', true, true, true, false);
 INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (5, 'Demo 2', true, true, true, false);
+
+-- Guidance, commands, .. can be associated with Areas, systems, PVs
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (3, 1, 'System Info', 'This is info for the system and PVs below it'); 
     
 INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 1, 'Info 1', 'Do something'); 
 INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 2, 'Info 2', 'Do something else'); 

@@ -12,6 +12,7 @@ package org.csstudio.alarm.beast;
  *  See http://www.javacoffeebreak.com/articles/network_timeouts by David Reilly
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class TimeoutTimer extends Thread
 {
     /** Granularity or fraction of timeout at which timeouts are checked.
@@ -31,19 +32,29 @@ abstract public class TimeoutTimer extends Thread
     private long elapsed;
 
     private boolean timed_out = false;
- 
-    /** Initialize
+
+    /** Initialize with default name
      *  @param timeout Timeout period in milliseconds.
      *  @see #GRANULARITY
      */
     public TimeoutTimer(final long timeout)
     {
-        super("Timeout Timer"); //$NON-NLS-1$
+        this("Timeout Timer", timeout);
+    }
+
+    /** Initialize
+     *  @param name Name of the timer
+     *  @param timeout Timeout period in milliseconds.
+     *  @see #GRANULARITY
+     */
+    public TimeoutTimer(final String name, final long timeout)
+    {
+        super(name);
         this.timeout = timeout < GRANULARITY ? GRANULARITY : timeout;
         setDaemon(true);
         reset();
     }
-    
+
     /** @return <code>true</code> while timed out */
     public synchronized boolean isTimedOut()
     {
@@ -73,7 +84,7 @@ abstract public class TimeoutTimer extends Thread
         run = false;
         interrupt();
     }
-    
+
     /** Thread's main routine.
      *  Periodically check for timeouts.
      *  Once timed out, wait for a reset.

@@ -58,8 +58,8 @@ public class AlarmLogicHeadlessTest
                 final int delay, final int count, final int global_delay)
         {
         	logic = new AlarmLogic(this, latching, annunciating, delay, count,
-                    AlarmState.createClearState(),
-                    AlarmState.createClearState(),
+                    AlarmState.createClearState(""),
+                    AlarmState.createClearState(""),
                     global_delay);
         }
 
@@ -226,7 +226,7 @@ public class AlarmLogicHeadlessTest
         // All back to OK
         logic.computeNewState("f", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("f", logic.getAlarmState().getValue());
     }
 
     @Test
@@ -418,13 +418,13 @@ public class AlarmLogicHeadlessTest
         Thread.sleep(delay * 500);
         logic.computeNewState("b", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
 
         // Assert that it stays that way
         System.out.println("wait...");
         Thread.sleep(delay * 1500);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
     }
 
     @Test
@@ -454,7 +454,7 @@ public class AlarmLogicHeadlessTest
         // Ack to clear alarm
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
 
         // -----
 
@@ -462,19 +462,19 @@ public class AlarmLogicHeadlessTest
         logic.computeNewState("c", SeverityLevel.MINOR, "high");
         Thread.sleep(500);
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
 
         // Neither has MAJOR
         final ITimestamp now = TimestampFactory.now();
         logic.computeNewState(new AlarmState(SeverityLevel.MAJOR, "too high", "d", now));
         logic.check(true, false, SeverityLevel.MAJOR, "too high", SeverityLevel.OK, OK);
         Thread.sleep(delay * 100);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
 
         // Back to MINOR
         logic.computeNewState("e", SeverityLevel.MINOR, "high");
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
-        assertEquals("", logic.getAlarmState().getValue());
+        assertEquals("b", logic.getAlarmState().getValue());
 
         // ... until latched MAJOR (!) appears after some delay
         System.out.println("wait...");

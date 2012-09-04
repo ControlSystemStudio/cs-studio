@@ -205,14 +205,16 @@ public abstract class AbstractNotificationAction implements INotificationAction 
     @Override
 	public void cancel() {
 		status = EActionStatus.CANCELED;
-		wrappingThread.interrupt();
+		if (wrappingThread != null)
+		    wrappingThread.interrupt();
 	}
 
 	/** {@inheritDoc} */
     @Override
 	public void forceExec() {
 		status = EActionStatus.FORCED;
-		wrappingThread.interrupt();
+		if (wrappingThread != null)
+		    wrappingThread.interrupt();
 	}
 
     @Override

@@ -8,12 +8,13 @@
 package org.csstudio.alarm.beast.ui.alarmtree;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Content provider that interfaces between the AlarmClientModel's
- *  AlarmTreeItem hierarchy and the TreeViewer
+/** Content provider that interfaces between the {@link AlarmClientModel}'s
+ *  {@link AlarmTreeItem} hierarchy and the {@link TreeViewer}
  *  @author Kay Kasemir
  */
 public class AlarmTreeContentProvider implements ILazyTreeContentProvider
@@ -38,7 +39,7 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
 
     /** @see ILazyTreeContentProvider */
     @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+    public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput)
     {
         tree_viewer = (TreeViewer) viewer;
         // Need to call setItemCount to update
