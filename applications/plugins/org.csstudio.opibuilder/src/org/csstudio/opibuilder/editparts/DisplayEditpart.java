@@ -61,7 +61,6 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 	}
 	
-	@SuppressWarnings("serial")
 	@Override
 	public void activate() {
 		super.activate();
@@ -90,6 +89,17 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 					oldSize = size;
 					getWidgetModel().scale(widthRatio, heightRatio);
 //					oldSize = size;					
+					//make sure the display figure repaint everything especially for RAP.
+					if(OPIBuilderPlugin.isRAP())
+						UIBundlingThread.getInstance().addRunnable(new Runnable() {
+							
+							@Override
+							public void run() {
+								getFigure().revalidate();
+								getFigure().repaint();
+								
+							}
+						});
 				}
 			};
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
@@ -103,14 +113,27 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		}
 		
 		if(getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isAutoZoomToFitAll()){
+			originSize = new org.eclipse.swt.graphics.Point(
+					getWidgetModel().getWidth(), getWidgetModel().getHeight());
+			oldSize=originSize;
 			zoomListener = new ControlAdapter() {
 					@Override
 					public void controlResized(ControlEvent e) {
+						if(!isActive() || getViewer() == null || getViewer().getControl().isDisposed())
+							return;
 						org.eclipse.swt.graphics.Point size = 
 								((FigureCanvas)getViewer().getControl()).getSize();
+						if(size.equals(oldSize))
+							return;
+						//In RAP, each revalidate will enlarge the shell by 1000, see  
+						//org.eclipse.rwt.internal.textsize.TextSizeRecalculation.enlargeShell(Shell shell)
+						if(OPIBuilderPlugin.isRAP() && (size.x - oldSize.x) == 1000 && (size.y - oldSize.y) == 1000)
+							return;
 						if (size.x * size.y > 0)
 							((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoomAsText(
 									ZoomManager.FIT_ALL);
+						oldSize = size;
+
 					}
 				};
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
@@ -122,6 +145,14 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			});
 			getViewer().getControl().addControlListener(zoomListener);
 		}
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
+			@Override
+			public void run() {
+				if(getViewer()!=null && getViewer().getControl() != null && !getViewer().getControl().isDisposed())
+					getViewer().getControl().forceFocus();
+			}
+		});
+		
 	}
 	
 	@Override
@@ -129,15 +160,14 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		final Control control = getViewer().getControl();
 		if (getViewer() != null && !control.isDisposed()) {
 			//This needs to be executed in UI Thread
-			
+			final ZoomManager zoomManager = ((ScalableFreeformRootEditPart) getRoot()).getZoomManager();
 			control.getDisplay().asyncExec(new Runnable() {
 				
 				@Override
 				public void run() {
 					if (zoomListener != null && !control.isDisposed()) {
 						// recover zoom
-						((ScalableFreeformRootEditPart) getRoot()).getZoomManager()
-								.setZoom(1.0);
+						zoomManager.setZoom(1.0);
 						control.removeControlListener(zoomListener);
 					}
 

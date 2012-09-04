@@ -180,7 +180,7 @@ Progress Bar</text>
     <widget_type>Tank</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>119</width>
     <show_lolo>true</show_lolo>
@@ -216,7 +216,7 @@ Progress Bar</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <color_lolo>
@@ -260,7 +260,7 @@ $(pv_value)</tooltip>
     <widget_type>Tank</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>150</width>
     <show_lolo>true</show_lolo>
@@ -296,7 +296,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <color_lolo>
@@ -317,59 +317,6 @@ $(pv_value)</tooltip>
     <x>45</x>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>-1ba7f91e:1363666d19c:-7dc1</wuid>
-    <scripts />
-    <height>28</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image>../pictures/home-16x16.png</image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>531</y>
-    <actions hook="true" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>../10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>1</replace>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>24</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
     <macros>
@@ -396,7 +343,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>394</width>
     <border_style>13</border_style>
@@ -432,7 +379,7 @@ $(pv_value)</tooltip>
       <widget_type>Thermometer</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>110</width>
       <show_lolo>true</show_lolo>
@@ -469,7 +416,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <color_lolo>
@@ -515,7 +462,7 @@ $(pv_value)</tooltip>
       <widget_type>Thermometer</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <show_lolo>true</show_lolo>
@@ -552,7 +499,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <color_lolo>
@@ -598,7 +545,7 @@ $(pv_value)</tooltip>
       <widget_type>Thermometer</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <show_lolo>true</show_lolo>
@@ -635,7 +582,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <color_lolo>
@@ -681,7 +628,7 @@ $(pv_value)</tooltip>
       <widget_type>Thermometer</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <show_lolo>true</show_lolo>
@@ -718,7 +665,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <color_lolo>
@@ -768,7 +715,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>386</width>
     <border_style>13</border_style>
@@ -804,7 +751,7 @@ $(pv_value)</tooltip>
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>224</width>
       <show_lolo>true</show_lolo>
@@ -843,7 +790,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>0.0</origin>
@@ -890,7 +837,7 @@ $(pv_value)</tooltip>
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>27</width>
       <show_lolo>true</show_lolo>
@@ -929,7 +876,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>10.0</origin>
@@ -976,7 +923,7 @@ $(pv_value)</tooltip>
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>55</width>
       <show_lolo>true</show_lolo>
@@ -1015,7 +962,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>0.0</origin>
@@ -1062,7 +1009,7 @@ $(pv_value)</tooltip>
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>201</width>
       <show_lolo>true</show_lolo>
@@ -1101,7 +1048,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>80.0</origin>
@@ -1148,7 +1095,7 @@ $(pv_value)</tooltip>
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>224</width>
       <show_lolo>true</show_lolo>
@@ -1187,7 +1134,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>10.0</origin>
@@ -1235,7 +1182,7 @@ $(pv_value)</tooltip>
     <widget_type>Tank</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>111</width>
     <show_lolo>true</show_lolo>
@@ -1271,7 +1218,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <color_lolo>
@@ -1315,7 +1262,7 @@ $(pv_value)</tooltip>
     <widget_type>Tank</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>155</width>
     <show_lolo>true</show_lolo>
@@ -1351,7 +1298,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <color_lolo>
@@ -1398,7 +1345,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -1475,6 +1422,7 @@ $(pv_value)</tooltip>
       <anti_alias>true</anti_alias>
       <name>Polyline</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1496,7 +1444,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -1539,7 +1487,7 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
@@ -1557,5 +1505,53 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>8</x>
     </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>66d1507f:138820a85e5:-7dab</wuid>
+    <scripts />
+    <height>38</height>
+    <name>Action Button_1</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <font>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+    </font>
+    <width>97</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>543</y>
+    <actions hook="true" hook_all="false">
+      <action type="EXECUTE_JAVASCRIPT">
+        <path>../scripts/goHome.js</path>
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>17</x>
   </widget>
 </display>

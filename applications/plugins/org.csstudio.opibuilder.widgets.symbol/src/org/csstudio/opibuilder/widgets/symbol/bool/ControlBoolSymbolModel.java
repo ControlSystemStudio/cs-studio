@@ -5,10 +5,10 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.FilePathPropertyWithFilter;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.tools.filebrowser.FilePathPropertyWithFilter;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
@@ -144,9 +144,9 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 				"Flip Horizontal", WidgetPropertyCategory.Image, false));
 		addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, "Flip Vertical",
 				WidgetPropertyCategory.Image, false));
-		setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
-		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
-		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
+//		setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
+//		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
+//		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
 		
 		addProperty(new StringProperty(PROP_DISPOSITION, "Image Disposition",
 				WidgetPropertyCategory.Image, "1234"));
