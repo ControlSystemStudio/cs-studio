@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Activator;
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.apputil.time.DelayCheck;
@@ -326,6 +327,26 @@ public class AlarmConfiguration
         return (AlarmTreeItem) addRootOrComponent(parent, name);
     }
 
+    /** Check if alarm configuration already contains an item
+     *  of given parent and name
+     *
+     *  @param parent Parent item, must not be <code>null</code>
+     *  @param name Name of item to be added
+     *  @throws Exception if there is already an item with same name
+     */
+    @SuppressWarnings("nls")
+    private void checkDuplicatePath(final AlarmTreeItem parent,
+            final String name) throws Exception
+    {
+        if (parent == null)
+            throw new Exception("Parent item is null");
+
+        final String path = AlarmTreePath.makePath(parent.getPathName(), name);
+        final AlarmTreeItem existing_item = config_tree.getItemByPath(path);
+        if (existing_item != null)
+            throw new Exception("Alarm configuration already contains an element with path "  + path);
+    }
+
     /** Create a new tree root, or add (sub)component to existing root
      *  or component.
      * @param parent Parent element in tree. <code>null</code> for root
@@ -340,9 +361,8 @@ public class AlarmConfiguration
         if (parent instanceof AlarmTreePV)
             throw new Exception("Cannot add sub-element to PV " +
                     parent.getName());
-        if (parent != null  &&  parent.getChild(name) != null)
-            throw new Exception("Alarm configuration element " +
-                    parent.getName() + " already has sub-element" + name);
+
+        checkDuplicatePath(parent, name);
 
         rdb.getConnection().setAutoCommit(false);
         final int id = getNextItemID();
@@ -406,6 +426,10 @@ public class AlarmConfiguration
     public AlarmTreePV addPV(final AlarmTreeItem parent,
                       final String name) throws Exception
     {
+        // Check if item with that path already exists
+        checkDuplicatePath(parent, name);
+
+        // Check if same PV is already found elsewhere in this tree
         final AlarmTreePV found = findPV(name);
         if (found != null)
             throw new Exception(name + " already under " + found.getPathName());
@@ -814,7 +838,7 @@ public class AlarmConfiguration
             throw ex;
         }
     }
-    
+
     /**Update automated actions in RDB by id
      * @param id The id of the item in alarmtree.
      * @param aaList automated actions ArrayList.
@@ -829,9 +853,9 @@ public class AlarmConfiguration
 			deleteAA.setInt(1, id);
 			deleteAA.executeUpdate();
 			int order = 0;
-			if (aaList != null && aaList.length > 0) 
+			if (aaList != null && aaList.length > 0)
 			{
-				for (AADataStructure aa : aaList) 
+				for (AADataStructure aa : aaList)
 				{
 					insertAA.setInt(1, id);
 					insertAA.setInt(2, order);
@@ -842,7 +866,7 @@ public class AlarmConfiguration
 					order++;
 				}
 			}
-		} catch (Exception ex) 
+		} catch (Exception ex)
 		{
 			throw ex;
 		}
@@ -873,7 +897,7 @@ public class AlarmConfiguration
             delete_commands_by_id.close();
         }
     }
-    
+
     /** Delete all automated actions for an item
      *  @param id Item ID
      *  @throws Exception on error
