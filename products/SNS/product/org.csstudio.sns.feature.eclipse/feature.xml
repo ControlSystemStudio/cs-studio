@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Components"
-      version="3.1.0.qualifier"
+      version="3.1.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -134,6 +134,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.common" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api"/>
    </requires>
 
    <plugin

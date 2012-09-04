@@ -1,3 +1,6 @@
+javax.mail/**
+org.antlr.runtime/**
+org.apache.batik/**
 org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
@@ -60,9 +63,11 @@ org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
 org.csstudio.opibuilder.editor/**
 org.csstudio.opibuilder.examples/**
+org.csstudio.opibuilder.imagelib/**
 org.csstudio.opibuilder.rcp/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.rcp/**
+org.csstudio.opibuilder.widgets.symbol/**
 org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
@@ -122,10 +127,16 @@ org.csstudio.utility.pv/**
 org.csstudio.utility.pv.epics/**
 org.csstudio.utility.pv.simu/**
 org.csstudio.utility.pvmanager/**
+org.csstudio.utility.pvmanager.epics/**
+org.csstudio.utility.pvmanager.loc/**
+org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.workspace/**
 org.epics.util/**
+org.hamcrest/**
 org.jdom/**
+org.junit-dep/**
+org.mockito/**
 org.python/**
