@@ -1,6 +1,5 @@
-package org.csstudio.diag.interconnectionServer.server;
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -20,26 +19,29 @@ package org.csstudio.diag.interconnectionServer.server;
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.diag.interconnectionServer.server;
 
-import org.csstudio.platform.logging.CentralLogger;
+import javax.annotation.CheckForNull;
 
+import org.csstudio.servicelocator.ServiceLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Whatever needs to be done when an IOC changes state.
+ * The constructor starts a thread which sends jms messages (formerly also changed ldap state, this is an explanation for the names) and
+ * maintains state of the given ioc connection.   
  *
  * @author Matthias Clausen
  *
  */
 public class IocChangedState extends Thread{
-	private String ldapIocName = "unknown Name";
-	private String logicalIocName = "unknown logical Name";
+    private static final Logger LOG = LoggerFactory.getLogger(IocChangedState.class);
+
 	private boolean isRunning = true;
 	private final IocConnection iocConnection;
 
 	IocChangedState(final IocConnection connection, final boolean isRunning) {
 		this.iocConnection = connection;
-		this.logicalIocName = connection.getLogicalIocName();
-		this.ldapIocName = connection.getLdapIocName();
 		this.isRunning = isRunning;
 
 		this.start();
@@ -48,78 +50,112 @@ public class IocChangedState extends Thread{
 	@Override
     public void run() {
 
-		final String localHostName = InterconnectionServer.getInstance().getLocalHostName();
+		IInterconnectionServer interconnectionServer = ServiceLocator.getService(IInterconnectionServer.class);
+        final String localHostName = interconnectionServer.getLocalHostName();
 
-		InterconnectionServer.getInstance().getNumberOfIocFailoverCollector().incrementCount();
+		interconnectionServer.getNumberOfIocFailoverCollector().incrementCount();
 
-		CentralLogger.getInstance().debug(this,"IocChangedState: logical IOC name: " + logicalIocName);
+		LOG.debug("IocChangedState: logical IOC name: " + iocConnection.getNames().getLogicalIocName());
 
 		if ( isRunning()) {
 			/*
 			 * IOC back online
 			 */
-			CentralLogger.getInstance().warn(this, "InterconnectionServer: Host: " + logicalIocName + " connected again - waiting for alarm updates");
-			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
-					logicalIocName + ":connectState",		// name
-					localHostName, 							// value
-					JmsMessage.SEVERITY_NO_ALARM, 			// severity
-					"CONNECTED", 							// status
-					logicalIocName, 						// host
-					null, 									// facility
-					"virtual channel");
+			LOG.warn("InterconnectionServer: Host: " + iocConnection.getNames().getLogicalIocName() + " connected again - waiting for alarm updates");
+			sendMessageConnected(localHostName);
 			/*
 			 * do NOT set the connect state for records in LDAP!
 			 * This is handled if the select state changes -> get all alarm states from the IOC
 			 *
 			 * not necessary: setAllRecordsToConnected ( logicalIocName);
 			 */
-		} else if ( !InterconnectionServer.getInstance().isQuit()){
-			/*
-			 * set channels in LDAP to disconnected
-			 * send messages -> IOC is disconnected!
-			 *
-			 * BUT: only if Interconnection Server is still running and was NOT stopped by command!
-			 * -> isQuit()
-			 */
+		} else if ( !interconnectionServer.isQuit()){
+			// set channels in LDAP to disconnected
+			// send messages -> IOC is disconnected!
+			//
+			// BUT: only if Interconnection Server is still running and was NOT stopped by command, therefore the check for isQuit()
 
-			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <disConnected> mode for Host: " + logicalIocName);
-			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
-					logicalIocName + ":connectState",		// name
-					localHostName, 							// value
-					JmsMessage.SEVERITY_MAJOR, 				// severity
-					"DISCONNECTED", 						// status
-					logicalIocName, 						// host
-					null, 									// facility
-					"virtual channel");
-			/*
-			 * for sure we are not selected any more
-			 *
-			 * XXX: Why does this use a different name than the other messages?
-			 */
-			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
-					localHostName + ":" + logicalIocName + ":selectState",	// name
-					localHostName, 							// value
-					JmsMessage.SEVERITY_MINOR, 				// severity
-					"NOT-SELECTED", 						// status
-					logicalIocName, 						// host
-					null, 									// facility
-					"virtual channel");
-			/*
-			 * set changes in LDAP and generate JMS Alarm message
-			 */
-			LdapServiceFacadeImpl.INSTANCE.setAllRecordsToDisconnected (ldapIocName);
-			/*
-			 * remember that we've set this IOC to disconnected!
-			 * one the IOC is back online - and we are selected - -> get all alarms from the IOC
-			 */
+			LOG.warn("InterconnectionServer: All channels set to <disConnected> mode for Host: " + iocConnection.getNames().getLogicalIocName());
+			sendMessageDisconnected(localHostName);
+			
+			// we are not selected any more
+			sendMessageNotSelected(localHostName);
+
+			// set changes in LDAP and generate JMS Alarm message
+			ServiceLocator.getService(ILdapServiceFacade.class).setAllRecordsToDisconnected (iocConnection.getNames().getLdapIocName());
+			
+			// remember that we've set this IOC to disconnected!
+			// one the IOC is back online - and we are selected - -> get all alarms from the IOC
 			iocConnection.setDidWeSetAllChannelToDisconnect(true);
 		}
 	}
 
-	public boolean isRunning() {
+    private void sendMessageConnected(final String localHostName) {
+        String partnerState = getPartnerState();
+        String text = partnerState != null ? partnerState : "IOC has no partner";
+
+        JmsMessage.INSTANCE.sendMessage(JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+        		JmsMessage.MESSAGE_TYPE_IOC_ALARM,                                 // type
+        		iocConnection.getNames().getLogicalIocName() + ":connectState",    // name
+        		localHostName,                                                     // value
+        		JmsMessage.SEVERITY_NO_ALARM,                                      // severity
+        		"CONNECTED",                                                       // status
+        		iocConnection.getNames().getLogicalIocName(),                      // host
+        		null,                                                              // facility
+        		text);                                                             // text
+    }
+
+    private void sendMessageDisconnected(final String localHostName) {
+        String partnerState = getPartnerState();
+        String text = partnerState != null ? partnerState : "IOC has no partner";
+        
+        JmsMessage.INSTANCE.sendMessage(JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+        		JmsMessage.MESSAGE_TYPE_IOC_ALARM,                                 // type
+        		iocConnection.getNames().getLogicalIocName() + ":connectState",    // name
+        		localHostName,                                                     // value
+        		JmsMessage.SEVERITY_MAJOR,                                         // severity
+        		"DISCONNECTED",                                                    // status
+        		iocConnection.getNames().getLogicalIocName(),                      // host
+        		null,                                                              // facility
+        		text);                                                             // text
+    }
+
+    private void sendMessageNotSelected(final String localHostName) {
+        String partnerState = getPartnerState();
+        String text = partnerState != null ? partnerState : "IOC has no partner";
+
+        JmsMessage.INSTANCE.sendMessage(JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+                JmsMessage.MESSAGE_TYPE_IOC_ALARM,                                 // type
+                iocConnection.getNames().getLogicalIocName() + ":selectState",     // name
+                localHostName,                                                     // value
+                JmsMessage.SEVERITY_MINOR,                                         // severity
+                "NOT-SELECTED",                                                    // status
+                iocConnection.getNames().getLogicalIocName(),                      // host
+                null,                                                              // facility
+                text);                                                             // text
+    }
+
+    /**
+     * @return null if ioc has no partner, else readable form of connection state of partner
+     */
+    @CheckForNull
+    private String getPartnerState() {
+        String result = null;
+        if (iocConnection.getNames().isRedundant()) {
+            IIocConnectionManager iocConnectionManager = ServiceLocator.getService(IIocConnectionManager.class);
+            IocConnection partnerIocConnection = iocConnectionManager.getIocConnectionFromName(iocConnection.getNames().getPartnerIpAddress());
+            if (partnerIocConnection != null) {
+                result = "Partner IOC " + partnerIocConnection.getNames().getHostName() + " is "
+                        + partnerIocConnection.getCurrentConnectState() + " and "
+                        + partnerIocConnection.getCurrentSelectState();
+            } else {
+                result = "Partner IOC expected at " + iocConnection.getNames().getPartnerIpAddress() + " but not found";
+            }
+        }
+        return result;
+    }
+
+    public boolean isRunning() {
 		return isRunning;
 	}
 

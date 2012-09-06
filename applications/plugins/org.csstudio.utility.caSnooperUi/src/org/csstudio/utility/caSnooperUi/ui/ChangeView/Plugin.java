@@ -1,6 +1,6 @@
 package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -8,7 +8,7 @@ import org.osgi.framework.BundleContext;
  * 
  * 
  */
-public class Plugin extends AbstractCssUiPlugin {
+public class Plugin extends AbstractUIPlugin {
 
 	/**
 	 * The plug-in ID
@@ -31,11 +31,13 @@ public class Plugin extends AbstractCssUiPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	protected void doStart(BundleContext context){
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 		plugin = this;
 	}
 	
-	protected void doStop(BundleContext context){
+	public void stop(BundleContext context)throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 
@@ -47,10 +49,4 @@ public class Plugin extends AbstractCssUiPlugin {
 	public static Plugin getDefault() {
 		return plugin;
 	}
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
-
 }

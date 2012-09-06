@@ -1,9 +1,9 @@
 package org.csstudio.platform.libs.hibernate;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
     /**
      *  The plug-in ID.
@@ -33,21 +33,15 @@ public class Activator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
+    	super.start(context);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doStop(BundleContext context) throws Exception {
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
+    public void stop(BundleContext context) throws Exception {
+    	super.stop(context);
     }
 }

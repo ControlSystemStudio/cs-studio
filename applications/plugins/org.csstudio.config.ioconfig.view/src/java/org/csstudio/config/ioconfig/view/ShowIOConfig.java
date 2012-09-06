@@ -24,12 +24,12 @@
  */
 package org.csstudio.config.ioconfig.view;
 
-import javax.annotation.Nonnull;
-
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
 /**
@@ -38,39 +38,18 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision: 1.2 $
  * @since 20.07.2007
  */
-public class ShowIOConfig implements IWorkbenchWindowActionDelegate {
-    
-    /** A workbench window handle. */
-    private IWorkbenchWindow _window;
-    
-    /**
-     * {@inheritDoc}
-     */
+public class ShowIOConfig extends AbstractHandler {
+
+	/** {@inheritDoc} */
     @Override
-    public void dispose() {
-        // Nothig do dispose
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public final void init(@Nonnull final IWorkbenchWindow window) {
-        _window = window;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public final void run(@Nonnull final IAction action) {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         try {
-            IOConfigActivatorUI.getDefault().getWorkbench().showPerspective("org.csstudio.config.ioconfig.view.perspective", _window);
+        	IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IOConfigActivatorUI.getDefault().getWorkbench().showPerspective("org.csstudio.config.ioconfig.view.perspective", window);
         } catch (final WorkbenchException e) {
             e.printStackTrace();
         }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void selectionChanged(@Nonnull final IAction action,
-                                 @Nonnull final ISelection selection) {
-        // nothing to do at selection change
+        return null;
     }
 }

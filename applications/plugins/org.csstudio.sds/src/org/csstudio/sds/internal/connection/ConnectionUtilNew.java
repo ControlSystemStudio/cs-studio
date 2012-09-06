@@ -26,7 +26,6 @@ import java.util.Map;
 import org.csstudio.auth.security.ActivationService;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.internal.model.logic.RuleEngine;
@@ -39,6 +38,7 @@ import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.dal.simple.ConnectionParameters;
 import org.csstudio.dal.simple.RemoteInfo;
 import org.csstudio.dal.simple.SimpleDALBroker;
+import org.csstudio.domain.common.strings.Strings;
 
 /**
  * Utility class that provides facilities to connect SDS widgets to a control
@@ -277,7 +277,7 @@ public final class ConnectionUtilNew {
 	static final RemoteInfo translateWithoutCharacteristic(final IProcessVariableAddress pv) {
 	    String cs = "";
 	    final String responsibleDalPlugId = pv.getControlSystem().getResponsibleDalPlugId();
-        if((responsibleDalPlugId!=null) && !StringUtil.isBlank(responsibleDalPlugId)) {
+        if((responsibleDalPlugId!=null) && !Strings.isBlank(responsibleDalPlugId)) {
 	        cs = RemoteInfo.DAL_TYPE_PREFIX
 				+ responsibleDalPlugId;
 	    }

@@ -23,14 +23,16 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmConnectionMonitor;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -67,15 +69,14 @@ public class TopicsetService implements ITopicsetService {
         
         @SuppressWarnings("synthetic-access")
         final Element element = new Element();
-        element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
+        element._connection = ServiceLocator.getService(IAlarmService.class).newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
         element._alarmTableListener.setMessageList(element._messageList);
-        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService()
-                .createAlarmResource(topicSet.getTopics(), null);
         element._connection.connect(new AlarmConnectionMonitor(),
-                                                           element._alarmTableListener,
-                                                           alarmResource);
+                                                           element._alarmTableListener, new AlarmResource(topicSet.getTopics()));
+        // apply filter state according to given topicSet
+        alarmTableListener.enableFilter(topicSet.isSynchedToTree());
         
         _topicSetMap.put(topicSet.getName(), element);
         

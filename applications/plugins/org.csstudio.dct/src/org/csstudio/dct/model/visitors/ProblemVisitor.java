@@ -16,7 +16,7 @@ import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 
 /**
  * Visitor implementation that determines logical and semantic errors in a DCT

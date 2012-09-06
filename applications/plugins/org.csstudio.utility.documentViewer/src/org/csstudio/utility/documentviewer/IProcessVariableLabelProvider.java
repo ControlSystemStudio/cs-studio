@@ -34,7 +34,7 @@
 		*/
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.platform.model.IProcessVariable;
+
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
@@ -52,10 +52,11 @@ public class IProcessVariableLabelProvider extends LabelProvider {
      */
     @Override
     public String getText(final Object element) {
-        if (element instanceof IProcessVariable) {
-            IProcessVariable pv = (IProcessVariable) element;
-            return pv.getName();
-        }
+    	//TODO jhatje: implement new datatype
+//        if (element instanceof IProcessVariable) {
+//            IProcessVariable pv = (IProcessVariable) element;
+//            return pv.getName();
+//        }
         return super.getText(element);
     }
 

@@ -24,7 +24,6 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.properties.IPropertyDescriptorFactory;
@@ -32,6 +31,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -39,7 +40,8 @@ import org.eclipse.core.runtime.Platform;
  *
  */
 public final class PropertyDescriptorFactoryService {
-	
+    private static final Logger LOG = LoggerFactory.getLogger(PropertyDescriptorFactoryService.class);
+
 	/**
 	 * Instances of this class serve as delegates to
 	 * enable lazy loading of extension point contributions.
@@ -74,7 +76,7 @@ public final class PropertyDescriptorFactoryService {
 				factory = (IPropertyDescriptorFactory) _configurationElement
 						.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 			return factory;
 		}

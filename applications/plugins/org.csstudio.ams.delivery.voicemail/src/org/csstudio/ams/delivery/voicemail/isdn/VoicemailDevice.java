@@ -26,8 +26,12 @@
 package org.csstudio.ams.delivery.voicemail.isdn;
 
 import java.util.Collection;
+
+import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.voicemail.VoicemailAlarmMessage;
+import org.csstudio.ams.delivery.voicemail.VoicemailWorkerStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +49,14 @@ public class VoicemailDevice implements IDeliveryDevice<VoicemailAlarmMessage> {
     /** The class that makes the telephone calls */
     private CallCenter callCenter;
 
-    public VoicemailDevice() {
+    private VoicemailWorkerStatus workerStatus;
+    
+    public VoicemailDevice(VoicemailWorkerStatus status) throws DeviceException {
+        workerStatus = status;
         try {
             callCenter = new CallCenter();
         } catch (CallCenterException e) {
-            e.printStackTrace();
+            throw new DeviceException(e.getMessage(), e);
         }
     }
     
@@ -62,16 +69,25 @@ public class VoicemailDevice implements IDeliveryDevice<VoicemailAlarmMessage> {
                                 message.getTextTypeNumberAsString(),
                                 message.getMessageChainIdAndPosAsString(),
                                 message.getWaitTimeAsString());
+            message.setMessageState(State.SENT);
             success = true;
         } catch (CallCenterException e) {
             LOG.error("[*** CallCenterException ***]: {}", e.getMessage());
+            message.setMessageState(State.FAILED);
         }
+        workerStatus.setMadeCall(success);
         return success;
     }
 
     @Override
     public int sendMessages(Collection<VoicemailAlarmMessage> msgList) {
-        return 0;
+        int sent = 0;
+        for (VoicemailAlarmMessage m : msgList) {
+            if (sendMessage(m)) {
+                sent++;
+            }
+        }
+        return sent;
     }
 
     @Override

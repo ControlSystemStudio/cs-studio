@@ -49,7 +49,7 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	public LogViewPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-	    setDescription(Messages.columnsHint + "\n" + Messages.fontHint);
+	    setDescription(Messages.columnsHint + "\n" + Messages.fontHint + "\n" + Messages.syncHint);
 	}
 
 	@Override

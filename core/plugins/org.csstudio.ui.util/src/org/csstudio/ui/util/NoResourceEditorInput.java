@@ -57,6 +57,12 @@ public class NoResourceEditorInput implements IEditorInput
     {
         this.orig = orig;
     }
+    
+    /** @return Original editor input, i.e. the one that's wrapped */
+    public IEditorInput getOriginEditorInput()
+    {
+        return orig;
+    }
 
     /** Do NOT adapt to IResource */
     @SuppressWarnings("rawtypes")
@@ -98,8 +104,4 @@ public class NoResourceEditorInput implements IEditorInput
     {
         return orig.getToolTipText();
     }
-
-	public IEditorInput getOriginEditorInput() {
-		return orig;
-	}
 }

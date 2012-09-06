@@ -2,8 +2,8 @@ package org.csstudio.management.contactscommands.ui;
 
 import java.util.Map;
 
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;

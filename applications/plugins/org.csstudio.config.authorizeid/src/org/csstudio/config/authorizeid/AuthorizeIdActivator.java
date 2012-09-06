@@ -3,15 +3,15 @@ package org.csstudio.config.authorizeid;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AuthorizeIdActivator extends AbstractCssUiPlugin {
+public class AuthorizeIdActivator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.config.authorizeid"; //$NON-NLS-1$
@@ -34,7 +34,8 @@ public class AuthorizeIdActivator extends AbstractCssUiPlugin {
     }
 
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
     }
@@ -43,14 +44,10 @@ public class AuthorizeIdActivator extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected final void doStop(@Nonnull final BundleContext context) throws Exception {
+    public final void stop(@Nonnull final BundleContext context) throws Exception {
+    	super.stop(context);
         _ldapServiceTracker.close();
     }
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
 
     /**
      * @return the LDAP service or null

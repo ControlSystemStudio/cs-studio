@@ -32,9 +32,11 @@ import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to generate a JMS message.
@@ -51,8 +53,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  */
 public enum JmsMessage {
-
     INSTANCE;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(JmsMessage.class);
 
 	public static final String SEVERITY_NO_ALARM 	= "NO_ALARM";
 	public static final String SEVERITY_MINOR 		= "MINOR";
@@ -98,25 +101,17 @@ public enum JmsMessage {
 
 		try {
 
+		    /*
+		     * get JMS alarm connection from InterconnectionServer class
+		     */
+		    session = ServiceLocator.getService(IInterconnectionServer.class).createJmsSession();
 			if ( messageType == JMS_MESSAGE_TYPE_ALARM) {
-				/*
-				 * get JMS alarm connection from InterconnectionServer class
-				 */
-				session = InterconnectionServer.getInstance().createJmsSession();
 				jmsContext = PreferenceProperties.JMS_ALARM_CONTEXT;
 				jmsTimeToLive = jmsTimeToLiveAlarmsInt;
 			} else if ( messageType == JMS_MESSAGE_TYPE_LOG) {
-				/*
-				 * get JMS alarm connection from InterconnectionServer class
-				 */
-				session = InterconnectionServer.getInstance().createJmsSession();
 				jmsContext = PreferenceProperties.JMS_LOG_CONTEXT;
 				jmsTimeToLive = jmsTimeToLiveLogsInt;
 			} else if ( messageType == JMS_MESSAGE_TYPE_PUT_LOG) {
-				/*
-				 * get JMS alarm connection from InterconnectionServer class
-				 */
-				session = InterconnectionServer.getInstance().createJmsSession();
 				jmsContext = PreferenceProperties.JMS_PUT_LOG_CONTEXT;
 				jmsTimeToLive = jmsTimeToLivePutLogsInt;
 			}
@@ -139,14 +134,14 @@ public enum JmsMessage {
 
 		catch(final JMSException jmse)
         {
-			InterconnectionServer.getInstance().countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-			CentralLogger.getInstance().debug(this,"IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+		    ServiceLocator.getService(IInterconnectionServer.class).countJmsSendMessageErrorAndReconnectIfTooManyErrors();
+			LOG.debug("IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
         } finally {
         	if (session != null) {
         		try {
 					session.close();
 				} catch (final JMSException e) {
-					CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+					LOG.warn("Failed to close JMS session", e);
 				}
         	}
         }
@@ -208,7 +203,7 @@ public enum JmsMessage {
 		}
 	    catch(final JMSException jmse)
 	    {
-	    	CentralLogger.getInstance().debug(this,"IocChangeState : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
+	    	LOG.debug("IocChangeState : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
 	    }
 		return message;
 	}

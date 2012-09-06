@@ -188,4 +188,21 @@ public final class Strings {
                                                          @Nonnull final String qIgn) {
         return "([^" + qSep + qIgn + "]+)";
     }
+    
+	/**
+	 * Checks if a String is whitespace, empty ("") or null.
+       <code>
+         StringUtils.isBlank(null)      = true
+         StringUtils.isBlank("")        = true
+         StringUtils.isBlank(" ")       = true
+         StringUtils.isBlank("bob")     = false
+         StringUtils.isBlank("  bob  ") = false
+       </code>
+	 * @param s
+	 * @return true if the string is null, empty, or does only contain whitespaces
+	 */
+	public static boolean isBlank(final String s) {
+	    return s == null || s.trim().equals("");
+	}
+
 }

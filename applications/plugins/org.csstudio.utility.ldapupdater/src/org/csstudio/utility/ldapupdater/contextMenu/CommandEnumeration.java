@@ -23,8 +23,8 @@ package org.csstudio.utility.ldapupdater.contextMenu;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.IDynamicParameterValues;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.IDynamicParameterValues;
 
 /**
  * Commands to process selected IOCs for the LDAP Updater Context Menu.

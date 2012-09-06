@@ -22,8 +22,8 @@
 
 package org.csstudio.config.savevalue.ui.changelogview;
 
+
 import org.csstudio.config.savevalue.service.ChangelogEntry;
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.PlatformObject;
 
@@ -41,8 +41,8 @@ public class ChangelogEntryProcessVariableAdapterFactory implements
 	 * implementation for a <code>ChangelogEntry</code>.
 	 */
 	private static class ChangelogEntryProcessVariableAdapter extends
-			PlatformObject implements IProcessVariable {
-		
+			PlatformObject {// implements IProcessVariable {
+//		TODO jhatje: implement new datatypes
 		private final ChangelogEntry _changelogEntry;
 		
 		ChangelogEntryProcessVariableAdapter(ChangelogEntry entry) {
@@ -60,7 +60,9 @@ public class ChangelogEntryProcessVariableAdapterFactory implements
 		 * {@inheritDoc}
 		 */
 		public String getTypeId() {
-			return IProcessVariable.TYPE_ID;
+//			TODO jhatje: implement new datatypes
+//			return IProcessVariable.TYPE_ID;
+			return null;
 		}
 	}
 
@@ -81,6 +83,8 @@ public class ChangelogEntryProcessVariableAdapterFactory implements
 	 */
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList() {
-		return new Class[] { IProcessVariable.class };
+//		TODO jhatje: implement new datatypes
+//		return new Class[] { IProcessVariable.class };
+		return null;
 	}
 }

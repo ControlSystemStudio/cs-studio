@@ -3,12 +3,12 @@ package org.csstudio.sds.ui.internal.editor.newproperties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.ColorProperty;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.NamedColor;
 import org.csstudio.sds.util.ColorAndFontUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

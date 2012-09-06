@@ -7,15 +7,13 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.ui;
 
-import org.csstudio.common.trendplotter.model.ArchiveDataSource;
-import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 
 /** Interface used by Plot to send events in response to user input:
  *  Zoom changed, scrolling turned on/off
  *  @author Kay Kasemir
  */
-public interface PlotListener
-{
+public interface PlotListener {
     /** Called when the user enables/disables scrolling
      *  @param enable_scrolling true when user requested scrolling via GUI
      */
@@ -46,6 +44,6 @@ public interface PlotListener
      *  @param name PV name or <code>null</code>
      *  @param archive Archive data source or <code>null</code>
      */
-    public void droppedPVName(ProcessVariable name, ArchiveDataSource archive);
+    public void droppedPVName(String name, IArchiveDataSource archive);
 
 }

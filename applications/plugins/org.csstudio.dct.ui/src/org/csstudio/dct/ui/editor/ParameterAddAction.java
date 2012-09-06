@@ -1,7 +1,7 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 
 /**

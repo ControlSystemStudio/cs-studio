@@ -23,10 +23,14 @@
 package org.csstudio.diag.interconnectionServer.internal.management;
 
 import org.csstudio.diag.interconnectionServer.InterconnectionServerApplication;
+import org.csstudio.diag.interconnectionServer.server.IInterconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.servicelocator.ServiceLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Management command which stops the Interconnection Server.
@@ -34,13 +38,15 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Joerg Rathlev
  */
 public class StopIcServer implements IManagementCommand {
-
+    private static final Logger LOG = LoggerFactory.getLogger(StopIcServer.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public CommandResult execute(CommandParameters parameters) {
+	    LOG.info("StopIcServer command called");
 		InterconnectionServerApplication.SHUTDOWN = true;
-		InterconnectionServer.getInstance().stopIcServer();
+		ServiceLocator.getService(IInterconnectionServer.class).stopIcServer();
 		return CommandResult.createSuccessResult();
 	}
 

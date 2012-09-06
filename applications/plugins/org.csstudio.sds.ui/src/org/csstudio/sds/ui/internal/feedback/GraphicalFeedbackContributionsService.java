@@ -24,13 +24,14 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access service for contributions for the extension point
@@ -42,6 +43,8 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public final class GraphicalFeedbackContributionsService {
+    private static final Logger LOG = LoggerFactory.getLogger(GraphicalFeedbackContributionsService.class);
+
 
 	/**
 	 * The singleton instance.
@@ -161,7 +164,7 @@ public final class GraphicalFeedbackContributionsService {
 					_graphicalFeedbackFactory = (IGraphicalFeedbackFactory) _configurationElement
 							.createExecutableExtension("class"); //$NON-NLS-1$
 				} catch (CoreException e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.error(e.toString());
 				}
 			}
 			return _graphicalFeedbackFactory;

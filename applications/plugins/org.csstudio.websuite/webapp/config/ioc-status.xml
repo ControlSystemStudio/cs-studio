@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iocstatus>
+ 
+ <system name="Anlage">
+  <ioc>kryoKS1</ioc>
+  <ioc>kryoKS2</ioc>
+  <ioc>kryoVBox</ioc>
+  <ioc>kryoUtility</ioc>
+  <ioc>kryoDiagA</ioc>
+  <ioc>analyze</ioc>
+ </system>
+ 
+ <system name="TTF">
+  <ioc>ttfKryoCB</ioc>
+  <ioc>ttfKryoFCB</ioc>
+  <ioc>ttfKryoLinac</ioc>
+  <ioc>ttfDiagLinac</ioc>
+  <ioc>ttfKryoFV</ioc>
+  <ioc>ttfKryoCMTB</ioc>
+  <ioc>ttfKryoVC1</ioc>
+  <ioc>ttfKryoVC2</ioc>
+  <ioc>ttfKryoSK47a</ioc>
+  <ioc>ttfKryoIKM</ioc>
+  <ioc>ttfKryoUtility</ioc>
+ </system>
+
+ <!--
+ <system name="MKK">
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+ </system>
+ -->
+ 
+ <system name="AMTF">
+  <ioc>amtfKryoVC</ioc>
+  <ioc>amtfTestVC</ioc>
+  <ioc>amtfKryoXASB</ioc>
+ </system>
+
+ <!--
+ <system name="XFEL">
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+  <ioc></ioc>
+ </system>
+ -->
+ 
+ <system name="Others">
+  <ioc>mthKryoStand</ioc>
+  <ioc>xmtsKryoStand</ioc>
+  <ioc>xmtsKryoPump</ioc>
+  <ioc>krykWetter</ioc>
+  <ioc>tineDataSrv</ioc>
+  <ioc>utilityIOC</ioc>
+  <ioc>wienerVME</ioc>
+ </system>
+
+</iocstatus>

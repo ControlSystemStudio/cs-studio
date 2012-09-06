@@ -19,14 +19,19 @@ package org.csstudio.alarm.table.jms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,16 +45,15 @@ public class AlarmListener implements IAlarmTableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlarmListener.class);
 
-    /**
-     * This is the destination for the messages
-     */
+    // This is the destination for the messages
     private AbstractMessageList _messageList;
 
-    /**
-     * Registered listeners will be notified when a message comes in
-     */
+    // Registered listeners will be notified when a message comes in
     private final List<IAlarmListener> _listeners = new ArrayList<IAlarmListener>();
 
+    // enable / disable filtering of incoming messages
+    private boolean _isFilterDisabled = true;
+    
     /**
      * Creates a new alarm message listener.
      */
@@ -71,13 +75,31 @@ public class AlarmListener implements IAlarmTableListener {
      */
     @Override
     public void onMessage(@CheckForNull final IAlarmMessage message) {
-//        LOG.debug("received: " + message);
         if (message == null) {
             LOG.error("Error processing message (was null)");
         } else {
-            processAlarmMessage(message);
-            callListeners(message);
+            LOG.trace("received {}", message);
+            if (_isFilterDisabled || isFilterPassed(message)) {
+                processAlarmMessage(message);
+                callListeners(message);
+            }
         }
+    }
+
+    private boolean isFilterPassed(@Nonnull final IAlarmMessage message) {
+        boolean result = false;
+        IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
+        if (alarmService != null) {
+            try {
+                Set<String> pvNames = alarmService.getPvNames();
+                result = pvNames.contains(message.getString(AlarmMessageKey.NAME));
+            } catch (AlarmServiceException e) {
+                LOG.error("Cannot filter, pvNames are missing");
+            }
+        } else {
+            LOG.error("Cannot filter, alarm service is not available");
+        }
+        return result;
     }
 
     private void callListeners(@Nonnull final IAlarmMessage message) {
@@ -112,6 +134,11 @@ public class AlarmListener implements IAlarmTableListener {
     @Override
     public final void deRegisterAlarmListener(@Nonnull final IAlarmListener alarmListener) {
         _listeners.remove(alarmListener);
+    }
+    
+    @Override
+    public void enableFilter(boolean enable) {
+        _isFilterDisabled = !enable;
     }
 
 }

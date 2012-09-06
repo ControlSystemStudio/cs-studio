@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.importer.ui.internal.wizards;
 
-import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.fieldassist.FieldAssistColors;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Timer;
 
@@ -32,13 +33,13 @@ public class PVItemTest
         {
             PVFactory.getSupportedPrefixes();
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             fail("Must run as JUnit *Plug-In* test to use PVFactory");
         }
     }
-    
+
     /** Check if PVItem scans its PV */
     @Test
     public void testScannedPVItem() throws Exception
@@ -82,13 +83,13 @@ public class PVItemTest
         final PVItem pv = new PVItem("sim://sine(0,10,10,1)", 1.0);
         pv.start(scan_timer);
         Thread.sleep((long) (RUNTIME_SECS * 1000));
-    
+
         // Leave PV running. Should have about 1 sample per second
         System.out.println("Samples while scanned at 1 second");
         IDataProvider samples = pv.getSamples();
         System.out.println(samples);
         assertEquals(RUNTIME_SECS, samples.getSize(), 2.0);
-        
+
         // Change to 2 second scan
         System.out.println("Changing scan to 2 seconds...");
         pv.setScanPeriod(2.0);
@@ -100,7 +101,7 @@ public class PVItemTest
         assertEquals(RUNTIME_SECS + RUNTIME_SECS/2, samples.getSize(), 4.0);
         pv.stop();
     }
-    
+
     /** Check if value min..max is correct */
     private void checkMinMax(final IDataProvider samples)
     {
@@ -109,10 +110,12 @@ public class PVItemTest
         for (int i=0; i<samples.getSize(); ++i)
         {
             final double value = samples.getSample(i).getYValue();
-            if (value < min)
+            if (value < min) {
                 min = value;
-            if (value > max)
+            }
+            if (value > max) {
                 max = value;
+            }
         }
         assertEquals(new Range(min, max), samples.getYDataMinMax());
     }

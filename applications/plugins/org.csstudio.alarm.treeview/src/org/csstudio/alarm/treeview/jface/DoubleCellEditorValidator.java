@@ -24,6 +24,7 @@ package org.csstudio.alarm.treeview.jface;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
 /**
@@ -46,9 +47,9 @@ final class DoubleCellEditorValidator implements ICellEditorValidator {
                 return null;
             }
         } catch (final NumberFormatException e) {
-            return "Malformed Double! Please enter a valid double value.";
+            return Messages.DoubleCellEditorValidator_Malformed;
         }
-        return "Entered value is not valid. Please enter a String representation of a Double.";
+        return Messages.DoubleCellEditorValidator_Invalid;
 
     }
 }

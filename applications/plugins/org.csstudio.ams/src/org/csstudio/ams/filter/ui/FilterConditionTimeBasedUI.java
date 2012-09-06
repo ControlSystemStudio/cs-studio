@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.filter.ui;
 
+
 import java.sql.Connection;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -41,8 +42,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterConditionTimeBasedDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTimeBasedTObject;
 import org.csstudio.ams.filter.FilterConditionString;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -294,16 +293,17 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 				}
 			});
 
-			new ProcessVariableDropTarget(txtValue[i])
-	        {
-	            @Override
-	            public void handleDrop(IProcessVariable name,
-	                                   DropTargetEvent event)
-	            {
-	            	((Text)((DropTarget)event.getSource()).getControl())
-	            		.setText(name.getName());
-	            }
-	        };
+//			TODO jhatje: implement new datatype
+//			new ProcessVariableDropTarget(txtValue[i])
+//	        {
+//	            @Override
+//	            public void handleDrop(IProcessVariable name,
+//	                                   DropTargetEvent event)
+//	            {
+//	            	((Text)((DropTarget)event.getSource()).getControl())
+//	            		.setText(name.getName());
+//	            }
+//	        };
 		}
 
 		initText();

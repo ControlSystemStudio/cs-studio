@@ -21,7 +21,7 @@
 */
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.platform.model.IProcessVariable;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -95,8 +95,9 @@ public class DocumentShell extends Dialog {
     /**
      * @param processVariables the processVariables to set
      */
-    public void setProcessVariables(final IProcessVariable[] processVariables) {
-        _documentContendFactory.setProcessVariables(processVariables);
-    }
+  //TODO jhatje: implement new datatype
+//    public void setProcessVariables(final IProcessVariable[] processVariables) {
+//        _documentContendFactory.setProcessVariables(processVariables);
+//    }
 
 }

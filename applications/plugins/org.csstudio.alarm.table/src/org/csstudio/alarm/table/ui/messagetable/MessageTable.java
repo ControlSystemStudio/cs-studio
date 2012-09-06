@@ -20,13 +20,13 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.alarm.table.ui.messagetable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -101,7 +101,8 @@ public class MessageTable {
 
 		initializeMessageTable(pureColumnNames);
 
-		new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
+//		TODO jhatje: implement new datatype
+//		new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
 
 		//Remove selected rows by double click
 		_tableViewer.getControl().addMouseListener(new MouseAdapter() {

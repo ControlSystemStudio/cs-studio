@@ -23,11 +23,13 @@
 package org.csstudio.alarm.table.ui;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
+import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.ArchiveMessageList;
@@ -41,7 +43,7 @@ import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
@@ -85,7 +87,7 @@ import org.slf4j.LoggerFactory;
  * @since 19.07.2007
  */
 public class ArchiveView extends ViewPart {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveView.class);
 
     /** The Id of this Object. */
@@ -147,8 +149,12 @@ public class ArchiveView extends ViewPart {
         final GregorianCalendar from = (GregorianCalendar) to.clone();
         from.set(Calendar.DAY_OF_YEAR, from.get(Calendar.DAY_OF_YEAR) - 1);
         _filter = new Filter(from, to);
-        _messageProperties = JmsLogsPlugin.getDefault().getMessageTypes()
-                .getMsgTypes();
+        
+        IMessageTypes messageTypeService = ServiceLocator.getService(IMessageTypes.class);
+        _messageProperties = messageTypeService.getMsgTypes();
+        if (_messageProperties == null) {
+            throw new IllegalStateException("Cannot load configuration of message types from database - probably no database access.");
+        }
     }
 
     /** {@inheritDoc} */
@@ -157,7 +163,7 @@ public class ArchiveView extends ViewPart {
 
         _shell = parent.getShell();
 
-        _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+        _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 
         _storedFilters.readFromPreferences();
 
@@ -535,15 +541,16 @@ public class ArchiveView extends ViewPart {
         bars.getToolBarManager().add(showPropertyViewAction);
     }
 
-    public void readDBFromExternalCall(final IProcessVariable pv) {
-        // GregorianCalendar _from = new GregorianCalendar();
-        // GregorianCalendar _to = new GregorianCalendar();
-        // _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
-        _filter.clearFilter();
-        _filter.addFilterItem("NAME", pv.getName(), "END");
-        _filterSettingHistory.add(0, pv.getName());
-        readDatabase();
-    }
+//    TODO jhatje: implement new datatype
+//    public void readDBFromExternalCall(final IProcessVariable pv) {
+//        // GregorianCalendar _from = new GregorianCalendar();
+//        // GregorianCalendar _to = new GregorianCalendar();
+//        // _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
+//        _filter.clearFilter();
+//        _filter.addFilterItem("NAME", pv.getName(), "END");
+//        _filterSettingHistory.add(0, pv.getName());
+//        readDatabase();
+//    }
 
     private void exportMessagesFromDatabase(final File path) {
         final String maxAnswerSize = JmsLogsPlugin.getDefault()
@@ -726,7 +733,7 @@ public class ArchiveView extends ViewPart {
     @Override
     public void saveState(final IMemento memento) {
         super.saveState(memento);
-        if ((memento != null) && (_filterSettingHistory != null)) {
+        if (memento != null && _filterSettingHistory != null) {
             LOG.debug("Save latest filter setting history in IMemento: ");
             final StringBuffer patternChain = new StringBuffer();
             for (final String pattern : _filterSettingHistory) {

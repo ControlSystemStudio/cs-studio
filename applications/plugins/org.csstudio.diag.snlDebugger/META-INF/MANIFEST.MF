@@ -7,8 +7,6 @@ Bundle-Activator: org.csstudio.diag.snlDebugger.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform,
- org.csstudio.platform.ui,
  org.csstudio.utility.IOC-Socket-Communication,
  org.eclipse.help,
  org.jdom;bundle-version="1.1.0",

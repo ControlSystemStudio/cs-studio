@@ -21,12 +21,13 @@
  */
 package org.csstudio.sds.internal.model;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A property, which is able to handle String values.
@@ -36,6 +37,8 @@ import org.csstudio.sds.util.ChannelReferenceValidationUtil;
  * 
  */
 public final class TooltipProperty extends StringProperty {
+    private static final Logger LOG = LoggerFactory.getLogger(TooltipProperty.class);
+
 	private AbstractWidgetModel widgetModel;
 	public TooltipProperty(String description, WidgetPropertyCategory category, String defaultValue, AbstractWidgetModel widgetModel) {
 		super(PropertyTypesEnum.PARAMSTRING, description, category, defaultValue);
@@ -51,8 +54,7 @@ public final class TooltipProperty extends StringProperty {
 			try {
 				tooltip = ChannelReferenceValidationUtil.createCanonicalName(v, widgetModel.getAllInheritedAliases());
 			} catch (ChannelReferenceValidationException e) {
-				CentralLogger.getInstance().debug(this,
-						"Aliases in \"" + v + "\" cannot be resolved, error message is: " + e.getMessage());
+				LOG.debug("Aliases in \"" + v + "\" cannot be resolved, error message is: " + e.getMessage());
 				tooltip = v + "(not resolvable)";
 			}
 		}

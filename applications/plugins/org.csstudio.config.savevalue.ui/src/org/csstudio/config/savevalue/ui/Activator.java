@@ -23,15 +23,15 @@ package org.csstudio.config.savevalue.ui;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	/**
 	 * The plug-in ID.
@@ -56,7 +56,8 @@ public class Activator extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+    	super.start(context);
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
     }
@@ -65,7 +66,8 @@ public class Activator extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected final void doStop(@Nonnull final BundleContext context) throws Exception {
+    public final void stop(@Nonnull final BundleContext context) throws Exception {
+    	super.stop(context);
         _ldapServiceTracker.close();
     }
 
@@ -76,14 +78,6 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	public static Activator getDefault() {
 		return INSTANCE;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getPluginId() {
-		return PLUGIN_ID;
 	}
 
     /**

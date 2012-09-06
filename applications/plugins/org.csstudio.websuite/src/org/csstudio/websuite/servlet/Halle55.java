@@ -41,8 +41,6 @@ import org.slf4j.LoggerFactory;
  * (C) DESY Hamburg 2003
  *
  * @author Matthias Clausen DESY/MKS-2
- * @param 
- * @return
  * @version 1.5.9
  *
  * The TopWindowStatistic servlet

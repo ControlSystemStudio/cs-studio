@@ -1,7 +1,7 @@
 package org.csstudio.utility.caSnooperUi;
 
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IResultReceiver;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IResultReceiver;
 import org.csstudio.utility.caSnooperUi.ui.ChangeView.SnooperView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;

@@ -117,6 +117,7 @@ public final class MessageFilter {
 
         public WatchDog() {
             MessageFilter.getLogger().info("WatchDog initialized");
+            this.setName("Watchdog-Thread");
         }
 
         @Override

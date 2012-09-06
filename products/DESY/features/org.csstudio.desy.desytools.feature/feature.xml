@@ -22,41 +22,6 @@
    </url>
 
    <plugin
-         id="org.csstudio.utility.documentService"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.documentViewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.config.savevalue.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.config.savevalue.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.dal.epics.infobar"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.nameSpaceBrowser"
          download-size="0"
          install-size="0"
@@ -71,7 +36,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.recordProperty"
+         id="org.csstudio.utility.namespace.utility"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.ldap.nameSpaceBrowser"
          download-size="0"
          install-size="0"
          version="0.0.0"

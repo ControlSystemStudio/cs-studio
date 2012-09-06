@@ -23,26 +23,32 @@
  */
 package org.csstudio.alarm.treeview.views;
 
+
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
+import org.csstudio.alarm.treeview.views.actions.AlarmTreeViewActionFactory;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.TreeItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides support for dropping process variables into the alarm tree.
  */
 public final class AlarmTreeProcessVariableDropListener implements TransferDropTargetListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeProcessVariableDropListener.class);
+    
     private final AlarmTreeView _alarmTreeView;
     private final Queue<ITreeModificationItem> _ldapModificationItems;
 
@@ -63,7 +69,9 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     @Override
     @Nonnull
     public Transfer getTransfer() {
-        return ProcessVariableNameTransfer.getInstance();
+    	// TODO jhatje: implement new datatype
+//        return ProcessVariableNameTransfer.getInstance();
+    	return null;
     }
 
     /**
@@ -129,26 +137,33 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
      */
     @Override
     public void drop(@Nonnull final DropTargetEvent event) {
-        final SubtreeNode parent = (SubtreeNode) event.item.getData();
-        final IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;
-        for (final IProcessVariable pv : droppedPVs) {
-            // FIXME (jpenning) This is slow for many pvs. Fix: Better give all pvs at once
-            if (DirectoryEditor.canCreateProcessVariableRecord(parent, pv.getName())) {
-                final ITreeModificationItem item = DirectoryEditor
-                        .createProcessVariableRecord(parent,
-                                                     pv.getName(),
-                                                     _alarmTreeView.getPVNodeListener());
-                if (item != null) {
-                    _ldapModificationItems.add(item);
-                }
-            } // silently ignoring pvs which are already present
-        }
-        final TreeViewer viewer = _alarmTreeView.getViewer();
-        if (viewer != null) {
-            viewer.refresh(parent);
-        } else {
-            throw new IllegalStateException("Viewer of " + AlarmTreeView.class.getName() +
-            " mustn't be null at this point.");
-        }
+    	// TODO jhatje: implement new datatype
+//        final SubtreeNode parent = (SubtreeNode) event.item.getData();
+//        final IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;
+//        for (final IProcessVariable pv : droppedPVs) {
+//            // FIXME (jpenning) This is slow for many pvs. Fix: Better give all pvs at once
+//            if (DirectoryEditor.canCreateProcessVariableRecord(parent, pv.getName())) {
+//                ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv
+//                        .getName(), _alarmTreeView.getPVNodeListener());
+//                if (item != null) {
+//                    _ldapModificationItems.add(item);
+//                }
+//                if (!AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() || (item != null)) {
+//                	try {
+//                		AlarmTreeViewActionFactory.retrieveInitialStateSynchronously(parent.getChild(pv.getName()));
+//                	} catch (AlarmServiceException e) {
+//                		LOG.warn("drop failed for pv " + pv.getName(), e);
+//                		// silently ignore the initial state retrieval error
+//                	}
+//				}
+//            } // silently ignoring pvs which are already present
+//        }
+//        final TreeViewer viewer = _alarmTreeView.getViewer();
+//        if (viewer != null) {
+//            viewer.refresh(parent);
+//        } else {
+//            throw new IllegalStateException("Viewer of " + AlarmTreeView.class.getName()
+//                    + " must not be null at this point.");
+//        }
     }
 }

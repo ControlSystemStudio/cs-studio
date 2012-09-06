@@ -100,17 +100,15 @@ public final class MessageArea {
      * @param icon the icon to be displayed next to the message. Must be one of
      *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
      *            <code>SWT.ICON_WARNING</code>, <code>SWT.ICON_QUESTION</code>.
-     * @param message the message.
-     * @param description a descriptive text.
+     * @param title title of the message.
+     * @param message a descriptive text.
      */
-    public void showMessage(final int icon, @Nonnull final String message, @Nonnull final String description) {
+    public void showMessage(final int icon, @Nonnull final String title, @Nonnull final String message) {
         _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
-        _messageAreaMessage.setText(message);
-        
+        _messageAreaMessage.setText(title);
         
         String dateOut = DateFormat.getDateTimeInstance().format(new Date());
-
-        _messageAreaDescription.setText(dateOut + " " + description);
+        _messageAreaDescription.setText(dateOut + ": " + message);
         _messageArea.layout();
 
         show();
@@ -121,7 +119,7 @@ public final class MessageArea {
      * Reset to the default message and hide.
      */
     public void clearMessage() {
-        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_INFORMATION));
         _messageAreaMessage.setText("No message");
         _messageAreaDescription.setText("");
         _messageArea.layout();

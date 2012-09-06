@@ -21,6 +21,7 @@
  */
  package org.csstudio.alarm.table.ui.messagetable;
 
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -37,14 +38,14 @@ public class ShowMessagePropertiesAction extends Action
 	/**
 	 * The ID of the property view.
 	 */
-	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
     
 	public ShowMessagePropertiesAction(final TableViewer tViewer)
 	{
         _tableViewer = tViewer;
-		setText("Show Properties");
-		setToolTipText("Show all properties of selected message");
+		setText(Messages.ShowMessagePropertiesAction_Text);
+		setToolTipText(Messages.ShowMessagePropertiesAction_TooltipText);
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		setDisabledImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
@@ -68,7 +69,7 @@ public class ShowMessagePropertiesAction extends Action
 		try {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(PROPERTY_VIEW_ID);
 		} catch (PartInitException e) {
-			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Alarm Tree",
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.ShowMessagePropertiesAction_ErrorDialog_Title,
 					e.getMessage());
 		}
 

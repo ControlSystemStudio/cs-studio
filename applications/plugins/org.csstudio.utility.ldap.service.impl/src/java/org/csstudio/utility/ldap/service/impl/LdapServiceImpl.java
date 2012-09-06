@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
 public final class LdapServiceImpl implements ILdapService {
 
     static final Logger LOG = LoggerFactory.getLogger(LdapServiceImpl.class);
-
+    
     /**
      * DirContext Holder to prevent accidental direct access to DirContext field.
      *
@@ -125,7 +125,7 @@ public final class LdapServiceImpl implements ILdapService {
 
             final Hashtable<Object, String> env = new Hashtable<Object, String>(ldapPrefs);
 
-            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
 
             try {
                 _context = new InitialLdapContext(env, null);
@@ -159,7 +159,7 @@ public final class LdapServiceImpl implements ILdapService {
             setScope(params.getScope()).
             setJobCompletedCallBack(callBack).
             build();
-
+        
         return ldapr;
     }
 
@@ -256,15 +256,14 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      * @throws InvalidNameException
      * @throws CreateContentModelException
-     * @throws LdapServiceException
+     * @throws LdapServiceException 
      */
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
         boolean removeComponent(@Nonnull final T configurationRoot,
                                 @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException {
 
-        final String ldapNameString = component.toString();
-        LOG.debug("Remove entry incl. subtree:\n{}", ldapNameString);
+        LOG.debug("Remove entry incl. subtree:\n{}", component.toString());
 
         // get complete subtree of 'oldLdapName' and create model
         final LdapSearchResult result =
@@ -273,8 +272,8 @@ public final class LdapServiceImpl implements ILdapService {
                                               SearchControls.SUBTREE_SCOPE);
 
         if (result == null || result.getAnswerSet().isEmpty()) {
-            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}",
-                      ldapNameString, any(ATTR_FIELD_OBJECT_CLASS));
+            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}", 
+                      component.toString(), any(ATTR_FIELD_OBJECT_CLASS));
             return false;
         }
 
@@ -283,21 +282,20 @@ public final class LdapServiceImpl implements ILdapService {
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
-        if (model == null) {
-            return false;
-        }
         // retrieve component from model
-        final INodeComponent<T> childByLdapName = model.getChildByLdapName(ldapNameString);
+        INodeComponent<T> childByLdapName = model.getChildByLdapName(component.toString());
         if (childByLdapName == null) {
-            LOG.debug("Model does not contain entry for component {}", ldapNameString);
+            LOG.debug("Model does not contain entry for component {}", component.toString());
             return false;
         }
+
         // perform the removal of the subtree
         copyAndRemoveTreeComponent(null,
                                    (ISubtreeNodeComponent<T>) childByLdapName,
                                    false);
         // perform the removal of the component itself
         removeLeafComponent(component);
+
         return true;
     }
 
@@ -346,14 +344,13 @@ public final class LdapServiceImpl implements ILdapService {
                                         @Nonnull final ISubtreeNodeComponent<T> treeParent,
                                         final boolean copy) throws InvalidNameException {
 
-        if (ldapParentName == null) {
-            return;
-        }
-        final LdapName newChildLdapName = new LdapName(ldapParentName.getRdns());
         // process contents of model and build subtree below 'newLdapName'
         for (final INodeComponent<T> child : treeParent.getDirectChildren()) {
+
+            final LdapName newChildLdapName = ldapParentName != null ? new LdapName(ldapParentName.getRdns()) : null;
             if (copy) {
                 newChildLdapName.add(new Rdn(((ITreeNodeConfiguration<T>) child.getType()).getNodeTypeName(), child.getName()));
+
                 // generate LDAP component for child
                 createComponent(newChildLdapName, child.getAttributes());
             }
@@ -408,23 +405,23 @@ public final class LdapServiceImpl implements ILdapService {
         }
         try {
             return context.getNameParser(new CompositeName());
-        } catch (final NamingException e) {
+        } catch (NamingException e) {
             throw new LdapServiceException("Parser couldn't be created from context.", e);
         }
     }
 
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                                            @Nonnull final ILdapSearchResult searchResult) throws LdapServiceException {
-
+        
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult, getLdapNameParser());
     }
-
+    
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException {
         return new LdapContentModelBuilder<T>(model, getLdapNameParser());
     }
@@ -433,11 +430,11 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
-    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
+    @Nonnull
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot, 
                                                        @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
-        final LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
+        LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         return builder.getModel();
     }
@@ -452,7 +449,7 @@ public final class LdapServiceImpl implements ILdapService {
         final String nameInNamespace = row.getNameInNamespace();
         try {
             return (LdapName) parser.parse(nameInNamespace);
-        } catch (final NamingException e) {
+        } catch (NamingException e) {
             throw new LdapServiceException(nameInNamespace + "could not be parsed.", e);
         }
     }

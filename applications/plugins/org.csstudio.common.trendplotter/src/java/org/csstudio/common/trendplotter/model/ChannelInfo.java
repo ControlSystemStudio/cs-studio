@@ -14,61 +14,78 @@ import org.csstudio.csdata.ProcessVariable;
 /** Archive search result, information about one channel
  *  @author Kay Kasemir
  */
-public class ChannelInfo implements Serializable
-{
+public class ChannelInfo implements Serializable, IProcessVariableWithArchive {
     /** Default ID for {@link Serializable} */
     private static final long serialVersionUID = 1L;
 
-    final private ProcessVariable name;
-    final private ArchiveDataSource archive;
+    private final ProcessVariable name;
+    private final ArchiveDataSource archive;
 
     /** Initialize
      *  @param archive IArchiveDataSource for channel
      *  @param name    Channel name
      */
-    public ChannelInfo(final String name, final ArchiveDataSource archive)
-    {
+    public ChannelInfo(final String name, final ArchiveDataSource archive) {
         this.name = new ProcessVariable(name);
         this.archive = archive;
     }
 
     /** @return ProcessVariable */
-    public ProcessVariable getProcessVariable()
-    {
+    public ProcessVariable getProcessVariable() {
         return name;
     }
 
     /** @return ArchiveDataSource */
-    public ArchiveDataSource getArchiveDataSource()
-    {
+    @Override
+    public ArchiveDataSource getArchiveDataSource() {
         return archive;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(final Object obj)
-    {
-        if (! (obj instanceof ChannelInfo))
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ChannelInfo)) {
             return false;
+        }
         final ChannelInfo other = (ChannelInfo) obj;
         return other.name.equals(name) && other.getArchiveDataSource().equals(archive);
     }
 
     /** {@inheritDoc} */
     @Override
-    public int hashCode()
-    {
-	    final int prime = 31;
-	    int result = prime + name.hashCode();
-	    result = prime * result + archive.hashCode();
-	    return result;
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + name.hashCode();
+        result = prime * result + archive.hashCode();
+        return result;
     }
 
     /** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + " [" + archive.getName() + "]";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTypeId() {
+        return IProcessVariableWithArchive.TYPE_ID;
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IArchiveDataSource.class) {
+            return getArchiveDataSource();
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName() {
+        return name.getName();
     }
 }

@@ -22,18 +22,16 @@
 package org.csstudio.diag.IOCremoteManagement;
 
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
-import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.diag.IOCremoteManagement"; //$NON-NLS-1$
@@ -70,7 +68,8 @@ public class Activator extends AbstractCssUiPlugin {
 	}
 
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
 		System.out.println("inDoStart IOCRemote");
 		/*
 //		super.start(context);
@@ -92,17 +91,12 @@ public class Activator extends AbstractCssUiPlugin {
 	}
 
 	@Override
-	protected void doStop(final BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		System.out.println("inDoStop IOCRemote");
 //TODO		
 //		RMTControl.getInstance().close();
 		plugin = null;
-	}
-
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 	/** Add informational message to the plugin log. */

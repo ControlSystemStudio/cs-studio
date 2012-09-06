@@ -23,7 +23,7 @@
       </product>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.utility.ldapupdater.action.ShutdownLdapUpdaterAction"
             id="org.csstudio.utility.ldapupdater.action.ShutdownLdapUpdaterAction"

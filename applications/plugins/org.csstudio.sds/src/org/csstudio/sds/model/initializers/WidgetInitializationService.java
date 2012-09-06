@@ -24,7 +24,6 @@ package org.csstudio.sds.model.initializers;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.model.initializers.ManualSchema;
@@ -33,6 +32,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A service that can initialize widgets using contributions of the
@@ -44,6 +45,7 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public final class WidgetInitializationService {
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetInitializationService.class);
 
 	/**
 	 * Separator token.
@@ -87,7 +89,7 @@ public final class WidgetInitializationService {
 				initializer = (AbstractWidgetModelInitializer) _configurationElement
 						.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 			return initializer;
 		}
@@ -144,7 +146,7 @@ public final class WidgetInitializationService {
 				schema = (AbstractControlSystemSchema) _configurationElement
 						.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 			return schema;
 		}

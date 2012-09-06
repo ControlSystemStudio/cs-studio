@@ -6,7 +6,6 @@ Bundle-Version: 1.1.0
 Bundle-Activator: org.csstudio.ams.remotetool.Activator
 Require-Bundle: org.eclipse.core.runtime.compatibility.auth;bundle-version="3.2.100",
  org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.1.0",
  org.remotercp.common;bundle-version="1.0.0",
  org.remotercp.util;bundle-version="1.0.0",
  org.eclipse.ecf.identity;bundle-version="3.1.100",

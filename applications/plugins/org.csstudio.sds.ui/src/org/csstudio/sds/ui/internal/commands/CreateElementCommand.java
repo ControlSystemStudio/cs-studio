@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.ui.internal.commands;
+package org.csstudio.sds.ui.internal.commands;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
@@ -55,9 +55,9 @@ public final class CreateElementCommand extends Command {
 	 * Bounds, which define size and location of the new widget.
 	 */
 	private Rectangle _bounds;
-	
+
 	/**
-	 * The internal {@link CompoundCommand}. 
+	 * The internal {@link CompoundCommand}.
 	 */
 	private Command _compoundCommand;
 
@@ -65,7 +65,8 @@ public final class CreateElementCommand extends Command {
 
 	/**
 	 * Constructs the command.
-	 * @param viewer 
+	 * 
+	 * @param viewer
 	 * 
 	 * @param container
 	 *            the display model to which the widgets should get added
@@ -74,9 +75,8 @@ public final class CreateElementCommand extends Command {
 	 * @param bounds
 	 *            bounds, which define size and location of the new widget
 	 */
-	public CreateElementCommand(EditPartViewer viewer, final ContainerModel container,
-			final CreateRequest request, final Rectangle bounds) {
-		assert viewer!=null;
+	public CreateElementCommand(EditPartViewer viewer, final ContainerModel container, final CreateRequest request, final Rectangle bounds) {
+		assert viewer != null;
 		assert container != null;
 		assert request != null;
 		assert bounds != null;
@@ -86,25 +86,24 @@ public final class CreateElementCommand extends Command {
 		_request = request;
 		_bounds = bounds;
 	}
-	
+
 	private Command createCompoundCommands() {
 		CompoundCommand comCmd = new CompoundCommand();
-		// create widget model
-		AbstractWidgetModel model = (AbstractWidgetModel) _request
-				.getNewObject();
-		assert model != null;
-		// set constraints
-		IGraphicalFeedbackFactory feedbackFactory = GraphicalFeedbackContributionsService
-		.getInstance().getGraphicalFeedbackFactory(model.getTypeID());				
-		if(feedbackFactory!=null) {
-			Command boundsCmd = feedbackFactory.createInitialBoundsCommand(model, _request,	_bounds);
-			comCmd.add(boundsCmd);
+
+		Object model = _request.getNewObject();
+
+		if (model != null && model instanceof AbstractWidgetModel) {
+			AbstractWidgetModel widgetModel = (AbstractWidgetModel) model;
+			IGraphicalFeedbackFactory feedbackFactory = GraphicalFeedbackContributionsService.getInstance().getGraphicalFeedbackFactory(widgetModel.getTypeID());
+			if (feedbackFactory != null) {
+				Command boundsCmd = feedbackFactory.createInitialBoundsCommand(widgetModel, _request, _bounds);
+				comCmd.add(boundsCmd);
+			}
+
+			comCmd.add(new SetPropertyCommand(widgetModel, AbstractWidgetModel.PROP_LAYER, _container.getLayerSupport().getActiveLayer().getId()));
+			comCmd.add(new AddWidgetCommand(_container, widgetModel));
+			comCmd.add(new SetSelectionCommand(_viewer, widgetModel));
 		}
-		
-		comCmd.add(new SetPropertyCommand(model, AbstractWidgetModel.PROP_LAYER, _container.getLayerSupport().getActiveLayer().getId()));	
-		comCmd.add(new AddWidgetCommand(_container, model));
-		comCmd.add(new SetSelectionCommand(_viewer, model));
-		
 		return comCmd;
 	}
 

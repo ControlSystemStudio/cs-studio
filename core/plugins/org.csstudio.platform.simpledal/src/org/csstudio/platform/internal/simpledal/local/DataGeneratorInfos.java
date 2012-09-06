@@ -23,7 +23,9 @@ package org.csstudio.platform.internal.simpledal.local;
 
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Process variable name patterns for local channels.
@@ -32,6 +34,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  */
 public enum DataGeneratorInfos {
+
 
 	/**
 	 * Countdown generator pattern. The pattern reads the following variables in

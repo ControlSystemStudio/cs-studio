@@ -1,9 +1,9 @@
 package org.csstudio.alarm.syslog2jms;
 
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

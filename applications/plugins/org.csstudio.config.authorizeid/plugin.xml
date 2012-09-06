@@ -2,6 +2,28 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.config.authorizeid.AuthorizeIdAction"
+            id="org.csstudio.config.authorizeid.authorizeidpopup"
+            name="authorizeid">
+      </command>
+</extension>
+<extension
+	point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:configuration">
+         <command
+               commandId="org.csstudio.config.authorizeid.authorizeidpopup"
+               icon="res/icons/ai1.gif"
+               label="Authorize ID"
+               style="push"
+               tooltip="Authorize ID">
+         </command>
+      </menuContribution>
+</extension>
+<!--   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
@@ -18,7 +40,7 @@
                tooltip="AuthorizeId">
          </action>
       </actionSet>
-   </extension>
+   </extension> -->
    <extension
          point="org.eclipse.ui.views">
       <view

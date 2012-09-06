@@ -38,11 +38,10 @@
       </toc>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommandResultReceivers">
+         point="org.csstudio.remote.managementCommandResultReceivers">
       <receiver
             class="org.csstudio.utility.caSnooperUi.TableReceiver"
             resultType="org.csstudio.utility.casnooper.Table">
       </receiver>
    </extension>
-
 </plugin>

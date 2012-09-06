@@ -21,7 +21,6 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
@@ -31,6 +30,7 @@ import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.ITextFigure;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;

@@ -2,7 +2,8 @@ package org.csstudio.utility.casnooper;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import org.csstudio.utility.casnooper.channel.*;
+
+import org.csstudio.utility.casnooper.channel.ChannelCollector;
 
 public class TimerProcessor {
 

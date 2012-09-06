@@ -24,30 +24,27 @@
 package org.csstudio.ams.delivery.sms;
 
 import java.util.Hashtable;
-import org.csstudio.platform.statistic.Collector;
+
+import org.csstudio.domain.common.statistic.Collector;
 import org.smslib.AGateway;
-import org.smslib.IGatewayStatusNotification;
 import org.smslib.AGateway.GatewayStatuses;
+import org.smslib.IGatewayStatusNotification;
 
 /**
  * @author Markus Moeller
  *
  */
-public class GatewayStatusNotification implements IGatewayStatusNotification
-{
+public class GatewayStatusNotification implements IGatewayStatusNotification {
+    
     /** Contains the Collector objects that hold the restart count for each modem */
     private final Hashtable<String, Collector> gatewayRestart;
 
-    public GatewayStatusNotification(final String[] gatewayId)
-    {
+    public GatewayStatusNotification(final String[] gatewayId) {
         gatewayRestart = new Hashtable<String, Collector>();
 
-        if(gatewayId != null)
-        {
-            for(final String s : gatewayId)
-            {
-                if(s != null)
-                {
+        if(gatewayId != null) {
+            for(final String s : gatewayId) {
+                if(s != null) {
                     final Collector c = new Collector();
                     c.setApplication("AmsSmsConnector");
                     c.setDescriptor("Restart count of " + s);
@@ -60,9 +57,11 @@ public class GatewayStatusNotification implements IGatewayStatusNotification
     }
 
     @Override
-    public void process(final AGateway gateway, final GatewayStatuses oldStatus, final GatewayStatuses newStatus) {
-        if((gatewayRestart.containsKey(gateway.getGatewayId())) && (newStatus == GatewayStatuses.RESTART))
-        {
+    public void process(final AGateway gateway,
+                        final GatewayStatuses oldStatus,
+                        final GatewayStatuses newStatus) {
+        if((gatewayRestart.containsKey(gateway.getGatewayId()))
+                && (newStatus == GatewayStatuses.RESTART)) {
             gatewayRestart.get(gateway.getGatewayId()).incrementValue();
         }
     }

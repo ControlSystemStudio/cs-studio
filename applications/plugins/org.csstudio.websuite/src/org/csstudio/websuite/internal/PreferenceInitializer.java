@@ -53,6 +53,14 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.DATABASE_USER, "NONE");
         prefs.put(PreferenceConstants.DATABASE_PASSWORD, "NONE");
         
+        // AMS database settings
+        prefs.put(PreferenceConstants.AMS_DATABASE_TYPE, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_URL, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_USER, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_PASSWORD, "");
+
+        prefs.put(PreferenceConstants.ENABLE_AMS_SERVLET, "false");
+        
         prefs.put(PreferenceConstants.DEFAULT_TOPIC_SET, "ALARM");
         prefs.put(PreferenceConstants.HTML_SERVLET_ADDRESS, "/AlarmViewer");
         prefs.put(PreferenceConstants.ACTIVATE_HTML_SERVLET, "true");
@@ -62,7 +70,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.ACTIVATE_CHANNEL_XML_SERVLET, "true");
         prefs.put(PreferenceConstants.HTML_CHANNEL_SERVLET_ADDRESS, "/RecordViewer");
         prefs.put(PreferenceConstants.ACTIVATE_CHANNEL_HTML_SERVLET, "true");
+        
         prefs.put(PreferenceConstants.HOST_NAME, "localhost");
+        prefs.put(PreferenceConstants.EXTERN_HOST_NAME, "localhost");
+        prefs.put(PreferenceConstants.EXTERN_HOST_PORT, "8080");
+        
         prefs.put(PreferenceConstants.EPICS_WEB_APP, "http://localhost:8080/epics/EpicsCa");
         prefs.put(PreferenceConstants.AAPI_WEB_APP, "http://localhost:8080/AAPI-web/archivereader.jsp");
 

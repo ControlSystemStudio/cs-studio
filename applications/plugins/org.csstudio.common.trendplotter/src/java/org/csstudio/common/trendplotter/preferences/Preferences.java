@@ -47,7 +47,10 @@ public class Preferences
                                PLOT_BINS = "plot_bins",
                                URLS = "urls",
                                ARCHIVES = "archives",
-                               ARCHIVE_RESCALE = "archive_rescale";
+                               ARCHIVE_RESCALE = "archive_rescale",
+                               COMPR_HIST = "compress_historic_samples",
+                               HIST_BUFFER = "historic_buffer_size",
+                               UNCOMP_LIVE_SAMPLES = "uncompressed_live_sample_size";
 
     public static double getTimeSpan()
     {
@@ -153,5 +156,34 @@ public class Preferences
             Activator.getLogger().log(Level.WARNING, "Undefined rescale option", ex);
         }
         return ArchiveRescale.STAGGER;
+    }
+
+    /**
+     * @return
+     */
+    public static int getUncompressedLiveSampleSize() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Activator.PLUGIN_ID, UNCOMP_LIVE_SAMPLES, 400, null);
+    }
+
+    /**
+     * @return
+     */
+    public static int getHistSampleBuffer() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Activator.PLUGIN_ID, HIST_BUFFER, 800, null);
+    }
+
+    /**
+     * @return
+     */
+    public static boolean getCompressHistSamples() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        String comprHist = prefs.getString(Activator.PLUGIN_ID, COMPR_HIST, "true", null).trim();
+        if(comprHist.equalsIgnoreCase("true")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

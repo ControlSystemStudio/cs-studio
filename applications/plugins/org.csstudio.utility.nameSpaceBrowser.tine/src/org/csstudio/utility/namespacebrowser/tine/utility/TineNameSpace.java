@@ -25,6 +25,7 @@
 package org.csstudio.utility.namespacebrowser.tine.utility;
 
 
+
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespacebrowser.tine.Activator;
 import org.csstudio.utility.namespacebrowser.tine.Messages;

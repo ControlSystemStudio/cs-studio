@@ -1,6 +1,7 @@
 
 package org.csstudio.ams.monitor.views;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,12 +16,13 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.csstudio.ams.dbAccess.configdb.HistoryTObject;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.TableColumn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exporting the table content of ams monitor into an excel file.
@@ -29,6 +31,8 @@ import org.eclipse.swt.widgets.TableColumn;
  * 
  */
 public class ExcelExporter extends Job {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ExcelExporter.class);
 
 	/**
 	 * Final data structure of strings that can directly written to POI lib.
@@ -186,12 +190,10 @@ public class ExcelExporter extends Job {
 			outputStream.close();
 			_exportTable.clear();
 		} catch (FileNotFoundException e) {
-			CentralLogger.getInstance().error(this,
-					"File not found " + e.toString());
+			LOG.error("File not found " + e.toString());
 			return Status.CANCEL_STATUS;
 		} catch (IOException e) {
-			CentralLogger.getInstance().error(this,
-					"IO Exception " + e.toString());
+			LOG.error("IO Exception " + e.toString());
 			return Status.CANCEL_STATUS;
 		}
 		return Status.OK_STATUS;

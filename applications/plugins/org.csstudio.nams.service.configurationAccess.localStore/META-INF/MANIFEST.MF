@@ -8,7 +8,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common,
  org.csstudio.platform.libs.jdbc,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.platform,
  org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.nams.service.logging,
  org.junit;bundle-version="4.8.1"

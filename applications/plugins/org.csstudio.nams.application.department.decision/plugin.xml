@@ -12,11 +12,20 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.nams.application.department.decision.management.Stop"
-            id="org.csstudio.nams.application.department.decision.org.csstudio.nams.application.department.decision.management.Stop"
+            id="org.csstudio.nams.application.department.decision.management.Stop"
             label="Stop">
+         <stringParameter
+               id="Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.nams.application.department.decision.management.Restart"
+            id="org.csstudio.nams.application.department.decision.management.Restart"
+            label="Restart">
          <stringParameter
                id="Password"
                label="Password">

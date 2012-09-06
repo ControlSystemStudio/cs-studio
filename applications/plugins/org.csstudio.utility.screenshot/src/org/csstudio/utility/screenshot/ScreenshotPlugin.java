@@ -25,7 +25,6 @@ package org.csstudio.utility.screenshot;
 import java.io.IOException;
 import java.net.URL;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -33,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
+public class ScreenshotPlugin extends AbstractUIPlugin // implements IStartup
 {
     
     private static final Logger LOG = LoggerFactory.getLogger(ScreenshotPlugin.class);
@@ -118,7 +118,8 @@ public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
     }
     
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
+    	super.start(context);
         IWorkbench workbench = PlatformUI.getWorkbench();
         
         window = workbench.getActiveWorkbenchWindow(); //.getWorkbenchWindows()[0];
@@ -127,13 +128,9 @@ public class ScreenshotPlugin extends AbstractCssUiPlugin // implements IStartup
     }
     
     @Override
-    protected void doStop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) throws Exception {
+    	super.stop(context);
         plugin = null;
-    }
-    
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
     
     /*

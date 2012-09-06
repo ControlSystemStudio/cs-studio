@@ -49,6 +49,9 @@ public final class Messages extends NLS {
     
     public static String JmsLogPreferencePage_sound;
     
+    public static String AlarmMessageTable_Authorization_Title;
+    public static String AlarmMessageTable_Not_Acknowledged;
+    public static String AlarmMessageTable_Ok;
     public static String AlarmView_acknowledgeAllDropDown;
     public static String AlarmView_acknowledgeButton;
     public static String AlarmView_acknowledgeTitle;
@@ -57,7 +60,6 @@ public final class Messages extends NLS {
     public static String AlarmView_soundButtonTitle;
     
     public static String AlarmViewerPreferencePage_column;
-    public static String AlarmViewerPreferencePage_columnsHint;
     public static String AlarmViewerPreferencePage_columnNamesMessageKeys;
     public static String AlarmViewerPreferencePage_enterColumnName;
     
@@ -65,9 +67,14 @@ public final class Messages extends NLS {
     
     public static String column;
     public static String showOutdatedMessages;
-    public static String fontHint;
     public static String columnsHint;
+    public static String fontHint;
+    public static String syncHint;
     public static String columnNamesMessageKeys;
+    public static String DeleteAllMessagesAction_Text;
+    public static String DeleteAllMessagesAction_TooltipText;
+    public static String DeleteMessageAction_Text;
+    public static String DeleteMessageAction_TooltipText;
     
     public static String ExpertSearchDialog_expertButton;
     public static String ExpertSearchDialog_end;
@@ -99,10 +106,19 @@ public final class Messages extends NLS {
     public static String LogView_defaultMessageText;
     public static String LogView_defaultMessageDescription;
     public static String LogView_runningSince;
+    public static String LogView_retrieveInitialStateText;
+    public static String LogView_retrieveInitialStateToolTop;
     public static String LogView_reloadText;
     public static String LogView_reloadToolTip;
     public static String LogView_reloadErrorTitle;
     public static String LogView_reloadErrorHint;
+    public static String LogView_reloadMessage;
+    public static String LogView_reloadMessageError;
+    public static String LogView_AlarmServer_Reloaded;
+    public static String LogView_AlarmServer_Title;
+    public static String LogView_AlarmServer_ConfigurationUpdated;
+    public static String LogView_AlarmServer_Started;
+    public static String LogView_AlarmServer_WillStop;
 
     public static String LogView_connectionErrorTitle;
     public static String LogView_connectionErrorHint;
@@ -150,6 +166,9 @@ public final class Messages extends NLS {
     public static String ViewArchive_toTime;
     
     public static String LogView_updateControlButton;
+    public static String ShowMessagePropertiesAction_ErrorDialog_Title;
+    public static String ShowMessagePropertiesAction_Text;
+    public static String ShowMessagePropertiesAction_TooltipText;
     
 
 }

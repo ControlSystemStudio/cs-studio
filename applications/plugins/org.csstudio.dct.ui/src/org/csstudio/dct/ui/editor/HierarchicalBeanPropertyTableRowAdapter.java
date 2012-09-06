@@ -4,7 +4,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.graphics.RGB;
 

@@ -21,6 +21,7 @@
  */
  package org.csstudio.platform.ui.dnd.rfc;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,10 +44,10 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class ProcessVariablePopupAction implements IObjectActionDelegate {
 
-	private List<IProcessVariableAdressProvider> _pvAdressListProviders;
+	private List<WeakReference<IProcessVariableAdressProvider>> _pvAdressListProviders;
 
 	public ProcessVariablePopupAction() {
-		_pvAdressListProviders = new ArrayList<IProcessVariableAdressProvider>();
+		_pvAdressListProviders = new ArrayList<WeakReference<IProcessVariableAdressProvider>>();
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
@@ -55,11 +56,14 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 	public void run(IAction action) {
 		Set<IProcessVariableAddress> pvs = new HashSet<IProcessVariableAddress>();
-		
-		for (IProcessVariableAdressProvider provider : _pvAdressListProviders) {
-			pvs.addAll(provider.getProcessVariableAdresses());
+
+		for (WeakReference<IProcessVariableAdressProvider> ref : _pvAdressListProviders) {
+			IProcessVariableAdressProvider provider = ref.get();
+			if (provider != null) {
+				pvs.addAll(provider.getProcessVariableAdresses());
+			}
 		}
-		
+
 		handlePvs(pvs);
 	}
 
@@ -71,7 +75,8 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 			for (Object o : sel.toList()) {
 				if (o instanceof IProcessVariableAdressProvider) {
-					_pvAdressListProviders.add((IProcessVariableAdressProvider) o);
+					_pvAdressListProviders
+							.add(new WeakReference<IProcessVariableAdressProvider>((IProcessVariableAdressProvider) o));
 				}
 			}
 		}
@@ -79,5 +84,4 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 	}
 
 	protected abstract void handlePvs(Set<IProcessVariableAddress> pvs);
-
 }

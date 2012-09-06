@@ -1,17 +1,19 @@
 package org.csstudio.sds.internal.connection;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.dal.DataExchangeException;
 import org.csstudio.dal.simple.AnyData;
 import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.platform.model.pvs.ValueType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SinglePropertyReadConnector implements ChannelListener {
 	private final ChannelInputProcessor channelInputProcessor;
 	private final ValueType valueType;
 	private org.csstudio.dal.context.ConnectionState latestConnectionState;
 	private final String characteristic;
+    private static final Logger LOG = LoggerFactory.getLogger(SinglePropertyReadConnector.class);
 
 	public SinglePropertyReadConnector(final ChannelInputProcessor channelInputProcessor, final ValueType valueType, final String characteristic) {
 		assert channelInputProcessor != null;
@@ -33,7 +35,7 @@ public class SinglePropertyReadConnector implements ChannelListener {
 				// Changed 24.10.2011 HRickens: give the DynamicValueCondition as value not the String representation
                 channelInputProcessor.valueChanged(cc);
 			} catch (final DataExchangeException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 		} else {
 			// .. handle value

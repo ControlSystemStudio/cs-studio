@@ -5,14 +5,9 @@ import java.util.List;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.ui.graphicalviewer.GraphicalDctView;
 import org.csstudio.dct.ui.graphicalviewer.GraphicalRepresentationUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Popup menu action for the outline view that opens a graphical representation

@@ -25,7 +25,7 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -42,13 +42,15 @@ import javax.jms.Session;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.IocControlMessageListener;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Receives messages from IOCs and creates {@link ClientRequest}s to handle
@@ -57,15 +59,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * @author Matthias Clausen, Markus Moeller, Joerg Rathlev
  */
-public class InterconnectionServer
-{
+public class InterconnectionServer implements IInterconnectionServer {
+    private static final Logger LOG = LoggerFactory.getLogger(InterconnectionServer.class);
+    
     private static final String IOC_CONTROL_TOPIC = "IOC_CONTROL";
-	private static InterconnectionServer		thisServer = null;
     private DatagramSocket              serverSocket    = null;
 	private int							sendMessageErrorCount	= 0;
 	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
-	private String						localHostName = "defaultLocalHost";
+	private String						localHostName = null;
 	private BeaconWatchdog				beaconWatchdog = null;
 	private int numberOfJmsServerFailover = -1;
 
@@ -127,26 +129,17 @@ public class InterconnectionServer
 	}
 
     private void disconnectFromIocs() {
-    	final String[] listOfNodes = IocConnectionManager.INSTANCE.getNodeNameArray();
-    	final InetAddress[] listOfIocInetAddresses = IocConnectionManager.INSTANCE.getListOfIocInetAdresses();
-
-        final IPreferencesService prefs = Platform.getPreferencesService();
-	    final String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.COMMAND_PORT_NUMBER, "", null);
-
-		final int commandPortNum = Integer.parseInt(commandPortNumber);
-
-		try {
-		    for ( int i=0; i<listOfNodes.length; i++ ) {
-		        CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-		        final IocCommandSender sendCommandToIoc = new IocCommandSender( listOfIocInetAddresses[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
-		        getCommandExecutor().execute(sendCommandToIoc);
-		    }
-		} catch (final IllegalArgumentException e) {
-		    CentralLogger.getInstance().fatal(this, "Creation of command sender failed:\n" + e.getMessage());
-		}
+        Collection<IocConnection> iocConnections = ServiceLocator.getService(IIocConnectionManager.class)
+                .getIocConnections();
+        for (IocConnection iocConnection : iocConnections) {
+            LOG.info("InterconnectionServer: disconnect from IOC: "
+                    + iocConnection.getNames().getLogicalIocName());
+            final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection,
+                                                                           PreferenceProperties.COMMAND_DISCONNECT);
+            getCommandExecutor().execute(sendCommandToIoc);
+        }
     }
-
+    
 	/**
 	 * Returns whether all IOCs are currently in the state "not selected".
 	 *
@@ -154,7 +147,7 @@ public class InterconnectionServer
 	 *         <code>false</code> if at least one IOC is selected.
 	 */
     private boolean allIocsNotSelected() {
-    	for (final IocConnection conn : IocConnectionManager.INSTANCE._connectionList.values()) {
+    	for (final IocConnection conn : ServiceLocator.getService(IIocConnectionManager.class).getIocConnections()) {
 			if (conn.isSelectState()) {
 				return false;
 			}
@@ -163,7 +156,7 @@ public class InterconnectionServer
     }
 
     public boolean stopIcServer () {
-    	CentralLogger.getInstance().info(this, "Stopping IC-Server");
+    	LOG.info("Stopping IC-Server");
 
     	/*
     	 * Disconnect from all IOCs.
@@ -211,10 +204,11 @@ public class InterconnectionServer
 			// ignore
 		}
 
+		LOG.debug("stopIcServer ends");
 		return true;
     }
 
-    private InterconnectionServer() {
+    public InterconnectionServer() {
         final IPreferencesService prefService = Platform.getPreferencesService();
 	    sendCommandId = prefService.getInt(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.SENT_START_ID, 0, null);
@@ -225,18 +219,9 @@ public class InterconnectionServer
 			this.localHostName = localMachine.getHostName();
 		}
 		catch (final java.net.UnknownHostException uhe) {
+		    LOG.error("ICS could not retrieve local hostname", uhe);
 		}
     }
-
-	// TODO: this doesn't really have to be a singleton. The application
-	// should simply create only a single instance, but it would improve
-	// testability if this were simply a normal class.
-    public static synchronized InterconnectionServer getInstance() {
-		if ( thisServer == null) {
-			thisServer = new InterconnectionServer();
-		}
-		return thisServer;
-	}
 
     public void executeMe()
     {
@@ -249,13 +234,13 @@ public class InterconnectionServer
         try {
         	createJmsConnections();
         } catch (final JMSException e) {
-        	CentralLogger.getInstance().fatal(this, "Could not connect to JMS servers", e);
+        	LOG.error("Could not connect to JMS servers", e);
         	return;
         }
 
         final IPreferencesService prefs = Platform.getPreferencesService();
 	    final String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.DATA_PORT_NUMBER, "", null);
+	    		PreferenceConstants.ICS_DATA_PORT_NUMBER, "", null);
 
 		final int dataPortNum = Integer.parseInt(dataPortNumber);
 
@@ -286,7 +271,7 @@ public class InterconnectionServer
 	    final int numberofReadThreads = Integer.parseInt(numberofReadThreadsS);
 
 	    this.executor = Executors.newFixedThreadPool(numberofReadThreads);
-	    CentralLogger.getInstance().info(this, "IC-Server create Read Thread Pool with " + numberofReadThreads + " threads");
+	    LOG.info("IC-Server create Read Thread Pool with " + numberofReadThreads + " threads");
 
 		//
 		// create command thread pool using the Executor Service
@@ -296,20 +281,17 @@ public class InterconnectionServer
 	    final int numberofCommandThreads = Integer.parseInt(numberofCommandThreadsS);
 
 	    this.commandExecutor = Executors.newFixedThreadPool(numberofCommandThreads);
-	    CentralLogger.getInstance().info(this, "IC-Server create Command Thread Pool with " + numberofCommandThreads + " threads");
+	    LOG.info("IC-Server create Command Thread Pool with " + numberofCommandThreads + " threads");
 
 
         try
         {
-        	CentralLogger.getInstance().info(this, "IC-Server trying to initialize UDP socket. Port: " + dataPortNum);
+        	LOG.info("IC-Server trying to initialize UDP socket. Port: " + dataPortNum);
         	serverSocket = new DatagramSocket( dataPortNum );
         }
         catch(final IOException ioe)
         {
-        	System.out.println(NAME + " ** ERROR ** : Could not initialize UDP socket. Port: " + dataPortNum);
-        	System.out.println("\n" + NAME + " *** EXCEPTION *** : " + ioe.getMessage());
-        	CentralLogger.getInstance().info(this, "IC-Server Could not initialize UDP socket. Port: " + dataPortNum);
-
+        	LOG.error("IC-Server " + NAME + " Could not initialize UDP socket. Port: " + dataPortNum, ioe);
             return;
         }
 
@@ -320,7 +302,7 @@ public class InterconnectionServer
         _redundantIocBeaconSender = new RedundantIocBeaconSender();
         this.executor.execute( _redundantIocBeaconSender);
 
-        CentralLogger.getInstance().info(this, "IC-Server starting to receive messages from Port: " + dataPortNum);
+        LOG.info("IC-Server starting to receive messages from Port: " + dataPortNum);
         while(!isQuit())
         {
 
@@ -329,7 +311,7 @@ public class InterconnectionServer
         	 */
         	if ( showMessageIndicatorB && messageCounter++ > 100){
         		messageCounter = 0;
-        		System.out.println ("100 messages complete");
+        		LOG.trace("100 messages complete");
         	}
 
     		try
@@ -354,11 +336,11 @@ public class InterconnectionServer
 
                 final String packetData = new String(packet.getData(), 0, packet.getLength());
 
-                CentralLogger.getInstance().debug(this, "Received packet: " + packetData);
+                LOG.debug("Received packet: " + packetData);
 
 
-                newClient = new ClientRequest( this, packetData, serverSocket,
-                		packet.getAddress(), packet.getPort(), packet.getLength(), startTime);
+                newClient = new ClientRequest( packetData, serverSocket, packet.getAddress(),
+                		packet.getPort(), packet.getLength(), startTime);
 
                 /*
                  * execute runnable by thread pool executor
@@ -376,11 +358,11 @@ public class InterconnectionServer
             	 */
             	if (!isQuit()) {
             		// TODO: is this error handling good enough?
-            		CentralLogger.getInstance().error(this, "IO Error in main loop", ioe);
+            		LOG.error("IO Error in main loop", ioe);
             	}
             }
         }
-        CentralLogger.getInstance().debug( this, "InterconnectionServer: leaving main loop - to STOP");
+        LOG.debug("InterconnectionServer: leaving main loop - to STOP");
 
 		if (!serverSocket.isClosed()) {
 			serverSocket.close();
@@ -405,7 +387,7 @@ public class InterconnectionServer
 			cleanShutdown = false;
 		}
 		if (!cleanShutdown) {
-			CentralLogger.getInstance().warn(this, "Not all ClientRequests were finished!");
+			LOG.warn("Not all ClientRequests were finished!");
 		}
 
     	try {
@@ -414,18 +396,15 @@ public class InterconnectionServer
 			cleanShutdown = false;
 		}
 		if (!cleanShutdown) {
-			CentralLogger.getInstance().warn(this, "Not all Commands were finished!");
+			LOG.warn("Not all Commands were finished!");
 		}
 
-    	CentralLogger.getInstance().info(this, "InterconnectionServer: finally Stopped");
+    	LOG.info("InterconnectionServer: finally Stopped");
 
         exitSignal.countDown();
         return;
     }
 
-	/**
-	 *
-	 */
 	private void setupStatisticCollectors() {
 		jmsMessageWriteCollector = new Collector();
         jmsMessageWriteCollector.setApplication("IC-Server-" + getLocalHostName());
@@ -500,7 +479,7 @@ public class InterconnectionServer
 				 * XXX: This error should be handled better. (It was not handled
 				 * at all in the old version.)
 				 */
-				CentralLogger.getInstance().error(this, "Failed to open JMS connection", e);
+				LOG.error("Failed to open JMS connection", e);
 			}
     	}
     }
@@ -528,7 +507,7 @@ public class InterconnectionServer
 		catch(final JMSException jmse)
 	    {
 			status = false;
-	        System.out.println("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+	        LOG.error("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
 	        return status;
 	    }
 	}
@@ -553,7 +532,7 @@ public class InterconnectionServer
 		return numberOfDuplicateMessagesCollector;
 	}
 
-	public synchronized int getSendCommandId() {
+	public synchronized int nextSendCommandId() {
 		return sendCommandId++;
 	}
 
@@ -565,13 +544,6 @@ public class InterconnectionServer
 		return numberOfIocFailoverCollector;
 	}
 
-	/**
-	 * Creates a new JMS session.
-	 *
-	 * @return the session.
-	 * @throws JMSException
-	 *             if an error occurs.
-	 */
 	public Session createJmsSession() throws JMSException {
 		return _sharedSenderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}

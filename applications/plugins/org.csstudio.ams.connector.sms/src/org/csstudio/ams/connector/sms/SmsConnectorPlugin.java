@@ -37,7 +37,7 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.ams.connector.sms";
 
-	public static final String CONNECTOR_ID = "SmsConnector";
+	public static final String CONNECTOR_ID = "SmsDeliveryWorker";
 	
 	// The shared instance
 	private static SmsConnectorPlugin _plugin;

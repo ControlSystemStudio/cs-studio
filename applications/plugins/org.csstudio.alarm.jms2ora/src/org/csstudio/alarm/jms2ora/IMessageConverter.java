@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 import org.csstudio.alarm.jms2ora.util.RawMessage;
 
@@ -40,4 +42,6 @@ public interface IMessageConverter {
      * @param m - The raw message. It is just a copy of the JMS MapMessage.
      */
     void putRawMessage(@Nonnull RawMessage m);
+    
+    Collection<RawMessage> getRawMessages();
 }

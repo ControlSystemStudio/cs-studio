@@ -21,9 +21,10 @@
  */
 package org.csstudio.utility.casnooper;
 
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 import org.csstudio.utility.casnooper.channel.SnooperStringParser;
 import org.slf4j.Logger;

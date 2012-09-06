@@ -27,7 +27,7 @@ import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.treeview.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeview.views.AlarmTreeModificationException;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -66,7 +66,7 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
     @Override
     public void apply() throws AlarmTreeModificationException {
         try {
-            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            final ILdapService service = ServiceLocator.getService(ILdapService.class);
             if (service == null) {
                 throw new AlarmTreeModificationException("Removal failed due to unavailable LDAP service", null);
             }

@@ -1,7 +1,7 @@
 
 package org.csstudio.cagateway;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -10,7 +10,7 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.cagateway";
@@ -32,7 +32,8 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+		super.start(context);
 		plugin = this;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -44,7 +45,8 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 
@@ -55,11 +57,6 @@ public class Activator extends AbstractCssPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-	}
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 	public void addSessionServiceListener(

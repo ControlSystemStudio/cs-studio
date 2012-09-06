@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeview.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditor;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
@@ -80,8 +81,8 @@ public final class DeleteNodeAction extends Action {
                 }
             } catch (final DirectoryEditException e) {
                 MessageDialog.openError(_site.getShell(),
-                                        "Delete",
-                                        "Could not delete this node: " + e.getMessage());
+                                        Messages.DeleteNodeAction_Error_Title,
+                                        Messages.DeleteNodeAction_Error_Hint + e.getMessage());
             }
         }
     }

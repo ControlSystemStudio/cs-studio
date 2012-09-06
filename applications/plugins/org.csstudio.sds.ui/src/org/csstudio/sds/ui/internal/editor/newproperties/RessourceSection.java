@@ -2,9 +2,9 @@ package org.csstudio.sds.ui.internal.editor.newproperties;
 
 import java.util.List;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.sds.internal.model.ResourceProperty;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.IContentProposal;

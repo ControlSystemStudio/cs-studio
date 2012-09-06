@@ -19,12 +19,12 @@
 package org.csstudio.alarm.treeview.views.actions;
 
 import javax.annotation.CheckForNull;
+
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.jobs.ImportXmlFileJob;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.service.AlarmMessageListener;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Import xml file action.
@@ -42,8 +44,7 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * @since 14.06.2010
  */
 public final class ImportXmlFileAction extends Action {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ImportXmlFileAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ImportXmlFileAction.class);
 
     private final IWorkbenchPartSite _site;
     private final AlarmMessageListener _alarmListener;
@@ -72,7 +73,7 @@ public final class ImportXmlFileAction extends Action {
         final String filePath = getFileNameToLoadFrom();
         if (filePath != null) {
             _importXmlFileJob.setXmlFilePath(filePath);
-            LOG.debug("Starting XML file importer.");
+            LOG.debug("Starting XML file importer."); //$NON-NLS-1$
             final IWorkbenchSiteProgressService progressService =
                 (IWorkbenchSiteProgressService) _site.getAdapter(IWorkbenchSiteProgressService.class);
 
@@ -90,8 +91,8 @@ public final class ImportXmlFileAction extends Action {
     @CheckForNull
     private String getFileNameToLoadFrom() {
         final FileDialog dialog = new FileDialog(_site.getShell(), SWT.OPEN);
-        dialog.setFilterExtensions(new String[] {"*.xml"});
-        dialog.setText("Load alarm tree configuration file (.xml)");
+        dialog.setFilterExtensions(new String[] {"*.xml"}); //$NON-NLS-1$
+        dialog.setText(Messages.ImportXmlFileAction_Dialog_Text);
         return dialog.open();
     }
 }

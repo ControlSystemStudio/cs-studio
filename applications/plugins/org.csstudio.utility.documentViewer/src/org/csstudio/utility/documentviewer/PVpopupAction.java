@@ -34,8 +34,7 @@
 		*/
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
+
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -46,13 +45,14 @@ import org.eclipse.swt.widgets.Display;
  * @version $Revision: 1.1 $
  * @since 26.07.2010
  */
-public class PVpopupAction extends ProcessVariablePopupAction {
-    /** @see org.csstudio.data.exchange.ProcessVariablePopupAction#handlePVs(]) */
-    @Override
-    public void handlePVs(final IProcessVariable[] pv_names) {
-        DocumentShell documentShell = new DocumentShell(Display.getDefault().getActiveShell());
-        documentShell.setProcessVariables(pv_names);
-        documentShell.open();
-    }
+//TODO jhatje: implement new datatype
+public class PVpopupAction {//extends ProcessVariablePopupAction {
+//    /** @see org.csstudio.data.exchange.ProcessVariablePopupAction#handlePVs(]) */
+//    @Override
+//    public void handlePVs(final IProcessVariable[] pv_names) {
+//        DocumentShell documentShell = new DocumentShell(Display.getDefault().getActiveShell());
+//        documentShell.setProcessVariables(pv_names);
+//        documentShell.open();
+//    }
 
 }

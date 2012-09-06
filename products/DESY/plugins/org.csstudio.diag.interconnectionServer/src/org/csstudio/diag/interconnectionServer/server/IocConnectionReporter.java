@@ -30,6 +30,7 @@ import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+import org.csstudio.servicelocator.ServiceLocator;
 
 /**
  * Implements the <code>IIocConnectionReporter</code> service for remote
@@ -43,13 +44,13 @@ public class IocConnectionReporter implements IIocConnectionReporter {
 	 * {@inheritDoc}
 	 */
 	public IocConnectionReport getReport() {
-		final String serverName = InterconnectionServer.getInstance().getLocalHostName();
+		final String serverName = ServiceLocator.getService(IInterconnectionServer.class).getLocalHostName();
 		final List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
-		final Collection<IocConnection> iocConnections = IocConnectionManager.INSTANCE.getIocConnections();
+		final Collection<IocConnection> iocConnections = ServiceLocator.getService(IIocConnectionManager.class).getIocConnections();
 		for (final IocConnection ioc : iocConnections) {
 			final IocConnectionState state = ioc.getIocConnectionState();
 			final IocConnectionReportItem item = new IocConnectionReportItem(
-					ioc.getHost(), ioc.getLogicalIocName(), state);
+					ioc.getNames().getHostName(), ioc.getNames().getLogicalIocName(), state);
 			items.add(item);
 		}
 		return new IocConnectionReport(serverName, items);

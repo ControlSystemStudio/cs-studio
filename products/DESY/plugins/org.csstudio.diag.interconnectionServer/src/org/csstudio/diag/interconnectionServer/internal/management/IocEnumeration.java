@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.diag.interconnectionServer.server.IIocConnectionManager;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
-import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.IDynamicParameterValues;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.IDynamicParameterValues;
+import org.csstudio.servicelocator.ServiceLocator;
 
 /**
  * Enumeration of IOCs for the management commands.
@@ -43,12 +44,12 @@ public class IocEnumeration implements IDynamicParameterValues {
 	 */
 	public CommandParameterEnumValue[] getEnumerationValues() {
 		final Collection<IocConnection> iocs =
-			IocConnectionManager.INSTANCE.getIocConnections();
+		    ServiceLocator.getService(IIocConnectionManager.class).getIocConnections();
 		final List<CommandParameterEnumValue> result =
 			new ArrayList<CommandParameterEnumValue>(iocs.size());
 		for (final IocConnection ioc : iocs) {
-			final String hostname = ioc.getHost();
-			final String logicalName = ioc.getLogicalIocName();
+			final String hostname = ioc.getNames().getHostName();
+			final String logicalName = ioc.getNames().getLogicalIocName();
 			final String label = logicalName + " (" + hostname + ")";
 			result.add(new CommandParameterEnumValue(hostname, label));
 		}

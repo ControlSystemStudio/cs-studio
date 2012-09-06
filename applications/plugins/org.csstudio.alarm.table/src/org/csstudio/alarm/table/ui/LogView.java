@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
@@ -44,10 +43,10 @@ import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
+import org.csstudio.alarm.table.ui.actions.LogTableViewActionFactory;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -62,18 +61,16 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.eclipse.ui.views.IViewDescriptor;
-import org.eclipse.ui.views.IViewRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +79,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhatje
  */
-public class LogView extends ViewPart {
+public class LogView extends ViewPart implements IConnectionHolder {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogView.class);
     
@@ -116,11 +113,6 @@ public class LogView extends ViewPart {
     private String _currentTopicSetName = null;
 
     /**
-     * Service allowing to reload the pvs which are tracked
-     */
-    private final IAlarmConfigurationService _configService = JmsLogsPlugin.getDefault().getAlarmConfigurationService();
-    
-    /**
      * Mapping of column widths from table to preferences.
      */
     ExchangeableColumnWidthPreferenceMapping _columnMapping;
@@ -132,8 +124,9 @@ public class LogView extends ViewPart {
 
     /**
      * The message area at the top of the table view
+     * May be used by subclasses.
      */
-    private MessageArea _messageArea;
+    protected MessageArea _messageArea;
 
     Composite _parent;
 
@@ -154,6 +147,9 @@ public class LogView extends ViewPart {
     private PopUpTimerTask _timerTask;
 
     private Timer _timer;
+
+    // may be used by subclasses
+    protected Action _reloadAction;
 
     /**
      * {@inheritDoc}
@@ -321,7 +317,7 @@ public class LogView extends ViewPart {
     @CheckForNull
     protected IAlarmTableListener getAlarmTableListener() {
         IAlarmTableListener result = null;
-        TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+        TopicSet topicSet = _topicSetColumnService.getTopicSetByName(_currentTopicSetName);
         if (_topicsetService.hasTopicSet(topicSet)) {
             result = _topicsetService.getAlarmTableListenerForTopicSet(topicSet);
         }
@@ -339,7 +335,7 @@ public class LogView extends ViewPart {
      */
     @Nonnull
     protected final AbstractMessageList getOrCreateCurrentMessageList() {
-        final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+        final TopicSet topicSet = _topicSetColumnService.getTopicSetByName(_currentTopicSetName);
         if (!_topicsetService.hasTopicSet(topicSet)) {
             final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
@@ -472,35 +468,34 @@ public class LogView extends ViewPart {
         jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
     
         final RowLayout layout = new RowLayout();
-        layout.type = SWT.HORIZONTAL;
         layout.spacing = 5;
+        layout.pack = true;
         jmsTopicItemsGroup.setLayout(layout);
     
         final Combo topicSetsCombo = new Combo(jmsTopicItemsGroup, SWT.SINGLE);
-        int i = 0;
-    
-        for (final TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
-            topicSetsCombo.add(topicSet.getName());
-            if (_currentTopicSetName.equals(topicSet.getName())) {
-                topicSetsCombo.select(i);
-            }
-            i++;
-        }
+
+        final Label syncLabel = new Label(jmsTopicItemsGroup, SWT.CENTER);
+        syncLabel.setLayoutData(new RowData(SWT.DEFAULT, 21));
+
+        fillComboBoxAndLabel(topicSetsCombo, syncLabel);
+        
         final Button pauseButton = new Button(jmsTopicItemsGroup, SWT.TOGGLE);
         pauseButton.setLayoutData(new RowData(60, 21));
         pauseButton.setText("Pause");
-
+        
         topicSetsCombo.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
             public void widgetSelected(@Nullable final SelectionEvent e) {
                 super.widgetSelected(e);
-                final String oldTopicSet = _currentTopicSetName;
-                _currentTopicSetName = _topicSetColumnService.getTopicSets().get(topicSetsCombo
-                        .getSelectionIndex()).getName();
-                if (!oldTopicSet.equals(_currentTopicSetName)) {
+                final String oldTopicSetName = _currentTopicSetName;
+                final TopicSet currentTopicSet = _topicSetColumnService.getTopicSets()
+                        .get(topicSetsCombo.getSelectionIndex());
+                _currentTopicSetName = currentTopicSet.getName();
+                if (!oldTopicSetName.equals(_currentTopicSetName)) {
                     _messageTable.setMessageUpdatePause(false);
                     pauseButton.setSelection(false);
+                    setTextToSyncLabel(syncLabel, currentTopicSet);
                     initializeMessageTable();
                 }
             }
@@ -548,97 +543,39 @@ public class LogView extends ViewPart {
         });
     }
 
+    private void fillComboBoxAndLabel(final Combo topicSetsCombo, final Label syncLabel) {
+        int i = 0;
+        for (final TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
+            topicSetsCombo.add(topicSet.getName());
+            if (_currentTopicSetName.equals(topicSet.getName())) {
+                topicSetsCombo.select(i);
+                setTextToSyncLabel(syncLabel, topicSet);
+            }
+            i++;
+        }
+    }
+
+    private void setTextToSyncLabel(final Label syncLabel, final TopicSet topicSet) {
+        syncLabel.setText(topicSet.isSynchedToTree() ? "In sync with tree" : "");
+    }
+    
     /**
      * Must be called from createPartControl from this class or the subclasses resp.
      */
     protected void createAndRegisterActions() {
         final IActionBars bars = getViewSite().getActionBars();
-
+        
         if (AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
-            createAndRegisterReloadAction(bars);
+            _reloadAction = LogTableViewActionFactory
+                    .createAndRegisterReloadAction(getSite(), this);
+            bars.getToolBarManager().add(_reloadAction);
         }
-        createAndRegisterPropertyViewAction(bars);
-        createAndRegisterMessageAreaToggleAction(bars);
-    }
-
-    private void createAndRegisterReloadAction(@Nonnull final IActionBars bars) {
-        final Action reloadAction = new Action() {
-            @Override
-            public void run() {
-                try {
-                    IAlarmConnection connection = getConnection();
-                    if (connection != null) {
-                        connection.reloadPVsFromResource();
-                    } else {
-                        MessageDialog.openError(getSite().getShell(),
-                                                Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
-                                                Messages.LogView_reloadErrorHint);
-                    }
-                } catch (AlarmConnectionException e) {
-                    MessageDialog.openError(getSite().getShell(), Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
-                                            e.getMessage() + "\n" + Messages.LogView_reloadErrorHint);
-                }
-            }
-            @SuppressWarnings("synthetic-access")
-            @CheckForNull
-            private IAlarmConnection getConnection() {
-                IAlarmConnection connection = null;
-                final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
-                if (_topicsetService.hasTopicSet(topicSet)) {
-                    connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
-                }
-                return connection;
-            }
-        };
-        
-        final String source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? " LDAP" : " XML";
-        reloadAction.setText(Messages.LogView_reloadText + source);
-        reloadAction.setToolTipText(Messages.LogView_reloadToolTip + source);
-        reloadAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/refresh.gif"));
-
-        bars.getToolBarManager().add(reloadAction);
-    }
-    
-    private void createAndRegisterPropertyViewAction(@Nonnull final IActionBars bars) {
-        final Action showPropertyViewAction = new Action() {
-            @Override
-            public void run() {
-                try {
-                    getSite().getPage().showView(PROPERTY_VIEW_ID);
-                } catch (final PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Table", //$NON-NLS-1$
-                                            e.getMessage());
-                }
-            }
-        };
-        showPropertyViewAction.setText(Messages.LogView_properties);
-        showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
-
-        final IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
-                .getViewRegistry();
-        final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
-
-        bars.getToolBarManager().add(showPropertyViewAction);
-    }
-
-    private void createAndRegisterMessageAreaToggleAction(@Nonnull final IActionBars bars) {
-        final Action displayMessageAreaAction = new Action() {
-            @SuppressWarnings("synthetic-access")
-            @Override
-            public void run() {
-                if (_messageArea.isVisible()) {
-                    _messageArea.hide();
-                } else {
-                    _messageArea.show();
-                }
-            }
-        };
-        displayMessageAreaAction.setText(Messages.LogView_messageArea);
-        displayMessageAreaAction.setToolTipText(Messages.LogView_messageAreaToolTip);
-        
-        displayMessageAreaAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/details_view.gif"));
-        bars.getToolBarManager().add(displayMessageAreaAction);
+        Action propertyViewAction = LogTableViewActionFactory
+                .createAndRegisterPropertyViewAction(getSite(), PROPERTY_VIEW_ID);
+        bars.getToolBarManager().add(propertyViewAction);
+        Action messageAreaToggleAction = LogTableViewActionFactory
+                .createAndRegisterMessageAreaToggleAction(_messageArea);
+        bars.getToolBarManager().add(messageAreaToggleAction);
     }
 
     /**
@@ -687,101 +624,19 @@ public class LogView extends ViewPart {
         _soundHandler.enableSound(false);
         _messageTable = null;
     }
-
-    /**
-     * Encapsulation of the message area. It is located below the tree view.<br>
-     * FIXME (jpenning) This is a copy of the inner class of the AlarmTreeView.
-     */
-    private static final class MessageArea {
-        /**
-         * The message area which can display error messages inside the view part.
-         */
-        private final Composite _messageAreaComposite;
-
-        /**
-         * The icon displayed in the message area.
-         */
-        private final Label _messageAreaIcon;
-
-        /**
-         * The message displayed in the message area.
-         */
-        private final Label _messageAreaMessage;
-
-        /**
-         * The description displayed in the message area.
-         */
-        private final Label _messageAreaDescription;
-
-        public MessageArea(final Composite parent) {
-            _messageAreaComposite = new Composite(parent, SWT.NONE);
-            final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
-            messageAreaLayoutData.exclude = true;
-            _messageAreaComposite.setVisible(false);
-            _messageAreaComposite.setLayoutData(messageAreaLayoutData);
-            _messageAreaComposite.setLayout(new GridLayout(2, false));
-
-            _messageAreaIcon = new Label(_messageAreaComposite, SWT.NONE);
-            _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING,
-                                                        SWT.BEGINNING,
-                                                        false,
-                                                        false,
-                                                        1,
-                                                        2));
-            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
-
-            _messageAreaMessage = new Label(_messageAreaComposite, SWT.WRAP);
-            _messageAreaMessage.setText(Messages.LogView_defaultMessageText);
-            // Be careful if changing the GridData below! The label will not wrap
-            // correctly for some settings.
-            _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-
-            _messageAreaDescription = new Label(_messageAreaComposite, SWT.WRAP);
-            _messageAreaDescription.setText(Messages.LogView_defaultMessageDescription);
-            // Be careful if changing the GridData below! The label will not wrap
-            // correctly for some settings.
-            _messageAreaDescription
-                    .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-        }
-
-        /**
-         * Sets the message displayed in the message area of this view part.
-         *
-         * @param icon the icon to be displayed next to the message. Must be one of
-         *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
-         *            <code>SWT.ICON_WARNING</code>, <code>SWT.ICON_QUESTION</code>.
-         * @param message the message.
-         * @param description a descriptive text.
-         */
-        public void showMessage(final int icon, final String message, final String description) {
-            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
-            _messageAreaMessage.setText(message);
-            _messageAreaDescription.setText(description);
-            _messageAreaComposite.layout();
-
-            show();
-        }
-
-        public void show() {
-            _messageAreaComposite.setVisible(true);
-            ((GridData) _messageAreaComposite.getLayoutData()).exclude = false;
-            _messageAreaComposite.getParent().layout();
-        }
-
-        /**
-         * Hides the message displayed in this view part.
-         */
-        public void hide() {
-            _messageAreaComposite.setVisible(false);
-            ((GridData) _messageAreaComposite.getLayoutData()).exclude = true;
-            _messageAreaComposite.getParent().layout();
-        }
-
-        public boolean isVisible() {
-            return _messageAreaComposite.isVisible();
-        }
-    }
     
+    @Override
+    @CheckForNull
+    public IAlarmConnection getConnection() {
+        IAlarmConnection connection = null;
+        final TopicSet topicSet = _topicSetColumnService.getTopicSetByName(_currentTopicSetName);
+        if (_topicsetService.hasTopicSet(topicSet)) {
+            connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
+        }
+        return connection;
+    }
+
+
     /**
      * Sound is played dependent of the state of the sound enable button. If it is enabled, the
      * so-called sound playing listener (encapsulated here) is registered at the alarm table

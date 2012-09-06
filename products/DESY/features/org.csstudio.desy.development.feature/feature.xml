@@ -22,48 +22,6 @@
    </url>
 
    <plugin
-         id="org.csstudio.diag.snlDebugger"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.caSnooperUi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.IOCremoteManagement"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.diles"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.jmssender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.config.authorizeid"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.config.kryoNameBrowser"
          download-size="0"
          install-size="0"
@@ -71,7 +29,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.icsiocmonitor.ui"
+         id="org.csstudio.config.authorizeid"
          download-size="0"
          install-size="0"
          version="0.0.0"

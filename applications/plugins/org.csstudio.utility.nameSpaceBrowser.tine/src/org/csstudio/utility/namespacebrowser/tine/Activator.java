@@ -1,14 +1,14 @@
 package org.csstudio.utility.namespacebrowser.tine;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
     /**
      * The plug-in ID.
      */
@@ -31,8 +31,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
-//		super.start(context);
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 	    System.out.println("Start "+PLUGIN_ID);
 	}
 
@@ -40,8 +40,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception {
-//		super.stop(context);
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 

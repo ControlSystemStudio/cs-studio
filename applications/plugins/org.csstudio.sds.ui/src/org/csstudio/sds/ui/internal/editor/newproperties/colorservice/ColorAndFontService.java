@@ -10,17 +10,18 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.util.ColorAndFontUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -28,6 +29,8 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public class ColorAndFontService implements IColorAndFontService {
+    private static final Logger LOG = LoggerFactory.getLogger(ColorAndFontService.class);
+
 	private static RGB FALLBACK_COLOR = new RGB(255, 0, 0);
 	private static FontData FALLBACK_FONT = new FontData("Arial", 8, SWT.None);
 
@@ -59,7 +62,7 @@ public class ColorAndFontService implements IColorAndFontService {
 				parser.parse(inputStream, _colorAndFontSaxHandler);
 				_currentTimeStamp = modificationStamp;
 			} catch (Exception e) {
-				CentralLogger.getInstance().debug(this, e);
+				LOG.debug(e.toString());
 			} finally {
 				closeStream(inputStream);
 			}
@@ -71,7 +74,7 @@ public class ColorAndFontService implements IColorAndFontService {
 			try {
 				stream.close();
 			} catch (IOException e) {
-				CentralLogger.getInstance().debug(this, e);
+				LOG.debug(e.toString());
 			}
 		}
 	}

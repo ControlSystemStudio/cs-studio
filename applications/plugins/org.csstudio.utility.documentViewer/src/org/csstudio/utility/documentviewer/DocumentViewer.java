@@ -34,7 +34,7 @@
 		*/
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.platform.model.IProcessVariable;
+
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -79,14 +79,12 @@ public class DocumentViewer extends ViewPart {
 
     }
     
-
-
-
     /**
      * @param processVariables the processVariables to set
      */
-    public void setProcessVariables(final IProcessVariable[] processVariables) {
-        _documentContendFactory.setProcessVariables(processVariables);
-    }
+  //TODO jhatje: implement new datatype
+//    public void setProcessVariables(final IProcessVariable[] processVariables) {
+//        _documentContendFactory.setProcessVariables(processVariables);
+//    }
     
 }

@@ -21,13 +21,14 @@
  */
 package org.csstudio.sds.ui.internal.editparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory which creates controllers (aka GEF Editparts).
@@ -38,6 +39,7 @@ import org.eclipse.gef.EditPartFactory;
  * 
  */
 public final class WidgetEditPartFactory implements EditPartFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetEditPartFactory.class);
 
 	/**
 	 * The execution mode.
@@ -92,11 +94,7 @@ public final class WidgetEditPartFactory implements EditPartFactory {
 			if (editPartService.canCreateEditPart(typeID)) {
 				result = editPartService.createEditPart(typeID);
 			} else {
-				CentralLogger
-						.getInstance()
-						.info(
-								null,
-								"No controller registered for widget´s of type: "
+				LOG.info("No controller registered for widget´s of type: "
 										+ typeID
 										+ "! We are using a fallback controller instead.");
 				result = new FallbackEditpart();
@@ -104,8 +102,7 @@ public final class WidgetEditPartFactory implements EditPartFactory {
 		}
 
 		if (result == null) {
-			CentralLogger.getInstance().info(null,
-					"Could not create controller for model object: " + model);
+			LOG.info("Could not create controller for model object: " + model);
 		} else {
 			// setup the mode on SDS controllers
 			if (result instanceof AbstractBaseEditPart) {

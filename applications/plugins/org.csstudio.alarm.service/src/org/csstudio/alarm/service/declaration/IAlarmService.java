@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,36 +18,102 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
 package org.csstudio.alarm.service.declaration;
 
 import java.util.List;
+import java.util.Set;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.utility.treemodel.ContentModel;
+
 /**
- * This service abstracts access to alarm and log messages.
- *
- * Currently two implementations exist with different abilities (DAL and JMS).<br>
- * Both implementations allow for<br>
- * - retrieving the initial state of a pv<br>
- * - monitoring the connection state<br>
- * - listening to alarm and log messages<br>
- *
- * The JMS implementation also allows for<br>
- * - selection of topics, which are actually topics from the JMS server<br>
- * - sending acknowledges<br>
- *
+ * This service abstracts access to alarm messages from PVs via DAL and JMS resp. 
+ * 
+ * The configuration model contains the alarm tree configuration. It is displayed in the alarm tree view
+ * and it is also used in the alarm table to define which pvs are watched.
+ * 
+ * The alarm service observes the remote command service to update the configuration when being told to do so.
+ * Therefore clients may register to be notified when an update has taken place.
+ *   
  * @author jpenning
- * @author $Author$
- * @version $Revision$
- * @since 21.04.2010
+ * @since 19.01.2012
  */
 public interface IAlarmService {
-
+    
+    /**
+     * The configuration model will be read lazily. The source for the model depends on the preferences.
+     * The configuration model is cached internally, so if you want to update, you must invalidate the cache.
+     * 
+     * @return the model of the alarm configuration
+     * @throws AlarmServiceException
+     */
+    @Nonnull
+    ContentModel<LdapEpicsAlarmcfgConfiguration> getConfiguration() throws AlarmServiceException;
+    
+    /**
+     * Invalidate the cache for the configuration.
+     * The next time you get the configuration it will be read from ldap and not taken from the cache.
+     */
+    void invalidateConfigurationCache();
+    
+    /**
+     * Creates a set of pv names from the current configuration and returns it.
+     * 
+     * @return set of pv names
+     * @throws AlarmServiceException
+     */
+    @Nonnull
+    Set<String> getPvNames() throws AlarmServiceException;
+    
+    /**
+     * clients implemented this, when they want to be notified on changes of the facility configuration
+     */
+    interface IListener {
+        
+        // This is called, when the configuration has been updated (usually in ldap).
+        void configurationUpdated();
+        
+        // This is called, when the server which forwards the alarms (usually dal2jms) has finished reloading.
+        void alarmServerReloaded();
+        
+        // This is called, when the server which forwards the alarms (usually dal2jms) has finished startup.
+        void alarmServerStarted();
+        
+        // This is called, when the server which forwards the alarms (usually dal2jms) is told to shutdown.
+        // This is serious, it means that clients will no longer receive alarm updates.
+        void alarmServerWillStop();
+    }
+    
+    /**
+     * Register the given listener for a configuration update.
+     * If it is registered more than once, it will be called more than once.
+     * @param listener
+     */
+    void register(@Nonnull final IListener listener);
+    
+    /**
+     * Deregister the given listener, if the listener has not been registered, nothing happens.
+     * @param listener
+     */
+    void deregister(@Nonnull final IListener listener);
+    
+    /**
+     * Synchronously retrieve the initial alarm state of the given PVs.
+     *
+     * On entry, the init items list has to contain the names of all PVs which should be initialized.
+     * The implementations of the alarm init item may contain other data as well.
+     *
+     * When the state could be retrieved, the init method of the init item is called from the service.
+     * Handling of connections is done internally in the service.
+     * 
+     * @param initItems
+     * @throws AlarmServiceException
+     */
+    void retrieveInitialState(@Nonnull List<IAlarmInitItem> initItems) throws AlarmServiceException;
+    
     /**
      * Create a new connection to the underlying alarm system.
      *
@@ -55,34 +121,5 @@ public interface IAlarmService {
      */
     @Nonnull
     IAlarmConnection newAlarmConnection();
-
-    /**
-     * Synchronously retrieve the initial state of the given PVs.
-     *
-     * On entry, the init items list has to contain the names of all PVs which should be initialized.
-     * The implementations of the alarm init item may contain other data as well.
-     *
-     * When the state could be retrieved, the init method of the init item is called from the service.
-     * Handling of connections is done internally in the service.
-     */
-    void retrieveInitialState(@Nonnull List<IAlarmInitItem> initItems);
-
-    /**
-     * Create an alarm resource.
-     * You give as much of the parameters as you know in your context, e.g.:
-     *
-     * If you use the jms implementation you may want to specify the list of jms topics.
-     * You can set this to null if you want to connect to the default as defined in the preferences of the alarm service.
-     *
-     * If you are not using an ldap server, you may want to specify a filepath to an xml configuration file for the set
-     * of pvs to watch for. Again, you can set this to null if you want to use the default as defined in the preferences.
-     *
-     * @param topics
-     * @param filepath
-     *
-     * @return the new alarm resource
-     */
-    @Nonnull
-    IAlarmResource createAlarmResource(@CheckForNull List<String> topics,
-                                       @CheckForNull String filepath);
+    
 }

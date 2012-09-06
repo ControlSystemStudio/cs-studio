@@ -21,8 +21,8 @@
  */
 package org.csstudio.dct.ui.graphicalviewer;
 
-import org.csstudio.dct.ui.graphicalviewer.controller.ContainerNodeEditPart;
 import org.csstudio.dct.ui.graphicalviewer.controller.ConnectionEditPart;
+import org.csstudio.dct.ui.graphicalviewer.controller.ContainerNodeEditPart;
 import org.csstudio.dct.ui.graphicalviewer.controller.GraphicalModelEditPart;
 import org.csstudio.dct.ui.graphicalviewer.controller.RecordNodeEditPart;
 import org.csstudio.dct.ui.graphicalviewer.model.Connection;

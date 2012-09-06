@@ -60,7 +60,7 @@ import org.csstudio.config.ioconfig.view.actions.DeleteNodeAction;
 import org.csstudio.config.ioconfig.view.actions.PasteNodeAction;
 import org.csstudio.config.ioconfig.view.actions.RenameNodeAction;
 import org.csstudio.config.ioconfig.view.serachview.SearchDialog;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -415,7 +415,7 @@ public class ProfiBusTreeView extends Composite {
     public ProfiBusTreeView(@Nonnull final Composite parent, final int style,
                             @Nonnull final IViewSite site) {
         super(parent, style);
-        new InstanceScope().getNode(IOConfigActivator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConfigActivator.PLUGIN_ID)
         .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
 

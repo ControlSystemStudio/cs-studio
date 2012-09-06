@@ -59,8 +59,8 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 60000;
 
-    /** Time to sleep in ms */
-    private static final long WAITFORTHREAD = 20000;
+    /** Time to wait for the thread MessageProcessor in ms */
+    private static final long WAITFORTHREAD = 60000;
     
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
@@ -99,7 +99,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         String host = null;
         String user = null;
 
-        args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+        args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String xmppUser = prefs.getString(Jms2OraActivator.PLUGIN_ID,
@@ -152,12 +152,16 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             user = cmd.value("username", "");
 
             final ApplicationChecker checker = new ApplicationChecker();
-            final boolean success = checker.checkExternInstance("jms2oracle", host, user);
-
-            if(success) {
-                LOG.info("jms2ora is working.");
-            } else {
-                LOG.error("jms2ora is NOT working.");
+            
+            try {
+                final boolean success = checker.checkExternInstance("jms2oracle", host, user);
+                if(success) {
+                    LOG.info("jms2ora is working.");
+                } else {
+                    LOG.error("jms2ora is NOT working.");
+                }
+            } catch (XmppLoginException e) {
+                LOG.error("[*** XmppLoginException ***]: {}", e.getMessage());
             }
 
             return IApplication.EXIT_OK;
@@ -173,8 +177,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
                                        60,
                                        null);
         
+        boolean logStatistic = prefs.getBoolean(Jms2OraActivator.PLUGIN_ID,
+                                                PreferenceConstants.LOG_STATISTIC,
+                                                true,
+                                                null);
+        
         // Create an object from this class
-        messageProcessor = new MessageProcessor(sleep, storageWait);
+        messageProcessor = new MessageProcessor(sleep, storageWait, logStatistic);
         messageProcessor.start();
 
         Jms2OraActivator.getDefault().addSessionServiceListener(this);
@@ -199,19 +208,17 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             // Clean stop of the working thread
             messageProcessor.stopWorking();
 
-            try {
-                messageProcessor.join(WAITFORTHREAD);
-            } catch(final InterruptedException ie) {
-                LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
-            }
-
-            if(messageProcessor.stoppedClean()) {
-                LOG.info("Restart/Exit: Thread stopped clean.");
-                messageProcessor = null;
-            } else {
-                LOG.warn("Restart/Exit: Thread did NOT stop clean.");
-                messageProcessor = null;
-            }
+            int waitCount = 2;
+            do {
+                try {
+                    LOG.info("Waiting for MessageProcessor.");
+                    messageProcessor.join(WAITFORTHREAD);
+                } catch(final InterruptedException ie) {
+                    LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
+                }
+            } while ((waitCount-- > 0) && !messageProcessor.stoppedClean());
+            
+            LOG.info("Restart/Exit: MessageProcessor stopped clean: {}", messageProcessor.stoppedClean());
         }
 
         if (xmppService != null) {
@@ -288,12 +295,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      */
     @Override
     public void stopWorking(boolean restart) {
-
         running = false;
         shutdown = !restart;
-
         LOG.info("The application will shutdown...");
-
         synchronized(lock) {
             lock.notify();
         }
@@ -304,12 +308,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      */
     @Override
     public void stop() {
-
         running = false;
         shutdown = true;
-
         LOG.info("The application will shutdown...");
-
         synchronized(lock) {
             lock.notify();
         }

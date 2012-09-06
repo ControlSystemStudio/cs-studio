@@ -21,9 +21,9 @@
  */
  package org.csstudio.sds.ui.internal.layers;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.Layer;
 import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 

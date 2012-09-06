@@ -24,8 +24,9 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -34,8 +35,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Joerg Rathlev
  */
 class ReplySender {
+    private static final Logger LOG = LoggerFactory.getLogger(ReplySender.class);
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ReplySender.class);
     /*
 	 * TODO
 	 * For compatibility reasons the message sender on the IOC side
@@ -49,6 +50,7 @@ class ReplySender {
 	private static final String replyTagName = "STATUS";
 
 	private ReplySender() {
+	    // used as singleton
 	}
 
 	/**
@@ -60,8 +62,9 @@ class ReplySender {
 	 * @param sender
 	 *            the sender which sends the message to the IOC.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	public static void sendSuccess(final int id, final IIocMessageSender sender) throws NamingException {
+	public static void sendSuccess(final int id, final IIocMessageSender sender) throws NamingException, LdapServiceException {
 		sender.send(prepareSuccessReply(id));
 	}
 
@@ -74,8 +77,9 @@ class ReplySender {
 	 * @param sender
 	 *            the sender which sends the message to the IOC.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	public static void sendError(final int id, final IIocMessageSender sender) throws NamingException {
+	public static void sendError(final int id, final IIocMessageSender sender) throws NamingException, LdapServiceException {
 		sender.send(prepareErrorReply(id));
 	}
 
@@ -100,7 +104,9 @@ class ReplySender {
 	        }
 	    } catch (final NamingException e) {
 	        LOG.error("Sending of " + id + " failed due to LDAP name composition.", e);
-	    }
+	    } catch (LdapServiceException e) {
+	        LOG.error("Sending of " + id + " failed due to LDAP service exception.", e);
+        }
 	}
 
 	/**

@@ -36,7 +36,7 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
 import org.csstudio.config.authorizeid.GroupRoleTableEntry;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.util.LdapUtils;

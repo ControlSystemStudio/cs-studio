@@ -40,9 +40,8 @@ import org.csstudio.utility.ldap.LdapServiceImplActivator;
  * @since 30.03.2010
  */
 public final class LdapPreference<T> extends AbstractPreference<T> {
-
-    // (Checkstyle bug, these static final fields shall be public!)
-    // CHECKSTYLE OFF : |
+    
+    // CHECKSTYLE:OFF (Checkstyle bug, these static final fields shall be public!) 
     public static LdapPreference<String> URL =
         new LdapPreference<String>("url", "ldap://krynfs.desy.de:389/o=DESY,c=DE", Context.PROVIDER_URL);
     public static LdapPreference<String> USER_DN =
@@ -53,7 +52,7 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
         new LdapPreference<String>("securityProtocol", "", Context.SECURITY_PROTOCOL);
     public static LdapPreference<String> SECURITY_AUTH =
         new LdapPreference<String>("securityAuth", "", Context.SECURITY_AUTHENTICATION);
-    // CHECKSTYLE ON : |
+    // CHECKSTYLE:ON
 
     private final String _contextId;
 
