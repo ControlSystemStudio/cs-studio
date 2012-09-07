@@ -4,12 +4,12 @@
 
 # Version to build
 
-export VERSION=3.1.2
+export VERSION=3.2.0I
 
 # Top of repository tree
 export TOP=/Kram/MerurialRepos/cs-studio-3.1
 
-# Location of Eclipse and Delta pack
+# Location of Eclipse and Delta pack, the 'target' platform
 export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
 export DELTAPACK=/Kram/Eclipse/3_7_2/rcp/delta/eclipse
 
