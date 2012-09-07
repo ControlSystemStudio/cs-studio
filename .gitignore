@@ -1,0 +1,3 @@
+# Ignore all output directories
+bin/
+classes/
