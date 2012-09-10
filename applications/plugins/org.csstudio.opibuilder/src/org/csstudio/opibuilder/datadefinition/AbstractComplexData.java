@@ -24,12 +24,16 @@ public abstract class AbstractComplexData {
 	
 	private AbstractWidgetModel widgetModel;
 	
-	public AbstractComplexData() {
+	public AbstractComplexData(AbstractWidgetModel widgetModel) {
+		this.widgetModel = widgetModel;
 		propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
 		configureProperties();
+		
 
 	}
 	
+	
+
 	/**Add a property to the widget.
 	 * @param property the property to be added.
 	 */
