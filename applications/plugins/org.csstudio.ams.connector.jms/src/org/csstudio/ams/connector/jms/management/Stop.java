@@ -24,9 +24,9 @@
 package org.csstudio.ams.connector.jms.management;
 
 import org.csstudio.ams.connector.jms.JMSConnectorStart;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
