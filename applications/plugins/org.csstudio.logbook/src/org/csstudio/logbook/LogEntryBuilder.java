@@ -23,10 +23,10 @@ public class LogEntryBuilder {
 	private String owner;
 	private Date createdDate;
 	private Date modifiedDate;
-	
+
 	private Collection<TagBuilder> tags = new ArrayList<TagBuilder>();
 	private Collection<LogbookBuilder> logbooks = new ArrayList<LogbookBuilder>();
-	private Collection<PropertyBuilder> properties = new ArrayList<PropertyBuilder>();	
+	private Collection<PropertyBuilder> properties = new ArrayList<PropertyBuilder>();
 	private Collection<Attachment> attachments = new ArrayList<Attachment>();
 
 	private LogEntryBuilder(String text) {
@@ -36,23 +36,28 @@ public class LogEntryBuilder {
 	public static LogEntryBuilder withText(String text) {
 		return new LogEntryBuilder(text);
 	}
-	
-	public LogEntryBuilder addTag(TagBuilder tagBuilder){
+
+	public LogEntryBuilder owner(String owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	public LogEntryBuilder addTag(TagBuilder tagBuilder) {
 		this.tags.add(tagBuilder);
 		return this;
 	}
-	
-	public LogEntryBuilder addProperty(PropertyBuilder propertyBuilder){
+
+	public LogEntryBuilder addProperty(PropertyBuilder propertyBuilder) {
 		this.properties.add(propertyBuilder);
 		return this;
 	}
-	
-	public LogEntryBuilder addLogbook(LogbookBuilder logbookBuilder){
+
+	public LogEntryBuilder addLogbook(LogbookBuilder logbookBuilder) {
 		this.logbooks.add(logbookBuilder);
 		return this;
 	}
-	
-	public LogEntryBuilder attach(Attachment attachment){
+
+	public LogEntryBuilder attach(Attachment attachment) {
 		this.attachments.add(attachment);
 		return this;
 	}
@@ -101,7 +106,7 @@ public class LogEntryBuilder {
 		private final Map<String, Logbook> logbooks;
 		private final Map<String, Property> properties;
 		private final Collection<Attachment> attachments;
-		
+
 		/**
 		 * @param id
 		 * @param text
@@ -116,7 +121,7 @@ public class LogEntryBuilder {
 				Date createdDate, Date modifiedDate,
 				Collection<TagBuilder> tags,
 				Collection<LogbookBuilder> logbooks,
-				Collection<PropertyBuilder> properties, 
+				Collection<PropertyBuilder> properties,
 				Collection<Attachment> attachments) {
 			super();
 			this.id = id;
@@ -124,9 +129,9 @@ public class LogEntryBuilder {
 			this.owner = owner;
 			this.createdDate = createdDate;
 			this.modifiedDate = modifiedDate;
-			
+
 			this.attachments = attachments;
-			
+
 			Map<String, Tag> newTags = new HashMap<String, Tag>();
 			for (TagBuilder tagBuilder : tags) {
 				Tag tag = tagBuilder.build();
