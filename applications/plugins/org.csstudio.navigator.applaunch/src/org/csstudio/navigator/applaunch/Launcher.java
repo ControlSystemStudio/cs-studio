@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.Util;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
@@ -55,22 +56,32 @@ public class Launcher implements IEditorLauncher
 	@SuppressWarnings("nls")
     private void launchCommand(final String command)
 	{
-		// Modify by Laurent PHILIPPE GANIL on Avril 2012
-		// GANIL need to use this for java app with arguments,
-		// and Program mechanism would require wrapper script
+	    // Remove unnecessary space
+	    final String commandToLaunch = command.trim();
 
-		// If the command have no argument and it is a normal file use Program mechanism (Rely on operating system  file extension/program association).
+	    // Modified by Laurent PHILIPPE GANIL in April 2012:
+		// GANIL need to use this for java app with arguments,
+		// and Program mechanism would require wrapper script.
+
+		// If the command has no argument and it is a normal file use Program mechanism
+	    // (Rely on operating system  file extension/program association).
 		// But if there are arguments or the command is not a file use Runtime.exec mechanism
 		// that allows argument.
 
-	    // Kay: This may work great for GANIL, but breaks the previously supported
-	    //      OS X launch of for example "/Applications/Utilities/Terminal.app"
-	    //      So now we use a wrapper script on OS X ...
+	    // On OS X there is the special case of "/Applications/Utilities/Terminal.app".
+	    // It is technically a directory, but the Program.launch() mechanism understands
+	    // how to open it as an application.
+	    if (Util.isMac()  &&  commandToLaunch.contains(".app"))
+	    {
+	        if (!Program.launch(command))
+	            MessageDialog.openError(null, Messages.Error,
+	                    NLS.bind(Messages.LaunchErrorApp, command));
+            return;
+	    }
 
-	    // Remove unnecessary space
-	    final String commandToLaunch = command.trim();
+	    // Check if single command or comamnd with arguments
 	    final String[] argv = commandToLaunch.split(" +");
-		if (argv.length == 1)
+	    if (argv.length == 1)
 		{
 			// If no argument and command is a file use OS properties to launch the appropriate program
 		    final File file = new File(argv[0]);
@@ -90,7 +101,6 @@ public class Launcher implements IEditorLauncher
 
 		//ELSE it is a command
 		//Use a runnable due to the output of the command
-
 		final Display display = Display.getCurrent();
 		final Runnable r = new Runnable()
 		{
@@ -135,13 +145,5 @@ public class Launcher implements IEditorLauncher
 
 		Thread t = new Thread(r);
 		t.start();
-
-		// // More ideas from org.eclipse.ui.internal.misc.ExternalEditor
-		// if (Util.isMac()) {
-		// Runtime.getRuntime().exec(
-		// new String[] { "open", "-a", programFileName, path });
-		// } else {
-		// Runtime.getRuntime().exec(
-		// new String[] { programFileName, path });
 	}
 }

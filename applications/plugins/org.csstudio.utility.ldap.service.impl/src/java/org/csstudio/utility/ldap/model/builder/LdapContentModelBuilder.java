@@ -23,7 +23,10 @@
  */
 package org.csstudio.utility.ldap.model.builder;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -64,7 +67,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         implements ILdapContentModelBuilder<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapContentModelBuilder.class);
-
+    
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
     private final NameParser _parser;
@@ -73,10 +76,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Constructor.
      * @param searchResult the search result to build the model from
      * @param objectClassRoot the model type
-     * @param nameParser
+     * @param nameParser 
      */
     public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult,
+                                   @Nonnull final ILdapSearchResult searchResult, 
                                    @Nonnull final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
@@ -86,9 +89,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
     /**
      * Constructor for builder that enriches an already existing model.
      * @param model the already filled model
-     * @param nameParser
+     * @param nameParser 
      */
-    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model,
+    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model, 
                                    @Nonnull final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
@@ -110,31 +113,36 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         // Generate new model only if there isn't any model set
         final ContentModel<T> model = getModel();
 
-        return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
-                                             : model,
-                               _searchResult,
-                               _parser);
-
+            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
+                                                 : model,
+                                   _searchResult,
+                                   _parser);
     }
 
     /**
      * Adds a given search result to the current LDAP content model.
      *
      * @param searchResult the search result .
-     * @param parser
+     * @param parser 
      * @return the enriched model
      */
     @Nonnull
     private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final ILdapSearchResult searchResult,
+                                            @Nullable final ILdapSearchResult searchResult, 
                                             @Nonnull final NameParser parser) {
 
         if (searchResult != null) {
             final ISubtreeNodeComponent<T> root = model.getVirtualRoot();
 
-            final Set<SearchResult> answerSet = searchResult.getAnswerSet();
             try {
-                for (final SearchResult row : answerSet) {
+                // sort the answer set for the length of rdns so the shortest come first
+                // this way the nodes higher up in the tree will be created first
+                // this is important when giving them their attributes
+                List<SearchResult> answerList = new ArrayList<SearchResult>(searchResult.getAnswerSet());
+                Comparator<? super SearchResult> comparator = createSearchResultComparator(parser);
+                Collections.sort(answerList, comparator);
+                
+                for (final SearchResult row : answerList) {
                     final Attributes attributes = row.getAttributes();
                     final LdapName parsedName = (LdapName) parser.parse(row.getNameInNamespace());
                     final LdapName nameWithoutRoot = LdapNameUtils.removeRdns(parsedName,
@@ -154,6 +162,27 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         }
 
         return model;
+    }
+
+    @Nonnull
+    private Comparator<SearchResult> createSearchResultComparator(@Nonnull final NameParser parser) {
+        return new Comparator<SearchResult>() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public int compare(@Nonnull final SearchResult sr1, @Nonnull final SearchResult sr2) {
+                int result = 0;
+                try {
+                    final LdapName parsedName1 = (LdapName) parser.parse(sr1.getNameInNamespace());
+                    final LdapName parsedName2 = (LdapName) parser.parse(sr2.getNameInNamespace());
+                    result = parsedName1.getRdns().size() - parsedName2.getRdns().size();
+                } catch (NamingException e) {
+                    LOG.error("Cannot parse name in ldap search result comparator", e);
+                    // Tunneling of root cause
+                    throw new RuntimeException("Cannot parse name", e);
+                }
+                return result;
+            }
+        };
     }
 
     private void createLdapComponent(@Nonnull final ContentModel<T> model,

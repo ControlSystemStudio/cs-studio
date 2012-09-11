@@ -7,7 +7,6 @@ Bundle-Activator: org.csstudio.utility.tine.ui.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform.ui,
  org.eclipse.help,
  org.csstudio.utility.tine,
  org.csstudio.platform.libs.tine;bundle-version="1.0.6"

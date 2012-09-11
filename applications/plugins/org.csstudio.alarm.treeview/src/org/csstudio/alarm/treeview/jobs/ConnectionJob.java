@@ -27,14 +27,15 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
+import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeview.service.AlarmMessageListener;
 import org.csstudio.alarm.treeview.views.AlarmTreeConnectionMonitor;
 import org.csstudio.alarm.treeview.views.AlarmTreeView;
-import org.csstudio.alarm.treeview.views.Messages;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -58,40 +59,27 @@ public final class ConnectionJob extends Job {
      * @param name
      */
     public ConnectionJob(@Nonnull final AlarmTreeView view) {
-        super("Connecting via alarm service");
+        super(Messages.ConnectionJob_Name);
         _view = view;
     }
 
-    @Nonnull
-    private IAlarmResource createNewAlarmResource() {
-        // JMS: topics: from tree prefs, facilities: don't care,               filename: don't care
-        // DAL: topics: don't care,      facilities: from alarm service prefs, filename: ok
-        
-        String[] topicArray = AlarmTreePreference.JMS_QUEUE.getValue().split(",");
-        final IAlarmResource alarmResource =
-            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(Arrays.asList(topicArray), null);
-        return alarmResource;
-    }
-
     @Override
+    @Nonnull
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask(Messages.AlarmTreeView_Monitor_ConnectionJob_Start, IProgressMonitor.UNKNOWN);
-        _connection = AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection();
+        _connection = ServiceLocator.getService(IAlarmService.class).newAlarmConnection();
         try {
             final AlarmMessageListener listener = _view.getAlarmListener();
             if (listener == null) {
-                throw new IllegalStateException("Listener of " +
-                                                AlarmTreeView.class.getName() + " mustn't be null.");
+                throw new IllegalStateException("Listener of " + //$NON-NLS-1$
+                                                AlarmTreeView.class.getName() + " mustn't be null."); //$NON-NLS-1$
             }
-            final IAlarmResource alarmResource = createNewAlarmResource();
             final AlarmTreeConnectionMonitor connectionMonitor =
                 new AlarmTreeConnectionMonitor(_view, _view.getRootNode());
-            _connection.connect(connectionMonitor,
-                                                       listener,
-                                                       alarmResource);
+            _connection.connect(connectionMonitor, listener, newAlarmResource());
 
         } catch (final AlarmConnectionException e) {
-            throw new RuntimeException("Could not connect via alarm service", e);
+            throw new RuntimeException(Messages.ConnectionJob_Connection_Failed, e);
         } finally {
             monitor.done();
         }
@@ -102,6 +90,15 @@ public final class ConnectionJob extends Job {
     @CheckForNull
     public IAlarmConnection getConnection() {
         return _connection;
+    }
+
+    @Nonnull
+    private AlarmResource newAlarmResource() {
+        // topics: JMS - from tree prefs, DAL - don't care
+        String[] topicArray = AlarmTreePreference.JMS_QUEUE.getValue().split(","); //$NON-NLS-1$
+        final AlarmResource alarmResource =
+            new AlarmResource(Arrays.asList(topicArray));
+        return alarmResource;
     }
 
 }

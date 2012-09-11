@@ -1,6 +1,5 @@
 package org.csstudio.utility.quickstart.preferences;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;

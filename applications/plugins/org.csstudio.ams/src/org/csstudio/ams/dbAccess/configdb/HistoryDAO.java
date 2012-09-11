@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.dbAccess.configdb;
 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 
 public abstract class HistoryDAO extends DAO {
 	

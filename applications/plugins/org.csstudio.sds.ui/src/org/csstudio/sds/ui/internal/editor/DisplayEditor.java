@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.model.LayerSupport;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
@@ -68,6 +66,10 @@ import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
 import org.csstudio.sds.ui.internal.commands.AssociableCommandListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableAddressDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariablesDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.TextTransferDropTargetListener;
 import org.csstudio.sds.ui.internal.editor.outline.ThumbnailViewOutlinePage;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
@@ -75,6 +77,7 @@ import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
 import org.csstudio.sds.ui.internal.properties.view.PropertySheetPage;
 import org.csstudio.sds.ui.internal.properties.view.UndoablePropertySheetEntry;
 import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
+import org.csstudio.sds.util.SaveAsDialog;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -140,6 +143,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The editor for synoptic displays.
@@ -150,7 +155,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implements
         ITabbedPropertySheetPageContributor {
-    
+
+	private static final Logger LOG = LoggerFactory.getLogger(DisplayEditor.class);
+
     /**
      * The default value for the grid spacing property.
      */
@@ -518,20 +525,17 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         
         // initialize context menu
         ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer, getActionRegistry());
-        
         viewer.setContextMenu(cmProvider);
         getSite().registerContextMenu(cmProvider, viewer);
         
         // load the model
         loadModelAsynchroniously();
         
-        // initialize drop support
-        viewer.addDropTargetListener(new EditorDropTargetListener(viewer));
-        
-        // initialize background color
-        // this.getGraphicalViewer().getControl().setBackground(
-        // CustomMediaFactory.getInstance().getColor(
-        // _displayModel.getBackgroundColor()));
+        // initialize drop support (order matters!)
+        viewer.addDropTargetListener(new ProcessVariablesDropTargetListener(viewer));
+        viewer.addDropTargetListener(new ProcessVariableDropTargetListener(viewer));
+        viewer.addDropTargetListener(new TextTransferDropTargetListener(viewer));
+        viewer.addDropTargetListener(new ProcessVariableAddressDropTargetListener(viewer));
     }
     
     private void initCommandStackListeners() {
@@ -917,7 +921,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
             }
         } catch (CoreException e) {
             MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error(e.toString());
         }
     }
     
@@ -959,7 +963,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                         writer.close();
                     } catch (IOException e) {
                         MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error(e.toString());
                     }
                 }
                 
@@ -969,7 +973,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
             }
         } catch (CoreException e) {
             MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error(e.toString());
         }
     }
     
@@ -1045,7 +1049,6 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         } else if (adapter == IPropertySheetPage.class) {
             PropertySheetPage page = new PropertySheetPage();
             page.setRootEntry(new UndoablePropertySheetEntry(getCommandStack()));
-            
             return page;
         } else if (adapter == ZoomManager.class) {
             return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart())

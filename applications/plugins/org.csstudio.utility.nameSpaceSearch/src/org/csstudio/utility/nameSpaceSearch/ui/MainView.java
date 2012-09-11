@@ -22,6 +22,7 @@
 package org.csstudio.utility.nameSpaceSearch.ui;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
+
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
@@ -37,9 +38,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
@@ -54,6 +55,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -132,8 +134,8 @@ public class MainView extends ViewPart {
 
 		@Override
 		public String getColumnText(final Object element, final int columnIndex) {
-			if (element instanceof ProcessVariable) {
-				final ProcessVariable pv = (ProcessVariable) element;
+			if (element instanceof ProcessVariableItem) {
+				final ProcessVariableItem pv = (ProcessVariableItem) element;
 				try {
 					if (pv.getPath() != null) {
 						return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
@@ -145,7 +147,7 @@ public class MainView extends ViewPart {
 
 			} else if (element instanceof ArrayList) {
 				@SuppressWarnings("unchecked")
-				final IProcessVariable o = ((ArrayList<IProcessVariable>) element)
+				final ProcessVariableItem o = ((ArrayList<ProcessVariableItem>) element)
 						.get(columnIndex);
 				return o.getName();
 			}
@@ -305,8 +307,18 @@ public class MainView extends ViewPart {
 
 		// Make Table row Drageble
 
-		new ProcessVariableDragSource(getResultTableView().getControl(),
-				getResultTableView());
+		new ControlSystemDragSource(getResultTableView().getControl()) {
+			
+			@Override
+			public Object getSelection() {
+                final Object[] obj = ((IStructuredSelection)getResultTableView().getSelection()).toArray();
+                final ProcessVariable[] pvs = new ProcessVariable[obj.length];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(((ProcessVariableItem)obj[i]).getName());
+                return pvs;
+			}
+		};
+		
 		// MB3
 		makeContextMenu();
 		getSearchText().forceFocus();
@@ -401,7 +413,7 @@ public class MainView extends ViewPart {
 
 	protected void getText(ILdapSearchResult searchResult) {
 		getResultTableView().refresh(false);
-		final ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
+		final ArrayList<ProcessVariable> tableElements = new ArrayList<ProcessVariable>();
 
 		int i = 0;
 		for (final SearchResult result : searchResult.getAnswerSet()) {
@@ -483,7 +495,7 @@ public class MainView extends ViewPart {
 					elements[k] = elements[0];
 				}
 			}
-			tableElements.add(new ProcessVariable(
+			tableElements.add(new ProcessVariableItem(
 					elements[0].split("=")[1], elements)); //$NON-NLS-1$
 			i++;
 		}
@@ -526,60 +538,72 @@ public class MainView extends ViewPart {
 		getSearchText().setText(FIELD_WILDCARD); //$NON-NLS-1$
 		getSearchText().setToolTipText(Messages.MainView_ToolTip);
 
-		// Eclipse
-		final int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
-		final DropTarget target = new DropTarget(getSearchText(), operations);
-
-		// Receive data in Text or File format
-		final TextTransfer textTransfer = TextTransfer.getInstance();
-		final Transfer[] types = new Transfer[] { textTransfer };
-		target.setTransfer(types);
-
-		target.addDropListener(new DropTargetListener() {
+		new ControlSystemDropTarget(getSearchText(), ProcessVariable.class, String.class) {
+			
 			@Override
-			public void dragEnter(final DropTargetEvent event) {
-				if (event.detail == DND.DROP_DEFAULT) {
-					if ((event.operations & DND.DROP_COPY) != 0) {
-						event.detail = DND.DROP_COPY;
-					} else {
-						event.detail = DND.DROP_NONE;
-					}
-				}
+			public void handleDrop(Object item) {
+                if (item instanceof ProcessVariable)
+                {
+                    final ProcessVariable pvs = (ProcessVariable) item;
+                    	getSearchText().insert((String) pvs.getName());
+            }
 			}
-
-			@Override
-			public void dragOver(final DropTargetEvent event) {
-				// EMPTY
-			}
-
-			@Override
-			public void dragOperationChanged(final DropTargetEvent event) {
-				if (event.detail == DND.DROP_DEFAULT) {
-					if ((event.operations & DND.DROP_COPY) != 0) {
-						event.detail = DND.DROP_COPY;
-					} else {
-						event.detail = DND.DROP_NONE;
-					}
-				}
-			}
-
-			@Override
-			public void dragLeave(final DropTargetEvent event) {
-				// EMPTY
-			}
-
-			@Override
-			public void dropAccept(final DropTargetEvent event) {
-				// EMPTY
-			}
-
-			@Override
-			public void drop(final DropTargetEvent event) {
-				if (textTransfer.isSupportedType(event.currentDataType)) {
-					getSearchText().insert((String) event.data);
-				}
-			}
-		});
+		};
+		
+//		// Eclipse
+//		final int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+//		final DropTarget target = new DropTarget(getSearchText(), operations);
+//
+//		// Receive data in Text or File format
+//		final TextTransfer textTransfer = TextTransfer.getInstance();
+//		final Transfer[] types = new Transfer[] { textTransfer };
+//		target.setTransfer(types);
+//
+//		target.addDropListener(new DropTargetListener() {
+//			@Override
+//			public void dragEnter(final DropTargetEvent event) {
+//				if (event.detail == DND.DROP_DEFAULT) {
+//					if ((event.operations & DND.DROP_COPY) != 0) {
+//						event.detail = DND.DROP_COPY;
+//					} else {
+//						event.detail = DND.DROP_NONE;
+//					}
+//				}
+//			}
+//
+//			@Override
+//			public void dragOver(final DropTargetEvent event) {
+//				// EMPTY
+//			}
+//
+//			@Override
+//			public void dragOperationChanged(final DropTargetEvent event) {
+//				if (event.detail == DND.DROP_DEFAULT) {
+//					if ((event.operations & DND.DROP_COPY) != 0) {
+//						event.detail = DND.DROP_COPY;
+//					} else {
+//						event.detail = DND.DROP_NONE;
+//					}
+//				}
+//			}
+//
+//			@Override
+//			public void dragLeave(final DropTargetEvent event) {
+//				// EMPTY
+//			}
+//
+//			@Override
+//			public void dropAccept(final DropTargetEvent event) {
+//				// EMPTY
+//			}
+//
+//			@Override
+//			public void drop(final DropTargetEvent event) {
+//				if (textTransfer.isSupportedType(event.currentDataType)) {
+//					getSearchText().insert((String) event.data);
+//				}
+//			}
+//		});
 
 		return getSearchText();
 	}

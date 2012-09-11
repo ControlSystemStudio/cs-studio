@@ -23,9 +23,9 @@ package org.csstudio.utility.ldap.reader;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapReaderJob;
@@ -102,7 +102,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @return the builder for chaining
          */
         @Nonnull
-        public Builder setJobCompletedCallBack(@Nullable final ILdapReadCompletedCallback callBack) {
+        public Builder setJobCompletedCallBack(@Nonnull final ILdapReadCompletedCallback callBack) {
             _callBack = callBack;
             return this;
         }
@@ -149,7 +149,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 
-        final ILdapService service = LdapServiceImplActivator.getDefault().getLdapService();
+        final ILdapService service = ServiceLocator.getService(ILdapService.class);
         if (service == null) {
             return new Status(IStatus.ERROR, "LDAP service unavailable.", null);
         }

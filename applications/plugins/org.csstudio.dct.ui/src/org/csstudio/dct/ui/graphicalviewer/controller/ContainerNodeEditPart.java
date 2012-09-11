@@ -2,13 +2,9 @@ package org.csstudio.dct.ui.graphicalviewer.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
 import org.csstudio.dct.model.IContainer;
-import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.ui.graphicalviewer.GraphicalRepresentationUtil;
 import org.csstudio.dct.ui.graphicalviewer.model.AbstractContainerNode;
@@ -16,16 +12,11 @@ import org.csstudio.dct.ui.graphicalviewer.model.DctGraphicalModel;
 import org.csstudio.dct.ui.graphicalviewer.model.RecordNode;
 import org.csstudio.dct.ui.graphicalviewer.view.ContainerNodeFigure;
 import org.csstudio.dct.ui.graphicalviewer.view.RecordFigure;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.EllipseAnchor;
-import org.eclipse.draw2d.FreeformLayer;
-import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -33,11 +24,8 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
-import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
-import org.eclipse.gef.requests.CreateRequest;
 
 /**
  * Controller for {@link AbstractContainerNode}s.

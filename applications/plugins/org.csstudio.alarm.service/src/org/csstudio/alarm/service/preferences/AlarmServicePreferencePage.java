@@ -23,12 +23,13 @@ package org.csstudio.alarm.service.preferences;
 
 import java.io.File;
 
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;

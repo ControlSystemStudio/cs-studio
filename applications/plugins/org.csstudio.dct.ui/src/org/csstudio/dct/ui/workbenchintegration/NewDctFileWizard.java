@@ -26,7 +26,6 @@ import java.io.InputStream;
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.internal.ProjectFactory;
-import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,6 +34,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
 /**
  * A wizard for creating new DCT files.

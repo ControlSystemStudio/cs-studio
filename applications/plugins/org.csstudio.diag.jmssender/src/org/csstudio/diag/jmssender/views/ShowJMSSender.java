@@ -21,7 +21,6 @@
  */
  package org.csstudio.diag.jmssender.views;
 
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 
 
 public class ShowJMSSender extends OpenViewAction {

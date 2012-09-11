@@ -124,9 +124,9 @@ public class SashContainerFigure extends Figure implements Introspectable {
 			addMouseListener(dragger);
 			addMouseMotionListener(dragger);
 			if (horizontal)
-				setCursor(Cursors.SIZEE);
+				setCursor(Cursors.SIZEWE);
 			else
-				setCursor(Cursors.SIZEN);
+				setCursor(Cursors.SIZENS);
 		}
 
 		@Override
@@ -426,9 +426,9 @@ public class SashContainerFigure extends Figure implements Introspectable {
 	public void setHorizontal(boolean horizontal) {
 		this.horizontal = horizontal;
 		if (horizontal)
-			sash.setCursor(Cursors.SIZEE);
+			sash.setCursor(Cursors.SIZEWE);
 		else
-			sash.setCursor(Cursors.SIZEN);
+			sash.setCursor(Cursors.SIZENS);
 		revalidate();
 	}
 

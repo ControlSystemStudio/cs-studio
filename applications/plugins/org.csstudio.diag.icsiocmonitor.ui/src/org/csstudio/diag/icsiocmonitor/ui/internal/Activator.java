@@ -1,12 +1,12 @@
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.diag.icsiocmonitor.ui";
@@ -51,14 +51,6 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 }

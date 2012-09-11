@@ -3,12 +3,7 @@ package org.csstudio.sds.internal.connection;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.dal.DataExchangeException;
-import org.csstudio.dal.simple.AnyData;
-import org.csstudio.dal.simple.AnyDataChannel;
-import org.csstudio.dal.simple.ChannelListener;
 
 public class CharacteristicReadConnector implements PropertyChangeListener {
 	private ChannelInputProcessor channelInputProcessor;

@@ -38,9 +38,9 @@ public class TableSorter extends ViewerSorter {
 	}
 	// Sort a table at the last two selected tableheader
 	public int compare(Viewer viewer, Object o1, Object o2) {
-		if (o1 instanceof ProcessVariable&&o2 instanceof ProcessVariable) {
-			ProcessVariable vp1 = (ProcessVariable) o1;
-			ProcessVariable vp2 = (ProcessVariable) o2;
+		if (o1 instanceof ProcessVariableItem&&o2 instanceof ProcessVariableItem) {
+			ProcessVariableItem vp1 = (ProcessVariableItem) o1;
+			ProcessVariableItem vp2 = (ProcessVariableItem) o2;
 			int multi =-1;
 			if(backward)
 				multi=1;

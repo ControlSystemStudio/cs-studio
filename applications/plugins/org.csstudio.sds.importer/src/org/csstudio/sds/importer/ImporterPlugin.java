@@ -21,13 +21,13 @@
  */
 package org.csstudio.sds.importer;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class ImporterPlugin extends AbstractCssPlugin {
+public class ImporterPlugin extends Plugin {
 
 	/**
 	 * The plug-in ID.
@@ -59,22 +59,16 @@ public class ImporterPlugin extends AbstractCssPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 	}
 
 }

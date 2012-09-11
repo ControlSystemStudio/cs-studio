@@ -27,9 +27,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
-import org.csstudio.platform.statistic.Collector;
+
+import org.csstudio.domain.common.statistic.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import de.desy.tine.alarmUtils.AlarmMonitor;
 import de.desy.tine.alarmUtils.AlarmMonitorHandler;
 import de.desy.tine.alarmUtils.TAlarmSystem;

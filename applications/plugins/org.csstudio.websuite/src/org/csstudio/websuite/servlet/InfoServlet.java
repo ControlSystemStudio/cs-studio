@@ -46,8 +46,11 @@ public class InfoServlet extends HttpServlet {
     /** Generated serial verison id */
     private static final long serialVersionUID = -7186174383878007383L;
 
-    /** Web address of this application*/
+    /** Web address of this application */
     private String appAddress;
+
+    /** Web address of the extern tomcat server */
+    private String externAppAddress;
 
     /**
      *
@@ -57,10 +60,13 @@ public class InfoServlet extends HttpServlet {
         super.init(config);
 
         final IPreferencesService pref = Platform.getPreferencesService();
-        final String hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.HOST_NAME, "loalhost", null);
-        final String port = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, "unknown", null);
-
+        String hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.HOST_NAME, "loalhost", null);
+        String port = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, "unknown", null);
         appAddress = hostName + ":" + port;
+        
+        hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.EXTERN_HOST_NAME, "loalhost", null);
+        port = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.EXTERN_HOST_PORT, "8080", null);
+        externAppAddress = hostName + ":" + port;
     }
 
     @Override
@@ -107,7 +113,9 @@ public class InfoServlet extends HttpServlet {
         this.appendLineRow(page);
         this.appendInfoIocViewerServlet(page);
         this.appendLineRow(page);
-        this.appendInfoHowToServlet(page);
+        this.appendInfoHowToViewerServlet(page);
+        this.appendLineRow(page);
+        this.appendInfoHowToSearchServlet(page);
         this.appendLineRow(page);
         this.appendFlashInfoServlet(page);
         this.appendLineRow(page);
@@ -118,7 +126,11 @@ public class InfoServlet extends HttpServlet {
         this.appendLineRow(page);
         this.appendGenericRecordInfoServlet(page);
         this.appendLineRow(page);
-
+        this.appendSecondHeadline(page);
+        this.appendLineRow(page);
+        this.appendAmsWebMonitorLink(page);
+        this.appendLineRow(page);
+        
         page.append("</table>\n");
         page.append("</body>\n</html>");
 
@@ -134,6 +146,14 @@ public class InfoServlet extends HttpServlet {
         page.append("</tr>\n");
     }
 
+    private void appendSecondHeadline(final StringBuilder page) {
+        page.append("<tr>\n");
+        page.append("<th class=\"info\">Externe Web-Anwendung</th>\n");
+        page.append("<th class=\"info\">nur DESY-intern</th>\n");
+        page.append("<th class=\"info\">Beschreibung</th>\n");
+        page.append("</tr>\n");
+    }
+    
     private void appendInfoAlarmViewServlet(final StringBuilder page) {
         page.append("<tr>\n");
         page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/html/AlarmViewer.html\">AlarmViewer</a></td>\n");
@@ -166,11 +186,19 @@ public class InfoServlet extends HttpServlet {
         page.append("</tr>\n");
     }
 
-    private void appendInfoHowToServlet(final StringBuilder page) {
+    private void appendInfoHowToViewerServlet(final StringBuilder page) {
         page.append("<tr>\n");
         page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/html/HowToViewer.html\">HowToViewer</a></td>\n");
         page.append("<td class=\"info\">Doc</td>");
         page.append("<td class=\"info\">Die HowTo-Eintraege des eLogbooks anzeigen</td>");
+        page.append("</tr>\n");
+    }
+
+    private void appendInfoHowToSearchServlet(final StringBuilder page) {
+        page.append("<tr>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/HowToSearch\">HowToSearch</a></td>\n");
+        page.append("<td class=\"info\">Direkt</td>");
+        page.append("<td class=\"info\">Nach den HowTo-Eintraege des eLogbooks suchen</td>");
         page.append("</tr>\n");
     }
 
@@ -211,6 +239,14 @@ public class InfoServlet extends HttpServlet {
         page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/Wetter\">Wetterstation</a></td>\n");
         page.append("<td class=\"info\">Direkt</td>");
         page.append("<td class=\"info\">Daten der Wetterstation</td>");
+        page.append("</tr>\n");
+    }
+
+    private void appendAmsWebMonitorLink(final StringBuilder page) {
+        page.append("<tr>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + externAppAddress + "/ams/AmsWebMonitor\" target=\"_blank\">AmsWebMonitor</a></td>\n");
+        page.append("<td class=\"info\">Ja</td>");
+        page.append("<td class=\"info\">Status des AMS-Checks und Versenden von Test-Nachricht</td>");
         page.append("</tr>\n");
     }
 

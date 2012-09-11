@@ -18,6 +18,7 @@
  */
 package org.csstudio.alarm.treeview.views;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,25 +26,24 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.alarm.treeview.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides labels for the alarm tree items.
  */
 public class AlarmTreeLabelProvider extends LabelProvider {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmTreeLabelProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeLabelProvider.class);
 
     /**
      * Cache for Image objects.

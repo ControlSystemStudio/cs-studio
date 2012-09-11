@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script that triggers a build of "everything"
 #
@@ -48,11 +48,11 @@ if [ $CYGWIN ]
 then
 # Patch headless launchers for windows
 unzip  $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip
-cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmServer$VERSION/AlarmServer.exe
+cp $CYGDRIVE/$ECLIPSE/eclipsec.exe  AlarmServer$VERSION/AlarmServer.exe
 zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmServer_kek_$VERSION/AlarmServer_kek_$VERSION-win32.win32.x86.zip AlarmServer$VERSION 
 
 unzip  $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip
-cp $CYGDRIVE/$ECLIPSE_BASE/eclipse/eclipsec.exe  AlarmConfigTool$VERSION/AlarmConfigTool.exe
+cp $CYGDRIVE/$ECLIPSE/eclipsec.exe  AlarmConfigTool$VERSION/AlarmConfigTool.exe
 zip -rm $CYGDRIVE/$BUILDDIR/I.AlarmConfigTool_kek_$VERSION/AlarmConfigTool_kek_$VERSION-win32.win32.x86.zip AlarmConfigTool$VERSION 
 fi
 

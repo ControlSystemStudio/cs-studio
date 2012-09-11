@@ -1,11 +1,9 @@
 package org.csstudio.utility.recordproperty;
 
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.utility.recordproperty.rdb.data.RecordPropertyGetRDB;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -175,31 +173,32 @@ public class RecordPropertyView extends ViewPart {
         label = new Label(g, SWT.CENTER);
         
         // Enable 'Drop'
-        new ProcessVariableDropTarget(cv.getControl()) {
-            @Override
-            public void handleDrop(final IProcessVariable name, final DropTargetEvent event) {
-                fillTableWithData(name.getName());
-            }
-        };
-        
-        ///////////////////// - copied from Probe
-        // In principle, this could allow 'dragging' of PV names.
-        // In practice, however, any mouse click & drag only selects
-        // portions of the text and moves the cursor. It won't
-        // initiate a 'drag'.
-        // Maybe it works on some OS? Maybe there's another magic
-        // modifier key to force a 'drag'?
-        new ProcessVariableDragSource(cv.getControl(), cv);
-        
-        filterText.addKeyListener(new KeyAdapter() {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void keyReleased(KeyEvent e) {
-                tableViewer.refresh();
-            }
-        });
+      //TODO jhatje: implement new datatype
+//        new ProcessVariableDropTarget(cv.getControl()) {
+//            @Override
+//            public void handleDrop(final IProcessVariable name, final DropTargetEvent event) {
+//                fillTableWithData(name.getName());
+//            }
+//        };
+//        
+//        ///////////////////// - copied from Probe
+//        // In principle, this could allow 'dragging' of PV names.
+//        // In practice, however, any mouse click & drag only selects
+//        // portions of the text and moves the cursor. It won't
+//        // initiate a 'drag'.
+//        // Maybe it works on some OS? Maybe there's another magic
+//        // modifier key to force a 'drag'?
+//        new ProcessVariableDragSource(cv.getControl(), cv);
+//        
+//        filterText.addKeyListener(new KeyAdapter() {
+//            /**
+//             * {@inheritDoc}
+//             */
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                tableViewer.refresh();
+//            }
+//        });
     }
     
     /**
@@ -365,23 +364,24 @@ public class RecordPropertyView extends ViewPart {
      * @param pv_name the name of pv (record)
      * @return
      */
-    public static boolean activateWithPV(final IProcessVariable pv_name) {
-        try {
-            final IWorkbench workbench = PlatformUI.getWorkbench();
-            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            final IWorkbenchPage page = window.getActivePage();
-            
-            final RecordPropertyView rpv = (RecordPropertyView) page
-                    .showView(ID, createNewInstance(), IWorkbenchPage.VIEW_ACTIVATE);
-            
-            rpv.fillTableWithData(pv_name.getName());
-            
-            return true;
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+  //TODO jhatje: implement new datatype
+//    public static boolean activateWithPV(final IProcessVariable pv_name) {
+//        try {
+//            final IWorkbench workbench = PlatformUI.getWorkbench();
+//            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+//            final IWorkbenchPage page = window.getActivePage();
+//            
+//            final RecordPropertyView rpv = (RecordPropertyView) page
+//                    .showView(ID, createNewInstance(), IWorkbenchPage.VIEW_ACTIVATE);
+//            
+//            rpv.fillTableWithData(pv_name.getName());
+//            
+//            return true;
+//        } catch (final Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
     
     /** @return a new view instance */
     public static String createNewInstance() {

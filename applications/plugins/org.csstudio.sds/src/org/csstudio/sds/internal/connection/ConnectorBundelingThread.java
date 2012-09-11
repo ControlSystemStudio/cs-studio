@@ -24,7 +24,8 @@ package org.csstudio.sds.internal.connection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A thread which bundles connection attempts. If a connector cannot connect, it
@@ -50,6 +51,8 @@ public final class ConnectorBundelingThread extends Thread {
 	 * during the last SLEEP_TIME milliseconds.
 	 */
 	private Queue<Runnable> _queue;
+
+	private static final Logger LOG = LoggerFactory.getLogger(ConnectorBundelingThread.class);
 
 	/**
 	 * Gets the singleton instance.
@@ -82,7 +85,7 @@ public final class ConnectorBundelingThread extends Thread {
 			try {
 				sleep(1000);
 			} catch (InterruptedException e) {
-				CentralLogger.getInstance().info(this, e);
+				LOG.info(e.toString());
 			}
 
 			processQueue();

@@ -1,10 +1,9 @@
 package org.csstudio.platform.internal.simpledal;
 
+
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
 import org.csstudio.dal.DalPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.dal.simple.AnyData;
 import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.ChannelListener;
@@ -14,6 +13,8 @@ import org.csstudio.dal.simple.RemoteInfo;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * This test expected the following channel on an IOC:
@@ -34,6 +35,9 @@ import org.junit.Test;
  */
 public class DALPrecisionTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DALPrecisionTest.class);
+
+	
     /**
      * TODO (hrickens) :
      *
@@ -83,8 +87,6 @@ public class DALPrecisionTest {
 
 
     }
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(DALPrecisionTest.class);
 
     private static final String DAL_PRECISION_TEST_1 = "DALPrecisionTest1";
     private static final long SLEEP_TIME_MSEC = 2000;

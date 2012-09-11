@@ -56,6 +56,7 @@ public class SmsConnectorPreferenceKey
     public static final String P_MODEM3_NUMBER = "modem3Number";
 
     public static final String P_MODEM_READ_WAITING_PERIOD = "modemReadWaitingPeriod";
+    public static final String P_MODEM_MAX_POLLING_TIME = "modemMaxPollingTime";
 
     public static final String P_XMPP_SERVER = "xmppServer";
     public static final String P_XMPP_USER = "xmppUser";

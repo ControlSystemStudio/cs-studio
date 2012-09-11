@@ -421,7 +421,7 @@ public class ArrayFigure extends Figure implements Introspectable {
 		this.arrayLength = arrayLength;
 		scrollbar.setMaximum(arrayLength - 1);
 		spinner.setMax(arrayLength - 1);
-		if(getIndex() >=arrayLength)
+		if(arrayLength > 0 && getIndex() >=arrayLength)
 			setIndex(0);
 		enabilityDirty = true;
 		updateElementsEnability();

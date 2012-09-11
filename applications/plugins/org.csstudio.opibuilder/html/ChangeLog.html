@@ -9,6 +9,7 @@
 <h1>BOY Changelog</h1>
 <ul>
 <li><a href="#NextVersion">Next Version</a></li>
+<li><a href="#3.1.2">Version 3.1.2</a></li>
 <li><a href="#3.1.1">Version 3.1.1</a></li>
 <li><a href="#3.1.0">Version 3.1.0</a></li>
 <li><a href="#1.2.0">Version 1.2.0</a></li>
@@ -20,6 +21,24 @@
 
 <h2>Next Version</h2>
 <ul>
+	<li> Macros priority order has been changed so that macros input from command line or actions can 
+	replace the macros defined in Display's Macro property. See <a href="Macro.html">Macro</a>.</li> 
+</ul>
+<A NAME="3.1.2"></A>
+<h2>Version 3.1.2 (2012-08-27)</h2>
+<ul>
+<li>Add more features to Intensity Graph widget to support areaDetector or beamline experiment:
+	<ul>
+		<li>Support areaDetector RGB1 Mode</li>
+		<li>Support adding arbitrary number of Region of Interest(ROI)</li>
+		<li>Support profiling on single line</li>
+		<li>Support giving cursor label information on each pixel from script</li>
+		<li>Make more properties runtime configurable</li>
+	</ul>
+	 <p><img src="img/IntensityGraph_RGBMode.png"> <img src="img/IntensityGraph_ROI.png"></p>
+</li>
+
+
 <li>Add <code>Confirm Message</code> property to Text Input and Text widget. 
 If the message is not empty, a confirm dialog will pop up before writing the new value to PV.
 <p><img src="img/TextInputConfirmDialog.png"></p>
@@ -29,12 +48,15 @@ If the message is not empty, a confirm dialog will pop up before writing the new
 
 </li>
 <li>Add <code>Next Focus</code> property to <a href="widgets/NativeText.html">Text</a> widget.</li>
-<li>XY Graph widget: Don't autoscale on invisible traces.</li> 
+<li>XY Graph widget: Don't autoscale on invisible traces.</li>
+<li>Fix a drawing error on XYGraph widget and undersampling performance bug.(Contributed by Takashi Nakamoto from Cosylab)</li>
 <li>Enabled arrow key operations on <a href="widgets/ThumbWheel.html">ThumbWheel</a> widget.
- Added new properties "Show Buttons" and "Focused Frame Color" to ThumbWheel widget.(Contributed by Takashi Nakamoto from CosyLab)</li>
+ Added new properties "Show Buttons" and "Focused Frame Color" to ThumbWheel widget.(Contributed by Takashi Nakamoto from Cosylab)</li>
+<li>Allow multiple selection in Input PVs table.</li>
+<li>Allow dragging text with a list of PV names to Input PVs table.</li>
 </ul>
 
-<A NAME="#3.1.1"></A>
+<A NAME="3.1.1"></A>
 
 <h2>Version 3.1.1 (2012-07-18)</h2>
 <ul>

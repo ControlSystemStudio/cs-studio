@@ -40,8 +40,8 @@ public class OutgoingVoicemailQueue extends AbstractMessageQueue<VoicemailAlarmM
     /** Static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(OutgoingVoicemailQueue.class);
 
-    public OutgoingVoicemailQueue() {
-        super();
+    public OutgoingVoicemailQueue(Object lock) {
+        super(lock);
     }
     
     @Override

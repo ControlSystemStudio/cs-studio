@@ -184,8 +184,8 @@ public final class TagList {
 		fillReplyTypes();
 	}
 	
-	// prevent instantiation
 	private TagList () {
+	    // prevent instantiation
 	}
 	
 	private static void fillMessageTypes() {

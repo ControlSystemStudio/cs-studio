@@ -21,9 +21,9 @@
  */
 package org.csstudio.utility.ioc_socket_communication;
 
+
 import java.util.Observable;
 
-import org.csstudio.platform.logging.CentralLogger;
 
 public class IOCAnswer extends Observable {
 

@@ -19,7 +19,7 @@ import gov.aps.jca.dbr.TimeStamp;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

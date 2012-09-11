@@ -1,5 +1,4 @@
 package org.csstudio.utility.recordproperty;
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 
 
 public class RecordPropertyAction extends OpenViewAction {

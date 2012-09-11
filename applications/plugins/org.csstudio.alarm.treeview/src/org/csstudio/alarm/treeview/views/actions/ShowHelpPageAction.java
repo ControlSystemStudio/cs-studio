@@ -18,14 +18,13 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,6 +32,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Show help page action.
@@ -43,8 +44,7 @@ import org.eclipse.ui.browser.IWebBrowser;
  * @since 14.06.2010
  */
 public final class ShowHelpPageAction extends Action {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ShowHelpPageAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShowHelpPageAction.class);
     private final TreeViewer _viewer;
 
     /**

@@ -21,10 +21,6 @@
  */
 package org.csstudio.alarm.treeview.ldap;
 
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-
-import java.util.Collections;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -34,22 +30,20 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.IAlarmInitItem;
-import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.IProcessVariableNodeListener;
-import org.csstudio.alarm.treeview.model.PVNodeItem;
 import org.csstudio.alarm.treeview.model.ProcessVariableNode;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.eclipse.osgi.util.NLS;
+
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.*;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -58,16 +52,14 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguratio
  * @author Joerg Rathlev
  */
 public final class DirectoryEditor {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(DirectoryEditor.class);
-
+    
     /**
      * Private constructor.
      */
     private DirectoryEditor() {
         // Don't instantiate.
     }
-
+    
     /**
      * Renames a node.
      *
@@ -82,37 +74,37 @@ public final class DirectoryEditor {
      */
     @CheckForNull
     public static ITreeModificationItem rename(@Nonnull final IAlarmTreeNode node,
-                                               @Nonnull final String newName)
-        throws DirectoryEditException {
-
+                                               @Nonnull final String newName) throws DirectoryEditException {
+        
         final LdapName oldLdapName = node.getLdapName();
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
-
+        
         final ITreeModificationItem item;
-
+        
         final IAlarmSubtreeNode parent = node.getParent();
         if (parent != null && parent.getChild(newName) != null) {
-            throw new DirectoryEditException("Either root node selected or name " + newName + " does already exist on this level.", null);
+            throw new DirectoryEditException(NLS.bind(Messages.DirectoryEditor_Rename_Failed,
+                                                      newName), null);
         }
-
+        
         if (node.getSource().equals(TreeNodeSource.LDAP)) {
             item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
         } else {
             item = null;
         }
-
+        
         if (parent != null) {
             parent.removeChild(node);
         }
         node.setName(newName); // rename on tree item
-
+        
         if (parent != null) {
             parent.addChild(node);
         }
-
+        
         return item;
     }
-
+    
     /**
      * Recursively deletes a node and all of its children.
      *
@@ -122,18 +114,17 @@ public final class DirectoryEditor {
      *             if an error occurs.
      */
     @CheckForNull
-    public static ITreeModificationItem deleteRecursively(@Nonnull final IAlarmTreeNode node)
-        throws DirectoryEditException {
-
+    public static ITreeModificationItem deleteRecursively(@Nonnull final IAlarmTreeNode node) throws DirectoryEditException {
+        
         final LdapName nodeName = new LdapName(node.getLdapName().getRdns());
-
+        
         final ITreeModificationItem item;
         if (node.getSource().equals(TreeNodeSource.LDAP)) {
             item = new DeleteRecursivelyModificationItem(nodeName);
         } else {
             item = null;
         }
-
+        
         if (node instanceof IAlarmSubtreeNode) {
             ((IAlarmSubtreeNode) node).removeChildren();
         }
@@ -141,13 +132,11 @@ public final class DirectoryEditor {
         if (parent != null) {
             parent.removeChild(node);
         } else {
-            throw new DirectoryEditException("Node is ROOT. Remove action mustn't be triggered on ROOT.",
-                                             null);
+            throw new DirectoryEditException(Messages.DirectoryEditor_RemoveRoot_Permitted, null);
         }
         return item;
     }
-
-
+    
     /**
      * Creates a copy of a node under a new subtree node. If the node to be
      * copied is a subtree node, all of its children will be copied into the new
@@ -162,52 +151,49 @@ public final class DirectoryEditor {
      */
     @CheckForNull
     public static Queue<ITreeModificationItem> copyNode(@Nonnull final IAlarmTreeNode node,
-                                                        @Nonnull final IAlarmSubtreeNode target)
-        throws DirectoryEditException {
-
+                                                        @Nonnull final IAlarmSubtreeNode target) throws DirectoryEditException {
+        
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getObjectClass());
-
+        
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
             copy = copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
         } else if (node instanceof IAlarmSubtreeNode) {
             copy = copySubtreeNode(node, target);
         } else {
-            throw new DirectoryEditException("Node " + node.getName() +
-                                             " is neither a subtree node nor a process variable node.", null);
+            throw new DirectoryEditException(NLS.bind(Messages.DirectoryEditor_Copy_Failed,
+                                                      node.getName()), null);
         }
-
+        
         final Queue<ITreeModificationItem> items = new ConcurrentLinkedQueue<ITreeModificationItem>();
         if (target.getSource().equals(TreeNodeSource.LDAP)) {
             items.add(new CreateLdapEntryModificationItem(copy.getLdapName(), attrs));
         }
-
+        
         if (node instanceof IAlarmSubtreeNode) {
             // Recursion
             for (final IAlarmTreeNode child : ((IAlarmSubtreeNode) node).getChildren()) {
-                final Queue<ITreeModificationItem> innerItems = copyNode(child, (IAlarmSubtreeNode) copy);
+                final Queue<ITreeModificationItem> innerItems = copyNode(child,
+                                                                         (IAlarmSubtreeNode) copy);
                 items.addAll(innerItems);
             }
         }
-
+        
         return items;
     }
-
-
+    
     @Nonnull
     private static IAlarmTreeNode copySubtreeNode(@Nonnull final IAlarmTreeNode node,
                                                   @Nonnull final IAlarmSubtreeNode target) {
         IAlarmTreeNode copy;
         copy = new SubtreeNode.Builder(node.getName(),
                                        node.getTreeNodeConfiguration(),
-                                       target.getSource())
-                              .setParent(target).build();
+                                       target.getSource()).setParent(target).build();
         copyProperties(node, copy);
         return copy;
     }
-
-
+    
     /**
      * Creates a new process variable node which is a copy of the given process
      * variable node.
@@ -220,7 +206,7 @@ public final class DirectoryEditor {
     @Nonnull
     private static IAlarmTreeNode copyProcessVariableNode(@Nonnull final IAlarmProcessVariableNode node,
                                                           @Nonnull final IAlarmSubtreeNode target) {
-
+        
         final IAlarmProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName(),
                                                                                target.getSource())
                 .setParent(target)
@@ -229,7 +215,7 @@ public final class DirectoryEditor {
         copyProperties(node, copy);
         return copy;
     }
-
+    
     /**
      * Copies the properties from one node to another node.
      *
@@ -245,8 +231,7 @@ public final class DirectoryEditor {
             destination.setProperty(id, value);
         }
     }
-
-
+    
     /**
      * @param parent
      * @param recordName
@@ -274,8 +259,11 @@ public final class DirectoryEditor {
                                                                     @Nonnull final IProcessVariableNodeListener pvNodeListener) {
         // guard
         if (!parent.canAddChild(recordName)) {
-            throw new IllegalStateException("node '" + recordName + "' cannot be added to target '" + parent.getName() + "'");
+            throw new IllegalStateException(NLS.bind(Messages.DirectoryEditor_Create_Failed,
+                                                     recordName,
+                                                     parent.getName()));
         }
+        ITreeModificationItem result = null;
         
         final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName,
                                                                                parent.getSource())
@@ -284,28 +272,14 @@ public final class DirectoryEditor {
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());
         
-        retrieveInitialStateSynchronously(node);
-        
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
-            return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
+            result = new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
         }
-        return null;
-
+        
+        return result;
+        
     }
-
-
-    private static void retrieveInitialStateSynchronously(@Nonnull final IAlarmProcessVariableNode node) {
-        final List<IAlarmInitItem> initItems = Collections.singletonList((IAlarmInitItem) new PVNodeItem(node));
-
-        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
-        if (alarmService != null) {
-            alarmService.retrieveInitialState(initItems);
-        } else {
-            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
-        }
-    }
-
-
+    
     /**
      * Creates an entry for a component (ecom) in the directory below the given
      * parent.
@@ -318,16 +292,16 @@ public final class DirectoryEditor {
     @CheckForNull
     public static ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                         @Nonnull final String componentName) {
-
-        final SubtreeNode node =
-            new SubtreeNode.Builder(componentName,
-                                    LdapEpicsAlarmcfgConfiguration.COMPONENT,
-                                    parent.getSource()).setParent(parent).build();
-
+        
+        final SubtreeNode node = new SubtreeNode.Builder(componentName,
+                                                         LdapEpicsAlarmcfgConfiguration.COMPONENT,
+                                                         parent.getSource()).setParent(parent)
+                .build();
+        
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS,
                   LdapEpicsAlarmcfgConfiguration.COMPONENT.getObjectClass());
-
+        
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
         }

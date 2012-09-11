@@ -28,9 +28,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.ResourceService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.cursorservice.ICursorService;
 import org.csstudio.sds.internal.SdsResourceChangeListener;
 import org.csstudio.sds.internal.eventhandling.BehaviorService;
@@ -41,7 +38,10 @@ import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.util.StringUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -49,7 +49,7 @@ import org.osgi.framework.BundleContext;
  * @author Alexander Will
  * @version $Revision: 1.28 $
  */
-public final class SdsPlugin extends AbstractCssPlugin {
+public final class SdsPlugin extends Plugin {
 
 	/**
 	 * The ID of this plugin.
@@ -125,6 +125,8 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 * Change listener for SDS resources.
 	 */
 	private SdsResourceChangeListener _resourceChangeListener;
+	
+    private static final Logger LOG = LoggerFactory.getLogger(SdsPlugin.class);
 
 //	TODO (jhatje): remove if patch in jca lib works
 //	/**
@@ -157,7 +159,8 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 * {@inheritDoc}.
 	 */
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
 		_resourceChangeListener = new SdsResourceChangeListener();
 
 		// create the default SDS project
@@ -183,9 +186,7 @@ public final class SdsPlugin extends AbstractCssPlugin {
 
 		// initialize the rules for the very first time
 		if (RuleService.getInstance().isErrorOccurred()) {
-			CentralLogger.getInstance().error(
-					this,
-					StringUtil.convertListToSingleString(RuleService
+			LOG.error(StringUtil.convertListToSingleString(RuleService
 							.getInstance().getErrorMessages()));
 		}
 		
@@ -200,7 +201,8 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 * {@inheritDoc}.
 	 */
 	@Override
-	protected void doStop(final BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		// de-register the workspace listener
 		ResourceService.getInstance().removeResourceChangeListener(
 				_resourceChangeListener);
@@ -212,14 +214,6 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	
 	public IWidgetPropertyPostProcessingService getWidgetPropertyPostProcessingService() {
 		return _widgetPropertyPostProcessingService;
-	}
-
-	/**
-	 * {@inheritDoc}.
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 //	TODO (jhatje): remove if patch in jca lib works

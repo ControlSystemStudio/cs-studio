@@ -6,7 +6,6 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.utility.caSnooperUi.ui.ChangeView.Plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform.ui,
  org.csstudio.platform.libs.epics,
  org.eclipse.help,
  org.csstudio.remote;bundle-version="1.0.0",

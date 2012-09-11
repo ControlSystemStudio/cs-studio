@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+	<!-- meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" / -->
+	<title>CSS EPICS PV Tree</title>
+    <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+
+<body>
+<h1>Overview</h1>
+The CSS EPICS PV Tree displays the hierarchical data flow between EPICS
+records.
+It displays the record types, their current values as well as
+severity/status.
+It attempts to follow the data flow by traversing input links
+(INP, INPA, DOL, ...).
+
+<h2>Usage</h2>
+Enter a name into the "PV" text box, and see what happens.
+Names can be entered in various ways:
+<ul>
+<li>Type a PV name, followed by "Return". </li>
+<li>Select a previously entered PV name from the drop-down list
+attached to the PV name text box. </li>
+<li>Drop a PV name from another CSS application into the "Tree" area
+below the PV name. </li>
+<li>Send a PV name to the EPICS PV tree via the context menu of another
+CSS application.  </li>
+</ul>
+    
+<h2>Examples</h2>
+<p>
+The first screen-shot shows an analog input (ai) record, which reads its
+input (INP) directly from a device support module that happens to understand
+the input description "adm606m....". 
+</p>
+
+<!--center-->
+<img alt="" src="screenshot1.png" />
+<p>
+<!--/center-->
+The second screen-shot shows a more interesting hierarchy:
+A binary input record (bi) reads from a calculation (calc), whose first input
+(INPA) reads from an mbbi which in turn reads from another calc and so on.
+Note how the color-coding indicates severities.
+</p>
+
+<p>
+<!--center-->
+<img alt="" src="screenshot2.png" />
+<!--/center-->
+</p>
+
+<h2>Limitations</h2>
+<p>
+This tool uses the EPICS network protocol, Channel Access, to read PVs.
+There is no way to query EPICS V3 IOCs for their database information
+to determine the available "input" links.
+</p>
+<p>
+The knowledge of which links to follow for each record type is therefore
+configured into the EPICS PV Tree application. It is at this time not
+configurable by end users, but people with access to the
+source code can determine the syntax from the preferences.ini file
+and override in the CSS plugin_customization.ini for site-specific
+settings.
+</p>
+</body>
+</html>

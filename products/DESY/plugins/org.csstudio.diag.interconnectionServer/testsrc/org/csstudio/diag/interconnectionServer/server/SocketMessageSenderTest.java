@@ -31,6 +31,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 
@@ -74,6 +75,6 @@ public class SocketMessageSenderTest {
 				description.appendText("packet with \"Hello, world.\"");
 			}
 		};
-		Mockito.verify(socket).send(Mockito.argThat(matchesExpectedDatagram));
+		Mockito.verify(socket).send(Matchers.argThat(matchesExpectedDatagram));
 	}
 }

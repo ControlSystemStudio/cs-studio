@@ -9,22 +9,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.xpath.operations.Quo;
 import org.csstudio.dct.DctActivator;
-import org.csstudio.dct.DummyIoNameService;
-import org.csstudio.dct.IoNameService;
-import org.csstudio.dct.export.IExporter;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.FieldFunctionExtension;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.util.AliasResolutionException;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 

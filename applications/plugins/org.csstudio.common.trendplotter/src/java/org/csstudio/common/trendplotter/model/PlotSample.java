@@ -51,7 +51,7 @@ public class PlotSample implements ISample
     public PlotSample(final String source, final IValue value)
     {
         if (value == null) {
-            throw new IllegalArgumentException("Value is null for PlotSample");
+            throw new IllegalArgumentException("IValue is null for PlotSample");
         }
         this.value = value;
         this.source = source;
@@ -177,9 +177,9 @@ public class PlotSample implements ISample
     public String toString()
     {
         if (hasDeadband()) {
-            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source });
+            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source});
         }
-        return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source });
+        return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source});
     }
 
     public void setDeadband(final Number db) {

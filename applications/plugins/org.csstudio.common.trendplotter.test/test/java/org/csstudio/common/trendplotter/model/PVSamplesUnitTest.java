@@ -35,9 +35,9 @@ public class PVSamplesUnitTest
         final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
         Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
 
-        final RequestType reqType = RequestType.RAW;
         // Start w/ empty PVSamples
-        final PVSamples samples = new PVSamples(reqType, null);
+        final RequestType reqType = RequestType.RAW;
+        final PVSamples samples = new PVSamples(reqType);
         assertEquals(0, samples.getSize());
         assertNull(samples.getXDataMinMax());
         assertNull(samples.getYDataMinMax());
@@ -47,7 +47,7 @@ public class PVSamplesUnitTest
         for (int i=0; i<10; ++i) {
             history.add(TestSampleBuilder.makeValue(i));
         }
-        samples.mergeArchivedData("TestChannel", null, reqType, history);
+        samples.mergeArchivedData("TestChannel", readerMock, reqType, history);
         // PVSamples include continuation until 'now'
         System.out.println(samples.toString());
         assertEquals(history.size()+1, samples.getSize());
@@ -87,7 +87,7 @@ public class PVSamplesUnitTest
     public void testUndefinedLiveData()
     {
         // Start w/ empty samples
-        final PVSamples samples = new PVSamples(null, null);
+        final PVSamples samples = new PVSamples(null);
         assertEquals(0, samples.getSize());
 
         // Add sample w/ null time stamp, INVALID/UDF

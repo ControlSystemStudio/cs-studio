@@ -2,14 +2,14 @@ package org.csstudio.config.ioconfig.view;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class IOConfigActivatorUI extends AbstractCssUiPlugin{
+public class IOConfigActivatorUI extends AbstractUIPlugin {
     
     /**
      * The plug-in ID.
@@ -36,7 +36,8 @@ public class IOConfigActivatorUI extends AbstractCssUiPlugin{
      * @exception Exception The Thrown excepton
      */
     @Override
-    public void doStart(@Nonnull final BundleContext context) throws Exception {
+    public void start(@Nonnull final BundleContext context) throws Exception {
+    	super.start(context);
         // nothing to start
     }
     
@@ -45,17 +46,9 @@ public class IOConfigActivatorUI extends AbstractCssUiPlugin{
      * @exception Exception The Thrown excepton
      */
     @Override
-    public final void doStop(@Nonnull final BundleContext context) throws Exception {
+    public final void stop(@Nonnull final BundleContext context) throws Exception {
+    	super.stop(context);
         // nothing to stop
-    }
-    
-    /**
-     * @return The PlugIn Id
-     */
-    @Override
-    @Nonnull
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
     
     /**

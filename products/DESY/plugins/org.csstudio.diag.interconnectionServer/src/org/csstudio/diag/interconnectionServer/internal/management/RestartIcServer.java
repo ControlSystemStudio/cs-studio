@@ -23,10 +23,12 @@
 package org.csstudio.diag.interconnectionServer.internal.management;
 
 import org.csstudio.diag.interconnectionServer.InterconnectionServerApplication;
+import org.csstudio.diag.interconnectionServer.server.IInterconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.servicelocator.ServiceLocator;
 
 /**
  * Management command which restarts the Interconnection Server.
@@ -37,7 +39,7 @@ public class RestartIcServer implements IManagementCommand {
 
 	public CommandResult execute(CommandParameters parameters) {
 		InterconnectionServerApplication.SHUTDOWN = false;
-		InterconnectionServer.getInstance().stopIcServer();
+		ServiceLocator.getService(IInterconnectionServer.class).stopIcServer();
 		return CommandResult.createSuccessResult();
 	}
 

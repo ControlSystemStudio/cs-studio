@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.ui;
 
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;

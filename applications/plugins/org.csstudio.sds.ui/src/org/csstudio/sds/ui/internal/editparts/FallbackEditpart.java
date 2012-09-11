@@ -34,7 +34,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * 
  * @author Stefan Hofer
  */
-final class FallbackEditpart extends AbstractWidgetEditPart {
+public final class FallbackEditpart extends AbstractWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}

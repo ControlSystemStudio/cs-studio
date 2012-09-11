@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -48,6 +47,8 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.SWT;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service for using mouse cursors in SDS displays.
@@ -98,6 +99,8 @@ public final class CursorService implements ICursorService {
 	 * The current cursor preferences.
 	 */
 	private CursorSettings _preferences;
+
+    private static final Logger LOG = LoggerFactory.getLogger(CursorService.class);
 
 	/**
 	 * Returns the singleton instance.
@@ -368,8 +371,7 @@ public final class CursorService implements ICursorService {
 					}
 				}
 			} catch (BackingStoreException e) {
-				CentralLogger.getInstance().warn(this,
-						"BackingStoreException while reading preferences", e);
+				LOG.warn("BackingStoreException while reading preferences", e);
 			}
 		}
 	}
@@ -522,7 +524,7 @@ public final class CursorService implements ICursorService {
 
 				});
 			} catch (CoreException e) {
-				CentralLogger.getInstance().warn(this, e);
+				LOG.warn(e.toString());
 			}
 		}
 

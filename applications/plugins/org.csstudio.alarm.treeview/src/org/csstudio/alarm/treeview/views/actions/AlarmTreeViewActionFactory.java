@@ -23,28 +23,35 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.alarm.treeview.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeview.jobs.RetrieveInitialStateJob;
 import org.csstudio.alarm.treeview.ldap.AlarmTreeContentModelBuilder;
+import org.csstudio.alarm.treeview.localization.Messages;
+import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeview.model.PVNodeItem;
 import org.csstudio.alarm.treeview.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeview.service.AlarmMessageListener;
 import org.csstudio.alarm.treeview.views.AlarmTreeView;
 import org.csstudio.alarm.treeview.views.ITreeModificationItem;
 import org.csstudio.alarm.treeview.views.MessageArea;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -60,6 +67,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action factory for the alarm tree view.
@@ -71,13 +80,12 @@ import org.eclipse.ui.views.IViewRegistry;
  */
 public final class AlarmTreeViewActionFactory {
 
-    static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeViewActionFactory.class);
 
     /**
      * The ID of the property view.
      */
-    public static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+    public static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
     
     /**
      * @param messageArea
@@ -87,10 +95,10 @@ public final class AlarmTreeViewActionFactory {
     public static Action createShowMessageAreaAction(@Nonnull final MessageArea messageArea) {
         
         ShowMessageAreaAction action = new ShowMessageAreaAction(messageArea);
-        action.setText("msg");
-        action.setToolTipText("Show message area");
+        action.setText(Messages.AlarmTreeViewActionFactory_ShowMessageArea_Text);
+        action.setToolTipText(Messages.AlarmTreeViewActionFactory_ShowMessageArea_TooltipText);
         action.setImageDescriptor(AlarmTreePlugin
-                .getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() + "/details_view.gif"));
+                .getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() + "/details_view.gif")); //$NON-NLS-1$
         
         return action;
     }
@@ -102,8 +110,8 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createShowPropertyViewAction(@Nonnull final IWorkbenchPartSite site) {
         final Action showPropertyViewAction = new ShowPropertyViewAction(site);
-        showPropertyViewAction.setText("Properties");
-        showPropertyViewAction.setToolTipText("Show property view");
+        showPropertyViewAction.setText(Messages.AlarmTreeViewActionFactory_ShowProperties_Text);
+        showPropertyViewAction.setToolTipText(Messages.AlarmTreeViewActionFactory_ShowProperties_TooltipText);
 
         final IViewRegistry viewRegistry = site.getWorkbenchWindow().getWorkbench().getViewRegistry();
         final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
@@ -123,7 +131,7 @@ public final class AlarmTreeViewActionFactory {
                                             @Nonnull final TreeViewer viewer,
                                             @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action renameAction = new RenameAction(viewer, site, modificationItems);
-        renameAction.setText("Rename...");
+        renameAction.setText(Messages.AlarmTreeViewActionFactory_Rename_Text);
         return renameAction;
     }
 
@@ -138,7 +146,7 @@ public final class AlarmTreeViewActionFactory {
                                                 @Nonnull final TreeViewer viewer,
                                                 @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action deleteNodeAction = new DeleteNodeAction(site, viewer, modificationItems);
-        deleteNodeAction.setText("Delete");
+        deleteNodeAction.setText(Messages.AlarmTreeViewActionFactory_Delete_Text);
         return deleteNodeAction;
     }
 
@@ -152,7 +160,7 @@ public final class AlarmTreeViewActionFactory {
                                                      @Nonnull final TreeViewer viewer,
                                                      @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action createComponentAction = new CreateComponentAction(site, viewer, modificationItems);
-        createComponentAction.setText("Create Component...");
+        createComponentAction.setText(Messages.AlarmTreeViewActionFactory_CreateComponent_Text);
         return createComponentAction;
     }
 
@@ -165,15 +173,15 @@ public final class AlarmTreeViewActionFactory {
     public static Action createSaveAsXmlFileAction(@Nonnull final IWorkbenchPartSite site,
                                                    @Nonnull final TreeViewer viewer) {
         final Action saveAsXmlFileAction = new SaveAsXmlAction(site, viewer);
-        saveAsXmlFileAction.setText("Save as XML...");
+        saveAsXmlFileAction.setText(Messages.AlarmTreeViewActionFactory_SaveAsXml_Text);
         return saveAsXmlFileAction;
     }
 
     @CheckForNull
     public static String getFileToSaveTo(@Nonnull final IWorkbenchPartSite site) {
         final FileDialog dialog = new FileDialog(site.getShell(), SWT.SAVE);
-        dialog.setFilterExtensions(new String[] {"*.xml"});
-        dialog.setText("Save alarm tree configuration file (.xml)");
+        dialog.setFilterExtensions(new String[] {"*.xml"}); //$NON-NLS-1$
+        dialog.setText(Messages.AlarmTreeViewActionFactory_SaveDialog_Text);
         dialog.setOverwrite(true);
         return dialog.open();
     }
@@ -187,10 +195,10 @@ public final class AlarmTreeViewActionFactory {
     public static Action createExportXmlFileAction(@Nonnull final IWorkbenchPartSite site,
                                                    @Nonnull final IAlarmSubtreeNode rootNode) {
         final Action exportXmlFileAction = new ExportXmlFileAction(rootNode, site);
-        exportXmlFileAction.setText("Export XML...");
-        exportXmlFileAction.setToolTipText("Export XML");
+        exportXmlFileAction.setText(Messages.AlarmTreeViewActionFactory_Export_Text);
+        exportXmlFileAction.setToolTipText(Messages.AlarmTreeViewActionFactory_Export_TooltipText);
         exportXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
-                                                                                  "/exportxml.png"));
+                                                                                  "/exportxml.png")); //$NON-NLS-1$
         return exportXmlFileAction;
     }
 
@@ -205,10 +213,10 @@ public final class AlarmTreeViewActionFactory {
                                                                    alarmListener,
                                                                    importXmlFileJob,
                                                                    viewer);
-        importXmlFileAction.setText("Import XML...");
-        importXmlFileAction.setToolTipText("Import XML");
+        importXmlFileAction.setText(Messages.AlarmTreeViewActionFactory_ImportXml_Text);
+        importXmlFileAction.setToolTipText(Messages.AlarmTreeViewActionFactory_ImportXml_TooltipText);
         importXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
-                                                                                  "/importxml.gif"));
+                                                                                  "/importxml.gif")); //$NON-NLS-1$
 
         return importXmlFileAction;
     }
@@ -223,7 +231,7 @@ public final class AlarmTreeViewActionFactory {
             builder.build();
             final ContentModel<LdapEpicsAlarmcfgConfiguration> model = builder.getModel();
 
-            final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
+            final IAlarmConfigurationService configService = ServiceLocator.getService(IAlarmConfigurationService.class);
 
             if (model != null) {
                 configService.exportContentModelToXmlFile(filePath, 
@@ -232,21 +240,21 @@ public final class AlarmTreeViewActionFactory {
             }
 
         } catch (final CreateContentModelException e) {
-            LOG.error("Creating content model from facility was not possible due to invalid LDAP name.");
+            LOG.error("Creating content model from facility was not possible due to invalid LDAP name."); //$NON-NLS-1$
             MessageDialog.openError(site.getShell(),
-                                    "Save as XML file",
-            "Internal error: Content model could not be created for facility subtree.");
+                                    Messages.AlarmTreeViewActionFactory_SaveXml_Failed_DialogTitle,
+            Messages.AlarmTreeViewActionFactory_SaveXml_Failed_ModelCreation);
 
         } catch (final ExportContentModelException e) {
-            LOG.error("Exporting content model for facility to XML file has not been successful.");
+            LOG.error("Exporting content model for facility to XML file has not been successful."); //$NON-NLS-1$
             MessageDialog.openError(site.getShell(),
-                                    "Save as XML file",
-            "Internal error: XML file could not be for facility.");
+                                    Messages.AlarmTreeViewActionFactory_SaveXml_Failed_DialogTitle,
+            Messages.AlarmTreeViewActionFactory_SaveXml_Failed_ModelExport);
         } catch (final IOException e) {
-            LOG.error("Exporting content model for facility to XML file has not been successful.");
+            LOG.error("Exporting content model for facility to XML file has not been successful."); //$NON-NLS-1$
             MessageDialog.openError(site.getShell(),
-                                    "Save as XML file",
-            "Internal error: DTD file could not be located.");
+                                    Messages.AlarmTreeViewActionFactory_SaveXml_Failed_DialogTitle,
+            Messages.AlarmTreeViewActionFactory_SaveXml_Failed_DTD_Missing);
         }
     }
 
@@ -264,10 +272,35 @@ public final class AlarmTreeViewActionFactory {
                                                   @Nonnull final AlarmTreeView alarmTreeView,
                                                   @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action createRecordAction = new CreateRecordAction(site, viewer, alarmTreeView, modificationItems);
-        createRecordAction.setText("Create Record...");
+        createRecordAction.setText(Messages.AlarmTreeViewActionFactory_CreateRecord_Text);
         return createRecordAction;
     }
 
+    /**
+     * Helper function to retrieve the initial alarm and acknowledge state of the pv of the given node
+     * 
+     * @param treeNode
+     * @throws AlarmServiceException
+     */
+    public static void retrieveInitialStateSynchronously(@Nonnull final IAlarmTreeNode treeNode) throws AlarmServiceException {
+        IAlarmProcessVariableNode node = null;
+        try {
+            node = (IAlarmProcessVariableNode) treeNode;
+        } catch (ClassCastException e) {
+            throw new AlarmServiceException("Cannot retrieve initial state: Wrong type of node");
+        }
+        
+        final List<IAlarmInitItem> initItems = Collections
+                .singletonList((IAlarmInitItem) new PVNodeItem(node));
+        
+        final IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
+        if (alarmService != null) {
+            alarmService.retrieveInitialState(initItems);
+        } else {
+            throw new AlarmServiceException("Cannot retrieve initial state: Alarm service not available");
+        }
+    }
+    
     /**
      * @param viewer
      * @return
@@ -275,8 +308,8 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createShowHelpPageAction(@Nonnull final TreeViewer viewer) {
         final Action showHelpPageAction = new ShowHelpPageAction(viewer);
-        showHelpPageAction.setText("Open Help Page");
-        showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
+        showHelpPageAction.setText(Messages.AlarmTreeViewActionFactory_OpenHelp_Text);
+        showHelpPageAction.setToolTipText(Messages.AlarmTreeViewActionFactory_OpenHelp_TooltipText);
         showHelpPageAction.setEnabled(false);
         return showHelpPageAction;
     }
@@ -290,8 +323,8 @@ public final class AlarmTreeViewActionFactory {
     public static Action createShowHelpGuidanceAction(@Nonnull final IWorkbenchPartSite site,
                                                       @Nonnull final TreeViewer viewer) {
         final Action showHelpGuidanceAction = new ShowHelpGuidanceAction(viewer, site);
-        showHelpGuidanceAction.setText("Show Help Guidance");
-        showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
+        showHelpGuidanceAction.setText(Messages.AlarmTreeViewActionFactory_ShowHelpGuidance_Text);
+        showHelpGuidanceAction.setToolTipText(Messages.AlarmTreeViewActionFactory_ShowHelpGuidance_TooltipText);
         showHelpGuidanceAction.setEnabled(false);
         return showHelpGuidanceAction;
     }
@@ -305,8 +338,8 @@ public final class AlarmTreeViewActionFactory {
     public static Action createCssStripChartAction(@Nonnull final IWorkbenchPartSite site,
                                                    @Nonnull final TreeViewer viewer) {
         final Action openCssStripChartAction = new CssStripChartAction(viewer, site);
-        openCssStripChartAction.setText("Open Strip Chart");
-        openCssStripChartAction.setToolTipText("Open the strip chart for this node");
+        openCssStripChartAction.setText(Messages.AlarmTreeViewActionFactory_OpenStripChart_Text);
+        openCssStripChartAction.setToolTipText(Messages.AlarmTreeViewActionFactory_OpenStripChart_TooltipText);
         openCssStripChartAction.setEnabled(false);
         return openCssStripChartAction;
     }
@@ -319,8 +352,8 @@ public final class AlarmTreeViewActionFactory {
     public static Action createRunCssDisplayAction(@Nonnull final TreeViewer viewer) {
 
         final Action runCssDisplayAction = new RunCssDisplayAction(viewer);
-        runCssDisplayAction.setText("Run Display");
-        runCssDisplayAction.setToolTipText("Run the display for this PV");
+        runCssDisplayAction.setText(Messages.AlarmTreeViewActionFactory_RunDisplay_Text);
+        runCssDisplayAction.setToolTipText(Messages.AlarmTreeViewActionFactory_RunDisplay_TooltipText);
         runCssDisplayAction.setEnabled(false);
 
         return runCssDisplayAction;
@@ -333,8 +366,8 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createCssAlarmDisplayAction(@Nonnull final TreeViewer viewer) {
         final Action runCssAlarmDisplayAction = new RunCssAlarmDisplayAction(viewer);
-        runCssAlarmDisplayAction.setText("Run Alarm Display");
-        runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
+        runCssAlarmDisplayAction.setText(Messages.AlarmTreeViewActionFactory_RunAlarmDisplay_Text);
+        runCssAlarmDisplayAction.setToolTipText(Messages.AlarmTreeViewActionFactory_RunAlarmDisplay_TooltipText);
         runCssAlarmDisplayAction.setEnabled(false);
 
         return runCssAlarmDisplayAction;
@@ -347,8 +380,8 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createAcknowledgeAction(@Nonnull final TreeViewer viewer) {
         final Action acknowledgeAction = new AcknowledgeSecureAction(viewer);
-        acknowledgeAction.setText("Send Acknowledgement");
-        acknowledgeAction.setToolTipText("Send alarm acknowledgement");
+        acknowledgeAction.setText(Messages.AlarmTreeViewActionFactory_SendAck_Text);
+        acknowledgeAction.setToolTipText(Messages.AlarmTreeViewActionFactory_SendAck_TooltipText);
         acknowledgeAction.setEnabled(false);
 
         return acknowledgeAction;
@@ -369,12 +402,28 @@ public final class AlarmTreeViewActionFactory {
                                             @Nonnull final TreeViewer viewer,
                                             @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action reloadAction = new ReloadFromLdapAction(site, viewer, alarmListener, modificationItems, directoryReaderJob);
-        reloadAction.setText("Reload");
-        reloadAction.setToolTipText("Reload");
+        reloadAction.setText(Messages.AlarmTreeViewActionFactory_Reload_Text);
+        reloadAction.setToolTipText(Messages.AlarmTreeViewActionFactory_Reload_TooltipText);
         reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
-                                                                           "/refresh.gif"));
+                                                                           "/refresh.gif")); //$NON-NLS-1$
 
         return reloadAction;
+    }
+
+
+    /**
+     * Send the reload command via reload service to all clients.
+     * 
+     * @return action
+     */
+    @Nonnull
+    public static Action createRemoteReloadAction(@Nonnull final MessageArea messageArea) {
+        final Action action = new RemoteReloadSecureAction(messageArea);
+        action.setText(Messages.AlarmTreeViewActionFactory_RemoteReload_Text);
+        action.setToolTipText(Messages.AlarmTreeViewActionFactory_RemoteReload_TooltipText);
+        action.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                           "/remoteReload.gif")); //$NON-NLS-1$
+        return action;
     }
 
 
@@ -388,8 +437,8 @@ public final class AlarmTreeViewActionFactory {
                                                           @Nonnull final RetrieveInitialStateJob retrieveInitialStateJob,
                                                           @Nonnull final TreeViewer viewer) {
         Action action = new RetrieveInitialStateAction(site, retrieveInitialStateJob, viewer);
-        action.setText("Retrieve initial state");
-        action.setToolTipText("Retrieve initial state");
+        action.setText(Messages.AlarmTreeViewActionFactory_RetrieveInitialState_Text);
+        action.setToolTipText(Messages.AlarmTreeViewActionFactory_RetrieveInitialState_TooltipText);
         return action;
     }
 
@@ -405,11 +454,11 @@ public final class AlarmTreeViewActionFactory {
     public static Action createToggleFilterAction(@Nonnull final AlarmTreeView alarmTreeView,
                                                   @Nonnull final TreeViewer viewer,
                                                   @Nonnull final ViewerFilter currentAlarmFilter) {
-        final Action toggleFilterAction = new ToggleFilterAction("Show Only Alarms", IAction.AS_CHECK_BOX, alarmTreeView, currentAlarmFilter, viewer);
-        toggleFilterAction.setToolTipText("Show Only Alarms");
+        final Action toggleFilterAction = new ToggleFilterAction(Messages.AlarmTreeViewActionFactory_ShowOnlyAlarms_Text, IAction.AS_CHECK_BOX, alarmTreeView, currentAlarmFilter, viewer);
+        toggleFilterAction.setToolTipText(Messages.AlarmTreeViewActionFactory_ShowOnlyAlarms_TooltipText);
         toggleFilterAction.setChecked(alarmTreeView.getIsFilterActive().booleanValue());
         toggleFilterAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
-                                                                                 "/no_alarm_filter.png"));
+                                                                                 "/no_alarm_filter.png")); //$NON-NLS-1$
 
         return toggleFilterAction;
     }
@@ -427,9 +476,9 @@ public final class AlarmTreeViewActionFactory {
                                                 @Nonnull final Queue<ITreeModificationItem> modifications) {
 
         final AbstractUserDependentAction saveInLdapAction = new SaveInLdapSecureAction(site, modifications);
-        saveInLdapAction.setToolTipText("Save in LDAP");
+        saveInLdapAction.setToolTipText(Messages.AlarmTreeViewActionFactory_SaveInLdap_TooltipText);
         saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
-                                                                               "/saveinldap.gif"));
+                                                                               "/ldapsave.gif")); //$NON-NLS-1$
         saveInLdapAction.setEnabled(false);
         return saveInLdapAction;
     }

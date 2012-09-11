@@ -36,9 +36,9 @@ public class AMSPerformanceTest {
         public void onMessage(Message m) {
             int number = -1;
             try {
-                number = Integer.parseInt(((MapMessage) m).getString("NUMBER"));
+                number = Integer.parseInt(((MapMessage) m).getString("VALUE"));
             } catch (Exception e) {
-                System.err.println("Warning: received message which was not a MapMessage, or did not contain field NUMBER:\n" + e);
+                System.err.println("Warning: received message which was not a MapMessage, or did not contain field VALUE:\n" + e);
             }
             synchronized (this) {
                 if (number >= 0 && number < receiveTimes.length) { 
@@ -89,8 +89,8 @@ public class AMSPerformanceTest {
         } else if (options.component.equals("decision")) {
             sendTopic = "ALARM";
             if (options.receiveFromTopics.size() == 0) {
-//                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
-                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
+                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+//                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
             }
         } else if (options.component.equals("minder")) {
             sendTopic = "T_AMS_MESSAGEMINDER";
@@ -170,7 +170,7 @@ public class AMSPerformanceTest {
         for (int i = 0; i < options.count; i++) {
             MapMessage message = senderSession.createMapMessage();
             messageTemplate.applyTo(message);
-            message.setString("NUMBER", String.valueOf(i));
+            message.setString("VALUE", String.valueOf(i));
             sendTimes[i] = System.nanoTime();
             producer.send(message);
             if (delay > 0) {

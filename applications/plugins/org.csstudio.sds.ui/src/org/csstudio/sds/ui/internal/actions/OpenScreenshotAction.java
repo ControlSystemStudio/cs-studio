@@ -23,35 +23,33 @@
 
 package org.csstudio.sds.ui.internal.actions;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Markus Moeller
  *
  */
-public class OpenScreenshotAction extends Action
-{
-    public OpenScreenshotAction()
-    {
+public class OpenScreenshotAction extends Action {
+    private static final Logger LOG = LoggerFactory.getLogger(OpenScreenshotAction.class);
+
+    public OpenScreenshotAction() {
         this.setText("Capture Me");
         this.setToolTipText("Capture the content of the SDS display and open the scrennshot plugin in CSS.");
         this.setEnabled(true);
     }
     
-    public void run()
-    {
-        try
-        {
+    public void run()   {
+        try {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("screenshotView");
         }
-        catch(PartInitException pie)
-        {
-            CentralLogger.getInstance().error(this, "*** PartInitException *** : " + pie.getMessage());
+        catch(PartInitException pie)  {
+            LOG.error("*** PartInitException *** : " + pie.getMessage());
             MessageDialog.openError(null, "OpenScreenshotAction", "*** PartInitException *** : " + pie.getMessage());
         }
         // MessageDialog.openInformation(null, "OpenScreenshotAction", "Thus we frustrate the user.");

@@ -174,9 +174,11 @@ public class Model
      */
     public ModelItem getFirstItemOnAxis(final AxisConfig axis)
     {
-        for (ModelItem item : items)
-            if (item.getAxis() == axis)
+        for (final ModelItem item : items) {
+            if (item.getAxis() == axis) {
                 return item;
+            }
+        }
         return null;
     }
 
@@ -185,9 +187,11 @@ public class Model
      */
     public AxisConfig getEmptyAxis()
     {
-        for (AxisConfig axis : axes)
-            if (getFirstItemOnAxis(axis) == null)
+        for (final AxisConfig axis : axes) {
+            if (getFirstItemOnAxis(axis) == null) {
                 return axis;
+            }
+        }
         return null;
     }
 
@@ -229,11 +233,14 @@ public class Model
      */
     public void removeAxis(final AxisConfig axis)
     {
-        if (! axes.contains(axis))
+        if (! axes.contains(axis)) {
             throw new Error("Unknown AxisConfig");
-        for (ModelItem item : items)
-            if (item.getAxis() == axis)
+        }
+        for (final ModelItem item : items) {
+            if (item.getAxis() == axis) {
                 throw new Error("Cannot removed AxisConfig while in use");
+            }
+        }
         axis.setModel(null);
         axes.remove(axis);
         fireAxisChangedEvent(null);
@@ -248,11 +255,13 @@ public class Model
     /** @param archive_rescale How should plot rescale after archived data arrived? */
     public void setArchiveRescale(final ArchiveRescale archive_rescale)
     {
-        if (this.archive_rescale == archive_rescale)
+        if (this.archive_rescale == archive_rescale) {
             return;
+        }
         this.archive_rescale = archive_rescale;
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedArchiveRescale();
+        }
     }
 
     /** @return {@link ModelItem} count in model */
@@ -276,9 +285,11 @@ public class Model
      */
     public ModelItem getItem(final String name)
     {
-        for (ModelItem item : items)
-            if (item.getName().equals(name))
+        for (final ModelItem item : items) {
+            if (item.getName().equals(name)) {
                 return item;
+            }
+        }
         return null;
     }
 
@@ -305,31 +316,37 @@ public class Model
     public void addItem(final ModelItem item) throws Exception
     {
         // Prohibit duplicate items
-        if (getItem(item.getName()) != null)
-                throw new RuntimeException("Item " + item.getName() + " already in Model");
+        if (getItem(item.getName()) != null) {
+            throw new RuntimeException("Item " + item.getName() + " already in Model");
+        }
         // Assign default color
-        if (item.getColor() == null)
+        if (item.getColor() == null) {
             item.setColor(getNextItemColor());
+        }
 
         // Force item to be on an axis
         if (item.getAxis() == null)
         {
-            if (axes.size() == 0)
+            if (axes.size() == 0) {
                 addAxis();
+            }
             item.setAxis(axes.get(0));
         }
         // Check item axis
-        if (! axes.contains(item.getAxis()))
+        if (! axes.contains(item.getAxis())) {
             throw new Exception("Item " + item.getName() + " added with invalid axis " + item.getAxis());
+        }
 
         // Add to model
         items.add(item);
         item.setModel(this);
-        if (is_running  &&  item instanceof PVItem)
+        if (is_running  &&  item instanceof PVItem) {
             ((PVItem)item).start(scanner);
+        }
         // Notify listeners of new item
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.itemAdded(item);
+        }
     }
 
     /** Remove item from the model.
@@ -351,14 +368,16 @@ public class Model
             // will have gaps because the item was stopped
             pv.getSamples().clear();
         }
-        if (! items.remove(item))
+        if (! items.remove(item)) {
             throw new RuntimeException("Unknown item " + item.getName());
+        }
         // Detach item from model
         item.setModel(null);
 
         // Notify listeners of removed item
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.itemRemoved(item);
+        }
     }
 
     /** @return Period in seconds for scrolling or refreshing */
@@ -371,13 +390,15 @@ public class Model
     public void setUpdatePeriod(final double period_secs)
     {
         // Don't allow updates faster than 10Hz (0.1 seconds)
-        if (period_secs < 0.1)
+        if (period_secs < 0.1) {
             update_period = 0.1;
-        else
+        } else {
             update_period = period_secs;
+        }
         // Notify listeners
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedUpdatePeriod();
+        }
     }
 
     /** The model supports two types of start/end time handling:
@@ -400,13 +421,15 @@ public class Model
     {
         synchronized (this)
         {
-            if (this.scroll_enabled == scroll_enabled)
+            if (this.scroll_enabled == scroll_enabled) {
                 return;
+            }
             this.scroll_enabled = scroll_enabled;
         }
         // Notify listeners
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.scrollEnabled(scroll_enabled);
+        }
     }
 
     /** @return time span of data in seconds
@@ -432,8 +455,9 @@ public class Model
             }
         }
         // Notify listeners
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedTimerange();
+        }
     }
 
     /** @param time_span time span of data in seconds
@@ -449,8 +473,9 @@ public class Model
             }
         }
         // Notify listeners
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedTimerange();
+        }
     }
 
     /** @return Start time of the data range
@@ -466,8 +491,9 @@ public class Model
      */
     synchronized public ITimestamp getEndTime()
     {
-        if (scroll_enabled)
+        if (scroll_enabled) {
             end_time = TimestampFactory.now();
+        }
         return end_time;
     }
 
@@ -476,10 +502,11 @@ public class Model
      */
     synchronized public String getStartSpecification()
     {
-        if (scroll_enabled)
+        if (scroll_enabled) {
             return new RelativeTime(-time_span).toString();
-        else
+        } else {
             return getStartTime().toString();
+        }
     }
 
     /** @return String representation of end time. While scrolling, this is
@@ -487,10 +514,11 @@ public class Model
      */
     synchronized public String getEndSpecification()
     {
-        if (scroll_enabled)
+        if (scroll_enabled) {
             return RelativeTime.NOW;
-        else
+        } else {
             return end_time.toString();
+        }
     }
 
     /** @return Background color */
@@ -502,12 +530,14 @@ public class Model
     /** @param rgb New background color */
     public void setPlotBackground(final RGB rgb)
     {
-        if (background.equals(rgb))
+        if (background.equals(rgb)) {
             return;
+        }
         background = rgb;
         // Notify listeners
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedColors();
+        }
     }
 
     /** Start all items: Connect PVs, initiate scanning, ...
@@ -515,12 +545,14 @@ public class Model
      */
     public void start() throws Exception
     {
-        if (is_running)
+        if (is_running) {
             throw new RuntimeException("Model already started");
-        for (ModelItem item : items)
+        }
+        for (final ModelItem item : items)
         {
-            if (!(item instanceof PVItem))
+            if (!(item instanceof PVItem)) {
                 continue;
+            }
             final PVItem pv_item = (PVItem) item;
             pv_item.start(scanner);
         }
@@ -530,13 +562,15 @@ public class Model
     /** Stop all items: Disconnect PVs, ... */
     public void stop()
     {
-        if (!is_running)
+        if (!is_running) {
             throw new RuntimeException("Model wasn't started");
+        }
         is_running = false;
-        for (ModelItem item : items)
+        for (final ModelItem item : items)
         {
-            if (!(item instanceof PVItem))
+            if (!(item instanceof PVItem)) {
                 continue;
+            }
             final PVItem pv_item = (PVItem) item;
             pv_item.stop();
         }
@@ -551,18 +585,20 @@ public class Model
     {
         boolean anything_new = false;
         // Update any formulas
-        for (ModelItem item : items)
+        for (final ModelItem item : items)
         {
             if (item instanceof FormulaItem  &&
-                ((FormulaItem)item).reevaluate())
-                    anything_new = true;
+                ((FormulaItem)item).reevaluate()) {
+                anything_new = true;
+            }
         }
         // Check and reset PV Items
-        for (ModelItem item : items)
+        for (final ModelItem item : items)
         {
             if (item instanceof PVItem  &&
-                item.getSamples().testAndClearNewSamplesFlag())
+                item.getSamples().testAndClearNewSamplesFlag()) {
                 anything_new = true;
+            }
         }
         return anything_new;
     }
@@ -572,8 +608,9 @@ public class Model
      */
     public void fireAxisChangedEvent(final AxisConfig axis)
     {
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedAxis(axis);
+        }
     }
 
     /** Notify listeners of changed item visibility
@@ -581,8 +618,9 @@ public class Model
      */
     void fireItemVisibilityChanged(final ModelItem item)
     {
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedItemVisibility(item);
+        }
     }
 
     /** Notify listeners of changed item configuration
@@ -590,8 +628,9 @@ public class Model
      */
     void fireItemLookChanged(final ModelItem item)
     {
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedItemLook(item);
+        }
     }
 
     /** Notify listeners of changed item configuration
@@ -599,8 +638,9 @@ public class Model
      */
     void fireItemDataConfigChanged(final PVItem item)
     {
-        for (ModelListener listener : listeners)
+        for (final ModelListener listener : listeners) {
             listener.changedItemDataConfig(item);
+        }
     }
 
     /** Find a formula that uses a model item as an input.
@@ -610,13 +650,15 @@ public class Model
     public FormulaItem getFormulaWithInput(final ModelItem item)
     {
         // Update any formulas
-        for (ModelItem i : items)
+        for (final ModelItem i : items)
         {
-            if (! (i instanceof FormulaItem))
+            if (! (i instanceof FormulaItem)) {
                 continue;
+            }
             final FormulaItem formula = (FormulaItem) i;
-            if (formula.usesInput(item))
+            if (formula.usesInput(item)) {
                 return formula;
+            }
         }
         return null;
     }
@@ -648,8 +690,9 @@ public class Model
     {
         final Element color =
             DOMHelper.findFirstElementNode(node.getFirstChild(), color_tag);
-        if (color == null)
+        if (color == null) {
             return null;
+        }
         final int red = DOMHelper.getSubelementInt(color, Model.TAG_RED, 0);
         final int green = DOMHelper.getSubelementInt(color, Model.TAG_GREEN, 0);
         final int blue = DOMHelper.getSubelementInt(color, Model.TAG_BLUE, 0);
@@ -694,15 +737,17 @@ public class Model
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);
         writer.println();
-        for (AxisConfig axis : axes)
+        for (final AxisConfig axis : axes) {
             axis.write(writer);
+        }
         XMLWriter.end(writer, 1, TAG_AXES);
         writer.println();
         // PVs (Formulas)
         XMLWriter.start(writer, 1, TAG_PVLIST);
         writer.println();
-        for (ModelItem item : items)
+        for (final ModelItem item : items) {
             item.write(writer);
+        }
         XMLWriter.end(writer, 1, TAG_PVLIST);
         writer.println();
         XMLWriter.end(writer, 0, TAG_DATABROWSER);
@@ -729,14 +774,16 @@ public class Model
      */
     private void loadFromDocument(final Document doc) throws Exception
     {
-        if (is_running || items.size() > 0)
+        if (is_running || items.size() > 0) {
             throw new RuntimeException("Model was already in use");
+        }
 
         // Check if it's a <databrowser/>.
         doc.getDocumentElement().normalize();
         final Element root_node = doc.getDocumentElement();
-        if (!root_node.getNodeName().equals(TAG_DATABROWSER))
+        if (!root_node.getNodeName().equals(TAG_DATABROWSER)) {
             throw new Exception("Wrong document type");
+        }
 
         scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
         update_period = DOMHelper.getSubelementDouble(root_node, TAG_PERIOD, update_period);
@@ -750,16 +797,17 @@ public class Model
                          TimestampFactory.fromCalendar(times.getEnd()));
         }
 
-        RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
-        if (color != null)
+        final RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
+        if (color != null) {
             background = color;
+        }
 
         try
         {
             archive_rescale = ArchiveRescale.valueOf(
                     DOMHelper.getSubelementString(root_node, TAG_ARCHIVE_RESCALE));
         }
-        catch (Throwable ex)
+        catch (final Throwable ex)
         {
             archive_rescale = ArchiveRescale.STAGGER;
         }
@@ -792,23 +840,26 @@ public class Model
             while (item != null)
             {
                 final PVItem model_item = PVItem.fromDocument(this, item);
-                if (buffer_size > 0)
+                if (buffer_size > 0) {
                     model_item.setLiveCapacity(buffer_size);
+                }
                 // Adding item creates the axis for it if not already there
                 addItem(model_item);
                 // Backwards compatibility with previous data browser which
                 // stored axis configuration with each item: Update axis from that.
                 final AxisConfig axis = model_item.getAxis();
                 String s = DOMHelper.getSubelementString(item, TAG_AUTO_SCALE);
-                if (s.equalsIgnoreCase("true"))
+                if (s.equalsIgnoreCase("true")) {
                     axis.setAutoScale(true);
+                }
                 s = DOMHelper.getSubelementString(item, TAG_LOG_SCALE);
-                if (s.equalsIgnoreCase("true"))
+                if (s.equalsIgnoreCase("true")) {
                     axis.setLogScale(true);
+                }
                 final double min = DOMHelper.getSubelementDouble(item, Model.TAG_MIN, axis.getMin());
                 final double max = DOMHelper.getSubelementDouble(item, Model.TAG_MAX, axis.getMax());
                 axis.setRange(min, max);
-
+                model_item.setMinMaxFromFile(true);
                 item = DOMHelper.findNextElementNode(item, TAG_PV);
             }
             // Load Formulas

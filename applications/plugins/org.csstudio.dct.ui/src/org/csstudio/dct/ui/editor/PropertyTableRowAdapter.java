@@ -9,7 +9,7 @@ import org.csstudio.dct.model.commands.ChangePropertyValueCommand;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;

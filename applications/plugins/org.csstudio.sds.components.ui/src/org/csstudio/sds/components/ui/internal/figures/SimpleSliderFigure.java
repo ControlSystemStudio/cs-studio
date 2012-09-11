@@ -25,13 +25,13 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
@@ -279,7 +279,7 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
             _scrollBar.setMinimum(_min);
             _scrollBar.setMaximum(_max + _sliderWide);
 
-            _currentValue = (int) (_originalVal * _scrollbarPrecision);
+            _currentValue = (int) Math.round(_originalVal * _scrollbarPrecision);
 
             int settedValue = _currentValue;
             // update scrollbar

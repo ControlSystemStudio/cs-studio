@@ -85,7 +85,6 @@ public class TestSampleBuilder
         }
         return result;
     }
-
     public static List<PlotSample> makePlotSamplesWithStep(final int number,
                                                            final int offset,
                                                            final int stepsize) {
@@ -96,5 +95,4 @@ public class TestSampleBuilder
         return result;
 
     }
-
 }

@@ -1,5 +1,6 @@
 package org.csstudio.diag.diles;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import org.csstudio.diag.diles.model.WireBendpoint;
 import org.csstudio.diag.diles.model.Xor;
 import org.csstudio.diag.diles.palette.DilesPalette;
 import org.csstudio.diag.diles.providers.ModelLabelProvider;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IPath;
@@ -66,8 +66,12 @@ import org.jdom.input.JDOMParseException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DilesEditor extends GraphicalEditorWithPalette {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DilesEditor.class);
 
 	/**
 	 * Path to XML file

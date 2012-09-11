@@ -21,19 +21,20 @@
  */
 package org.csstudio.diag.rmtcontrol;
 
+
 import java.io.File;
 
 import org.csstudio.diag.rmtcontrol.Preference.SampleService;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.diag.RMTControl"; //$NON-NLS-1$
@@ -71,8 +72,8 @@ public class Activator extends AbstractCssUiPlugin {
 	}
 
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
-//		super.start(context);
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 		File defaultFile = new File(getPluginPreferences().getString(SampleService.RMT_XML_FILE_PATH));
 		if(!defaultFile.isFile()){
 			if(defaultFile.isDirectory()){
@@ -89,14 +90,9 @@ public class Activator extends AbstractCssUiPlugin {
 	}
 
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
-	}
-
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
 	/** Add informational message to the plugin log. */

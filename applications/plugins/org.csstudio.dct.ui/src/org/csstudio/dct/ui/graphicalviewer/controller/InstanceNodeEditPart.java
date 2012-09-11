@@ -2,24 +2,17 @@ package org.csstudio.dct.ui.graphicalviewer.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.ui.graphicalviewer.GraphicalDctView;
-import org.csstudio.dct.ui.graphicalviewer.model.Connection;
 import org.csstudio.dct.ui.graphicalviewer.model.InstanceNode;
-import org.csstudio.dct.ui.graphicalviewer.model.RecordNode;
-import org.csstudio.dct.ui.graphicalviewer.view.ConnectionAnchor;
 import org.csstudio.dct.ui.graphicalviewer.view.InstanceBoxFigure;
-import org.csstudio.dct.ui.graphicalviewer.view.RecordFigure;
 import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.NodeEditPart;

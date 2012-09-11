@@ -29,8 +29,10 @@ import java.net.UnknownHostException;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The runnable which actually is sending the command.
@@ -40,6 +42,7 @@ import org.eclipse.core.runtime.Platform;
  *
  */
 public class RedundantIocBeaconSender implements Runnable {
+    private static final Logger LOG = LoggerFactory.getLogger(RedundantIocBeaconSender.class);
 
 	private int iocBroadcastPortNumber = 0;
 	private String iocBroadcastAddressString = null;
@@ -72,7 +75,7 @@ public class RedundantIocBeaconSender implements Runnable {
 			e.printStackTrace();
 		}
 
-		IcsHostName = InterconnectionServer.getInstance().getLocalHostName();
+		IcsHostName = ServiceLocator.getService(IInterconnectionServer.class).getLocalHostName();
 
 //		this.run();
 	}
@@ -86,7 +89,7 @@ public class RedundantIocBeaconSender implements Runnable {
 
 		preparedMessage = prepareMessage ();
 
-		CentralLogger.getInstance().debug(this, "Start RedundantIocBeaconSender on " + IcsHostName + " with " + iocBroadcastAddressString + " on " + iocBroadcastPortNumber + " @ " + broadcastCycleTime);
+		LOG.debug("Start RedundantIocBeaconSender on " + IcsHostName + " with " + iocBroadcastAddressString + " on " + iocBroadcastPortNumber + " @ " + broadcastCycleTime);
 
 		try
 		{
@@ -97,7 +100,7 @@ public class RedundantIocBeaconSender implements Runnable {
 		catch ( /* UnknownHostException is a */ final IOException e )
 		{
 			e.printStackTrace();
-			CentralLogger.getInstance().debug(this, "RedundantIocBeaconSender on " + IcsHostName + " could not create socket");
+			LOG.debug("RedundantIocBeaconSender on " + IcsHostName + " could not create socket");
 		}
 
 		while (running) {
@@ -119,12 +122,13 @@ public class RedundantIocBeaconSender implements Runnable {
 			try {
 				Thread.sleep( broadcastCycleTime);
 			} catch (final InterruptedException e) {
+			    // do not care
 			}
 		}
 		if ( socket != null ) {
             socket.close();
         }
-		CentralLogger.getInstance().debug(this, "RedundantIocBeaconSender stopped on " + IcsHostName);
+		LOG.debug("RedundantIocBeaconSender stopped on " + IcsHostName);
 	}
 
 	private byte[] prepareMessage () {
@@ -136,7 +140,7 @@ public class RedundantIocBeaconSender implements Runnable {
 	}
 
 	public void stopRedundanIocBeaconServer() {
-		CentralLogger.getInstance().debug(this, "Stop RedundantIocBeaconSender on " + IcsHostName);
+		LOG.debug("Stop RedundantIocBeaconSender on " + IcsHostName);
 		running = false;
 		return;
 	}

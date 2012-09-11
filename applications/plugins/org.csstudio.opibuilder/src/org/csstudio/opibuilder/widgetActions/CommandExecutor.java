@@ -110,8 +110,9 @@ public final class CommandExecutor
         try {
 			int c = 0;
 			while(c != -1){
-				c = process.getInputStream().read();				
-				ConsoleService.getInstance().writeString(""+(char)c);
+				c = process.getInputStream().read();			
+				if(c!=-1)
+					ConsoleService.getInstance().writeString(""+(char)c);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();

@@ -23,7 +23,7 @@ import gov.aps.jca.cas.ServerContext;
 
 import java.net.InetSocketAddress;
 
-import org.csstudio.platform.statistic.Collector;
+import org.csstudio.domain.common.statistic.Collector;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcasts;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcastsPerSecond;
@@ -156,7 +156,7 @@ public class SnooperServer {
     private void initializeStatisticCollectors() {
     	
     	IPreferencesService prefs = Platform.getPreferencesService();
-	    String connectionId = prefs.getString(Activator.getDefault().getPluginId(),
+	    String connectionId = prefs.getString(Activator.PLUGIN_ID,
 	    		PreferenceConstants.CONNECTION_CLIENT_ID, "", null);
         /*
          * set up collectors (statistic)
@@ -251,7 +251,7 @@ public class SnooperServer {
 			
 			// start time based processor
 			IPreferencesService prefs = Platform.getPreferencesService();
-			timerProcessor = new TimerProcessor( this, 2000, Integer.parseInt(prefs.getString(Activator.getDefault().getPluginId(),
+			timerProcessor = new TimerProcessor( this, 2000, Integer.parseInt(prefs.getString(Activator.PLUGIN_ID,
 		    		PreferenceConstants.UPDATE_TIME, "", null)));
 			
 			System.out.println("Starting TimerProcessor...");

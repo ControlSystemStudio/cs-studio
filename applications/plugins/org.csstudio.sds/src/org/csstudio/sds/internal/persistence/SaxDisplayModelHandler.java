@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.dal.DynamicValueState;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.EventType;
@@ -40,9 +40,10 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.GroupingContainerModel;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.dal.DynamicValueState;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -59,7 +60,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public final class SaxDisplayModelHandler extends DefaultHandler {
-    
+    private static final Logger LOG = LoggerFactory.getLogger(SaxDisplayModelHandler.class);
+
     /**
      * Element stack for the created DOM elements.
      */
@@ -560,7 +562,7 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
             result = PropertyPersistenceHandlerRegistry.getInstance()
                     .getPersistenceHandler(PropertyTypesEnum.createFromPortable(propertyType));
         } catch (Exception e) {
-            CentralLogger.getInstance().error(this, "Unknown property type <" + propertyType + ">");
+            LOG.error("Unknown property type <" + propertyType + ">");
         }
         
         return result;

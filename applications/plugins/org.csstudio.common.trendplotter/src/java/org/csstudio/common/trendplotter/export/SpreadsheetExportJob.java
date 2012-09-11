@@ -40,13 +40,15 @@ public class SpreadsheetExportJob extends PlainExportJob
                                  final PrintStream out) throws Exception
     {
         // Item header
-        for (int i=0; i<model.getItemCount(); ++i)
+        for (int i=0; i<model.getItemCount(); ++i) {
             printItemInfo(out, model.getItem(i));
+        }
         out.println();
         // Spreadsheet Header
         out.print("# " + Messages.TimeColumn);
-        for (int i=0; i<model.getItemCount(); ++i)
+        for (int i=0; i<model.getItemCount(); ++i) {
             out.print(Messages.Export_Delimiter + model.getItem(i).getName() + " " + formatter.getHeader());
+        }
         out.println();
 
         // Create speadsheet interpolation
@@ -60,19 +62,25 @@ public class SpreadsheetExportJob extends PlainExportJob
         final SpreadsheetIterator sheet = new SpreadsheetIterator(iters);
         // Dump the spreadsheet lines
         long line_count = 0;
+        String value;
         while (sheet.hasNext()  &&  !monitor.isCanceled())
         {
             final ITimestamp time = sheet.getTime();
             final IValue line[] = sheet.next();
             out.print(time);
-            for (int i=0; i<line.length; ++i)
-                out.print(Messages.Export_Delimiter + formatter.format(line[i]));
+            for (int i=0; i<line.length; ++i) {
+                value = formatter.format(line[i]);
+                value = value.replace(".", ",");
+                out.print(Messages.Export_Delimiter + value);
+            }
             out.println();
             ++line_count;
-            if ((line_count % PROGRESS_UPDATE_LINES) == 0)
+            if (line_count % PROGRESS_UPDATE_LINES == 0) {
                 monitor.subTask(NLS.bind("Wrote {0} samples", line_count));
-            if (monitor.isCanceled())
+            }
+            if (monitor.isCanceled()) {
                 break;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.fieldassist.IContentProposal;
 

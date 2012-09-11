@@ -118,9 +118,7 @@ public class MessageContentCreator {
 
         final String[] list = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
         if(list != null) {
-
             for(final String s : list) {
-
                 temp = s.trim().toLowerCase();
                 if(temp.length() > 0) {
                     discardTypes.add(temp);
@@ -174,9 +172,7 @@ public class MessageContentCreator {
         for (final RawMessage m : rawMsg) {
             final ArchiveMessage am = this.convertRawMessage(m);
             if(am.discard() || !am.hasContent()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Message discarded or does not have any content: {}", am.toString());
-                }
+                LOG.info("Message discarded or does not have any content: {}", am.toString());
             } else {
                 result.add(am);
             }
@@ -216,7 +212,7 @@ public class MessageContentCreator {
             type = "unknown";
         }
 
-        LOG.debug("Message type: " + type);
+        LOG.info("Message type: " + type);
 
         // Discard messages with the type 'simulator'
         if(!discardTypes.isEmpty()) {
@@ -266,7 +262,7 @@ public class MessageContentCreator {
             // If there is something wrong with the format...
             if(temp == null) {
 
-                LOG.info("Property EVENTTIME contains invalid format: " + et);
+                LOG.warn("Property EVENTTIME contains invalid format: " + et);
                 wrongFormat = true;
 
                 // ... create a new date string
@@ -341,17 +337,17 @@ public class MessageContentCreator {
             }
 
             if(wrongFormat) {
-                LOG.info(msgContent.toPrintableString());
+                LOG.warn(msgContent.toPrintableString());
                 wrongFormat = false;
             }
         }
 
         if(messageFilter.shouldBeBlocked(msgContent)) {
-            LOG.debug("Block it!");
+            LOG.info("Block it!");
             msgContent.deleteContent();
             collector.incrementFilteredMessages();
         } else {
-            LOG.debug("Process it!");
+            LOG.info("Process it!");
         }
 
         return msgContent;

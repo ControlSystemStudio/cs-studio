@@ -30,53 +30,39 @@ import java.util.Vector;
  * @author Markus Moeller
  *
  */
-public class HowToBlockingList
-{
+public class HowToBlockingList {
+    
     /** */
     private Vector<Long> howToList;
     
-    public HowToBlockingList(String l)
-    {
+    public HowToBlockingList(String l) {
         String[] list = null;
         long value;
-        
         howToList = new Vector<Long>();
-        
         list = l.split(",");
-        if(list != null)
-        {
-            for(String s : list)
-            {
-                try
-                {
+        if(list != null) {
+            for(String s : list) {
+                try {
                     value = Long.parseLong(s.trim());
                     howToList.add(value);
-                }
-                catch(NumberFormatException nfe) {
+                } catch(NumberFormatException nfe) {
                 	// Can be ignored???
                 }
             }
         }
     }
     
-    public boolean blockEntry(long id)
-    {
+    public boolean blockEntry(long id) {
         return howToList.contains(id);
     }
     
-    public boolean blockEntry(String id)
-    {
+    public boolean blockEntry(String id) {
         long value = 0;
-        
-        try
-        {
+        try {
             value = Long.parseLong(id);
-        }
-        catch(NumberFormatException nfe)
-        {
+        } catch(NumberFormatException nfe) {
             value = 0;
         }
-        
         return blockEntry(value);
     }
 }

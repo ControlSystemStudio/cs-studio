@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.importer.ui.internal.wizards;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.ui.wizards.NewDisplayWizardPage;
@@ -33,6 +32,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract super class for display import wizards.
@@ -43,6 +44,9 @@ import org.eclipse.ui.IWorkbench;
  */
 public abstract class AbstractDisplayImportWizard extends Wizard implements
 		IImportWizard {
+	
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDisplayImportWizard.class);
+
 	/**
 	 * This wizard page is used to enter the file name and the target
 	 * project/folder for the imported display.
@@ -106,7 +110,7 @@ public abstract class AbstractDisplayImportWizard extends Wizard implements
 		} catch (Exception e) {
 			MessageDialog.openWarning(_workbench.getDisplay().getActiveShell(),
 					"Error", "Error during import: " + e.getMessage());
-			CentralLogger.getInstance().error(this, e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		return result;

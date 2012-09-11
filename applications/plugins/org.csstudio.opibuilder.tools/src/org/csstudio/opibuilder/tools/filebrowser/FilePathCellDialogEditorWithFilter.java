@@ -9,7 +9,6 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.tools.Activator;
 import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
-import org.csstudio.opibuilder.visualparts.FilePathDialogWithFilter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;

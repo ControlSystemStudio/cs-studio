@@ -27,10 +27,11 @@ import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeview.views.AlarmTreeModificationException;
-import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
@@ -75,23 +76,21 @@ public final class RenameModificationItem extends AbstractTreeModificationItem {
             final Rdn rdn = new Rdn(_node.getTreeNodeConfiguration().getNodeTypeName(), _newName);
             _newLdapName.add(rdn);
 
-            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            final ILdapService service = ServiceLocator.getService(ILdapService.class);
             if (service == null) {
-                throw new AlarmTreeModificationException("Rename failed.", null);
+                throw new AlarmTreeModificationException(Messages.RenameModificationItem_Rename_Failed, null);
             }
             service.rename(_oldLdapName, _newLdapName);
         } catch (final InvalidNameException e) {
-            throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
+            throw new AlarmTreeModificationException(Messages.RenameModificationItem_InvalidName, e);
         } catch (final NamingException e) {
-            throw new AlarmTreeModificationException("LDAP rename action failed.", e);
+            throw new AlarmTreeModificationException(Messages.RenameModificationItem_RenamingForLdap_Failed, e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    @Nonnull
     public String getDescription() {
-        return "RENAME " + _oldLdapName.toString() + " to " + _newName;
+        return "RENAME " + _oldLdapName.toString() + " to " + _newName; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

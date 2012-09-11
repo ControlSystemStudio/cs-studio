@@ -9,7 +9,7 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.ams.distributor.management.Stop"
             id="org.csstudio.ams.distributor.management.Stop"

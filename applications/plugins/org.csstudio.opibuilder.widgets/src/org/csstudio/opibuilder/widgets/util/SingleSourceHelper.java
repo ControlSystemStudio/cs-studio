@@ -82,5 +82,15 @@ public abstract class SingleSourceHelper {
 	protected abstract void internalSwtWidgetAddMouseTrackListener(Control control,
 			MouseTrackListener listener);
 	
-	
+	/**RAP control doesn't have control.traverse. This is used to fake this operation in RAP.
+	 * @param control
+	 * @param traversal
+	 */
+	public static void swtControlTraverse(Control control, int traversal){
+		if(IMPL == null)
+			return;
+		IMPL.internalSWTControlTraverse(control, traversal);
+	}
+
+	protected abstract void internalSWTControlTraverse(Control control, int traversal);	
 }

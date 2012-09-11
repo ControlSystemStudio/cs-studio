@@ -22,7 +22,7 @@
 
 package org.csstudio.config.savevalue.ui.changelogview;
 
-import org.csstudio.platform.ui.workbench.OpenViewAction;
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 
 /**
  * Opens the Changelog view.

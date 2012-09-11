@@ -99,7 +99,7 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
             try {
                 this.wait(2000);
             } catch(InterruptedException ie) {
-                LOG.error("*** InterruptedException ***: " + ie.getMessage());
+                LOG.error("[** InterruptedException ***]: " + ie.getMessage());
             } 
         }
         
@@ -107,7 +107,12 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
             return ApplicResult.RESULT_ERROR_XMPP.getApplicResultNumber();
         }
         
-        ApplicationStopper appStopper = new ApplicationStopper(xmppSession);
+        IPreferencesService pref = Platform.getPreferencesService();
+        String rosterGroup = pref.getString(Activator.PLUGIN_ID,
+                                            PreferenceKeys.P_AMS_ROSTER_GROUP,
+                                            "JMS-Applications",
+                                            null);
+        ApplicationStopper appStopper = new ApplicationStopper(xmppSession, rosterGroup);
         iResult = appStopper.stopApplication(host, applicName, user, pw);
         
         if (xmppSession != null) {

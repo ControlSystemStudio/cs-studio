@@ -34,7 +34,6 @@ public class PreferenceProperties {
 	// in a headles Eclipse plugin
 	//
 	
-	public static int COMMAND_PORT_NUMBER = 18325;			// PP
 	public static int ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER = 10;
 	
 	public static int MAX_NUMBER_OF_CLIENT_THREADS = 200;

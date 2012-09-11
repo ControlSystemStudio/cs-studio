@@ -23,13 +23,14 @@
 
 package org.csstudio.ams;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AmsActivator extends AbstractCssUiPlugin {
+public class AmsActivator extends AbstractUIPlugin {
 	
     /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams"; //$NON-NLS-1$
@@ -48,16 +49,16 @@ public class AmsActivator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final void doStart(final BundleContext context) throws Exception {
-		// Nothing to do
+    public final void start(final BundleContext context) throws Exception {
+		super.start(context);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final void doStop(final BundleContext context) throws Exception {
-	    // Nothing to do
+    public final void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 	}
 
 	/**
@@ -67,13 +68,5 @@ public class AmsActivator extends AbstractCssUiPlugin {
 	 */
 	public static AmsActivator getDefault() {
 		return _plugin;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 }

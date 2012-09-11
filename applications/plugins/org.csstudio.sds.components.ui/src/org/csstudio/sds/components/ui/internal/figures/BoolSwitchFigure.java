@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Ellipse;

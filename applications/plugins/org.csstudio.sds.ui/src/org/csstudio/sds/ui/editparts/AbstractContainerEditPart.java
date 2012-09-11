@@ -27,17 +27,18 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.model.ILayerModelListener;
 import org.csstudio.sds.internal.model.Layer;
 import org.csstudio.sds.internal.model.LayerSupport;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.ui.CheckedUiRunnable;
-import org.csstudio.sds.ui.internal.commands.CreateWidgetFromDroppedPvCommand;
+import org.csstudio.sds.ui.internal.commands.AddWidgetCommand;
 import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
 import org.csstudio.sds.ui.internal.commands.OrphanChildCommand;
-import org.csstudio.sds.ui.internal.editor.DropPvRequest;
+import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
+import org.csstudio.sds.ui.internal.editor.WidgetCreationUtil;
+import org.csstudio.sds.ui.internal.editor.dnd.DropPvRequest;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.CompoundSnapToHelper;
@@ -51,6 +52,7 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.editpolicies.ContainerEditPolicy;
@@ -59,21 +61,20 @@ import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditPart implementation with container semantics. Can be used as controller
  * base class for widgets that are derived from {@link ContainerModel}.
- *
+ * 
  * @author Sven Wende
- *
+ * 
  */
 public abstract class AbstractContainerEditPart extends AbstractBaseEditPart implements IAdaptable, ILayerModelListener {
 
-	/**
-	 * Flag for the selection behaviour of children.
-	 */
-	private boolean _childrenSelectable;
-
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractContainerEditPart.class);
+	
 	/**
 	 * Flag which indicates that the layers are already initialized on the
 	 * content pane.
@@ -81,7 +82,6 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	private boolean _layersInitialized = false;
 
 	public AbstractContainerEditPart() {
-		_childrenSelectable = true;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	 * Returns the container model, which is managed by this controller. This is
 	 * for convinience only. The method returns the same object as
 	 * {@link #getModel()} or {@link #getWidgetModel()}.
-	 *
+	 * 
 	 * @return the container model
 	 */
 	public final ContainerModel getContainerModel() {
@@ -139,7 +139,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	/**
 	 * Overidden to suppport layers. Layers are only supported if the figure for
 	 * this editpart used a {@link LayeredWidgetPane} as its content pane.
-	 *
+	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -151,9 +151,9 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 
 		if (contentPane instanceof LayeredWidgetPane) {
 			LayerSupport layerSupport = getContainerModel().getLayerSupport();
-            Layer layer = layerSupport.findLayer(widgetModel.getLayer());
+			Layer layer = layerSupport.findLayer(widgetModel.getLayer());
 			if (!layerSupport.isLayerId(widgetModel.getLayer()) && layerSupport.isLayerName(widgetModel.getLayer())) {
-			    widgetModel.setPropertyValue(AbstractWidgetModel.PROP_LAYER, layer.getId());
+				widgetModel.setPropertyValue(AbstractWidgetModel.PROP_LAYER, layer.getId());
 			}
 			((LayeredWidgetPane) contentPane).addWidget(layer.getId(), child, index);
 		} else {
@@ -164,7 +164,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	/**
 	 * Overidden to suppport layers. Layers are only supported if the figure for
 	 * this editpart used a {@link LayeredWidgetPane} as its content pane.
-	 *
+	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -213,7 +213,19 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 			@Override
 			public Command getCommand(final Request request) {
 				if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
-					return new CreateWidgetFromDroppedPvCommand(getViewer(), (DropPvRequest) request, (ContainerModel) getHost().getModel());
+					DropPvRequest r = (DropPvRequest) request;
+					ContainerModel container = (ContainerModel) getHost().getModel();
+					CompoundCommand cmd = new CompoundCommand();
+
+					AbstractWidgetModel widgetModel = WidgetCreationUtil.createAndPreconfigureWidget(null, r.getDroppedProcessVariables());
+
+					if (widgetModel != null) {
+						widgetModel.setLocation(r.getLocation().x, r.getLocation().y);
+						widgetModel.setLayer(container.getLayerSupport().getActiveLayer().getId());
+						cmd.add(new AddWidgetCommand(container, widgetModel));
+						cmd.add(new SetSelectionCommand(getViewer(), widgetModel));
+						return cmd;
+					}
 				}
 				return super.getCommand(request);
 			}
@@ -393,43 +405,12 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	}
 
 	/**
-	 * Sets the selection behaviour for children of this container.
-	 *
-	 * @param childrenSelectable
-	 *            true, if children of this container should be selectable,
-	 *            false otherwise
-	 */
-	public final void setChildrenSelectable(final boolean childrenSelectable) {
-		_childrenSelectable = childrenSelectable;
-	}
-	
-	public final boolean isChildrenSelectable() {
-		return _childrenSelectable;
-	}
-
-	/**
-	 * {@inheritDoc} Overidden, to set the selection behaviour of child
-	 * EditParts.
-	 */
-	@Override
-	protected final EditPart createChild(final Object model) {
-		EditPart result = super.createChild(model);
-
-		// setup selection behaviour for the new child
-		if (result instanceof AbstractBaseEditPart) {
-			((AbstractBaseEditPart) result).setSelectable(_childrenSelectable);
-		}
-
-		return result;
-	}
-
-	/**
 	 * Called by child editparts when their current layer has changed.
-	 *
+	 * 
 	 * Note: Layers are only supported if the figure for this editpart used a
 	 * {@link LayeredWidgetPane} as its content pane. Otherwise this call won´t
 	 * have any effect.
-	 *
+	 * 
 	 * @param childEditPart
 	 *            the child editpart
 	 * @param oldLayerName
@@ -443,10 +424,47 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 			LayeredWidgetPane contentPane = (LayeredWidgetPane) getContentPane();
 			if (!contentPane.hasLayer(newLayerName)) {
 				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, getContainerModel().getLayerSupport().getDefaultLayer().getId());
-				CentralLogger.getInstance().warn(this, "Tried to move widget into not existing layer '"+ newLayerName +"'");
+				LOG.warn("Tried to move widget into not existing layer '" + newLayerName + "'");
 			} else {
 				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, newLayerName);
 			}
 		}
+	}
+
+	/**
+	 * Returns true, if children of this container may be selected.
+	 * 
+	 * @return true, if children of this container may be selected
+	 */
+	public final boolean allowsChildSelection() {
+		return isSelectable() && determineChildrenSelectability();
+	}
+
+	// FIXME:SW:Comment
+	protected abstract boolean determineChildrenSelectability();
+
+	/**
+	 * Helper method that checks if any direct or indirect child (e.g. a widget
+	 * in a contained container) is selected.
+	 * 
+	 * @return true, if any direct or indirect child is selected
+	 */
+	protected final boolean isAnyChildSelected() {
+		for (Object child : getChildren()) {
+			if (child instanceof AbstractContainerEditPart) {
+				AbstractContainerEditPart cep = (AbstractContainerEditPart) child;
+				if (cep.isSelected() || cep.isAnyChildSelected()) {
+					return true;
+				}
+			} else if (child instanceof AbstractEditPart) {
+				AbstractBaseEditPart ep = (AbstractBaseEditPart) child;
+
+				if (ep.isSelected()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

@@ -51,8 +51,7 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
-public class PVItem extends ModelItem implements PVListener
-{
+public class PVItem extends ModelItem implements PVListener, IProcessVariableWithSamples {
     private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
 
     /** Historic and 'live' samples for this PV */
@@ -68,13 +67,13 @@ public class PVItem extends ModelItem implements PVListener
     /** Most recently received value */
     private volatile IValue current_value;
 
-    /** Scan _period in seconds, &le;0 to 'monitor' */
+    /** Scan period in seconds, &le;0 to 'monitor' */
     private double _period;
 
     /** Timer that was used to schedule the scanner */
     private Timer scan_timer = null;
 
-    /** For a _period &gt;0, this timer task performs the scanning */
+    /** For a period &gt;0, this timer task performs the scanning */
     private TimerTask scanner = null;
 
     /** Archive data request type */
@@ -83,45 +82,62 @@ public class PVItem extends ModelItem implements PVListener
     /** Internal flag to store the 'on first connection/value update' info */
     private boolean first_pv_update = true;
 
+    private boolean _minMaxFromFile;
+
     /** Initialize
      *  @param name PV name
-     *  @param _period Scan _period in seconds, &le;0 to 'monitor'
+     *  @param period Scan period in seconds, &le;0 to 'monitor'
      *  @throws Exception on error
      */
-    public PVItem(@Nonnull final String name,
-                  final double period) throws Exception
-    {
+    public PVItem(@Nonnull final String name, final double period) throws Exception {
         super(name);
-        samples = new PVSamples(request_type,
-                                new IIntervalProvider() {
-                                    @Override
-                                    @CheckForNull
-                                    public Interval getTimeInterval() {
-                                        final TimeInstant startTime = getModelStartTime();
-                                        final TimeInstant endTime = getModelEndTime();
-                                        if (startTime == null || endTime == null) {
-                                            return null;
-                                        }
-                                        return new Interval(startTime.getInstant(),
-                                                            endTime.getInstant());
-                                    }
-                                    private TimeInstant getModelStartTime() {
-                                        final Model m = getModel();
-                                        if (model != null) {
-                                            return BaseTypeConversionSupport.toTimeInstant(m.getStartTime());
-                                        }
-                                        return null;
-                                    }
-                                    private TimeInstant getModelEndTime() {
-                                        final Model m = getModel();
-                                        if (model != null) {
-                                            return BaseTypeConversionSupport.toTimeInstant(m.getEndTime());
-                                        }
-                                        return null;
-                                    }
-                                });
+        samples = new PVSamples(request_type, new IIntervalProvider() {
+            @Override
+            @CheckForNull
+            public Interval getTimeInterval() {
+                final TimeInstant startTime = getModelStartTime();
+                final TimeInstant endTime = getModelEndTime();
+                if (startTime == null || endTime == null) {
+                    return null;
+                }
+                return new Interval(startTime.getInstant(), endTime.getInstant());
+            }
+
+            private TimeInstant getModelStartTime() {
+                final Model m = getModel();
+                if (model != null) {
+                    return BaseTypeConversionSupport.toTimeInstant(m.getStartTime());
+                }
+                return null;
+            }
+
+            private TimeInstant getModelEndTime() {
+                final Model m = getModel();
+                if (model != null) {
+                    return BaseTypeConversionSupport.toTimeInstant(m.getEndTime());
+                }
+                return null;
+            }
+        });
         pv = PVFactory.createPV(name);
         _period = period;
+    }
+
+    /** IProcessVariable
+     *  {@inheritDoc}
+     */
+    @Override
+    public String getTypeId() {
+        return IProcessVariable.TYPE_ID;
+    }
+
+    /** IProcessVariable
+     *  {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object getAdapter(final Class adapter) {
+        return null;
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -129,7 +145,7 @@ public class PVItem extends ModelItem implements PVListener
      */
     @Override
     public boolean setName(final String new_name) throws Exception {
-        if (! super.setName(new_name)) {
+        if (!super.setName(new_name)) {
             return false;
         }
         // Stop PV, clear samples
@@ -146,15 +162,15 @@ public class PVItem extends ModelItem implements PVListener
         return true;
     }
 
-    /** @return Scan _period in seconds, &le;0 to 'monitor' */
+    /** @return Scan period in seconds, &le;0 to 'monitor' */
     public double getScanPeriod() {
         return _period;
     }
 
-    /** Update scan _period.
+    /** Update scan period.
      *  <p>
      *  When called on a running item, this stops and re-starts the PV.
-     *  @param _period New scan _period in seconds, &le;0 to 'monitor'
+     *  @param period New scan period in seconds, &le;0 to 'monitor'
      *  @throws Exception On error re-starting a running PVItem
      */
     public void setScanPeriod(double period) throws Exception {
@@ -166,7 +182,7 @@ public class PVItem extends ModelItem implements PVListener
         if (running) {
             stop();
         }
-        this._period = period;
+        _period = period;
         if (running) {
             start(scan_timer);
         }
@@ -183,21 +199,18 @@ public class PVItem extends ModelItem implements PVListener
      *  @param new_capacity New sample count capacity
      *  @throws Exception on out-of-memory error
      */
-    public void setLiveCapacity(final int new_capacity) throws Exception
-    {
+    public void setLiveCapacity(final int new_capacity) throws Exception {
         samples.setLiveCapacity(new_capacity);
         fireItemLookChanged();
     }
 
     /** @return Archive data sources for this item */
-    public ArchiveDataSource[] getArchiveDataSources()
-    {
+    public ArchiveDataSource[] getArchiveDataSources() {
         return archives.toArray(new ArchiveDataSource[archives.size()]);
     }
 
     /** Replace archives with settings from preferences */
-    public void useDefaultArchiveDataSources()
-    {
+    public void useDefaultArchiveDataSources() {
         archives.clear();
         for (final ArchiveDataSource arch : Preferences.getArchives()) {
             archives.add(arch);
@@ -208,8 +221,7 @@ public class PVItem extends ModelItem implements PVListener
     /** @param archive Archive data source
      *  @return <code>true</code> if PV uses given data source
      */
-    public boolean hasArchiveDataSource(final ArchiveDataSource archive)
-    {
+    public boolean hasArchiveDataSource(final ArchiveDataSource archive) {
         for (final ArchiveDataSource arch : archives) {
             if (arch.equals(archive)) {
                 return true;
@@ -222,8 +234,7 @@ public class PVItem extends ModelItem implements PVListener
      *  @throws Error when archive is already used
      */
     @SuppressWarnings("nls")
-    public void addArchiveDataSource(final ArchiveDataSource archive)
-    {
+    public void addArchiveDataSource(final ArchiveDataSource archive) {
         if (hasArchiveDataSource(archive)) {
             throw new Error("Duplicate archive " + archive);
         }
@@ -232,12 +243,10 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** @param archive Archives to add as a source to this item. Duplicates are ignored */
-    public void addArchiveDataSource(final ArchiveDataSource archs[])
-    {
+    public void addArchiveDataSource(final ArchiveDataSource archs[]) {
         boolean change = false;
         for (final ArchiveDataSource archive : archs) {
-            if (! archives.contains(archive))
-            {
+            if (!archives.contains(archive)) {
                 change = true;
                 archives.add(archive);
             }
@@ -248,16 +257,14 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** @param archive Archive to remove as a source from this item. */
-    public void removeArchiveDataSource(final ArchiveDataSource archive)
-    {
+    public void removeArchiveDataSource(final ArchiveDataSource archive) {
         if (archives.remove(archive)) {
             fireItemDataConfigChanged();
         }
     }
 
     /** @param archive Archives to remove as a source from this item. Ignored when not used. */
-    public void removeArchiveDataSource(final ArchiveDataSource archs[])
-    {
+    public void removeArchiveDataSource(final ArchiveDataSource archs[]) {
         boolean change = false;
         for (final ArchiveDataSource archive : archs) {
             if (archives.remove(archive)) {
@@ -272,15 +279,12 @@ public class PVItem extends ModelItem implements PVListener
     /** Replace existing archive data sources with given archives
      *  @param archs ArchiveDataSources to use for this item
      */
-    public void setArchiveDataSource(final ArchiveDataSource archs[])
-    {
+    public void setArchiveDataSource(final ArchiveDataSource archs[]) {
         // Check if they are the same, i.e. count AND order match
-        if (archs.length == archives.size())
-        {
+        if (archs.length == archives.size()) {
             boolean same = true;
-            for (int i=0; i<archs.length; ++i) {
-                if (! archs[i].equals(archives.get(i)))
-                {
+            for (int i = 0; i < archs.length; ++i) {
+                if (!archs[i].equals(archives.get(i))) {
                     same = false;
                     break;
                 }
@@ -298,15 +302,13 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** @return Archive data request type */
-    public RequestType getRequestType()
-    {
+    public RequestType getRequestType() {
         return request_type;
     }
 
     /** @param request_type New request type */
-    public void setRequestType(final RequestType request_type)
-    {
-        if (this.request_type == request_type ) {
+    public void setRequestType(final RequestType request_type) {
+        if (this.request_type == request_type) {
             return;
         }
         this.request_type = request_type;
@@ -317,8 +319,7 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** Notify listeners */
-    private void fireItemDataConfigChanged()
-    {
+    private void fireItemDataConfigChanged() {
         if (model != null) {
             model.fireItemDataConfigChanged(this);
         }
@@ -328,8 +329,7 @@ public class PVItem extends ModelItem implements PVListener
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public void start(final Timer timer) throws Exception
-    {
+    public void start(final Timer timer) throws Exception {
         if (pv.isRunning()) {
             throw new RuntimeException("Already started " + getName());
         }
@@ -345,28 +345,24 @@ public class PVItem extends ModelItem implements PVListener
             return;
         }
         // Start scanner for periodic log
-        scanner = new TimerTask()
-        {
+        scanner = new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 LOG.debug("PV {0} scans {1}", new Object[] { getName(), current_value });
                 logCurrentValue();
             }
         };
-        final long delay = (long) (_period*1000);
+        final long delay = (long) (_period * 1000);
         timer.schedule(scanner, delay, delay);
     }
 
     /** Disconnect from control system PV, stop scanning, ... */
     @SuppressWarnings("nls")
-    public void stop()
-    {
+    public void stop() {
         if (!pv.isRunning()) {
             throw new RuntimeException("Not running " + getName());
         }
-        if (scanner != null)
-        {
+        if (scanner != null) {
             scanner.cancel();
             scanner = null;
         }
@@ -384,10 +380,25 @@ public class PVItem extends ModelItem implements PVListener
         return samples;
     }
 
+    /** Get sample for IProcessVariableWithSamples
+     *  {@inheritDoc}
+     */
+    @Override
+    public IValue getSample(final int index) {
+        return samples.getSample(index).getValue();
+    }
+
+    /** Get sample count for IProcessVariableWithSamples
+     *  {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return samples.getSize();
+    }
+
     // PVListener
     @Override
-    public void pvDisconnected(final PV pv)
-    {
+    public void pvDisconnected(final PV pv) {
         current_value = null;
         // In 'monitor' mode, mark in live sample buffer
         if (_period <= 0) {
@@ -395,22 +406,23 @@ public class PVItem extends ModelItem implements PVListener
         }
     }
 
-
     private void onConnect(@Nonnull final IValue value) {
         if (first_pv_update) {
             first_pv_update = false;
-            if (value.getMetaData() instanceof INumericMetaData) {
+            if (!_minMaxFromFile) {
+                if (value.getMetaData() instanceof INumericMetaData) {
 
-                final INumericMetaData meta = (INumericMetaData) value.getMetaData();
-                final double displayHigh = meta.getDisplayHigh();
-                final double displayLow = meta.getDisplayLow();
-                // Call into the ui thread
-                Display.getDefault().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        getAxis().setRange(displayLow, displayHigh);
-                    }
-                });
+                    final INumericMetaData meta = (INumericMetaData) value.getMetaData();
+                    final double displayHigh = meta.getDisplayHigh();
+                    final double displayLow = meta.getDisplayLow();
+                    // Call into the ui thread
+                    Display.getDefault().asyncExec(new Runnable() {
+                        @Override
+                        public void run() {
+                            getAxis().setRange(displayLow, displayHigh);
+                        }
+                    });
+                }
             }
         }
     }
@@ -418,8 +430,7 @@ public class PVItem extends ModelItem implements PVListener
     // PVListener
     @Override
     @SuppressWarnings("nls")
-    public void pvValueUpdate(final PV new_pv)
-    {
+    public void pvValueUpdate(final PV new_pv) {
         final IValue value = new_pv.getValue();
 
         onConnect(value);
@@ -428,21 +439,36 @@ public class PVItem extends ModelItem implements PVListener
         current_value = value;
 
         // In 'monitor' mode, add to live sample buffer
-        if (_period <= 0)
-        {
-            LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
+        if (_period <= 0) {
+            //            LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
+            //            LOG.debug("--------- sampleSize: " + samples.getSize() + " liveSampleSize: " + samples.getLiveSampleSize());
             samples.addLiveSample(value);
+            //            if (samples.getLiveCapacity() <= samples.getLiveSampleSize()) {
+            //                try {
+            //                    samples.cutOffLiveSamples(0.1);
+            //                } catch (final Exception e) {
+            //                    LOG.error("Error removing old live samples: " + e.getMessage());
+            //                }
+            //                Display.getDefault().asyncExec(new Runnable() {
+            //                    @Override
+            //                    public void run() {
+            //                        try {
+            //                            fireItemDataConfigChanged();
+            //                        } catch (final Exception e) {
+            //                            LOG.error("Error updating model: " + e.getMessage());
+            //                        }
+            //                    }
+            //                });
+            //            }
         }
     }
 
     /** Add 'current' value to the live sample ring buffer,
      *  using 'now' as time stamp.
      */
-    private void logCurrentValue()
-    {
+    private void logCurrentValue() {
         final IValue value = current_value;
-        if (value == null)
-        {
+        if (value == null) {
             logDisconnected();
             return;
         }
@@ -451,15 +477,11 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** Add one(!) 'disconnected' sample */
-    private void logDisconnected()
-    {
-        synchronized (samples)
-        {
+    private void logDisconnected() {
+        synchronized (samples) {
             final int size = samples.getSize();
-            if (size > 0)
-            {
-                final String last =
-                    samples.getSample(size - 1).getValue().getStatus();
+            if (size > 0) {
+                final String last = samples.getSample(size - 1).getValue().getStatus();
                 // Does last sample already have 'disconnected' status?
                 if (last != null && last.equals(Messages.Model_Disconnected)) {
                     return;
@@ -478,10 +500,8 @@ public class PVItem extends ModelItem implements PVListener
      */
     synchronized public void mergeArchivedSamples(final ArchiveReader reader,
                                                   final List<IValue> result,
-                                                  final RequestType requestType)
-                                                  throws OsgiServiceUnavailableException,
-                                                         ArchiveServiceException
-    {
+                                                  final RequestType requestType) throws OsgiServiceUnavailableException,
+                                                                                ArchiveServiceException {
         samples.mergeArchivedData(getName(), reader, requestType, result);
     }
 
@@ -489,16 +509,14 @@ public class PVItem extends ModelItem implements PVListener
      *  @param writer PrintWriter
      */
     @Override
-    public void write(final PrintWriter writer)
-    {
+    public void write(final PrintWriter writer) {
         XMLWriter.start(writer, 2, Model.TAG_PV);
         writer.println();
         writeCommonConfig(writer);
         XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
-        for (final ArchiveDataSource archive : archives)
-        {
+        for (final ArchiveDataSource archive : archives) {
             XMLWriter.start(writer, 3, Model.TAG_ARCHIVE);
             writer.println();
             XMLWriter.XML(writer, 4, Model.TAG_NAME, archive.getName());
@@ -517,38 +535,38 @@ public class PVItem extends ModelItem implements PVListener
      *  @return PVItem
      *  @throws Exception on error
      */
-    public static PVItem fromDocument(final Model model, final Element node) throws Exception
-    {
+    public static PVItem fromDocument(final Model model, final Element node) throws Exception {
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
         final double period = DOMHelper.getSubelementDouble(node, Model.TAG_PERIOD, 0.0);
 
         final PVItem item = new PVItem(name, period);
-        final int buffer_size = DOMHelper.getSubelementInt(node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, Preferences.getLiveSampleBufferSize());
+        final int buffer_size = DOMHelper.getSubelementInt(node,
+                                                           Model.TAG_LIVE_SAMPLE_BUFFER_SIZE,
+                                                           Preferences.getLiveSampleBufferSize());
         item.setLiveCapacity(buffer_size);
 
-        final String req_txt = DOMHelper.getSubelementString(node, Model.TAG_REQUEST, RequestType.OPTIMIZED.name());
-        try
-        {
+        final String req_txt = DOMHelper.getSubelementString(node,
+                                                             Model.TAG_REQUEST,
+                                                             RequestType.OPTIMIZED.name());
+        try {
 
             final RequestType request = RequestType.valueOf(req_txt);
             item.setRequestType(request);
-        }
-        catch (final Throwable ex)
-        {
+        } catch (final Throwable ex) {
             // Ignore
         }
 
         item.configureFromDocument(model, node);
+        item.useDefaultArchiveDataSources();
         // Load archives
-        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
-        while (archive != null)
-        {
-            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
-            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
-            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
-            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
-            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
-        }
+//        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
+//        while (archive != null) {
+//            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
+//            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
+//            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
+//            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
+//            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
+//        }
         return item;
     }
 
@@ -579,5 +597,19 @@ public class PVItem extends ModelItem implements PVListener
         });
         mdel_pv.start();
         return mdel_pv;
+    }
+
+    /**
+     * @param b
+     */
+    public void setMinMaxFromFile(final boolean minMaxFromFile) {
+        _minMaxFromFile = minMaxFromFile;
+    }
+
+    /**
+     * 
+     */
+    public void moveHistoricSamplesToLiveSamples() {
+        samples.moveHistoricSamplesToLiveSamples();
     }
 }

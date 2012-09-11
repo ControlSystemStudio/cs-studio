@@ -77,7 +77,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
     public HibernatePreferencePage() {
         super(GRID);
         ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), 
-                Activator.getDefault().getBundle().getSymbolicName());
+                Activator.PLUGIN_ID);
         setPreferenceStore(prefStore);
         setDescription("Settings for the IO Configurator.");
     }

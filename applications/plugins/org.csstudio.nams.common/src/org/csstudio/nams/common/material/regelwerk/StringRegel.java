@@ -136,7 +136,7 @@ public class StringRegel implements VersandRegel {
             if(StringRegel.logger != null) {
                 StringRegel.logger.logErrorMessage(this,
                         "An error occured during parsing of : " + nachricht);
-                }
+            }
 			istGueltig = true;
 		}
 

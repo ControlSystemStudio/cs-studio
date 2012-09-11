@@ -56,6 +56,10 @@ public class PersistEngineDataManager {
      */
     private final ScheduledThreadPoolExecutor _executor =
         (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(2, _cpus + 1));
+//jhatje 2.2.12: set to 1 Thread
+//jhatje 22.2.12: back to previous thread number
+//    private final ScheduledThreadPoolExecutor _executor =
+//            (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
 
     /**
      * Sorted set for submitted periodic workers - decreasing by period

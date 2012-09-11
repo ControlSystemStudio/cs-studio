@@ -56,17 +56,16 @@
 	
    <extension
          point="org.csstudio.startup.module">
-      <locale
+ <!--     <locale
             class="org.csstudio.startuphelper.module.DefaultLocaleSettings">
       </locale>
+     -->
       <login
-            class="org.csstudio.startuphelper.module.DefaultLoginPrompt">
+            class="org.csstudio.desy.startuphelper.login.DesyLoginPrompt">
       </login>
       <services
-            class="org.csstudio.startuphelper.module.DefaultServicesStartup">
+            class="org.csstudio.desy.startuphelper.startupservice.DesyServicesStartup">
       </services>
-      <workbench
-            class="org.csstudio.startuphelper.module.DefaultWorkbench">
-      </workbench>
+      <workbench class="org.csstudio.utility.product.Workbench"/>
    </extension>
 </plugin>

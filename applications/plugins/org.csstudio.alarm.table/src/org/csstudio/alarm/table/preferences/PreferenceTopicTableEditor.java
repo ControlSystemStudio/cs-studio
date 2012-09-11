@@ -211,7 +211,7 @@ public class PreferenceTopicTableEditor extends AbstractPreferenceTableEditor {
                 // Insert default values for booleans here, because there is no guarantee that there a any values. Reasons:
                 // a: None will be written to the pref store when columns are not displayed in the editor
                 // b. If new prefs were added, there will also be no values
-                if ((pref.length() == 0) && (MouseActionDescription.TOGGLE_BOOL == columnDescription.getMouseActionDescription())) {
+                if ((pref.length() == 0) && (isBoolAction(columnDescription))) {
                     pref = columnDescription.getDefaultValue();
                 }
                 item.setText(i, pref);
@@ -225,6 +225,9 @@ public class PreferenceTopicTableEditor extends AbstractPreferenceTableEditor {
         }
     }
 
+    private boolean isBoolAction(final ColumnDescription columnDescription) {
+        return MouseActionDescription.TOGGLE_BOOL == columnDescription.getMouseActionDescription();
+    }
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.

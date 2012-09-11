@@ -29,8 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
@@ -56,6 +54,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Base class for widgets that implement a chart (waveform, strip chart).</p>
@@ -250,7 +250,8 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	/**
 	 * The logger used by this object.
 	 */
-	private final Logger _logger = CentralLogger.getInstance().getLogger(this);
+	private static final Logger _logger = LoggerFactory.getLogger(AbstractChartFigure.class);
+
 
 	/**
 	 * The aliases of this waveform.

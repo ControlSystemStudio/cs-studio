@@ -44,9 +44,9 @@ public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 //				"xmppPassword", false);
 
 	    IPreferencesService prefs = Platform.getPreferencesService();
-	    String xmppUserName = prefs.getString(Activator.getDefault().getPluginId(),
+	    String xmppUserName = prefs.getString(Activator.PLUGIN_ID,
 	    		PreferenceConstants.XMPP_USER_NAME, "", null);
-	    String xmppPassword = prefs.getString(Activator.getDefault().getPluginId(),
+	    String xmppPassword = prefs.getString(Activator.PLUGIN_ID,
 	    		PreferenceConstants.XMPP_PASSWORD, "", null);  
 		
 		return new Credentials(xmppUserName, xmppPassword);

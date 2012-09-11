@@ -23,8 +23,8 @@ package org.csstudio.sds.internal.persistence;
 
 import java.io.InputStream;
 
-import org.csstudio.platform.ExecutionService;
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.util.ExecutionService;
 
 /**
  * 

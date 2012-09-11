@@ -30,7 +30,7 @@
       </initializer>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.utility.casnooper.GetBroadcastPerSecond"
             id="org.csstudio.utility.casnooper.GetBroadcastPerSecond"

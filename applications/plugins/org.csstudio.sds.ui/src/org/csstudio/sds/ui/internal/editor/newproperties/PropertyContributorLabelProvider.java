@@ -1,8 +1,8 @@
 package org.csstudio.sds.ui.internal.editor.newproperties;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetModelFactoryService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

@@ -1,21 +1,23 @@
 package org.csstudio.sds.internal.connection;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.IPropertyChangeListener;
 import org.csstudio.dal.ResponseEvent;
 import org.csstudio.dal.ResponseListener;
 import org.csstudio.dal.simple.ConnectionParameters;
 import org.csstudio.dal.simple.RemoteInfo;
 import org.csstudio.dal.simple.SimpleDALBroker;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.IPropertyChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
 public class SinglePropertyWriteConnector implements IPropertyChangeListener {
 	private IProcessVariableAddress pv;
 	private SimpleDALBroker broker;
 	private ValueType valueType;
+    private static final Logger LOG = LoggerFactory.getLogger(SinglePropertyWriteConnector.class);
 
 	public SinglePropertyWriteConnector(IProcessVariableAddress pv, ValueType valueType, SimpleDALBroker broker) {
 		assert pv != null;
@@ -36,11 +38,11 @@ public class SinglePropertyWriteConnector implements IPropertyChangeListener {
 		try {
 			broker.setValueAsync(new ConnectionParameters(rinfo), manualValue, new ResponseListener() {
 				public void responseError(ResponseEvent event) {
-					CentralLogger.getInstance().error(null, "Could not set value for ["+pv.toString()+"].");
+					LOG.error("Could not set value for ["+pv.toString()+"].");
 				}
 
 				public void responseReceived(ResponseEvent event) {
-					CentralLogger.getInstance().error(null, "Value for ["+pv.toString()+"] was set.");
+					LOG.error("Value for ["+pv.toString()+"] was set.");
 				}
 
 			});

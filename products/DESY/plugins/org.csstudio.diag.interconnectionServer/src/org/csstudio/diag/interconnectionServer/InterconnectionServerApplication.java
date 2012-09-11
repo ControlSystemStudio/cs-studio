@@ -22,19 +22,19 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.StartupServiceEnumerator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.diag.interconnectionServer.server.IInterconnectionServer;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
-import org.remotercp.common.tracker.ServiceListener;
-import org.remotercp.common.tracker.ServiceProvider;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The application class for the interconnection server.
@@ -43,6 +43,8 @@ import org.remotercp.service.connection.session.ISessionService;
  */
 public final class InterconnectionServerApplication implements IApplication,
 		IGenericServiceListener<ISessionService> {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(InterconnectionServerApplication.class);
 			
 	// XXX: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
@@ -52,8 +54,7 @@ public final class InterconnectionServerApplication implements IApplication,
 	 * {@inheritDoc}
 	 */
 	public Object start(final IApplicationContext context) throws Exception {
-		CentralLogger.getInstance().info(this,
-				"Starting Interconnection Server");
+	    LOG.info("Starting Interconnection Server");
 
 //		ServiceProvider.addServiceListener(ISessionService.class, this);
 
@@ -62,7 +63,7 @@ public final class InterconnectionServerApplication implements IApplication,
 		runStartupServices();
 
 		context.applicationRunning();
-		final InterconnectionServer ics = InterconnectionServer.getInstance();
+		final IInterconnectionServer ics = ServiceLocator.getService(IInterconnectionServer.class);
 		ics.executeMe();
 
 		if (SHUTDOWN) {
@@ -102,8 +103,7 @@ public final class InterconnectionServerApplication implements IApplication,
 		try {
 			sessionService.connect(username, password, server);
 		} catch (final Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			LOG.warn("XMPP connection is not available, " + e.toString());
 		}
 	}
 

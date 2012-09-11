@@ -67,7 +67,6 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 	 * Constructor.
 	 */
 	public LinkingContainerEditPart() {
-//		setChildrenSelectable(false);
 	}
 
 	/**
@@ -86,8 +85,6 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 		LinkingContainerFigure linkingContainerFigure = new LinkingContainerFigure();
 		linkingContainerFigure.setAutoFit(widget.isAutoZoom());
-		setChildrenSelectable(widget.isLive());
-		
 		
 		return linkingContainerFigure;
 	}
@@ -337,5 +334,10 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 			return result;
 		}
 
+	}
+
+	@Override
+	protected boolean determineChildrenSelectability() {
+		return false;
 	}
 }

@@ -1,5 +1,6 @@
 package org.csstudio.config.authorizeid;
 
+
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 
@@ -16,18 +17,20 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.GroupRoleTableViewerFactory.GroupRoleTableColumns;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides data for group / role table
  * @author Rok Povsic / Jörg Penning
  */
 class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(GroupRoleLabelProvider.class);
 
     private final String ROLE_ATTRIBUTE_KEY = "eagn";
     private final String ORGANIZATION_ATTRIBUTE_KEY = "ou";
@@ -107,7 +110,7 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
             result = createStringOfUsers(users);
         } catch (NamingException e) {
             result = "<error retrieving users for this group / role: probably undefined in ldap>";
-            CentralLogger.getInstance().error("Error retrieving users for group " + entry.getEaig()
+            LOG.error("Error retrieving users for group " + entry.getEaig()
                       + " and role " + entry.getEair(),
                                               e);
         }

@@ -21,8 +21,9 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * A waveform figure. This figure supports drawing an arbitrary number of data
@@ -32,6 +33,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Sven Wende, Kai Meyer, Joerg Rathlev
  */
 public final class WaveformFigure extends AbstractChartFigure {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WaveformFigure.class);
 
 	/**
 	 * The displayed waveform data.
@@ -52,11 +55,6 @@ public final class WaveformFigure extends AbstractChartFigure {
 	 * The length of the longest data array.
 	 */
 	private int _longestDataLength;
-	
-	/**
-	 * The logger for this object.
-	 */
-	private Logger _logger = CentralLogger.getInstance().getLogger(this);
 	
 	/**
 	 * Standard constructor.
@@ -125,7 +123,7 @@ public final class WaveformFigure extends AbstractChartFigure {
 	 *            the waveform data.
 	 */
 	public void setData(final int index, final double[] data) {
-		_logger.debug("setData called with index=" + index);
+		LOG.debug("setData called with index=" + index);
 		
 		_data[index] = data;
 		if (data.length > _longestDataLength) {
@@ -178,7 +176,7 @@ public final class WaveformFigure extends AbstractChartFigure {
 		}
 		
 		if (min != oldMin || max != oldMax) {
-			_logger.debug("calculated new data range: [" + min + "," + max + "]");
+			LOG.debug("calculated new data range: [" + min + "," + max + "]");
 			
 			_min = min;
 			_max = max;

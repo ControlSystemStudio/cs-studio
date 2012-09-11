@@ -96,5 +96,11 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 	}
 
 
+	@Override
+	protected void internalSWTControlTraverse(Control control, int traversal) {
+		control.traverse(traversal);
+	}
+
+
 	
 }

@@ -3,8 +3,6 @@ package org.csstudio.dct.ui.editor.outline.internal;
 import java.util.List;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.editor.copyandpaste.AbstractElementTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.InstanceTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.PrototypeTransfer;

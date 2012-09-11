@@ -27,10 +27,9 @@ package org.csstudio.archive.sdds.server.management;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.IRemotelyStoppable;
-import org.csstudio.archive.sdds.server.SddsServerActivator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
@@ -39,7 +38,7 @@ import org.csstudio.platform.management.IManagementCommand;
 public class StopMgmtCommand implements IManagementCommand {
 
     /** Static instance of the Application object. */
-    private static IRemotelyStoppable STOP_ME;
+    private static IRemotelyStoppable STOP_ME = null;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
@@ -47,27 +46,13 @@ public class StopMgmtCommand implements IManagementCommand {
     @Override
     @Nonnull
     public CommandResult execute(@Nonnull final CommandParameters parameters) {
-
-        // The result of this method call.
-        CommandResult result = null;
-
-        if(STOP_ME != null) {
-            STOP_ME.stopApplication(false);
-            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is stopping now.");
-        } else {
-            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
+        if(STOP_ME == null) {
+            return CommandResult.createFailureResult("The command is disabled!");
         }
-
-        return result;
+        STOP_ME.stopApplication(false);
+        return CommandResult.createMessageResult("OK: [0] - SDDS-Server is stopping now.");
     }
 
-
-    /**
-     * Sets the static Application object.
-     *
-     * @param o
-     *
-     */
     public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
         STOP_ME = o;
     }

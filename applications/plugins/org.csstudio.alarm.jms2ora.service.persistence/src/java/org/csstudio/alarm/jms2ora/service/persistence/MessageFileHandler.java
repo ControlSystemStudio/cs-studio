@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @version 2.0
  */
 
-public class MessageFileHandler implements FilenameFilter {
+public class MessageFileHandler {
 
     /** the class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageFileHandler.class);
@@ -60,21 +59,30 @@ public class MessageFileHandler implements FilenameFilter {
     /** The object that holds the paths to the data directories */
     private final DataDirectory dataDirectories;
 
-    /** Prefix for the file names */
-    private final String prefix = "message-";
+    private ArchiveMessageFilter archiveMessageFilter;
+    
+    @SuppressWarnings("unused")
+    private RawMessageFilter rawMessageFilter;
+    
+    /** Prefix for the file names of the archive messages */
+    private final String archivePrefix = "archive-message-";
+
+    /** Prefix for the file names of the archive messages */
+    private final String rawPrefix = "raw-message-";
 
     public MessageFileHandler() {
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String messageDir = prefs.getString(Activator.getPluginId(), PreferenceConstants.MESSAGE_DIRECTORY, "columns/", null);
-        dataDirectories = new DataDirectory(messageDir);
-    }
-
-    /**
-     *
-     */
-    @Override
-    public boolean accept(final File dir, final String name) {
-        return name.toLowerCase().matches(prefix + "\\d{8}-\\d{9}-\\d+.ser");
+        final String messageDir = prefs.getString(Activator.getPluginId(),
+                                                  PreferenceConstants.MESSAGE_DIRECTORY,
+                                                  "./var/nirvana",
+                                                  null);
+        final String messageAltDir = prefs.getString(Activator.getPluginId(),
+                                                     PreferenceConstants.MESSAGE_ALT_DIRECTORY,
+                                                     null,
+                                                     null);
+        dataDirectories = new DataDirectory(messageDir, messageAltDir);
+        archiveMessageFilter = new ArchiveMessageFilter(archivePrefix);
+        rawMessageFilter = new RawMessageFilter(rawPrefix);
     }
 
     /**
@@ -91,7 +99,7 @@ public class MessageFileHandler implements FilenameFilter {
 
         try {
             final File file = dataDirectories.getDataDirectory();
-            fileList = file.list(this);
+            fileList = file.list(archiveMessageFilter);
             if(fileList != null) {
                 result = fileList.length;
             }
@@ -128,7 +136,7 @@ public class MessageFileHandler implements FilenameFilter {
 
             final File name = dataDirectories.getDataDirectory();
 
-            result = name.list(this);
+            result = name.list(archiveMessageFilter);
             if(result.length == 0) {
                 result = null;
                 result = new String[1];
@@ -150,7 +158,7 @@ public class MessageFileHandler implements FilenameFilter {
 
         try {
             name = dataDirectories.getDataDirectory();
-            result = name.list(this);
+            result = name.list(archiveMessageFilter);
         } catch (final DataDirectoryException dde) {
             // Can be ignored
         }
@@ -208,6 +216,40 @@ public class MessageFileHandler implements FilenameFilter {
         return result;
     }
 
+    public ArchiveMessage readMessageContent(final String fileName) {
+
+        ArchiveMessage content = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
+        File file = new File(fileName);
+        
+        try {
+            fis = new FileInputStream(file);
+            ois = new ObjectInputStream(fis);
+
+            // Write the MessageContent object to disk
+            content = (ArchiveMessage) ois.readObject();
+        } catch(final FileNotFoundException fnfe) {
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
+        } catch(final IOException ioe) {
+            LOG.error("IOException : " + ioe.getMessage());
+        } catch (final ClassNotFoundException e) {
+            LOG.error("ClassNotFoundException : " + e.getMessage());
+        } finally {
+            if(ois != null){try{ois.close();}catch(final IOException ioe){/* Can be ignored */}}
+            if(fis != null){try{fis.close();}catch(final IOException ioe){/* Can be ignored */}}
+
+            ois = null;
+            fis = null;
+        }
+
+        if (file.delete()) {
+            LOG.debug("{} deleted.", fileName);
+        }
+
+        return content;
+    }
 
     /**
      * The method deletes all message files.
@@ -227,7 +269,7 @@ public class MessageFileHandler implements FilenameFilter {
             return result;
         }
 
-        fileList = list.list(this);
+        fileList = list.list(archiveMessageFilter);
         if(fileList == null) {
             list = null;
             return result;
@@ -258,15 +300,15 @@ public class MessageFileHandler implements FilenameFilter {
      *
      * @param content - The MessageContent object that have to be stored on disk.
      */
-    public void writeMessagesToFile(final Vector<ArchiveMessage> content) {
+    public int writeMessagesToFile(final Vector<ArchiveMessage> content) {
 
         if (content.isEmpty()) {
-            return;
+            return 0;
         }
         
         if(dataDirectories.existsDataDirectory() == false) {
             LOG.warn("Object folder does not exist. Message cannot be stored.");
-            return;
+            return -1;
         }
 
         final GregorianCalendar cal = new GregorianCalendar();
@@ -279,7 +321,7 @@ public class MessageFileHandler implements FilenameFilter {
         int count = 1;
         for (ArchiveMessage o : content) {
         
-            String fn = prefix + dateString + "-" + nf.format(count++);
+            String fn = archivePrefix + dateString + "-" + nf.format(count++);
             
             FileOutputStream fos = null;
             ObjectOutputStream oos = null;
@@ -290,7 +332,7 @@ public class MessageFileHandler implements FilenameFilter {
     
                 // Write the MessageContent object to disk
                 oos.writeObject(o);
-            } catch(final Exception e) {
+            } catch (final Exception e) {
                 LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
             } finally {
                 if(oos != null){try{oos.close();}catch(final IOException ioe){/* Can be ignored */}}
@@ -300,34 +342,27 @@ public class MessageFileHandler implements FilenameFilter {
                 fos = null;
             }
         }
+        count--;
+        return count;
     }
-
-    public ArchiveMessage readMessageContent(final String fileName) {
-
-        ArchiveMessage content = null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-
+    
+    public Vector<ArchiveMessage> readMessagesFromFile() {
+        Vector<ArchiveMessage> result = new Vector<ArchiveMessage>();
         try {
-            fis = new FileInputStream(fileName);
-            ois = new ObjectInputStream(fis);
-
-            // Write the MessageContent object to disk
-            content = (ArchiveMessage)ois.readObject();
-        } catch(final FileNotFoundException fnfe) {
-            LOG.error("FileNotFoundException : " + fnfe.getMessage());
-        } catch(final IOException ioe) {
-            LOG.error("IOException : " + ioe.getMessage());
-        } catch (final ClassNotFoundException e) {
-            LOG.error("ClassNotFoundException : " + e.getMessage());
-        } finally {
-            if(ois != null){try{ois.close();}catch(final IOException ioe){/* Can be ignored */}}
-            if(fis != null){try{fis.close();}catch(final IOException ioe){/* Can be ignored */}}
-
-            ois = null;
-            fis = null;
+            File file = dataDirectories.getDataDirectory();
+            String path = file.getAbsolutePath() + System.getProperty("file.separator");
+            String[] fileNames = file.list(archiveMessageFilter);
+            if (fileNames != null) {
+                if (fileNames.length > 0) {
+                    for (String s : fileNames) {
+                        ArchiveMessage am = readMessageContent(path + s);
+                        result.add(am);
+                    }
+                }
+            }
+        } catch (DataDirectoryException e) {
+            LOG.error("[*** DataDirectoryException ***]: {}", e.getMessage());
         }
-
-        return content;
+        return result;
     }
 }

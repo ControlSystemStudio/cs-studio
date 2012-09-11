@@ -1,13 +1,14 @@
 package org.csstudio.sds.internal.connection;
 
 import org.csstudio.dal.DalPlugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.eventhandling.AbstractBehavior;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.ChannelListener;
 import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.sds.eventhandling.AbstractBehavior;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Connector that forwards channel events to a behavior strategy class.
@@ -19,6 +20,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
 	private AbstractWidgetModel widget;
 	private ConnectionParameters connectionParameters;
 	private AbstractBehavior<AbstractWidgetModel> behavior;
+    private static final Logger LOG = LoggerFactory.getLogger(BehaviorConnector.class);
 
 	/**
 	 * Constructs a connector.
@@ -70,10 +72,10 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
 
 		if (value2set != null) {
 			try {
-				CentralLogger.getInstance().info(null, "About to apply: "+value2set + " to " + connectionParameters.toString());
+				LOG.info("About to apply: "+value2set + " to " + connectionParameters.toString());
 				DalPlugin.getDefault().getSimpleDALBroker().setValueAsync(this.connectionParameters, value2set, null);
 			} catch (Exception e) {
-				CentralLogger.getInstance().error(this, e.getMessage());
+				LOG.error(e.getMessage());
 			}
 		}
 	}

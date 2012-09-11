@@ -38,18 +38,15 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
  */
 public final class AlarmTreePreference<T> extends AbstractPreference<T> {
 
-    public static final AlarmTreePreference<String> JMS_URL_PRIMARY =
-        new AlarmTreePreference<String>("jms.url", "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
-
-    public static final AlarmTreePreference<String> JMS_URL_SECONDARY =
-        new AlarmTreePreference<String>("jms.url.2", "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
-
     public static final AlarmTreePreference<String> JMS_QUEUE =
         new AlarmTreePreference<String>("jms.queue", "ALARM,ACK");
 
     public static final AlarmTreePreference<String> RES_ICON_PATH =
         new AlarmTreePreference<String>("res.icon.path", "./res/icons");
 
+    public static final AlarmTreePreference<String> ALARM_DISPLAY_ALIAS =
+        new AlarmTreePreference<String>("alarmDisplayAlias", "chan");
+    
     /**
      * Constructor.
      * @param keyAsString
@@ -59,19 +56,15 @@ public final class AlarmTreePreference<T> extends AbstractPreference<T> {
         super(keyAsString, defaultValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     @Override
+    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) AlarmTreePreference.class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    @Nonnull
     public String getPluginID() {
         return AlarmTreePlugin.PLUGIN_ID;
     }

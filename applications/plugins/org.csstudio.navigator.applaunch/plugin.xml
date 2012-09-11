@@ -74,6 +74,7 @@
    
    <extension point="org.eclipse.help.toc">
      <toc file="toc.xml" primary="true"/>
+     <toc file="tocChangelog.xml"/>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">

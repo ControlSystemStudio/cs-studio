@@ -22,6 +22,7 @@
 
 package org.csstudio.management.internal.xmpplogindialog;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -29,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Preference page for the XMPP login.
@@ -43,8 +45,8 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 */
 	public PreferencePage() {
 		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-	}
+		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+				Activator.getDefault().getBundle().getSymbolicName()));	}
 
 	/**
 	 * {@inheritDoc}

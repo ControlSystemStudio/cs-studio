@@ -26,12 +26,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.actions.OpenScreenshotAction;
 import org.csstudio.sds.ui.runmode.RunModeService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -64,6 +63,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
@@ -73,6 +74,7 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision: 1.26 $
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
+    private static final Logger LOG = LoggerFactory.getLogger(ShellRunModeBox.class);
     
     private static final String VIEW_TO_REGISTER_CONTEXT_MENU = "org.eclipse.ui.views.ResourceNavigator";
     
@@ -387,7 +389,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
      */
     @Override
     protected void finalize() throws Throwable {
-        CentralLogger.getInstance().debug(this, "finalized()");
+        LOG.debug("finalized()");
     }
     
     /**

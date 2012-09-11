@@ -9,18 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BehaviorService implements IBehaviorService {
 	private static final String ALL_WIDGETS_ID = "*";
 
 	private final Map<String, Map<String, BehaviorDescriptor>> _behaviors;
+
+    private static final Logger LOG = LoggerFactory.getLogger(BehaviorService.class);
 
 	public BehaviorService() {
 		_behaviors = new HashMap<String, Map<String, BehaviorDescriptor>>();
@@ -43,7 +46,7 @@ public class BehaviorService implements IBehaviorService {
 				behavior = (AbstractBehavior<AbstractWidgetModel>) e.createExecutableExtension("class");
 			} catch (CoreException e1) {
 				String msg = "Behavior ["+e.getAttribute("class")+"] could not be instantiated.";
-				CentralLogger.getInstance().error(this, msg);
+				LOG.error(msg);
 				throw new IllegalArgumentException(msg);
 			}
 			

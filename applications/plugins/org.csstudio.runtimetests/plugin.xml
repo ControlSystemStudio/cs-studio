@@ -2,12 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.csstudio.platform.startupListener">
+         point="org.csstudio.desy.startuphelper.startupListener">
       <startupService
             class="org.csstudio.runtimetests.Startup"
             id="org.csstudio.runtimetests.startup"
             isHighPriority="False">
       </startupService>
    </extension>
-
 </plugin>

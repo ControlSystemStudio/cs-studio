@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.datadefinition;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 
@@ -9,6 +10,10 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
  */
 public class DisplayScaleData extends AbstractComplexData {
 	
+	public DisplayScaleData(AbstractWidgetModel widgetModel) {
+		super(widgetModel);
+	}
+
 	/**
 	 * Automatically scale all widgets when display resizes. The scale behavior of 
 	 * each widget is determined by its scale options property. 
@@ -54,7 +59,7 @@ public class DisplayScaleData extends AbstractComplexData {
 	
 	@Override
 	public AbstractComplexData createInstance() {
-		return new DisplayScaleData();
+		return new DisplayScaleData(getWidgetModel());
 	}
 	
 	@Override

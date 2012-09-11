@@ -23,19 +23,18 @@
  */
 package org.csstudio.alarm.treeview.views;
 
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeview.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.SubtreeNode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -47,6 +46,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.TreeItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Drop Listener for the AlarmTreeView
@@ -57,8 +58,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * @since 09.06.2010
  */
 public final class AlarmTreeLocalSelectionDropListener implements TransferDropTargetListener {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmTreeLocalSelectionDropListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeLocalSelectionDropListener.class);
     
     private final AlarmTreeView _alarmTreeView;
     private final Queue<ITreeModificationItem> _ldapModificationItems;
