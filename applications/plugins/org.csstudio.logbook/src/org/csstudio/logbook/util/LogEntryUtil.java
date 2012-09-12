@@ -32,7 +32,7 @@ public class LogEntryUtil {
 	 * @param logEntry
 	 * @return
 	 */
-	public List<String> getTagNames(LogEntry logEntry) {
+	public static List<String> getTagNames(LogEntry logEntry) {
 		List<String> tagNames = new ArrayList<String>();
 		for (Tag tag : logEntry.getTags()) {
 			tagNames.add(tag.getName());
@@ -46,7 +46,7 @@ public class LogEntryUtil {
 	 * @param logEntry
 	 * @return
 	 */
-	public List<String> getLogbookNames(LogEntry logEntry) {
+	public static List<String> getLogbookNames(LogEntry logEntry) {
 		List<String> logbookNames = new ArrayList<String>();
 		for (Logbook logbook : logEntry.getLogbooks()) {
 			logbookNames.add(logbook.getName());
@@ -60,7 +60,7 @@ public class LogEntryUtil {
 	 * @param logEntry
 	 * @return
 	 */
-	public List<String> getPropertyNames(LogEntry logEntry) {
+	public static List<String> getPropertyNames(LogEntry logEntry) {
 		List<String> propertyNames = new ArrayList<String>();
 		for (Property property : logEntry.getProperties()) {
 			propertyNames.add(property.getName());
