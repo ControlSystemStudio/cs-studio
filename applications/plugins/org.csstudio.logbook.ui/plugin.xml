@@ -9,9 +9,9 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.logbook.ui.ELogEntryView"
+            class="org.csstudio.logbook.ui.CreateLogEntryView"
             icon="icons/logentry-add-16.png"
-            id="org.csstudio.logbook.ui.ELogEntryView"
+            id="org.csstudio.logbook.ui.CreateLogEntry"
             name="%MakeLogEntry"
             restorable="true">
       </view>
@@ -28,7 +28,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logbook.ui.ELogEntryView">
+                  value="org.csstudio.logbook.ui.CreateLogEntry">
             </parameter>
          </command>
       </menuContribution>
