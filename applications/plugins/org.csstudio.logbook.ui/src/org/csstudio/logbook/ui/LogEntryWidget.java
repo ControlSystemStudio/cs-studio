@@ -163,7 +163,7 @@ public class LogEntryWidget extends Composite {
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						parent.getShell(), logbookNames, LogEntryUtil
 								.getLogbookNames(logEntryBuilder.build()));
-				dialog.setText("Add Logbook");
+//				dialog.setText("Add Logbook");
 				dialog.open();
 			}
 		});
@@ -190,7 +190,7 @@ public class LogEntryWidget extends Composite {
 				// Open a dialog which allows users to select tags
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						parent.getShell(), tagNames, LogEntryUtil.getTagNames(logEntryBuilder.build()));
-				dialog.setText("Add Tags");
+//				dialog.setText("Add Tags");
 				dialog.open();
 			}
 		});
