@@ -80,8 +80,9 @@ public class StringListSelectionWidgetTest extends ApplicationWindow {
 			public void widgetSelected(SelectionEvent e) {
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						getShell(), possibleValues, selectedValues);
-				dialog.setText("Add Logbook");
-				dialog.open();
+				if (dialog.open() == Window.OK) {
+					System.out.println(dialog.getSelectedValues());
+				}
 			}
 		});
 		btnOpenDialog.setText("open Dialog");
