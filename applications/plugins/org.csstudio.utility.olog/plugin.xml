@@ -7,12 +7,5 @@
             ologclient="org.csstudio.utility.olog.OlogClientFromPreferences">
       </ologclient>
    </extension>
-   <extension
-         point="org.csstudio.logbook.logbookclientfactory">
-      <logbookclientfactory
-            class="org.csstudio.utility.olog.OlogLogbookClientFactory"
-            name="org.csstudio.utility.olog.logbookclientfactory">
-      </logbookclientfactory>
-   </extension>
 
 </plugin>
