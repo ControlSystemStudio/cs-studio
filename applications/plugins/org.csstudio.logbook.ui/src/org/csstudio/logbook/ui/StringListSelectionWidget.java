@@ -36,11 +36,11 @@ public class StringListSelectionWidget extends Composite {
 		super(parent, style);
 		GridLayout gridLayout = new GridLayout(3, false);
 		setLayout(gridLayout);
-		
+
 		Label lblAvaliableOptions = new Label(this, SWT.NONE);
 		lblAvaliableOptions.setText("Avaliable:");
 		new Label(this, SWT.NONE);
-		
+
 		Label lblSelectedOptions = new Label(this, SWT.NONE);
 		lblSelectedOptions.setText("Selected:");
 

@@ -3,6 +3,7 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
@@ -30,8 +32,8 @@ public class StringListSelectionDialog extends Dialog {
 	protected Shell dialogShell;
 	private StringListSelectionWidget stringListSelectionWidget;
 
-	private List<String> initialPossibleValues;
-	private List<String> initialSelectedValues;
+	private List<String> initialPossibleValues = new ArrayList<String>();
+	private List<String> initialSelectedValues = new ArrayList<String>();
 
 	public StringListSelectionDialog(Shell parent, List<String> possibleValues,
 			List<String> selectedValues) {
@@ -40,7 +42,6 @@ public class StringListSelectionDialog extends Dialog {
 		this.initialSelectedValues = selectedValues;
 		createContents();
 		populateInitialValues();
-
 	}
 
 	void createContents() {
@@ -86,6 +87,7 @@ public class StringListSelectionDialog extends Dialog {
 		fd_btnApply.right = new FormAttachment(btnCancel, -5);
 		btnApply.setLayoutData(fd_btnApply);
 		btnApply.setText("Apply");
+		populateInitialValues();
 	}
 
 	public void open() {
@@ -118,6 +120,7 @@ public class StringListSelectionDialog extends Dialog {
 	private void populateInitialValues() {
 		setPossibleValues(initialPossibleValues);
 		setSelectedValues(initialSelectedValues);
+
 	}
 
 	private void setSelectedValues(List<String> selectedValues) {
