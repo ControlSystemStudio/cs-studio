@@ -163,7 +163,7 @@ public class LogEntryWidget extends Composite {
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						parent.getShell(), logbookNames, LogEntryUtil
 								.getLogbookNames(logEntryBuilder.build()));
-//				dialog.setText("Add Logbook");
+				dialog.setText("Add Logbook");
 				dialog.open();
 			}
 		});
@@ -189,9 +189,8 @@ public class LogEntryWidget extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				// Open a dialog which allows users to select tags
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
-						parent.getShell(), tagNames, LogEntryUtil
-								.getTagNames(logEntryBuilder.build()));
-//				dialog.setText("Add Tags");
+						parent.getShell(), tagNames, LogEntryUtil.getTagNames(logEntryBuilder.build()));
+				dialog.setText("Add Tags");
 				dialog.open();
 			}
 		});
@@ -227,21 +226,20 @@ public class LogEntryWidget extends Composite {
 						if (logbookClient == null) {
 							logbookClient = LogbookClientManager
 									.getLogbookClientFactory().getClient();
-							logbookNames = Lists.transform(
-									new ArrayList<Logbook>(logbookClient
-											.listLogbooks()),
-									new Function<Logbook, String>() {
-										public String apply(Logbook input) {
-											return input.getName();
-										};
-									});
-							tagNames = Lists.transform(new ArrayList<Tag>(
-									logbookClient.listTags()),
-									new Function<Tag, String>() {
-										public String apply(Tag input) {
-											return input.getName();
-										};
-									});
+						logbookNames = Lists.transform(new ArrayList<Logbook>(
+								logbookClient.listLogbooks()),
+								new Function<Logbook, String>() {
+									public String apply(Logbook input) {
+										return input.getName();
+									};
+								});
+						tagNames = Lists.transform(new ArrayList<Tag>(
+								logbookClient.listTags()),
+								new Function<Tag, String>() {
+									public String apply(Tag input) {
+										return input.getName();
+									};
+								});
 						}
 					} catch (Exception e) {
 						// Failed to get a client to the logbook
