@@ -20,56 +20,41 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.Set;
-
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.CommandParameters;
 import org.junit.Test;
+
 
 /**
  * @author Joerg Rathlev
+ *
  */
-public class CommandParametersTest {
+public class CommandParameterEnumValueTest {
+	
+	@Test
+	public void testValueAndLabel() throws Exception {
+		CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
+		assertEquals("value", ev.getValue());
+		assertEquals("label", ev.getLabel());
+	}
+	
+	@Test
+	public void testToStringReturnsAString() throws Exception {
+		CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
+		assertNotNull(ev.toString());
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testValueMustNotBeNull() throws Exception {
+		new CommandParameterEnumValue(null, "label");
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testLabelMustNotBeNull() throws Exception {
+		new CommandParameterEnumValue("value", null);
+	}
 
-	@Test
-	public void testSetAndGetParameters() throws Exception {
-		CommandParameters params = new CommandParameters();
-		assertNull(params.get("string"));
-		assertNull(params.get("int"));
-		assertNull(params.get("enum"));
-		
-		params.set("string", "foo");
-		params.set("int", Integer.valueOf(42));
-		params.set("enum", new CommandParameterEnumValue("bar", "baz"));
-		
-		assertEquals("foo", params.get("string"));
-		assertEquals(42, params.get("int"));
-		CommandParameterEnumValue e = (CommandParameterEnumValue) params.get("enum");
-		assertEquals("bar", e.getValue());
-		assertEquals("baz", e.getLabel());
-	}
-	
-	@Test
-	public void testParameterIdentifiers() throws Exception {
-		CommandParameters params = new CommandParameters();
-		params.set("foo", "bar");
-		params.set("baz", "quux");
-		
-		Set<String> parameterIDs = params.identifiers();
-		assertEquals(2, parameterIDs.size());
-		assertTrue(parameterIDs.contains("foo"));
-		assertTrue(parameterIDs.contains("baz"));
-	}
-	
-	@Test
-	public void testToString() throws Exception {
-		CommandParameters params = new CommandParameters();
-		assertNotNull(params.toString());
-		params.set("foo", "bar");
-		assertNotNull(params.toString());
-	}
 }
