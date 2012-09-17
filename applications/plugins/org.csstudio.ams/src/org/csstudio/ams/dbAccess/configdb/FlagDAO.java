@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -27,68 +26,80 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 
-public abstract class FlagDAO extends DAO
-{
-	public static short selectFlag(Connection conDB, String flagName) throws SQLException
-	{
+public abstract class FlagDAO extends DAO {
+	public static short selectFlag(Connection conDB, String flagName)
+			throws SQLException {
 		final String query = "SELECT sFlagValue FROM AMS_Flag WHERE cFlagName=?";
 		short sRet = 0;
 		ResultSet rs = null;
 		PreparedStatement pst = null;
-		try
-		{
+		try {
 			pst = conDB.prepareStatement(query);
 			pst.setString(1, flagName);
 			rs = pst.executeQuery();
-			
-			if(rs.next())
+
+			if (rs.next())
 				sRet = rs.getShort(1);
-			
+
 			return sRet;
-		}
-		catch(SQLException ex)
-		{
+		} catch (SQLException ex) {
 			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
 			throw ex;
-		}
-		finally
-		{
-			close(pst,rs);
+		} finally {
+			close(pst, rs);
 		}
 	}
 
-	public static boolean bUpdateFlag(Connection masterDB, String flagName, short sOld, short sNew) throws SQLException
-	{
+	public static boolean bUpdateFlag(Connection masterDB, String flagName,
+			short sOld, short sNew) throws SQLException {
 		final String query = "UPDATE AMS_Flag SET sFlagValue=? WHERE cFlagName=? AND sFlagValue=?";
 		PreparedStatement pst = null;
-			
-		try
-		{
+
+		try {
 			pst = masterDB.prepareStatement(query);
-			
+
 			pst.setShort(1, sNew);
 			pst.setString(2, flagName);
 			pst.setShort(3, sOld);
-			
+
 			int iCount = pst.executeUpdate();
-			Log.log(Log.INFO, "update sFlagValue=" + flagName 
-					+ " from=" + sOld 
-					+ " to= " + sNew
-					+ " updCnt=" + iCount);
-			
+			Log.log(Log.INFO, "update sFlagValue=" + flagName + " from=" + sOld
+					+ " to= " + sNew + " updCnt=" + iCount);
+
 			return iCount > 0;
-		}	
-		catch(SQLException ex)
-		{
+		} catch (SQLException ex) {
 			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
 			throw ex;
+		} finally {
+			close(pst, null);
 		}
-		finally
-		{
-			close(pst,null);
+	}
+
+	public static void copyAllFlagStates(Connection masterDB, Connection targetDB) throws SQLException {
+		final String query = "SELECT cFlagName,sFlagValue FROM AMS_Flag";
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+
+		try {
+			statement = masterDB.prepareStatement(query);
+			resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String cFlagName = resultSet.getString(1);
+				short sFlagValue = resultSet.getShort(2);
+				short oldFlagValue = selectFlag(targetDB, cFlagName);
+				
+				bUpdateFlag(targetDB, cFlagName, oldFlagValue, sFlagValue);
+			}
+		} catch (SQLException ex) {
+			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
+			throw ex;
+		} finally {
+			close(statement, resultSet);
 		}
 	}
 }
