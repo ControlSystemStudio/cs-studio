@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.beust.jcommander.Parameter;
 
-class CommandLineArgs {
+public class CommandLineArgs {
     @Parameter(names = { "-help", "-h", "--help" }, description = "Display help")
     public boolean showUsage = false;
     

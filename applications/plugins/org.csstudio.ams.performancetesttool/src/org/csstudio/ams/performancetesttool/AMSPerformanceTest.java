@@ -89,8 +89,8 @@ public class AMSPerformanceTest {
         } else if (options.component.equals("decision")) {
             sendTopic = "ALARM";
             if (options.receiveFromTopics.size() == 0) {
-                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
-//                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
+//                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
             }
         } else if (options.component.equals("minder")) {
             sendTopic = "T_AMS_MESSAGEMINDER";
@@ -100,7 +100,8 @@ public class AMSPerformanceTest {
         } else if (options.component.equals("distributor")) {
             sendTopic = "T_AMS_DISTRIBUTE";
             if (options.receiveFromTopics.size() == 0) {
-                options.receiveFromTopics.add("T_AMS_CON_JMS");
+//            	options.receiveFromTopics.add("T_AMS_CON_JMS");
+                options.receiveFromTopics.add("T_AMS_CON_MAIL");
             }
         } else if (options.component.equals("jmsconnector")) {
             sendTopic = "T_AMS_CON_JMS";
