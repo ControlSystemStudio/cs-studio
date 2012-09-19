@@ -190,6 +190,15 @@ public class ImageStackWidget extends Composite {
 				this.imageFilenames);
 	}
 
+	public void addImageFilename(String imageFilename) {
+		List<String> oldValue = this.imageFilenames;
+		ArrayList<String> newList = new ArrayList<String>(this.imageFilenames);
+		newList.add(imageFilename);
+		this.imageFilenames = newList;
+		changeSupport.firePropertyChange("imageFilenames", oldValue,
+				this.imageFilenames);
+	}
+
 	public List<String> getImageFilenames() {
 		return imageFilenames;
 	}

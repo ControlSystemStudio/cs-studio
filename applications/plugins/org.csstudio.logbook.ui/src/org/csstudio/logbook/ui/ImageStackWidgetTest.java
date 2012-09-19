@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
@@ -64,6 +65,23 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
 		btnNewButton.setText("Add Test Images");
+
+		Button btnNewButton_1 = new Button(container, SWT.NONE);
+		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
+				dlg.setFilterExtensions(new String[] { "*.png" }); //$NON-NLS-1$
+				dlg.setFilterNames(new String[] { "PNG Image" }); //$NON-NLS-1$
+				final String filename = dlg.open();
+				if (filename != null) {
+					imageStackWidget.addImageFilename(filename);
+				}
+			}
+		});
+		btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+		btnNewButton_1.setText("Add Image");
 		return container;
 	}
 
