@@ -32,7 +32,7 @@
          </action>
       </actionSet>
    </extension>
-   <extension
+<!--   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
@@ -56,6 +56,27 @@
                tooltip="Send selected PV to the Display Browser">
          </action>
       </objectContribution>
-   </extension>
-
+   </extension>-->
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.utility.displaybrowser.pvpopup"
+               icon="icons/DisplayBrowser.gif"
+               label="Display Browser"
+               style="push"
+               tooltip="Send PV to Display Browser">
+         </command>
+      </menuContribution>
+	</extension>
+	<extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.displaybrowser.ShowDispBrowser"
+            id="org.csstudio.utility.displaybrowser.pvpopup"
+            name="Display Browser">
+      </command>
+    </extension>
 </plugin>
