@@ -69,7 +69,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.desy.product"/>
-      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform" fragment=""/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.ldapAuthorization"/>
       <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
@@ -85,11 +85,11 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.jms.ui" fragment=""/>
-      <plugin id="org.csstudio.platform.libs.tango"/>
+      <plugin id="org.csstudio.platform.libs.tango" fragment=""/>
       <plugin id="org.csstudio.platform.libs.tine"/>
       <plugin id="org.csstudio.platform.libs.xmpp" fragment=""/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui" fragment=""/>
-      <plugin id="org.csstudio.platform.ui"/>
+      <plugin id="org.csstudio.platform.ui" fragment=""/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
@@ -184,6 +184,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
