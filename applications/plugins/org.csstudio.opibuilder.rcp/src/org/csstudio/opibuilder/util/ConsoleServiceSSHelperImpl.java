@@ -216,7 +216,9 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 	}
 
 	private void popConsoleView(){
-		if(PlatformUI.getWorkbench() != null){
+		if(PlatformUI.getWorkbench() != null &&
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null &&
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() !=null){
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
 				public void run() {
 					try {
