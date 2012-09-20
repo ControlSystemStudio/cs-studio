@@ -79,7 +79,8 @@ public class StringListSelectionWidgetTest extends ApplicationWindow {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
-						getShell(), possibleValues, selectedValues);
+						getShell(), possibleValues, selectedValues,
+						"Add Test Data");
 				if (dialog.open() == Window.OK) {
 					System.out.println(dialog.getSelectedValues());
 				}

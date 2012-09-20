@@ -28,11 +28,14 @@ public class StringListSelectionDialog extends Dialog {
 	private List<String> initialPossibleValues = new ArrayList<String>();
 	private List<String> initialSelectedValues = new ArrayList<String>();
 
+	private final String title;
+
 	public StringListSelectionDialog(Shell parent, List<String> possibleValues,
-			List<String> selectedValues) {
+			List<String> selectedValues, String title) {
 		super(parent);
 		this.initialPossibleValues = possibleValues;
 		this.initialSelectedValues = selectedValues;
+		this.title = title;
 	}
 
 	@Override
@@ -43,7 +46,7 @@ public class StringListSelectionDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-
+		getShell().setText(title);
 		Composite container = (Composite) super.createDialogArea(parent);
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.verticalSpacing = 0;
