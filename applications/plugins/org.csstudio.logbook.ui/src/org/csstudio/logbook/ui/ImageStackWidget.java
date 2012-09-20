@@ -75,7 +75,7 @@ public class ImageStackWidget extends Composite {
 		fd_table.top = new FormAttachment(0, 10);
 		fd_table.right = new FormAttachment(100, -10);
 		fd_table.bottom = new FormAttachment(100, -10);
-		fd_table.left = new FormAttachment(100, -120);
+		fd_table.left = new FormAttachment(100, -124);
 		table.setLayoutData(fd_table);
 
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(
@@ -89,13 +89,13 @@ public class ImageStackWidget extends Composite {
 				ImageData imageData = new ImageData(
 						cell.getElement() == null ? "" : cell.getElement()
 								.toString());
-				cell.setImage(new Image(getDisplay(), imageData.scaledTo(100,
-						100)));
+				cell.setImage(new Image(getDisplay(), imageData
+						.scaledTo(90, 90)));
 			}
 		});
 		TableColumn tblclmnImage = tableViewerColumn.getColumn();
 		tblclmnImage.setResizable(false);
-		tblclmnImage.setWidth(110);
+		tblclmnImage.setWidth(90);
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
 
 			@Override
