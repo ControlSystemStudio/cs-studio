@@ -47,6 +47,11 @@ public class LogEntryBuilder {
 		return this;
 	}
 
+	public LogEntryBuilder setTags(Collection<TagBuilder> tags) {
+		this.tags = new ArrayList<TagBuilder>(tags);
+		return this;
+	}
+
 	public LogEntryBuilder addProperty(PropertyBuilder propertyBuilder) {
 		this.properties.add(propertyBuilder);
 		return this;
@@ -54,6 +59,11 @@ public class LogEntryBuilder {
 
 	public LogEntryBuilder addLogbook(LogbookBuilder logbookBuilder) {
 		this.logbooks.add(logbookBuilder);
+		return this;
+	}
+
+	public LogEntryBuilder setLogbooks(Collection<LogbookBuilder> logbooks) {
+		this.logbooks = new ArrayList<LogbookBuilder>(logbooks);
 		return this;
 	}
 
