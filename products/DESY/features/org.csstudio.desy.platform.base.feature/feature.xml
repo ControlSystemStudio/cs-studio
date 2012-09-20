@@ -253,13 +253,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.remote"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.dal"
          download-size="0"
          install-size="0"
@@ -268,13 +261,6 @@
 
    <plugin
          id="org.csstudio.dal.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.remote"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -600,6 +586,20 @@
 
    <plugin
          id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.remote"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.servicelocator"
          download-size="0"
          install-size="0"
          version="0.0.0"
