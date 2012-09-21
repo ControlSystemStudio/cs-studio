@@ -46,6 +46,8 @@ import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 
 /**
  * @author shroffk
@@ -119,6 +121,14 @@ public class LogEntryWidget extends Composite {
 		textDate.setLayoutData(fd_textDate);
 
 		text = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+		text.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.CR) {
+					text.getParent().layout();
+				}
+			}
+		});
 		FormData fd_text = new FormData();
 		fd_text.right = new FormAttachment(70);
 		fd_text.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
@@ -155,13 +165,11 @@ public class LogEntryWidget extends Composite {
 		btnSubmit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO submit the logEntry to the logbook service
-				// if owner not the same as the preference one create a new
+				// TODO if owner not the same as the preference one create a new
 				// client
 				try {
 					LogbookClient logbookClient = LogbookClientManager
-							.getLogbookClientFactory().getClient("shroffk",
-									"1234");
+							.getLogbookClientFactory().getClient();
 					updateLogEntryBuilder();
 					LogEntry logEntry = logbookClient
 							.createLogEntry(logEntryBuilder.build());
@@ -170,6 +178,9 @@ public class LogEntryWidget extends Composite {
 						logbookClient.addAttachment(logEntry.getId(),
 								new FileInputStream(file), file.getName());
 					}
+					setLogEntryBuilder(null);
+					setLogEntry(logEntry);
+					setEditable(false);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -370,6 +381,14 @@ public class LogEntryWidget extends Composite {
 		updateWidget();
 	}
 
+	private void reset() {
+
+	}
+
+	private void init() {
+
+	}
+
 	private void configureWidgets(Composite parent) {
 		btnEnableEdit.setSelection(editable);
 		text.setEditable(editable);
@@ -558,7 +577,7 @@ public class LogEntryWidget extends Composite {
 	public void setEditable(boolean editable) {
 		boolean oldValue = this.editable;
 		this.editable = editable;
-		changeSupport.firePropertyChange("editable", oldValue, editable);
+		changeSupport.firePropertyChange("editable", oldValue, this.editable);
 	}
 
 	public LogEntry getLogEntry() {
@@ -568,6 +587,18 @@ public class LogEntryWidget extends Composite {
 	public void setLogEntry(LogEntry logEntry) {
 		LogEntry oldValue = this.logEntry;
 		this.logEntry = logEntry;
-		changeSupport.firePropertyChange("logEntry", oldValue, logEntry);
+		changeSupport.firePropertyChange("logEntry", oldValue, this.logEntry);
 	}
+
+	public LogEntryBuilder getLogEntryBuilder() {
+		return logEntryBuilder;
+	}
+
+	public void setLogEntryBuilder(LogEntryBuilder logEntryBuilder) {
+		LogEntryBuilder oldValue = this.logEntryBuilder;
+		this.logEntryBuilder = logEntryBuilder;
+		changeSupport.firePropertyChange("logEntryBuilder", oldValue,
+				this.logEntryBuilder);
+	}
+
 }
