@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.scriptUtil;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 
 /**The utility class to facilitate Javascript programming
