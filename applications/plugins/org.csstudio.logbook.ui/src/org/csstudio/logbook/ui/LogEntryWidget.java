@@ -7,13 +7,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.text.DateFormat;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
-import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
@@ -25,31 +24,28 @@ import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * @author shroffk
@@ -162,6 +158,20 @@ public class LogEntryWidget extends Composite {
 				// TODO submit the logEntry to the logbook service
 				// if owner not the same as the preference one create a new
 				// client
+				try {
+					LogbookClient logbookClient = LogbookClientManager
+							.getLogbookClientFactory().getClient("shroffk",
+									"1234");
+					updateLogEntryBuilder();
+					LogEntry logEntry = logbookClient
+							.createLogEntry(logEntryBuilder.build());
+					for (String fileName : imageStackWidget.getImageFilenames()) {
+						logbookClient.addAttachment(logEntry.getId(),
+								new FileInputStream(fileName), fileName);
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 
 			}
 		});
@@ -205,11 +215,10 @@ public class LogEntryWidget extends Composite {
 					for (String logbookName : dialog.getSelectedValues()) {
 						newLogbooks.add(LogbookBuilder.logbook(logbookName));
 					}
-					// logEntryBuilder.setLogbooks(newLogbooks);
-					// updateWidget();
 					logbookList.setItems(dialog.getSelectedValues().toArray(
 							new String[dialog.getSelectedValues().size()]));
-					parent.layout();
+					logbookList.getParent().layout();
+					updateLogEntryBuilder();
 				}
 			}
 		});
@@ -243,11 +252,10 @@ public class LogEntryWidget extends Composite {
 					for (String tagName : dialog.getSelectedValues()) {
 						newTags.add(TagBuilder.tag(tagName));
 					}
-					// logEntryBuilder.setTags(newTags);
-					// updateWidget();
 					tagList.setItems(dialog.getSelectedValues().toArray(
 							new String[dialog.getSelectedValues().size()]));
-					parent.layout();
+					tagList.getParent().layout();
+					updateLogEntryBuilder();
 				}
 			}
 		});
@@ -345,69 +353,11 @@ public class LogEntryWidget extends Composite {
 			public void propertyChange(PropertyChangeEvent evt) {
 				switch (evt.getPropertyName()) {
 				case "editable":
-					// mark as editable/uneditable all the input UIs
 					configureWidgets(logEntryWidget);
-					if ((boolean) evt.getNewValue() == true) {
-						// the widget was just marked read for editing.
-						if (logEntryBuilder == null) {
-							// No old logEntryBuilder
-							// create a new one using the logEntry
-							if (getLogEntry() != null) {
-								logEntryBuilder = LogEntryBuilder
-										.logEntry(getLogEntry());
-							} else {
-								logEntryBuilder = LogEntryBuilder.withText("");
-							}
-						}
-					} else if ((boolean) evt.getNewValue() == false) {
-						// No longer Editing so save the state of the currently
-						// created logEntry in the logEntryBuilder
-						Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
-						for (String tagName : tagList.getItems()) {
-							if (!tagName.equals("Tags:"))
-								newTags.add(TagBuilder.tag(tagName));
-						}
-						Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
-						for (String logbookName : logbookList.getItems()) {
-							if (!logbookName.equalsIgnoreCase("Logbooks:"))
-								newLogbooks.add(LogbookBuilder
-										.logbook(logbookName));
-						}
-						imageFileNames = imageStackWidget.getImageFilenames();
-						logEntryBuilder = LogEntryBuilder
-								.withText(text.getText())
-								.owner(textOwner.getText())
-								.setLogbooks(newLogbooks).setTags(newTags);
-					}
-					try {
-						if (logbookClient == null) {
-							logbookClient = LogbookClientManager
-									.getLogbookClientFactory().getClient();
-							logbookNames = Lists.transform(
-									new ArrayList<Logbook>(logbookClient
-											.listLogbooks()),
-									new Function<Logbook, String>() {
-										public String apply(Logbook input) {
-											return input.getName();
-										};
-									});
-							tagNames = Lists.transform(new ArrayList<Tag>(
-									logbookClient.listTags()),
-									new Function<Tag, String>() {
-										public String apply(Tag input) {
-											return input.getName();
-										};
-									});
-						}
-					} catch (Exception e) {
-						// Failed to get a client to the logbook
-						// Display exception and disable editing.
-						e.printStackTrace();
-					}
+					updateLogEntryBuilder();
 					updateWidget();
 					break;
 				case "logEntry":
-					// mark as editable/uneditable all the input UIs
 					updateWidget();
 					break;
 				default:
@@ -498,6 +448,76 @@ public class LogEntryWidget extends Composite {
 		}
 		this.layout();
 	};
+
+	private void updateLogEntryBuilder() {
+		if (editable) {
+			// the widget was just marked ready for editing.
+			if (logEntryBuilder == null) {
+				// No old logEntryBuilder
+				// create a new one using the logEntry
+				if (getLogEntry() != null) {
+					logEntryBuilder = LogEntryBuilder.logEntry(getLogEntry());
+				} else {
+					logEntryBuilder = LogEntryBuilder.withText("");
+				}
+			} else {
+				Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
+				for (String tagName : tagList.getItems()) {
+					if (!tagName.equals("Tags:"))
+						newTags.add(TagBuilder.tag(tagName));
+				}
+				Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
+				for (String logbookName : logbookList.getItems()) {
+					if (!logbookName.equalsIgnoreCase("Logbooks:"))
+						newLogbooks.add(LogbookBuilder.logbook(logbookName));
+				}
+				logEntryBuilder = LogEntryBuilder.withText(text.getText())
+						.owner(textOwner.getText()).setLogbooks(newLogbooks)
+						.setTags(newTags);
+			}
+		} else if (!editable) {
+			// No longer Editing so save the state of the currently
+			// created logEntry in the logEntryBuilder
+			Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
+			for (String tagName : tagList.getItems()) {
+				if (!tagName.equals("Tags:"))
+					newTags.add(TagBuilder.tag(tagName));
+			}
+			Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
+			for (String logbookName : logbookList.getItems()) {
+				if (!logbookName.equalsIgnoreCase("Logbooks:"))
+					newLogbooks.add(LogbookBuilder.logbook(logbookName));
+			}
+			imageFileNames = imageStackWidget.getImageFilenames();
+			logEntryBuilder = LogEntryBuilder.withText(text.getText())
+					.owner(textOwner.getText()).setLogbooks(newLogbooks)
+					.setTags(newTags);
+		}
+		try {
+			if (logbookClient == null) {
+				logbookClient = LogbookClientManager.getLogbookClientFactory()
+						.getClient();
+				logbookNames = Lists.transform(new ArrayList<Logbook>(
+						logbookClient.listLogbooks()),
+						new Function<Logbook, String>() {
+							public String apply(Logbook input) {
+								return input.getName();
+							};
+						});
+				tagNames = Lists.transform(
+						new ArrayList<Tag>(logbookClient.listTags()),
+						new Function<Tag, String>() {
+							public String apply(Tag input) {
+								return input.getName();
+							};
+						});
+			}
+		} catch (Exception e) {
+			// Failed to get a client to the logbook
+			// Display exception and disable editing.
+			e.printStackTrace();
+		}
+	}
 
 	@SuppressWarnings("nls")
 	private void addScreenshot(final boolean full) {

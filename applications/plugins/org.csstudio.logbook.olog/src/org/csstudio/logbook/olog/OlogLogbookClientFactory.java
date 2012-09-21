@@ -20,6 +20,12 @@ public class OlogLogbookClientFactory implements LogbookClientFactory {
 
 	@Override
 	public LogbookClient getClient(String username, String password) {
+		try {
+			return new OlogLogbookClient(Olog.getClient());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
