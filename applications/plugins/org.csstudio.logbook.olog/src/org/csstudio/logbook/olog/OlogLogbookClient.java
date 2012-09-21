@@ -134,11 +134,12 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Attachment addAttachment(Object logId, InputStream attachment) {
+	public Attachment addAttachment(Object logId, InputStream attachment,
+			String name) {
 
 		File file;
 		try {
-			file = File.createTempFile(logId + "-attachment", null);
+			file = File.createTempFile(name, null);
 			// write the inputStream to a FileOutputStream
 			OutputStream out = new FileOutputStream(file);
 			int read = 0;
