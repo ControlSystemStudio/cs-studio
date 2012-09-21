@@ -166,8 +166,9 @@ public class LogEntryWidget extends Composite {
 					LogEntry logEntry = logbookClient
 							.createLogEntry(logEntryBuilder.build());
 					for (String fileName : imageStackWidget.getImageFilenames()) {
+						File file = new File(fileName);
 						logbookClient.addAttachment(logEntry.getId(),
-								new FileInputStream(fileName), fileName);
+								new FileInputStream(file), file.getName());
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
