@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
+import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
@@ -63,6 +64,9 @@ public class LogEntryWidget extends Composite {
 	// This serves as the model behind the new entry being created to be written
 	// to the logbook service
 	private LogEntryBuilder logEntryBuilder;
+	//
+	private java.util.List<String> imageFileNames = Collections.emptyList();
+
 	private LogbookClient logbookClient;
 	// List of all the possible logbooks and tags which may be added to a
 	// logEntry.
@@ -156,6 +160,9 @@ public class LogEntryWidget extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// TODO submit the logEntry to the logbook service
+				// if owner not the same as the preference one create a new
+				// client
+
 			}
 		});
 		btnSubmit.setEnabled(false);
@@ -366,6 +373,7 @@ public class LogEntryWidget extends Composite {
 								newLogbooks.add(LogbookBuilder
 										.logbook(logbookName));
 						}
+						imageFileNames = imageStackWidget.getImageFilenames();
 						logEntryBuilder = LogEntryBuilder
 								.withText(text.getText())
 								.owner(textOwner.getText())
@@ -453,7 +461,10 @@ public class LogEntryWidget extends Composite {
 		if (editable) {
 			// Show the LogBuilder
 			updateWidget(logEntryBuilder.build());
-			this.layout();
+			for (String fileName : imageFileNames) {
+				imageStackWidget.addImageFilename(fileName);
+			}
+			// this.layout();
 		} else {
 			updateWidget(logEntry);
 		}
@@ -465,7 +476,8 @@ public class LogEntryWidget extends Composite {
 			text.setText(logEntry.getText());
 			// textDate.setText(DateFormat.getDateInstance().format(
 			// logEntry.getCreateDate()));
-			textOwner.setText(logEntry.getOwner());
+			textOwner.setText(logEntry.getOwner() == null ? "" : logEntry
+					.getOwner());
 			java.util.List<String> logbookNames = new ArrayList<String>();
 			logbookNames.add("Logbooks:");
 			logbookNames.addAll(LogEntryUtil.getLogbookNames(logEntry));
@@ -480,6 +492,9 @@ public class LogEntryWidget extends Composite {
 			textOwner.setText("");
 			logbookList.setItems(new String[0]);
 			tagList.setItems(new String[0]);
+			imageStackWidget
+					.setImageFilenames(Collections.<String> emptyList());
+			imageStackWidget.setSelectedImageFile(null);
 		}
 		this.layout();
 	};

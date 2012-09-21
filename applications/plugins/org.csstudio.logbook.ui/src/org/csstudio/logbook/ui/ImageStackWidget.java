@@ -146,7 +146,7 @@ public class ImageStackWidget extends Composite {
 				case "editable":
 					break;
 				case "imageFilenames":
-					if (imageFilenames != null) {
+					if (imageFilenames != null && !imageFilenames.isEmpty()) {
 						// Populate the list on the side
 						tableViewer.setInput(imageFilenames
 								.toArray(new String[imageFilenames.size()]));
@@ -157,9 +157,12 @@ public class ImageStackWidget extends Composite {
 							imagePreview.setImage(imageFilenames.iterator()
 									.next());
 						}
-						tableViewer.refresh();
-						imagePreview.redraw();
+					} else {
+						tableViewer.setInput(null);
+						imagePreview.setImage(null);
 					}
+					tableViewer.refresh();
+					imagePreview.redraw();
 					break;
 				case "selectedImageFile":
 					imagePreview.setImage(selectedImageFile);
