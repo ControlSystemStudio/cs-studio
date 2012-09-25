@@ -11,7 +11,7 @@ public class Settings {
 
 //krynfsb settings
 	public static final String DATABASE = "archive";
-	public static final String SERVER = "krynfsb.desy.de";
+	public static final String SERVER = "krynfsa.desy.de";
 	public static final String USER = "cssUser";
 	public static final String PASSWORD = "cssUser";
 	public static final double RANGE_IN_NANO = 60*60*1e9;
