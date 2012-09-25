@@ -92,6 +92,7 @@ public class LogEntryWidget extends Composite {
 	private Button btnAddImage;
 	private Button btnAddScreenshot;
 	private Button btnCSSWindow;
+	private Label lblTags;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -206,10 +207,17 @@ public class LogEntryWidget extends Composite {
 		btnEnableEdit.setText("Edit Entry");
 		btnEnableEdit.setSelection(editable);
 
+		Label lblLogbooks = new Label(this, SWT.NONE);
+		FormData fd_lblLogbooks = new FormData();
+		fd_lblLogbooks.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
+		fd_lblLogbooks.left = new FormAttachment(label, 2);
+		lblLogbooks.setLayoutData(fd_lblLogbooks);
+		lblLogbooks.setText("Logbooks:");
+
 		logbookList = new List(this, SWT.BORDER | SWT.V_SCROLL);
 		FormData fd_logbookList = new FormData();
 		fd_logbookList.right = new FormAttachment(100, -5);
-		fd_logbookList.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
+		fd_logbookList.top = new FormAttachment(lblLogbooks, 2, SWT.BOTTOM);
 		fd_logbookList.left = new FormAttachment(label, 2);
 		logbookList.setLayoutData(fd_logbookList);
 
@@ -243,9 +251,16 @@ public class LogEntryWidget extends Composite {
 		btnAddLogbook.setLayoutData(fd_btnAddLogbook);
 		btnAddLogbook.setText("Add Logbook");
 
+		lblTags = new Label(this, SWT.NONE);
+		FormData fd_lblTags = new FormData();
+		fd_lblTags.left = new FormAttachment(label, 2);
+		fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
+		lblTags.setLayoutData(fd_lblTags);
+		lblTags.setText("Tags:");
+
 		tagList = new List(this, SWT.BORDER);
 		FormData fd_tagList = new FormData();
-		fd_tagList.top = new FormAttachment(btnAddLogbook, 5);
+		fd_tagList.top = new FormAttachment(lblTags, 2);
 		fd_tagList.right = new FormAttachment(100, -5);
 		fd_tagList.left = new FormAttachment(label, 2);
 		tagList.setLayoutData(fd_tagList);
@@ -379,6 +394,7 @@ public class LogEntryWidget extends Composite {
 		});
 		configureWidgets(logEntryWidget);
 		updateWidget();
+		init();
 	}
 
 	private void reset() {
@@ -386,6 +402,30 @@ public class LogEntryWidget extends Composite {
 	}
 
 	private void init() {
+		try {
+			if (logbookClient == null) {
+				logbookClient = LogbookClientManager.getLogbookClientFactory()
+						.getClient();
+				logbookNames = Lists.transform(new ArrayList<Logbook>(
+						logbookClient.listLogbooks()),
+						new Function<Logbook, String>() {
+							public String apply(Logbook input) {
+								return input.getName();
+							};
+						});
+				tagNames = Lists.transform(
+						new ArrayList<Tag>(logbookClient.listTags()),
+						new Function<Tag, String>() {
+							public String apply(Tag input) {
+								return input.getName();
+							};
+						});
+			}
+		} catch (Exception e) {
+			// Failed to get a client to the logbook
+			// Display exception and disable editing.
+			e.printStackTrace();
+		}
 
 	}
 
@@ -405,9 +445,9 @@ public class LogEntryWidget extends Composite {
 		if (!editable) {
 			btnAddLogbook.setSize(btnAddLogbook.getSize().x, 0);
 			btnAddTags.setSize(btnAddTags.getSize().x, 0);
-			FormData fd_tagList = ((FormData) tagList.getLayoutData());
-			fd_tagList.top = new FormAttachment(logbookList, 5);
-			tagList.setLayoutData(fd_tagList);
+			FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
+			fd_lblTags.top = new FormAttachment(logbookList, 5);
+			lblTags.setLayoutData(fd_lblTags);
 			// Attachment Tab Layout
 			FormData fd = ((FormData) imageStackWidget.getLayoutData());
 			fd.bottom = new FormAttachment(100, -2);
@@ -415,9 +455,9 @@ public class LogEntryWidget extends Composite {
 		} else {
 			btnAddLogbook.setSize(btnAddLogbook.getSize().x, SWT.DEFAULT);
 			btnAddTags.setSize(btnAddTags.getSize().x, SWT.DEFAULT);
-			FormData fd_tagList = ((FormData) tagList.getLayoutData());
-			fd_tagList.top = new FormAttachment(btnAddLogbook, 5);
-			tagList.setLayoutData(fd_tagList);
+			FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
+			fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
+			lblTags.setLayoutData(fd_lblTags);
 			// Attachment Tab Layout
 			FormData fd = ((FormData) imageStackWidget.getLayoutData());
 			fd.bottom = new FormAttachment(btnAddImage, -2);
@@ -448,14 +488,12 @@ public class LogEntryWidget extends Composite {
 			// logEntry.getCreateDate()));
 			textOwner.setText(logEntry.getOwner() == null ? "" : logEntry
 					.getOwner());
-			java.util.List<String> logbookNames = new ArrayList<String>();
-			logbookNames.add("Logbooks:");
-			logbookNames.addAll(LogEntryUtil.getLogbookNames(logEntry));
+			java.util.List<String> logbookNames = LogEntryUtil
+					.getLogbookNames(logEntry);
 			logbookList.setItems(logbookNames.toArray(new String[logbookNames
 					.size()]));
-			java.util.List<String> tagNames = new ArrayList<String>();
-			tagNames.add("Tags:");
-			tagNames.addAll(LogEntryUtil.getTagNames(logEntry));
+			java.util.List<String> tagNames = LogEntryUtil
+					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 		} else {
 			text.setText("");
@@ -491,6 +529,7 @@ public class LogEntryWidget extends Composite {
 					if (!logbookName.equalsIgnoreCase("Logbooks:"))
 						newLogbooks.add(LogbookBuilder.logbook(logbookName));
 				}
+				imageFileNames = imageStackWidget.getImageFilenames();
 				logEntryBuilder = LogEntryBuilder.withText(text.getText())
 						.owner(textOwner.getText()).setLogbooks(newLogbooks)
 						.setTags(newTags);
@@ -512,30 +551,6 @@ public class LogEntryWidget extends Composite {
 			logEntryBuilder = LogEntryBuilder.withText(text.getText())
 					.owner(textOwner.getText()).setLogbooks(newLogbooks)
 					.setTags(newTags);
-		}
-		try {
-			if (logbookClient == null) {
-				logbookClient = LogbookClientManager.getLogbookClientFactory()
-						.getClient();
-				logbookNames = Lists.transform(new ArrayList<Logbook>(
-						logbookClient.listLogbooks()),
-						new Function<Logbook, String>() {
-							public String apply(Logbook input) {
-								return input.getName();
-							};
-						});
-				tagNames = Lists.transform(
-						new ArrayList<Tag>(logbookClient.listTags()),
-						new Function<Tag, String>() {
-							public String apply(Tag input) {
-								return input.getName();
-							};
-						});
-			}
-		} catch (Exception e) {
-			// Failed to get a client to the logbook
-			// Display exception and disable editing.
-			e.printStackTrace();
 		}
 	}
 
@@ -600,5 +615,4 @@ public class LogEntryWidget extends Composite {
 		changeSupport.firePropertyChange("logEntryBuilder", oldValue,
 				this.logEntryBuilder);
 	}
-
 }
