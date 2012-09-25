@@ -22,9 +22,11 @@ public class Settings {
 //	public static final int RANGE_START_IN_SECONDS = 1327937579;
 //	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*24;
 	
-//Zeitpintervall fuer Ausfaelle am 2011-11-23 zwischen 18:00 und 20:00 Kanal 12PI102_ai.VAL (group 7)
+	//Zeitpintervall fuer Ausfaelle am 2011-11-23 zwischen 18:00 und 20:00 Kanal 12PI102_ai (group 7)
 //	public static final int RANGE_START_IN_SECONDS = 1322042400;
+	//Zeitpintervall fuer Ausfaelle am 2012-02-21 zwischen 06:00 und 12:00 Kanal 20MFG_U23_li (group 7)
+//	public static final int RANGE_START_IN_SECONDS = ?;
 //Zeitpintervall 2012-02-11 12:00
-	public static final int RANGE_START_IN_SECONDS = 1329735600;
-	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*24*2;
+	public static final int RANGE_START_IN_SECONDS = 1322042400;
+	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*12*1;
 }

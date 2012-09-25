@@ -79,7 +79,7 @@ public class GapFinder {
 		ResultSet resultSet = stm.executeQuery();
 		while (resultSet.next()) {
 			String channelName = resultSet.getString(2);
-			if (channelName.contains("VAL")) {
+			if (!channelName.contains("ADEL")) {
 				_listOfPvIntervals.add(new PvIntervalList(channelName, resultSet.getString(1)));
 			}
 		}
@@ -179,11 +179,13 @@ public class GapFinder {
 	private Map<TimeInstant, List<String>> prepareGapsMap(
 			List<PvIntervalList> listOfPvIntervals) {
 		Map<TimeInstant, List<String>> gaps = new HashMap<TimeInstant, List<String>>();
-		PvIntervalList intervalList = listOfPvIntervals.get(0);
-		if (intervalList != null) {
-			for (Interval interval : intervalList.getIntervalList()) {
-				List<String> list = new ArrayList<String>();
-				gaps.put(interval.getStart(), list);
+		if (listOfPvIntervals.size() > 0) {
+			PvIntervalList intervalList = listOfPvIntervals.get(0);
+			if (intervalList != null) {
+				for (Interval interval : intervalList.getIntervalList()) {
+					List<String> list = new ArrayList<String>();
+					gaps.put(interval.getStart(), list);
+				}
 			}
 		}
 		return gaps;
