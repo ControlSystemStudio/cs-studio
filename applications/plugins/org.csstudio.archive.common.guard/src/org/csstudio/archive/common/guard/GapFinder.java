@@ -12,6 +12,17 @@ import java.util.Map;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
+/**
+ * Find gaps in a time range defined in class Settings.
+ * The time range is split in intervals.
+ * The list of PvIntervalList (_listOfPvIntervals) is the main structure to store the
+ * sample number for each channel. 
+ * Class PvIntervalsList holds for one channel the interval list of the time range and
+ * for each interval the number of samples.
+ *  *  
+ * @author jhatje
+ *
+ */
 public class GapFinder {
 
 	private ConnectionHandler _connectionHandler;
@@ -22,10 +33,10 @@ public class GapFinder {
 		_connectionHandler = connectionHandler;
 	}
 
-
-	public void retrieveSamplesInIntervals(TimeInstant start, TimeInstant end) {
+	
+	public void retrieveSamplesForChannels(TimeInstant start, TimeInstant end) {
 		try {
-			getAllConnectedChannels();
+			initialiseIntervalListForChannels();
 			System.out.println("-------size: " + _listOfPvIntervals.size());
 		
 			for (PvIntervalList intervalList : _listOfPvIntervals) {
@@ -73,7 +84,7 @@ public class GapFinder {
 	}
 
 
-	private void getAllConnectedChannels() throws Exception {
+	private void initialiseIntervalListForChannels() throws Exception {
 		Connection con = _connectionHandler.getConnection();
 		PreparedStatement stm = createReadAllChannelsStatement(con);
 		ResultSet resultSet = stm.executeQuery();
@@ -120,7 +131,7 @@ public class GapFinder {
 		return rangeCount;
 	}
 	
-	public void removeEmptyPvLists() {
+	public void removeIfAllIntervalsOfPvEmpty() {
 		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();
 		for (PvIntervalList pvIntervalList : _listOfPvIntervals) {
 			if (pvIntervalList.isAllIntervalsEmpty()) {
@@ -132,7 +143,12 @@ public class GapFinder {
 		_listOfPvIntervals.removeAll(intervalListsToRemove);
 	}
 	
-
+	/**
+	 * Remove PvIntervalLists where the average number of samples over all intervals
+	 * are below threshold.
+	 * 
+	 * @param threshold
+	 */
 	public void removeSmallAvgPvLists(int threshold) {
 		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();
 		for (PvIntervalList pvIntervalList : _listOfPvIntervals) {
@@ -145,6 +161,14 @@ public class GapFinder {
 		_listOfPvIntervals.removeAll(intervalListsToRemove);
 	}
 	
+	/**
+	 * Remove PvIntervalLists where the average number of samples over all intervals
+	 * are below threshold. Remove BEFORE calculation of average number the intervals 
+	 * with largest number of samples.
+	 * 
+	 * @param threshold
+	 * @param maxIntervalsToRemove
+	 */
 	public void removeSmallWithoutMaxAvgPvLists(int threshold,
 			int maxIntervalsToRemove) {
 		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();

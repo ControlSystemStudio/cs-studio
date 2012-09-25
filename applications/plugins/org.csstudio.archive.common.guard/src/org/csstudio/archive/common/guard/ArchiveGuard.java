@@ -19,8 +19,8 @@ public class ArchiveGuard {
 		GapFinder gapFinder = new GapFinder(_connectionHandler);
 		TimeInstant start =   TimeInstantBuilder.fromSeconds(Settings.RANGE_START_IN_SECONDS);
 		TimeInstant end = TimeInstantBuilder.fromSeconds(Settings.RANGE_END_IN_SECONDS);
-		gapFinder.retrieveSamplesInIntervals(start, end);
-		gapFinder.removeEmptyPvLists();
+		gapFinder.retrieveSamplesForChannels(start, end);
+		gapFinder.removeIfAllIntervalsOfPvEmpty();
 		gapFinder.removeSmallAvgPvLists(20);
 		gapFinder.removeSmallWithoutMaxAvgPvLists(20, 20);
 		// eval.printLostHourSamples(listOfPvIntervals);
