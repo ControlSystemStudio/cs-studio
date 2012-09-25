@@ -44,52 +44,6 @@ public class BasicTypeSupport {
 
         installed = true;
     }
-
-    private static void addList() {
-        // TODO this is actually very broken:
-        // Clients can modify the list contents! (should return immutable list)
-        // PVManager is modifying the same list! (client will see dirty changes)
-        TypeSupport.addTypeSupport(new NotificationSupport<List>(List.class) {
-            Object o=null;
-            @Override
-            @SuppressWarnings({"unchecked", "rawtypes"})
-            public Notification<List> prepareNotification(List oldValue, final List newValue) {
-                // Initialize value if never initialized
-                if (oldValue == null) {
-                    oldValue = new ArrayList();
-                }else{
-                	o=oldValue.get(oldValue.size()-1);
-                }
-
-                boolean notificationNeeded = false;
-
-                // Check all the elements in the list and use StandardTypeSupport
-                // to understand whether any needs notification.
-                // Notification is done only if at least one element needs notification.
-                for (int index = 0; index < newValue.size(); index++) {
-                    if (oldValue.size() <= index) {
-                        oldValue.add(null);
-                    }
-
-                    if (newValue.get(index) != null) {
-                        Notification itemNotification = NotificationSupport.notification(o, newValue.get(index));
-                        if (itemNotification.isNotificationNeeded()) {
-                            notificationNeeded = true;
-                            o=itemNotification.isNotificationNeeded();
-                            oldValue.set(index, o);
-                        }
-                    }
-                }
-
-                // Shrink the list if more elements are there
-                while (oldValue.size() > newValue.size()) {
-                    oldValue.remove(oldValue.size() - 1);
-                }
-
-                return new Notification<List>(notificationNeeded, oldValue);
-            }
-        });
-    }
     private static void addList_old() {
         // TODO this is actually very broken:
         // Clients can modify the list contents! (should return immutable list)
@@ -132,4 +86,52 @@ public class BasicTypeSupport {
             }
         });
     }
+    private static void addList() {
+        // TODO this is actually very broken:
+        // Clients can modify the list contents! (should return immutable list)
+        // PVManager is modifying the same list! (client will see dirty changes)
+        TypeSupport.addTypeSupport(new NotificationSupport<List>(List.class) {
+
+            @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            public Notification<List> prepareNotification(List oldValue, final List newValue) {
+                // Initialize value if never initialized
+            	Object o=null;
+                if (oldValue == null) {
+                	oldValue = new ArrayList();
+                }else
+                {
+                	o=oldValue.get(oldValue.size()-1);
+                }
+
+                boolean notificationNeeded = false;
+
+                // Check all the elements in the list and use StandardTypeSupport
+                // to understand whether any needs notification.
+                // Notification is done only if at least one element needs notification.
+                for (int index = 0; index < newValue.size(); index++) {
+                    if (oldValue.size() <= index) {
+                        oldValue.add(null);
+                    }
+
+                    if (newValue.get(index) != null) {
+                        Notification itemNotification = NotificationSupport.notification(o, newValue.get(index));
+                        if (itemNotification.isNotificationNeeded()) {
+                            notificationNeeded = true;
+                            o=itemNotification.getNewValue();
+                            oldValue.set(index, o);
+                        }
+                    }
+                }
+
+                // Shrink the list if more elements are there
+                while (oldValue.size() > newValue.size()) {
+                    oldValue.remove(oldValue.size() - 1);
+                }
+
+                return new Notification<List>(notificationNeeded, oldValue);
+            }
+        });
+    }
+
 }
