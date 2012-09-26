@@ -44,9 +44,12 @@ public class SdsThumbnailImageCache {
 		config.setDiskPersistent(true);
 		config.setTimeToIdleSeconds(60 * 60 * 24 * 7);
 		config.setTimeToLiveSeconds(60 * 60 * 24 * 30);
+
+		config.setEternal(true); // Overrides time to live
+		
 		config.setMaxEntriesLocalHeap(100);
-		config.setMaxBytesLocalDisk("25M");
-		config.setMaxEntriesLocalDisk(10000);
+		config.setMaxBytesLocalDisk("100M");
+		config.setMaxEntriesLocalDisk(50000);
 		cache = new Cache(config);
 
 		cacheManager.addCache(cache);

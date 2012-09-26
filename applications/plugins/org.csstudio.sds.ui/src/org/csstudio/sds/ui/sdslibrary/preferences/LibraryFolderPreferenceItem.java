@@ -57,5 +57,9 @@ public class LibraryFolderPreferenceItem {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "checked: "+isChecked+", path: "+getFolderPath();
+	}
 	
 }

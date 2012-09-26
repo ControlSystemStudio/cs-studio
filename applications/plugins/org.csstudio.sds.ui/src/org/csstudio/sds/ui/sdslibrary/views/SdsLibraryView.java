@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
@@ -163,9 +164,12 @@ public class SdsLibraryView extends ViewPart {
 				File folder = new File(filePathPrefix
 						+ folderItem.getFolderPath());
 
-				assert folder.isDirectory();
-
-				folders.add(folder);
+				if(!folder.isDirectory()) {
+					CentralLogger.getInstance().warn(this, "library preference folder: \""+folder.getAbsolutePath() + "\" does not exist");
+				}
+				else {
+					folders.add(folder);
+				}
 			}
 		}
 		

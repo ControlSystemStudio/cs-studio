@@ -110,8 +110,6 @@ public class SdsThumbnailCreator {
 
 		private void loadLinkingContainersRecursive(ContainerModel model,
 				int recursionDepth) {
-			assert !(model instanceof LinkingContainerModel) : "Precondition failed: !(model instanceof LinkingContainerModel)";
-		
 			List<AbstractWidgetModel> childWidgets = model.getWidgets();
 			for (AbstractWidgetModel childModel : childWidgets) {
 				int childRecursionDepth = recursionDepth;

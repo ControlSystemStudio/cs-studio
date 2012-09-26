@@ -282,7 +282,7 @@ public class PvSearchView extends ViewPart {
 				IEditorInput editorInput = new FileEditorInput(file);
 				IWorkbenchWindow window = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow();
-				IWorkbenchPage page = window.getActivePage();
+				final IWorkbenchPage page = window.getActivePage();
 				final DisplayEditor editor = (DisplayEditor) page.openEditor(
 						editorInput,
 						"org.csstudio.sds.ui.internal.editor.DisplayEditor");
@@ -295,6 +295,8 @@ public class PvSearchView extends ViewPart {
 									.getActiveWorkbenchWindow().getActivePage()
 									.showView(PvListView.VIEW_ID);
 							pvListView.selectPv(pvAddress, editor);
+							// make sure that editor gets focus from click events
+							page.activate(editor);
 						} catch (PartInitException e) {
 							CentralLogger.getInstance().error(this,
 									e.getLocalizedMessage());
