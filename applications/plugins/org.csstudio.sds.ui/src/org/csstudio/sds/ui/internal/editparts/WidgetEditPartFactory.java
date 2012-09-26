@@ -37,7 +37,7 @@ import org.eclipse.gef.EditPartFactory;
  * @author Sven Wende
  * 
  */
-public final class WidgetEditPartFactory implements EditPartFactory {
+public class WidgetEditPartFactory implements EditPartFactory {
 
 	/**
 	 * The execution mode.

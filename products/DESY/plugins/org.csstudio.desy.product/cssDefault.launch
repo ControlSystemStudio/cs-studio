@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<setAttribute key="additional_plugins"/>
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.csstudio.desy.product.application"/>
 <booleanAttribute key="askclear" value="true"/>
@@ -12,17 +13,158 @@
 <booleanAttribute key="clearwslog" value="false"/>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/cssDefault"/>
 <booleanAttribute key="default" value="false"/>
+<stringAttribute key="featureDefaultLocation" value="workspace"/>
+<stringAttribute key="featurePluginResolution" value="workspace"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-css.product"/>
-<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -plugincustomization plugin_customization.ini"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.requiredJavaVersion=1.5 -Xmx512m  -Xms40m -ea"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.csstudio.desy.product.product"/>
 <stringAttribute key="productFile" value="\org.csstudio.desy.product\css.product"/>
-<stringAttribute key="selected_target_plugins" value="org.apache.jasper@default:default,org.eclipse.core.runtime.compatibility@default:default,org.hamcrest.core@default:default,org.eclipse.ui.views@default:default,org.eclipse.equinox.frameworkadmin@default:default,org.eclipse.draw2d@default:default,org.mortbay.jetty.util@default:default,org.eclipse.ui.ide@default:default,org.eclipse.help.appserver@default:default,org.junit4@default:default,org.eclipse.team.cvs.core@default:default,org.eclipse.core.filebuffers@default:default,org.eclipse.ant.core@default:default,org.eclipse.ecf.ssl@default:false,org.remotercp.domain.authorization@default:default,org.eclipse.help.webapp@default:default,org.eclipse.ecf.provider.xmpp.remoteservice@default:false,org.junit@default:default,org.jivesoftware.smack@default:default,org.apache.commons.logging@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.ui.cheatsheets@default:default,org.eclipse.equinox.p2.publisher@default:default,org.sat4j.pb@default:default,org.eclipse.equinox.p2.reconciler.dropins@default:default,org.eclipse.ui.intro.universal@default:default,org.eclipse.equinox.p2.director.app@default:default,org.eclipse.equinox.p2.director@default:default,org.eclipse.core.net@default:default,org.eclipse.ui.net@default:default,org.eclipse.core.commands@default:default,org.eclipse.equinox.http.jetty@default:default,org.eclipse.osgi.services@default:default,org.remotercp.domain.provisioning@default:default,org.eclipse.team.ui@default:default,org.eclipse.ecf.provider.filetransfer@default:default,org.eclipse.equinox.p2.metadata.repository@default:default,org.eclipse.text@default:default,org.apache.commons.el@default:default,org.eclipse.equinox.launcher@default:default,org.eclipse.ecf.presence@default:default,org.eclipse.ui.intro@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.resources@default:default,org.eclipse.core.databinding.beans@default:default,javax.servlet@default:default,org.eclipse.help.ui@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.ui.workbench.texteditor@default:default,org.eclipse.equinox.p2.repository.tools@default:default,org.eclipse.ui.workbench@default:default,javax.xml@default:default,org.eclipse.osgi@-1:true,org.eclipse.jdt.debug@default:default,org.eclipse.core.databinding@default:default,org.eclipse.ecf.provider.xmpp@default:default,org.eclipse.core.databinding.observable@default:default,org.eclipse.core.variables@default:default,org.eclipse.help.base@default:default,org.eclipse.jdt.junit.core@default:default,org.sat4j.core@default:default,org.eclipse.equinox.p2.ui@default:default,org.remotercp.ui.contacts@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.equinox.p2.ui.sdk@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.gef@default:default,org.eclipse.compare@default:default,org.eclipse.equinox.jsp.jasper@default:default,org.remotercp.service.authorization@default:true,javax.servlet.jsp@default:default,org.eclipse.jdt.core@default:default,org.eclipse.ui.views.properties.tabbed@default:default,org.eclipse.ui.navigator@default:default,org.eclipse.ecf.identity@default:default,org.eclipse.equinox.app@default:default,com.jcraft.jsch@default:default,org.eclipse.equinox.p2.updatesite@default:default,org.eclipse.team.cvs.ssh2@default:default,org.remotercp.service.connection@default:true,org.eclipse.equinox.p2.jarprocessor@default:default,org.eclipse.osgi.util@default:default,org.eclipse.ui@default:default,org.remotercp.ui.login@default:default,org.eclipse.ecf.datashare@default:default,org.eclipse.equinox.common@2:true,org.eclipse.core.runtime@default:true,org.remotercp.filetransfer.receiver@default:default,org.eclipse.ltk.ui.refactoring@default:default,org.apache.lucene.analysis@default:default,org.eclipse.jdt.junit.runtime@default:default,org.eclipse.ecf.provider@default:default,org.eclipse.jdt.launching@default:default,org.eclipse.equinox.p2.core@default:true,org.eclipse.cvs@default:default,org.remotercp.service.provisioning@default:true,org.eclipse.equinox.p2.directorywatcher@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.team.core@default:default,org.eclipse.equinox.p2.touchpoint.natives@default:default,org.remotercp.filetransfer.sender@default:default,org.eclipse.ui.console@default:default,org.eclipse.equinox.p2.repository@default:default,org.eclipse.equinox.p2.garbagecollector@default:default,org.eclipse.jsch.ui@default:default,org.eclipse.jsch.core@default:default,org.eclipse.ecf.remoteservice@default:default,org.eclipse.update.ui@default:default,org.eclipse.debug.core@default:default,org.eclipse.equinox.simpleconfigurator.manipulator@default:default,org.eclipse.ui.forms@default:default,org.eclipse.ecf.provider.datashare@default:default,org.eclipse.jface.text@default:default,org.eclipse.equinox.util@default:default,org.eclipse.equinox.p2.updatechecker@default:default,org.eclipse.ecf.provider.filetransfer.ssl@default:false,org.eclipse.equinox.p2.metadata@default:default,org.remotercp.common@default:default,org.eclipse.help@default:default,org.eclipse.equinox.p2.ui.sdk.scheduler@default:default,org.eclipse.ui.editors@default:default,com.ibm.icu@default:default,org.remotercp.service.preferences@default:true,org.eclipse.pde.runtime@default:default,org.eclipse.equinox.p2.operations@default:default,org.remotercp.ui.provisioning@default:default,org.eclipse.equinox.p2.extensionlocation@default:default,org.eclipse.update.configurator@3:true,org.remotercp.util@default:default,org.eclipse.swt.win32.win32.x86@default:false,org.eclipse.ecf@default:default,org.mortbay.jetty.server@default:default,org.eclipse.equinox.security.ui@default:default,org.eclipse.equinox.concurrent@default:default,org.eclipse.equinox.launcher.win32.win32.x86@default:false,org.eclipse.ltk.core.refactoring@default:default,org.eclipse.equinox.p2.artifact.repository@default:default,org.eclipse.equinox.simpleconfigurator@1:true,org.eclipse.rcp@default:default,org.eclipse.jface.databinding@default:default,org.eclipse.ui.navigator.resources@default:default,org.eclipse.ecf.provider.remoteservice@default:default,org.eclipse.jface@default:default,org.eclipse.core.filesystem@default:default,org.eclipse.equinox.security@default:default,org.eclipse.compare.core@default:default,org.eclipse.equinox.p2.engine@default:default,org.eclipse.core.contenttype@default:default,org.remotercp.ui.administration@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.ecf.filetransfer@default:default,org.eclipse.core.expressions@default:default,org.eclipse.core.databinding.property@default:default,org.objectweb.asm@default:default,org.remotercp.ui.progress@default:default,org.eclipse.equinox.frameworkadmin.equinox@default:default,org.eclipse.ecf.provider.xmpp.datashare@default:false,org.eclipse.team.cvs.ui@default:default,org.eclipse.equinox.p2.touchpoint.eclipse@default:default,org.eclipse.equinox.p2.metadata.generator@default:default,org.eclipse.ecf.sharedobject@default:default,org.apache.lucene@default:default,org.remotercp.ui.errorhandling@default:default,org.eclipse.equinox.jsp.jasper.registry@default:default,org.eclipse.update.core@default:default,org.eclipse.equinox.ds@default:true,org.remotercp.domain.preferences@default:default,org.eclipse.equinox.p2.console@default:default,org.eclipse.swt@default:default,org.remotercp.ui.preferences@default:default"/>
-<stringAttribute key="selected_workspace_plugins" value="org.apache.tools.ant.junit@default:default,org.csstudio.nams.common@default:default,org.csstudio.utility.pv.ui@default:default,org.csstudio.sds.ui@default:default,org.csstudio.common.trendplotter@default:default,org.csstudio.platform.jaasAuthentication@default:default,org.csstudio.platform.jaasAuthentication.ui@default:default,org.csstudio.platform.ldapAuthorization.ui@default:default,org.csstudio.platform.libs.epics.ui@default:default,org.csstudio.domain.desy@default:default,org.csstudio.config.kryoNameBrowser@default:default,com.google.common@default:default,org.csstudio.diag.epics.pvtree.intro@default:default,org.csstudio.utility.nameSpaceBrowser@default:default,org.csstudio.alarm.service@default:default,de.desy.language.editor.core@default:default,org.slf4j-log4j12@default:default,org.csstudio.email@default:default,org.csstudio.sds.intro@default:default,org.csstudio.platform.simpledal@default:default,de.desy.language.snl.diagram.ui@default:default,org.csstudio.utility.pvmanager@default:default,org.csstudio.platform.libs.hibernate@default:default,org.csstudio.dct.treemodelexporter@default:default,org.csstudio.sds.samples@default:default,org.csstudio.alarm.dbaccess@default:default,org.csstudio.platform.libs.epics@default:default,javax.annotation@default:default,org.csstudio.platform.libs.jdbc@default:default,org.csstudio.email.ui@default:default,org.csstudio.sds.components@default:default,org.csstudio.diag.diles@default:default,de.desy.language.editor.details@default:default,org.csstudio.sds.language.script@default:default,org.csstudio.diag.jmssender@default:default,org.csstudio.alarm.treeview@default:default,org.csstudio.swt.xygraph@default:default,org.csstudio.utility.adlConverter@default:default,org.csstudio.utility.screenshot@default:default,org.csstudio.testsuite@default:default,org.csstudio.platform.libs.dal.ui@default:default,org.csstudio.logbook.ui@default:default,org.csstudio.dct@default:default,org.csstudio.utility.ldap.service.impl@default:true,org.csstudio.platform.libs.jms@default:default,org.csstudio.sds.importer@default:default,org.csstudio.diag.probe.intro@default:default,org.csstudio.nams.common.activatorUtils@default:default,org.csstudio.platform.libs.hibernate.ui@default:default,org.csstudio.utility.pv@default:default,org.csstudio.config.ioconfig.view@default:default,org.csstudio.openfile@default:default,org.csstudio.samples@default:default,org.mockito@default:default,org.csstudio.logbook@default:default,org.csstudio.diag.IOCremoteManagement@default:default,org.csstudio.alarm.intro@default:default,org.csstudio.sds.settings.desy@default:default,org.csstudio.ams.alarmchainmanager@default:default,org.csstudio.platform@default:default,org.csstudio.management.contactscommands.ui@default:default,org.csstudio.snl.intro@default:default,org.csstudio.apputil@default:default,org.csstudio.csdata@default:default,org.csstudio.platform.utility.rdb@default:default,org.csstudio.platform.utility.jms.ui@default:default,org.csstudio.utility.documentViewer@default:default,org.csstudio.nams.service.messaging@default:default,org.csstudio.config.ioconfig.model@default:default,org.csstudio.domain.desy.epics@default:default,org.csstudio.dct.desy@default:default,org.csstudio.apputil.ui@default:default,org.csstudio.startuphelper@default:default,org.csstudio.desy.common.product.log4j@default:false,org.csstudio.platform.libs.dal.epics@default:default,org.csstudio.auth@default:default,org.csstudio.platform.ui@default:default,org.csstudio.utility.pvmanager.epics@default:default,org.csstudio.ui.preferences@default:default,org.csstudio.sds.importer.ui@default:default,org.csstudio.platform.libs.dal@default:default,org.csstudio.sds@default:default,de.desy.language.libraries@default:default,org.csstudio.desy.product@default:default,org.csstudio.utility.dal.epics.infobar@default:default,de.desy.language.editor.ui@default:default,org.jdom@default:default,org.csstudio.diag.snlDebugger@default:default,org.csstudio.management.xmpplogindialog@default:default,org.csstudio.domain.desy.ui@default:default,org.csstudio.auth.ui@default:default,org.custommonkey.xmlunit@default:default,org.csstudio.utility.namespace.utility@default:default,org.csstudio.dct.intro@default:default,org.csstudio.utility.treemodel@default:default,org.csstudio.config.authorizeid@default:default,org.csstudio.swt.widgets@default:default,org.csstudio.workspace@default:default,com.google.inject@default:default,org.csstudio.nams.service.configurationAccess.localStore@default:default,org.csstudio.nams.service.messaging.impl.jms@default:default,org.slf4j@default:default,org.csstudio.platform.ldapAuthorization@default:default,org.csstudio.diag.epics.pvtree@default:default,org.apache.log4j@default:default,org.csstudio.utility.httpd@default:default,org.csstudio.config.savevalue.service@default:default,org.csstudio.utility.ldap.ui@default:default,org.csstudio.utility.documentService@default:default,org.csstudio.startup@default:default,org.csstudio.utility.screenshot.desy@default:default,de.desy.language.snl.configuration.linux@default:default,org.csstudio.platform.libs.easymock@default:default,org.csstudio.utility.epicsDataBaseCompare@default:default,org.csstudio.remote@default:default,org.csstudio.nams.service.preferenceservice.ui@default:default,org.csstudio.sds.components.ui@default:default,org.csstudio.utility.ldap.service@default:default,org.csstudio.display.pvtable@default:default,org.csstudio.utility.quickstart@default:default,org.csstudio.sds.language.script.ui@default:default,org.apache.tools.ant@default:default,org.csstudio.diag.icsiocmonitor.service@default:default,org.csstudio.ui.util@default:default,org.joda.time@default:default,org.csstudio.utility.IOC-Socket-Communication@default:default,org.csstudio.ams@default:default,org.csstudio.utility.nameSpaceSearch@default:default,org.csstudio.platform.utility.jms@default:default,org.csstudio.java@default:default,org.csstudio.utility.pv.epics@default:default,org.csstudio.alarm.table@default:default,org.csstudio.utility.ldap.nameSpaceBrowser@default:default,org.csstudio.nams.service.preferenceservice@default:default,org.csstudio.nams.service.logging@default:default,org.csstudio.sds.components.epics@default:default,org.csstudio.swt.chart@default:default,org.csstudio.dct.ui@default:default,org.csstudio.utility.sysmon@default:default,org.csstudio.nams.configurator.ui@default:default,org.csstudio.utility.ldap.treeconfiguration@default:default,org.csstudio.ams.monitor@default:default,org.csstudio.diag.probe@default:default,de.desy.language.snl.ui@default:default,org.csstudio.utility.recordProperty@default:default,de.desy.language.snl@default:default,de.desy.language.snl.diagram@default:default,org.csstudio.data@default:default,org.csstudio.utility.caSnooperUi@default:default,org.csstudio.config.savevalue.ui@default:default,org.csstudio.platform.libs.jmock@default:default"/>
+<setAttribute key="selected_features">
+<setEntry value="org.csstudio.sds.feature:default"/>
+<setEntry value="org.eclipse.cvs:default"/>
+<setEntry value="org.eclipse.datatools.common.doc.user:default"/>
+<setEntry value="org.eclipse.datatools.connectivity.doc.user:default"/>
+<setEntry value="org.eclipse.datatools.connectivity.feature:default"/>
+<setEntry value="org.eclipse.datatools.connectivity.oda.designer.core.feature:default"/>
+<setEntry value="org.eclipse.datatools.connectivity.oda.designer.feature:default"/>
+<setEntry value="org.eclipse.datatools.connectivity.oda.feature:default"/>
+<setEntry value="org.eclipse.datatools.doc.user:default"/>
+<setEntry value="org.eclipse.datatools.enablement.apache.derby.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.hsqldb.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.ibm.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.ingres.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.jdbc.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.jdt.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.msft.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.mysql.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.oda.designer.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.oda.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.oracle.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.postgresql.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.sap.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.sqlite.feature:default"/>
+<setEntry value="org.eclipse.datatools.enablement.sybase.feature:default"/>
+<setEntry value="org.eclipse.datatools.intro:default"/>
+<setEntry value="org.eclipse.datatools.modelbase.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.data.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.ddl.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.ddlgen.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.parsers.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.results.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.schemaobjecteditor.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqldevtools.sqlbuilder.feature:default"/>
+<setEntry value="org.eclipse.datatools.sqltools.doc.user:default"/>
+<setEntry value="org.eclipse.draw2d:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore:default"/>
+<setEntry value="org.eclipse.emf.codegen.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen:default"/>
+<setEntry value="org.eclipse.emf.common.ui:default"/>
+<setEntry value="org.eclipse.emf.common:default"/>
+<setEntry value="org.eclipse.emf.converter:default"/>
+<setEntry value="org.eclipse.emf.databinding.edit:default"/>
+<setEntry value="org.eclipse.emf.databinding:default"/>
+<setEntry value="org.eclipse.emf.ecore.edit:default"/>
+<setEntry value="org.eclipse.emf.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.ecore:default"/>
+<setEntry value="org.eclipse.emf.edit.ui:default"/>
+<setEntry value="org.eclipse.emf.edit:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore:default"/>
+<setEntry value="org.eclipse.emf.mapping.ui:default"/>
+<setEntry value="org.eclipse.emf.mapping:default"/>
+<setEntry value="org.eclipse.emf:default"/>
+<setEntry value="org.eclipse.epp.mpc:default"/>
+<setEntry value="org.eclipse.epp.package.common.feature:default"/>
+<setEntry value="org.eclipse.epp.package.jee.feature:default"/>
+<setEntry value="org.eclipse.epp.usagedata.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.discovery.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
+<setEntry value="org.eclipse.gef:default"/>
+<setEntry value="org.eclipse.help:default"/>
+<setEntry value="org.eclipse.jdt:default"/>
+<setEntry value="org.eclipse.jpt.common.eclipselink.feature:default"/>
+<setEntry value="org.eclipse.jpt.common.feature:default"/>
+<setEntry value="org.eclipse.jpt.dbws.eclipselink.feature:default"/>
+<setEntry value="org.eclipse.jpt.jaxb.eclipselink.feature:default"/>
+<setEntry value="org.eclipse.jpt.jaxb.feature:default"/>
+<setEntry value="org.eclipse.jpt.jpa.eclipselink.feature:default"/>
+<setEntry value="org.eclipse.jpt.jpa.feature:default"/>
+<setEntry value="org.eclipse.jsf.feature:default"/>
+<setEntry value="org.eclipse.jst.common.fproj.enablement.jdt:default"/>
+<setEntry value="org.eclipse.jst.enterprise_core.feature:default"/>
+<setEntry value="org.eclipse.jst.enterprise_ui.feature:default"/>
+<setEntry value="org.eclipse.jst.enterprise_userdoc.feature:default"/>
+<setEntry value="org.eclipse.jst.jsf.apache.trinidad.tagsupport.feature:default"/>
+<setEntry value="org.eclipse.jst.server_adapters.ext.feature:default"/>
+<setEntry value="org.eclipse.jst.server_adapters.feature:default"/>
+<setEntry value="org.eclipse.jst.server_core.feature:default"/>
+<setEntry value="org.eclipse.jst.server_ui.feature:default"/>
+<setEntry value="org.eclipse.jst.server_userdoc.feature:default"/>
+<setEntry value="org.eclipse.jst.web_core.feature:default"/>
+<setEntry value="org.eclipse.jst.web_ui.feature:default"/>
+<setEntry value="org.eclipse.jst.web_userdoc.feature:default"/>
+<setEntry value="org.eclipse.jst.webpageeditor.feature:default"/>
+<setEntry value="org.eclipse.jst.ws.axis2tools.feature:default"/>
+<setEntry value="org.eclipse.jst.ws.cxf.feature:default"/>
+<setEntry value="org.eclipse.jst.ws.jaxws.dom.feature:default"/>
+<setEntry value="org.eclipse.jst.ws.jaxws.feature:default"/>
+<setEntry value="org.eclipse.jst.ws.jaxws_userdoc.feature:default"/>
+<setEntry value="org.eclipse.mylyn.bugzilla_feature:default"/>
+<setEntry value="org.eclipse.mylyn.context_feature:default"/>
+<setEntry value="org.eclipse.mylyn.ide_feature:default"/>
+<setEntry value="org.eclipse.mylyn.java_feature:default"/>
+<setEntry value="org.eclipse.mylyn.team_feature:default"/>
+<setEntry value="org.eclipse.mylyn.wikitext_feature:default"/>
+<setEntry value="org.eclipse.mylyn_feature:default"/>
+<setEntry value="org.eclipse.pde:default"/>
+<setEntry value="org.eclipse.platform:default"/>
+<setEntry value="org.eclipse.rcp:default"/>
+<setEntry value="org.eclipse.rse.core:default"/>
+<setEntry value="org.eclipse.rse.dstore:default"/>
+<setEntry value="org.eclipse.rse.ftp:default"/>
+<setEntry value="org.eclipse.rse.local:default"/>
+<setEntry value="org.eclipse.rse.ssh:default"/>
+<setEntry value="org.eclipse.rse.telnet:default"/>
+<setEntry value="org.eclipse.rse.terminals:default"/>
+<setEntry value="org.eclipse.rse.useractions:default"/>
+<setEntry value="org.eclipse.rse:default"/>
+<setEntry value="org.eclipse.tm.terminal.ssh:default"/>
+<setEntry value="org.eclipse.tm.terminal.telnet:default"/>
+<setEntry value="org.eclipse.tm.terminal.view:default"/>
+<setEntry value="org.eclipse.tm.terminal:default"/>
+<setEntry value="org.eclipse.wst.common.fproj:default"/>
+<setEntry value="org.eclipse.wst.common_core.feature:default"/>
+<setEntry value="org.eclipse.wst.common_ui.feature:default"/>
+<setEntry value="org.eclipse.wst.jsdt.feature:default"/>
+<setEntry value="org.eclipse.wst.server_adapters.feature:default"/>
+<setEntry value="org.eclipse.wst.server_core.feature:default"/>
+<setEntry value="org.eclipse.wst.server_ui.feature:default"/>
+<setEntry value="org.eclipse.wst.server_userdoc.feature:default"/>
+<setEntry value="org.eclipse.wst.web_core.feature:default"/>
+<setEntry value="org.eclipse.wst.web_ui.feature:default"/>
+<setEntry value="org.eclipse.wst.web_userdoc.feature:default"/>
+<setEntry value="org.eclipse.wst.ws_core.feature:default"/>
+<setEntry value="org.eclipse.wst.ws_ui.feature:default"/>
+<setEntry value="org.eclipse.wst.ws_userdoc.feature:default"/>
+<setEntry value="org.eclipse.wst.ws_wsdl15.feature:default"/>
+<setEntry value="org.eclipse.wst.xml.xpath2.processor.feature:default"/>
+<setEntry value="org.eclipse.wst.xml_core.feature:default"/>
+<setEntry value="org.eclipse.wst.xml_ui.feature:default"/>
+<setEntry value="org.eclipse.wst.xml_userdoc.feature:default"/>
+<setEntry value="org.eclipse.wst.xsl.feature:default"/>
+</setAttribute>
+<stringAttribute key="selected_target_plugins" value="ch.qos.logback.classic@default:default,ch.qos.logback.core@default:default,ch.qos.logback.slf4j@default:false,com.ibm.icu@default:default,com.ning.async-http-client@default:default,javax.servlet.jsp@default:default,javax.servlet@default:default,javax.transaction@default:false,javax.xml@default:default,org.apache.ant@default:default,org.apache.commons.el@default:default,org.apache.commons.logging@default:default,org.apache.jasper@default:default,org.apache.lucene*2.9.1.v201101211721@default:default,org.apache.lucene.analysis@default:default,org.apache.lucene.core@default:default,org.apache.lucene.highlighter@default:default,org.apache.lucene.memory@default:default,org.apache.lucene.misc@default:default,org.apache.lucene.queries@default:default,org.apache.lucene.snowball@default:default,org.apache.lucene.spellchecker@default:default,org.apache.xerces@default:default,org.apache.xml.resolver@default:default,org.apache.xml.serializer@default:default,org.eclipse.ant.core@default:default,org.eclipse.compare.core@default:default,org.eclipse.compare@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.databinding.observable@default:default,org.eclipse.core.databinding.property@default:default,org.eclipse.core.databinding@default:default,org.eclipse.core.expressions@default:default,org.eclipse.core.filebuffers@default:default,org.eclipse.core.filesystem.win32.x86_64@default:false,org.eclipse.core.filesystem@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.net.win32.x86_64@default:false,org.eclipse.core.net@default:default,org.eclipse.core.resources@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.core.variables@default:default,org.eclipse.draw2d@default:default,org.eclipse.emf.common@default:default,org.eclipse.emf.ecore.change@default:default,org.eclipse.emf.ecore.edit@default:default,org.eclipse.emf.ecore.xmi@default:default,org.eclipse.emf.ecore@default:default,org.eclipse.emf.edit@default:default,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.equinox.jsp.jasper.registry@default:default,org.eclipse.equinox.jsp.jasper@default:default,org.eclipse.equinox.p2.core@default:true,org.eclipse.equinox.p2.engine@default:default,org.eclipse.equinox.p2.metadata.repository@default:default,org.eclipse.equinox.p2.metadata@default:default,org.eclipse.equinox.p2.repository@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.security.win32.x86_64@default:false,org.eclipse.equinox.security@default:default,org.eclipse.gef@default:default,org.eclipse.help.base@default:default,org.eclipse.help.ui@default:default,org.eclipse.help.webapp@default:default,org.eclipse.help@default:default,org.eclipse.jem.util@default:default,org.eclipse.jface.databinding@default:default,org.eclipse.jface.text@default:default,org.eclipse.jface@default:default,org.eclipse.ltk.core.refactoring@default:default,org.eclipse.ltk.ui.refactoring@default:default,org.eclipse.m2e.archetype.common@default:default,org.eclipse.m2e.core.ui@default:default,org.eclipse.m2e.core@default:default,org.eclipse.m2e.logback.appender@default:false,org.eclipse.m2e.maven.indexer@default:default,org.eclipse.m2e.maven.runtime@default:default,org.eclipse.m2e.model.edit@default:default,org.eclipse.nebula.widgets.gallery@default:default,org.eclipse.net4j.jms.api@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi.util@default:default,org.eclipse.osgi@-1:true,org.eclipse.search@default:default,org.eclipse.swt.win32.win32.x86_64@default:false,org.eclipse.swt@default:default,org.eclipse.team.core@default:default,org.eclipse.team.ui@default:default,org.eclipse.text@default:default,org.eclipse.ui.cheatsheets@default:default,org.eclipse.ui.console@default:default,org.eclipse.ui.editors@default:default,org.eclipse.ui.forms@default:default,org.eclipse.ui.ide@default:default,org.eclipse.ui.intro.universal@default:default,org.eclipse.ui.intro@default:default,org.eclipse.ui.navigator.resources@default:default,org.eclipse.ui.navigator@default:default,org.eclipse.ui.views.properties.tabbed@default:default,org.eclipse.ui.views@default:default,org.eclipse.ui.win32@default:false,org.eclipse.ui.workbench.texteditor@default:default,org.eclipse.ui.workbench@default:default,org.eclipse.ui@default:default,org.eclipse.update.configurator@3:true,org.eclipse.update.core.win32@default:false,org.eclipse.update.core@default:default,org.eclipse.update.ui@default:default,org.eclipse.wst.common.core@default:default,org.eclipse.wst.common.emf@default:default,org.eclipse.wst.common.emfworkbench.integration@default:default,org.eclipse.wst.common.environment@default:default,org.eclipse.wst.common.frameworks@default:default,org.eclipse.wst.common.project.facet.core@default:default,org.eclipse.wst.common.uriresolver@default:default,org.eclipse.wst.sse.core@default:default,org.eclipse.wst.validation@default:default,org.eclipse.wst.xml.core@default:default,org.eclipse.wst.xsd.core@default:default,org.eclipse.xsd@default:default,org.hamcrest.core@default:default,org.jboss.netty@default:default,org.junit*4.8.2.v4_8_2_v20110321-1705@default:default,org.junit4@default:default,org.mortbay.jetty.server@default:default,org.mortbay.jetty.util@default:default,org.slf4j.api@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="com.google.common@default:default,de.desy.language.editor.core@default:default,de.desy.language.editor.ui@default:default,de.desy.language.libraries@default:default,javax.annotation@default:default,javax.mail@default:default,org.apache.log4j@default:default,org.csstudio.auth.ui@default:default,org.csstudio.auth@default:default,org.csstudio.dal.epics@default:default,org.csstudio.dal.simulator@default:default,org.csstudio.dal.ui@default:default,org.csstudio.dal@default:default,org.csstudio.data@default:default,org.csstudio.desy.product@default:default,org.csstudio.domain.desy.softioc@default:default,org.csstudio.domain.desy.ui@default:default,org.csstudio.domain.desy@default:default,org.csstudio.openfile@default:default,org.csstudio.platform.libs.epics@default:default,org.csstudio.platform.libs.jmock@default:default,org.csstudio.platform.libs.jms@default:default,org.csstudio.platform.simpledal@default:default,org.csstudio.platform.ui@default:default,org.csstudio.platform.utility.jms@default:default,org.csstudio.platform@default:default,org.csstudio.sds.components.epics@default:default,org.csstudio.sds.components.ui@default:default,org.csstudio.sds.components@default:default,org.csstudio.sds.importer.ui@default:default,org.csstudio.sds.importer@default:default,org.csstudio.sds.intro@default:default,org.csstudio.sds.language.script.ui@default:default,org.csstudio.sds.language.script@default:default,org.csstudio.sds.samples@default:default,org.csstudio.sds.settings.desy@default:default,org.csstudio.sds.ui.sdslibrary@default:default,org.csstudio.sds.ui@default:default,org.csstudio.sds@default:default,org.csstudio.startup@default:default,org.csstudio.startuphelper@default:default,org.csstudio.swt.xygraph.rcp@default:false,org.csstudio.swt.xygraph@default:default,org.csstudio.ui.preferences@default:default,org.csstudio.utility.pvmanager.epics@default:default,org.csstudio.utility.pvmanager.ui@default:default,org.csstudio.utility.pvmanager@default:default,org.csstudio.workspace@default:default,org.ehcache@default:default,org.jdom@default:default,org.joda.time@default:default,org.mockito@default:default,org.slf4j-log4j12@default:default,org.slf4j@default:default"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>

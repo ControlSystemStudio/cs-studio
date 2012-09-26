@@ -24,6 +24,7 @@ package org.csstudio.sds.ui;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.simpledal.ProcessVariableAddressValidationServiceTracker;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.rules.RuleService;
@@ -31,6 +32,8 @@ import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.ColorAndFo
 import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.ColorAndFontService;
 import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.IColorAndFontService;
 import org.csstudio.sds.ui.internal.preferences.AllowWriteAccessPreferenceListener;
+import org.csstudio.sds.ui.internal.pvlistview.preferences.PvSearchFolderPreferenceService;
+import org.csstudio.sds.ui.sdslibrary.preferences.LibraryFolderPreferenceService;
 import org.csstudio.sds.util.StringUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -80,6 +83,11 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 	private static IPreferenceStore _preferenceStore;
 
 	private IColorAndFontService _colorAndFontService;
+
+	private LibraryFolderPreferenceService libraryFolderPreferenceService;
+	private PvSearchFolderPreferenceService pvSearchFolderPreferenceService;
+
+	private ProcessVariableAddressValidationServiceTracker pvAddressValidationServiceTracker;
 
 	/**
 	 * Standard constructor.
@@ -135,6 +143,10 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject("Settings").getFile("settings.xml");
 		_colorAndFontService = new ColorAndFontService(file, new ColorAndFontSaxHandler());
+		libraryFolderPreferenceService = new LibraryFolderPreferenceService(this.getPreferenceStore());
+		pvSearchFolderPreferenceService = new PvSearchFolderPreferenceService(this.getPreferenceStore());
+		
+		pvAddressValidationServiceTracker = new ProcessVariableAddressValidationServiceTracker(context);
 	}
 
 	/**
@@ -142,6 +154,7 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 	 */
 	@Override
 	protected void doStop(final BundleContext context) throws Exception {
+		pvAddressValidationServiceTracker.close();
 	}
 
 	/**
@@ -154,5 +167,17 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 
 	public IColorAndFontService getColorAndFontService() {
 		return _colorAndFontService;
+	}
+	
+	public LibraryFolderPreferenceService getLibraryFolderPreferenceService() {
+		return libraryFolderPreferenceService;
+	}
+	
+	public PvSearchFolderPreferenceService getPvSearchFolderPreferenceService() {
+		return pvSearchFolderPreferenceService;
+	}
+
+	public ProcessVariableAddressValidationServiceTracker getProcessVariableAddressValidationServiceTracker() {
+		return this.pvAddressValidationServiceTracker;
 	}
 }

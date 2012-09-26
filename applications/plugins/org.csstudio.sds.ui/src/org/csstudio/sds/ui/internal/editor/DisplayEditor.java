@@ -165,7 +165,10 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
      */
     private DisplayModel _displayModel = new DisplayModel();
     
-    /**
+    private boolean isModelLoaded;
+    private final List<IDisplayModelLoadListener> modelLoadedListeners;
+    
+	/**
      * A DisplayListener.
      */
     private Map<String, IPropertyChangeListener> _propertyChangeListeners;
@@ -199,6 +202,9 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         
         initPropertyChangeListeners();
         initCommandStackListeners();
+        
+        isModelLoaded = false;
+        modelLoadedListeners = new ArrayList<IDisplayModelLoadListener>();
     }
     
     /**
@@ -342,6 +348,22 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
      */
     public Composite getParentComposite() {
         return _rulerComposite;
+    }
+    
+    /**
+     * Adds a listener that is called when the model has been loaded. 
+     * The Listener is called once and automatically removed afterwards
+     */
+    public void addModelLoadedListener(IDisplayModelLoadListener displayModelLoadListener) {
+		assert displayModelLoadListener != null : "Precondition failed: displayModelLoadListener != null";
+		
+		if(isModelLoaded) {
+			// Fire listener directly if model is already loaded
+			displayModelLoadListener.onDisplayModelLoaded();
+		}
+		else {
+			modelLoadedListeners.add(displayModelLoadListener);
+		}
     }
     
     /**
@@ -512,28 +534,29 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
      */
     @Override
     protected void initializeGraphicalViewer() {
-        prepareModel();
-        
-        final GraphicalViewer viewer = getGraphicalViewer();
-        
-        // initialize context menu
-        ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer, getActionRegistry());
-        
-        viewer.setContextMenu(cmProvider);
-        getSite().registerContextMenu(cmProvider, viewer);
-        
-        // load the model
-        loadModelAsynchroniously();
-        
-        // initialize drop support
-        viewer.addDropTargetListener(new EditorDropTargetListener(viewer));
-        
-        // initialize background color
-        // this.getGraphicalViewer().getControl().setBackground(
-        // CustomMediaFactory.getInstance().getColor(
-        // _displayModel.getBackgroundColor()));
-    }
-    
+		prepareModel();
+
+		final GraphicalViewer viewer = getGraphicalViewer();
+
+		// initialize context menu
+		ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer, getActionRegistry());
+
+		viewer.setContextMenu(cmProvider);
+		getSite().registerContextMenu(cmProvider, viewer);
+
+		// load the model
+		loadModelAsynchroniously();
+
+		// initialize drop support
+		viewer.addDropTargetListener(new EditorDropTargetListener(viewer));
+
+		viewer.addDropTargetListener(new LibraryElementDropTargetListener(viewer));
+		// initialize background color
+		// this.getGraphicalViewer().getControl().setBackground(
+		// CustomMediaFactory.getInstance().getColor(
+		// _displayModel.getBackgroundColor()));
+	}
+
     private void initCommandStackListeners() {
         getCommandStack()
                 .addCommandStackEventListener(new AssociableCommandListener(getCommandStack()));
@@ -581,6 +604,12 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                         action = getActionRegistry()
                                 .getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY);
                         action.setChecked(action.isChecked());
+                        
+                        isModelLoaded = true;
+                        for (IDisplayModelLoadListener modelLoadListener : modelLoadedListeners) {
+							modelLoadListener.onDisplayModelLoaded();
+						}
+                        modelLoadedListeners.clear();
                     }
                 };
             }

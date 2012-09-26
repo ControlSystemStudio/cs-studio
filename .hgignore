@@ -21,6 +21,8 @@ build/ext
 logs/*.log
 log/*.log
 
+# local wps mac launch
+products/DESY/plugins/org.csstudio.desy.product/cssDefault-wps-mac.launch
 
 # SNS, KEK Products: Ignore output of headless build
 syntax: glob
