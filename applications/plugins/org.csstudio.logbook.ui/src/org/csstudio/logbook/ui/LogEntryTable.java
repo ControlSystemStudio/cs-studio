@@ -14,7 +14,12 @@ import org.csstudio.logbook.Logbook;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -22,17 +27,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
-import org.eclipse.jface.viewers.ColumnPixelData;
 
 /**
  * @author shroffk
  * 
  */
-public class LogEntryTable extends Composite {
+public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	// Model
 	Collection<LogEntry> logs;
@@ -45,6 +48,7 @@ public class LogEntryTable extends Composite {
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 			this);
 	private Composite composite;
+	private org.csstudio.logbook.ui.AbstractSelectionProviderWrapper selectionProvider;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -95,7 +99,15 @@ public class LogEntryTable extends Composite {
 				return (Object[]) inputElement;
 			}
 		});
+		selectionProvider = new AbstractSelectionProviderWrapper(
+				logTableViewer, this) {
 
+			@Override
+			protected ISelection transform(IStructuredSelection selection) {
+				return selection;
+			}
+
+		};
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
@@ -103,6 +115,7 @@ public class LogEntryTable extends Composite {
 				switch (event.getPropertyName()) {
 				case "logs":
 					updateTable();
+					logTableViewer.setInput(logs.toArray());
 					break;
 				case "selectedLogEntry":
 
@@ -225,6 +238,28 @@ public class LogEntryTable extends Composite {
 		this.selectedLogEntry = selectedLogEntry;
 		changeSupport.firePropertyChange("selectedLogEntry", oldValue,
 				this.selectedLogEntry);
+	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
 	}
 
 }
