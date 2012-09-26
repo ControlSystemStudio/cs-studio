@@ -256,6 +256,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             RESCUE_LOG.info(stmt);
             no++;
         }
-        ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, "#Rescued: " + no);
+        if(no != 0) {
+            ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, "#Rescued: " + no);
+        }
     }
 }
