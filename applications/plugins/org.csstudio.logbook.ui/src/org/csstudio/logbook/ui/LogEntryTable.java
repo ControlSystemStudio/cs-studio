@@ -3,6 +3,9 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
 import java.util.Collection;
 
@@ -19,9 +22,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
+import org.eclipse.jface.viewers.ColumnPixelData;
 
 /**
  * @author shroffk
@@ -37,6 +42,18 @@ public class LogEntryTable extends Composite {
 	private Table logTable;
 	private TableViewer logTableViewer;
 
+	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
+			this);
+	private Composite composite;
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(listener);
+	}
+
 	public LogEntryTable(Composite parent, int style) {
 		super(parent, style);
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -46,10 +63,17 @@ public class LogEntryTable extends Composite {
 		gridLayout.horizontalSpacing = 2;
 		setLayout(gridLayout);
 
-		logTableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
-		logTable = logTableViewer.getTable();
-		logTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 				1));
+		TableColumnLayout tcl_composite = new TableColumnLayout();
+		composite.setLayout(tcl_composite);
+
+		logTableViewer = new TableViewer(composite, SWT.BORDER
+				| SWT.FULL_SELECTION);
+		logTable = logTableViewer.getTable();
+		logTable.setHeaderVisible(true);
+		logTable.setLinesVisible(true);
 
 		logTableViewer.setContentProvider(new IStructuredContentProvider() {
 
@@ -72,6 +96,23 @@ public class LogEntryTable extends Composite {
 			}
 		});
 
+		this.addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				switch (event.getPropertyName()) {
+				case "logs":
+					updateTable();
+					break;
+				case "selectedLogEntry":
+
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
 		updateTable();
 	}
 
@@ -80,10 +121,10 @@ public class LogEntryTable extends Composite {
 		for (TableColumn column : logTableViewer.getTable().getColumns()) {
 			column.dispose();
 		}
-		// First column is date and the default sort column
-		TableColumnLayout channelTablelayout = new TableColumnLayout();
-		logTableViewer.getTable().getParent().setLayout(channelTablelayout);
+		TableColumnLayout channelTablelayout = (TableColumnLayout) composite
+				.getLayout();
 
+		// First column is date and the default sort column
 		TableViewerColumn tableViewerColumnDate = new TableViewerColumn(
 				logTableViewer, SWT.DOUBLE_BUFFERED);
 		new TableViewerColumnSorter(tableViewerColumnDate) {
@@ -127,27 +168,23 @@ public class LogEntryTable extends Composite {
 
 		// Third column is the owner of the logEntry
 
-		TableViewerColumn tableViewerColumnOwner;
-		tableViewerColumnOwner = new TableViewerColumn(logTableViewer,
-				SWT.DOUBLE_BUFFERED);
+		TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(
+				logTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
-
 			public String getText(Object element) {
 				LogEntry item = ((LogEntry) element);
 				return item == null ? "" : item.getOwner();
 			}
 		});
-		TableColumn tblclmnOwner;
-		tblclmnOwner = tableViewerColumnDescription.getColumn();
-		tblclmnOwner.setWidth(100);
-		tblclmnOwner.setText("Owner");
+		TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
 		channelTablelayout
 				.setColumnData(tblclmnOwner, new ColumnWeightData(15));
+		tblclmnOwner.setWidth(100);
+		tblclmnOwner.setText("Owner");
 
 		// Forth column lists the logbooks
-		TableViewerColumn tableViewerColumnLogbooks;
-		tableViewerColumnLogbooks = new TableViewerColumn(logTableViewer,
-				SWT.DOUBLE_BUFFERED);
+		TableViewerColumn tableViewerColumnLogbooks = new TableViewerColumn(
+				logTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnLogbooks.setLabelProvider(new ColumnLabelProvider() {
 
 			public String getText(Object element) {
@@ -159,13 +196,35 @@ public class LogEntryTable extends Composite {
 				return item == null ? "" : logbooks.toString();
 			}
 		});
-		TableColumn tblclmnLogbooks;
-		tblclmnLogbooks = tableViewerColumnDescription.getColumn();
-		tblclmnLogbooks.setWidth(100);
-		tblclmnLogbooks.setText("Logbooks");
+		TableColumn tblclmnLogbooks = tableViewerColumnLogbooks.getColumn();
 		channelTablelayout.setColumnData(tblclmnLogbooks, new ColumnWeightData(
 				15));
+		tblclmnLogbooks.setWidth(100);
+		tblclmnLogbooks.setText("Logbooks");
+
 		// Now additional Columns are created based on the selected
 		// tags/properties the users wishes to view
 	}
+
+	public Collection<LogEntry> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(Collection<LogEntry> logs) {
+		Collection<LogEntry> oldValue = this.logs;
+		this.logs = logs;
+		changeSupport.firePropertyChange("logs", oldValue, this.logs);
+	}
+
+	public LogEntry getSelectedLogEntry() {
+		return selectedLogEntry;
+	}
+
+	public void setSelectedLogEntry(LogEntry selectedLogEntry) {
+		LogEntry oldValue = this.selectedLogEntry;
+		this.selectedLogEntry = selectedLogEntry;
+		changeSupport.firePropertyChange("selectedLogEntry", oldValue,
+				this.selectedLogEntry);
+	}
+
 }
