@@ -2,6 +2,7 @@ package org.csstudio.sds.ui.internal.pvlistview;
 
 import java.util.HashMap;
 
+import org.csstudio.domain.desy.types.Tuple;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback.ValidationResult;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationService;
@@ -13,12 +14,12 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ValidatePvsAction extends Action {
 
 	private final IProcessVariableAddressValidationService validationService;
-	private final HashMap<IProcessVariableAddress, ValidationResult> serviceValidations;
+	private final HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations;
 	private final PvListView pvListView;
 
 	public ValidatePvsAction(
 			IProcessVariableAddressValidationService validationService,
-			HashMap<IProcessVariableAddress, ValidationResult> serviceValidations,
+			HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations,
 			PvListView pvListView) {
 				this.validationService = validationService;
 				this.serviceValidations = serviceValidations;

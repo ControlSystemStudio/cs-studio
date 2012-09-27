@@ -16,7 +16,8 @@ import org.csstudio.platform.simpledal.IValidationProcess;
 public class ProcessVariableAddressValidationMock implements
 		IProcessVariableAddressValidationService {
 
-	private static ExecutorService executor = Executors.newFixedThreadPool(4);
+	private static ExecutorService executor = Executors.newSingleThreadExecutor();
+//	private static ExecutorService executor = Executors.newFixedThreadPool(4);
 	private final String serviceName;
 
 	public ProcessVariableAddressValidationMock(String serviceName) {
@@ -41,35 +42,21 @@ public class ProcessVariableAddressValidationMock implements
 			List<IProcessVariableAddress> pvAddresses,
 			IProcessVariableAddressValidationCallback callback) {
 
-		final List<IValidationProcess> validationProcesses = new ArrayList<IValidationProcess>(
+		final List<Future<?>> submittedValidations = new ArrayList<Future<?>>(
 				pvAddresses.size());
 
 		for (IProcessVariableAddress iProcessVariableAddress : pvAddresses) {
-			IValidationProcess validationProcess = validateProcessVariableAddress(
-					iProcessVariableAddress, callback);
-			validationProcesses.add(validationProcess);
+			final Future<?> submittedValidation = executor.submit(new ValidationRunnable(
+					iProcessVariableAddress, callback));
+			submittedValidations.add(submittedValidation);
 		}
 		return new IValidationProcess() {
 
 			@Override
 			public void cancel() {
-				for (IValidationProcess iValidationProcess : validationProcesses) {
-					iValidationProcess.cancel();
+				for (Future<?> iValidationProcess : submittedValidations) {
+					iValidationProcess.cancel(true);
 				}
-			}
-		};
-	}
-
-	public IValidationProcess validateProcessVariableAddress(
-			IProcessVariableAddress pvAddress,
-			IProcessVariableAddressValidationCallback callback) {
-		final Future<?> submitted = executor.submit(new ValidationRunnable(
-				pvAddress, callback));
-
-		return new IValidationProcess() {
-			@Override
-			public void cancel() {
-				submitted.cancel(true);
 			}
 		};
 	}
@@ -96,7 +83,7 @@ public class ProcessVariableAddressValidationMock implements
 				this.callback.onValidate(pvAddress, validationResult,
 						validationResult.name());
 			} catch (InterruptedException e) {
-				this.callback.onValidate(pvAddress, ValidationResult.INVALID,
+				this.callback.onValidate(pvAddress, ValidationResult.VALIDATION_ERROR,
 						e.getMessage());
 			}
 		}

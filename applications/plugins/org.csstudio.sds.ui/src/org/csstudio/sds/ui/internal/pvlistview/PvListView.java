@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.ldap.SortControl;
+
+import org.csstudio.domain.desy.types.Tuple;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback.ValidationResult;
@@ -22,17 +25,18 @@ import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -59,11 +63,12 @@ public class PvListView extends ViewPart {
 	public static final String VIEW_ID = "org.csstudio.sds.ui.internal.pvlistview.PvListView";
 
 	private Map<IProcessVariableAddress, List<AbstractWidgetModel>> pvsToWidgets;
-	private List<Map<IProcessVariableAddress, ValidationResult>> validationResults;
+	private List<Map<IProcessVariableAddress, Tuple<ValidationResult, String>>> validationResults;
 
 	private final List<IValidationProcess> currentValidationProcesses;
 
 	private TreeViewer treeViewer;
+	private Comparator<IProcessVariableAddress> tableSortComparator;
 
 	// Need to be removed when View is disposed
 	private ISelectionListener pageSelectionListener;
@@ -74,8 +79,9 @@ public class PvListView extends ViewPart {
 
 	public PvListView() {
 		pvsToWidgets = new HashMap<IProcessVariableAddress, List<AbstractWidgetModel>>();
-		validationResults = new ArrayList<Map<IProcessVariableAddress, ValidationResult>>();
+		validationResults = new ArrayList<Map<IProcessVariableAddress, Tuple<ValidationResult, String>>>();
 		currentValidationProcesses = new ArrayList<IValidationProcess>();
+		tableSortComparator = new ProcessVariableAddressComparator();
 	}
 
 	@Override
@@ -123,7 +129,9 @@ public class PvListView extends ViewPart {
 
 		treeViewer = new TreeViewer(pvTree);
 
-		final TreeColumn pvColumn = new TreeColumn(pvTree, SWT.LEFT);
+		TreeViewerColumn pvAddressColumn = new TreeViewerColumn(treeViewer,
+				SWT.LEFT);
+		final TreeColumn pvColumn = pvAddressColumn.getColumn();
 		pvColumn.setText("Process Variable Addresses");
 		pvColumn.setAlignment(SWT.LEFT);
 		pvColumn.setWidth(170);
@@ -136,6 +144,17 @@ public class PvListView extends ViewPart {
 			}
 
 		});
+		pvColumn.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableSortComparator = new ProcessVariableAddressComparator();
+				treeViewer.setInput(pvsToWidgets);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
 
 		// Create a table column for each validation service
 		List<IProcessVariableAddressValidationService> validationServices = SdsUiPlugin
@@ -144,20 +163,20 @@ public class PvListView extends ViewPart {
 				.getServices();
 		List<ValidatePvsAction> validateActions = new ArrayList<ValidatePvsAction>(
 				validationServices.size());
-		for (IProcessVariableAddressValidationService iProcessVariableAddressValidationService : validationServices) {
-			HashMap<IProcessVariableAddress, ValidationResult> serviceValidations = new HashMap<IProcessVariableAddress, IProcessVariableAddressValidationCallback.ValidationResult>();
+		int validationColumnIndex = 0;
+		for (IProcessVariableAddressValidationService validationService : validationServices) {
+			HashMap<IProcessVariableAddress, Tuple<ValidationResult, String>> serviceValidations = new HashMap<IProcessVariableAddress, Tuple<ValidationResult, String>>();
 			validationResults.add(serviceValidations);
-			createValidationColumn(pvTree,
-					iProcessVariableAddressValidationService,
-					serviceValidations);
-			validateActions.add(new ValidatePvsAction(
-					iProcessVariableAddressValidationService,
+			createValidationColumn(treeViewer, validationColumnIndex,
+					validationService);
+			validateActions.add(new ValidatePvsAction(validationService,
 					serviceValidations, this));
+			validationColumnIndex += 1;
 		}
 		createToolbarButtons(validateActions);
 
 		treeViewer.setContentProvider(new PvTreeContentProvider());
-		treeViewer.setLabelProvider(new PvTreeLabelProvider());
+		pvAddressColumn.setLabelProvider(new PvColumnLabelProvider());
 
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -245,11 +264,11 @@ public class PvListView extends ViewPart {
 		treeViewer.setInput(pvsToWidgets);
 	}
 
-	private void createValidationColumn(
-			Tree pvTree,
-			final IProcessVariableAddressValidationService validationService,
-			final Map<IProcessVariableAddress, ValidationResult> serviceValidations) {
-		TreeColumn validationColumn = new TreeColumn(pvTree, SWT.RIGHT);
+	private void createValidationColumn(final TreeViewer treeViewer, final int columnIndex,
+			IProcessVariableAddressValidationService validationService) {
+		TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
+				SWT.RIGHT);
+		TreeColumn validationColumn = treeViewerColumn.getColumn();
 		validationColumn.setText(validationService.getServiceName());
 		validationColumn.setToolTipText(validationService.getServiceName()
 				+ ": " + validationService.getServiceDescription());
@@ -257,20 +276,25 @@ public class PvListView extends ViewPart {
 		validationColumn.setWidth(40);
 
 		validationColumn.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				handleValidationAction(validationService, serviceValidations);
-			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableSortComparator = new ProcessVariableValidationResultComparator(columnIndex);
+				treeViewer.setInput(pvsToWidgets);
+			}
 		});
+		treeViewerColumn.setLabelProvider(new ValidationServiceLabelProvider(
+				columnIndex));
+		ColumnViewerToolTipSupport.enableFor(treeViewer);
 	}
 
 	public void handleValidationAction(
 			final IProcessVariableAddressValidationService validationService,
-			final Map<IProcessVariableAddress, ValidationResult> serviceValidations) {
+			final Map<IProcessVariableAddress, Tuple<ValidationResult, String>> serviceValidations) {
 		List<IProcessVariableAddress> pvAddresses = new ArrayList<IProcessVariableAddress>(
 				pvsToWidgets.keySet());
 		Collections.sort(pvAddresses,
@@ -289,7 +313,9 @@ public class PvListView extends ViewPart {
 							public void onValidate(
 									final IProcessVariableAddress pvAddress,
 									ValidationResult result, String comment) {
-								serviceValidations.put(pvAddress, result);
+								serviceValidations.put(pvAddress,
+										new Tuple<ValidationResult, String>(
+												result, comment));
 								Display.getDefault().asyncExec(new Runnable() {
 									@Override
 									public void run() {
@@ -395,7 +421,7 @@ public class PvListView extends ViewPart {
 		final IWorkbenchPart activatedPart = partRef.getPart(true);
 		if (activatedPart instanceof DisplayEditor) {
 			if (activatedPart != linkedDisplayEditor) {
-				for (Map<IProcessVariableAddress, ValidationResult> serviceValidations : validationResults) {
+				for (Map<IProcessVariableAddress, Tuple<ValidationResult, String>> serviceValidations : validationResults) {
 					serviceValidations.clear();
 				}
 			}
@@ -484,13 +510,7 @@ public class PvListView extends ViewPart {
 		public Object[] getElements(Object inputElement) {
 			IProcessVariableAddress[] elements = pvsToWidgets.keySet().toArray(
 					new IProcessVariableAddress[] {});
-			Arrays.sort(elements, new Comparator<IProcessVariableAddress>() {
-				@Override
-				public int compare(IProcessVariableAddress pv1,
-						IProcessVariableAddress pv2) {
-					return pv1.getFullName().compareTo(pv2.getFullName());
-				}
-			});
+			Arrays.sort(elements, tableSortComparator);
 			return elements;
 		}
 
@@ -501,51 +521,64 @@ public class PvListView extends ViewPart {
 		}
 	}
 
-	private class PvTreeLabelProvider implements ITableLabelProvider {
+	private class PvColumnLabelProvider extends ColumnLabelProvider {
 
 		@Override
-		public String getColumnText(final Object element, int columnIndex) {
+		public String getText(final Object element) {
 			String result = null;
-			if (columnIndex == 0) {
-				result = element.toString();
+			result = element.toString();
 
-				if (element instanceof AbstractWidgetModel) {
-					result = ((AbstractWidgetModel) element).getName();
-				} else if (element instanceof IProcessVariableAddress) {
-					result = ((IProcessVariableAddress) element).getFullName();
-					if (result.length() == 0) {
-						result = "EMPTY PV";
-					}
+			if (element instanceof AbstractWidgetModel) {
+				result = ((AbstractWidgetModel) element).getName();
+			} else if (element instanceof IProcessVariableAddress) {
+				result = ((IProcessVariableAddress) element).getFullName();
+				if (result.length() == 0) {
+					result = "EMPTY PV";
+				}
+			}
+			return result;
+		}
+	}
+
+	private class ValidationServiceLabelProvider extends ColumnLabelProvider {
+
+		private final int columnIndex;
+
+		public ValidationServiceLabelProvider(int columnIndex) {
+			this.columnIndex = columnIndex;
+		}
+
+		@Override
+		public int getToolTipDisplayDelayTime(Object object) {
+			return 0;
+		}
+
+		@Override
+		public String getToolTipText(Object element) {
+			String result = null;
+			if (element instanceof IProcessVariableAddress) {
+				Map<IProcessVariableAddress, Tuple<ValidationResult, String>> validations = validationResults
+						.get(columnIndex);
+				if (validations.containsKey(element)) {
+					result = validations.get(element).getSecond();
 				}
 			}
 			return result;
 		}
 
 		@Override
-		public void addListener(ILabelProviderListener listener) {
+		public String getText(Object element) {
+			return null;
 		}
 
 		@Override
-		public void dispose() {
-		}
-
-		@Override
-		public boolean isLabelProperty(Object element, String property) {
-			return false;
-		}
-
-		@Override
-		public void removeListener(ILabelProviderListener listener) {
-		}
-
-		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
+		public Image getImage(Object element) {
 			Image result = null;
-			if (columnIndex > 0 && element instanceof IProcessVariableAddress) {
-				Map<IProcessVariableAddress, ValidationResult> validations = validationResults
-						.get(columnIndex - 1);
+			if (element instanceof IProcessVariableAddress) {
+				Map<IProcessVariableAddress, Tuple<ValidationResult, String>> validations = validationResults
+						.get(columnIndex);
 				if (validations.containsKey(element)) {
-					switch (validations.get(element)) {
+					switch (validations.get(element).getFirst()) {
 					case VALID:
 						result = CustomMediaFactory.getInstance()
 								.getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
@@ -573,5 +606,42 @@ public class PvListView extends ViewPart {
 			return result;
 		}
 
+	}
+	
+	private class ProcessVariableValidationResultComparator implements Comparator<IProcessVariableAddress> {
+
+		private final int serviceIndex;
+		private ProcessVariableAddressComparator secondaryComparator;
+
+		public ProcessVariableValidationResultComparator(int serviceIndex) {
+			this.serviceIndex = serviceIndex;
+			secondaryComparator = new ProcessVariableAddressComparator();
+		}
+		
+		@Override
+		public int compare(IProcessVariableAddress pv0,
+				IProcessVariableAddress pv1) {
+			int result = 0;
+			Map<IProcessVariableAddress, Tuple<ValidationResult, String>> map = validationResults.get(serviceIndex);
+			if(map.containsKey(pv0) && map.containsKey(pv1)) {
+				ValidationResult pv1ValidationResult = map.get(pv0).getFirst();
+				ValidationResult pv2ValidationResult = map.get(pv1).getFirst();
+				result = pv1ValidationResult.compare(pv2ValidationResult);
+			}
+			if(result == 0) {
+				result = secondaryComparator.compare(pv0, pv1);
+			}
+			
+			return result;
+		}
+		
+	}
+	
+	private class ProcessVariableAddressComparator implements Comparator<IProcessVariableAddress> {
+		@Override
+		public int compare(IProcessVariableAddress pv1,
+				IProcessVariableAddress pv2) {
+			return pv1.getFullName().compareTo(pv2.getFullName());
+		}
 	}
 }

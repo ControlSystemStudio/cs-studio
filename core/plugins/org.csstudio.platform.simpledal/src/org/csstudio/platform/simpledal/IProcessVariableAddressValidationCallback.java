@@ -5,7 +5,17 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 public interface IProcessVariableAddressValidationCallback {
 	
 	public enum ValidationResult {
-		VALID, INVALID, ARCHIVED, VALIDATION_ERROR;
+		VALID(4), INVALID(2), ARCHIVED(3), VALIDATION_ERROR(1);
+		
+		private final int comparisonIndex;
+		
+		private ValidationResult(int comparisonIndex) {
+			this.comparisonIndex = comparisonIndex;
+			
+		}
+		public int compare(ValidationResult other) {
+			return this.comparisonIndex - other.comparisonIndex;
+		}
 	}
 
 	/**
