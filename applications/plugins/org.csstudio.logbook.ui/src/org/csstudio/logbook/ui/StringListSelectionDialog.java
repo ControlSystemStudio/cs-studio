@@ -33,6 +33,7 @@ public class StringListSelectionDialog extends Dialog {
 	public StringListSelectionDialog(Shell parent, List<String> possibleValues,
 			List<String> selectedValues, String title) {
 		super(parent);
+		setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
 		this.initialPossibleValues = possibleValues;
 		this.initialSelectedValues = selectedValues;
 		this.title = title;
