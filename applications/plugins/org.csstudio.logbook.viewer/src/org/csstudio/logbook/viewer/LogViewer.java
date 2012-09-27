@@ -15,22 +15,18 @@ import org.csstudio.logbook.ui.LogEntryWidget;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author shroffk
@@ -145,6 +141,9 @@ public class LogViewer extends ViewPart {
 		fd_logEntryWidget.left = new FormAttachment(0, 3);
 		fd_logEntryWidget.bottom = new FormAttachment(100, -5);
 		logEntryWidget.setLayoutData(fd_logEntryWidget);
+		
+		PopupMenuUtil.installPopupForView(logEntryTable, getSite(),
+				logEntryTable);
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
@@ -260,6 +261,12 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	@Override
 	public void setSelection(ISelection selection) {
 		selectionProvider.setSelection(selection);
+	}
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		logTable.setMenu(menu);
 	}
 
 }

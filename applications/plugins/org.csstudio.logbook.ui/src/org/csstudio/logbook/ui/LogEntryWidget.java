@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
+import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
@@ -179,9 +180,9 @@ public class LogEntryWidget extends Composite {
 						logbookClient.addAttachment(logEntry.getId(),
 								new FileInputStream(file), file.getName());
 					}
+					setEditable(false);
 					setLogEntryBuilder(null);
 					setLogEntry(logEntry);
-					setEditable(false);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -495,6 +496,13 @@ public class LogEntryWidget extends Composite {
 			java.util.List<String> tagNames = LogEntryUtil
 					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
+			if (!logEntry.getAttachment().isEmpty()) {
+//				for (Attachment attachment : logEntry.getAttachment()) {
+//					
+//					imageStackWidget.addImageFilename(new Image(getDisplay(), logbookClient.getAttachment(
+//							logEntry.getId(), attachment.getFileName())));
+//				}
+			}
 		} else {
 			text.setText("");
 			textOwner.setText("");
