@@ -31,6 +31,40 @@
                   value="org.csstudio.logbook.ui.CreateLogEntry">
             </parameter>
          </command>
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               label="Create Log Entry"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <menu
+               id="org.csstudio.ui.menu.popup.logentry"
+               label="Log Entry">
+            <separator
+                  name="main">
+            </separator>
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.logbook.LogEntryBuilder">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.logentry">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               label="Create Log Entry"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -38,5 +72,23 @@
       <toc
             file="toc.xml"
             primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+            id="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+            name="Create Log Entry">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.logbook.LogEntry"
+            class="org.csstudio.logbook.ui.LogEntryAdapterFactory">
+         <adapter
+               type="org.csstudio.logbook.LogEntryBuilder">
+         </adapter>
+      </factory>
    </extension>
 </plugin>
