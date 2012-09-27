@@ -15,7 +15,7 @@ export WORKSPACE=/Kram/Eclipse/Workspace_cs-studio_4.2
 # Location of Eclipse and Delta pack, the 'target' platform
 export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
 # Deltapack can list several sites: delta pack;SVN support;...
-export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse;/Kram/Eclipse/CSS_Additions/site-1.6.18"
+export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/site-1.6.18"
 export ECLIPSE=$ECLIPSE_BASE/eclipse
 
 # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
