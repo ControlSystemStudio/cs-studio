@@ -8,6 +8,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +27,9 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
+import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -49,6 +56,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author shroffk
@@ -496,12 +504,40 @@ public class LogEntryWidget extends Composite {
 			java.util.List<String> tagNames = LogEntryUtil
 					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
-			if (!logEntry.getAttachment().isEmpty()) {
-//				for (Attachment attachment : logEntry.getAttachment()) {
-//					
-//					imageStackWidget.addImageFilename(new Image(getDisplay(), logbookClient.getAttachment(
-//							logEntry.getId(), attachment.getFileName())));
-//				}
+			// TODO temporary fix, in future releases the attahments will be
+			// listed with the logEntry itself
+			imageStackWidget.setImageFilenames(null);
+			Collection<Attachment> attachments = logbookClient
+					.listAttachments(logEntry.getId());
+			if (!attachments.isEmpty()) {
+				java.util.List<String> imageFileNames = new ArrayList<String>();
+				for (Attachment attachment : attachments) {
+					File file = new File(attachment.getFileName());
+					try {
+						InputStream ip = logbookClient.getAttachment(
+								logEntry.getId(), attachment.getFileName());
+						OutputStream out = new FileOutputStream(file);
+						// Transfer bytes from in to out
+						byte[] buf = new byte[1024];
+						int len;
+						while ((len = ip.read(buf)) > 0) {
+							out.write(buf, 0, len);
+						}
+						ip.close();
+						out.close();
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+					}
+					IFile f = IFileUtil.getInstance().createFileResource(file);
+					IFileUtil.getInstance().registerPart(
+							PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow()
+									.getPartService().getActivePart(), f);
+					imageFileNames.add(f.getLocationURI().getPath());
+				}
+				imageStackWidget.setImageFilenames(imageFileNames);
 			}
 		} else {
 			text.setText("");

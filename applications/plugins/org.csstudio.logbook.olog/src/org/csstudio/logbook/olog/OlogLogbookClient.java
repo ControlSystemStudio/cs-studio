@@ -137,9 +137,9 @@ public class OlogLogbookClient implements LogbookClient {
 	public Attachment addAttachment(Object logId, InputStream attachment,
 			String name) {
 
-		File file;
 		try {
-			file = File.createTempFile(name, null);
+			File file = new File(name);
+	//		file = File.createTempFile(name, null);
 			// write the inputStream to a FileOutputStream
 			OutputStream out = new FileOutputStream(file);
 			int read = 0;
@@ -151,8 +151,12 @@ public class OlogLogbookClient implements LogbookClient {
 			attachment.close();
 			out.flush();
 			out.close();
-			if (file != null)
-				return new OlogAttachment(writer.add(file, (Long) logId));
+			edu.msu.nscl.olog.api.Attachment response;
+			if (file != null){
+				response = writer.add(file, (Long) logId);
+				file.delete();
+				return new OlogAttachment(response);
+				}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
