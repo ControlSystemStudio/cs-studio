@@ -57,6 +57,8 @@ import com.google.common.collect.Lists;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author shroffk
@@ -93,7 +95,7 @@ public class LogEntryWidget extends Composite {
 	private Button btnAddLogbook;
 	private Button btnAddTags;
 	final private FormData empty;
-	private Label label;
+	private Label label_vertical;
 	private CTabItem tbtmAttachments;
 	private CTabFolder tabFolder;
 	private Composite tbtmAttachmentsComposite;
@@ -102,6 +104,7 @@ public class LogEntryWidget extends Composite {
 	private Button btnAddScreenshot;
 	private Button btnCSSWindow;
 	private Label lblTags;
+	private Label label_horizontal;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -130,6 +133,44 @@ public class LogEntryWidget extends Composite {
 		fd_textDate.left = new FormAttachment(lblDate, 5);
 		textDate.setLayoutData(fd_textDate);
 
+		label_vertical = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
+		label_vertical.addMouseMoveListener(new MouseMoveListener() {
+			public void mouseMove(MouseEvent e) {
+				FormData fd = (FormData) label_vertical.getLayoutData();
+				long calNumerator = fd.left.numerator + (e.x * 100)
+						/ e.display.getActiveShell().getClientArea().width;
+				fd.left = new FormAttachment((int) calNumerator);
+				label_vertical.setLayoutData(fd);
+				label_vertical.getParent().layout();
+			}
+		});
+		label_vertical.setCursor(Display.getCurrent().getSystemCursor(
+				SWT.CURSOR_SIZEWE));
+		FormData fd_label_vertical = new FormData();
+		fd_label_vertical.top = new FormAttachment(0, 2);
+		fd_label_vertical.bottom = new FormAttachment(100, -2);
+		fd_label_vertical.left = new FormAttachment(70);
+		label_vertical.setLayoutData(fd_label_vertical);
+
+		label_horizontal = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label_horizontal.addMouseMoveListener(new MouseMoveListener() {
+			public void mouseMove(MouseEvent e) {
+				FormData fd = (FormData) label_horizontal.getLayoutData();
+				long calNumerator = fd.top.numerator + (e.y * 100)
+						/ e.display.getActiveShell().getClientArea().height;
+				fd.top = new FormAttachment((int) calNumerator);
+				label_horizontal.setLayoutData(fd);
+				label_horizontal.getParent().layout();
+			}
+		});
+		label_horizontal.setCursor(Display.getCurrent().getSystemCursor(
+				SWT.CURSOR_SIZENS));
+		FormData fd_label_horizontal = new FormData();
+		fd_label_horizontal.top = new FormAttachment(20);
+		fd_label_horizontal.right = new FormAttachment(label_vertical, 2);
+		fd_label_horizontal.left = new FormAttachment(0, 5);
+		label_horizontal.setLayoutData(fd_label_horizontal);
+
 		text = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		text.addKeyListener(new KeyAdapter() {
 			@Override
@@ -140,22 +181,16 @@ public class LogEntryWidget extends Composite {
 			}
 		});
 		FormData fd_text = new FormData();
-		fd_text.right = new FormAttachment(70);
+		fd_text.bottom = new FormAttachment(label_horizontal, -2);
+		fd_text.right = new FormAttachment(label_vertical, -2);
 		fd_text.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
 		fd_text.left = new FormAttachment(0, 5);
 		text.setLayoutData(fd_text);
 
-		label = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
-		FormData fd_label = new FormData();
-		fd_label.top = new FormAttachment(0, 2);
-		fd_label.bottom = new FormAttachment(100, -2);
-		fd_label.left = new FormAttachment(text, 2);
-		label.setLayoutData(fd_label);
-
 		Label lblOwner = new Label(this, SWT.NONE);
 		FormData fd_lblOwner = new FormData();
+		fd_lblOwner.left = new FormAttachment(label_vertical, 2);
 		fd_lblOwner.top = new FormAttachment(0, 5);
-		fd_lblOwner.left = new FormAttachment(label, 2);
 		lblOwner.setLayoutData(fd_lblOwner);
 		lblOwner.setText("Owner:");
 
@@ -168,9 +203,9 @@ public class LogEntryWidget extends Composite {
 
 		btnSubmit = new Button(this, SWT.NONE);
 		FormData fd_btnSubmit = new FormData();
+		fd_btnSubmit.left = new FormAttachment(label_vertical, 2);
 		fd_btnSubmit.right = new FormAttachment(100, -5);
 		fd_btnSubmit.bottom = new FormAttachment(100, -5);
-		fd_btnSubmit.left = new FormAttachment(label, 2);
 		btnSubmit.setLayoutData(fd_btnSubmit);
 		btnSubmit.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -203,8 +238,8 @@ public class LogEntryWidget extends Composite {
 
 		btnEnableEdit = new Button(this, SWT.CHECK);
 		FormData fd_btnEnableEdit = new FormData();
+		fd_btnEnableEdit.left = new FormAttachment(label_vertical, 2);
 		fd_btnEnableEdit.bottom = new FormAttachment(btnSubmit, -5);
-		fd_btnEnableEdit.left = new FormAttachment(label, 2);
 		fd_btnEnableEdit.right = new FormAttachment(100, -5);
 		btnEnableEdit.setLayoutData(fd_btnEnableEdit);
 		btnEnableEdit.addSelectionListener(new SelectionAdapter() {
@@ -218,16 +253,16 @@ public class LogEntryWidget extends Composite {
 
 		Label lblLogbooks = new Label(this, SWT.NONE);
 		FormData fd_lblLogbooks = new FormData();
+		fd_lblLogbooks.left = new FormAttachment(label_vertical, 2);
 		fd_lblLogbooks.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
-		fd_lblLogbooks.left = new FormAttachment(label, 2);
 		lblLogbooks.setLayoutData(fd_lblLogbooks);
 		lblLogbooks.setText("Logbooks:");
 
 		logbookList = new List(this, SWT.BORDER | SWT.V_SCROLL);
 		FormData fd_logbookList = new FormData();
+		fd_logbookList.left = new FormAttachment(label_vertical, 2);
 		fd_logbookList.right = new FormAttachment(100, -5);
 		fd_logbookList.top = new FormAttachment(lblLogbooks, 2, SWT.BOTTOM);
-		fd_logbookList.left = new FormAttachment(label, 2);
 		logbookList.setLayoutData(fd_logbookList);
 
 		btnAddLogbook = new Button(this, SWT.NONE);
@@ -254,24 +289,24 @@ public class LogEntryWidget extends Composite {
 		btnAddLogbook.setImage(ResourceManager.getPluginImage(
 				"org.csstudio.logbook.ui", "icons/logbook-16.png"));
 		FormData fd_btnAddLogbook = new FormData();
+		fd_btnAddLogbook.left = new FormAttachment(label_vertical, 2);
 		fd_btnAddLogbook.top = new FormAttachment(logbookList, 5);
-		fd_btnAddLogbook.left = new FormAttachment(label, 2);
 		fd_btnAddLogbook.right = new FormAttachment(100, -5);
 		btnAddLogbook.setLayoutData(fd_btnAddLogbook);
 		btnAddLogbook.setText("Add Logbook");
 
 		lblTags = new Label(this, SWT.NONE);
 		FormData fd_lblTags = new FormData();
-		fd_lblTags.left = new FormAttachment(label, 2);
+		fd_lblTags.left = new FormAttachment(label_vertical, 2);
 		fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
 		lblTags.setLayoutData(fd_lblTags);
 		lblTags.setText("Tags:");
 
 		tagList = new List(this, SWT.BORDER);
 		FormData fd_tagList = new FormData();
+		fd_tagList.left = new FormAttachment(label_vertical, 2);
 		fd_tagList.top = new FormAttachment(lblTags, 2);
 		fd_tagList.right = new FormAttachment(100, -5);
-		fd_tagList.left = new FormAttachment(label, 2);
 		tagList.setLayoutData(fd_tagList);
 
 		btnAddTags = new Button(this, SWT.NONE);
@@ -297,16 +332,16 @@ public class LogEntryWidget extends Composite {
 		});
 		btnAddTags.setText("Add Tags");
 		FormData fd_btnAddTags = new FormData();
+		fd_btnAddTags.left = new FormAttachment(label_vertical, 2);
 		fd_btnAddTags.top = new FormAttachment(tagList, 5);
-		fd_btnAddTags.left = new FormAttachment(label, 2);
 		fd_btnAddTags.right = new FormAttachment(100, -5);
 		btnAddTags.setLayoutData(fd_btnAddTags);
 
 		tabFolder = new CTabFolder(this, SWT.BORDER);
 		FormData fd_tabFolder = new FormData();
-		fd_tabFolder.top = new FormAttachment(text, 5);
+		fd_tabFolder.top = new FormAttachment(label_horizontal, 2);
+		fd_tabFolder.right = new FormAttachment(label_vertical, -2);
 		fd_tabFolder.left = new FormAttachment(0, 5);
-		fd_tabFolder.right = new FormAttachment(70);
 		fd_tabFolder.bottom = new FormAttachment(100, -5);
 		tabFolder.setLayoutData(fd_tabFolder);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(
