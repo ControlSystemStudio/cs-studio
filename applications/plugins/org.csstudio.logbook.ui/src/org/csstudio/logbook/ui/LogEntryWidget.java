@@ -431,6 +431,9 @@ public class LogEntryWidget extends Composite {
 				case "logEntry":
 					updateWidget();
 					break;
+				case "logEntryBuilder":
+					updateWidget();
+					break;
 				default:
 					break;
 				}
@@ -539,40 +542,43 @@ public class LogEntryWidget extends Composite {
 			java.util.List<String> tagNames = LogEntryUtil
 					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
-			// TODO temporary fix, in future releases the attahments will be
+			// TODO temporary fix, in future releases the attachments will be
 			// listed with the logEntry itself
 			imageStackWidget.setImageFilenames(null);
-			Collection<Attachment> attachments = logbookClient
-					.listAttachments(logEntry.getId());
-			if (!attachments.isEmpty()) {
-				java.util.List<String> imageFileNames = new ArrayList<String>();
-				for (Attachment attachment : attachments) {
-					File file = new File(attachment.getFileName());
-					try {
-						InputStream ip = logbookClient.getAttachment(
-								logEntry.getId(), attachment.getFileName());
-						OutputStream out = new FileOutputStream(file);
-						// Transfer bytes from in to out
-						byte[] buf = new byte[1024];
-						int len;
-						while ((len = ip.read(buf)) > 0) {
-							out.write(buf, 0, len);
+			if (logEntry.getId() != null) {
+				Collection<Attachment> attachments = logbookClient
+						.listAttachments(logEntry.getId());
+				if (!attachments.isEmpty()) {
+					java.util.List<String> imageFileNames = new ArrayList<String>();
+					for (Attachment attachment : attachments) {
+						File file = new File(attachment.getFileName());
+						try {
+							InputStream ip = logbookClient.getAttachment(
+									logEntry.getId(), attachment.getFileName());
+							OutputStream out = new FileOutputStream(file);
+							// Transfer bytes from in to out
+							byte[] buf = new byte[1024];
+							int len;
+							while ((len = ip.read(buf)) > 0) {
+								out.write(buf, 0, len);
+							}
+							ip.close();
+							out.close();
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
 						}
-						ip.close();
-						out.close();
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						IFile f = IFileUtil.getInstance().createFileResource(
+								file);
+						IFileUtil.getInstance().registerPart(
+								PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getPartService().getActivePart(), f);
+						imageFileNames.add(f.getLocationURI().getPath());
 					}
-					IFile f = IFileUtil.getInstance().createFileResource(file);
-					IFileUtil.getInstance().registerPart(
-							PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow()
-									.getPartService().getActivePart(), f);
-					imageFileNames.add(f.getLocationURI().getPath());
+					imageStackWidget.setImageFilenames(imageFileNames);
 				}
-				imageStackWidget.setImageFilenames(imageFileNames);
 			}
 		} else {
 			text.setText("");

@@ -33,6 +33,7 @@ public class LogEntryBuilderDialog extends Dialog {
 		super(parentShell);
 		setBlockOnOpen(false);
 		setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+		this.logEntryBuilder = logEntryBuilder;
 	}
 
 	@Override
@@ -50,6 +51,10 @@ public class LogEntryBuilderDialog extends Dialog {
 				true, 1, 1);
 		gd_logEntryWidget.heightHint = 283;
 		logEntryWidget.setLayoutData(gd_logEntryWidget);
+		logEntryWidget.setEditable(true);
+		if (this.logEntryBuilder != null) {
+			logEntryWidget.setLogEntryBuilder(logEntryBuilder);
+		}
 		return container;
 	}
 }
