@@ -57,13 +57,8 @@
       <plugin id="org.csstudio.domain.desy.softioc"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.java"/>
-      <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
-      <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.utility.jms"/>
-      <plugin id="org.csstudio.remote"/>
       <plugin id="org.csstudio.servicelocator"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
