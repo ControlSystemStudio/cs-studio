@@ -345,7 +345,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
 		addProperty(new RulesProperty(PROP_RULES, "Rules", WidgetPropertyCategory.Behavior));	
 		addProperty(new ComplexDataProperty(PROP_SCALE_OPTIONS,
-				"Scale Options", WidgetPropertyCategory.Position, new WidgetScaleData(this, true, true, false), "Set Scale Options"));
+				"Scale Options", WidgetPropertyCategory.Position, new WidgetScaleData(true, true, false), "Set Scale Options"));
 		addProperty(new StringProperty(PROP_WIDGET_UID, "Widget UID", WidgetPropertyCategory.Basic, 
 				new UID().toString()));	
 		//update the WUID saved in connections without triggering anything
@@ -669,7 +669,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void setScaleOptions(boolean isWidthScalable, boolean isHeightScalable, boolean keepWHRatio){
 		setPropertyValue(PROP_SCALE_OPTIONS, 
-				new WidgetScaleData(this, isWidthScalable, isHeightScalable, keepWHRatio));
+				new WidgetScaleData(isWidthScalable, isHeightScalable, keepWHRatio));
 	}
 	
 	

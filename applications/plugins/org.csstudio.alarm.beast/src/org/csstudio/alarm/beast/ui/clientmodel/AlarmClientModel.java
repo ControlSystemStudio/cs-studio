@@ -823,14 +823,6 @@ public class AlarmClientModel
         }
         // Update a known PV
         final AlarmTreePV pv = (AlarmTreePV) item;
-        
-        // Remember state
-        final SeverityLevel severity = pv.getSeverity();
-        final SeverityLevel current_severity = pv.getCurrentSeverity();
-        final String message = pv.getMessage();
-        final String current_message = pv.getCurrentMessage();
-        final boolean enabled = pv.isEnabled();
-        
         synchronized (this)
         {
             if (config == null)
@@ -844,19 +836,11 @@ public class AlarmClientModel
             	config.closeStatements();
             }
         }
-        
         // This could change the alarm tree after a PV was disabled or enabled.
+        // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
             parent.maximizeSeverity();
-
-        // Change in alarm state as result of config update?
-        if (severity.equals(pv.getSeverity()) &&
-        	current_severity.equals(pv.getCurrentSeverity()) &&
-        	message.equals(pv.getMessage()) &&
-        	current_message.equals(pv.getCurrentMessage()) &&
-        	enabled == pv.isEnabled())
-        	return;
         // Update alarm display
         fireNewAlarmState(pv, true);
     }

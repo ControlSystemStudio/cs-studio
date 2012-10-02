@@ -644,7 +644,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 			final List<?> fActions = AggrFilterActionDAO.select(memoryCacheDb,
 					iFilterId);
 
-			int iMessageID = 0;
+			int iMessageId = -1;
 			int iWorked = ErrorState.STAT_FALSE.getStateNumber();
 
 			final Iterator<?> iter = fActions.iterator();
@@ -661,19 +661,19 @@ public class DistributorWork extends Thread implements AmsConstants,
 					final AggrUserGroupTObject userGroup = AggrUserGroupDAO
 							.selectList(memoryCacheDb, fa.getReceiverRef());
 					if (userGroup.getUsergroup().getIsActive() != 0) {
-						if (iMessageID == 0) {
-							iMessageID = MessageDAO.insert(localAppDb, msg,
+						if (iMessageId == -1) {
+							iMessageId = MessageDAO.insert(localAppDb, msg,
 									true);
-							iMessageID = MessageDAO.insert(memoryCacheDb, msg,
-									true);
+							// Make sure that message IDs are identical in both DBs
+							MessageDAO.insertWithMessageId(memoryCacheDb, msg, iMessageId);
 						}
 
-						final MessageChainTObject msgChain = new MessageChainTObject(
-								0, iMessageID, filter.getFilterID(),
+						final MessageChainTObject messageChainObject = new MessageChainTObject(
+								-1, iMessageId, filter.getFilterID(),
 								fa.getFilterActionID(), 0, null, null,
 								MESSAGECHAIN_WORK, null);
-						MessageChainDAO.insert(localAppDb, msgChain);
-						MessageChainDAO.insert(memoryCacheDb, msgChain);
+						MessageChainDAO.insert(localAppDb, messageChainObject);
+						MessageChainDAO.insert(memoryCacheDb, messageChainObject);
 
 						if (iWorked == ErrorState.STAT_FALSE.getStateNumber()) {
 							iWorked = ErrorState.STAT_OK.getStateNumber();

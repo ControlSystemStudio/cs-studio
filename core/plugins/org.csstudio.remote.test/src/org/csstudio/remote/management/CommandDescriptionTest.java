@@ -20,16 +20,16 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameterDefinition;
-import org.csstudio.platform.management.CommandParameterType;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameterDefinition;
+import org.csstudio.remote.management.CommandParameterType;
 import org.junit.Test;
 
 

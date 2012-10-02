@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.datadefinition;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 
 /**A complex properties data that holds the options for scaling a widget.
@@ -11,14 +10,12 @@ public class WidgetScaleData extends AbstractComplexData {
 	
 	public final static String PROP_WIDTH_SCALABLE = "width_scalable"; //$NON-NLS-1$
 	public final static String PROP_HEIGHT_SCALABLE = "height_scalable"; //$NON-NLS-1$
-	public final static String PROP_KEEP_WH_RATIO = "keep_wh_ratio"; //$NON-NLS-1$	
-
-	private WidgetScaleData(AbstractWidgetModel widgetModel){
-		super(widgetModel);		
+	public final static String PROP_KEEP_WH_RATIO = "keep_wh_ratio"; //$NON-NLS-1$
+	
+	public WidgetScaleData() {
 	}
 	
-	public WidgetScaleData(AbstractWidgetModel widgetModel,boolean isWidthScalable, boolean isHeightScalable, boolean keepWHRatio){
-		super(widgetModel);
+	public WidgetScaleData(boolean isWidthScalable, boolean isHeightScalable, boolean keepWHRatio){
 		setPropertyValue(PROP_WIDTH_SCALABLE, isWidthScalable);
 		setPropertyValue(PROP_HEIGHT_SCALABLE, isHeightScalable);
 		setPropertyValue(PROP_KEEP_WH_RATIO, keepWHRatio);
@@ -48,7 +45,7 @@ public class WidgetScaleData extends AbstractComplexData {
 	
 	@Override
 	public AbstractComplexData createInstance() {
-		return new WidgetScaleData(getWidgetModel());
+		return new WidgetScaleData();
 	}
 	
 	@Override

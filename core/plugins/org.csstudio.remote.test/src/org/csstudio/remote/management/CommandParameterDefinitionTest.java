@@ -20,14 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.management;
+package org.csstudio.remote.management;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.platform.management.CommandParameterDefinition;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.CommandParameterType;
-import org.csstudio.platform.management.CommandParameterDefinition.Builder;
+import org.csstudio.remote.management.CommandParameterDefinition;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.CommandParameterType;
+import org.csstudio.remote.management.CommandParameterDefinition.Builder;
 import org.junit.Before;
 import org.junit.Test;
 
