@@ -16,6 +16,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.WriteFailException;
 
 /**A utility PV which uses PVManager as the connection layer. 
  * Type of the value returned by {@link #getValue()} is always {@link PMObjectValue}.
@@ -27,10 +28,14 @@ public class PVManagerPV implements PV {
 	final private String name;
 	final private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener> listenerMap;
+	private boolean readOnly = false;
 	private ExceptionHandler exceptionHandler = new ExceptionHandler() {
 		@Override
 		public void handleException(Exception ex) {
-			ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
+			if(ex instanceof WriteFailException)
+				readOnly = true;
+			else
+				ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
 		}
 	};
 	private PVReader<?> pvReader;
@@ -120,7 +125,7 @@ public class PVManagerPV implements PV {
 	@Override
 	public boolean isWriteAllowed() {
 		// TODO implement this function after PVManager support this.
-		return true;
+		return !readOnly;
 	}
 
 	
