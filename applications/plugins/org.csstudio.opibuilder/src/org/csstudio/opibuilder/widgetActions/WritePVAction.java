@@ -14,11 +14,11 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -83,7 +83,7 @@ public class WritePVAction extends AbstractWidgetAction {
 				String text = getValue().trim();
 				PV pv = null;	
 				try {
-					pv = PVFactory.createPV(getPVName());
+					pv = BOYPVFactory.createPV(getPVName());
 					pv.start();
 					long startTime = System.currentTimeMillis();
 					int timeout = getTimeout()*1000;

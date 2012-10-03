@@ -40,6 +40,7 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
+import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.ScriptData;
@@ -58,7 +59,6 @@ import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -187,7 +187,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 							pvArray[i] = pvMap.get(pvName);
 						} else {
 							try {
-								PV pv = PVFactory.createPV(pvName);
+								PV pv = BOYPVFactory.createPV(pvName);
 								pvMap.put(pvName, pv);
 								addToConnectionHandler(pvName, pv);
 								pvArray[i] = pv;

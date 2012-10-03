@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.OPITimer;
@@ -23,7 +24,6 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.AbstractBorder;
@@ -195,7 +195,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 						continue;
 
 					try {
-						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
+						PV pv = BOYPVFactory.createPV((String) sp.getPropertyValue());
 						pvMap.put(sp.getPropertyID(), pv);
 						editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
 						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
@@ -419,7 +419,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
 				}
 				try {
-					PV newPV = PVFactory.createPV(newPVName);
+					PV newPV = BOYPVFactory.createPV(newPVName);
 					writeAccessMarked = false;
 					PVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);
