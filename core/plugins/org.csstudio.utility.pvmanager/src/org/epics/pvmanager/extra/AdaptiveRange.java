@@ -8,6 +8,8 @@ import java.text.NumberFormat;
 import java.util.List;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VDoubleArray;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -33,15 +35,15 @@ class AdaptiveRange implements Display {
         return returnValue;
     }
 
-    public void considerValues(List<VDoubleArray> values) {
-        for (VDoubleArray vDoubleArray : values) {
-            considerValues(vDoubleArray.getArray());
+    public void considerValues(List<? extends VNumberArray> values) {
+        for (VNumberArray vDoubleArray : values) {
+            considerValues(vDoubleArray.getData());
         }
     }
 
-    void considerValues(double[] array) {
-        for (int i = 0; i < array.length; i++) {
-            double d = array[i];
+    void considerValues(ListNumber array) {
+        for (int i = 0; i < array.size(); i++) {
+            double d = array.getDouble(i);
             if (!Double.isNaN(d)) {
                 if (firstValue) {
                     lowerDisplayLimit = d;

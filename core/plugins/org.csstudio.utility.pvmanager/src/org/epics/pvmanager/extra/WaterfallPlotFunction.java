@@ -15,6 +15,7 @@ import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.ValueUtil;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.extra.WaterfallPlotParameters.InternalCopy;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 
@@ -107,8 +108,8 @@ class WaterfallPlotFunction extends Function<VImage> {
         int newMaxArraySize = 0;
         for (DoubleArrayTimeCache.Data data : dataToPlot) {
             for (int n = 0; n < data.getNArrays(); n++) {
-                double[] array = data.getArray(n);
-                newMaxArraySize = Math.max(newMaxArraySize, array.length);
+                ListNumber array = data.getArray(n);
+                newMaxArraySize = Math.max(newMaxArraySize, array.size());
                 if (adaptiveRange != null)
                     adaptiveRange.considerValues(array);
             }
@@ -169,9 +170,9 @@ class WaterfallPlotFunction extends Function<VImage> {
         // Loop until the pixel starts before the range end
         while (pixelStart.compareTo(data.getEnd()) < 0) {
             // Get all the values in the pixel
-            List<double[]> pixelValues = valuesInPixel(pixelStart, pixelEnd, data, usedArrays);
+            List<ListNumber> pixelValues = valuesInPixel(pixelStart, pixelEnd, data, usedArrays);
             // Determine the data to print on screen
-            double[] dataToDisplay = aggregate(pixelValues);
+            ListNumber dataToDisplay = aggregate(pixelValues);
             if (dataToDisplay == null) {
                 copyPreviousLine(image, y, parameters);
             } else {
@@ -209,15 +210,15 @@ class WaterfallPlotFunction extends Function<VImage> {
         }
     }
     
-    private static double[] aggregate(List<double[]> values) {
+    private static ListNumber aggregate(List<ListNumber> values) {
         if (values.isEmpty())
             return null;
         
         return values.get(values.size() - 1);
     }
     
-    private static List<double[]> valuesInPixel(Timestamp pixelStart, Timestamp pixelEnd, DoubleArrayTimeCache.Data data, int usedArrays) {
-        List<double[]> pixelValues = new ArrayList<double[]>();
+    private static List<ListNumber> valuesInPixel(Timestamp pixelStart, Timestamp pixelEnd, DoubleArrayTimeCache.Data data, int usedArrays) {
+        List<ListNumber> pixelValues = new ArrayList<ListNumber>();
         int currentArray = usedArrays;
         while (currentArray < data.getNArrays() && data.getTimestamp(currentArray).compareTo(pixelEnd) <= 0) {
             pixelValues.add(data.getArray(currentArray));
@@ -226,7 +227,7 @@ class WaterfallPlotFunction extends Function<VImage> {
         return pixelValues;
     }
     
-    private static void drawLine(int y, double[] data, double[] positions, Display display, ColorScheme colorScheme, BufferedImage image, InternalCopy parameters) {
+    private static void drawLine(int y, ListNumber data, double[] positions, Display display, ColorScheme colorScheme, BufferedImage image, InternalCopy parameters) {
         if (positions != null)
             throw new RuntimeException("Positions not supported yet");
         
@@ -236,8 +237,8 @@ class WaterfallPlotFunction extends Function<VImage> {
         if (!parameters.scrollDown) {
             y = parameters.height - y - 1;
         }
-        for (int i = 0; i < data.length; i++) {
-            image.setRGB(i, y, colorScheme.color(data[i], display));
+        for (int i = 0; i < data.size(); i++) {
+            image.setRGB(i, y, colorScheme.color(data.getDouble(i), display));
         }
     }
 

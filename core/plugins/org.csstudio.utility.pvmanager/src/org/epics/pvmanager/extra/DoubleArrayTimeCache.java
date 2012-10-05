@@ -6,6 +6,7 @@ package org.epics.pvmanager.extra;
 
 import java.util.List;
 import org.epics.pvmanager.data.Display;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
 
@@ -22,7 +23,7 @@ public interface DoubleArrayTimeCache {
         
         public int getNArrays();
         
-        public double[] getArray(int index);
+        public ListNumber getArray(int index);
         
         public Timestamp getTimestamp(int index);
     }
