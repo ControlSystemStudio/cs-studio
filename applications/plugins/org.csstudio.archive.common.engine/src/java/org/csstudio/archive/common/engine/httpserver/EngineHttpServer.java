@@ -122,6 +122,9 @@ public class EngineHttpServer {
                                     null, httpContext);
         httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
+        httpService.registerServlet(ImportResponse.baseUrl(), new ImportResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+
     }
 
 
@@ -171,6 +174,7 @@ public class EngineHttpServer {
                                     null, httpContext);
         httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
+        httpService.registerServlet(ImportResultResponse.baseUrl(), new ImportResultResponse(model), null, httpContext);
     }
 
 
