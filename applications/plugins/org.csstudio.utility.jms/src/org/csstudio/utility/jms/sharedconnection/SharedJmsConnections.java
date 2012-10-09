@@ -69,6 +69,15 @@ public final class SharedJmsConnections {
 	}
 	
 	/**
+	 * Sets the URL for the shared publisher connection.
+	 * 
+	 * @param url - URL of the JMS server
+	 */
+	public static void staticInjectPublisherUrl(String url) {
+		staticInjectPublisherUrlAndClientId(url, null);
+	}
+	
+	/**
 	 * Sets the URL and the client id for the shared receiver connection.
 	 * The client id may be null.
 	 * 
@@ -88,6 +97,16 @@ public final class SharedJmsConnections {
         }
     }
 	
+	/**
+	 * Sets the URL for the shared receiver connection.
+	 * 
+	 * @param url1 - URL of the first JMS server.
+	 * @param url2 - URL of the second JMS server.
+	 */
+    public static void staticInjectConsumerUrl(String url1, String url2) {
+    	staticInjectConsumerUrlAndClientId(url1, url2, null);
+    }
+    
 	/**
 	 * Returns a handle to a shared JMS connection for sending JMS messages. If
 	 * the shared connection has not been created yet, this method will create
