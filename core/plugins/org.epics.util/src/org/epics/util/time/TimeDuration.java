@@ -303,7 +303,9 @@ public class TimeDuration implements Comparable<TimeDuration> {
             return false;
 
         if (obj instanceof TimeDuration) {
-            if (nanoSec == ((TimeDuration) obj).nanoSec)
+            TimeDuration other = (TimeDuration) obj;
+            if (nanoSec == other.nanoSec &&
+                    sec == other.sec)
                 return true;
         }
 

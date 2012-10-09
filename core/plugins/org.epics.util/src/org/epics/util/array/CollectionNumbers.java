@@ -220,4 +220,100 @@ public class CollectionNumbers {
         }
         return data;
     }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static float[] floatArrayWrappedOrCopy(CollectionNumber coll) {
+        float[] array = wrappedFloatArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return floatArrayCopyOf(coll);
+    }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static double[] doubleArrayWrappedOrCopy(CollectionNumber coll) {
+        double[] array = wrappedDoubleArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return doubleArrayCopyOf(coll);
+    }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static byte[] byteArrayWrappedOrCopy(CollectionNumber coll) {
+        byte[] array = wrappedByteArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return byteArrayCopyOf(coll);
+    }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static short[] shortArrayWrappedOrCopy(CollectionNumber coll) {
+        short[] array = wrappedShortArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return shortArrayCopyOf(coll);
+    }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static int[] intArrayWrappedOrCopy(CollectionNumber coll) {
+        int[] array = wrappedIntArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return intArrayCopyOf(coll);
+    }
+    
+    /**
+     * Returns either the wrapped array (if exists and matches the type)
+     * or a copy - USE WITH CAUTION AS IT MAY EXPOSE THE INTERNAL STATE
+     * OF THE COLLECTION.
+     * 
+     * @param coll the collection
+     * @return the array
+     */
+    public static long[] longArrayWrappedOrCopy(CollectionNumber coll) {
+        long[] array = wrappedLongArray(coll);
+        if (array != null) {
+            return array;
+        }
+        return longArrayCopyOf(coll);
+    }
 }
