@@ -182,6 +182,9 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.snl.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.dct.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
