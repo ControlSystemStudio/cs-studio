@@ -6,7 +6,7 @@ package org.csstudio.display.pvmanager.pvtable.editors;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.extra.ExpressionLanguage.group;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -151,7 +151,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 	private DynamicGroup group = group();
 	private PVReader<List<Object>> pv = PVManager.read(group)
-			.notifyOn(SWTUtil.swtThread()).every(hz(2));
+			.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(2));
 	private final PVReaderListener pvListener = new PVReaderListener() {
 
 		@Override
@@ -592,7 +592,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
 					return null;
-				return ValueUtil.timeOf(item.getValue()).getTimeStamp().toString();
+				return ValueUtil.timeOf(item.getValue()).getTimestamp().toString();
 			}
 		});
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();
