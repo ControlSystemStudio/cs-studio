@@ -5,9 +5,7 @@
 package org.epics.pvmanager.data;
 
 import org.epics.pvmanager.NotificationSupport;
-import org.epics.pvmanager.TimeSupport;
 import org.epics.pvmanager.TypeSupport;
-import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Adds support for control system standard types defined in this package.
@@ -27,15 +25,6 @@ public final class DataTypeSupport {
         if (installed) {
             return;
         }
-
-        // Add time support for everything
-        TimeSupport.addTypeSupport(new TimeSupport<Time>(Time.class) {
-
-            @Override
-            public TimeStamp extractTimestamp(final Time object) {
-                return object.getTimeStamp();
-            }
-        });
 
         // Add notification support for all immutable types
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(VType.class));

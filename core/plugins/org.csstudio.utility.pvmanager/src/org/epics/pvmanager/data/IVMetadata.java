@@ -4,7 +4,6 @@
  */
 package org.epics.pvmanager.data;
 
-import org.epics.pvmanager.util.TimeStamp;
 import org.epics.util.time.Timestamp;
 
 
@@ -16,11 +15,13 @@ import org.epics.util.time.Timestamp;
 class IVMetadata implements Alarm, Time {
     
     private final AlarmSeverity alarmSeverity;
+    private final String alarmName;
     private final AlarmStatus alarmStatus;
     private final Timestamp timestamp;
     private final Integer timeUserTag;
     private final boolean timeValid;
 
+    @Deprecated
     IVMetadata(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
             Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
         this.alarmSeverity = alarmSeverity;
@@ -28,7 +29,20 @@ class IVMetadata implements Alarm, Time {
         this.timestamp = timestamp;
         this.timeUserTag = timeUserTag;
         this.timeValid = timeValid;
+        this.alarmName = alarmStatus.toString();
     }
+
+    public IVMetadata(AlarmSeverity alarmSeverity, String alarmName, 
+            Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
+        this.alarmSeverity = alarmSeverity;
+        this.alarmName = alarmName;
+        this.alarmStatus = null;
+        this.timestamp = timestamp;
+        this.timeUserTag = timeUserTag;
+        this.timeValid = timeValid;
+    }
+    
+    
 
     @Override
     public AlarmSeverity getAlarmSeverity() {
@@ -36,13 +50,13 @@ class IVMetadata implements Alarm, Time {
     }
 
     @Override
-    public AlarmStatus getAlarmStatus() {
-        return alarmStatus;
+    public String getAlarmName() {
+        return alarmName;
     }
 
     @Override
-    public TimeStamp getTimeStamp() {
-        return TimeStamp.timestampOf(timestamp);
+    public AlarmStatus getAlarmStatus() {
+        return alarmStatus;
     }
 
     @Override

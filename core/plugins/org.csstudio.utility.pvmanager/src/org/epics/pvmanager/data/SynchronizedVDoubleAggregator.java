@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.epics.pvmanager.Function;
-import static org.epics.pvmanager.TimeSupport.*;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.TimeInterval;
 import org.epics.util.time.Timestamp;
@@ -66,11 +65,11 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
                 ValueFactory.newTime(reference), ValueFactory.displayNone());
     }
 
-    static <T> Timestamp electReferenceTimeStamp(List<Function<List<T>>> collectors) {
+    static <T extends Time> Timestamp electReferenceTimeStamp(List<Function<List<T>>> collectors) {
         for (Function<List<T>> collector : collectors) {
             List<T> data = collector.getValue();
             if (data.size() > 1) {
-                Timestamp time = toTimestamp(data.get(data.size() - 2));
+                Timestamp time = data.get(data.size() - 2).getTimestamp();
                 if (time != null)
                     return time;
             }
@@ -78,12 +77,12 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
         return null;
     }
 
-    static <T> T closestElement(List<T> data, TimeInterval interval, Timestamp reference) {
+    static <T extends Time> T closestElement(List<T> data, TimeInterval interval, Timestamp reference) {
         StringBuilder buffer = new StringBuilder();
         T latest = null;
         long latestDistance = Long.MAX_VALUE;
         for (T value : data) {
-            Timestamp newTime = toTimestamp(value);
+            Timestamp newTime = value.getTimestamp();
             if (log.isLoggable(Level.FINEST)) {
                 buffer.append(newTime.getNanoSec()).append(", ");
             }
@@ -102,7 +101,7 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
             }
         }
         if (log.isLoggable(Level.FINEST)) {
-            buffer.append("[").append(toTimestamp(latest).getNanoSec()).append("|").append(reference.getNanoSec()).append("]");
+            buffer.append("[").append(latest.getTimestamp().getNanoSec()).append("|").append(reference.getNanoSec()).append("]");
             log.finest(buffer.toString());
         }
         return latest;

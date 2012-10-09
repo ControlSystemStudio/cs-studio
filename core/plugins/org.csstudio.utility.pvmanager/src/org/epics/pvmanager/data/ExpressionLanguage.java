@@ -6,6 +6,7 @@ package org.epics.pvmanager.data;
 
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.epics.pvmanager.expression.ChannelExpression;
 import org.epics.pvmanager.expression.ChannelExpressionList;
@@ -20,7 +21,6 @@ import org.epics.pvmanager.expression.SourceRateExpressionImpl;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
-import org.epics.pvmanager.util.TimeStamp;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
@@ -38,52 +38,6 @@ public class ExpressionLanguage {
     static {
         // Add support for Epics types.
         DataTypeSupport.install();
-    }
-    
-    /**
-     * Expects a numeric scalar (VDouble or VInt) and converts it to
-     * a VDouble.
-     * 
-     * @deprecated use {@link #vNumber(java.lang.String) }
-     * @param expression an expression that returns a numeric scalar
-     * @return a new expression
-     */
-    @Deprecated
-    public static SourceRateExpression<VDouble> vDoubleOf(SourceRateExpression<?> expression) {
-        return new SourceRateExpressionImpl<VDouble>(expression, new ConverterVDoubleFunction(expression.getFunction()), expression.getName());
-    }
-    
-    /**
-     * Expects a numeric array (VDoubleArray, VFloatArray, VIntArray, VShortArray
-     * or VByteArray) and converts it to a VDoubleArray.
-     * 
-     * @deprecated use {@link #vNumberArray(java.lang.String) }
-     * @param expression an expression that returns a numeric array
-     * @return a new expression
-     */
-    @Deprecated
-    public static SourceRateExpression<VDoubleArray> vDoubleArrayOf(SourceRateExpression<?> expression) {
-        return new SourceRateExpressionImpl<VDoubleArray>(expression, new ConverterVDoubleArrayFunction(expression.getFunction()), expression.getName());
-    }
-    
-    /**
-     * Transforms a list of numeric scalar into a double array.
-     * 
-     * @deprecated use {@link #vNumberArray(java.lang.String) }
-     * @param expressions a list of numeric expressions
-     * @return a new double array expression
-     */
-    @Deprecated
-    public static DesiredRateExpression<VDoubleArray>
-            vDoubleArrayOf(DesiredRateExpressionList<? extends VNumber> expressions) {
-        // TODO - there should be a common function to extract the list of functions
-        List<Function<? extends VNumber>> functions = new ArrayList<Function<? extends VNumber>>();
-        for (DesiredRateExpression<? extends VNumber> expression : expressions.getDesiredRateExpressions()) {
-            functions.add(expression.getFunction());
-        }
-        VNumbersToVDoubleArrayConverter converter =
-                new VNumbersToVDoubleArrayConverter(functions);
-        return new DesiredRateExpressionImpl<VDoubleArray>(expressions, converter, "syncArray");
     }
     
     //
@@ -105,7 +59,7 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static ChannelExpressionList<VType, Object> vTypes(List<String> name) {
+    public static ChannelExpressionList<VType, Object> vTypes(Collection<String> name) {
         return channels(name, VType.class, Object.class);
     }
 
@@ -125,7 +79,7 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static ChannelExpressionList<VNumber, Number> vNumbers(List<String> name) {
+    public static ChannelExpressionList<VNumber, Number> vNumbers(Collection<String> name) {
         return channels(name, VNumber.class, Number.class);
     }
 
@@ -157,6 +111,24 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VNumberArray, ListNumber> vNumberArray(String name) {
         return channel(name, VNumberArray.class, ListNumber.class);
+    }
+    
+    /**
+     * Transforms a list of numeric scalar into an array.
+     * 
+     * @param expressions a list of numeric expressions
+     * @return a new numeric array expression
+     */
+    public static DesiredRateExpression<VNumberArray>
+            vNumberArrayOf(DesiredRateExpressionList<? extends VNumber> expressions) {
+        // TODO - there should be a common function to extract the list of functions
+        List<Function<? extends VNumber>> functions = new ArrayList<Function<? extends VNumber>>();
+        for (DesiredRateExpression<? extends VNumber> expression : expressions.getDesiredRateExpressions()) {
+            functions.add(expression.getFunction());
+        }
+        VNumbersToVNumberArrayConverter converter =
+                new VNumbersToVNumberArrayConverter(functions);
+        return new DesiredRateExpressionImpl<VNumberArray>(expressions, converter, "numberArrayOf");
     }
 
     /**
@@ -245,7 +217,7 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static ChannelExpressionList<VDouble, Double> vDoubles(List<String> names) {
+    public static ChannelExpressionList<VDouble, Double> vDoubles(Collection<String> names) {
         return channels(names, VDouble.class, Double.class);
     }
     
@@ -444,37 +416,20 @@ public class ExpressionLanguage {
     }
 
     /**
-     * A synchronized array from the given expression.
-     *
-     * @param tolerance maximum time difference between samples
-     * @param expressions the expressions from which to reconstruct the array
-     * @return an expression for the array
-     * @deprecated use {@link #synchronizedArrayOf(org.epics.util.time.TimeDuration, org.epics.pvmanager.expression.SourceRateExpressionList) }
+     * Returns all the values starting the latest value and older up to
+     * the time difference given by the interval.
+     * 
+     * @param <T> type being read
+     * @param expression expression to read
+     * @param maxIntervalBetweenSamples maximum time difference between values
+     * @return a new expression
      */
-    @Deprecated
-    public static DesiredRateExpression<VMultiDouble>
-            synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration tolerance, SourceRateExpressionList<VDouble> expressions) {
-        return synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration.asTimeDuration(tolerance), expressions);
+    public static <T extends Time> DesiredRateExpression<List<T>>
+            timedCacheOf(SourceRateExpression<T> expression, TimeDuration maxIntervalBetweenSamples) {
+        return new DesiredRateExpressionImpl<List<T>>(expression,
+                new TimedCacheCollector<T>(expression.getFunction(), maxIntervalBetweenSamples),
+                expression.getName());
     }
-
-    /**
-     * A synchronized array from the given expression.
-     *
-     * @param tolerance maximum time difference between samples in the
-     * reconstructed array
-     * @param cacheDepth maximum time difference between samples in the caches
-     * used to reconstruct the array
-     * @param expressions the expressions from which to reconstruct the array
-     * @return an expression for the array
-     * @deprecated {@link #synchronizedArrayOf(org.epics.util.time.TimeDuration, org.epics.util.time.TimeDuration, org.epics.pvmanager.expression.SourceRateExpressionList) }
-     */
-    @Deprecated
-    public static DesiredRateExpression<VMultiDouble>
-            synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration tolerance, org.epics.pvmanager.util.TimeDuration cacheDepth, SourceRateExpressionList<VDouble> expressions) {
-        return synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration.asTimeDuration(tolerance),
-                org.epics.pvmanager.util.TimeDuration.asTimeDuration(cacheDepth), expressions);
-    }
-
 
     /**
      * A column for an aggregated vTable.

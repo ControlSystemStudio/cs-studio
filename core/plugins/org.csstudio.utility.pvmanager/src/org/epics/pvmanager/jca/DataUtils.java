@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * Utilities to convert JCA types to VData types.
@@ -62,16 +62,6 @@ class DataUtils {
      * number of leap seconds (which should have been 15).
      */
     static long TS_EPOCH_SEC_PAST_1970=631152000; //7305*86400;
-
-    /**
-     * Converts a JCA timestamp to a pvmanager timestamp.
-     *
-     * @param epicsTimeStamp the epics timestamp
-     * @return a new pvmanager timestamp
-     */
-    static org.epics.pvmanager.util.TimeStamp fromEpics(gov.aps.jca.dbr.TimeStamp epicsTimeStamp) {
-        return org.epics.pvmanager.util.TimeStamp.time(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, (int) epicsTimeStamp.nsec());
-    }
     
     /**
      * Converts a JCA timestamp to an epics.util timestamp.
@@ -149,7 +139,7 @@ class DataUtils {
      * @param timeStamp a timestamp
      * @return false if timeStamp is null or represents a UNIX 0 or an Epics 0
      */
-    static boolean isTimeValid(TimeStamp timeStamp) {
+    static boolean isTimeValid(Timestamp timeStamp) {
         if (timeStamp == null)
             return false;
         

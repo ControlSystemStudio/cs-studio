@@ -53,22 +53,6 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
 
-    @Override
-    @Deprecated
-    public PVConfiguration<R, W> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
-        pvReaderConfiguration.timeout(timeout);
-        pvWriterConfiguration.timeout(timeout);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVConfiguration<R, W>  timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
-        pvReaderConfiguration.timeout(timeout, timeoutMessage);
-        pvWriterConfiguration.timeout(timeout, timeoutMessage);
-        return this;
-    }
-
     /**
      * Specifies a timeout, with a different message for the read and the write.
      * 
@@ -124,34 +108,6 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
      */
     public PV<R, W> asynchWriteAndMaxReadRate(TimeDuration period) {
         PVReader<R> pvReader = pvReaderConfiguration.maxRate(period);
-        PVWriter<W> pvWriter = pvWriterConfiguration.async();
-        return new PV<R, W>(pvReader, pvWriter);
-    }
-    
-    /**
-     * Creates the pv such that writes are synchronous and read notifications
-     * comes at most at the rate specified.
-     * 
-     * @param period minimum time between read notifications
-     * @return a new PV
-     */
-    @Deprecated
-    public PV<R, W> synchWriteAndReadEvery(org.epics.pvmanager.util.TimeDuration period) {
-        PVReader<R> pvReader = pvReaderConfiguration.every(period);
-        PVWriter<W> pvWriter = pvWriterConfiguration.sync();
-        return new PV<R, W>(pvReader, pvWriter);
-    }
-    
-    /**
-     * Creates the pv such that writes are asynchronous and read notifications
-     * comes at most at the rate specified.
-     * 
-     * @param period minimum time between read notifications
-     * @return a new PV
-     */
-    @Deprecated
-    public PV<R, W> asynchWriteAndReadEvery(org.epics.pvmanager.util.TimeDuration period) {
-        PVReader<R> pvReader = pvReaderConfiguration.every(period);
         PVWriter<W> pvWriter = pvWriterConfiguration.async();
         return new PV<R, W>(pvReader, pvWriter);
     }

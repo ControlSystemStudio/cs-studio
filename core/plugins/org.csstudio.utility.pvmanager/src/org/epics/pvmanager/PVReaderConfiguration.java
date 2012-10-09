@@ -41,22 +41,6 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         super.timeout(timeout, timeoutMessage);
         return this;
     }
-
-    @Override
-    @Deprecated
-    public PVReaderConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
-        super.timeout(timeout);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVReaderConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
-        super.timeout(timeout, timeoutMessage);
-        return this;
-    }
-    
-    
     
     private DesiredRateExpression<T> aggregatedPVExpression;
     private ExceptionHandler exceptionHandler;
@@ -126,17 +110,5 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);
         notifier.setPvRecipe(recipe);
         return pv;
-    }
-
-    /**
-     * Sets the rate of scan of the expression and creates the actual {@link PVReader}
-     * object that can be monitored through listeners.
-     * 
-     * @param period the minimum time distance (i.e. the maximum rate) at which notifications should be sent
-     * @return the PVReader
-     */
-    @Deprecated
-    public PVReader<T> every(org.epics.pvmanager.util.TimeDuration period) {
-        return maxRate(org.epics.pvmanager.util.TimeDuration.asTimeDuration(period));
     }
 }

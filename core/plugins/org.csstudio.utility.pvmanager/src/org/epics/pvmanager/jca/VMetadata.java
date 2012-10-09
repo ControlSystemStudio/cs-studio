@@ -5,7 +5,6 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.TIME;
-import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
@@ -41,11 +40,10 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
     }
 
     @Override
-    public TimeStamp getTimeStamp() {
-        if (dbrValue.getTimeStamp() == null)
-            return null;
-        
-        return DataUtils.fromEpics(dbrValue.getTimeStamp());
+    public String getAlarmName() {
+        if (disconnected)
+            return "Disconnected";
+        return dbrValue.getStatus().getName();
     }
 
     @Override
@@ -60,7 +58,7 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     @Override
     public boolean isTimeValid() {
-        return DataUtils.isTimeValid(getTimeStamp());
+        return DataUtils.isTimeValid(getTimestamp());
     }
 
 }
