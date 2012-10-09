@@ -22,6 +22,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
+@Deprecated
 public enum AlarmStatus {
 
     /**
