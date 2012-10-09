@@ -3,9 +3,7 @@ package org.csstudio.channel.widgets;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vNumber;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
@@ -53,12 +51,13 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.graphene.PlotDataRange;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormData;
@@ -474,19 +473,18 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			return;
 		}
 
-		DesiredRateExpression<VDoubleArray> yValueExpression = null;
+		DesiredRateExpression<VNumberArray> yValueExpression = null;
 		// Determine the expression for the y values.
 		if (yOrdering.equals(YAxis.CHANNELQUERY)) {
 			if (yChannelNames != null)
-				yValueExpression = vDoubleArrayOf(latestValueOf(channels(
-						yChannelNames, VNumber.class, VNumber.class)));
+				yValueExpression = vNumberArrayOf(latestValueOf(vNumbers(yChannelNames)));
 		} else if (yOrdering.equals(YAxis.WAVEFORM)) {
 			if (yWaveformChannelName != null && !yWaveformChannelName.isEmpty())
-				yValueExpression = latestValueOf(vDoubleArrayOf(channel(yWaveformChannelName)));
+				yValueExpression = latestValueOf(vNumberArray(yWaveformChannelName));
 		}
 
 		if (yValueExpression != null) {
-			DesiredRateExpression<VDoubleArray> xValueExpression = null;
+			DesiredRateExpression<VNumberArray> xValueExpression = null;
 			// Determine the expression for the x values.
 			switch (xOrdering) {
 			case INDEX:
@@ -494,13 +492,13 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				break;
 			case CHANNELQUERY:
 				if (xChannelNames != null && !xChannelNames.isEmpty()) {
-					xValueExpression = vDoubleArrayOf(latestValueOf(channels(
-							xChannelNames, VNumber.class, VNumber.class)));
+					xValueExpression = vNumberArrayOf(latestValueOf(vNumbers(
+							xChannelNames)));
 					plot = ExpressionLanguage.lineGraphOf(xValueExpression,
 							yValueExpression);
 				} else if (xWaveformChannelName != null
 						&& !xWaveformChannelName.isEmpty()) {
-					xValueExpression = latestValueOf(vDoubleArrayOf(channel(xWaveformChannelName)));
+					xValueExpression = latestValueOf(vNumberArray(xWaveformChannelName));
 					plot = ExpressionLanguage.lineGraphOf(xValueExpression,
 							yValueExpression);
 				} else {
