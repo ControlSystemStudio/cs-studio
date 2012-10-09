@@ -120,16 +120,6 @@ public class WaterfallPlotParameters extends Parameters {
     }
 
     /**
-     * How much time should be allocated to each line of the plot.
-     * 
-     * @param pixelDuration amount of time for each pixel
-     * @return a new parameter
-     */
-    public static WaterfallPlotParameters pixelDuration(org.epics.pvmanager.util.TimeDuration pixelDuration) {
-        return new WaterfallPlotParameters("pixelDuration", org.epics.pvmanager.util.TimeDuration.asTimeDuration(pixelDuration));
-    }
-
-    /**
      * The background color for the plot.
      * 
      * @param rgb background color for the plot

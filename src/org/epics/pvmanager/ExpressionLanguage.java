@@ -191,36 +191,6 @@ public class ExpressionLanguage {
     }
 
     /**
-     * Returns all the values starting the latest value and older up to
-     * the time different given by the interval.
-     * 
-     * @param <T> type being read
-     * @param expression expression to read
-     * @param maxIntervalBetweenSamples maximum time difference between values
-     * @return a new expression
-     */
-    public static <T> DesiredRateExpression<List<T>>
-            timedCacheOf(SourceRateExpression<T> expression, TimeDuration maxIntervalBetweenSamples) {
-        return new DesiredRateExpressionImpl<List<T>>(expression,
-                new TimedCacheCollector<T>(expression.getFunction(), maxIntervalBetweenSamples),
-                expression.getName());
-    }
-
-    /**
-     * Returns all the values starting the latest value and older up to
-     * the time different given by the interval.
-     * 
-     * @param <T> type being read
-     * @param expression expression to read
-     * @param maxIntervalBetweenSamples maximum time difference between values
-     * @return a new expression
-     */
-    public static <T> DesiredRateExpression<List<T>>
-            timedCacheOf(SourceRateExpression<T> expression, org.epics.pvmanager.util.TimeDuration maxIntervalBetweenSamples) {
-        return timedCacheOf(expression, org.epics.pvmanager.util.TimeDuration.asTimeDuration(maxIntervalBetweenSamples));
-    }
-
-    /**
      * Expression that returns (only) the latest value computed
      * from a {@code SourceRateExpression}.
      *
