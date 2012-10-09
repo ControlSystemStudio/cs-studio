@@ -35,8 +35,9 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
-import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.csstudio.utility.jms.JmsUtilityException;
+import org.csstudio.utility.jms.sharedconnection.IMessageListenerSession;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,14 +92,16 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
             sendViaMessageProducer(session, message);
         } catch (final JMSException e) {
             throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
-        } finally {
+        } catch (JmsUtilityException e) {
+        	throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
+		} finally {
             tryToCloseSession(session);
         }
         
     }
     
     private RemoteCommandException newRemoteCommandException(@Nonnull final String message,
-                                                             @Nonnull final JMSException e) {
+                                                             @Nonnull final Exception e) {
         LOG.error(message, e);
         return new RemoteCommandException(message, e);
     }
@@ -130,7 +133,7 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
     }
     
     @Nonnull
-    private Session newSession() throws JMSException {
+    private Session newSession() throws JMSException, JmsUtilityException {
         return SharedJmsConnections.sharedSenderConnection()
                 .createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
