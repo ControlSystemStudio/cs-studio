@@ -2,7 +2,7 @@ package org.csstudio.utility.pvamanger.widgets.test;
 
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.util.TimeDuration.hz;
+import static org.epics.util.time.TimeDuration.ofHertz;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
@@ -114,7 +114,7 @@ public class VImageDisplayDemo extends ViewPart {
 			pv.close();
 		}
 		pv = PVManager.read(waterfallPlotOf(vDoubleArray("sim://gaussianWaveform(1, 50, 0.1)")))
-		.notifyOn(SWTUtil.swtThread()).every(hz(50));
+		.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override

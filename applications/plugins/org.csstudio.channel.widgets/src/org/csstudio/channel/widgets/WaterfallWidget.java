@@ -1,14 +1,13 @@
 package org.csstudio.channel.widgets;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
-import static org.epics.pvmanager.util.TimeDuration.hz;
+import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -51,7 +50,7 @@ import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 public class WaterfallWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget, ISelectionProvider {
@@ -107,7 +106,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			
 			@Override
 			public void rangeChanged() {
-				parameters = parameters.with(pixelDuration(TimeDuration.asTimeDuration(TimeDuration.nanos((long) (rangeWidget.getDistancePerPx() * 1000000000)))));
+				parameters = parameters.with(pixelDuration(TimeDuration.ofNanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
 				if (plot != null) {
 					plot.with(parameters);
 				}
@@ -228,7 +227,7 @@ implements ConfigurableWidget, ISelectionProvider {
 		}
 		
 		// Make sure the range is consistent with the image resolution
-		rangeWidget.setDistancePerPx(TimeDuration.durationOf(parameters.getPixelDuration()).getNanoSec() / 1000000000.0);
+		rangeWidget.setDistancePerPx(parameters.getPixelDuration().toSeconds());
 	}
 	
 	// Reconnects the pv
@@ -241,10 +240,10 @@ implements ConfigurableWidget, ISelectionProvider {
 		
 		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
-			plot = waterfallPlotOf(vDoubleArrayOf(channel(waveformPVName))).with(parameters, WaterfallPlotParameters.backgroundColor(color));
+			plot = waterfallPlotOf(vNumberArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.swtThread()).every(hz(50));
+				.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
 			pv.addPVReaderListener(new PVReaderListener() {
 				
 				@Override
@@ -261,7 +260,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.swtThread()).every(hz(50));
+					.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
 			pv.addPVReaderListener(new PVReaderListener() {
 				
 				@Override
@@ -334,7 +333,7 @@ implements ConfigurableWidget, ISelectionProvider {
 	}
 	
 	public TimeDuration getPixelDuration() {
-		return TimeDuration.durationOf(parameters.getPixelDuration());
+		return parameters.getPixelDuration();
 	}
 	
 	public void setPixelDuration(TimeDuration pixelDuration) {
@@ -538,7 +537,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
 		}
 		memento.putBoolean(MEMENTO_ADAPTIVE_RANGE, isAdaptiveRange());
-		memento.putInteger(MEMENTO_PIXEL_DURATION, (int) getPixelDuration().getNanoSec());
+		memento.putInteger(MEMENTO_PIXEL_DURATION, (int) getPixelDuration().toNanosLong());
 		memento.putInteger(MEMENTO_SCROLL_DIRECTION, getScrollDirection());
 		memento.putBoolean(MEMENTO_SHOW_TIME_AXIS, isShowTimeAxis());
 		if (getSortProperty() != null) {
@@ -552,7 +551,7 @@ implements ConfigurableWidget, ISelectionProvider {
 				setAdaptiveRange(memento.getBoolean(MEMENTO_ADAPTIVE_RANGE));
 			}
 			if (memento.getInteger(MEMENTO_PIXEL_DURATION) != null) {
-				setPixelDuration(TimeDuration.nanos(memento.getInteger(MEMENTO_PIXEL_DURATION)));
+				setPixelDuration(TimeDuration.ofNanos(memento.getInteger(MEMENTO_PIXEL_DURATION)));
 			}
 			if (memento.getInteger(MEMENTO_SCROLL_DIRECTION) != null) {
 				setScrollDirection(memento.getInteger(MEMENTO_SCROLL_DIRECTION));

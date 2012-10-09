@@ -2,8 +2,7 @@ package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.util.TimeDuration.hz;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -57,7 +56,7 @@ import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.data.ValueUtil;
-import org.epics.pvmanager.util.TimeStampFormat;
+import org.epics.util.time.TimestampFormat;
 
 /**
  * Probe view.
@@ -109,7 +108,7 @@ public class PVManagerProbe extends ViewPart {
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 
 	/** Formatting used for the time text field */
-	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
+	private TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
@@ -520,8 +519,8 @@ public class PVManagerProbe extends ViewPart {
 
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.readAndWrite(channel(pvName.getName()))
-				.timeout(ms(5000), "No connection after 5s. Still trying...")
-				.notifyOn(swtThread()).asynchWriteAndReadEvery(hz(25));
+				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
+				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
@@ -650,7 +649,7 @@ public class PVManagerProbe extends ViewPart {
 		if (time == null) {
 			timestampField.setText(""); //$NON-NLS-1$
 		} else {
-			timestampField.setText(timeFormat.format(time.getTimeStamp()));
+			timestampField.setText(timeFormat.format(time.getTimestamp()));
 		}
 	}
 

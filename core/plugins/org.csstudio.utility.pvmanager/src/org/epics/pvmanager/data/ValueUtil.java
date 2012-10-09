@@ -226,19 +226,4 @@ public class ValueUtil {
         return ValueFactory.newVImage(image.getHeight(), image.getWidth(), buffer);
     }
     
-    /**
-     * Returns a comparator with the order defined by the timestamp.
-     * 
-     * @param <T> a Time type
-     * @return a comparator
-     */
-    public static <T extends Time> Comparator<T> timeComparator() {
-        return new Comparator<T>() {
-
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.getTimeStamp().compareTo(o2.getTimeStamp());
-            }
-        };
-    }
 }

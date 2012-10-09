@@ -24,23 +24,7 @@ public interface VExtendedAlarm extends VType {
     /**
      * A single alarm condition that can be on or off.
      */
-    public interface Condition {
-        
-        /**
-         * A short name for the alarm condition.
-         * 
-         * @return condition name
-         */
-        @Metadata
-        public String getName();
-        
-        /**
-         * The severity associated with the alarm.
-         * 
-         * @return the alarm severity
-         */
-        @Metadata
-        public AlarmSeverity getSeverity();
+    public interface AlarmCondition extends Alarm {
         
         /**
          * Whether the alarm is on.
@@ -56,7 +40,7 @@ public interface VExtendedAlarm extends VType {
      * 
      * @return the alarm conditions
      */
-    public List<Condition> getConditions();
+    public List<AlarmCondition> getConditions();
     
     
     /**

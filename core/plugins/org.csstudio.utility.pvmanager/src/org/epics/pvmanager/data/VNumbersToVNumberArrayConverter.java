@@ -16,7 +16,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class VNumbersToVDoubleArrayConverter extends Function<VDoubleArray> {
+class VNumbersToVNumberArrayConverter extends Function<VNumberArray> {
     
     private final List<? extends Function<? extends VNumber>> arguments;
 
@@ -25,12 +25,12 @@ class VNumbersToVDoubleArrayConverter extends Function<VDoubleArray> {
      * 
      * @param argument the argument function
      */
-    public VNumbersToVDoubleArrayConverter(List<? extends Function<? extends VNumber>> arguments) {
+    public VNumbersToVNumberArrayConverter(List<? extends Function<? extends VNumber>> arguments) {
         this.arguments = arguments;
     }
 
     @Override
-    public VDoubleArray getValue() {
+    public VNumberArray getValue() {
         final List<VNumber> values = new ArrayList<VNumber>();
         
         Display meta = displayNone();

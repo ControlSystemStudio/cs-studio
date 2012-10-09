@@ -38,6 +38,13 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         public MonitorHandler(ChannelHandlerReadSubscription subscription) {
             this.subscription = subscription;
         }
+        
+        public final void processConnection(boolean connection) {
+            synchronized (subscription.getConnCollector()) {
+                subscription.getConnCache().setValue(connection);
+                subscription.getConnCollector().collect();
+            }
+        }
 
         public final void processValue(MessagePayload payload) {
             if (typeAdapter == null)
@@ -85,10 +92,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     
     private void reportConnectionStatus(boolean connected) {
         for (MonitorHandler monitor : monitors.values()) {
-            synchronized (monitor.subscription.getConnCollector()) {
-                monitor.subscription.getConnCache().setValue(connected);
-                monitor.subscription.getConnCollector().collect();
-            }
+            monitor.processConnection(connected);
         }
     }
 
@@ -221,6 +225,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         monitor.findTypeAdapter();
         guardedConnect();
         if (readUsageCounter > 1 && lastMessage != null) {
+            monitor.processConnection(isConnected());
             monitor.processValue(lastMessage);
         } 
     }
