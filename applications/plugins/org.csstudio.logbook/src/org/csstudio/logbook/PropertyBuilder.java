@@ -52,7 +52,7 @@ public class PropertyBuilder {
 		return this;
 	}
 
-	Property build() {
+	public Property build() {
 		return new PropertyImpl(name, attributes);
 	}
 

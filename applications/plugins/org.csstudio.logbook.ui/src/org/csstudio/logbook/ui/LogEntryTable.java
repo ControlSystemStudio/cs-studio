@@ -74,8 +74,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		TableColumnLayout tcl_composite = new TableColumnLayout();
 		composite.setLayout(tcl_composite);
 
-		logTableViewer = new TableViewer(composite, SWT.BORDER
-				| SWT.FULL_SELECTION);
+		logTableViewer = new TableViewer(composite, SWT.BORDER | SWT.FULL_SELECTION);
 		logTable = logTableViewer.getTable();
 		logTable.setHeaderVisible(true);
 		logTable.setLinesVisible(true);

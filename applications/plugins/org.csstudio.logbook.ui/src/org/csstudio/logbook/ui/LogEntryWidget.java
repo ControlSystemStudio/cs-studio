@@ -16,6 +16,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -25,11 +28,14 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
+import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -81,7 +87,10 @@ public class LogEntryWidget extends Composite {
 	// logEntry.
 	private java.util.List<String> logbookNames;
 	private java.util.List<String> tagNames;
+	// TODO
+	private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
 
+	// UI components
 	private Text text;
 	private Text textDate;
 	private Text textOwner;
@@ -222,6 +231,9 @@ public class LogEntryWidget extends Composite {
 						File file = new File(fileName);
 						logbookClient.addAttachment(logEntry.getId(),
 								new FileInputStream(file), file.getName());
+					}
+					for (AbstractPropertyWidget abstractPropertyWidget : propertyWidgets.values()) {
+						abstractPropertyWidget.afterCreate(logEntry);
 					}
 					setEditable(false);
 					setLogEntryBuilder(null);
@@ -467,6 +479,24 @@ public class LogEntryWidget extends Composite {
 								return input.getName();
 							};
 						});
+				// get the list of properties and extensions to handle these
+				// properties.
+				IConfigurationElement[] config = Platform
+						.getExtensionRegistry().getConfigurationElementsFor(
+								"org.csstudio.logbook.ui.propertywidget");
+				if (config.length > 0) {
+					propertyWidgetFactories = new HashMap<String, PropertyWidgetFactory>();
+					for (IConfigurationElement iConfigurationElement : config) {
+						propertyWidgetFactories
+								.put(iConfigurationElement
+										.getAttribute("propertyName"),
+										(PropertyWidgetFactory) iConfigurationElement
+												.createExecutableExtension("propertywidgetfactory"));
+					}
+				} else {
+					propertyWidgetFactories = Collections.emptyMap();
+				}
+
 			}
 		} catch (Exception e) {
 			// Failed to get a client to the logbook
@@ -489,6 +519,12 @@ public class LogEntryWidget extends Composite {
 		btnAddImage.setVisible(editable);
 		btnAddScreenshot.setVisible(editable);
 		btnCSSWindow.setVisible(editable);
+		// Dispose the contributed tabs, only keep the default attachments tab
+		for (CTabItem cTabItem : tabFolder.getItems()) {
+			if (!cTabItem.equals(tbtmAttachments)) {
+				cTabItem.dispose();
+			}
+		}
 		if (!editable) {
 			btnAddLogbook.setSize(btnAddLogbook.getSize().x, 0);
 			btnAddTags.setSize(btnAddTags.getSize().x, 0);
@@ -514,6 +550,8 @@ public class LogEntryWidget extends Composite {
 		parent.layout();
 	}
 
+	private Map<String, AbstractPropertyWidget> propertyWidgets;
+
 	private void updateWidget() {
 		if (editable) {
 			// Show the LogBuilder
@@ -521,9 +559,37 @@ public class LogEntryWidget extends Composite {
 			for (String fileName : imageFileNames) {
 				imageStackWidget.addImageFilename(fileName);
 			}
-			// this.layout();
+
+			propertyWidgets = new HashMap<String, AbstractPropertyWidget>();
+			// show edit views for properties the can be added
+			for (Entry<String, PropertyWidgetFactory> entry : propertyWidgetFactories
+					.entrySet()) {
+				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
+				tbtmProperty.setText(entry.getKey());
+				AbstractPropertyWidget abstractPropertyWidget = entry
+						.getValue().create(tabFolder, SWT.NONE);
+				tbtmProperty.setControl(abstractPropertyWidget);
+				abstractPropertyWidget.setEditable(true);
+				propertyWidgets.put(entry.getKey(), abstractPropertyWidget);
+			}
 		} else {
 			updateWidget(logEntry);
+			// only Show properties already present on the logEntry
+			if (logEntry != null) {
+				for (Property property : logEntry.getProperties()) {
+					if (propertyWidgetFactories.containsKey(property.getName())) {
+						CTabItem tbtmProperty = new CTabItem(tabFolder,
+								SWT.NONE);
+						tbtmProperty.setText(property.getName());
+						AbstractPropertyWidget abstractPropertyWidget = propertyWidgetFactories
+								.get(property.getName()).create(tabFolder,
+										SWT.NONE);
+						tbtmProperty.setControl(abstractPropertyWidget);
+						abstractPropertyWidget.setEditable(false);
+						abstractPropertyWidget.setProperty(property);
+					}
+				}
+			}
 		}
 	}
 
@@ -544,7 +610,8 @@ public class LogEntryWidget extends Composite {
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 			// TODO temporary fix, in future releases the attachments will be
 			// listed with the logEntry itself
-			imageStackWidget.setImageFilenames(null);
+			imageStackWidget
+					.setImageFilenames(Collections.<String> emptyList());
 			if (logEntry.getId() != null) {
 				Collection<Attachment> attachments = logbookClient
 						.listAttachments(logEntry.getId());
@@ -618,6 +685,13 @@ public class LogEntryWidget extends Composite {
 				logEntryBuilder = LogEntryBuilder.withText(text.getText())
 						.owner(textOwner.getText()).setLogbooks(newLogbooks)
 						.setTags(newTags);
+				for (Entry<String, AbstractPropertyWidget> propertyWidget : propertyWidgets
+						.entrySet()) {
+					if (propertyWidget.getValue().getPropertyBuilder() != null) {
+						logEntryBuilder.addProperty(propertyWidget.getValue()
+								.getPropertyBuilder());
+					}
+				}
 			}
 		} else if (!editable) {
 			// No longer Editing so save the state of the currently
