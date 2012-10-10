@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
+import org.csstudio.ams.dbAccess.PreparedStatementHolder;
 
 public abstract class MessageChainDAO extends DAO 
 {
@@ -41,9 +42,13 @@ public abstract class MessageChainDAO extends DAO
 	
 		try
 		{
-			int newID = getNewID(con, "iMessageChainID", "AMS_MessageChain");
+			int messageChainID = msgChain.getMessageChainID();
+			// If necessary, create valid message ID
+			if(messageChainID == -1) {
+				messageChainID = getNewID(con, "iMessageChainID", "AMS_MessageChain");
+			}
 			st = con.prepareStatement(query);
-			st.setInt(1, newID);
+			st.setInt(1, messageChainID);
 			st.setInt(2, msgChain.getMessageRef());
 			st.setInt(3, msgChain.getFilterRef());
 			st.setInt(4, msgChain.getFilterActionRef());
@@ -54,7 +59,7 @@ public abstract class MessageChainDAO extends DAO
 			st.setString(9, msgChain.getReceiverAdress());
 			
 			st.execute();
-			msgChain.setMessageChainID(newID);
+			msgChain.setMessageChainID(messageChainID);
 		}	
 		catch(SQLException ex)
 		{
@@ -246,4 +251,87 @@ public abstract class MessageChainDAO extends DAO
             close(st,rs);
         }
     }
+    
+    public static void removeAll(final Connection con) throws SQLException
+	{
+		final String query = "DELETE FROM AMS_MessageChain";
+		
+		PreparedStatement st = null;
+		
+		try
+		{
+			st = con.prepareStatement(query);
+			st.executeUpdate();
+		}
+		catch(final SQLException ex)
+		{
+			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
+			throw ex;
+		}
+		finally
+		{
+			close(st,null);
+		}
+	}
+
+    public static void copyMessageChains(Connection masterDB, Connection targetDB) throws SQLException {
+		final String query = "SELECT iMessageChainID, iMessageRef, iFilterRef, iFilterActionRef, iReceiverPos, tSendTime, tNextActTime, sChainState, cReceiverAdress FROM AMS_MessageChain";
+		
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		PreparedStatementHolder psth = null;
+
+		try {
+			psth = new PreparedStatementHolder();
+			statement = masterDB.prepareStatement(query);
+			resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				MessageChainTObject messageChainObj = new MessageChainTObject(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), getUtilDate(resultSet, 6), getUtilDate(resultSet, 7), resultSet.getShort(8), resultSet.getString(9));
+				preparedInsertFilter(targetDB, psth, messageChainObj);
+			}
+		} catch (SQLException ex) {
+			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
+			throw ex;
+		} finally {
+			close(statement, resultSet);
+
+			try {
+				if (psth.pst != null) {
+					psth.pst.close();
+				}
+			} catch (SQLException ex) {
+				Log.log(Log.WARN, ex);
+			}
+		}
+	}
+
+	private static void preparedInsertFilter(Connection targetDB, PreparedStatementHolder psth, MessageChainTObject messageChainObject)
+			throws SQLException {
+		final String query = "INSERT INTO AMS_MessageChain"
+				+ " (iMessageChainID, iMessageRef, iFilterRef, iFilterActionRef, iReceiverPos, tSendTime, tNextActTime, sChainState, cReceiverAdress) VALUES(?,?,?,?,?,?,?,?,?)";
+
+		try {
+			if (psth.bMode == PreparedStatementHolder.MODE_INIT) {
+				psth.pst = targetDB.prepareStatement(query);
+				psth.bMode = PreparedStatementHolder.MODE_EXEC;
+			}
+
+			psth.pst.setInt(1, messageChainObject.getMessageChainID());
+			psth.pst.setInt(2, messageChainObject.getMessageRef());
+			psth.pst.setInt(3, messageChainObject.getFilterRef());
+			psth.pst.setInt(4, messageChainObject.getFilterActionRef());
+			psth.pst.setInt(5, messageChainObject.getReceiverPos());
+			setUtilDate(psth.pst, 6, messageChainObject.getSendTime());
+			setUtilDate(psth.pst, 7, messageChainObject.getNextActTime());
+			psth.pst.setShort(8, messageChainObject.getChainState());
+			psth.pst.setString(9, messageChainObject.getReceiverAdress());
+
+			psth.pst.executeUpdate();
+		} catch (SQLException ex) {
+			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
+			throw ex;
+		}
+	}
+
 }

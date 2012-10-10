@@ -362,7 +362,9 @@ public class AlarmConfiguration
             throw new Exception("Cannot add sub-element to PV " +
                     parent.getName());
 
-        checkDuplicatePath(parent, name);
+        // For all but root check the path
+        if (parent != null)
+            checkDuplicatePath(parent, name);
 
         rdb.getConnection().setAutoCommit(false);
         final int id = getNextItemID();

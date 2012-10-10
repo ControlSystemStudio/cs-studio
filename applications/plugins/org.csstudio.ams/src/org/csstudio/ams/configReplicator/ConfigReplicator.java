@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
@@ -47,12 +48,15 @@ import org.csstudio.ams.dbAccess.configdb.FilterDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterFilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterFilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
+import org.csstudio.ams.dbAccess.configdb.HistoryDAO;
+import org.csstudio.ams.dbAccess.configdb.MessageChainDAO;
+import org.csstudio.ams.dbAccess.configdb.MessageDAO;
 import org.csstudio.ams.dbAccess.configdb.TopicDAO;
 import org.csstudio.ams.dbAccess.configdb.UserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
-import org.hsqldb.util.SqlFile;
-import org.hsqldb.util.SqlToolError;
+import org.hsqldb.cmdline.SqlFile;
+import org.hsqldb.cmdline.SqlToolError;
 
 public class ConfigReplicator implements AmsConstants {
 	
@@ -156,13 +160,13 @@ public class ConfigReplicator implements AmsConstants {
 	    Log.log(Log.INFO, "Creating memory cache database.");
 	    try {
 	        // HSQLDB 1.8.0.10:
-	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
-	        sqlFile.execute(cacheDb, false);
+//	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
+//	        sqlFile.execute(cacheDb, false);
 
 	        // HSQLDB 2.2.9.0:
-	        // SqlFile sqlFile = new SqlFile(sqlScript);
-	        // sqlFile.setConnection(cacheDb);
-	        // sqlFile.execute();
+	         SqlFile sqlFile = new SqlFile(sqlScript);
+	         sqlFile.setConnection(cacheDb);
+	         sqlFile.execute();
 	        Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
 	    } catch (IOException e) {
 	        throw new ReplicationException(e);
@@ -196,64 +200,75 @@ public class ConfigReplicator implements AmsConstants {
 	 * @throws ReplicationException 
 	 */
 	public static void replicateConfigurationToHsql(Connection masterDB,
-			                                        Connection localDB)
+			                                        Connection hsqlDB)
 			                                                throws ReplicationException {
 			    		
 		try {
             Log.log(Log.INFO, "Start deleting memory cache configuration.");           
-            FilterCondJunctionDAO.removeAll(localDB);           
-            FilterCondNegationDAO.removeAll(localDB);
-            FilterCondFilterCondDAO.removeAll(localDB);
+            FilterCondJunctionDAO.removeAll(hsqlDB);           
+            FilterCondNegationDAO.removeAll(hsqlDB);
+            FilterCondFilterCondDAO.removeAll(hsqlDB);
             
-            FilterConditionTypeDAO.removeAll(localDB);
-            FilterConditionDAO.removeAll(localDB);
-            FilterConditionStringDAO.removeAll(localDB);
-            FilterConditionArrayStringDAO.removeAll(localDB);
-            FilterConditionArrayStringValuesDAO.removeAll(localDB);
-            FilterConditionProcessVariableDAO.removeAll(localDB);
-            CommonConjunctionFilterConditionDAO.removeAll(localDB);
+            FilterConditionTypeDAO.removeAll(hsqlDB);
+            FilterConditionDAO.removeAll(hsqlDB);
+            FilterConditionStringDAO.removeAll(hsqlDB);
+            FilterConditionArrayStringDAO.removeAll(hsqlDB);
+            FilterConditionArrayStringValuesDAO.removeAll(hsqlDB);
+            FilterConditionProcessVariableDAO.removeAll(hsqlDB);
+            CommonConjunctionFilterConditionDAO.removeAll(hsqlDB);
             
-            FilterConditionTimeBasedDAO.removeAll(localDB);
-            FilterDAO.removeAll(localDB);
-            FilterFilterConditionDAO.removeAll(localDB);
-            TopicDAO.removeAll(localDB);
-            FilterActionTypeDAO.removeAll(localDB);
+            FilterConditionTimeBasedDAO.removeAll(hsqlDB);
+            FilterDAO.removeAll(hsqlDB);
+            FilterFilterConditionDAO.removeAll(hsqlDB);
+            TopicDAO.removeAll(hsqlDB);
+            FilterActionTypeDAO.removeAll(hsqlDB);
             
-            FilterActionDAO.removeAll(localDB);
-            FilterFilterActionDAO.removeAll(localDB);
-            UserDAO.removeAll(localDB);
-            UserGroupDAO.removeAll(localDB);
-            UserGroupUserDAO.removeAll(localDB);
+            FilterActionDAO.removeAll(hsqlDB);
+            FilterFilterActionDAO.removeAll(hsqlDB);
+            UserDAO.removeAll(hsqlDB);
+            UserGroupDAO.removeAll(hsqlDB);
+            UserGroupUserDAO.removeAll(hsqlDB);
 
 			Log.log(Log.INFO, "Start copying master configuration to memory cache database.");
-			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB, "");
-			FilterConditionDAO.copyFilterCondition(masterDB, localDB, "");
+			FilterConditionTypeDAO.copyFilterConditionType(masterDB, hsqlDB, "");
+			FilterConditionDAO.copyFilterCondition(masterDB, hsqlDB, "");
 			FilterConditionStringDAO.copyFilterConditionString(masterDB,
-					localDB, "");
+					hsqlDB, "");
 			FilterConditionArrayStringDAO.copyFilterConditionArrayString(
-					masterDB, localDB, "");
+					masterDB, hsqlDB, "");
 			FilterConditionArrayStringValuesDAO
-					.copyFilterConditionArrayStringValues(masterDB, localDB, "");
-			FilterConditionProcessVariableDAO.copy(masterDB, localDB, "");
-			CommonConjunctionFilterConditionDAO.copy(masterDB, localDB, "");
+					.copyFilterConditionArrayStringValues(masterDB, hsqlDB, "");
+			FilterConditionProcessVariableDAO.copy(masterDB, hsqlDB, "");
+			CommonConjunctionFilterConditionDAO.copy(masterDB, hsqlDB, "");
 			// ADDED: Markus Moeller 2008-08-06
-			FilterCondJunctionDAO.copyFilterCondJunction(masterDB, localDB, "");
-			FilterCondNegationDAO.copyFilterCondNegation(masterDB, localDB, "");
-			FilterCondFilterCondDAO.copyFilterCondFilterCond(masterDB, localDB, "");
+			FilterCondJunctionDAO.copyFilterCondJunction(masterDB, hsqlDB, "");
+			FilterCondNegationDAO.copyFilterCondNegation(masterDB, hsqlDB, "");
+			FilterCondFilterCondDAO.copyFilterCondFilterCond(masterDB, hsqlDB, "");
 
 			FilterConditionTimeBasedDAO.copyFilterConditionTimeBased(masterDB,
-					localDB, "");
-			FilterDAO.copyFilter(masterDB, localDB, "");
+					hsqlDB, "");
+			FilterDAO.copyFilter(masterDB, hsqlDB, "");
 			FilterFilterConditionDAO.copyFilterFilterCondition(masterDB,
-					localDB, "");
-			TopicDAO.copyTopic(masterDB, localDB, "");
-			FilterActionTypeDAO.copyFilterActionType(masterDB, localDB, "");
+					hsqlDB, "");
+			TopicDAO.copyTopic(masterDB, hsqlDB, "");
+			FilterActionTypeDAO.copyFilterActionType(masterDB, hsqlDB, "");
 
-			FilterActionDAO.copyFilterAction(masterDB, localDB, "");
-			FilterFilterActionDAO.copyFilterFilterAction(masterDB, localDB, "");
-			UserDAO.copyUser(masterDB, localDB, "");
-			UserGroupDAO.copyUserGroup(masterDB, localDB, "");
-			UserGroupUserDAO.copyUserGroupUser(masterDB, localDB, "");
+			FilterActionDAO.copyFilterAction(masterDB, hsqlDB, "");
+			FilterFilterActionDAO.copyFilterFilterAction(masterDB, hsqlDB, "");
+			UserDAO.copyUser(masterDB, hsqlDB, "");
+			UserGroupDAO.copyUserGroup(masterDB, hsqlDB, "");
+			UserGroupUserDAO.copyUserGroupUser(masterDB, hsqlDB, "");
+			
+			// ADDED: gs, fz 2012-09-12
+			MessageDAO.removeAll(hsqlDB);
+			MessageChainDAO.removeAll(hsqlDB);
+			HistoryDAO.removeAll(hsqlDB);
+
+			HistoryDAO.copyHistory(masterDB, hsqlDB);
+			MessageChainDAO.copyMessageChains(masterDB, hsqlDB);
+			MessageDAO.copyMessages(masterDB, hsqlDB);
+
+			FlagDAO.copyAllFlagStates(masterDB, hsqlDB);
 
 			Log.log(Log.INFO, "Replicating configuration finished.");
 
