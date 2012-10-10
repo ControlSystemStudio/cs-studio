@@ -9,6 +9,7 @@ import gov.aps.jca.JCALibrary;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.epics.pvmanager.jca.JCADataSource;
+import org.epics.pvmanager.jca.JCADataSourceBuilder;
 
 public class Epics3DataSource extends JCADataSource {
 	
@@ -32,7 +33,9 @@ public class Epics3DataSource extends JCADataSource {
 	}
 	
 	public Epics3DataSource() {
-		super(context, paramMask);
+		super(new JCADataSourceBuilder()
+		        .jcaContext(context)
+				.monitorMask(paramMask));
 	}
 
 }
