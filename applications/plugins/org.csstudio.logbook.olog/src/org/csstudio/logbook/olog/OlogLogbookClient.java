@@ -82,7 +82,7 @@ public class OlogLogbookClient implements LogbookClient {
 
 					@Override
 					public Property apply(edu.msu.nscl.olog.api.Property input) {
-						return new OlogPropery(input);
+						return new OlogProperty(input);
 					}
 				}));
 	}
@@ -200,10 +200,10 @@ public class OlogLogbookClient implements LogbookClient {
 		return logBuilder;
 	}
 
-	private class OlogPropery implements Property {
+	public static class OlogProperty implements Property {
 		private final edu.msu.nscl.olog.api.Property property;
 
-		public OlogPropery(edu.msu.nscl.olog.api.Property property) {
+		public OlogProperty(edu.msu.nscl.olog.api.Property property) {
 			this.property = property;
 		}
 
@@ -337,7 +337,7 @@ public class OlogLogbookClient implements LogbookClient {
 						@Override
 						public Property apply(
 								edu.msu.nscl.olog.api.Property input) {
-							return new OlogPropery(input);
+							return new OlogProperty(input);
 						}
 					});
 
