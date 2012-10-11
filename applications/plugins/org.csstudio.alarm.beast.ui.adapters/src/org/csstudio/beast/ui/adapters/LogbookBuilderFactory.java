@@ -29,14 +29,15 @@ public class LogbookBuilderFactory implements IAdapterFactory {
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adapterType == LogEntryBuilder.class) {
-			if (adaptableObject instanceof AlarmTreeItem) {
-				AlarmTreeItem alarmTreeItem = ((AlarmTreeItem) adaptableObject);
-				return LogEntryBuilder.withText("alarmTreeItem");
-			} else if (adaptableObject instanceof AlarmTreeLeaf) {
+			if (adaptableObject instanceof AlarmTreeLeaf) {
 				AlarmTreeLeaf alarmTreeLeaf = ((AlarmTreeLeaf) adaptableObject);
 				List<AlarmTreeLeaf> alarms = new ArrayList<AlarmTreeLeaf>();
 				alarms.add(alarmTreeLeaf);
-				return LogEntryBuilder.withText(AlarmTextHelper.createAlarmInfoText(alarms));
+				return LogEntryBuilder.withText(AlarmTextHelper
+						.createAlarmInfoText(alarms));
+			} else if (adaptableObject instanceof AlarmTreeItem) {
+				AlarmTreeItem alarmTreeItem = ((AlarmTreeItem) adaptableObject);
+				return LogEntryBuilder.withText("alarmTreeItem");
 			}
 		}
 		return null;
