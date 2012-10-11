@@ -58,7 +58,7 @@ import org.eclipse.core.runtime.Platform;
 public class ManagementServiceImpl implements IManagementCommandService {
 	
 	private static final String EXTENSION_POINT_ID =
-		"org.csstudio.platform.managementCommands";
+		"org.csstudio.remote.managementCommands";
 	
 	
 	private Map<String, CommandContribution> _commands;
