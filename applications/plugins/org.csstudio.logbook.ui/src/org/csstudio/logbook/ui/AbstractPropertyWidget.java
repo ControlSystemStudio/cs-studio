@@ -31,6 +31,7 @@ public abstract class AbstractPropertyWidget extends Composite {
 	}
 
 	private boolean editable;
+	private boolean attached = false;
 	private Property property;
 	private PropertyBuilder propertyBuilder;
 
@@ -53,6 +54,16 @@ public abstract class AbstractPropertyWidget extends Composite {
 		boolean oldValue = this.editable;
 		this.editable = editable;
 		changeSupport.firePropertyChange("editable", oldValue, this.editable);
+	}
+	
+	public boolean isAttached() {
+		return attached;
+	}
+
+	public void setAttached(boolean attached) {
+		boolean oldValue = this.attached;
+		this.attached = attached;
+		changeSupport.firePropertyChange("attached", oldValue, this.attached);
 	}
 
 	public Property getProperty() {

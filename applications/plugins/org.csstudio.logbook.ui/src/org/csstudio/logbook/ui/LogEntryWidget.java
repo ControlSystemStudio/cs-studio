@@ -29,6 +29,7 @@ import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Property;
+import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
@@ -87,6 +88,7 @@ public class LogEntryWidget extends Composite {
 	// logEntry.
 	private java.util.List<String> logbookNames;
 	private java.util.List<String> tagNames;
+	private Collection<Property> properties;
 	// TODO
 	private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
 
@@ -232,7 +234,8 @@ public class LogEntryWidget extends Composite {
 						logbookClient.addAttachment(logEntry.getId(),
 								new FileInputStream(file), file.getName());
 					}
-					for (AbstractPropertyWidget abstractPropertyWidget : propertyWidgets.values()) {
+					for (AbstractPropertyWidget abstractPropertyWidget : propertyWidgets
+							.values()) {
 						abstractPropertyWidget.afterCreate(logEntry);
 					}
 					setEditable(false);
@@ -479,25 +482,27 @@ public class LogEntryWidget extends Composite {
 								return input.getName();
 							};
 						});
-				// get the list of properties and extensions to handle these
-				// properties.
-				IConfigurationElement[] config = Platform
-						.getExtensionRegistry().getConfigurationElementsFor(
-								"org.csstudio.logbook.ui.propertywidget");
-				if (config.length > 0) {
-					propertyWidgetFactories = new HashMap<String, PropertyWidgetFactory>();
-					for (IConfigurationElement iConfigurationElement : config) {
-						propertyWidgetFactories
-								.put(iConfigurationElement
-										.getAttribute("propertyName"),
-										(PropertyWidgetFactory) iConfigurationElement
-												.createExecutableExtension("propertywidgetfactory"));
-					}
-				} else {
-					propertyWidgetFactories = Collections.emptyMap();
-				}
 
+				properties = logbookClient.listProperties();
 			}
+			// get the list of properties and extensions to handle these
+			// properties.
+			IConfigurationElement[] config = Platform.getExtensionRegistry()
+					.getConfigurationElementsFor(
+							"org.csstudio.logbook.ui.propertywidget");
+			if (config.length > 0) {
+				propertyWidgetFactories = new HashMap<String, PropertyWidgetFactory>();
+				for (IConfigurationElement iConfigurationElement : config) {
+					propertyWidgetFactories
+							.put(iConfigurationElement
+									.getAttribute("propertyName"),
+									(PropertyWidgetFactory) iConfigurationElement
+											.createExecutableExtension("propertywidgetfactory"));
+				}
+			} else {
+				propertyWidgetFactories = Collections.emptyMap();
+			}
+
 		} catch (Exception e) {
 			// Failed to get a client to the logbook
 			// Display exception and disable editing.
@@ -519,12 +524,6 @@ public class LogEntryWidget extends Composite {
 		btnAddImage.setVisible(editable);
 		btnAddScreenshot.setVisible(editable);
 		btnCSSWindow.setVisible(editable);
-		// Dispose the contributed tabs, only keep the default attachments tab
-		for (CTabItem cTabItem : tabFolder.getItems()) {
-			if (!cTabItem.equals(tbtmAttachments)) {
-				cTabItem.dispose();
-			}
-		}
 		if (!editable) {
 			btnAddLogbook.setSize(btnAddLogbook.getSize().x, 0);
 			btnAddTags.setSize(btnAddTags.getSize().x, 0);
@@ -553,6 +552,12 @@ public class LogEntryWidget extends Composite {
 	private Map<String, AbstractPropertyWidget> propertyWidgets;
 
 	private void updateWidget() {
+		// Dispose the contributed tabs, only keep the default attachments tab
+		for (CTabItem cTabItem : tabFolder.getItems()) {
+			if (!cTabItem.equals(tbtmAttachments)) {
+				cTabItem.dispose();
+			}
+		}
 		if (editable) {
 			// Show the LogBuilder
 			updateWidget(logEntryBuilder.build());
@@ -564,6 +569,7 @@ public class LogEntryWidget extends Composite {
 			// show edit views for properties the can be added
 			for (Entry<String, PropertyWidgetFactory> entry : propertyWidgetFactories
 					.entrySet()) {
+				// TODO Check the property is supported by service
 				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
 				tbtmProperty.setText(entry.getKey());
 				AbstractPropertyWidget abstractPropertyWidget = entry
@@ -586,6 +592,7 @@ public class LogEntryWidget extends Composite {
 										SWT.NONE);
 						tbtmProperty.setControl(abstractPropertyWidget);
 						abstractPropertyWidget.setEditable(false);
+						abstractPropertyWidget.setAttached(true);
 						abstractPropertyWidget.setProperty(property);
 					}
 				}
@@ -687,7 +694,8 @@ public class LogEntryWidget extends Composite {
 						.setTags(newTags);
 				for (Entry<String, AbstractPropertyWidget> propertyWidget : propertyWidgets
 						.entrySet()) {
-					if (propertyWidget.getValue().getPropertyBuilder() != null) {
+					if (propertyWidget.getValue().isAttached()
+							&& propertyWidget.getValue().getPropertyBuilder() != null) {
 						logEntryBuilder.addProperty(propertyWidget.getValue()
 								.getPropertyBuilder());
 					}
@@ -742,6 +750,26 @@ public class LogEntryWidget extends Composite {
 		} catch (Exception ex) {
 			MessageDialog.openError(getShell(), "Error", ex.getMessage());
 		}
+	}
+
+	/**
+	 * 
+	 * @param property
+	 * @param porpertyBuilder
+	 */
+	private static boolean valiablePropertyBuilder(Property property,
+			PropertyBuilder propertyBuilder) {
+		Property builtProperty = propertyBuilder.build();
+		if (property.getName().equals(builtProperty.getName())
+				&& builtProperty.getAttributeNames().containsAll(
+						property.getAttributeNames())) {
+			for (String attributeValue : builtProperty.getAttributeValues()) {
+				if (attributeValue == null || attributeValue.isEmpty()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public boolean isEditable() {
