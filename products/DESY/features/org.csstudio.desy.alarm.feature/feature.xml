@@ -21,11 +21,6 @@
       <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
    </url>
 
-   <requires>
-      <import feature="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
-      <import feature="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
-   </requires>
-
    <plugin
          id="org.csstudio.alarm.dbaccess"
          download-size="0"
