@@ -43,13 +43,12 @@ public class JCADataSource extends DataSource {
     private final boolean dbePropertySupported;
     private final JCATypeSupport typeSupport;
 
-    static final JCADataSource INSTANCE = new JCADataSource();
-
     /**
-     * Creates a new data source using pure Java implementation
+     * Creates a new data source using pure Java implementation and all the
+     * defaults described in {@link JCADataSourceBuilder}.
      */
     public JCADataSource() {
-        this(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.VALUE | Monitor.ALARM);
+        this(new JCADataSourceBuilder());
     }
     
     /**
@@ -58,9 +57,11 @@ public class JCADataSource extends DataSource {
      * 
      * @param jcaContext the context to be used
      * @param monitorMask Monitor.VALUE, ...
+     * @deprecated use {@link JCADataSourceBuilder}
      */
+    @Deprecated
     public JCADataSource(Context jcaContext, int monitorMask) {
-        this(jcaContext, monitorMask, new JCATypeSupport(new JCAVTypeAdapterSet()));
+        this(new JCADataSourceBuilder().jcaContext(jcaContext).monitorMask(monitorMask));
     }
 
     /**
@@ -68,19 +69,11 @@ public class JCADataSource extends DataSource {
      *
      * @param className JCALibrary.CHANNEL_ACCESS_JAVA, JCALibrary.JNI_THREAD_SAFE, ...
      * @param monitorMask Monitor.VALUE, ...
+     * @deprecated use {@link JCADataSourceBuilder}
      */
+    @Deprecated
     public JCADataSource(String className, int monitorMask) {
-        this(createContext(className), monitorMask);
-    }
-    
-    private static Context createContext(String className) {
-        try {
-            JCALibrary jca = JCALibrary.getInstance();
-            return jca.createContext(className);
-        } catch (CAException ex) {
-            log.log(Level.SEVERE, "JCA context creation failed", ex);
-            throw new RuntimeException("JCA context creation failed", ex);
-        }
+        this(new JCADataSourceBuilder().jcaContextClass(className).monitorMask(monitorMask));
     }
     
     /**
@@ -91,9 +84,12 @@ public class JCADataSource extends DataSource {
      * @param jcaContext the context to be used
      * @param monitorMask Monitor.VALUE, ...
      * @param typeSupport type support to be used
+     * @deprecated use {@link JCADataSourceBuilder}
      */
+    @Deprecated
     public JCADataSource(Context jcaContext, int monitorMask, JCATypeSupport typeSupport) {
-        this(jcaContext, monitorMask, typeSupport, false, isVarArraySupported(jcaContext));
+        this(new JCADataSourceBuilder().jcaContext(jcaContext).monitorMask(monitorMask)
+                .typeSupport(typeSupport));
     }
     
     /**
@@ -106,14 +102,43 @@ public class JCADataSource extends DataSource {
      * @param typeSupport type support to be used
      * @param dbePropertySupported whether metadata monitors should be used
      * @param varArraySupported true if var array should be used 
+     * @deprecated use {@link JCADataSourceBuilder}
      */
+    @Deprecated
     public JCADataSource(Context jcaContext, int monitorMask, JCATypeSupport typeSupport, boolean dbePropertySupported, boolean varArraySupported) {
+        this(new JCADataSourceBuilder().jcaContext(jcaContext).monitorMask(monitorMask)
+                .typeSupport(typeSupport).dbePropertySupported(dbePropertySupported)
+                .varArraySupported(varArraySupported));
+    }
+    
+    protected JCADataSource(JCADataSourceBuilder builder) {
         super(true);
-        this.ctxt = jcaContext;
-        this.monitorMask = monitorMask;
-        this.typeSupport = typeSupport;
-        this.dbePropertySupported = dbePropertySupported;
-        this.varArraySupported = varArraySupported;
+        // Some properties are not pre-initialized to the default,
+        // so if they were not set, we should initialize them.
+        
+        // Default JCA context is pure Java
+        if (builder.jcaContext == null) {
+            ctxt = JCADataSourceBuilder.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+        } else {
+            ctxt = builder.jcaContext;
+        }
+        
+        // Default type support are the VTypes
+        if (builder.typeSupport == null) {
+            typeSupport = new JCATypeSupport(new JCAVTypeAdapterSet());
+        } else {
+            typeSupport = builder.typeSupport;
+        }
+
+        // Default support for var array needs to be detected
+        if (builder.varArraySupported == null) {
+            varArraySupported = JCADataSourceBuilder.isVarArraySupported(ctxt);
+        } else {
+            varArraySupported = builder.varArraySupported;
+        }
+        
+        monitorMask = builder.monitorMask;
+        dbePropertySupported = builder.dbePropertySupported;
     }
 
     @Override
@@ -175,49 +200,9 @@ public class JCADataSource extends DataSource {
      * @param context a JCA Context
      * @return true if supports variable sized arrays
      */
+    @Deprecated
     public static boolean isVarArraySupported(Context context) {
-        try {
-            Class cajClazz = Class.forName("com.cosylab.epics.caj.CAJContext");
-            if (cajClazz.isInstance(context)) {
-                return !(context.getVersion().getMajorVersion() <= 1 && context.getVersion().getMinorVersion() <= 1 && context.getVersion().getMaintenanceVersion() <=9);
-            }
-        } catch (ClassNotFoundException ex) {
-            // Can't be CAJ, fall back to JCA
-        }
-        
-        if (context instanceof JNIContext) {
-            try {
-                Class<?> jniClazz = Class.forName("gov.aps.jca.jni.JNI");
-                final Method method = jniClazz.getDeclaredMethod("_ca_getRevision", new Class<?>[0]);
-                // The field is actually private, so we need to make it accessible
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-                    @Override
-                    public Object run() {
-                        method.setAccessible(true);
-                        return null;
-                    }
-                    
-                });
-                Integer integer = (Integer) method.invoke(null, new Object[0]);
-                return (integer >= 13);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext or JNI classes can be loaded.", ex);
-            } catch (NoSuchMethodException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext or JNI._ca_getRevision found.", ex);
-            } catch (SecurityException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and no permission to access JNI._ca_getRevision.", ex);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
-            } catch (IllegalArgumentException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
-            }
-            
-        }
-        
-        throw new RuntimeException("Couldn't detect");
+        return JCADataSourceBuilder.isVarArraySupported(context);
     }
     
 }

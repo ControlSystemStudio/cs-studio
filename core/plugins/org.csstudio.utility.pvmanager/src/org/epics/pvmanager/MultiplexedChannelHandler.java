@@ -224,9 +224,13 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         monitors.put(subscription.getCollector(), monitor);
         monitor.findTypeAdapter();
         guardedConnect();
-        if (readUsageCounter > 1 && lastMessage != null) {
+        if (readUsageCounter > 1) {
+            if (connectionPayload != null) {
             monitor.processConnection(isConnected());
-            monitor.processValue(lastMessage);
+            }
+            if (lastMessage != null) {
+                monitor.processValue(lastMessage);
+            }
         } 
     }
 

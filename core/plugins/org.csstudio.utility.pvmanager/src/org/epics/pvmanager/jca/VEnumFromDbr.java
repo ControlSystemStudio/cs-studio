@@ -25,6 +25,11 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
 
     @Override
     public String getValue() {
+        // There are pathological cases in which CA returns no labels.
+        // In those cases, we return the integer value converted to String.
+        if (metadata.getLabels() == null) {
+            return Integer.toString(getIndex());
+        }
         return getLabels().get(getIndex());
     }
 

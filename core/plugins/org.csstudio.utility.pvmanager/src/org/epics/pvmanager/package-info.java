@@ -85,12 +85,15 @@
  * // Sets CAJ (pure java implementation) as the default data source,
  * // monitoring both value and alarm changes
  * PVManager.setDefaultDataSource(new JCADataSource());
- * 
- * // For utltimate control, you can create the JCA context yourself
- * // and pass it to the data source
- * ...
+ *
+ * // For ultimate control, you can modify all the parameters, 
+ * // and even create the JCA context yourself
  * Context jcaContext = ...
- * PVManager.setDefaultDataSource(new JCADataSource(jcaContext, Monitor.VALUE | Monitor.ALARM));
+ * PVManager.setDefaultDataSource(new JCADataSourceBuilder()
+ *         .monitorMask(Monitor.VALUE | Monitor.ALARM)
+ *         .jcaContext(jcaContext)
+ *         ...
+ *         .build());
  * </pre>
  * 
  * For more options, check the constructors for {@link org.epics.pvmanager.jca.JCADataSource}.
