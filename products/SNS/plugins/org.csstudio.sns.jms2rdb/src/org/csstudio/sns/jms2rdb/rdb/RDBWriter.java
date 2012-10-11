@@ -145,7 +145,11 @@ public class RDBWriter
         {
             final ResultSet result = statement.executeQuery();
             if (result.next())
+            {
             	next_id = result.getInt(1);
+            	if (next_id <= 0) // No IDs defined at all?
+            	    next_id = 1;  // Start at 1
+            }
             else
             	throw new Exception("Cannot get new ID for " + property_name);
         }
