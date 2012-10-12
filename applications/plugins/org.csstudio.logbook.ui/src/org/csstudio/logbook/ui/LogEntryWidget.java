@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -29,7 +28,6 @@ import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Property;
-import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
@@ -42,6 +40,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -57,15 +59,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author shroffk
@@ -76,10 +74,9 @@ public class LogEntryWidget extends Composite {
 	private boolean editable;
 	// This serves as the model for the complete logEntry that is simply being
 	// displayed.
-	private LogEntry logEntry;
 	// This serves as the model behind the new entry being created to be written
 	// to the logbook service
-	private LogEntryBuilder logEntryBuilder;
+	private LogEntryChangeset logEntryChangeset;
 	//
 	private java.util.List<String> imageFileNames = Collections.emptyList();
 
@@ -89,9 +86,12 @@ public class LogEntryWidget extends Composite {
 	private java.util.List<String> logbookNames;
 	private java.util.List<String> tagNames;
 	private Collection<Property> properties;
+
+	private LogEntryChangeset savedLogEntryChangeset;
 	// TODO
 	private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
-
+	private Map<String, AbstractPropertyWidget> propertyWidgets;
+	private LogEntry logEntry;
 	// UI components
 	private Text text;
 	private Text textDate;
@@ -103,6 +103,7 @@ public class LogEntryWidget extends Composite {
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 			this);
 	private Button btnSubmit;
+	private Button btnSave;
 	private Button btnAddLogbook;
 	private Button btnAddTags;
 	final private FormData empty;
@@ -127,7 +128,6 @@ public class LogEntryWidget extends Composite {
 
 	public LogEntryWidget(final Composite parent, int style) {
 		super(parent, style);
-		final Composite logEntryWidget = this;
 		setLayout(new FormLayout());
 
 		Label lblDate = new Label(this, SWT.NONE);
@@ -226,20 +226,15 @@ public class LogEntryWidget extends Composite {
 				try {
 					LogbookClient logbookClient = LogbookClientManager
 							.getLogbookClientFactory().getClient();
-					updateLogEntryBuilder();
+					saveLogEntryChangeset();
 					LogEntry logEntry = logbookClient
-							.createLogEntry(logEntryBuilder.build());
+							.createLogEntry(logEntryChangeset.getLogEntry());
 					for (String fileName : imageStackWidget.getImageFilenames()) {
 						File file = new File(fileName);
 						logbookClient.addAttachment(logEntry.getId(),
 								new FileInputStream(file), file.getName());
 					}
-					for (AbstractPropertyWidget abstractPropertyWidget : propertyWidgets
-							.values()) {
-						abstractPropertyWidget.afterCreate(logEntry);
-					}
 					setEditable(false);
-					setLogEntryBuilder(null);
 					setLogEntry(logEntry);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -251,10 +246,24 @@ public class LogEntryWidget extends Composite {
 		btnSubmit.setText("Submit");
 		btnSubmit.setEnabled(true);
 
+		btnSave = new Button(this, SWT.NONE);
+		btnSave.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				saveLogEntryChangeset();
+			}
+		});
+		FormData fd_btnSave = new FormData();
+		fd_btnSave.left = new FormAttachment(label_vertical, 2);
+		fd_btnSave.right = new FormAttachment(100, -5);
+		fd_btnSave.bottom = new FormAttachment(btnSubmit, -2);
+		btnSave.setLayoutData(fd_btnSave);
+		btnSave.setText("Save");
+
 		btnEnableEdit = new Button(this, SWT.CHECK);
 		FormData fd_btnEnableEdit = new FormData();
+		fd_btnEnableEdit.bottom = new FormAttachment(btnSave, -2);
 		fd_btnEnableEdit.left = new FormAttachment(label_vertical, 2);
-		fd_btnEnableEdit.bottom = new FormAttachment(btnSubmit, -5);
 		fd_btnEnableEdit.right = new FormAttachment(100, -5);
 		btnEnableEdit.setLayoutData(fd_btnEnableEdit);
 		btnEnableEdit.addSelectionListener(new SelectionAdapter() {
@@ -287,8 +296,8 @@ public class LogEntryWidget extends Composite {
 				// Open a dialog which allows users to select logbooks
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						parent.getShell(), logbookNames, LogEntryUtil
-								.getLogbookNames(logEntryBuilder.build()),
-						"Add Logbooks");
+								.getLogbookNames(logEntryChangeset
+										.getLogEntry()), "Add Logbooks");
 				if (dialog.open() == IDialogConstants.OK_ID) {
 					Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
 					for (String logbookName : dialog.getSelectedValues()) {
@@ -297,7 +306,6 @@ public class LogEntryWidget extends Composite {
 					logbookList.setItems(dialog.getSelectedValues().toArray(
 							new String[dialog.getSelectedValues().size()]));
 					logbookList.getParent().layout();
-					updateLogEntryBuilder();
 				}
 			}
 		});
@@ -331,7 +339,7 @@ public class LogEntryWidget extends Composite {
 				// Open a dialog which allows users to select tags
 				StringListSelectionDialog dialog = new StringListSelectionDialog(
 						parent.getShell(), tagNames, LogEntryUtil
-								.getTagNames(logEntryBuilder.build()),
+								.getTagNames(logEntryChangeset.getLogEntry()),
 						"Add Tags");
 				if (dialog.open() == IDialogConstants.OK_ID) {
 					Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
@@ -341,7 +349,6 @@ public class LogEntryWidget extends Composite {
 					tagList.setItems(dialog.getSelectedValues().toArray(
 							new String[dialog.getSelectedValues().size()]));
 					tagList.getParent().layout();
-					updateLogEntryBuilder();
 				}
 			}
 		});
@@ -439,32 +446,54 @@ public class LogEntryWidget extends Composite {
 			public void propertyChange(PropertyChangeEvent evt) {
 				switch (evt.getPropertyName()) {
 				case "editable":
-					configureWidgets(logEntryWidget);
-					updateLogEntryBuilder();
-					updateWidget();
+					if (isEditable()) {
+						getLogEntryChangeset().setLogEntryBuilder(
+								LogEntryBuilder.logEntry(savedLogEntryChangeset
+										.getLogEntry()));
+					} else {
+						// Save the current changes
+						savedLogEntryChangeset
+								.setLogEntryBuilder(LogEntryBuilder
+										.logEntry(getLogEntryChangeset()
+												.getLogEntry()));
+						getLogEntryChangeset().setLogEntryBuilder(
+								LogEntryBuilder.logEntry(getLogEntry()));
+					}
 					break;
 				case "logEntry":
-					updateWidget();
+					init();
+					updateUI();
 					break;
 				case "logEntryBuilder":
-					updateWidget();
+					updateUI();
 					break;
 				default:
+					updateUI();
 					break;
 				}
 			}
 		});
-		configureWidgets(logEntryWidget);
-		updateWidget();
 		init();
-	}
-
-	private void reset() {
-
+		updateUI();
 	}
 
 	private void init() {
 		try {
+			if (getLogEntry() == null) {
+				logEntryChangeset = new LogEntryChangeset();
+			} else {
+				logEntryChangeset = new LogEntryChangeset(getLogEntry());
+			}
+			savedLogEntryChangeset = new LogEntryChangeset(
+					logEntryChangeset.getLogEntry());
+			logEntryChangeset
+					.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							updateUI();
+						}
+					});
 			if (logbookClient == null) {
 				logbookClient = LogbookClientManager.getLogbookClientFactory()
 						.getClient();
@@ -511,10 +540,37 @@ public class LogEntryWidget extends Composite {
 
 	}
 
-	private void configureWidgets(Composite parent) {
+	private void saveLogEntryChangeset() {
+		Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
+		for (String tagName : tagList.getItems()) {
+			newTags.add(TagBuilder.tag(tagName));
+		}
+		Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
+		for (String logbookName : logbookList.getItems()) {
+			newLogbooks.add(LogbookBuilder.logbook(logbookName));
+		}
+		imageFileNames = imageStackWidget.getImageFilenames();
+
+		getLogEntryChangeset().setLogEntryBuilder(
+				LogEntryBuilder.logEntry(getLogEntryChangeset().getLogEntry())
+						.setText(text.getText()).owner(textOwner.getText())
+						.setLogbooks(newLogbooks).setTags(newTags));
+		// for (Entry<String, AbstractPropertyWidget> propertyWidget :
+		// propertyWidgets
+		// .entrySet()) {
+		// if (propertyWidget.getValue().isAttached()
+		// && propertyWidget.getValue().getPropertyBuilder() != null) {
+		// logEntryBuilder.addProperty(propertyWidget.getValue()
+		// .getPropertyBuilder());
+		// }
+		// }
+	}
+
+	private void updateUI() {
 		btnEnableEdit.setSelection(editable);
 		text.setEditable(editable);
 		textOwner.setEditable(editable);
+		btnSave.setEnabled(editable);
 		btnSubmit.setEnabled(editable);
 		// logbookList.setEnabled(editable);
 		// tagList.setEnabled(editable);
@@ -545,62 +601,14 @@ public class LogEntryWidget extends Composite {
 			fd.bottom = new FormAttachment(btnAddImage, -2);
 			imageStackWidget.setLayoutData(fd);
 		}
-		tbtmAttachmentsComposite.layout();
-		parent.layout();
-	}
-
-	private Map<String, AbstractPropertyWidget> propertyWidgets;
-
-	private void updateWidget() {
+		btnEnableEdit.getParent().layout();
 		// Dispose the contributed tabs, only keep the default attachments tab
 		for (CTabItem cTabItem : tabFolder.getItems()) {
 			if (!cTabItem.equals(tbtmAttachments)) {
 				cTabItem.dispose();
 			}
 		}
-		if (editable) {
-			// Show the LogBuilder
-			updateWidget(logEntryBuilder.build());
-			for (String fileName : imageFileNames) {
-				imageStackWidget.addImageFilename(fileName);
-			}
-
-			propertyWidgets = new HashMap<String, AbstractPropertyWidget>();
-			// show edit views for properties the can be added
-			for (Entry<String, PropertyWidgetFactory> entry : propertyWidgetFactories
-					.entrySet()) {
-				// TODO Check the property is supported by service
-				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
-				tbtmProperty.setText(entry.getKey());
-				AbstractPropertyWidget abstractPropertyWidget = entry
-						.getValue().create(tabFolder, SWT.NONE);
-				tbtmProperty.setControl(abstractPropertyWidget);
-				abstractPropertyWidget.setEditable(true);
-				propertyWidgets.put(entry.getKey(), abstractPropertyWidget);
-			}
-		} else {
-			updateWidget(logEntry);
-			// only Show properties already present on the logEntry
-			if (logEntry != null) {
-				for (Property property : logEntry.getProperties()) {
-					if (propertyWidgetFactories.containsKey(property.getName())) {
-						CTabItem tbtmProperty = new CTabItem(tabFolder,
-								SWT.NONE);
-						tbtmProperty.setText(property.getName());
-						AbstractPropertyWidget abstractPropertyWidget = propertyWidgetFactories
-								.get(property.getName()).create(tabFolder,
-										SWT.NONE);
-						tbtmProperty.setControl(abstractPropertyWidget);
-						abstractPropertyWidget.setEditable(false);
-						abstractPropertyWidget.setAttached(true);
-						abstractPropertyWidget.setProperty(property);
-					}
-				}
-			}
-		}
-	}
-
-	private void updateWidget(LogEntry logEntry) {
+		LogEntry logEntry = logEntryChangeset.getLogEntry();
 		if (logEntry != null) {
 			// Show the logEntry
 			text.setText(logEntry.getText());
@@ -664,61 +672,6 @@ public class LogEntryWidget extends Composite {
 			imageStackWidget.setSelectedImageFile(null);
 		}
 		this.layout();
-	};
-
-	private void updateLogEntryBuilder() {
-		if (editable) {
-			// the widget was just marked ready for editing.
-			if (logEntryBuilder == null) {
-				// No old logEntryBuilder
-				// create a new one using the logEntry
-				if (getLogEntry() != null) {
-					logEntryBuilder = LogEntryBuilder.logEntry(getLogEntry());
-				} else {
-					logEntryBuilder = LogEntryBuilder.withText("");
-				}
-			} else {
-				Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
-				for (String tagName : tagList.getItems()) {
-					if (!tagName.equals("Tags:"))
-						newTags.add(TagBuilder.tag(tagName));
-				}
-				Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
-				for (String logbookName : logbookList.getItems()) {
-					if (!logbookName.equalsIgnoreCase("Logbooks:"))
-						newLogbooks.add(LogbookBuilder.logbook(logbookName));
-				}
-				imageFileNames = imageStackWidget.getImageFilenames();
-				logEntryBuilder = LogEntryBuilder.withText(text.getText())
-						.owner(textOwner.getText()).setLogbooks(newLogbooks)
-						.setTags(newTags);
-				for (Entry<String, AbstractPropertyWidget> propertyWidget : propertyWidgets
-						.entrySet()) {
-					if (propertyWidget.getValue().isAttached()
-							&& propertyWidget.getValue().getPropertyBuilder() != null) {
-						logEntryBuilder.addProperty(propertyWidget.getValue()
-								.getPropertyBuilder());
-					}
-				}
-			}
-		} else if (!editable) {
-			// No longer Editing so save the state of the currently
-			// created logEntry in the logEntryBuilder
-			Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
-			for (String tagName : tagList.getItems()) {
-				if (!tagName.equals("Tags:"))
-					newTags.add(TagBuilder.tag(tagName));
-			}
-			Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
-			for (String logbookName : logbookList.getItems()) {
-				if (!logbookName.equalsIgnoreCase("Logbooks:"))
-					newLogbooks.add(LogbookBuilder.logbook(logbookName));
-			}
-			imageFileNames = imageStackWidget.getImageFilenames();
-			logEntryBuilder = LogEntryBuilder.withText(text.getText())
-					.owner(textOwner.getText()).setLogbooks(newLogbooks)
-					.setTags(newTags);
-		}
 	}
 
 	@SuppressWarnings("nls")
@@ -752,26 +705,6 @@ public class LogEntryWidget extends Composite {
 		}
 	}
 
-	/**
-	 * 
-	 * @param property
-	 * @param porpertyBuilder
-	 */
-	private static boolean valiablePropertyBuilder(Property property,
-			PropertyBuilder propertyBuilder) {
-		Property builtProperty = propertyBuilder.build();
-		if (property.getName().equals(builtProperty.getName())
-				&& builtProperty.getAttributeNames().containsAll(
-						property.getAttributeNames())) {
-			for (String attributeValue : builtProperty.getAttributeValues()) {
-				if (attributeValue == null || attributeValue.isEmpty()) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
 	public boolean isEditable() {
 		return editable;
 	}
@@ -782,8 +715,8 @@ public class LogEntryWidget extends Composite {
 		changeSupport.firePropertyChange("editable", oldValue, this.editable);
 	}
 
-	public LogEntry getLogEntry() {
-		return logEntry;
+	private LogEntry getLogEntry() {
+		return this.logEntry;
 	}
 
 	public void setLogEntry(LogEntry logEntry) {
@@ -792,14 +725,14 @@ public class LogEntryWidget extends Composite {
 		changeSupport.firePropertyChange("logEntry", oldValue, this.logEntry);
 	}
 
-	public LogEntryBuilder getLogEntryBuilder() {
-		return logEntryBuilder;
+	public LogEntryChangeset getLogEntryChangeset() {
+		return this.logEntryChangeset;
 	}
 
-	public void setLogEntryBuilder(LogEntryBuilder logEntryBuilder) {
-		LogEntryBuilder oldValue = this.logEntryBuilder;
-		this.logEntryBuilder = logEntryBuilder;
-		changeSupport.firePropertyChange("logEntryBuilder", oldValue,
-				this.logEntryBuilder);
-	}
+	// public void setLogEntryChangeset(LogEntryChangeset logEntryChangeset) {
+	// LogEntryChangeset oldValue = this.logEntryChangeset;
+	// this.logEntryChangeset = logEntryChangeset;
+	// changeSupport.firePropertyChange("logEntryChangeset", oldValue,
+	// this.logEntryChangeset);
+	// }
 }

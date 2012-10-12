@@ -37,6 +37,16 @@ public class LogEntryBuilder {
 		return new LogEntryBuilder(text);
 	}
 
+	public LogEntryBuilder addText(String text){
+		this.text = this.text.concat(text);
+		return this;
+	}
+	
+	public LogEntryBuilder setText(String text){
+		this.text = text;
+		return this;
+	}
+	
 	public LogEntryBuilder owner(String owner) {
 		this.owner = owner;
 		return this;

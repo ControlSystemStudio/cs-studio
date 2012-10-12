@@ -53,7 +53,7 @@ public class LogEntryBuilderDialog extends Dialog {
 		logEntryWidget.setLayoutData(gd_logEntryWidget);
 		logEntryWidget.setEditable(true);
 		if (this.logEntryBuilder != null) {
-			logEntryWidget.setLogEntryBuilder(logEntryBuilder);
+			logEntryWidget.setLogEntry(logEntryBuilder.build());
 		}
 		return container;
 	}
