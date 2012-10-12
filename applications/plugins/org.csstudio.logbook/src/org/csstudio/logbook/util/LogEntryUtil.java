@@ -67,5 +67,14 @@ public class LogEntryUtil {
 		}
 		return propertyNames;
 	}
+	
+	public static Property getProperty(LogEntry logEntry, String PropertyName){
+		for (Property property : logEntry.getProperties()) {
+			if(property.getName().equalsIgnoreCase(PropertyName)){
+				return property;
+			}
+		}
+		return null;
+	}
 
 }
