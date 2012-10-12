@@ -3,9 +3,11 @@ package org.csstudio.logbook.olog.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
+import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,9 +22,13 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 class TracPropertyWidget extends AbstractPropertyWidget {
+	private static final Property widgetProperty = PropertyBuilder
+			.property("Trac").attribute("TicketId").attribute("TicketURL")
+			.build();
+
 	private Text textId;
 	private Text textURL;
-	private Button btnApply;
+	private Button btnAttach;
 	private Link link;
 	private Label lblAttached;
 
@@ -66,25 +72,25 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 		fd_textURL.right = new FormAttachment(100, -10);
 		textURL.setLayoutData(fd_textURL);
 
-		btnApply = new Button(this, SWT.NONE);
-		btnApply.addSelectionListener(new SelectionAdapter() {
+		btnAttach = new Button(this, SWT.NONE);
+		btnAttach.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// store the property
-				PropertyBuilder propertyBuilder = getPropertyBuilder();
-				if (propertyBuilder != null) {
-					propertyBuilder.attribute("TicketId", textId.getText())
-							.attribute("TicketURL", textURL.getText());
-					setPropertyBuilder(propertyBuilder);
-					setAttached(true);
-				}
+				LogEntryBuilder logEntrybuilder = LogEntryBuilder
+						.logEntry(getLogEntryChangeset().getLogEntry());
+				logEntrybuilder.addProperty(PropertyBuilder
+						.property(widgetProperty)
+						.attribute("TicketId", textId.getText())
+						.attribute("TicketURL", textURL.getText()));
+				getLogEntryChangeset().setLogEntryBuilder(logEntrybuilder);
 			}
 		});
 		FormData fd_btnApply = new FormData();
 		fd_btnApply.bottom = new FormAttachment(100, -10);
 		fd_btnApply.right = new FormAttachment(100, -10);
-		btnApply.setLayoutData(fd_btnApply);
-		btnApply.setText("Attach");
+		btnAttach.setLayoutData(fd_btnApply);
+		btnAttach.setText("Attach");
 
 		link = new Link(this, SWT.NONE);
 		FormData fd_link = new FormData();
@@ -108,13 +114,10 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 			public void propertyChange(PropertyChangeEvent evt) {
 				switch (evt.getPropertyName()) {
 				case "editable":
-					updateWidget();
+					updateUI();
 					break;
-				case "property":
-					updateWidget();
-					break;
-				case "propertyBuilder":
-					updateWidget();
+				case "logEntryChangeset":
+					updateUI();
 					break;
 				default:
 					break;
@@ -124,29 +127,13 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 
 	}
 
-	private void updateWidget() {
-		this.lblAttached.setVisible(!isEditable() && isAttached());
+	private void updateUI() {
+		this.lblAttached.setVisible(!isEditable());
 		this.textId.setEditable(isEditable());
 		this.textURL.setVisible(isEditable());
 		this.link.setVisible(!isEditable());
-		if (isEditable()) {
-			if (getPropertyBuilder() != null) {
-				updateWidget(getPropertyBuilder().build());
-			} else if (getProperty() != null) {
-				setPropertyBuilder(PropertyBuilder.property(getProperty()));
-			} else {
-				System.out.println(getPropertyName());
-				setPropertyBuilder(PropertyBuilder.property(getPropertyName()));
-			}
-		} else {
-			if (getProperty() != null) {
-				updateWidget(getProperty());
-			}
-		}
-
-	}
-
-	private void updateWidget(Property property) {
+		Property property = LogEntryUtil.getProperty(getLogEntryChangeset()
+				.getLogEntry(), widgetProperty.getName());
 		this.textId.setText(property.getAttributeValue("TicketId") == null ? ""
 				: property.getAttributeValue("TicketId"));
 		this.textURL
@@ -155,5 +142,6 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 		String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
 				: property.getAttributeValue("TicketURL");
 		this.link.setText("<a>" + ticketURL + "</a>");
+
 	}
 }

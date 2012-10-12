@@ -18,22 +18,14 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class AbstractPropertyWidget extends Composite {
 
 	// property that this widget is intended to be used with
-	private final String propertyName;
-
-	public String getPropertyName() {
-		return propertyName;
-	}
 
 	public AbstractPropertyWidget(Composite parent, int style,
 			String propertyName) {
 		super(parent, style);
-		this.propertyName = propertyName;
 	}
 
 	private boolean editable;
-	private boolean attached = false;
-	private Property property;
-	private PropertyBuilder propertyBuilder;
+	private LogEntryChangeset logEntryChangeset;
 
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 			this);
@@ -56,50 +48,13 @@ public abstract class AbstractPropertyWidget extends Composite {
 		changeSupport.firePropertyChange("editable", oldValue, this.editable);
 	}
 	
-	public boolean isAttached() {
-		return attached;
+	public LogEntryChangeset getLogEntryChangeset() {
+		return logEntryChangeset;
 	}
 
-	public void setAttached(boolean attached) {
-		boolean oldValue = this.attached;
-		this.attached = attached;
-		changeSupport.firePropertyChange("attached", oldValue, this.attached);
+	public void setLogEntrychangeset(LogEntryChangeset logEntryChangeset) {
+		LogEntryChangeset oldValue = this.logEntryChangeset;
+		this.logEntryChangeset = logEntryChangeset;
+		changeSupport.firePropertyChange("logEntryChangeset", oldValue, this.logEntryChangeset);
 	}
-
-	public Property getProperty() {
-		return property;
-	}
-
-	public void setProperty(Property property) {
-		if (property.getName().equalsIgnoreCase(propertyName)) {
-			Property oldValue = this.property;
-			this.property = property;
-			changeSupport.firePropertyChange("property", oldValue,
-					this.property);
-		} else {
-			throw new IllegalArgumentException("property " + property.getName()
-					+ " does not match the property type (" + this.propertyName
-					+ ") that this widget can handle");
-		}
-	}
-
-	public PropertyBuilder getPropertyBuilder() {
-		return propertyBuilder;
-	}
-
-	public void setPropertyBuilder(PropertyBuilder propertyBuilder) {
-		PropertyBuilder oldValue = this.propertyBuilder;
-		this.propertyBuilder = propertyBuilder;
-		changeSupport.firePropertyChange("propertyBuilder", oldValue,
-				this.propertyBuilder);
-	}
-	
-	/**
-	 * This method provides a hook to perform operation after the log entry has been created.
-	 * @param logEntry
-	 */
-	public void afterCreate(LogEntry logEntry){
-		
-	}
-
 }

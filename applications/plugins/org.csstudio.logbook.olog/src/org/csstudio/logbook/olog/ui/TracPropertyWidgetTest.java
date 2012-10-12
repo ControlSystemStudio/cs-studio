@@ -3,8 +3,11 @@
  */
 package org.csstudio.logbook.olog.ui;
 
+import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Property;
+import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.olog.OlogLogbookClient.OlogProperty;
+import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -18,7 +21,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import edu.msu.nscl.olog.api.PropertyBuilder;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -46,26 +48,31 @@ public class TracPropertyWidgetTest extends ApplicationWindow {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(1, false));
 		final TracPropertyWidget tracPropertyWidget = new TracPropertyWidget(
-				container, SWT.NONE,"Trac");
-		tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true, 1, 1));
+				container, SWT.NONE, "Trac");
+		tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
 
 		Button btnNewButton = new Button(container, SWT.NONE);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Property property = new OlogProperty(PropertyBuilder
-						.property("Trac")
-						.attribute("TicketId", "12345")
-						.attribute("TicketURL",
-								"http://localhost.com").build());
-				tracPropertyWidget.setProperty(property);
+				LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
+				logEntrychangeset.setLogEntryBuilder(LogEntryBuilder
+						.withText("test")
+						.owner("test")
+						.addProperty(
+								PropertyBuilder
+										.property("Trac")
+										.attribute("TicketId", "12345")
+										.attribute("TicketURL",
+												"http://localhost.com")));
+				tracPropertyWidget.setLogEntrychangeset(logEntrychangeset);
 			}
 		});
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
 		btnNewButton.setText("Add Test Trac Property");
-		
+
 		btnEditable = new Button(container, SWT.CHECK);
 		btnEditable.addSelectionListener(new SelectionAdapter() {
 			@Override
