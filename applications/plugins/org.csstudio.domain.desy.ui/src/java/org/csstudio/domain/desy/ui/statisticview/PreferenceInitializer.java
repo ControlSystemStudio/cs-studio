@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN ../AS IS BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
  * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
@@ -19,34 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+/*
+ * $Id$
+ */
+package org.csstudio.domain.desy.ui.statisticview;
 
-package org.csstudio.domain.common.statistic;
-
-import org.csstudio.remote.management.CommandParameters;
-import org.csstudio.remote.management.CommandResult;
-import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.domain.desy.ui.DomainDesyActivator;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * Management command to get statistics from the CSS application.
- * 
- * @author Joerg Rathlev
+ * @author hrickens
  */
-public class GetStatisticsManagementCommand implements IManagementCommand {
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/**
-	 * The result type of results returned by this command. The platform.ui
-	 * plug-in contributes a receiver for this type which will display the
-	 * result in a view.
-	 */
-	private static final String TYPE =
-		"org.csstudio.domain.common.statistic.XmlStatistic";
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
-		return CommandResult.createSuccessResult(stats, TYPE);
-	}
-
+    /** {@inheritDoc} */
+    @Override
+    public void initializeDefaultPreferences() {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(DomainDesyActivator.PLUGIN_ID);
+        prefs.put(PreferenceConstants.STATISTICVIEW_COLUMNS,
+        		"Application,Descriptor,Counter,"
+                + "Actual value,Date Actual,Count Actual,"
+                + "Highest Value,Date Highest,Count Highest,"
+                + "Lowest Value,Date Lowest,Count Lowest,"
+                + "Mean Value abs,Mean Value rel.,Alarm Limit (abs),"
+                + "Alarm Limit (rel),Hard Limit");
+    }
 }

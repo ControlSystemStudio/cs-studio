@@ -20,33 +20,50 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.domain.common.statistic;
+package org.csstudio.domain.desy.ui.statisticview;
 
-import org.csstudio.remote.management.CommandParameters;
+
 import org.csstudio.remote.management.CommandResult;
-import org.csstudio.remote.management.IManagementCommand;
+import org.csstudio.remote.management.IResultReceiver;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
- * Management command to get statistics from the CSS application.
- * 
+ * Receives statistics from a management command and displays them in the
+ * Statistic View.
+ *
  * @author Joerg Rathlev
  */
-public class GetStatisticsManagementCommand implements IManagementCommand {
-
-	/**
-	 * The result type of results returned by this command. The platform.ui
-	 * plug-in contributes a receiver for this type which will display the
-	 * result in a view.
-	 */
-	private static final String TYPE =
-		"org.csstudio.domain.common.statistic.XmlStatistic";
+public class StatisticReceiver implements IResultReceiver {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
-		return CommandResult.createSuccessResult(stats, TYPE);
+	@Override
+    public void processResult(final CommandResult result) {
+		final String stat = (String) result.getValue();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+            public void run() {
+				try {
+					final IWorkbench workbench = PlatformUI.getWorkbench();
+					final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+					final IWorkbenchPage page = window.getActivePage();
+					final StatisticView view =
+						(StatisticView) page.showView(StatisticView.VIEW_ID);
+					view.setMessage(stat, "", "", "");
+				} catch (final PartInitException e) {
+					MessageDialog.openError(null, "Management Command",
+							"Failed to create Statistic View. "
+							+ e.getMessage());
+				}
+			}
+		});
 	}
 
 }

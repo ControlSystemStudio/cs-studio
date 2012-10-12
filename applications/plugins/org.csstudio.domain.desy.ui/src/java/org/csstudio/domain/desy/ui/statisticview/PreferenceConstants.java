@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,34 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.domain.common.statistic;
-
-import org.csstudio.remote.management.CommandParameters;
-import org.csstudio.remote.management.CommandResult;
-import org.csstudio.remote.management.IManagementCommand;
+/*
+ * $Id$
+ */
+package org.csstudio.domain.desy.ui.statisticview;
 
 /**
- * Management command to get statistics from the CSS application.
- * 
- * @author Joerg Rathlev
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 18.07.2007
  */
-public class GetStatisticsManagementCommand implements IManagementCommand {
-
-	/**
-	 * The result type of results returned by this command. The platform.ui
-	 * plug-in contributes a receiver for this type which will display the
-	 * result in a view.
-	 */
-	private static final String TYPE =
-		"org.csstudio.domain.common.statistic.XmlStatistic";
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
-		return CommandResult.createSuccessResult(stats, TYPE);
-	}
-
+public class PreferenceConstants {
+    public static final String STATISTICVIEW_COLUMNS = "StatisticView.Columns";
 }
