@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -23,6 +22,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.ComboFigure;
 import org.csstudio.opibuilder.widgets.model.ComboModel;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;

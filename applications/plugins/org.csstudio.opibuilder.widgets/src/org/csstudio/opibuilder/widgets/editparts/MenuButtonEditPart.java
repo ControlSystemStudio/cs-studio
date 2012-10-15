@@ -26,7 +26,6 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -37,6 +36,7 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;

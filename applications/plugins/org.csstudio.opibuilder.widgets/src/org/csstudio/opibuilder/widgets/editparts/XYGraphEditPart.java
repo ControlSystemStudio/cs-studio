@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -23,6 +22,7 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
