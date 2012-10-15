@@ -16,8 +16,8 @@ import org.epics.pvmanager.data.VDouble;
  */
 class VDoubleFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Double> implements VDouble {
 
-    public VDoubleFromDbr(DBR_TIME_Double dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VDoubleFromDbr(DBR_TIME_Double dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
 
     private static DBR_TIME_Double convert(DBR dbrValue) {
@@ -28,8 +28,8 @@ class VDoubleFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Double> i
         }
     }
 
-    public VDoubleFromDbr(DBR dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        this(convert(dbrValue), metadata, disconnected);
+    public VDoubleFromDbr(DBR dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        this(convert(dbrValue), metadata, connPayload);
     }
 
     @Override

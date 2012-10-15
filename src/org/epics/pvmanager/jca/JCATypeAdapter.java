@@ -20,7 +20,7 @@ import org.epics.pvmanager.ValueCache;
  *
  * @author carcassi
  */
-public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, JCAMessagePayload> {
+public abstract class JCATypeAdapter implements DataSourceTypeAdapter<JCAConnectionPayload, JCAMessagePayload> {
 
     private final Class<?> typeClass;
     private final DBRType epicsValueType;
@@ -43,7 +43,8 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
     }
 
     @Override
-    public int match(ValueCache<?> cache, Channel channel) {
+    public int match(ValueCache<?> cache, JCAConnectionPayload connPayload) {
+        Channel channel = connPayload.getChannel();
         
         // If the generated type can't be put in the cache, no match
         if (!cache.getType().isAssignableFrom(typeClass))
@@ -76,12 +77,14 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
     }
 
     @Override
-    public Object getSubscriptionParameter(ValueCache cache, Channel channel) {
+    public Object getSubscriptionParameter(ValueCache cache, JCAConnectionPayload connPayload) {
         throw new UnsupportedOperationException("Not implemented: JCAChannelHandler is multiplexed, will not use this method");
     }
 
     @Override
-    public boolean updateCache(ValueCache cache, Channel channel, JCAMessagePayload message) {
+    public boolean updateCache(ValueCache cache, JCAConnectionPayload connPayload, JCAMessagePayload message) {
+        Channel channel = connPayload.getChannel();
+        
         // If metadata is required and not present, no update
         if (epicsMetaType != null && message.getMetadata() == null)
             return false;
@@ -90,7 +93,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
         if (message.getEvent() == null)
             return false;
         
-        Object value = createValue(message.getEvent().getDBR(), message.getMetadata(), !JCAChannelHandler.isChannelConnected(channel));
+        Object value = createValue(message.getEvent().getDBR(), message.getMetadata(), connPayload);
         cache.setValue(value);
         return true;
     }
@@ -100,9 +103,9 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
      * 
      * @param value the value taken from the monitor
      * @param metadata the value taken as metadata
-     * @param disconnected true if the value should report the channel is currently disconnected
+     * @param connPayload the connection payload
      * @return the new value
      */
-    public abstract Object createValue(DBR value, DBR metadata, boolean disconnected);
+    public abstract Object createValue(DBR value, DBR metadata, JCAConnectionPayload connPayload);
     
 }
