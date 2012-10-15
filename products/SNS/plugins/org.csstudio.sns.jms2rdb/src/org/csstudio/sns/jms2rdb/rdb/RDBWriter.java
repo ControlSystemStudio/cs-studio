@@ -75,16 +75,16 @@ public class RDBWriter
             throw new Exception("Error connecting to '" + url + "': " + ex.getMessage());
         }
 
+        final Connection connection = rdb_util.getConnection();
         if (enable_trace)
         {
-            final Statement statement = rdb_util.getConnection().createStatement();
+            final Statement statement = connection.createStatement();
             statement.execute("alter session set tracefile_identifier='KayTest'");
             statement.execute("ALTER SESSION SET events " +
                     "'10046 trace name context forever, level 12'");
         }
 
         sql = new SQL(rdb_util, schema);
-        final Connection connection = rdb_util.getConnection();
         
         if (sql.select_next_message_id != null)
             next_message_id_statement =
@@ -145,7 +145,11 @@ public class RDBWriter
         {
             final ResultSet result = statement.executeQuery();
             if (result.next())
+            {
             	next_id = result.getInt(1);
+            	if (next_id <= 0) // No IDs defined at all?
+            	    next_id = 1;  // Start at 1
+            }
             else
             	throw new Exception("Cannot get new ID for " + property_name);
         }
@@ -154,24 +158,26 @@ public class RDBWriter
             statement.close();
         }
 
-        rdb_util.getConnection().setAutoCommit(false);
+        // Insert new property; preserver auto-commit setting
+        final boolean auto_commit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
         statement = connection.prepareStatement(sql.insert_property_id);
         statement.setInt(1, next_id);
         statement.setString(2, property_name);
         try
         {
         	statement.executeUpdate();
-        	rdb_util.getConnection().commit();
+        	connection.commit();
         }
         catch(Exception e)
         {
-        	rdb_util.getConnection().rollback();
+        	connection.rollback();
         	throw e;
         }
         finally
         {
             statement.close();
-            rdb_util.getConnection().setAutoCommit(true);
+            connection.setAutoCommit(auto_commit);
         }
         Activator.getLogger().log(Level.WARNING,
     		"Inserted previously unused Message Property {0} as ID {1}",

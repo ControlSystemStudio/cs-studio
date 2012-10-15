@@ -303,7 +303,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("'").append(getPathName()).append("' [").append(description).append("] - ");
+        buf.append("'").append(getPathName()).append("' (ID ").append(getID()).append(")");
+        buf.append(" [").append(description).append("] - ");
         if (pv != null)
         {
 	        if (pv.isConnected())

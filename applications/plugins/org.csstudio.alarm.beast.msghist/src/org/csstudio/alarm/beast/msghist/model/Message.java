@@ -8,8 +8,10 @@
 package org.csstudio.alarm.beast.msghist.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -124,15 +126,14 @@ public class Message implements IPropertySource
     public IPropertyDescriptor[] getPropertyDescriptors()
 	{
 		final Set<String> key_set = properties.keySet();
-		final String keys[] = new String[key_set.size()];
-		key_set.toArray(keys);
+		final List<IPropertyDescriptor> props = new ArrayList<IPropertyDescriptor>();
 		// Create read-only properties in the property view.
 		// (Would use TextPropertyDescriptor for edit-able)
-		final IPropertyDescriptor props[] = new IPropertyDescriptor[keys.length+1];
-		props[0] = new PropertyDescriptor(ID, ID);
-		for (int i=0; i<keys.length; ++i)
-			props[i+1] = new PropertyDescriptor(keys[i], keys[i]);
-		return props;
+		props.add(new PropertyDescriptor(ID, ID));
+		for (String key : key_set)
+		    if (key != null)
+		        props.add(new PropertyDescriptor(key, key));
+		return props.toArray(new IPropertyDescriptor[props.size()]);
 	}
 
 	/** @see IPropertySource */
