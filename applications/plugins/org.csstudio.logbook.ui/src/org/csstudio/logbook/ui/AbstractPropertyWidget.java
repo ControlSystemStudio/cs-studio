@@ -3,6 +3,7 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -17,25 +18,22 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class AbstractPropertyWidget extends Composite {
 
+	private boolean editable;
+	private LogEntryChangeset logEntryChangeset;
+	
 	// property that this widget is intended to be used with
 
 	public AbstractPropertyWidget(Composite parent, int style,
-			String propertyName) {
+			LogEntryChangeset logEntryChangeset) {
 		super(parent, style);
-	}
-
-	private boolean editable;
-	private LogEntryChangeset logEntryChangeset;
-
-	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-			this);
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(listener);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(listener);
+		this.logEntryChangeset = logEntryChangeset;
+		this.logEntryChangeset.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateUI();
+			}
+		});
 	}
 
 	public boolean isEditable() {
@@ -43,18 +41,13 @@ public abstract class AbstractPropertyWidget extends Composite {
 	}
 
 	public void setEditable(boolean editable) {
-		boolean oldValue = this.editable;
 		this.editable = editable;
-		changeSupport.firePropertyChange("editable", oldValue, this.editable);
+		updateUI();
 	}
 	
-	public LogEntryChangeset getLogEntryChangeset() {
-		return logEntryChangeset;
+	public LogEntryChangeset getLogEntryChangeset(){
+		return this.logEntryChangeset;
 	}
-
-	public void setLogEntrychangeset(LogEntryChangeset logEntryChangeset) {
-		LogEntryChangeset oldValue = this.logEntryChangeset;
-		this.logEntryChangeset = logEntryChangeset;
-		changeSupport.firePropertyChange("logEntryChangeset", oldValue, this.logEntryChangeset);
-	}
+	
+	public abstract void updateUI();
 }

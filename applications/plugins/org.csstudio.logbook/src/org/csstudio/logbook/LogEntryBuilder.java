@@ -27,7 +27,7 @@ public class LogEntryBuilder {
 	private Collection<TagBuilder> tags = new ArrayList<TagBuilder>();
 	private Collection<LogbookBuilder> logbooks = new ArrayList<LogbookBuilder>();
 	private Collection<PropertyBuilder> properties = new ArrayList<PropertyBuilder>();
-	private Collection<Attachment> attachments = new ArrayList<Attachment>();
+	private Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
 
 	private LogEntryBuilder(String text) {
 		this.text = text;
@@ -37,16 +37,16 @@ public class LogEntryBuilder {
 		return new LogEntryBuilder(text);
 	}
 
-	public LogEntryBuilder addText(String text){
+	public LogEntryBuilder addText(String text) {
 		this.text = this.text.concat(text);
 		return this;
 	}
-	
-	public LogEntryBuilder setText(String text){
+
+	public LogEntryBuilder setText(String text) {
 		this.text = text;
 		return this;
 	}
-	
+
 	public LogEntryBuilder owner(String owner) {
 		this.owner = owner;
 		return this;
@@ -77,7 +77,7 @@ public class LogEntryBuilder {
 		return this;
 	}
 
-	public LogEntryBuilder attach(Attachment attachment) {
+	public LogEntryBuilder attach(AttachmentBuilder attachment) {
 		this.attachments.add(attachment);
 		return this;
 	}
@@ -85,10 +85,14 @@ public class LogEntryBuilder {
 	public static LogEntryBuilder logEntry(LogEntry logEntry) {
 		LogEntryBuilder logEntryBuilder = new LogEntryBuilder(
 				logEntry.getText());
-		// logEntryBuilder.id = logEntry.getId();
+		if (logEntry.getId() != null) {
+			logEntryBuilder.id = logEntry.getId();
+		}
 		logEntryBuilder.owner = logEntry.getOwner();
 		logEntryBuilder.createdDate = logEntry.getCreateDate();
-		// logEntryBuilder.modifiedDate = logEntry.getModifiedDate();
+		if (logEntry.getModifiedDate() == null) {
+			logEntryBuilder.modifiedDate = logEntry.getModifiedDate();
+		}
 
 		for (Tag tag : logEntry.getTags()) {
 			logEntryBuilder.tags.add(TagBuilder.tag(tag));
@@ -99,7 +103,10 @@ public class LogEntryBuilder {
 		for (Property property : logEntry.getProperties()) {
 			logEntryBuilder.properties.add(PropertyBuilder.property(property));
 		}
-		logEntryBuilder.attachments = logEntry.getAttachment();
+		for (Attachment attachment : logEntry.getAttachment()) {
+			logEntryBuilder.attachments.add(AttachmentBuilder
+					.attachment(attachment));
+		}
 		return logEntryBuilder;
 	}
 
@@ -125,7 +132,7 @@ public class LogEntryBuilder {
 		private final Map<String, Tag> tags;
 		private final Map<String, Logbook> logbooks;
 		private final Map<String, Property> properties;
-		private final Collection<Attachment> attachments;
+		private final Collection<AttachmentBuilder> attachments;
 
 		/**
 		 * @param id
@@ -142,7 +149,7 @@ public class LogEntryBuilder {
 				Collection<TagBuilder> tags,
 				Collection<LogbookBuilder> logbooks,
 				Collection<PropertyBuilder> properties,
-				Collection<Attachment> attachments) {
+				Collection<AttachmentBuilder> attachments) {
 			super();
 			this.id = id;
 			this.text = text;
@@ -217,7 +224,11 @@ public class LogEntryBuilder {
 
 		@Override
 		public Collection<Attachment> getAttachment() {
-			return attachments;
+			Collection<Attachment> newAttachments = new ArrayList<Attachment>();
+			for (AttachmentBuilder attachmentBuilder : attachments) {
+				newAttachments.add(attachmentBuilder.build());
+			}
+			return newAttachments;
 		}
 
 	}

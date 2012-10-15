@@ -47,8 +47,10 @@ public class TracPropertyWidgetTest extends ApplicationWindow {
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(1, false));
+		final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
+
 		final TracPropertyWidget tracPropertyWidget = new TracPropertyWidget(
-				container, SWT.NONE, "Trac");
+				container, SWT.NONE, logEntrychangeset);
 		tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1));
 
@@ -56,7 +58,6 @@ public class TracPropertyWidgetTest extends ApplicationWindow {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
 				logEntrychangeset.setLogEntryBuilder(LogEntryBuilder
 						.withText("test")
 						.owner("test")
@@ -66,7 +67,6 @@ public class TracPropertyWidgetTest extends ApplicationWindow {
 										.attribute("TicketId", "12345")
 										.attribute("TicketURL",
 												"http://localhost.com")));
-				tracPropertyWidget.setLogEntrychangeset(logEntrychangeset);
 			}
 		});
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,

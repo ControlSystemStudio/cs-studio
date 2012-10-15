@@ -1,13 +1,17 @@
 package org.csstudio.logbook.olog.ui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import org.csstudio.logbook.LogEntry;
+import org.csstudio.logbook.AttachmentBuilder;
+import org.csstudio.logbook.LogEntryBuilder;
+import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
+import org.csstudio.logbook.ui.LogEntryChangeset;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -15,8 +19,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 
@@ -28,9 +30,13 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	private Label lblNewLabel_2;
 	private Button btnCurrentContext;
 
+	private File file;
+	private final Property property = PropertyBuilder.property("Context")
+			.attribute("FileName").attribute("FileDescription").build();
+
 	public ContextPropertyWidget(Composite parent, int style,
-			String propertyName) {
-		super(parent, style, propertyName);
+			LogEntryChangeset logEntryChangeset) {
+		super(parent, style, logEntryChangeset);
 		setLayout(new FormLayout());
 
 		Label lblNewLabel = new Label(this, SWT.NONE);
@@ -46,11 +52,20 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (isEditable()) {
-					// Apply Action
-
+					// Attach Action
+					if (file != null) {
+						LogEntryBuilder logEntryBuilder = LogEntryBuilder
+								.logEntry(getLogEntryChangeset().getLogEntry());
+						logEntryBuilder.addProperty(PropertyBuilder
+								.property(property)
+								.attribute("FileName", file.getName())
+								.attribute("FileDescription",
+										textFileDescription.getText()));
+						logEntryBuilder.attach(AttachmentBuilder.attachment(file.getName()));
+					}
 				} else {
 					// Restore Action
-					
+
 				}
 			}
 		});
@@ -67,7 +82,9 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 				IEditorInput input = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage()
 						.getActiveEditor().getEditorInput();
-				// IFile file = (IFile) input.getAdapter(IFile.class);
+				file = new File(((IFile) input.getAdapter(IFile.class))
+						.getLocationURI());
+				textFileName.setText(file.getName());
 				// logEntryBuilder.attach(new File(file.getLocationURI()));
 				// PropertyBuilder propertyBuilder = PropertyBuilder
 				// .property("css-context");
@@ -109,41 +126,17 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 		fd_textFileDescription.top = new FormAttachment(lblNewLabel_1, 6);
 		fd_textFileDescription.right = new FormAttachment(100, -10);
 		textFileDescription.setLayoutData(fd_textFileDescription);
-
-		addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				switch (evt.getPropertyName()) {
-				case "editable":
-					updateWidget();
-					break;
-				case "property":
-					updateWidget();
-					break;
-				case "propertyBuilder":
-					break;
-				default:
-					break;
-				}
-			}
-		});
-
 	}
 
-	private void updateWidget() {
+	@Override
+	public void updateUI() {
 		textFileName.setEditable(isEditable());
 		textFileDescription.setEditable(isEditable());
 		btnCurrentContext.setVisible(isEditable());
 		if (isEditable()) {
-			btnRestore.setText("Apply");
+			btnRestore.setText("Attach");
 		} else {
 			btnRestore.setText("Restore");
 		}
-	}
-
-	@Override
-	public void afterCreate(LogEntry logEntry) {
-
 	}
 }

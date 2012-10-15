@@ -4,6 +4,7 @@
 package org.csstudio.logbook.olog.ui;
 
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
+import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.csstudio.logbook.ui.PropertyWidgetFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -21,10 +22,8 @@ import org.eclipse.swt.layout.FormAttachment;
  * @author shroffk
  * 
  */
-public class ContextPropertyWidgetFactory implements PropertyWidgetFactory,
-		IExecutableExtensionFactory, IExecutableExtension {
+public class ContextPropertyWidgetFactory implements PropertyWidgetFactory {
 
-	private static final ContextPropertyWidgetFactory instance = new ContextPropertyWidgetFactory();
 	private String propertyName;
 
 	/**
@@ -34,28 +33,10 @@ public class ContextPropertyWidgetFactory implements PropertyWidgetFactory,
 
 	}
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
 	@Override
-	public Object create() throws CoreException {
-		return instance;
+	public AbstractPropertyWidget create(Composite parent, int SWT,
+			LogEntryChangeset logEntryChangeset) {
+		return new ContextPropertyWidget(parent, SWT, logEntryChangeset);
 	}
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
-	@Override
-	public void setInitializationData(IConfigurationElement config,
-			String propertyName, Object data) throws CoreException {
-		this.propertyName = config.getAttribute("propertyName");
-	}
-
-	/**
-	 * @wbp.parser.entryPoint
-	 */
-	@Override
-	public AbstractPropertyWidget create(Composite parent, int style) {
-		return new ContextPropertyWidget(parent, style, this.propertyName);
-	}
 }

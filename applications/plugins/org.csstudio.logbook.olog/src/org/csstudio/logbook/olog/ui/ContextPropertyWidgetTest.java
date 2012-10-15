@@ -4,6 +4,7 @@
 package org.csstudio.logbook.olog.ui;
 
 import org.csstudio.logbook.Property;
+import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,8 +46,9 @@ public class ContextPropertyWidgetTest extends ApplicationWindow {
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(1, false));
+		final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
 		final ContextPropertyWidget contextPropertyWidget = new ContextPropertyWidget(
-				container, SWT.NONE,"context");
+				container, SWT.NONE, logEntrychangeset);
 		contextPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, true, 1, 1));
 		return container;

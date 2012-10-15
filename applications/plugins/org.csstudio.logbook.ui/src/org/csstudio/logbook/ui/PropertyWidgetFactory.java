@@ -7,9 +7,10 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- *
+ * 
  */
 public interface PropertyWidgetFactory {
 
-	public AbstractPropertyWidget create(Composite parent, int SWT);
+	public AbstractPropertyWidget create(Composite parent, int SWT,
+			LogEntryChangeset logEntryChangeset);
 }

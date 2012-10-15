@@ -7,6 +7,7 @@ import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
+import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,8 +33,9 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 	private Link link;
 	private Label lblAttached;
 
-	public TracPropertyWidget(Composite parent, int style, String propertyName) {
-		super(parent, style, propertyName);
+	public TracPropertyWidget(Composite parent, int style,
+			LogEntryChangeset logEntryChangeset) {
+		super(parent, style, logEntryChangeset);
 		setLayout(new FormLayout());
 
 		Label lblNewLabel = new Label(this, SWT.NONE);
@@ -108,40 +110,27 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 		fd_lblNewLabel_3.right = new FormAttachment(textId, 0, SWT.RIGHT);
 		lblAttached.setLayoutData(fd_lblNewLabel_3);
 		lblAttached.setText("attached");
-		addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				switch (evt.getPropertyName()) {
-				case "editable":
-					updateUI();
-					break;
-				case "logEntryChangeset":
-					updateUI();
-					break;
-				default:
-					break;
-				}
-			}
-		});
-
 	}
 
-	private void updateUI() {
+	@Override
+	public void updateUI() {
 		this.lblAttached.setVisible(!isEditable());
 		this.textId.setEditable(isEditable());
 		this.textURL.setVisible(isEditable());
 		this.link.setVisible(!isEditable());
 		Property property = LogEntryUtil.getProperty(getLogEntryChangeset()
-				.getLogEntry(), widgetProperty.getName());
-		this.textId.setText(property.getAttributeValue("TicketId") == null ? ""
-				: property.getAttributeValue("TicketId"));
-		this.textURL
-				.setText(property.getAttributeValue("TicketURL") == null ? ""
-						: property.getAttributeValue("TicketURL"));
-		String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
-				: property.getAttributeValue("TicketURL");
-		this.link.setText("<a>" + ticketURL + "</a>");
+				.getLogEntry(), TracPropertyWidget.widgetProperty.getName());
+		if (property != null) {
+			this.textId
+					.setText(property.getAttributeValue("TicketId") == null ? ""
+							: property.getAttributeValue("TicketId"));
+			this.textURL
+					.setText(property.getAttributeValue("TicketURL") == null ? ""
+							: property.getAttributeValue("TicketURL"));
+			String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
+					: property.getAttributeValue("TicketURL");
+			this.link.setText("<a>" + ticketURL + "</a>");
+		}
 
 	}
 }

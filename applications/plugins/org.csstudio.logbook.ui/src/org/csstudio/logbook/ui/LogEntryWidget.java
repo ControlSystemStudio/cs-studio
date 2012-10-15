@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -483,6 +484,45 @@ public class LogEntryWidget extends Composite {
 				logEntryChangeset = new LogEntryChangeset();
 			} else {
 				logEntryChangeset = new LogEntryChangeset(getLogEntry());
+				imageStackWidget.setImageFilenames(Collections
+						.<String> emptyList());
+				if (logEntry.getId() != null) {
+					Collection<Attachment> attachments = logbookClient
+							.listAttachments(logEntry.getId());
+					if (!attachments.isEmpty()) {
+						java.util.List<String> imageFileNames = new ArrayList<String>();
+						for (Attachment attachment : attachments) {
+							File file = new File(attachment.getFileName());
+							try {
+								InputStream ip = logbookClient.getAttachment(
+										logEntry.getId(),
+										attachment.getFileName());
+								OutputStream out = new FileOutputStream(file);
+								// Transfer bytes from in to out
+								byte[] buf = new byte[1024];
+								int len;
+								while ((len = ip.read(buf)) > 0) {
+									out.write(buf, 0, len);
+								}
+								ip.close();
+								out.close();
+							} catch (MalformedURLException e) {
+								// TODO Auto-generated catch block
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+							}
+							IFile f = IFileUtil.getInstance()
+									.createFileResource(file);
+							IFileUtil.getInstance().registerPart(
+									PlatformUI.getWorkbench()
+											.getActiveWorkbenchWindow()
+											.getPartService().getActivePart(),
+									f);
+							imageFileNames.add(f.getLocationURI().getPath());
+						}
+						imageStackWidget.setImageFilenames(imageFileNames);
+					}
+				}
 			}
 			savedLogEntryChangeset = new LogEntryChangeset(
 					logEntryChangeset.getLogEntry());
@@ -531,7 +571,11 @@ public class LogEntryWidget extends Composite {
 			} else {
 				propertyWidgetFactories = Collections.emptyMap();
 			}
-
+			for (CTabItem cTabItem : tabFolder.getItems()) {
+				if (!cTabItem.equals(tbtmAttachments)) {
+					cTabItem.dispose();
+				}
+			}
 		} catch (Exception e) {
 			// Failed to get a client to the logbook
 			// Display exception and disable editing.
@@ -555,18 +599,16 @@ public class LogEntryWidget extends Composite {
 				LogEntryBuilder.logEntry(getLogEntryChangeset().getLogEntry())
 						.setText(text.getText()).owner(textOwner.getText())
 						.setLogbooks(newLogbooks).setTags(newTags));
-		// for (Entry<String, AbstractPropertyWidget> propertyWidget :
-		// propertyWidgets
-		// .entrySet()) {
-		// if (propertyWidget.getValue().isAttached()
-		// && propertyWidget.getValue().getPropertyBuilder() != null) {
-		// logEntryBuilder.addProperty(propertyWidget.getValue()
-		// .getPropertyBuilder());
-		// }
-		// }
 	}
 
 	private void updateUI() {
+		// Dispose the contributed tabs, only keep the default attachments tab
+		for (CTabItem cTabItem : tabFolder.getItems()) {
+			if (!cTabItem.equals(tbtmAttachments)) {
+				cTabItem.dispose();
+			}
+		}
+
 		btnEnableEdit.setSelection(editable);
 		text.setEditable(editable);
 		textOwner.setEditable(editable);
@@ -602,12 +644,7 @@ public class LogEntryWidget extends Composite {
 			imageStackWidget.setLayoutData(fd);
 		}
 		btnEnableEdit.getParent().layout();
-		// Dispose the contributed tabs, only keep the default attachments tab
-		for (CTabItem cTabItem : tabFolder.getItems()) {
-			if (!cTabItem.equals(tbtmAttachments)) {
-				cTabItem.dispose();
-			}
-		}
+
 		LogEntry logEntry = logEntryChangeset.getLogEntry();
 		if (logEntry != null) {
 			// Show the logEntry
@@ -625,43 +662,6 @@ public class LogEntryWidget extends Composite {
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 			// TODO temporary fix, in future releases the attachments will be
 			// listed with the logEntry itself
-			imageStackWidget
-					.setImageFilenames(Collections.<String> emptyList());
-			if (logEntry.getId() != null) {
-				Collection<Attachment> attachments = logbookClient
-						.listAttachments(logEntry.getId());
-				if (!attachments.isEmpty()) {
-					java.util.List<String> imageFileNames = new ArrayList<String>();
-					for (Attachment attachment : attachments) {
-						File file = new File(attachment.getFileName());
-						try {
-							InputStream ip = logbookClient.getAttachment(
-									logEntry.getId(), attachment.getFileName());
-							OutputStream out = new FileOutputStream(file);
-							// Transfer bytes from in to out
-							byte[] buf = new byte[1024];
-							int len;
-							while ((len = ip.read(buf)) > 0) {
-								out.write(buf, 0, len);
-							}
-							ip.close();
-							out.close();
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-						}
-						IFile f = IFileUtil.getInstance().createFileResource(
-								file);
-						IFileUtil.getInstance().registerPart(
-								PlatformUI.getWorkbench()
-										.getActiveWorkbenchWindow()
-										.getPartService().getActivePart(), f);
-						imageFileNames.add(f.getLocationURI().getPath());
-					}
-					imageStackWidget.setImageFilenames(imageFileNames);
-				}
-			}
 		} else {
 			text.setText("");
 			textOwner.setText("");
@@ -670,6 +670,20 @@ public class LogEntryWidget extends Composite {
 			imageStackWidget
 					.setImageFilenames(Collections.<String> emptyList());
 			imageStackWidget.setSelectedImageFile(null);
+		}
+		for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
+				.entrySet()) {
+			if (editable
+					|| LogEntryUtil.getPropertyNames(logEntry).contains(
+							propertyFactoryEntry.getKey())) {
+				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
+				tbtmProperty.setText(propertyFactoryEntry.getKey());
+				AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
+						.getValue().create(tabFolder, SWT.NONE,
+								logEntryChangeset);
+				tbtmProperty.setControl(abstractPropertyWidget);
+				abstractPropertyWidget.setEditable(editable);
+			}
 		}
 		this.layout();
 	}
