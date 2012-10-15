@@ -242,7 +242,7 @@ public class PVManagerHelper{
 	
 	private String formatScalarEnum(FormatEnum formatEnum, VEnum enumValue){
 		switch (formatEnum) {
-		case DECIAML:
+		case DECIMAL:
 		case EXP:
 		case COMPACT:
 			return Integer.toString(enumValue.getIndex());
@@ -272,7 +272,7 @@ public class PVManagerHelper{
 		if(pmValue !=null)
 			numValue = (Number) ((Scalar)pmValue).getValue();
 		switch (formatEnum) {
-		case DECIAML:
+		case DECIMAL:
 		case DEFAULT:
 		default:
 			if (precision == -1 && pmValue !=null
@@ -299,7 +299,7 @@ public class PVManagerHelper{
 			if ( ((dValue > 0.0001) && (dValue < 10000))||
 					((dValue < -0.0001) && (dValue > -10000)) ||
 					dValue == 0.0){
-				return formatScalarNumber(FormatEnum.DECIAML, numValue, precision);
+				return formatScalarNumber(FormatEnum.DECIMAL, numValue, precision);
 			}else{
 				return formatScalarNumber(FormatEnum.EXP, numValue, precision);					
 			}

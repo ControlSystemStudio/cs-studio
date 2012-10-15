@@ -346,7 +346,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	private String formatUtilityPVValue(IValue value, int tempPrecision) {
 		String text;
 		switch (format) {
-		case DECIAML:
+		case DECIMAL:
 			text = value.format(Format.Decimal, tempPrecision);
 			break;
 		case EXP:

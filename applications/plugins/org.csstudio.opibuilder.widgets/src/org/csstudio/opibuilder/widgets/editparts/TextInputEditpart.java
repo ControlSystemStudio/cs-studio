@@ -439,7 +439,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return parseHEX(text, true);
 				case STRING:
 					return text;
-				case DECIAML:
+				case DECIMAL:
 				case COMPACT:
 				case EXP:
 					return parseDouble(text,true);
@@ -459,7 +459,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 						return parseHEX(text, true);
 					case STRING:
 						return text;
-					case DECIAML:
+					case DECIMAL:
 					case EXP:
 					case COMPACT:
 						return parseDouble(text, true);
@@ -483,7 +483,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return parseHEX(text, true);
 				case STRING:					
 					return parseCharArray(text, ((Array<?>)pvValue).getSizes().get(0));					
-				case DECIAML:
+				case DECIMAL:
 				case EXP:
 				case COMPACT:
 					return parseDouble(text, true);
@@ -517,7 +517,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return parseCharArray(text, ((IDoubleValue) pvValue).getValues().length);
 				} else
 					return text;
-			case DECIAML:
+			case DECIMAL:
 			case EXP:
 			case COMPACT:
 				return parseDouble(text, true);
@@ -541,7 +541,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return parseCharArray(text,((ILongValue) pvValue).getValues().length );
 				} else
 					return text;
-			case DECIAML:
+			case DECIMAL:
 			case EXP:
 			case COMPACT:
 				return parseDouble(text, true);
@@ -562,7 +562,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				return parseHEX(text, true);
 			case STRING:
 				return text;
-			case DECIAML:
+			case DECIMAL:
 			case EXP:
 			case COMPACT:
 				return parseDouble(text, true);

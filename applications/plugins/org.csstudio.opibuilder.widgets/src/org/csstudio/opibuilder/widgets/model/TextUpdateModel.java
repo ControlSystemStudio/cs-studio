@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
+import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
@@ -21,34 +22,7 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public class TextUpdateModel extends LabelModel {
 	
-	public enum FormatEnum {
-		DEFAULT("Default"),
-		DECIAML("Decimal"),
-		EXP("Exponential"),
-		HEX("Hex 32"),		
-		STRING("String"),
-		HEX64("Hex 64"),
-		COMPACT("Compact");
-		
-		private String description;
-		private FormatEnum(String description) {
-			this.description = description;
-		}
-		
-		@Override
-		public String toString() {
-			return description;
-		}
-		
-		public static String[] stringValues(){
-			String[] result = new String[values().length];
-			int i =0 ;
-			for(FormatEnum f : values()){
-				result[i++] = f.toString();
-			}
-			return result;
-		}
-	}
+
 	
 	public static final String PROP_FORMAT_TYPE = "format_type";	//$NON-NLS-1$
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
