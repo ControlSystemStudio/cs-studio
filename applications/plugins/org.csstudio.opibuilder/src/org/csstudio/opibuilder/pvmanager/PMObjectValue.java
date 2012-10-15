@@ -8,11 +8,11 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.datadefinition.NotImplementedException;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Scalar;
 import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.ValueUtil;
@@ -85,7 +85,7 @@ public class PMObjectValue implements IValue {
 	public String getStatus() {
 		Alarm alarm = ValueUtil.alarmOf(latestValue);
 		if(alarm != null){
-			return alarm.getAlarmStatus().toString();		
+			return alarm.getAlarmName();		
 		}
 		return null;
 	}
@@ -108,9 +108,10 @@ public class PMObjectValue implements IValue {
 					display.getUpperDisplayLimit(),
 					display.getLowerWarningLimit(),
 					display.getUpperWarningLimit(),
-					display.getLowerAlarmLimit(), display.getUpperAlarmLimit(),
-					// TODO precision is not from PV
-					3, display.getUnits());
+					display.getLowerAlarmLimit(), 
+					display.getUpperAlarmLimit(),
+					display.getFormat().getMaximumFractionDigits(),
+					display.getUnits());
 		}
 		return null;
 	}
@@ -122,13 +123,14 @@ public class PMObjectValue implements IValue {
 
 	@Override
 	public String format() {
-		Display display = ValueUtil.displayOf(latestValue);
-		if (display != null) {
-			return display.getFormat().format(ValueUtil.numericValueOf(latestValue));
-		}
-		if(latestValue instanceof Scalar)
-			return ((Scalar)latestValue).getValue().toString();		
-		return latestValue.toString();
+		return PVManagerHelper.getInstance().
+				formatValue(FormatEnum.DEFAULT, latestValue, -1);
+//		Display display = ValueUtil.displayOf(latestValue);
+//		if (display != null) {
+//			return display.getFormat().format(ValueUtil.numericValueOf(latestValue));
+//		}
+//		if(latestValue instanceof Scalar)
+//			return ((Scalar)latestValue).getValue().toString();		
 	}
 	
 	@Override

@@ -19,14 +19,16 @@ import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.pvmanager.PMObjectValue;
+import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
-import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure;
@@ -44,6 +46,9 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.epics.pvmanager.data.Array;
+import org.epics.pvmanager.data.Scalar;
+import org.epics.pvmanager.data.VEnum;
 
 /**
  * The editpart for text input widget.)
@@ -53,7 +58,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextInputEditpart extends TextUpdateEditPart {
 
-	private static final char SPACE = ' ';
+	private static final char SPACE = ' '; //$NON-NLS-1$
+	private static DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
 
@@ -379,7 +385,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		String[] texts = text.split(" +"); //$NON-NLS-1$
 		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
-				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))){
+				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))
+				||(pvValue instanceof PMObjectValue && 
+					((PMObjectValue)pvValue).getLatestValue() instanceof Array) &&
+					PVManagerHelper.isPrimaryNumberArray(
+						((Array<?>)((PMObjectValue)pvValue).getLatestValue()).getArray())){
 			double[] result = new double[texts.length];
 			for (int i = 0; i < texts.length; i++) {
 				Object o = parseString(texts[i]);
@@ -407,11 +417,96 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	private Object parseString(final String text) throws ParseException {
 		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		FormatEnum formatEnum = getWidgetModel().getFormat();
+		
+		if(pvValue == null)
+			return text;
+		
+		if(pvValue instanceof PMObjectValue){
+			return parseStringForPVManagerPV(formatEnum, text, ((PMObjectValue) pvValue).getLatestValue());
+		}else
+			return parseStringForUtilityPV(formatEnum, text, pvValue);
 
-		if (pvValue == null || pvValue instanceof IStringValue) {
+	}
+	
+	private Object parseStringForPVManagerPV(FormatEnum formatEnum,
+			final String text, Object pvValue) throws ParseException {
+		if(pvValue instanceof Scalar){
+			Object value = ((Scalar)pvValue).getValue();
+			if (value instanceof Number) {
+				switch (formatEnum) {
+				case HEX:
+				case HEX64:
+					return parseHEX(text, true);
+				case STRING:
+					return text;
+				case DECIAML:
+				case COMPACT:
+				case EXP:
+					return parseDouble(text,true);
+				case DEFAULT:
+				default:
+					try {
+						return parseDouble(text, true);
+					} catch (ParseException e) {
+						return text;
+					}
+				}
+			}else if(value instanceof String){
+				if(pvValue instanceof VEnum){
+					switch (formatEnum) {
+					case HEX:
+					case HEX64:
+						return parseHEX(text, true);
+					case STRING:
+						return text;
+					case DECIAML:
+					case EXP:
+					case COMPACT:
+						return parseDouble(text, true);
+					case DEFAULT:
+					default:
+						try {
+							return parseDouble(text, true);
+						} catch (ParseException e) {
+							return text;
+						}
+					}
+				}else
+					return text;
+			}			
+		}else if(pvValue instanceof Array){
+			Object array = ((Array<?>) pvValue).getArray();
+			if(PVManagerHelper.isPrimaryNumberArray(array)){
+				switch (formatEnum) {
+				case HEX:
+				case HEX64:
+					return parseHEX(text, true);
+				case STRING:					
+					return parseCharArray(text, ((Array<?>)pvValue).getSizes().get(0));					
+				case DECIAML:
+				case EXP:
+				case COMPACT:
+					return parseDouble(text, true);
+				case DEFAULT:
+				default:
+					try {
+						return parseDouble(text, true);
+					} catch (ParseException e) {
+						return text;
+					}
+				}
+			}else {
+				return text;
+			}
+		}
+		return text;
+	}
+
+	private Object parseStringForUtilityPV(FormatEnum formatEnum,
+			final String text, IValue pvValue) throws ParseException {
+		if (pvValue instanceof IStringValue) {
 			return text;
 		}
-
 		if (pvValue instanceof IDoubleValue) {
 			switch (formatEnum) {
 			case HEX:
@@ -482,7 +577,6 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 
 		return text;
-
 	}
 
 	private Integer[] parseCharArray(final String text, int currentLength) {
@@ -499,10 +593,9 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	}
 
 	private double parseDouble(final String text, final boolean coerce)
-			throws ParseException {
-		DecimalFormat format = new DecimalFormat();
+			throws ParseException {	
 		
-		double value = format.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
+		double value = DECIMAL_FORMAT.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();
 			double max = getWidgetModel().getMaximum();
