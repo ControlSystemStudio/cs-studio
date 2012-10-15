@@ -19,10 +19,12 @@ import org.epics.pvmanager.util.NumberFormats;
 class VNumberMetadata<TValue extends TIME, TMetadata extends CTRL> extends VMetadata<TValue> implements Display {
 
     private final TMetadata metadata;
+    private final boolean honorZeroPrecision;
 
-    VNumberMetadata(TValue dbrValue, TMetadata metadata, boolean disconnected) {
-        super(dbrValue, disconnected);
+    VNumberMetadata(TValue dbrValue, TMetadata metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, connPayload);
         this.metadata = metadata;
+        this.honorZeroPrecision = connPayload.getJcaDataSource().isHonorZeroPrecision();
     }
 
     @Override
@@ -52,13 +54,20 @@ class VNumberMetadata<TValue extends TIME, TMetadata extends CTRL> extends VMeta
 
     @Override
     public NumberFormat getFormat() {
-        int precision = 0;
+        int precision = -1;
         if (metadata instanceof PRECISION) {
             precision = ((PRECISION) metadata).getPrecision();
         }
+        
         // If precision is 0 or less, we assume full precision
-        if (precision <= 0) {
+        if (precision < 0) {
             return NumberFormats.toStringFormat();
+        } else if (precision == 0) {
+            if (honorZeroPrecision) {
+                return NumberFormats.format(0);
+            } else {
+                return NumberFormats.toStringFormat();
+            }
         } else {
             return NumberFormats.format(precision);
         }

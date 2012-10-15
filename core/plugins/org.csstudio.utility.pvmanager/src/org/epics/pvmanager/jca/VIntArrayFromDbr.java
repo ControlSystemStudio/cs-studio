@@ -18,8 +18,8 @@ import org.epics.util.array.ListInt;
  */
 class VIntArrayFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> implements VIntArray {
 
-    public VIntArrayFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VIntArrayFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
     
     @Override

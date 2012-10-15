@@ -32,6 +32,8 @@ public class JCADataSourceBuilder {
     JCATypeSupport typeSupport;
     boolean dbePropertySupported  = false;
     Boolean varArraySupported;
+    boolean rtypValueOnly = false;
+    boolean honorZeroPrecision = false;
 
     /**
      * The class name for the implementation of JCA.
@@ -121,6 +123,37 @@ public class JCADataSourceBuilder {
      */
     public JCADataSourceBuilder varArraySupported(boolean varArraySupported) {
         this.varArraySupported = varArraySupported;
+        return this;
+    }
+    
+    /**
+     * If true, for fields that match ".*\.RTYP.*" only the value will be
+     * read; alarm and time will be created at client side. Some old version
+     * of EPICS would not send correct data (would send only the value),
+     * which would make the client behave incorrectly.
+     * <p>
+     * Default is false.
+     * 
+     * @param rtypValueOnly true will enable
+     * @return this
+     */
+    public JCADataSourceBuilder rtypValueOnly(boolean rtypValueOnly) {
+        this.rtypValueOnly = rtypValueOnly;
+        return this;
+    }
+    
+    /**
+     * If true, the formatter returned by the VType will show
+     * no decimal digits (assumes it was configured);
+     * if false, it will return all the digit (assumes it wasn't configured).
+     * <p>
+     * Default is true.
+     * 
+     * @param honorZeroPrecision whether the formatter should treat 0 precision as meaningful
+     * @return this
+     */
+    public JCADataSourceBuilder honorZeroPrecision(boolean honorZeroPrecision) {
+        this.honorZeroPrecision = honorZeroPrecision;
         return this;
     }
     

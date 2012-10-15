@@ -40,7 +40,7 @@ public class JCATypeSupport extends DataSourceTypeSupport {
      * @param channel the jca channel
      * @return the matched type adapter
      */
-    protected JCATypeAdapter find(ValueCache<?> cache, Channel channel) {
+    protected JCATypeAdapter find(ValueCache<?> cache, JCAConnectionPayload channel) {
         return find(adapters.getAdapters(), cache, channel);
     }
     
