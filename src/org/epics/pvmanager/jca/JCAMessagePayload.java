@@ -28,15 +28,19 @@ public class JCAMessagePayload {
     private final MonitorEvent event;
 
     JCAMessagePayload(DBR metadata, MonitorEvent event) {
-        if (event.getDBR() instanceof DBR_String && !(event.getDBR() instanceof DBR_TIME_String)) {
-            DBR_String originalValue = (DBR_String) event.getDBR();
-            // Received only partial data. Filling in time and alarm
-            DBR_TIME_String value = new DBR_TIME_String(originalValue.getStringValue());
-            value.setSeverity(Severity.NO_ALARM);
-            value.setStatus(Status.NO_ALARM);
-            value.setTimeStamp(new TimeStamp());
-            
-            event = new MonitorEvent((Channel) event.getSource(), value, event.getStatus());
+        if (event != null) {
+            // If we have a monitor event, it may be an "incomplete"
+            // String event because of the RTYP support
+            if (event.getDBR() instanceof DBR_String && !(event.getDBR() instanceof DBR_TIME_String)) {
+                DBR_String originalValue = (DBR_String) event.getDBR();
+                // Received only partial data. Filling in time and alarm
+                DBR_TIME_String value = new DBR_TIME_String(originalValue.getStringValue());
+                value.setSeverity(Severity.NO_ALARM);
+                value.setStatus(Status.NO_ALARM);
+                value.setTimeStamp(new TimeStamp());
+
+                event = new MonitorEvent((Channel) event.getSource(), value, event.getStatus());
+            }
         }
         this.metadata = metadata;
         this.event = event;
