@@ -14,12 +14,12 @@ import org.epics.pvmanager.data.VString;
  */
 class VStringFromDbr extends VMetadata<DBR_TIME_String> implements VString {
 
-    public VStringFromDbr(DBR_TIME_String dbrValue, boolean disconnected) {
-        super(dbrValue, disconnected);
+    public VStringFromDbr(DBR_TIME_String dbrValue, JCAConnectionPayload connPayload) {
+        super(dbrValue, connPayload);
     }
 
-    VStringFromDbr(DBR_TIME_Byte dbrValue, boolean disconnected) {
-        this(convert(dbrValue), disconnected);
+    VStringFromDbr(DBR_TIME_Byte dbrValue, JCAConnectionPayload JCAConnectionPayload) {
+        this(convert(dbrValue), JCAConnectionPayload);
     }
     
     private static DBR_TIME_String convert(DBR_TIME_Byte dbrValue) {

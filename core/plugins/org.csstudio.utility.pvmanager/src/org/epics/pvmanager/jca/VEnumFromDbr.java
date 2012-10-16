@@ -18,8 +18,8 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
 
     private final DBR_LABELS_Enum metadata;
 
-    public VEnumFromDbr(DBR_TIME_Enum dbrValue, DBR_LABELS_Enum metadata, boolean disconnected) {
-        super(dbrValue, disconnected);
+    public VEnumFromDbr(DBR_TIME_Enum dbrValue, DBR_LABELS_Enum metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, connPayload);
         this.metadata = metadata;
     }
 

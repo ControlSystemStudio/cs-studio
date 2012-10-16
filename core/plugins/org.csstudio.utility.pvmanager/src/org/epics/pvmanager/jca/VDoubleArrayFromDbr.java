@@ -18,8 +18,8 @@ import org.epics.util.array.ListDouble;
  */
 class VDoubleArrayFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Double> implements VDoubleArray {
 
-    public VDoubleArrayFromDbr(DBR_TIME_Double dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VDoubleArrayFromDbr(DBR_TIME_Double dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
     
     @Override

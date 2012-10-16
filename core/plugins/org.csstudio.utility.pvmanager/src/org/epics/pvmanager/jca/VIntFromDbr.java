@@ -16,8 +16,8 @@ import org.epics.pvmanager.data.VInt;
  */
 class VIntFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> implements VInt {
 
-    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
 
     private static DBR_TIME_Int convert(DBR dbrValue) {
@@ -28,8 +28,8 @@ class VIntFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> impleme
         }
     }
 
-    public VIntFromDbr(DBR dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        this(convert(dbrValue), metadata, disconnected);
+    public VIntFromDbr(DBR dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        this(convert(dbrValue), metadata, connPayload);
     }
 
     @Override

@@ -37,7 +37,7 @@ import org.epics.pvmanager.*;
  *
  * @author carcassi
  */
-class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
+class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, JCAMessagePayload> {
 
     private static final int LARGE_ARRAY = 100000;
     private final JCADataSource jcaDataSource;
@@ -71,8 +71,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
     }
  
     @Override
-    protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, Channel channel) {
-        return jcaDataSource.getTypeSupport().find(cache, channel);
+    protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, JCAConnectionPayload connPayload) {
+        return jcaDataSource.getTypeSupport().find(cache, connPayload);
     }
 
     @Override
@@ -225,7 +225,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
                         }
 
                         // Setup monitors on connection
-                        processConnection(channel);
+                        processConnection(new JCAConnectionPayload(jcaDataSource, channel));
                         if (ev.isConnected()) {
                             setup(channel);
                         }
@@ -277,13 +277,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
     }
     
     @Override
-    protected boolean isConnected(Channel channel) {
-        return isChannelConnected(channel);
-    }
-    
-    
-    static boolean isChannelConnected(Channel channel) {
-        return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
+    protected boolean isConnected(JCAConnectionPayload connPayload) {
+        return connPayload.isChannelConnected();
     }
 
     @Override
@@ -324,11 +319,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
         else
             return channel.getElementCount();
     }
+    
+    static Pattern rtypeStringPattern = Pattern.compile(".+\\.RTYP.*");
 
     protected DBRType valueTypeFor(Channel channel) {
         DBRType type = channel.getFieldType();
-        
-        // TODO: .RTYP should not request the time
         
         // For scalar numbers, only use Double or Int
         if (channel.getElementCount() == 1) {
@@ -351,6 +346,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
         } else if (type.isENUM()) {
             return DBR_TIME_Enum.TYPE;
         } else if (type.isSTRING()) {
+            if (jcaDataSource.isRtypValueOnly() &&
+                    rtypeStringPattern.matcher(channel.getName()).matches()) {
+                return DBR_String.TYPE;
+            }
             return DBR_TIME_String.TYPE;
         }
         

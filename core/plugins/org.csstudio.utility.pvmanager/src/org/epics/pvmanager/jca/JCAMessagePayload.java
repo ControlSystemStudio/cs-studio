@@ -8,7 +8,13 @@
  */
 package org.epics.pvmanager.jca;
 
+import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBR;
+import gov.aps.jca.dbr.DBR_String;
+import gov.aps.jca.dbr.DBR_TIME_String;
+import gov.aps.jca.dbr.Severity;
+import gov.aps.jca.dbr.Status;
+import gov.aps.jca.dbr.TimeStamp;
 import gov.aps.jca.event.MonitorEvent;
 
 /**
@@ -22,6 +28,16 @@ public class JCAMessagePayload {
     private final MonitorEvent event;
 
     JCAMessagePayload(DBR metadata, MonitorEvent event) {
+        if (event.getDBR() instanceof DBR_String && !(event.getDBR() instanceof DBR_TIME_String)) {
+            DBR_String originalValue = (DBR_String) event.getDBR();
+            // Received only partial data. Filling in time and alarm
+            DBR_TIME_String value = new DBR_TIME_String(originalValue.getStringValue());
+            value.setSeverity(Severity.NO_ALARM);
+            value.setStatus(Status.NO_ALARM);
+            value.setTimeStamp(new TimeStamp());
+            
+            event = new MonitorEvent((Channel) event.getSource(), value, event.getStatus());
+        }
         this.metadata = metadata;
         this.event = event;
     }

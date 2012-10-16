@@ -15,8 +15,8 @@ import org.epics.pvmanager.data.VStringArray;
  */
 class VStringArrayFromDbr extends VMetadata<DBR_TIME_String> implements VStringArray {
 
-    public VStringArrayFromDbr(DBR_TIME_String dbrValue, boolean disconnected) {
-        super(dbrValue, disconnected);
+    public VStringArrayFromDbr(DBR_TIME_String dbrValue, JCAConnectionPayload connPayload) {
+        super(dbrValue, connPayload);
     }
     
     @Override

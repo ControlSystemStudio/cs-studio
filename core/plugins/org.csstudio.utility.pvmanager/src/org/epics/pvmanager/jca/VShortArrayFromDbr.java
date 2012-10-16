@@ -18,8 +18,8 @@ import org.epics.util.array.ListShort;
  */
 class VShortArrayFromDbr extends VNumberMetadata<DBR_TIME_Short, DBR_CTRL_Double> implements VShortArray {
 
-    public VShortArrayFromDbr(DBR_TIME_Short dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VShortArrayFromDbr(DBR_TIME_Short dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
     
     @Override

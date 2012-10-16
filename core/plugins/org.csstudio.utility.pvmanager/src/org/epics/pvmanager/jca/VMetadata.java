@@ -20,9 +20,9 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
     final TValue dbrValue;
     private final boolean disconnected;
 
-    VMetadata(TValue dbrValue, boolean disconnected) {
+    VMetadata(TValue dbrValue, JCAConnectionPayload connPayload) {
         this.dbrValue = dbrValue;
-        this.disconnected = disconnected;
+        this.disconnected = !connPayload.isChannelConnected();
     }
 
     @Override

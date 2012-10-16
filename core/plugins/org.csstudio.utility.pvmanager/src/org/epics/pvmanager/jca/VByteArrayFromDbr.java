@@ -18,8 +18,8 @@ import org.epics.util.array.ListByte;
  */
 class VByteArrayFromDbr extends VNumberMetadata<DBR_TIME_Byte, DBR_CTRL_Double> implements VByteArray {
 
-    public VByteArrayFromDbr(DBR_TIME_Byte dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
-        super(dbrValue, metadata, disconnected);
+    public VByteArrayFromDbr(DBR_TIME_Byte dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
+        super(dbrValue, metadata, connPayload);
     }
     
     @Override
