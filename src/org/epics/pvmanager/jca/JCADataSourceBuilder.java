@@ -33,7 +33,7 @@ public class JCADataSourceBuilder {
     boolean dbePropertySupported  = false;
     Boolean varArraySupported;
     boolean rtypValueOnly = false;
-    boolean honorZeroPrecision = false;
+    boolean honorZeroPrecision = true;
 
     /**
      * The class name for the implementation of JCA.

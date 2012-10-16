@@ -23,10 +23,10 @@ public class ValueUtil {
         // Can't instanciate
     }
 
-    private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByteArray.class, VDouble.class,
-            VDoubleArray.class, VEnum.class, VEnumArray.class, VFloatArray.class,
+    private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
+            VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
             VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
-            VMultiInt.class, VMultiString.class, VShortArray.class,
+            VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
             VStatistics.class, VString.class, VStringArray.class, VTable.class);
 
     /**
