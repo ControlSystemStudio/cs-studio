@@ -278,7 +278,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     
     @Override
     protected boolean isConnected(JCAConnectionPayload connPayload) {
-        return connPayload.isChannelConnected();
+        return connPayload != null && connPayload.isChannelConnected();
     }
 
     @Override
@@ -324,14 +324,6 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
     protected DBRType valueTypeFor(Channel channel) {
         DBRType type = channel.getFieldType();
-        
-        // For scalar numbers, only use Double or Int
-        if (channel.getElementCount() == 1) {
-            if (type.isBYTE() || type.isSHORT() || type.isINT())
-                return DBR_TIME_Int.TYPE;
-            if (type.isFLOAT() || type.isDOUBLE())
-                return DBR_TIME_Double.TYPE;
-        }
         
         if (type.isBYTE()) {
             return DBR_TIME_Byte.TYPE;
