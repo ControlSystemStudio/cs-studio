@@ -190,6 +190,13 @@
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.alarm.table.dataModel.BasicMessage"
+            class="org.csstudio.alarm.table.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.csstudio.desy.startuphelper.startupListener">
