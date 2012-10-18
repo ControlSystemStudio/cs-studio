@@ -21,6 +21,7 @@ import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -143,248 +144,245 @@ public class ItemConfigDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.Config_Title);
     }
-
+    
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
     @Override
-    protected Control createDialogArea(final Composite parent)
-    {
-    	GridData gd = null;
-        final Composite parent_composite = (Composite) super.createDialogArea(parent);
-        // TODO: make scroll work...
-//        final ScrolledComposite sc = new ScrolledComposite(parent_composite, SWT.BORDER | SWT.V_SCROLL);
-//        sc.setExpandVertical(true);
-        final Composite composite = new Composite(parent_composite, SWT.NONE);
-//        sc.setContent(composite);
-        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final GridLayout layout = new GridLayout();
-        layout.numColumns = 4;
-        composite.setLayout(layout);
+	protected Control createDialogArea(final Composite parent) {
+		GridData gd = null;
+		final Composite parent_composite = (Composite) super
+				.createDialogArea(parent);
 
-        // Set title image, arrange for it to be disposed
-        final Image title_image =
-            Activator.getImageDescriptor("icons/config_image.png").createImage(); //$NON-NLS-1$
-        setTitleImage(title_image);
-        parent.addDisposeListener(new DisposeListener()
-        {
-            @Override
-            public void widgetDisposed(DisposeEvent e)
-            {
-                title_image.dispose();
-            }
-        });
+		final ScrolledComposite sc = new ScrolledComposite(parent, 
+				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-        setTitle(NLS.bind(Messages.Config_ItemFmt, item.getPathName()));
-        setMessage(Messages.Config_Message);
+		final Composite composite = new Composite(sc, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final GridLayout layout = new GridLayout();
+		layout.numColumns = 4;
+		composite.setLayout(layout);
 
-        if (item instanceof AlarmTreePV)
-        {
-            final AlarmTreePV pv = (AlarmTreePV) item;
+		// Set title image, arrange for it to be disposed
+		final Image title_image = Activator.getImageDescriptor("icons/config_image.png").createImage(); //$NON-NLS-1$
+		setTitleImage(title_image);
+		parent.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				title_image.dispose();
+			}
+		});
 
-            // Description: __________________
-            Label l = new Label(composite, 0);
-            l.setText(Messages.Config_Description);
-            l.setLayoutData(new GridData());
+		setTitle(NLS.bind(Messages.Config_ItemFmt, item.getPathName()));
+		setMessage(Messages.Config_Message);
 
-            description_text = new Text(composite, SWT.BORDER);
-            description_text.setText(pv.getDescription());
-            description_text.setToolTipText(Messages.Config_DescriptionTT);
-            gd = new GridData();
-            gd.horizontalSpan = layout.numColumns - 1;
-            gd.grabExcessHorizontalSpace = true;
-            gd.horizontalAlignment = SWT.FILL;
-            description_text.setLayoutData(gd);
+		if (item instanceof AlarmTreePV) {
+			final AlarmTreePV pv = (AlarmTreePV) item;
 
-            // Alarm Delay [sec]: __________________
-            l = new Label(composite, 0);
-            l.setText(Messages.Config_Delay);
-            l.setLayoutData(new GridData());
+			// Description: __________________
+			Label l = new Label(composite, 0);
+			l.setText(Messages.Config_Description);
+			l.setLayoutData(new GridData());
 
-            delay_text = new Text(composite, SWT.BORDER);
-            delay_text.setText(Integer.toString(pv.getDelay()));
-            delay_text.setToolTipText(Messages.Config_DelayTT);
-            gd = new GridData();
-            gd.horizontalSpan = layout.numColumns - 1;
-            gd.grabExcessHorizontalSpace = true;
-            gd.horizontalAlignment = SWT.FILL;
-            delay_text.setLayoutData(gd);
+			description_text = new Text(composite, SWT.BORDER);
+			description_text.setText(pv.getDescription());
+			description_text.setToolTipText(Messages.Config_DescriptionTT);
+			gd = new GridData();
+			gd.horizontalSpan = layout.numColumns - 1;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			description_text.setLayoutData(gd);
 
-            // Alarm Count [within delay]: __________________
-            l = new Label(composite, 0);
-            l.setText(Messages.Config_Count);
-            l.setLayoutData(new GridData());
+			// Alarm Delay [sec]: __________________
+			l = new Label(composite, 0);
+			l.setText(Messages.Config_Delay);
+			l.setLayoutData(new GridData());
 
-            count_text = new Text(composite, SWT.BORDER);
-            count_text.setText(Integer.toString(pv.getCount()));
-            count_text.setToolTipText(Messages.Config_CountTT);
-            gd = new GridData();
-            gd.horizontalSpan = layout.numColumns - 1;
-            gd.grabExcessHorizontalSpace = true;
-            gd.horizontalAlignment = SWT.FILL;
-            count_text.setLayoutData(gd);
+			delay_text = new Text(composite, SWT.BORDER);
+			delay_text.setText(Integer.toString(pv.getDelay()));
+			delay_text.setToolTipText(Messages.Config_DelayTT);
+			gd = new GridData();
+			gd.horizontalSpan = layout.numColumns - 1;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			delay_text.setLayoutData(gd);
 
-            // Behavior: Enabled[x] Latching [x]  Annunciating [x]
-            l = new Label(composite, 0);
-            l.setText(Messages.Config_Behavior);
-            l.setLayoutData(new GridData());
+			// Alarm Count [within delay]: __________________
+			l = new Label(composite, 0);
+			l.setText(Messages.Config_Count);
+			l.setLayoutData(new GridData());
 
-            enable_button = new Button(composite, SWT.CHECK);
-            enable_button.setText(Messages.Config_Enabled);
-            enable_button.setToolTipText(Messages.Config_EnabledTT);
-            enable_button.setLayoutData(new GridData());
-            enable_button.addSelectionListener(new SelectionAdapter()
-            {
-                @Override
-                public void widgetSelected(SelectionEvent e)
-                {
-                    if (enable_button.getSelection())
-                        setErrorMessage(null);
-                    else
-                        setErrorMessage(Messages.Config_DisableWarning);
-                }
-            });
-            enable_button.setSelection(pv.isEnabled());
+			count_text = new Text(composite, SWT.BORDER);
+			count_text.setText(Integer.toString(pv.getCount()));
+			count_text.setToolTipText(Messages.Config_CountTT);
+			gd = new GridData();
+			gd.horizontalSpan = layout.numColumns - 1;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			count_text.setLayoutData(gd);
 
-            latch_button = new Button(composite, SWT.CHECK);
-            latch_button.setText(Messages.Config_Latch);
-            latch_button.setToolTipText(Messages.Config_LatchingTT);
-            latch_button.setSelection(pv.isLatching());
-            latch_button.setLayoutData(new GridData());
+			// Behavior: Enabled[x] Latching [x] Annunciating [x]
+			l = new Label(composite, 0);
+			l.setText(Messages.Config_Behavior);
+			l.setLayoutData(new GridData());
 
-            annunciate_button = new Button(composite, SWT.CHECK);
-            annunciate_button.setText(Messages.Config_Annunciate);
-            annunciate_button.setToolTipText(Messages.Config_AnnunciateTT);
-            annunciate_button.setSelection(pv.isAnnunciating());
-            annunciate_button.setLayoutData(new GridData());
+			enable_button = new Button(composite, SWT.CHECK);
+			enable_button.setText(Messages.Config_Enabled);
+			enable_button.setToolTipText(Messages.Config_EnabledTT);
+			enable_button.setLayoutData(new GridData());
+			enable_button.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (enable_button.getSelection())
+						setErrorMessage(null);
+					else
+						setErrorMessage(Messages.Config_DisableWarning);
+				}
+			});
+			enable_button.setSelection(pv.isEnabled());
 
-            // Filter: _____________________
-            l = new Label(composite, 0);
-            l.setText(Messages.Config_Filter);
-            l.setLayoutData(new GridData());
+			latch_button = new Button(composite, SWT.CHECK);
+			latch_button.setText(Messages.Config_Latch);
+			latch_button.setToolTipText(Messages.Config_LatchingTT);
+			latch_button.setSelection(pv.isLatching());
+			latch_button.setLayoutData(new GridData());
 
-            filter_text = new Text(composite, SWT.BORDER);
-            filter_text.setText(pv.getFilter());
-            filter_text.setToolTipText(Messages.Config_FilterTT);
-            gd = new GridData();
-            gd.horizontalSpan = layout.numColumns-1;
-            gd.grabExcessHorizontalSpace = true;
-            gd.horizontalAlignment = SWT.FILL;
-            filter_text.setLayoutData(gd);
-            final ModifyListener filter_overrides_enablement = new ModifyListener()
-            {
-                @Override
-                public void modifyText(ModifyEvent e)
-                {
-                    final String filter_spec = filter_text.getText().trim();
+			annunciate_button = new Button(composite, SWT.CHECK);
+			annunciate_button.setText(Messages.Config_Annunciate);
+			annunciate_button.setToolTipText(Messages.Config_AnnunciateTT);
+			annunciate_button.setSelection(pv.isAnnunciating());
+			annunciate_button.setLayoutData(new GridData());
+
+			// Filter: _____________________
+			l = new Label(composite, 0);
+			l.setText(Messages.Config_Filter);
+			l.setLayoutData(new GridData());
+
+			filter_text = new Text(composite, SWT.BORDER);
+			filter_text.setText(pv.getFilter());
+			filter_text.setToolTipText(Messages.Config_FilterTT);
+			gd = new GridData();
+			gd.horizontalSpan = layout.numColumns - 1;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			filter_text.setLayoutData(gd);
+			final ModifyListener filter_overrides_enablement = new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					final String filter_spec = filter_text.getText().trim();
 					final boolean have_filter = filter_spec.length() > 0;
-                    enable_button.setEnabled(!have_filter);
-                    if (have_filter)
-                    {
-                        // When entering a filter, the manual 'enable' is always 'on'
-                        enable_button.setSelection(true);
-                        if (isFilterSpecOK(filter_spec))
-                            setErrorMessage(null);
-                        else
-                        	setErrorMessage(Messages.ErrorInFilter);
-                    }
-                }
-            };
-            filter_text.addModifyListener(filter_overrides_enablement);
-            // Run once to initialize
-            filter_overrides_enablement.modifyText(null);
+					enable_button.setEnabled(!have_filter);
+					if (have_filter) {
+						// When entering a filter, the manual 'enable' is always
+						// 'on'
+						enable_button.setSelection(true);
+						if (isFilterSpecOK(filter_spec))
+							setErrorMessage(null);
+						else
+							setErrorMessage(Messages.ErrorInFilter);
+					}
+				}
+			};
+			filter_text.addModifyListener(filter_overrides_enablement);
+			// Run once to initialize
+			filter_overrides_enablement.modifyText(null);
 
-            // -----------------------------
-            l = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-            gd = new GridData();
-            gd.horizontalSpan = layout.numColumns;
-            gd.grabExcessHorizontalSpace = true;
-            gd.horizontalAlignment = SWT.FILL;
-            l.setLayoutData(gd);
-        }
+			// -----------------------------
+			l = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+			gd = new GridData();
+			gd.horizontalSpan = layout.numColumns;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			l.setLayoutData(gd);
+		}
 
-        // Guidance:
-        // +------------------+
-        // |     List         |
-        // +------------------+
-        // Turn GDC list into tableList, so it can be manipulated in table
-        final boolean[] editable = { true, true };
-        guidance_table_list = getStringList(item.getGuidance());
-        Label l = new Label(composite, 0);
-        l.setText(Messages.Config_Guidance);
-        l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+		// Guidance:
+		// +------------------+
+		// | List |
+		// +------------------+
+		// Turn GDC list into tableList, so it can be manipulated in table
+		final boolean[] editable = { true, true };
+		guidance_table_list = getStringList(item.getGuidance());
+		Label l = new Label(composite, 0);
+		l.setText(Messages.Config_Guidance);
+		l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        guidance_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Detail},
-                editable, guidance_table_list, new EditGDCItemDialog(parent.getShell()),
-                new int[]{120,120});
-        guidance_editor.setToolTipText(Messages.Config_GuidanceTT);
-        guidance_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+		guidance_editor = new StringTableEditor(composite, 
+				new String[] { Messages.Title, Messages.Detail }, editable,
+				guidance_table_list, new EditGDCItemDialog(parent.getShell()), 
+				new int[] { 120, 120 });
+		guidance_editor.setToolTipText(Messages.Config_GuidanceTT);
+		guidance_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, layout.numColumns, 1));
 
-        // Displays:
-        // +------------------+
-        // |     List         |
-        // +------------------+
-        displays_table_list = getStringList(item.getDisplays());
-        l = new Label(composite, 0);
-        l.setText(Messages.Config_Displays);
-        l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+		// Displays:
+		// +------------------+
+		// | List |
+		// +------------------+
+		displays_table_list = getStringList(item.getDisplays());
+		l = new Label(composite, 0);
+		l.setText(Messages.Config_Displays);
+		l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        display_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Command },
-                editable, displays_table_list, new EditGDCItemDialog(parent.getShell()),
-                new int[]{120,120});
-        display_editor.setToolTipText(Messages.Config_DisplaysTT);
-        display_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+		display_editor = new StringTableEditor(composite, 
+				new String[] { Messages.Title, Messages.Command }, editable,
+				displays_table_list, new EditGDCItemDialog(parent.getShell()),
+				new int[] { 120, 120 });
+		display_editor.setToolTipText(Messages.Config_DisplaysTT);
+		display_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, layout.numColumns, 1));
 
-        // Commands:
-        // +------------------+
-        // |     List         |
-        // +------------------+
-        commands_table_list = getStringList(item.getCommands());
-        l = new Label(composite, 0);
-        l.setText(Messages.Config_Commands);
-        l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+		// Commands:
+		// +------------------+
+		// | List |
+		// +------------------+
+		commands_table_list = getStringList(item.getCommands());
+		l = new Label(composite, 0);
+		l.setText(Messages.Config_Commands);
+		l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        command_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Command },
-                editable, commands_table_list, new EditGDCItemDialog(parent.getShell()),
-                new int[]{120,120});
-        command_editor.setToolTipText(Messages.Config_CommandsTT);
-        command_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
-        // Automated Actions:
-        // +------------------+
-        // |     List         |
-        // +------------------+
+		command_editor = new StringTableEditor(composite, 
+				new String[] { Messages.Title, Messages.Command }, editable,
+				commands_table_list, new EditGDCItemDialog(parent.getShell()),
+				new int[] { 120, 120 });
+		command_editor.setToolTipText(Messages.Config_CommandsTT);
+		command_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, layout.numColumns, 1));
+
+		// Automated Actions:
+		// +------------------+
+		// | List |
+		// +------------------+
 		auto_actions_table_list = new ArrayList<String[]>();
 		for (AADataStructure aa : item.getAutomatedActions()) {
-			final String row[] = { aa.getTitle(), aa.getDetails(), String.valueOf(aa.getDelay()) };
+			final String row[] = { aa.getTitle(), aa.getDetails(),
+					String.valueOf(aa.getDelay()) };
 			auto_actions_table_list.add(row);
 		}
-        l = new Label(composite, 0);
-        l.setText(Messages.Config_AutomatedActions);
-        l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
-        // TODO: remove
-//        automated_action_editor = new ActionTableEditor(composite,
-//                new String [] { Messages.Title, Messages.Detail },
-//                auto_actions_table_list, new OldEditAAItemDialog(parent.getShell()),
-//                new int[]{120,120});
-        automated_action_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Detail, Messages.Delay },
-                null, auto_actions_table_list, new EditAAItemDialog(parent.getShell()),
-                new int[]{120,110,10});
-        automated_action_editor.setToolTipText(Messages.Config_AutomatedActionsTT);
-        automated_action_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+		l = new Label(composite, 0);
+		l.setText(Messages.Config_AutomatedActions);
+		l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+		automated_action_editor = new StringTableEditor(composite,
+				new String[] { Messages.Title, Messages.Detail, Messages.Delay }, null, 
+				auto_actions_table_list, new EditAAItemDialog(parent.getShell()), 
+				new int[] { 120, 110, 10 });
+		automated_action_editor.setToolTipText(Messages.Config_AutomatedActionsTT);
+		automated_action_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true, layout.numColumns, 1));
 
-        // Item info line
-        l = new Label(composite, 0);
-        l.setText(NLS.bind(Messages.Config_ItemInfoFmt,
-                           Integer.toString(item.getID()),
-                           item.getConfigTime()));
-        l.setLayoutData(new GridData(0, 0, true, false, layout.numColumns, 1));
+		// Item info line
+		l = new Label(composite, 0);
+		l.setText(NLS.bind(Messages.Config_ItemInfoFmt,
+				Integer.toString(item.getID()), item.getConfigTime()));
+		l.setLayoutData(new GridData(0, 0, true, false, layout.numColumns, 1));
 
-//        sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-        return parent_composite;
-    }
+		sc.setContent(composite);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setShowFocusedControl(true);
+
+		return parent_composite;
+	}
 
     /** Convert array from GDC to plain strings for table editor
      *  @param gdc_list List of GDCDataStructure
@@ -460,12 +458,18 @@ public class ItemConfigDialog extends TitleAreaDialog
      */
 	@SuppressWarnings("nls")
 	private AADataStructure checkAAData(final String title, final String details, final String delay) {
+		int delayInt = 0; // default delay
+		if (delay != null && !delay.isEmpty()) delayInt = Integer.valueOf(delay);
 		// if neither title nor details are configured, ignore this entry
-		if ((title == null || title.equals("")) || (details == null || details.equals("")))
-			return null;
-		if (delay == null || delay.equals(""))
-			return new AADataStructure(title, details, 0);
-		return new AADataStructure(title, details, Integer.valueOf(delay));
+		if ((title == null || title.equals("")) && (details == null || details.equals("")))
+    		return null;
+		// if title is not configured, make it same as details
+		if (title == null || title.equals(""))
+			return new AADataStructure(details, details, delayInt);
+		// if details is not configured, make it same as title
+		if (details == null || details.equals(""))
+			return new AADataStructure(title, title, delayInt);
+		return new AADataStructure(title, details, delayInt);
 	}
     
 	/** @return Automated Actions */
