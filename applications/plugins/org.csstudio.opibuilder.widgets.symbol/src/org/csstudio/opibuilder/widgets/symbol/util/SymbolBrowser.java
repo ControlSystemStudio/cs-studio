@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.util;
 
 import java.util.ArrayList;
@@ -5,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.opibuilder.widgets.symbol.multistate.ControlMultiSymbolFigure;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -21,7 +29,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
-
+/**
+ * Symbol browser for {@link ControlMultiSymbolFigure}.
+ * Allow user to choose a different state (symbol)
+ * @author Fred Arnaud (Sopra Group)
+ *
+ */
 public class SymbolBrowser extends Composite {
 	
 	private Map<String, ImageData> images;
