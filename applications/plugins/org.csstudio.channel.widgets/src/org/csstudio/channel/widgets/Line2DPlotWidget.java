@@ -240,9 +240,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				}
 			}
 		}
-
-		final List<String> finalChannels = channelNames;
-		return finalChannels;
+		return Collections.unmodifiableList(channelNames);
 	}
 
 	@Override
@@ -255,7 +253,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				setYChannelNames(finalChannels);
 			}
 			setProperties(ChannelUtil.getPropertyNames(result.channels));
-		} else if (finalChannels == null) {
+		} else if (getChannelQuery().getQuery() != null
+				&& !getChannelQuery().getQuery().isEmpty()) {
 			// assumes the entered string to be an waveform pv
 			setyWaveformChannelName(getChannelQuery().getQuery());
 		}
@@ -263,7 +262,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 	private PVReader<Plot2DResult> pv;
 	// Y values
-	private Collection<String> yChannelNames;
+	private List<String> yChannelNames;
 	private String yWaveformChannelName;
 
 	private enum YAxis {
@@ -424,7 +423,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	public void setSortProperty(String sortProperty) {
 		if (sortProperty != null) {
 			this.sortProperty = sortProperty;
-			reconnect();
+			queryExecuted(result);
 		}
 	}
 
