@@ -29,7 +29,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
     @Override
     public Image getImage(final Object obj)
     {
-        // Indicate if this is a 'record' of known type...
+        // TODO Indicate if this is a 'record' of known type...
         //if (obj instanceof PVTreeItem && ((PVTreeItem)obj).getType() != null)
         //    return PlatformUI.getWorkbench().getSharedImages()
         //        .getImage(ISharedImages.IMG_OBJ_FILE);
@@ -60,7 +60,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
             return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
         case MINOR:
             return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
+        default:
+        	return null;
         }
-        return null;
     }
 }

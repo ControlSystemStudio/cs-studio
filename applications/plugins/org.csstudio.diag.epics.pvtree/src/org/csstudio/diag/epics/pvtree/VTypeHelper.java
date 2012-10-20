@@ -78,8 +78,8 @@ public class VTypeHelper
             return;
         if (alarm.getAlarmSeverity() == AlarmSeverity.NONE)
             return;
-        buf.append("\t").append(alarm.getAlarmSeverity());
-        buf.append("/").append(alarm.getAlarmStatus());
+        buf.append(" ").append(alarm.getAlarmSeverity());
+        buf.append("/").append(alarm.getAlarmName());
     }
 
     public static String formatValue(final VType value)
