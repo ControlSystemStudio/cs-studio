@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import org.csstudio.data.values.ISeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.epics.pvmanager.data.AlarmSeverity;
 
 /** Label provider for PVTreeItem entries.
  *  @author Kay Kasemir
@@ -49,15 +49,18 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         if (! (element instanceof PVTreeItem))
             return null;
 
-        final ISeverity severity = ((PVTreeItem)element).getSeverity();
+        final AlarmSeverity severity = ((PVTreeItem)element).getSeverity();
         if (severity == null)
             return null;
-        if (severity.isInvalid())
+        switch (severity)
+        {
+        case INVALID:
             return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
-        if (severity.isMajor())
+        case MAJOR:
             return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-        if (severity.isMinor())
+        case MINOR:
             return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
+        }
         return null;
     }
 }
