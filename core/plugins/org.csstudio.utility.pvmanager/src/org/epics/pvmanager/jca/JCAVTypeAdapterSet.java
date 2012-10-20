@@ -28,15 +28,10 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
     final static JCATypeAdapter DBRFloatToVFloat = new JCATypeAdapter(VFloat.class, DBR_TIME_Float.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
-<<<<<<< HEAD
             public VFloat createValue(DBR value, DBR metadata, JCAConnectionPayload connPayload) {
                 return new VFloatFromDbr((DBR_TIME_Float) value, (DBR_CTRL_Double) metadata, connPayload);
-=======
-            public VDouble createValue(DBR value, DBR metadata, boolean disconnected) {
-                return new VDoubleFromDbr((DBR_TIME_Double) value, (DBR_CTRL_Double) metadata, disconnected);
->>>>>>> master
             }
-        };
+       };
 
     // DBR_TIME_Double -> VDouble
     final static JCATypeAdapter DBRDoubleToVDouble = new JCATypeAdapter(VDouble.class, DBR_TIME_Double.TYPE, DBR_CTRL_Double.TYPE, false) {
