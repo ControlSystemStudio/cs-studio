@@ -28,8 +28,13 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
     final static JCATypeAdapter DBRFloatToVFloat = new JCATypeAdapter(VFloat.class, DBR_TIME_Float.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
+<<<<<<< HEAD
             public VFloat createValue(DBR value, DBR metadata, JCAConnectionPayload connPayload) {
                 return new VFloatFromDbr((DBR_TIME_Float) value, (DBR_CTRL_Double) metadata, connPayload);
+=======
+            public VDouble createValue(DBR value, DBR metadata, boolean disconnected) {
+                return new VDoubleFromDbr((DBR_TIME_Double) value, (DBR_CTRL_Double) metadata, disconnected);
+>>>>>>> master
             }
         };
 
@@ -46,8 +51,13 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
     final static JCATypeAdapter DBRByteToVByte = new JCATypeAdapter(VByte.class, DBR_TIME_Byte.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
+<<<<<<< HEAD
             public VByte createValue(DBR value, DBR metadata, JCAConnectionPayload connPayload) {
                 return new VByteFromDbr((DBR_TIME_Byte) value, (DBR_CTRL_Double) metadata, connPayload);
+=======
+            public VInt createValue(DBR value, DBR metadata, boolean disconnected) {
+                return new VIntFromDbr((DBR_TIME_Int) value, (DBR_CTRL_Double) metadata, disconnected);
+>>>>>>> master
             }
         };
     
@@ -55,8 +65,13 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
     final static JCATypeAdapter DBRShortToVShort = new JCATypeAdapter(VShort.class, DBR_TIME_Short.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
+<<<<<<< HEAD
             public VShort createValue(DBR value, DBR metadata, JCAConnectionPayload connPayload) {
                 return new VShortFromDbr((DBR_TIME_Short) value, (DBR_CTRL_Double) metadata, connPayload);
+=======
+            public VInt createValue(DBR value, DBR metadata, boolean disconnected) {
+                return new VIntFromDbr((DBR_TIME_Int) value, (DBR_CTRL_Double) metadata, disconnected);
+>>>>>>> master
             }
         };
 
