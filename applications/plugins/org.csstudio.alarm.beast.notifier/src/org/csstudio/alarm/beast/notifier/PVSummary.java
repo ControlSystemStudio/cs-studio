@@ -1,9 +1,17 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.data.values.ITimestamp;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -18,15 +26,17 @@ public class PVSummary {
 	private String current_message, message;
 	private String value;
 	private String timestamp;
-
+	
+	private char prefix;
 	boolean isNLSMessage = false;
 	private static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
 
 	/** Pattern for description prefixes */
-    final protected static Pattern PrefixPattern = Pattern.compile("^[\\*\\!]*(.*)");
+    final private static Pattern PrefixPattern = Pattern.compile("^(\\*|\\!)(.*)");
 
 	public static PVSummary buildFromSnapshot(PVSnapshot pv)
 	{
+		char prefix = '-';
 		String description = pv.getDescription().trim();
 		boolean isNLSMessage = false;
 		Matcher NLSMatcher = NLSPattern.matcher(description);
@@ -36,7 +46,8 @@ public class PVSummary {
 		// Clean description
 		Matcher prefixMatcher = PrefixPattern.matcher(description);
 		if (prefixMatcher.matches()) {
-			description = prefixMatcher.group(1).trim();
+			prefix = prefixMatcher.group(1).charAt(0);
+			description = prefixMatcher.group(2).trim();
 		}
 		String name = pv.getName();
 
@@ -46,10 +57,11 @@ public class PVSummary {
 		String message = pv.getMessage();
 		String value = pv.getValue();
 
-		String timestamp = pv.getTimestamp() == null ? "(no time)" : pv.getTimestamp().toString();
+		String timestamp = pv.getTimestamp() == null ? "(no time)" : pv
+				.getTimestamp().format(ITimestamp.Format.DateTimeSeconds);
 
 		return new PVSummary(description, name, current_severity, severity,
-				current_message, message, value, timestamp, isNLSMessage);
+				current_message, message, value, timestamp, prefix, isNLSMessage);
 	}
 
 	public PVSummary(String description,
@@ -60,6 +72,7 @@ public class PVSummary {
 			String message,
 			String value,
 			String timestamp,
+			char prefix,
 			boolean isNLSMessage)
 	{
 		this.description = description;
@@ -71,45 +84,59 @@ public class PVSummary {
 		this.value = value;
 		this.timestamp = timestamp;
 		this.isNLSMessage = isNLSMessage;
+		this.prefix = prefix;
+		if (isNLSMessage) {
+			String[] bindings = { current_severity, value };
+			this.description = NLS.bind(description, bindings);
+		}
 	}
 
 	public String getSummary()
 	{
-		if (isNLSMessage) {
-			String[] bindings = { current_severity, value };
-			return NLS.bind(description, bindings);
-		}
+		if (prefix == '*') return description;
 		StringBuilder builder = new StringBuilder();
 		builder.append(current_severity);
 		if (current_severity.equals(SeverityLevel.MINOR_ACK)
 				|| current_severity.equals(SeverityLevel.MAJOR_ACK))
-			builder.append(" alarm ACK - ");
-		else builder.append(" alarm - ");
-		builder.append(name);
-		if (description != null && !"".equals(description)) {
-			builder.append(": ");
-			builder.append(description);
-		}
+			builder.append(" alarm ACK: ");
+		else builder.append(" alarm: ");
+		builder.append(description);
 		return builder.toString();
 	}
 
 	public String getDetails()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("Timestamp: ");
+		builder.append("PV: ");
+		builder.append(name);
+		builder.append(" - ");
+		
+		builder.append("Description: ");
+		builder.append(getSummary());
+		builder.append(" - ");
+		
+		builder.append("Alarm Time: ");
 		builder.append(timestamp);
 		builder.append(" - ");
-		builder.append("PV value: ");
-		builder.append(value);
+		
+		builder.append("Current Severity: ");
+		builder.append(current_severity);
 		builder.append(" - ");
-		builder.append("PV status: ");
+		
+		builder.append("Current Status: ");
 		builder.append(current_message);
-		builder.append("\n");
-		builder.append("SERVER severity: ");
+		builder.append(" - ");
+		
+		builder.append("Alarm Severity: ");
 		builder.append(severity);
 		builder.append(" - ");
-		builder.append("SERVER status: ");
+		
+		builder.append("Alarm Status: ");
 		builder.append(message);
+		builder.append(" - ");
+		
+		builder.append("Alarm Value: ");
+		builder.append(value);
 		return builder.toString();
 	}
 

@@ -31,10 +31,18 @@
    <extension point="org.csstudio.alarm.beast.notifier">
       <action scheme="mailto" 
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedEmailAction"/>
-      <action scheme="smsto" 
+      <action scheme="sms" 
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedSmsAction"/>
       <action scheme="cmd" 
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedCommandAction"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/firststeps.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
    </extension>
 	
 </plugin>

@@ -18,6 +18,9 @@ export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
 export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/site-1.6.18"
 export ECLIPSE=$ECLIPSE_BASE/eclipse
 
+export JRE_Macosx64=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/jre
+export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
+
 # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
 export BUILDDIR=/Kram/build
 

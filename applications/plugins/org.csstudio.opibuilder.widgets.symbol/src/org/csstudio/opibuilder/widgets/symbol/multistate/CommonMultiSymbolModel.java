@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import java.util.ArrayList;
@@ -10,12 +17,15 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathPropertyWithFilter;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.bool.MonitorBoolSymbolModel;
+import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
+import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
 import org.eclipse.core.runtime.IPath;
@@ -25,8 +35,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines a common model for Multistate Symbol Image widget.
- * 
- * @author SOPRA Group
+ * @author Fred Arnaud (Sopra Group)
  * 
  */
 public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
@@ -73,15 +82,11 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 	 */
 	public static final String PROP_FLIP_VERTICAL = "flip_vertical";
 	/**
-	 * Image disposition (matrix)
-	 * Image is split in 4 and each corner is numbered
-	 * 1 = top right corner
-	 * 2 = bottom right corner
-	 * 3 = bottom left corner
-	 * 4 = top left corner
-	 * "1234" is the default disposition
+	 * Image disposition (permutation matrix)
 	 */
-	public static final String PROP_DISPOSITION = "image_disposition";
+	public static final String PERMUTATION_MATRIX = "permutation_matrix";
+	// Obsolete property
+	public static final String IMAGE_DISPOSITION = "image_disposition"; 
 	/**
 	 * Images values of the symbol widget.
 	 */
@@ -139,17 +144,22 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 //		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
 		
-		addProperty(new StringProperty(PROP_DISPOSITION, "Image Disposition",
+		addProperty(new MatrixProperty(PERMUTATION_MATRIX,
+				"Permutation Matrix", WidgetPropertyCategory.Image,
+				PermutationMatrix.generateIdentityMatrix().getMatrix()));
+		setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
+		// Obsolete property
+		addProperty(new StringProperty(IMAGE_DISPOSITION, "Image Disposition",
 				WidgetPropertyCategory.Image, "1234"));
-		setPropertyVisibleAndSavable(PROP_DISPOSITION, false, true);
+		setPropertyVisibleAndSavable(IMAGE_DISPOSITION, false, false);
 
 		// Display properties
 		addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
 				"Symbol Image", WidgetPropertyCategory.Display, new Path(""),
 				IMAGE_EXTENSIONS));
-		addProperty(new ColorProperty(PROP_ON_COLOR, "On Color",
+		addProperty(new ColorProperty(PROP_ON_COLOR, "Non-Zero Color",
 				WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
-		addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
+		addProperty(new ColorProperty(PROP_OFF_COLOR, "Zero Color",
 				WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
 		addProperty(new BooleanProperty(PROP_SHOW_SYMBOL_LABEL, "Show Symbol Label",
 				WidgetPropertyCategory.Display,false));
@@ -160,8 +170,8 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 				PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, new ArrayList<String>()));
 		addProperty(new BooleanProperty(PROP_ITEMS_FROM_PV, "Items From PV",
 				WidgetPropertyCategory.Behavior, true));
-		setPropertyVisibleAndSavable(PROP_ITEMS, false, true);
-		setPropertyVisibleAndSavable(PROP_ITEMS_FROM_PV, false, true);
+//		setPropertyVisibleAndSavable(PROP_ITEMS, false, true);
+//		setPropertyVisibleAndSavable(PROP_ITEMS_FROM_PV, false, true);
 	}
 
 	/**
@@ -266,10 +276,11 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 	/**
 	 * Get the current disposition of the image.
 	 * 
-	 * @return The disposition matrix
+	 * @return The permutation matrix
 	 */
-	public String getDisposition() {
-		return (String) getProperty(PROP_DISPOSITION).getPropertyValue();
+	public PermutationMatrix getPermutationMatrix() {
+		return new PermutationMatrix((double[][]) getProperty(
+				PERMUTATION_MATRIX).getPropertyValue());
 	}
 
 	@Override
@@ -339,6 +350,18 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
 	public boolean isItemsFromPV() {
 		return (Boolean) getPropertyValue(PROP_ITEMS_FROM_PV);
+	}
+	
+	@Override
+	public void setPropertyValue(Object id, Object value) {
+		// Override obsolete properties
+		if (id != null && id instanceof String) {
+			if (((String) id).equals(IMAGE_DISPOSITION)) {
+				id = PERMUTATION_MATRIX;
+				value = ImagePermuter.getMatrix((String) value);
+			}
+		}
+		super.setPropertyValue(id, value);
 	}
 
 }

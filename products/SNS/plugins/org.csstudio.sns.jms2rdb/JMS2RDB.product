@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMS-to-RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" version="3.1.1" useFeatures="false" includeLaunchers="true">
+<product name="JMS-to-RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" version="3.2.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

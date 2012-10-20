@@ -1,12 +1,20 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.notifier.model.INotificationAction;
+import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
 
 /**
  * Automated actions work queue.
@@ -16,47 +24,65 @@ import org.csstudio.alarm.beast.notifier.model.INotificationAction;
  */
 public class WorkQueue {
 	
-	/** Hash of all Item in config_tree that maps Action ID to INotificationAction[] */
-	private HashMap<String, HashMap<ActionID, INotificationAction>> pending_actions = new HashMap<String, HashMap<ActionID, INotificationAction>>();
-	
-	/** Overflow threshold */
-	private final int threshold;
+	/** Overflow timer_threshold */
+	private final int timer_threshold;
+	private final int thread_threshold;
 	
 	/** Number of running actions */
-	private int count = 0;
+	private int count_pending = 0;
+	private int count_thread = 0;
 	
 	/** Minimum allowed action priority if overflow occurs */
 	private final EActionPriority overflow_level = EActionPriority.MAJOR;
 	private boolean cleaned = false;
 	
-	public WorkQueue(int threshold) {
-		this.threshold = threshold;
+	/** Automated actions scheduler */
+	private Timer timer;
+	
+	private Map<ActionID, ExecuteActionTask> scheduledActions;
+	
+	public WorkQueue(final int timer_threshold, final int thread_threshold) {
+		this.timer_threshold = timer_threshold;
+		this.thread_threshold = thread_threshold;
+		timer = new Timer();
+		scheduledActions = new ConcurrentHashMap<ActionID, ExecuteActionTask>();
 	}
 	
 	/** @return Number of currently queued actions on the work queue */
-	public int size() {
-		return count;
+	public int CountPendingActions() {
+		return count_pending;
 	}
 	
-	/** @return {@link ActionID} for the specified {@link AlarmTreeItem} and {@link AADataStructure} */
-	public static ActionID getActionID(AlarmTreeItem item, AADataStructure aa) {
-		return new ActionID(item.getPathName(), aa.getTitle());
+	/** @return Number of currently running threads on the work queue */
+	public int countRunningThreads() {
+		return count_thread;
+	}
+	
+	public synchronized void incrementPendingActions() {
+		count_pending++;
+	}
+	public synchronized void incrementRunningThreads() {
+		count_thread++;
+		if (count_thread > thread_threshold) {
+			Activator.getLogger().log(Level.SEVERE,
+					"Too many threads running: " + count_thread + " !");
+		}
+	}
+	public synchronized void decrementPendingActions() {
+		count_pending--;
+	}
+	public synchronized void decrementRunningThreads() {
+		count_thread--;
 	}
 	
 	/** @return Currently running automated action for the specified {@link AlarmTreeItem} and {@link AADataStructure} */
-	public INotificationAction findAction(AlarmTreeItem item, AADataStructure aa) {
-		synchronized (pending_actions) 
-		{
-			HashMap<ActionID, INotificationAction> actions = pending_actions.get(item.getName());
-			if (actions == null) return null;
-			ActionID naID = getActionID(item, aa);
-			return actions.get(naID);
-		}
+	public ExecuteActionTask findAction(AlarmTreeItem item, AADataStructure aa) {
+		ActionID naID = NotifierUtils.getActionID(item, aa);
+		return scheduledActions.get(naID);
 	}
 	
 	/** Add an automated action to the work queue and runs it */
-	public void add(final INotificationAction action) {
-		ItemInfo item = action.getItem();
+	public void add(final ExecuteActionTask newTask) {
 		if (isOverflooded()) {
 			if (!cleaned) {
 				Activator.getLogger().log(Level.WARNING,
@@ -67,68 +93,59 @@ public class WorkQueue {
 		} else {
 			cleaned = false;
 		}
-		synchronized (pending_actions) 
-		{
-			HashMap<ActionID, INotificationAction> actions = pending_actions.get(item.getName());
-			if (actions == null) {
-				actions = new HashMap<ActionID, INotificationAction>();
-				pending_actions.put(item.getName(), actions);
+		ActionID naID = newTask.getID();
+		if ((isOverflooded()
+				&& newTask.getPriority().compareTo(overflow_level) >= 0 
+				&& !newTask.getItem().isPV()) 
+				|| !isOverflooded()) {
+			// TODO: action already scheduled ? => remove
+			if (scheduledActions.get(naID) != null) { // replace
+				ExecuteActionTask oldTask = scheduledActions.get(naID);
+				oldTask.cancel();
+				scheduledActions.put(naID, newTask);
+			} else {
+				scheduledActions.put(naID, newTask);
+				incrementPendingActions();
 			}
-			ActionID naID = action.getID();
-			if ((isOverflooded()
-					&& action.getActionPriority().compareTo(overflow_level) >= 0 && !action
-						.isPV()) || !isOverflooded()) {
-				if (actions.put(naID, action) == null) {
-					count++;
-				}
-				action.start();
-			}
+			timer.schedule(newTask, newTask.getDelay() * 1000);
+			Activator.getLogger().log(Level.INFO,
+					newTask.getInfos() + " => SCHEDULED: " + newTask.getDelay() + "s");
 		}
 	}
 
 	/** Remove an automated action */
-	public void remove(final INotificationAction action) {
-		String name = action.getItem().getName();
-		synchronized (pending_actions) {
-			if (pending_actions.get(name) == null) return;
-			if (pending_actions.get(name).remove(action.getID()) != null) {
-				count--;
-			}
+	public void remove(final ExecuteActionTask task) {
+		if (scheduledActions.remove(task.getID()) != null) {
+			decrementPendingActions();
 		}
 	}
 	
 	public boolean isOverflooded() {
-		return count >= threshold;
+		return count_pending >= timer_threshold;
 	}
 	
 	/** Interrupt all automated actions */
 	public void interruptAll() {
-		synchronized (pending_actions) {
-			for (Map<ActionID, INotificationAction> actions : pending_actions.values()) {
-				for (INotificationAction action : actions.values()) {
-					interrupt(action);
-				}
+		synchronized (scheduledActions) {
+			for (ExecuteActionTask task : scheduledActions.values()) {
+				interrupt(task);
 			}
 		}
 	}
-
+	
 	/** Interrupt an automated action */
-	public void interrupt(INotificationAction action) {
-		action.cancel();
+	public void interrupt(ExecuteActionTask task) {
+		task.cancel();
 	}
 
 	/** Flush the work queue */
 	public void flush() {
-		synchronized (pending_actions) {
-			for (Map<ActionID, INotificationAction> actions : pending_actions.values()) {
-				for (INotificationAction action : actions.values()) {
-					// cancel all non-system & low priority actions, force others.
-					if (action.getActionPriority().compareTo(overflow_level) < 0 || action.isPV()) {
-						interrupt(action);
-					} else {
-						action.forceExec();
-					}
-				}
+		for (ExecuteActionTask task : scheduledActions.values()) {
+			interrupt(task);
+			// force execution of Components & PV with high priority
+			if ((task.getPriority().compareTo(overflow_level) >= 0 && task.getItem().isPV()) 
+					|| !task.getItem().isPV()) {
+				task.execute();
 			}
 		}
 	}
@@ -136,11 +153,12 @@ public class WorkQueue {
 	/** Dump to stdout */
 	public void dump() {
 		System.out.println("== Work Queue Snapshot ==");
-		System.out.println("Work work_queue size: " + size());
-		for (Map<ActionID, INotificationAction> actions : pending_actions.values()) {
-			for (INotificationAction action : actions.values()) {
-				System.out.println(action);
-			}
+		System.out.println("Work work_queue size:");
+		System.out.println(">>>> Pending actions: " + count_pending);
+		System.out.println(">>>> Running threads: " + count_thread);
+		System.out.println("Pending actions list:");
+		for (ExecuteActionTask scheduledAction : scheduledActions.values()) {
+			System.out.println(scheduledAction.getScheduledAction());
 		}
 		System.out.println("== Work Queue Snapshot ==");
 	}

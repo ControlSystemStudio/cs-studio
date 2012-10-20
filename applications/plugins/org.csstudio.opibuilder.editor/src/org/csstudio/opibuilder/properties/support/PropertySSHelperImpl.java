@@ -124,6 +124,13 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 		return new FilePathPropertyDescriptorWithFilter(prop_id, description, widgetModel, filters);
 	}
 
+	@Override
+	public PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
+			String description) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }

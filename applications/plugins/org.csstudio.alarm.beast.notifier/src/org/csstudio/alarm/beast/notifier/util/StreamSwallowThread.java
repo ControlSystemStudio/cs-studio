@@ -20,30 +20,23 @@ import java.io.InputStream;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class StreamSwallowThread extends Thread
-{
-    final private InputStream stream;
+public class StreamSwallowThread extends Thread {
+	final private InputStream stream;
 
-    public StreamSwallowThread(final InputStream stream)
-    {
-        super("StreamSwallower");
-        this.stream = stream;
-    }
-    
-    @Override
-    public void run()
-    {
-        try
-        {
-            final byte buf[] = new byte[100];
-            while (stream.read(buf) >= 0)
-            {
-                // Ignore bytes
-            }
-        }
-        catch (IOException e)
-        {
-            // Ignore errors
-        }
-    }
+	public StreamSwallowThread(final InputStream stream) {
+		super("StreamSwallower");
+		this.stream = stream;
+	}
+
+	@Override
+	public void run() {
+		try {
+			final byte buf[] = new byte[100];
+			while (stream.read(buf) >= 0) {
+				// Ignore bytes
+			}
+		} catch (IOException e) {
+			// Ignore errors
+		}
+	}
 }
