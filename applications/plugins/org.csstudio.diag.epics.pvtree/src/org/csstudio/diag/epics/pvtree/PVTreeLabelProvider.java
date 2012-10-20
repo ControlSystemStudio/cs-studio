@@ -7,34 +7,78 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.epics.pvmanager.data.AlarmSeverity;
 
 /** Label provider for PVTreeItem entries.
  *  @author Kay Kasemir
  */
-class PVTreeLabelProvider extends LabelProvider implements IColorProvider
+class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
 {
+	final private Map<AlarmSeverity, Image> images = new HashMap<>();
+	
+	public PVTreeLabelProvider(final Control widget)
+	{
+		final Display display = widget.getDisplay();
+		images.put(AlarmSeverity.NONE,
+			createImage(display, display.getSystemColor(SWT.COLOR_GREEN)));
+		images.put(AlarmSeverity.MINOR,
+				createImage(display, display.getSystemColor(SWT.COLOR_YELLOW)));
+		images.put(AlarmSeverity.MAJOR,
+				createImage(display, display.getSystemColor(SWT.COLOR_RED)));
+		images.put(AlarmSeverity.INVALID,
+				createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
+		images.put(AlarmSeverity.UNDEFINED,
+				createImage(display, display.getSystemColor(SWT.COLOR_GRAY)));
+		
+		// Arrange for image disposal
+		widget.addDisposeListener(this);
+	}
+
+	/** Dispose images */
+	@Override
+	public void widgetDisposed(final DisposeEvent e)
+	{
+		for (Image image : images.values())
+			image.dispose();
+		images.clear();
+	}
+
+	private Image createImage(final Display display, final Color color)
+	{
+		final Image image = new Image(display, 16, 16);
+		final GC gc = new GC(image);
+		gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+		gc.fillRectangle(0, 0, 16, 16);
+		gc.setBackground(color);
+		gc.fillOval(0, 0, 16, 16);
+		gc.dispose();
+		return image;
+	}
+	
     @Override
-    public String getText(final Object obj)
+    public String getText(final Object element)
     {
-        return obj.toString();
+        return element.toString();
     }
 
     @Override
-    public Image getImage(final Object obj)
+    public Image getImage(final Object element)
     {
-        // TODO Indicate if this is a 'record' of known type...
-        //if (obj instanceof PVTreeItem && ((PVTreeItem)obj).getType() != null)
-        //    return PlatformUI.getWorkbench().getSharedImages()
-        //        .getImage(ISharedImages.IMG_OBJ_FILE);
-        // or something else (unknown)
-        return null;
+        final AlarmSeverity severity = getSeverity(element);
+        return images.get(severity);
     }
 
     @Override
@@ -46,10 +90,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
     @Override
     public Color getForeground(final Object element)
     {
-        if (! (element instanceof PVTreeItem))
-            return null;
-
-        final AlarmSeverity severity = ((PVTreeItem)element).getSeverity();
+        final AlarmSeverity severity = getSeverity(element);
         if (severity == null)
             return null;
         switch (severity)
@@ -64,4 +105,14 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         	return null;
         }
     }
+
+    /** @param element Tree element, presumably {@link PVTreeItem}
+     *  @return {@link AlarmSeverity} of that tree element
+     */
+	private AlarmSeverity getSeverity(final Object element)
+	{
+		if (element instanceof PVTreeItem)
+			return ((PVTreeItem)element).getSeverity();
+		return null;
+	}
 }
