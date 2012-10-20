@@ -381,6 +381,11 @@ class PVTreeItem
             return;
         }
         final String field = links_to_read.remove(0);
+        // If there is a value in the link, display this
+        // (and sub-items)
+        // TODO: This is not 100% correct. If a link happens to contain
+        // an empty string right now, it will not be included in the tree.
+        // But the value could change later; we won't catch that...
         if (link_value.length() > 0)
         {
             new PVTreeItem(model, PVTreeItem.this, field, link_value);
