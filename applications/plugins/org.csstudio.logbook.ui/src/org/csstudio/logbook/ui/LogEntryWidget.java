@@ -486,6 +486,8 @@ public class LogEntryWidget extends Composite {
 				logEntryChangeset = new LogEntryChangeset(getLogEntry());
 				imageStackWidget.setImageFilenames(Collections
 						.<String> emptyList());
+				// TODO temporary fix, in future releases the attachments will be
+				// listed with the logEntry itself
 				if (logEntry.getId() != null) {
 					Collection<Attachment> attachments = logbookClient
 							.listAttachments(logEntry.getId());
@@ -494,9 +496,10 @@ public class LogEntryWidget extends Composite {
 						for (Attachment attachment : attachments) {
 							File file = new File(attachment.getFileName());
 							try {
-								InputStream ip = logbookClient.getAttachment(
-										logEntry.getId(),
-										attachment.getFileName());
+//								InputStream ip = logbookClient.getAttachment(
+//										logEntry.getId(),
+//										attachment.getFileName());
+								InputStream ip = attachment.getInputStream();
 								OutputStream out = new FileOutputStream(file);
 								// Transfer bytes from in to out
 								byte[] buf = new byte[1024];
@@ -660,8 +663,6 @@ public class LogEntryWidget extends Composite {
 			java.util.List<String> tagNames = LogEntryUtil
 					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
-			// TODO temporary fix, in future releases the attachments will be
-			// listed with the logEntry itself
 		} else {
 			text.setText("");
 			textOwner.setText("");

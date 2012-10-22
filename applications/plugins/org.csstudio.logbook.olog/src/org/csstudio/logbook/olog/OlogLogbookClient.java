@@ -28,6 +28,7 @@ import org.csstudio.logbook.Tag;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
+import edu.msu.nscl.olog.api.AttachmentBuilder;
 import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
@@ -88,7 +89,7 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Collection<Attachment> listAttachments(Object logId) {
+	public Collection<Attachment> listAttachments(final Object logId) {
 		return Collections.unmodifiableCollection(Collections2.transform(
 				reader.listAttachments((Long) logId),
 				new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
@@ -96,7 +97,9 @@ public class OlogLogbookClient implements LogbookClient {
 					@Override
 					public Attachment apply(
 							edu.msu.nscl.olog.api.Attachment input) {
-						return new OlogAttachment(input);
+						// TODO (shroffk) n/w call
+						return new OlogAttachment(input, getAttachment(logId,
+								input.getFileName()));
 					}
 				}));
 	}
@@ -109,6 +112,14 @@ public class OlogLogbookClient implements LogbookClient {
 	@Override
 	public LogEntry findLogEntry(Object logId) throws Exception {
 		Log log = reader.getLog((Long) logId);
+		if (log != null) {
+			LogBuilder logBuilder = LogBuilder.log(log);
+			for (edu.msu.nscl.olog.api.Attachment attachments : reader
+					.listAttachments(log.getId())) {
+				logBuilder.attach(AttachmentBuilder.attachment(attachments));
+			}
+			return new OlogEntry(logBuilder.build());
+		}
 		return new OlogEntry(log);
 	}
 
@@ -125,7 +136,17 @@ public class OlogLogbookClient implements LogbookClient {
 
 	@Override
 	public LogEntry createLogEntry(LogEntry logEntry) throws IOException {
-		return new OlogEntry(writer.set(LogBuilder(logEntry)));
+		OlogEntry ologEntry = new OlogEntry(writer.set(LogBuilder(logEntry)));
+		// creates the log entry and then adds all the attachments
+		// TODO (shroffk) multiple network calls, one for each attachment, need
+		// to improve
+		for (Attachment attachment : logEntry.getAttachment()) {
+			if (attachment.getInputStream() != null) {
+				addAttachment(ologEntry.getId(), attachment.getInputStream(),
+						attachment.getFileName());
+			}
+		}
+		return ologEntry;
 	}
 
 	@Override
@@ -139,7 +160,7 @@ public class OlogLogbookClient implements LogbookClient {
 
 		try {
 			File file = new File(name);
-	//		file = File.createTempFile(name, null);
+			// file = File.createTempFile(name, null);
 			// write the inputStream to a FileOutputStream
 			OutputStream out = new FileOutputStream(file);
 			int read = 0;
@@ -152,11 +173,12 @@ public class OlogLogbookClient implements LogbookClient {
 			out.flush();
 			out.close();
 			edu.msu.nscl.olog.api.Attachment response;
-			if (file != null){
+			if (file != null) {
 				response = writer.add(file, (Long) logId);
 				file.delete();
-				return new OlogAttachment(response);
-				}
+				return new OlogAttachment(response, getAttachment(logId,
+						response.getFileName()));
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -276,9 +298,17 @@ public class OlogLogbookClient implements LogbookClient {
 	private class OlogAttachment implements Attachment {
 
 		private final edu.msu.nscl.olog.api.Attachment attachment;
+		private final InputStream inputStream;
+
+		public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
+				InputStream inputStream) {
+			this.attachment = attachment;
+			this.inputStream = inputStream;
+		}
 
 		public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment) {
 			this.attachment = attachment;
+			this.inputStream = null;
 		}
 
 		@Override
@@ -299,6 +329,11 @@ public class OlogLogbookClient implements LogbookClient {
 		@Override
 		public Long getFileSize() {
 			return this.attachment.getFileSize();
+		}
+
+		@Override
+		public InputStream getInputStream() {
+			return this.inputStream;
 		}
 
 	}

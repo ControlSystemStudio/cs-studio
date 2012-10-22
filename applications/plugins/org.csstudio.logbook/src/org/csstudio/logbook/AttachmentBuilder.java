@@ -3,13 +3,19 @@
  */
 package org.csstudio.logbook;
 
+import java.io.InputStream;
+
 /**
+ * 
+ * A builder for a default implementation of the Attachment interface.
+ * 
  * @author shroffk
  * 
  */
 public class AttachmentBuilder {
 
 	// required
+	private InputStream inputStream;
 	private String fileName;
 	private String contentType;
 	private Boolean thumbnail;
@@ -65,6 +71,11 @@ public class AttachmentBuilder {
 		this.thumbnail = thumbnail;
 		return this;
 	}
+	
+	public AttachmentBuilder inputStream(InputStream inputStream){
+		this.inputStream = inputStream;
+		return this;
+	}
 
 	/**
 	 * Build an object implementing the Logbook.
@@ -72,7 +83,7 @@ public class AttachmentBuilder {
 	 * @return
 	 */
 	Attachment build() {
-		return new AttachmentImpl(fileName, contentType, thumbnail, fileSize);
+		return new AttachmentImpl(inputStream, fileName, contentType, thumbnail, fileSize);
 	}
 
 	/**
@@ -87,14 +98,21 @@ public class AttachmentBuilder {
 		private String contentType;
 		private Boolean thumbnail;
 		private Long fileSize;
+		private InputStream inputStream;
 
-		public AttachmentImpl(String fileName, String contentType,
+		public AttachmentImpl(InputStream inputStream, String fileName, String contentType,
 				Boolean thumbnail, Long fileSize) {
 			super();
+			this.inputStream = inputStream;
 			this.fileName = fileName;
 			this.contentType = contentType;
 			this.thumbnail = thumbnail;
 			this.fileSize = fileSize;
+		}		
+
+		@Override
+		public InputStream getInputStream() {
+			return inputStream;
 		}
 
 		@Override

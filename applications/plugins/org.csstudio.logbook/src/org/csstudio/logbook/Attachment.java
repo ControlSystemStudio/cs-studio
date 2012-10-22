@@ -3,15 +3,17 @@
  */
 package org.csstudio.logbook;
 
+import java.io.InputStream;
+
 /**
- * 
- * A builder for a default implementation of the Attachment interface.
  * 
  * @author shroffk
  * 
  */
 public interface Attachment {
 
+	public InputStream getInputStream();
+	
 	public String getFileName();
 
 	public String getContentType();
