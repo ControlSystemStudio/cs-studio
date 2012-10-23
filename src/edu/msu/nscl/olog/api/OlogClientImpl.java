@@ -778,6 +778,7 @@ public class OlogClientImpl implements OlogClient {
 		form.bodyPart(new FileDataBodyPart("file", local));
 		XmlAttachment xmlAttachment = service.path("attachments")
 				.path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
+				.type(MediaType.MULTIPART_FORM_DATA_TYPE)
 				.accept(MediaType.APPLICATION_XML)
 				.post(XmlAttachment.class, form);
 
