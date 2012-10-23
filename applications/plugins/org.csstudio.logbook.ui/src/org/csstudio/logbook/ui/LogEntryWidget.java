@@ -8,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import java.util.Map.Entry;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
+import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
@@ -230,11 +232,6 @@ public class LogEntryWidget extends Composite {
 					saveLogEntryChangeset();
 					LogEntry logEntry = logbookClient
 							.createLogEntry(logEntryChangeset.getLogEntry());
-					for (String fileName : imageStackWidget.getImageFilenames()) {
-						File file = new File(fileName);
-						logbookClient.addAttachment(logEntry.getId(),
-								new FileInputStream(file), file.getName());
-					}
 					setEditable(false);
 					setLogEntry(logEntry);
 				} catch (Exception e1) {
@@ -251,7 +248,12 @@ public class LogEntryWidget extends Composite {
 		btnSave.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				saveLogEntryChangeset();
+				try {
+					saveLogEntryChangeset();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		FormData fd_btnSave = new FormData();
@@ -486,7 +488,8 @@ public class LogEntryWidget extends Composite {
 				logEntryChangeset = new LogEntryChangeset(getLogEntry());
 				imageStackWidget.setImageFilenames(Collections
 						.<String> emptyList());
-				// TODO temporary fix, in future releases the attachments will be
+				// TODO temporary fix, in future releases the attachments will
+				// be
 				// listed with the logEntry itself
 				if (logEntry.getId() != null) {
 					Collection<Attachment> attachments = logbookClient
@@ -496,9 +499,6 @@ public class LogEntryWidget extends Composite {
 						for (Attachment attachment : attachments) {
 							File file = new File(attachment.getFileName());
 							try {
-//								InputStream ip = logbookClient.getAttachment(
-//										logEntry.getId(),
-//										attachment.getFileName());
 								InputStream ip = attachment.getInputStream();
 								OutputStream out = new FileOutputStream(file);
 								// Transfer bytes from in to out
@@ -587,21 +587,27 @@ public class LogEntryWidget extends Composite {
 
 	}
 
-	private void saveLogEntryChangeset() {
+	private void saveLogEntryChangeset() throws Exception {
+		LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(getLogEntryChangeset().getLogEntry())
+				.setText(text.getText()).owner(textOwner.getText());
 		Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
 		for (String tagName : tagList.getItems()) {
 			newTags.add(TagBuilder.tag(tagName));
 		}
+		logEntryBuilder.setTags(newTags);
 		Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
 		for (String logbookName : logbookList.getItems()) {
 			newLogbooks.add(LogbookBuilder.logbook(logbookName));
 		}
+		logEntryBuilder.setLogbooks(newLogbooks);
+		for (String attachment : imageStackWidget.getImageFilenames()) {
+			File file = new File(attachment);
+			logEntryBuilder.attach(AttachmentBuilder.attachment(file.getName())
+					.inputStream(new FileInputStream(file)));
+		}
 		imageFileNames = imageStackWidget.getImageFilenames();
-
-		getLogEntryChangeset().setLogEntryBuilder(
-				LogEntryBuilder.logEntry(getLogEntryChangeset().getLogEntry())
-						.setText(text.getText()).owner(textOwner.getText())
-						.setLogbooks(newLogbooks).setTags(newTags));
+		getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
 	}
 
 	private void updateUI() {
@@ -743,11 +749,4 @@ public class LogEntryWidget extends Composite {
 	public LogEntryChangeset getLogEntryChangeset() {
 		return this.logEntryChangeset;
 	}
-
-	// public void setLogEntryChangeset(LogEntryChangeset logEntryChangeset) {
-	// LogEntryChangeset oldValue = this.logEntryChangeset;
-	// this.logEntryChangeset = logEntryChangeset;
-	// changeSupport.firePropertyChange("logEntryChangeset", oldValue,
-	// this.logEntryChangeset);
-	// }
 }
