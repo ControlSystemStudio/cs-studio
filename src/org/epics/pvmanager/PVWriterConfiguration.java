@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.epics.pvmanager.expression.WriteExpressionImpl;
 import org.epics.pvmanager.expression.WriteExpression;
 import java.util.concurrent.Executor;
@@ -45,9 +47,22 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
     
     private WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
+    private List<PVWriterListener> writeListeners = new ArrayList<PVWriterListener>();
 
     PVWriterConfiguration(WriteExpression<T> writeExpression) {
         this.writeExpression = writeExpression;
+    }
+    
+    /**
+     * 
+     * @param listeners
+     * @return 
+     */
+    public PVWriterConfiguration<T> listeners(PVWriterListener... listeners) {
+        for (PVWriterListener pVWriterListener : listeners) {
+            writeListeners.add(pVWriterListener);
+        }
+        return this;
     }
 
     /**
@@ -75,6 +90,9 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
+        for (PVWriterListener pVWriterListener : writeListeners) {
+            pvWriter.addPVWriterListener(pVWriterListener);
+        }
         WriteBuffer writeBuffer = writeExpression.createWriteBuffer();
         if (exceptionHandler == null) {
             exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
