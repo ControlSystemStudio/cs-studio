@@ -67,6 +67,9 @@ import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
+import org.csstudio.ui.util.widgets.ErrorBar;
 
 /**
  * @author shroffk
@@ -120,6 +123,8 @@ public class LogEntryWidget extends Composite {
 	private Button btnCSSWindow;
 	private Label lblTags;
 	private Label label_horizontal;
+	private Composite composite;
+	private ErrorBar errorBar;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -131,23 +136,35 @@ public class LogEntryWidget extends Composite {
 
 	public LogEntryWidget(final Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FormLayout());
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 2;
+		gridLayout.marginWidth = 2;
+		gridLayout.marginHeight = 2;
+		gridLayout.horizontalSpacing = 2;
+		setLayout(gridLayout);
 
-		Label lblDate = new Label(this, SWT.NONE);
+		errorBar = new ErrorBar(this, SWT.NONE);
+
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
+		composite.setLayout(new FormLayout());
+
+		Label lblDate = new Label(composite, SWT.NONE);
 		FormData fd_lblDate = new FormData();
 		fd_lblDate.top = new FormAttachment(0, 5);
 		fd_lblDate.left = new FormAttachment(0, 5);
 		lblDate.setLayoutData(fd_lblDate);
 		lblDate.setText("Date:");
 
-		textDate = new Text(this, SWT.NONE);
+		textDate = new Text(composite, SWT.NONE);
 		textDate.setEditable(false);
 		FormData fd_textDate = new FormData();
 		fd_textDate.top = new FormAttachment(0, 5);
 		fd_textDate.left = new FormAttachment(lblDate, 5);
 		textDate.setLayoutData(fd_textDate);
 
-		label_vertical = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
+		label_vertical = new Label(composite, SWT.SEPARATOR | SWT.VERTICAL);
 		label_vertical.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
 				FormData fd = (FormData) label_vertical.getLayoutData();
@@ -166,7 +183,7 @@ public class LogEntryWidget extends Composite {
 		fd_label_vertical.left = new FormAttachment(70);
 		label_vertical.setLayoutData(fd_label_vertical);
 
-		label_horizontal = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label_horizontal = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_horizontal.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
 				FormData fd = (FormData) label_horizontal.getLayoutData();
@@ -185,7 +202,7 @@ public class LogEntryWidget extends Composite {
 		fd_label_horizontal.left = new FormAttachment(0, 5);
 		label_horizontal.setLayoutData(fd_label_horizontal);
 
-		text = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+		text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		text.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -201,21 +218,21 @@ public class LogEntryWidget extends Composite {
 		fd_text.left = new FormAttachment(0, 5);
 		text.setLayoutData(fd_text);
 
-		Label lblOwner = new Label(this, SWT.NONE);
+		Label lblOwner = new Label(composite, SWT.NONE);
 		FormData fd_lblOwner = new FormData();
 		fd_lblOwner.left = new FormAttachment(label_vertical, 2);
 		fd_lblOwner.top = new FormAttachment(0, 5);
 		lblOwner.setLayoutData(fd_lblOwner);
 		lblOwner.setText("Owner:");
 
-		textOwner = new Text(this, SWT.BORDER);
+		textOwner = new Text(composite, SWT.BORDER);
 		FormData fd_textOwner = new FormData();
 		fd_textOwner.top = new FormAttachment(0, 5);
 		fd_textOwner.right = new FormAttachment(100, -5);
 		fd_textOwner.left = new FormAttachment(lblOwner, 2);
 		textOwner.setLayoutData(fd_textOwner);
 
-		btnSubmit = new Button(this, SWT.NONE);
+		btnSubmit = new Button(composite, SWT.NONE);
 		FormData fd_btnSubmit = new FormData();
 		fd_btnSubmit.left = new FormAttachment(label_vertical, 2);
 		fd_btnSubmit.right = new FormAttachment(100, -5);
@@ -234,8 +251,8 @@ public class LogEntryWidget extends Composite {
 							.createLogEntry(logEntryChangeset.getLogEntry());
 					setEditable(false);
 					setLogEntry(logEntry);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+				} catch (Exception ex) {
+					setLastException(ex);
 				}
 
 			}
@@ -244,15 +261,14 @@ public class LogEntryWidget extends Composite {
 		btnSubmit.setText("Submit");
 		btnSubmit.setEnabled(true);
 
-		btnSave = new Button(this, SWT.NONE);
+		btnSave = new Button(composite, SWT.NONE);
 		btnSave.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
 					saveLogEntryChangeset();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (Exception ex) {
+					setLastException(ex);
 				}
 			}
 		});
@@ -263,7 +279,7 @@ public class LogEntryWidget extends Composite {
 		btnSave.setLayoutData(fd_btnSave);
 		btnSave.setText("Save");
 
-		btnEnableEdit = new Button(this, SWT.CHECK);
+		btnEnableEdit = new Button(composite, SWT.CHECK);
 		FormData fd_btnEnableEdit = new FormData();
 		fd_btnEnableEdit.bottom = new FormAttachment(btnSave, -2);
 		fd_btnEnableEdit.left = new FormAttachment(label_vertical, 2);
@@ -278,21 +294,21 @@ public class LogEntryWidget extends Composite {
 		btnEnableEdit.setText("Edit Entry");
 		btnEnableEdit.setSelection(editable);
 
-		Label lblLogbooks = new Label(this, SWT.NONE);
+		Label lblLogbooks = new Label(composite, SWT.NONE);
 		FormData fd_lblLogbooks = new FormData();
 		fd_lblLogbooks.left = new FormAttachment(label_vertical, 2);
 		fd_lblLogbooks.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
 		lblLogbooks.setLayoutData(fd_lblLogbooks);
 		lblLogbooks.setText("Logbooks:");
 
-		logbookList = new List(this, SWT.BORDER | SWT.V_SCROLL);
+		logbookList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
 		FormData fd_logbookList = new FormData();
 		fd_logbookList.left = new FormAttachment(label_vertical, 2);
 		fd_logbookList.right = new FormAttachment(100, -5);
 		fd_logbookList.top = new FormAttachment(lblLogbooks, 2, SWT.BOTTOM);
 		logbookList.setLayoutData(fd_logbookList);
 
-		btnAddLogbook = new Button(this, SWT.NONE);
+		btnAddLogbook = new Button(composite, SWT.NONE);
 		btnAddLogbook.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -321,21 +337,21 @@ public class LogEntryWidget extends Composite {
 		btnAddLogbook.setLayoutData(fd_btnAddLogbook);
 		btnAddLogbook.setText("Add Logbook");
 
-		lblTags = new Label(this, SWT.NONE);
+		lblTags = new Label(composite, SWT.NONE);
 		FormData fd_lblTags = new FormData();
 		fd_lblTags.left = new FormAttachment(label_vertical, 2);
 		fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
 		lblTags.setLayoutData(fd_lblTags);
 		lblTags.setText("Tags:");
 
-		tagList = new List(this, SWT.BORDER);
+		tagList = new List(composite, SWT.BORDER);
 		FormData fd_tagList = new FormData();
 		fd_tagList.left = new FormAttachment(label_vertical, 2);
 		fd_tagList.top = new FormAttachment(lblTags, 2);
 		fd_tagList.right = new FormAttachment(100, -5);
 		tagList.setLayoutData(fd_tagList);
 
-		btnAddTags = new Button(this, SWT.NONE);
+		btnAddTags = new Button(composite, SWT.NONE);
 		btnAddTags.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -362,7 +378,7 @@ public class LogEntryWidget extends Composite {
 		fd_btnAddTags.right = new FormAttachment(100, -5);
 		btnAddTags.setLayoutData(fd_btnAddTags);
 
-		tabFolder = new CTabFolder(this, SWT.BORDER);
+		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		FormData fd_tabFolder = new FormData();
 		fd_tabFolder.top = new FormAttachment(label_horizontal, 2);
 		fd_tabFolder.right = new FormAttachment(label_vertical, -2);
@@ -509,10 +525,8 @@ public class LogEntryWidget extends Composite {
 								}
 								ip.close();
 								out.close();
-							} catch (MalformedURLException e) {
-								// TODO Auto-generated catch block
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
+							} catch (Exception ex) {
+								setLastException(ex);
 							}
 							IFile f = IFileUtil.getInstance()
 									.createFileResource(file);
@@ -722,8 +736,13 @@ public class LogEntryWidget extends Composite {
 
 			imageStackWidget.addImageFilename(screenshot_file.getPath());
 		} catch (Exception ex) {
-			MessageDialog.openError(getShell(), "Error", ex.getMessage());
+			// MessageDialog.openError(getShell(), "Error", ex.getMessage());
+			setLastException(ex);
 		}
+	}
+
+	private void setLastException(Exception exception) {
+		errorBar.setException(exception);
 	}
 
 	public boolean isEditable() {
