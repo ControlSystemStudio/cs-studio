@@ -50,6 +50,11 @@
             id="org.csstudio.alarm.jms2ora.GetVersion"
             label="Get Version">
       </command>
+      <command
+            class="org.csstudio.domain.common.statistic.GetStatisticsManagementCommand"
+            id="org.csstudio.domain.common.statistic.GetStatisticCommand"
+            label="Get Statistics">
+      </command>
    </extension>
    <extension
          id="Jms2OraProduct"
