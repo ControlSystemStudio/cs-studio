@@ -113,6 +113,25 @@ public class EpicsPreferencePage
                         PreferenceConstants.SERVER_PORT + sep, parent));
         addField(new StringFieldEditor(PreferenceConstants.MAX_ARRAY_BYTES,
                         PreferenceConstants.MAX_ARRAY_BYTES + sep, parent));
+        
+        addField(new BooleanFieldEditor(PreferenceConstants.DBE_PROPERTY_SUPPORTED,
+        		Messages.EpicsPreferencePage_DBE_PROPERTY_SUPPORTED, parent));
+        addField(new BooleanFieldEditor(PreferenceConstants.HONOR_ZERO_PRECISION,
+        		Messages.EpicsPreferencePage_HONOR_ZERO_PRECISION, parent));
+        addField(new BooleanFieldEditor(PreferenceConstants.RTYP_VALUE_ONLY,
+        		Messages.EpicsPreferencePage_RTYP_VALUE_ONLY, parent));
+        
+        final String varArrayOptions[][] =
+        {
+            { Messages.EpicsPreferencePage_VAR_ARRAY_SUPPORT_AUTO, "Auto"  },
+            { Messages.EpicsPreferencePage_VAR_ARRAY_SUPPORT_ENABLED, "Enabled"  },
+            { Messages.EpicsPreferencePage_VAR_ARRAY_SUPPORT_DISABLED, "Disabled"  }
+        };
+        addField(new RadioGroupFieldEditor(PreferenceConstants.VAR_ARRAY_SUPPORT,
+                Messages.EpicsPreferencePage_VAR_ARRAY_SUPPORT,
+                varArrayOptions.length,
+                varArrayOptions,
+                parent));
     }
 
 	@Override
