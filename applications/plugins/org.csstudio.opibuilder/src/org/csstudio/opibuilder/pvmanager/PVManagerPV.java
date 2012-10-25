@@ -17,6 +17,7 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.WriteFailException;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 
 /**A utility PV which uses PVManager as the connection layer. 
  * Type of the value returned by {@link #getValue()} is always {@link PMObjectValue}.
@@ -41,7 +42,7 @@ public class PVManagerPV implements PV {
 	private PVReader<?> pvReader;
 	private PVWriter<Object> pvWriter;
 
-	/**Construct a PVManger PV.
+	/**Construct a PVManger PV. This method must be called in UI Thread.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
 	 * @param updateDuration the least update duration.
@@ -50,10 +51,10 @@ public class PVManagerPV implements PV {
 		this.name = name;
 		this.valueBuffered = bufferAllValues;
 		if (bufferAllValues) {
-			pvReader = PVManager.read(newValuesOf(channel(name)))
+			pvReader = PVManager.read(newValuesOf(channel(name))).notifyOn(swtThread())
 					.routeExceptionsTo(exceptionHandler).maxRate(ofMillis(updateDuration));
 		} else {
-			pvReader = PVManager.read(channel(name))
+			pvReader = PVManager.read(channel(name)).notifyOn(swtThread())
 					.routeExceptionsTo(exceptionHandler).maxRate(ofMillis(updateDuration));
 		}
 		pvWriter = PVManager.write(channel(name))
@@ -74,6 +75,8 @@ public class PVManagerPV implements PV {
 		return new PMObjectValue(pvReader.getValue(), valueBuffered);
 	}
 
+	/** This method should be called in UI thread.
+	 */
 	@Override
 	public void addListener(final PVListener listener) {
 		PVReaderListener pvReaderListener = new PVReaderListener() {
@@ -119,7 +122,7 @@ public class PVManagerPV implements PV {
 
 	@Override
 	public boolean isConnected() {
-		return pvReader.isConnected();
+		return pvReader.isConnected() && pvReader.getValue() != null;
 	}
 
 	@Override

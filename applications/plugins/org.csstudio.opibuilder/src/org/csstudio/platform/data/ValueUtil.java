@@ -59,9 +59,13 @@ public class ValueUtil
      */
     public static double getDouble(final IValue value, final int index)
     {
-    	if (value instanceof PMObjectValue)
-        	return org.epics.pvmanager.data.ValueUtil.numericValueOf(
-        			((PMObjectValue)value).getLatestValue());    	
+    	if (value instanceof PMObjectValue){
+        	Double v = org.epics.pvmanager.data.ValueUtil.numericValueOf(
+        			((PMObjectValue)value).getLatestValue());
+        	if(v==null)
+        		return Double.NaN;
+        	return v;
+    	}
     	return org.csstudio.data.values.ValueUtil.getDouble(value, index);
        
     }
