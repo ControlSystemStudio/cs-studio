@@ -670,7 +670,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 						final MessageChainTObject messageChainObject = new MessageChainTObject(
 								-1, iMessageId, filter.getFilterID(),
-								fa.getFilterActionID(), 0, null, null,
+								fa.getFilterActionID(), -1, null, null,
 								MESSAGECHAIN_WORK, null);
 						MessageChainDAO.insert(localAppDb, messageChainObject);
 						MessageChainDAO.insert(memoryCacheDb, messageChainObject);
@@ -2041,7 +2041,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			final FilterTObject filter = FilterDAO.select(memoryCacheDb,
 					msgChain.getFilterRef());
-			final FilterActionTObject fa = FilterActionDAO.select(
+			final FilterActionTObject filterAction = FilterActionDAO.select(
 					memoryCacheDb, msgChain.getFilterActionRef());
 
 			AggrUserGroupUserTObject aNextUser = null;
@@ -2049,9 +2049,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 			boolean bOneActive = false; // if no one possible break up complete
 			// chain
 
-			if (fa != null && filter != null) {
+			if (filterAction != null && filter != null) {
 				userGroup = AggrUserGroupDAO.selectList(memoryCacheDb,
-						fa.getReceiverRef()); // ggf. eine Topic-ID!
+						filterAction.getReceiverRef()); // ggf. eine Topic-ID!
 
 				final Iterator<?> iter = userGroup.getUsers().iterator();
 				while (iter.hasNext()) {
@@ -2062,13 +2062,13 @@ public class DistributorWork extends Thread implements AmsConstants,
 						Log.log(Log.WARN, "UserGroupRel not active: User "
 								+ aUser.getUser().getUserID() + " of Group "
 								+ aUser.getUserGroupUser().getUserGroupRef()
-								+ " in FilterAction: " + fa.getFilterActionID());
+								+ " in FilterAction: " + filterAction.getFilterActionID());
 						continue;
 					}
 					if (aUser.getUser().getActive() == 0) {
 						Log.log(Log.WARN, "User not active: "
 								+ aUser.getUser().getUserID()
-								+ " in FilterAction: " + fa.getFilterActionID());
+								+ " in FilterAction: " + filterAction.getFilterActionID());
 						continue;
 					}
 
@@ -2102,7 +2102,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 			if (aNextUser != null) // send next
 			{
 				int iPref = 0;
-				final String text = prepareMessageText(extMsg, filter, fa,
+				final String text = prepareMessageText(extMsg, filter, filterAction,
 						msgChain); // throws
 				// no
 				// JMSException
@@ -2119,7 +2119,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					break;
 				case USERFILTERALARMTYPE_JMS:
 					final TopicTObject topic = TopicDAO.select(memoryCacheDb,
-							fa.getReceiverRef());
+							filterAction.getReceiverRef());
 					publishToConnectorJms(text, topic.getTopicName(), null); // JMS
 					msgChain.setReceiverAdress(topic.getTopicName());
 					iPref = USERFILTERALARMTYPE_JMS;
@@ -2136,7 +2136,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					iPref = USERFILTERALARMTYPE_MAIL;
 					break;
 				default:
-					switch (fa.getFilterActionTypeRef()) {
+					switch (filterAction.getFilterActionTypeRef()) {
 					case FILTERACTIONTYPE_SMS_GR:
 						publishToConnectorSms(text, user.getMobilePhone());// SMS
 						msgChain.setReceiverAdress(user.getMobilePhone());
@@ -2154,7 +2154,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					default:
 						throw new AMSException(
 								"Configuration is invalid. FilterActionType="
-										+ fa.getFilterActionTypeRef());
+										+ filterAction.getFilterActionTypeRef());
 					}
 					break;
 				}
@@ -2168,14 +2168,14 @@ public class DistributorWork extends Thread implements AmsConstants,
 									localAppDb,
 									extMsg,
 									text,
-									fa.getFilterActionTypeRef(),
+									filterAction.getFilterActionTypeRef(),
 									user,
 									(userGroup != null ? userGroup
 											.getUsergroup() : null), msgChain
 											.getReceiverPos(), msgChain
 											.getMessageChainID(), iPref,
 									TopicDAO.select(memoryCacheDb,
-											fa.getReceiverRef()));
+											filterAction.getReceiverRef()));
 				} catch (final JMSException e) // JMSException
 				// (STAT_ERR_JMSCON_EXT)
 				{
@@ -2188,7 +2188,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 						+ msgChain.getMessageChainID() + ", Pos="
 						+ msgChain.getReceiverPos()
 						+ " Reason: nobody replied the chain.";
-				if (fa == null || filter == null) // log if error only
+				if (filterAction == null || filter == null) // log if error only
 				{
 					err = "Chain failed for ChainId="
 							+ msgChain.getMessageChainID() + ", Pos="
@@ -2204,11 +2204,11 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 				HistoryWriter.logHistoryReply(localAppDb, "Failed", null, null,
 						null, err,
-						(fa == null ? 0 : fa.getFilterActionTypeRef()),
+						(filterAction == null ? 0 : filterAction.getFilterActionTypeRef()),
 						msgChain.getMessageChainID(),
 						msgChain.getReceiverPos(), null, null);
 
-				if (bOneActive == true || fa == null || filter == null) {
+				if (bOneActive == true || filterAction == null || filter == null) {
 					try {
 						extMsg.setString(MSGPROP_REINSERTED, "TRUE"); // store
 						// it
