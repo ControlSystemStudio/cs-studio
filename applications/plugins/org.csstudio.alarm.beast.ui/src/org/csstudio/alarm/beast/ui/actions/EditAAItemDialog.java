@@ -13,9 +13,6 @@ import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,9 +34,9 @@ public class EditAAItemDialog extends RowEditDialog {
 
 	private Composite header;
 	private Composite content;
-	private Composite parent;
 	private Composite parent_composite;
 	private Text messageLabel;
+	private boolean showingError = false;
 
 	protected EditAAItemDialog(final Shell parentShell) {
 		super(parentShell);
@@ -53,29 +50,20 @@ public class EditAAItemDialog extends RowEditDialog {
 	@Override
 	protected Control createDialogArea(final Composite parent) {
 		parent_composite = (Composite) super.createDialogArea(parent);
-		this.parent = parent;
+		parent_composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		parent_composite.setLayout(new GridLayout());
 		
 		// Header part
 		header = new Composite(parent_composite, SWT.NONE);
+		header.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		header.setLayout(new GridLayout(2, false));
-
-		// Message image @ left
-		final Label messageImageLabel = new Label(header, SWT.NONE);
-		messageImageLabel.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_ERROR));
-		GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
-		gridData.widthHint = 30;
-		messageImageLabel.setLayoutData(gridData);
-		messageImageLabel.pack();
-		// Message label @ right
-		messageLabel = new Text(header, SWT.WRAP);
-		messageLabel.setBackground(header.getBackground());
-		messageLabel.setForeground(parent_composite.getDisplay().getSystemColor(SWT.COLOR_RED));
-		messageLabel.setFont(JFaceResources.getDialogFont());
-		messageLabel.pack();
+		header.setSize(0, 0);
+		header.setVisible(false);
 		
 		// Content part
 		content = new Composite(parent_composite, SWT.NONE);
 		content.setLayout(new GridLayout(2, false));
+		content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		GridData gd;
 
 		final Label titleLabel = new Label(content, 0);
@@ -120,20 +108,8 @@ public class EditAAItemDialog extends RowEditDialog {
 		detailsText.setLayoutData(gd);
 		detailsText.setText(rowData[1]);
 
-		header.setVisible(false);
 		content.pack();
 		parent_composite.pack();
-		parent_composite.setLayout(new FormLayout());
-		FormData layoutData = new FormData();
-		layoutData.top = new FormAttachment(0, 0);
-		layoutData.height = 0;
-		layoutData.width = 0;
-		header.setLayoutData(layoutData);
-		layoutData = new FormData();
-		layoutData.top = new FormAttachment(0, 0);
-		content.setLayoutData(layoutData);
-		parent.pack();
-		
 		return parent_composite;
 	}
 
@@ -147,8 +123,25 @@ public class EditAAItemDialog extends RowEditDialog {
 			if (rowData[1] != null && !rowData[1].isEmpty()) {
 				NotifierUtils.performValidation(rowData[1]);
 			}
+			showingError = false;
 			super.okPressed();
 		} catch (Exception e) {
+			if(!showingError) {
+				// Message image @ left
+				final Label messageImageLabel = new Label(header, SWT.NONE);
+				messageImageLabel.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_ERROR));
+				GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+				gridData.widthHint = 30;
+				messageImageLabel.setLayoutData(gridData);
+				messageImageLabel.pack();
+				// Message label @ right
+				messageLabel = new Text(header, SWT.WRAP);
+				messageLabel.setBackground(header.getBackground());
+				messageLabel.setForeground(parent_composite.getDisplay().getSystemColor(SWT.COLOR_RED));
+				messageLabel.setFont(JFaceResources.getDialogFont());
+				header.setVisible(true);
+				showingError = true;
+			}
 			String message = e.getMessage();
 			// Cut long messages
 			GC gc = new GC(messageLabel);
@@ -172,19 +165,9 @@ public class EditAAItemDialog extends RowEditDialog {
 			}
 			messageLabel.setText(message);
 			messageLabel.pack();
-			header.setVisible(true);
 			header.pack();
-			parent_composite.setLayout(new GridLayout());
-			header.setLayoutData(new GridData());
-			content.setLayoutData(new GridData());
-			parent_composite.pack();
-			parent.pack();
-			getShell().pack();
-//			MessageDialog.openError(
-//					shell,
-//					Messages.AutoActionError,
-//					NLS.bind(Messages.AutoActionValidErrorFmt,
-//							new Object[] { e.getMessage() }));
+			parent_composite.layout();
+			getShell().layout();
 		}
 	}
 
