@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class PhoneUtils {
 	
-	final public static Pattern PhonePattern = Pattern.compile("([0-9\\(\\)\\/\\+\\-\\.\\ ]+)");
+	final public static Pattern PhonePattern = Pattern.compile("(\\+?[0-9\\(\\)\\/\\-\\.\\ ]+)");
 	
 	public static List<String> parse(String data) throws Exception {
 		List<String> phoneNumbers = new ArrayList<String>();

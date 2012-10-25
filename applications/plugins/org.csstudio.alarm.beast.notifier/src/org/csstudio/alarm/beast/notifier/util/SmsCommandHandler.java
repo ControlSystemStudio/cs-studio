@@ -39,6 +39,7 @@ public class SmsCommandHandler extends AbstractCommandHandler {
 			break;
 		case Body:
 			body = data.trim();
+			validateNSF(body);
 			break;
 		default:
 			break;
