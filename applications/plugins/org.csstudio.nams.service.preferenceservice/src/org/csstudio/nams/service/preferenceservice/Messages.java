@@ -28,6 +28,7 @@ public class Messages extends NLS {
 	public static String PreferenceServiceJMSKeys_P_JMS_AMS_TSUB_SMS_CONNECTOR_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_ALARM_label;
+    public static String PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_ALARM_REINSERT_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_COMMAND_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_STATUSCHANGE_label;
 	public static String PreferenceServiceJMSKeys_P_JMS_EXT_TSUB_ALARM_label;
