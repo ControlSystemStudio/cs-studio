@@ -1925,9 +1925,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 							aUser = userGroup.getUsers().get(0);
 						}
 
+						String userConfirmCode = aUser.getUser().getConfirmCode();
 						if (aUser != null
-								&& aUser.getUser().getConfirmCode()
-										.equals(confirmCode)) {
+								&& userConfirmCode != null && userConfirmCode.equals(confirmCode)) {
 							chainDb.setChainState(MESSAGECHAIN_REPLIED);
 							MessageChainDAO.update(localAppDb, chainDb);
 							MessageChainDAO.update(memoryCacheDb, chainDb);
@@ -1978,7 +1978,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 					err = "message chain not in work.";
 				} else if (chainDb.getReceiverPos() != msgChainPos) {
 					err = "user not in time interval.";
-				} else if (!aUser.getUser().getConfirmCode()
+				} else if (aUser.getUser().getConfirmCode() == null) {
+					err = "use has no confirmation code.";
+				} else if(!aUser.getUser().getConfirmCode()
 						.equals(confirmCode)) {
 					err = "wrong confirmation code.";
 				}
