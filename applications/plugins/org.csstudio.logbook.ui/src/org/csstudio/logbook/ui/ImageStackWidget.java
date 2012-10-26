@@ -86,9 +86,9 @@ public class ImageStackWidget extends Composite {
 				// TODO does not center
 				// TODO does not preserve aspect ratio
 				// use the OwnerDrawLabelProvider
-				ImageData imageData = new ImageData(
-						cell.getElement() == null ? "" : cell.getElement()
-								.toString());
+				String fileName = cell.getElement() == null ? "" : cell.getElement()
+						.toString();
+				ImageData imageData = new ImageData(fileName);
 				cell.setImage(new Image(getDisplay(), imageData
 						.scaledTo(90, 90)));
 			}

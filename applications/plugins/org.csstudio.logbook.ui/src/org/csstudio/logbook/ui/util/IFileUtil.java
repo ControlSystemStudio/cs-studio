@@ -104,16 +104,35 @@ public class IFileUtil {
 		return instance;
 	}
 
+	public IFile createFileResource(String fileName, InputStream inputStream)
+			throws IOException {
+		if (fileName != null && !fileName.isEmpty()) {
+			File file = new File(fileName);
+			OutputStream out = new FileOutputStream(file);
+			// Transfer bytes from in to out
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = inputStream.read(buf)) > 0) {
+				out.write(buf, 0, len);
+			}
+			inputStream.close();
+			out.close();
+			return createFileResource(file);
+		} else {
+			return null;
+		}
+	}
+
 	public IFile createFileResource(File file) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("External Files");
-		IFile ifile = project.getFile(System.currentTimeMillis() + file.getName());
+		IFile ifile = project.getFile(file.getName());
 		try {
 			if (!project.exists())
 				project.create(null);
 			if (!project.isOpen())
 				project.open(null);
-//			project.setHidden(true);
+			project.setHidden(true);
 			if (!ifile.exists())
 				ifile.create(new FileInputStream(file), IResource.NONE, null);
 			file.delete();
@@ -121,7 +140,6 @@ public class IFileUtil {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

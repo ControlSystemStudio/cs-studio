@@ -1,13 +1,20 @@
 package org.csstudio.logbook.olog.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
+import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
 import org.csstudio.logbook.ui.LogEntryChangeset;
+import org.csstudio.logbook.ui.util.IFileUtil;
+import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -19,8 +26,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 class ContextPropertyWidget extends AbstractPropertyWidget {
 	private Button btnRestore;
@@ -31,8 +43,9 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	private Button btnCurrentContext;
 
 	private File file;
-	private final Property property = PropertyBuilder.property("Context")
-			.attribute("FileName").attribute("FileDescription").build();
+	private final static Property property = PropertyBuilder
+			.property("Context").attribute("FileName")
+			.attribute("FileDescription").build();
 
 	public ContextPropertyWidget(Composite parent, int style,
 			LogEntryChangeset logEntryChangeset) {
@@ -54,17 +67,56 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 				if (isEditable()) {
 					// Attach Action
 					if (file != null) {
-						LogEntryBuilder logEntryBuilder = LogEntryBuilder
-								.logEntry(getLogEntryChangeset().getLogEntry());
-						logEntryBuilder.addProperty(PropertyBuilder
-								.property(property)
-								.attribute("FileName", file.getName())
-								.attribute("FileDescription",
-										textFileDescription.getText()));
-						logEntryBuilder.attach(AttachmentBuilder.attachment(file.getName()));
+						try {
+							LogEntryBuilder logEntryBuilder = LogEntryBuilder
+									.logEntry(getLogEntryChangeset()
+											.getLogEntry());
+							logEntryBuilder.addProperty(PropertyBuilder
+									.property(property)
+									.attribute("FileName", file.getName())
+									.attribute("FileDescription",
+											textFileDescription.getText()));
+							logEntryBuilder.attach(AttachmentBuilder
+									.attachment(file.getName()).inputStream(
+											new FileInputStream(file)));
+							getLogEntryChangeset().setLogEntryBuilder(
+									logEntryBuilder);
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				} else {
 					// Restore Action
+					LogEntry logEntry = getLogEntryChangeset().getLogEntry();
+					for (Attachment attachment : logEntry.getAttachment()) {
+						if (attachment.getFileName().equals(
+								textFileName.getText())) {
+							try {
+								IWorkbenchPage page = PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage();
+								IFile ifile = IFileUtil.getInstance()
+										.createFileResource(
+												attachment.getFileName(),
+												attachment.getInputStream());
+								IEditorDescriptor desc = PlatformUI
+										.getWorkbench()
+										.getEditorRegistry()
+										.getDefaultEditor(
+												attachment.getFileName());
+								IEditorPart part;
+
+								part = page.openEditor(new FileEditorInput(
+										ifile), desc.getId());
+								IFileUtil.getInstance().registerPart(part,
+										ifile);
+							} catch (PartInitException | IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					}
 
 				}
 			}
@@ -85,11 +137,6 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 				file = new File(((IFile) input.getAdapter(IFile.class))
 						.getLocationURI());
 				textFileName.setText(file.getName());
-				// logEntryBuilder.attach(new File(file.getLocationURI()));
-				// PropertyBuilder propertyBuilder = PropertyBuilder
-				// .property("css-context");
-				// propertyBuilder.attribute("context-file", file.getName());
-				// logEntryBuilder.addProperty(propertyBuilder);
 			}
 		});
 		FormData fd_btnCurrentContext = new FormData();
@@ -137,6 +184,14 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 			btnRestore.setText("Attach");
 		} else {
 			btnRestore.setText("Restore");
+		}
+		Property property = LogEntryUtil.getProperty(getLogEntryChangeset()
+				.getLogEntry(), ContextPropertyWidget.property.getName());
+		if (property != null) {
+			String fileName = property.getAttributeValue("FileName");
+			this.textFileName.setText(fileName);
+			this.textFileDescription.setText(property
+					.getAttributeValue("FileDescription"));
 		}
 	}
 }

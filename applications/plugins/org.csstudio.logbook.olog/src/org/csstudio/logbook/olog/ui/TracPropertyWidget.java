@@ -79,13 +79,13 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// store the property
-				LogEntryBuilder logEntrybuilder = LogEntryBuilder
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
 						.logEntry(getLogEntryChangeset().getLogEntry());
-				logEntrybuilder.addProperty(PropertyBuilder
+				logEntryBuilder.addProperty(PropertyBuilder
 						.property(widgetProperty)
 						.attribute("TicketId", textId.getText())
 						.attribute("TicketURL", textURL.getText()));
-				getLogEntryChangeset().setLogEntryBuilder(logEntrybuilder);
+				getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
 			}
 		});
 		FormData fd_btnApply = new FormData();

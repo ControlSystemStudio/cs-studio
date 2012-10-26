@@ -82,6 +82,11 @@ public class LogEntryBuilder {
 		return this;
 	}
 
+	public LogEntryBuilder setAttachments(Collection<AttachmentBuilder> attachments) {
+		this.attachments = attachments;
+		return this;
+	}
+
 	public static LogEntryBuilder logEntry(LogEntry logEntry) {
 		LogEntryBuilder logEntryBuilder = new LogEntryBuilder(
 				logEntry.getText());
@@ -232,4 +237,5 @@ public class LogEntryBuilder {
 		}
 
 	}
+
 }

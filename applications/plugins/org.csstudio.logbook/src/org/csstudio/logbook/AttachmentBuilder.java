@@ -48,6 +48,7 @@ public class AttachmentBuilder {
 		attachmentBuilder.contentType = attachment.getContentType();
 		attachmentBuilder.thumbnail = attachment.getThumbnail();
 		attachmentBuilder.fileSize = attachment.getFileSize();
+		attachmentBuilder.inputStream = attachment.getInputStream();
 		return attachmentBuilder;
 	}
 

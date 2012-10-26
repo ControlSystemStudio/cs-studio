@@ -8,17 +8,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
@@ -30,16 +27,15 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
-import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -55,6 +51,8 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -67,9 +65,6 @@ import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.csstudio.ui.util.widgets.ErrorBar;
 
 /**
  * @author shroffk
@@ -83,20 +78,16 @@ public class LogEntryWidget extends Composite {
 	// This serves as the model behind the new entry being created to be written
 	// to the logbook service
 	private LogEntryChangeset logEntryChangeset;
-	//
-	private java.util.List<String> imageFileNames = Collections.emptyList();
+	private LogEntryChangeset savedLogEntryChangeset;
 
 	private LogbookClient logbookClient;
 	// List of all the possible logbooks and tags which may be added to a
 	// logEntry.
 	private java.util.List<String> logbookNames;
 	private java.util.List<String> tagNames;
-	private Collection<Property> properties;
 
-	private LogEntryChangeset savedLogEntryChangeset;
 	// TODO
 	private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
-	private Map<String, AbstractPropertyWidget> propertyWidgets;
 	private LogEntry logEntry;
 	// UI components
 	private Text text;
@@ -487,13 +478,14 @@ public class LogEntryWidget extends Composite {
 					updateUI();
 					break;
 				default:
-					updateUI();
+					// updateUI();
 					break;
 				}
 			}
 		});
+
 		init();
-		updateUI();
+		// updateUI();
 	}
 
 	private void init() {
@@ -501,48 +493,35 @@ public class LogEntryWidget extends Composite {
 			if (getLogEntry() == null) {
 				logEntryChangeset = new LogEntryChangeset();
 			} else {
-				logEntryChangeset = new LogEntryChangeset(getLogEntry());
-				imageStackWidget.setImageFilenames(Collections
-						.<String> emptyList());
+				logEntryChangeset = new LogEntryChangeset();
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+						.logEntry(getLogEntry());
 				// TODO temporary fix, in future releases the attachments will
-				// be
-				// listed with the logEntry itself
+				// be listed with the logEntry itself
 				if (logEntry.getId() != null) {
 					Collection<Attachment> attachments = logbookClient
 							.listAttachments(logEntry.getId());
-					if (!attachments.isEmpty()) {
-						java.util.List<String> imageFileNames = new ArrayList<String>();
-						for (Attachment attachment : attachments) {
-							File file = new File(attachment.getFileName());
-							try {
-								InputStream ip = attachment.getInputStream();
-								OutputStream out = new FileOutputStream(file);
-								// Transfer bytes from in to out
-								byte[] buf = new byte[1024];
-								int len;
-								while ((len = ip.read(buf)) > 0) {
-									out.write(buf, 0, len);
-								}
-								ip.close();
-								out.close();
-							} catch (Exception ex) {
-								setLastException(ex);
-							}
-							IFile f = IFileUtil.getInstance()
-									.createFileResource(file);
-							IFileUtil.getInstance().registerPart(
-									PlatformUI.getWorkbench()
-											.getActiveWorkbenchWindow()
-											.getPartService().getActivePart(),
-									f);
-							imageFileNames.add(f.getLocationURI().getPath());
+					for (Attachment attachment : attachments) {
+						IFile f = null;
+						try {
+							f = IFileUtil.getInstance().createFileResource(
+									attachment.getFileName(),
+									attachment.getInputStream());
+						} catch (IOException ex) {
+							setLastException(ex);
 						}
-						imageStackWidget.setImageFilenames(imageFileNames);
+						IFileUtil.getInstance().registerPart(
+								PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getPartService().getActivePart(), f);
+						logEntryBuilder.attach(AttachmentBuilder.attachment(f
+								.getLocationURI().getPath()));
 					}
 				}
+				logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 			}
-			savedLogEntryChangeset = new LogEntryChangeset(
-					logEntryChangeset.getLogEntry());
+			logEntry = logEntryChangeset.getLogEntry();
+			savedLogEntryChangeset = logEntryChangeset;
 			logEntryChangeset
 					.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -568,8 +547,6 @@ public class LogEntryWidget extends Composite {
 								return input.getName();
 							};
 						});
-
-				properties = logbookClient.listProperties();
 			}
 			// get the list of properties and extensions to handle these
 			// properties.
@@ -587,11 +564,6 @@ public class LogEntryWidget extends Composite {
 				}
 			} else {
 				propertyWidgetFactories = Collections.emptyMap();
-			}
-			for (CTabItem cTabItem : tabFolder.getItems()) {
-				if (!cTabItem.equals(tbtmAttachments)) {
-					cTabItem.dispose();
-				}
 			}
 		} catch (Exception e) {
 			// Failed to get a client to the logbook
@@ -615,12 +587,12 @@ public class LogEntryWidget extends Composite {
 			newLogbooks.add(LogbookBuilder.logbook(logbookName));
 		}
 		logEntryBuilder.setLogbooks(newLogbooks);
+		Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
 		for (String attachment : imageStackWidget.getImageFilenames()) {
-			File file = new File(attachment);
-			logEntryBuilder.attach(AttachmentBuilder.attachment(file.getName())
-					.inputStream(new FileInputStream(file)));
+			newAttachments.add(AttachmentBuilder.attachment(attachment)
+					.inputStream(new FileInputStream(attachment)));
 		}
-		imageFileNames = imageStackWidget.getImageFilenames();
+		logEntryBuilder.setAttachments(newAttachments);
 		getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
 	}
 
@@ -631,7 +603,6 @@ public class LogEntryWidget extends Composite {
 				cTabItem.dispose();
 			}
 		}
-
 		btnEnableEdit.setSelection(editable);
 		text.setEditable(editable);
 		textOwner.setEditable(editable);
@@ -667,7 +638,7 @@ public class LogEntryWidget extends Composite {
 			imageStackWidget.setLayoutData(fd);
 		}
 		btnEnableEdit.getParent().layout();
-
+		imageStackWidget.setImageFilenames(Collections.<String> emptyList());
 		LogEntry logEntry = logEntryChangeset.getLogEntry();
 		if (logEntry != null) {
 			// Show the logEntry
@@ -683,13 +654,16 @@ public class LogEntryWidget extends Composite {
 			java.util.List<String> tagNames = LogEntryUtil
 					.getTagNames(logEntry);
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
+			java.util.List<String> imageFileNames = new ArrayList<String>();
+			for (Attachment attachment : logEntry.getAttachment()) {
+				imageFileNames.add(attachment.getFileName());
+			}
+			imageStackWidget.setImageFilenames(imageFileNames);
 		} else {
 			text.setText("");
 			textOwner.setText("");
 			logbookList.setItems(new String[0]);
 			tagList.setItems(new String[0]);
-			imageStackWidget
-					.setImageFilenames(Collections.<String> emptyList());
 			imageStackWidget.setSelectedImageFile(null);
 		}
 		for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories

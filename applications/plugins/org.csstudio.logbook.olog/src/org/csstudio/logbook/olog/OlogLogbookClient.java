@@ -143,7 +143,7 @@ public class OlogLogbookClient implements LogbookClient {
 		for (Attachment attachment : logEntry.getAttachment()) {
 			if (attachment.getInputStream() != null) {
 				addAttachment(ologEntry.getId(), attachment.getInputStream(),
-						attachment.getFileName());
+						new File(attachment.getFileName()).getName());
 			}
 		}
 		return ologEntry;
