@@ -1,7 +1,19 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.util;
 
 import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
 
+/**
+ * Handler for {@link AbstractSymbolImage} properties.
+ * @author Fred Arnaud (Sopra Group)
+ *
+ */
 public class SymbolImageProperties {
 
 	private int topCrop = 0;
@@ -13,7 +25,7 @@ public class SymbolImageProperties {
 	private int degree;
 	private boolean flipV;
 	private boolean flipH;
-	private String disposition;
+	private PermutationMatrix matrix;
 	
 	public void fillSymbolImage(AbstractSymbolImage asi) {
 		asi.setTopCrop(topCrop);
@@ -25,7 +37,7 @@ public class SymbolImageProperties {
 		asi.setDegree(degree);
 		asi.setFlipV(flipV);
 		asi.setFlipH(flipH);
-		asi.setImageState(disposition);
+		asi.setPermutationMatrix(matrix);
 	}
 
 	public int getTopCrop() {
@@ -100,12 +112,12 @@ public class SymbolImageProperties {
 		this.flipH = flipH;
 	}
 
-	public String getDisposition() {
-		return disposition;
+	public PermutationMatrix getMatrix() {
+		return matrix;
 	}
 
-	public void setDisposition(String disposition) {
-		this.disposition = disposition;
+	public void setMatrix(PermutationMatrix matrix) {
+		this.matrix = matrix;
 	}
-	
+
 }

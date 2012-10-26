@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views;bundle-version="3.6.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.data;bundle-version="3.1.0",
- org.csstudio.utility.jms;bundle-version="1.0.0"
+ org.csstudio.utility.jms;bundle-version="1.0.0",
+ org.csstudio.csdata;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.mail.handlers,
  org.csstudio.alarm.table,

@@ -8,11 +8,14 @@
 package org.csstudio.opibuilder.persistence;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 
 
@@ -38,6 +41,14 @@ public class URLPath implements IPath {
 	 * @param url
 	 */
 	public URLPath(String url){
+		if (url.startsWith("platform:/")) {
+			try {
+				URL tmpURL = FileLocator.find(new URL(url));
+				if (tmpURL != null)
+					url = tmpURL.toString();
+			} catch (MalformedURLException e) {
+			}
+		}
 		this.url = url;	
 		int i = url.indexOf(DEVICE_SEPARATOR);
 		if(i != -1){

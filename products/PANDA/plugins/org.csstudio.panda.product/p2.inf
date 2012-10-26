@@ -3,7 +3,7 @@
 # http://www.ralfebert.de/blog/eclipsercp/p2_updates_tutorial/
 
 instructions.configure=\        
-  addRepository(type:0,name:PANDA CSS update site,location:http${#58}//www.ep1.rub.de/css/updates,enabled:true);\
-  addRepository(type:1,name:PANDA CSS update site,location:http${#58}//www.ep1.rub.de/css/updates,enabled:true);\
+  addRepository(type:0,name:PANDA CSS update site,location:http${#58}//www.ep1.rub.de/css-panda/updates,enabled:true);\
+  addRepository(type:1,name:PANDA CSS update site,location:http${#58}//www.ep1.rub.de/css-panda/updates,enabled:true);\
   mkdir(path:${installFolder}/logs)
   

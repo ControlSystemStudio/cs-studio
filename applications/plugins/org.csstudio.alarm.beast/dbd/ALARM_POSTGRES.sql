@@ -154,8 +154,8 @@ CREATE TABLE AUTOMATED_ACTION (
     TITLE             VARCHAR(100)     NOT NULL ,
     AUTO_ACTION_ORDER INT              NOT NULL ,
     DETAIL            VARCHAR(4000)    NOT NULL ,
-	DELAY             INT              NOT NULL ,
-	PRIMARY KEY (COMPONENT_ID, TITLE)
+    DELAY             INT              NOT NULL ,
+    PRIMARY KEY (COMPONENT_ID, TITLE)
 );
 
 
