@@ -44,8 +44,9 @@ public class DesyJCADataSource extends JCADataSource {
 
     @Override
     @Nonnull
-    protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+    protected ChannelHandler createChannel(@Nonnull final String channelName) {
+        // TODO (2012-10-26 jp adapted to new pvmanager)
+        return new DesyJCAChannelHandler(channelName, this);
     }
 
     @CheckForNull

@@ -37,7 +37,7 @@ import org.epics.pvmanager.*;
  *
  * @author carcassi
  */
-class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
+public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
 
     private static final int LARGE_ARRAY = 100000;
     private final JCADataSource jcaDataSource;
