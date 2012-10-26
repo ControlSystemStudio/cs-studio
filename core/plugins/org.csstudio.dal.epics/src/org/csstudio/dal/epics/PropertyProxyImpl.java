@@ -374,7 +374,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			final MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, param);
 			return m;
 		} catch (final Throwable th) {
-			throw new RemoteException(this, "Failed to create new monitor: "+PlugUtilities.toShortErrorReport(th), th);
+			throw new RemoteException(this, "Failed to create new monitor for " + this.getUniqueName() + ": " + PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 

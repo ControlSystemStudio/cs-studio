@@ -1,50 +1,49 @@
 package org.csstudio.dal.simulator;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.csstudio.dal.context.AbstractApplicationContext;
+import org.csstudio.dal.spi.LinkPolicy;
+import org.csstudio.dal.spi.PropertyFactory;
+import org.csstudio.dal.spi.PropertyFactoryService;
+import org.epics.css.dal.simulation.PropertyFactoryImpl;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator extends AbstractUIPlugin {
+public class Activator implements BundleActivator, PropertyFactoryService {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.dal.simulator"; //$NON-NLS-1$
+	private static BundleContext context;
 
-	// The shared instance
-	private static Activator plugin;
+	static BundleContext getContext() {
+		return context;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext bundleContext) throws Exception {
+		Activator.context = bundleContext;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext bundleContext) throws Exception {
+		Activator.context = null;
+	}
 	
-	/**
-	 * The constructor
-	 */
-	public Activator() {
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy) {
+		
+		PropertyFactoryImpl pf= new PropertyFactoryImpl();
+		pf.initialize(ctx, linkPolicy);
+		return pf;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
+	
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy, String plugName) {
+		// not required
+		return null;
 	}
 
 }
