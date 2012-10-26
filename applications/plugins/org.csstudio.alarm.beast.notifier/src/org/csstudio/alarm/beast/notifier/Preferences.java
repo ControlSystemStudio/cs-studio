@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
 import org.csstudio.auth.security.SecureStorage;
@@ -11,16 +18,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class Preferences {
-    final public static String THRESHOLD = "threshold";
-    final public static String SMTP_SENDER = "smtp_sender";
-    final public static String SMS_URL = "sms_url";
-    final public static String SMS_USER = "sms_user";
-    final public static String SMS_PASSWORD = "sms_password";
+    final public static String TIMER_THRESHOLD = "timer_threshold";
+    final public static String THREAD_THRESHOLD = "thread_threshold";
 
 	/**
 	 * @param setting Preference identifier
 	 * @return String from preference system, or <code>null</code>
 	 */
+	@SuppressWarnings("unused")
 	private static String getString(final String setting) {
 		return getString(setting, null);
 	}
@@ -39,33 +44,22 @@ public class Preferences {
 	}
 
 	/** @return threshold for automated actions */
-	public static int getThreshold() {
+	public static int getTimerThreshold() {
 		final IPreferencesService service = Platform.getPreferencesService();
 		if (service == null)
 			return 100; // default
-		return service.getInt(Activator.ID, THRESHOLD, 100, null);
+		return service.getInt(Activator.ID, TIMER_THRESHOLD, 100, null);
+	}
+	
+	/** @return threshold for automated actions */
+	public static int getThreadThreshold() {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service == null)
+			return 100; // default
+		return service.getInt(Activator.ID, THREAD_THRESHOLD, 100, null);
 	}
 
-    /** @return SMTP Password */
-    public static String getSMTP_Sender() {
-        return getString(SMTP_SENDER, "");
-    }
-
-	/** @return SMS URL */
-	public static String getSMS_URL() {
-		return getString(SMS_URL);
-	}
-
-	/** @return SMS User name */
-	public static String getSMS_User() {
-		return getSecureString(SMS_USER);
-	}
-
-	/** @return SMS Password */
-	public static String getSMS_Password() {
-		return getSecureString(SMS_PASSWORD);
-	}
-
+	@SuppressWarnings("unused")
 	private static String getSecureString(final String setting) {
 		String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);
 		return value;

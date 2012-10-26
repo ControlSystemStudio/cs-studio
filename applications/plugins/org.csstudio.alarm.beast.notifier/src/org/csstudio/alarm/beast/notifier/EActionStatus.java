@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
 /**
@@ -8,9 +15,8 @@ package org.csstudio.alarm.beast.notifier;
 public enum EActionStatus {
 	
     OK(Messages.Status_OK, 0),
-    FORCED(Messages.Status_FORCED, 1),
-    STOPPED(Messages.Status_STOPPED, 2),
-    CANCELED(Messages.Status_CANCELED, 3);
+    CANCELED(Messages.Status_CANCELED, 1),
+    FAILED(Messages.Status_FAILED, 2);
 
 	final private String display_name;
     final private int priority;

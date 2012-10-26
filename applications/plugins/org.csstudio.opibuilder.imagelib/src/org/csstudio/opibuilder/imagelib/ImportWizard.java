@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.imagelib;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -14,17 +21,14 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * The import wizard of BOY Symbol Images Library.
- * 
- * @author SOPRA Group
- * 
  */
 public class ImportWizard extends Wizard implements IImportWizard {
 
 	private static final String WINDOW_TITLE = "Import BOY Image Library";
 	private static final String WIZARD_PAGE = "BOY Image Library";
 	private static final String WIZARD_PAGE_TITLE = "Import BOY Image Library";
-	private static final String WIZARD_PAGE_DESCRIPTION = "Import the library of images come with BOY. " +
-			"It containes more than 200 electrical and fluid symbols.";
+	private static final String WIZARD_PAGE_DESCRIPTION = "Import the library of images come with BOY. "
+			+ "It containes more than 200 electrical and fluid symbols.";
 
 	@Override
 	public boolean performFinish() {

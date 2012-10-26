@@ -11,6 +11,7 @@
  */
 package org.apache.batik.utils;
 
+import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
@@ -25,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.GenericCDATASection;
 import org.apache.batik.dom.GenericText;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGStylableElement;
 import org.apache.batik.gvt.renderer.ImageRenderer;
@@ -38,23 +40,26 @@ import org.apache.batik.util.CSSConstants;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.CharacterData;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGSVGElement;
 
 public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 
 	private BufferedImage bufferedImage;
-	private Document document;
+	private Document originalDocument, document;
 	private int canvasWidth = -1, canvasHeight = -1;
 	private Rectangle2D canvasAOI;
 	private RenderingHints renderingHints;
-	private Color color;
-	private Color oldColor;
+	private Color oldColor, color;
+	private double[][] matrix;
 
 	public SimpleImageTranscoder(Document document) {
 		this.document = document;
+		this.originalDocument = document;
 		renderingHints = new RenderingHints(null);
 	}
 
@@ -168,11 +173,11 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		} catch (TranscoderException e) {
 		}
 	}
-
+	
 	protected void transcode(Document document, String uri, TranscoderOutput output) throws TranscoderException {
 		super.transcode(document, uri, output);
-		int w = (int) (width + 0.5);
-		int h = (int) (height + 0.5);
+		int w = (int) (this.width + 0.5);
+		int h = (int) (this.height + 0.5);
 		ImageRenderer renderer = createImageRenderer();
 		renderer.updateOffScreen(w, h);
 		// curTxf.translate(0.5, 0.5);
@@ -206,12 +211,33 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		return color;
 	}
 
-	public void setColor(Color color) {
-		if (color == null || (this.color != null && color.equals(this.color)))
+	public void setColor(Color newColor) {
+		if (newColor == null || (this.color != null && newColor.equals(this.color)))
 			return;
 		this.oldColor = this.color;
-		this.color = color;
+		this.color = newColor;
 		contentChanged();
+	}
+	
+	public double[][] getTransformMatrix() {
+		return matrix;
+	}
+	
+	public void setTransformMatrix(double[][] newMatrix) {
+		if (newMatrix == null)
+			return;
+		this.matrix = newMatrix;
+		this.document = applyMatrix(matrix);
+		// Transformed document is based on original => reset color
+		this.oldColor = null;
+		contentChanged();
+	}
+	
+	public Dimension getDocumentSize() {
+		SVGSVGElement svgElmt = ((SVGOMDocument) document).getRootElement();
+		double width = svgElmt.getWidth().getBaseVal().getValue();
+		double height = svgElmt.getHeight().getBaseVal().getValue();
+		return new Dimension((int) Math.round(width), (int) Math.round(height));
 	}
 	
 	public Document copyDocument() {
@@ -299,5 +325,106 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			builder.append("0");
 		}
 		return builder.toString().toUpperCase();
+	}
+	
+	private Document applyMatrix(double[][] matrix) {
+		// creation of the SVG document
+		DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+		String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+		final Document newDocument = impl.createDocument(svgNS, "svg", null);
+
+		// get the root element (the 'svg' element).
+		Element svgRoot = newDocument.getDocumentElement();
+		
+		// get the original document size
+		SVGSVGElement svgElmt = ((SVGOMDocument) originalDocument).getRootElement();
+		double width = svgElmt.getWidth().getBaseVal().getValue();
+		double height = svgElmt.getHeight().getBaseVal().getValue();
+
+		// current Transformation Matrix
+		double[][] CTM = { 
+				{ matrix[0][0], matrix[0][1], 0 }, 
+				{ matrix[1][0], matrix[1][1], 0 }, 
+				{ 0, 0, 1 } };
+		
+		// apply permutation to viewBox corner points
+		double[] a = transformP(0.0, 0.0, 1.0, CTM);
+		double[] b = transformP(width, 0.0, 1.0, CTM);
+		double[] c = transformP(width, height, 1.0, CTM);
+		double[] d = transformP(0.0, height, 1.0, CTM);
+
+		// find new points
+		double minX = findMin(a[0], b[0], c[0], d[0]);
+		double minY = findMin(a[1], b[1], c[1], d[1]);
+		double maxX = findMax(a[0], b[0], c[0], d[0]);
+		double maxY = findMax(a[1], b[1], c[1], d[1]);
+		double newWidth = maxX - minX;
+		double newHeight = maxY - minY;
+
+		// set the width and height attributes on the root 'svg' element.
+		svgRoot.setAttributeNS(null, "width", String.valueOf(newWidth));
+		svgRoot.setAttributeNS(null, "height", String.valueOf(newHeight));
+		String vbs = minX + " " + minY + " " + newWidth + " " + newHeight;
+		svgRoot.setAttributeNS(null, "viewBox", vbs);
+		svgRoot.setAttributeNS(null, "preserveAspectRatio", "none");
+		
+		// Create the transform matrix
+		StringBuilder sb = new StringBuilder();
+		// a c e
+		// b d f
+		// 0 0 1
+		sb.append("matrix(");
+		sb.append(CTM[0][0] + ",");
+		sb.append(CTM[1][0] + ",");
+		sb.append(CTM[0][1] + ",");
+		sb.append(CTM[1][1] + ",");
+		sb.append(CTM[0][2] + ",");
+		sb.append(CTM[1][2] + ")");
+		Element graphic = newDocument.createElementNS(svgNS, "g");
+		graphic.setAttributeNS(null, "transform", sb.toString());
+
+		// Attach the transform to the root 'svg' element.
+		Node copiedRoot = newDocument.importNode(originalDocument.getDocumentElement(), true);
+		graphic.appendChild(copiedRoot);
+		svgRoot.appendChild(graphic);
+
+		// TODO: remove this part => debug
+		// Write to file
+//		try {
+//			TransformerFactory factory = TransformerFactory.newInstance();
+//			Transformer transformer = factory.newTransformer();
+//			FileWriter writer = new FileWriter("/home/ITER/arnaudf/perso/testX.svg");
+//			Source source = new DOMSource(newDocument);
+//			Result result = new StreamResult(writer);
+//			transformer.transform(source, result);
+//			writer.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		return newDocument;
+	}
+	
+	// apply transformation to point { x, y, z } (affine transformation)
+	private double[] transformP(double x, double y, double z, double[][] matrix) {
+		double[] p = { x, y, z };
+		double[] pp = new double[3];
+		for (int a = 0; a < 3; a++)
+			for (int b = 0; b < 3; b++)
+				pp[a] += matrix[a][b] * p[b];
+		return pp;
+	}
+	
+	private double findMax(double a, double b, double c, double d) {
+		double result = Math.max(a, b);
+		result = Math.max(result, c);
+		result = Math.max(result, d);
+		return result;
+	}
+	
+	private double findMin(double a, double b, double c, double d) {
+		double result = Math.min(a, b);
+		result = Math.min(result, c);
+		result = Math.min(result, d);
+		return result;
 	}
 }
