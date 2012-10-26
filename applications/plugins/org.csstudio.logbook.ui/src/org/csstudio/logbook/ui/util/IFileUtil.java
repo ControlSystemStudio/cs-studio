@@ -135,7 +135,7 @@ public class IFileUtil {
 			project.setHidden(true);
 			if (!ifile.exists())
 				ifile.create(new FileInputStream(file), IResource.NONE, null);
-			file.delete();
+//			file.delete();
 			return ifile;
 		} catch (CoreException e) {
 			e.printStackTrace();

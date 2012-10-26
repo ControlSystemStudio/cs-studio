@@ -90,28 +90,25 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 					// Restore Action
 					LogEntry logEntry = getLogEntryChangeset().getLogEntry();
 					for (Attachment attachment : logEntry.getAttachment()) {
-						if (attachment.getFileName().equals(
+						File file = new File(attachment.getFileName());
+						if (file.getName().equals(
 								textFileName.getText())) {
 							try {
 								IWorkbenchPage page = PlatformUI.getWorkbench()
 										.getActiveWorkbenchWindow()
 										.getActivePage();
 								IFile ifile = IFileUtil.getInstance()
-										.createFileResource(
-												attachment.getFileName(),
-												attachment.getInputStream());
+										.createFileResource(file);
 								IEditorDescriptor desc = PlatformUI
 										.getWorkbench()
 										.getEditorRegistry()
 										.getDefaultEditor(
 												attachment.getFileName());
-								IEditorPart part;
-
-								part = page.openEditor(new FileEditorInput(
+								IEditorPart part = page.openEditor(new FileEditorInput(
 										ifile), desc.getId());
 								IFileUtil.getInstance().registerPart(part,
 										ifile);
-							} catch (PartInitException | IOException e1) {
+							} catch (PartInitException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}

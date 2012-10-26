@@ -588,6 +588,10 @@ public class LogEntryWidget extends Composite {
 		}
 		logEntryBuilder.setLogbooks(newLogbooks);
 		Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
+		for(Attachment attachment : getLogEntryChangeset().getLogEntry().getAttachment()){
+			if(!imageStackWidget.getImageFilenames().contains(attachment.getFileName()))
+				newAttachments.add(AttachmentBuilder.attachment(attachment));
+		}
 		for (String attachment : imageStackWidget.getImageFilenames()) {
 			newAttachments.add(AttachmentBuilder.attachment(attachment)
 					.inputStream(new FileInputStream(attachment)));
@@ -656,6 +660,7 @@ public class LogEntryWidget extends Composite {
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 			java.util.List<String> imageFileNames = new ArrayList<String>();
 			for (Attachment attachment : logEntry.getAttachment()) {
+				if(attachment.getFileName().endsWith(".png"))
 				imageFileNames.add(attachment.getFileName());
 			}
 			imageStackWidget.setImageFilenames(imageFileNames);
