@@ -6,6 +6,9 @@ package org.csstudio.logbook.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,11 +89,17 @@ public class ImageStackWidget extends Composite {
 				// TODO does not center
 				// TODO does not preserve aspect ratio
 				// use the OwnerDrawLabelProvider
-				String fileName = cell.getElement() == null ? "" : cell.getElement()
-						.toString();
-				ImageData imageData = new ImageData(fileName);
-				cell.setImage(new Image(getDisplay(), imageData
-						.scaledTo(90, 90)));
+				try {
+					String fileName = cell.getElement() == null ? "" : cell
+							.getElement().toString();
+					ImageData imageData = new ImageData(new FileInputStream(
+							fileName));
+					cell.setImage(new Image(getDisplay(), imageData.scaledTo(
+							90, 90)));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		TableColumn tblclmnImage = tableViewerColumn.getColumn();
@@ -188,7 +197,8 @@ public class ImageStackWidget extends Composite {
 
 	public void setImageFilenames(List<String> imageFilenames) {
 		List<String> oldValue = this.imageFilenames;
-		this.imageFilenames = imageFilenames == null ? new ArrayList<String>() : imageFilenames;
+		this.imageFilenames = imageFilenames == null ? new ArrayList<String>()
+				: imageFilenames;
 		changeSupport.firePropertyChange("imageFilenames", oldValue,
 				this.imageFilenames);
 	}

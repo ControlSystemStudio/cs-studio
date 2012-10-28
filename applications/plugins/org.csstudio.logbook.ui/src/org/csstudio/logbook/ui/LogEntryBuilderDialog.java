@@ -3,23 +3,14 @@
  */
 package org.csstudio.logbook.ui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.csstudio.logbook.LogEntryBuilder;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * @author shroffk
@@ -46,10 +37,10 @@ public class LogEntryBuilderDialog extends Dialog {
 		gridLayout.marginWidth = 2;
 		gridLayout.marginHeight = 2;
 
-		LogEntryWidget logEntryWidget = new LogEntryWidget(container, SWT.NONE);
+		LogEntryWidget logEntryWidget = new LogEntryWidget(container, SWT.NONE, true);
 		GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1);
-		gd_logEntryWidget.heightHint = 283;
+		gd_logEntryWidget.heightHint = 450;
 		logEntryWidget.setLayoutData(gd_logEntryWidget);
 		logEntryWidget.setEditable(true);
 		if (this.logEntryBuilder != null) {

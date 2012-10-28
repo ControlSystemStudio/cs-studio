@@ -45,7 +45,7 @@ public class LogEntryWidgetTest extends ApplicationWindow {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(5, false));
 		final LogEntryWidget logEntryWidget = new LogEntryWidget(container,
-				SWT.WRAP);
+				SWT.WRAP, true);
 		logEntryWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 5, 1));
 

@@ -151,7 +151,7 @@ public class LogViewer extends ViewPart {
 						}
 					}
 				});
-		logEntryWidget = new LogEntryWidget(parent, SWT.NONE);
+		logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false);
 		FormData fd_logEntryWidget = new FormData();
 		fd_logEntryWidget.right = new FormAttachment(100, -3);
 		fd_logEntryWidget.top = new FormAttachment(label, -5);

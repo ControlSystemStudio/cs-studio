@@ -71,8 +71,8 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
-				dlg.setFilterExtensions(new String[] { "*.png" }); //$NON-NLS-1$
-				dlg.setFilterNames(new String[] { "PNG Image" }); //$NON-NLS-1$
+				dlg.setFilterExtensions(new String[] { "*.png", "*.jpg" }); //$NON-NLS-1$
+				dlg.setFilterNames(new String[] { "PNG Image", "JPEG Image" }); //$NON-NLS-1$
 				final String filename = dlg.open();
 				if (filename != null) {
 					imageStackWidget.addImageFilename(filename);

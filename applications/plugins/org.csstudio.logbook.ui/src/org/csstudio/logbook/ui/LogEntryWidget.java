@@ -116,6 +116,7 @@ public class LogEntryWidget extends Composite {
 	private Label label_horizontal;
 	private Composite composite;
 	private ErrorBar errorBar;
+	private final boolean newWindow;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -125,8 +126,9 @@ public class LogEntryWidget extends Composite {
 		changeSupport.removePropertyChangeListener(listener);
 	}
 
-	public LogEntryWidget(final Composite parent, int style) {
+	public LogEntryWidget(final Composite parent, int style, final boolean newWindow) {
 		super(parent, style);
+		this.newWindow = newWindow;
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 2;
 		gridLayout.marginWidth = 2;
@@ -406,12 +408,11 @@ public class LogEntryWidget extends Composite {
 		fd_btnAddImage.right = new FormAttachment(32);
 		btnAddImage.setLayoutData(fd_btnAddImage);
 		btnAddImage.setText("Add Image");
-
 		btnAddScreenshot = new Button(tbtmAttachmentsComposite, SWT.NONE);
 		btnAddScreenshot.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				addScreenshot(true);
+				addScreenshot(true, newWindow);
 			}
 		});
 		FormData fd_btnAddScreenshot = new FormData();
@@ -425,7 +426,7 @@ public class LogEntryWidget extends Composite {
 		btnCSSWindow.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				addScreenshot(false);
+				addScreenshot(false, newWindow);
 			}
 		});
 		FormData fd_btnCSSWindow = new FormData();
@@ -565,10 +566,10 @@ public class LogEntryWidget extends Composite {
 			} else {
 				propertyWidgetFactories = Collections.emptyMap();
 			}
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// Failed to get a client to the logbook
 			// Display exception and disable editing.
-			e.printStackTrace();
+			setLastException(ex);
 		}
 
 	}
@@ -588,8 +589,10 @@ public class LogEntryWidget extends Composite {
 		}
 		logEntryBuilder.setLogbooks(newLogbooks);
 		Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
-		for(Attachment attachment : getLogEntryChangeset().getLogEntry().getAttachment()){
-			if(!imageStackWidget.getImageFilenames().contains(attachment.getFileName()))
+		for (Attachment attachment : getLogEntryChangeset().getLogEntry()
+				.getAttachment()) {
+			if (!imageStackWidget.getImageFilenames().contains(
+					attachment.getFileName()))
 				newAttachments.add(AttachmentBuilder.attachment(attachment));
 		}
 		for (String attachment : imageStackWidget.getImageFilenames()) {
@@ -660,8 +663,8 @@ public class LogEntryWidget extends Composite {
 			tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 			java.util.List<String> imageFileNames = new ArrayList<String>();
 			for (Attachment attachment : logEntry.getAttachment()) {
-				if(attachment.getFileName().endsWith(".png"))
-				imageFileNames.add(attachment.getFileName());
+				if (attachment.getFileName().endsWith(".png"))
+					imageFileNames.add(attachment.getFileName());
 			}
 			imageStackWidget.setImageFilenames(imageFileNames);
 		} else {
@@ -689,17 +692,19 @@ public class LogEntryWidget extends Composite {
 	}
 
 	@SuppressWarnings("nls")
-	private void addScreenshot(final boolean full) {
+	private void addScreenshot(final boolean full, final boolean newWindow) {
 		// Hide the shell that displays the dialog
 		// to keep the dialog itself out of the screenshot
-		getShell().setVisible(false);
+		if (newWindow)
+			getShell().setVisible(false);
 
 		// Take the screen shot
 		final Image image = full ? Screenshot.getFullScreenshot() : Screenshot
 				.getApplicationScreenshot();
 
 		// Show the dialog again
-		getShell().setVisible(true);
+		if (newWindow)
+			getShell().setVisible(true);
 
 		// Write to file
 		try {
