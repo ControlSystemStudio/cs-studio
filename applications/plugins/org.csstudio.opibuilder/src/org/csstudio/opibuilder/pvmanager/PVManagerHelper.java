@@ -5,11 +5,25 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.opibuilder.datadefinition.DataType;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.epics.pvmanager.data.Array;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Scalar;
+import org.epics.pvmanager.data.VByte;
+import org.epics.pvmanager.data.VByteArray;
+import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VEnumArray;
+import org.epics.pvmanager.data.VFloat;
+import org.epics.pvmanager.data.VFloatArray;
+import org.epics.pvmanager.data.VInt;
+import org.epics.pvmanager.data.VIntArray;
+import org.epics.pvmanager.data.VShort;
+import org.epics.pvmanager.data.VShortArray;
+import org.epics.pvmanager.data.VString;
+import org.epics.pvmanager.data.VStringArray;
 import org.epics.pvmanager.data.ValueUtil;
 
 /**
@@ -18,7 +32,7 @@ import org.epics.pvmanager.data.ValueUtil;
  * @author Xihui Chen, Kay Kasemir
  *
  */
-public class PVManagerHelper{
+public class PVManagerHelper{	
 	
 	public static final int DEFAULT_PRECISION = 4;//$NON-NLS-1$
 	public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
@@ -43,6 +57,41 @@ public class PVManagerHelper{
 		
 	}
 	
+	public static DataType getDataType(Object obj){
+		Class<?> typeClass = ValueUtil.typeOf(obj);
+		if(typeClass == VByte.class)
+			return DataType.BYTE;
+		if(typeClass == VEnum.class)
+			return DataType.ENUM;
+		if(typeClass == VDouble.class)
+			return DataType.DOUBLE;
+		if(typeClass == VFloat.class)
+			return DataType.FLOAT;
+		if(typeClass == VInt.class)
+			return DataType.INT;
+		if(typeClass == VShort.class)
+			return DataType.SHORT;
+		if(typeClass == VString.class)
+			return DataType.STRING;
+		
+		if(typeClass == VByteArray.class)
+			return DataType.BYTE_ARRAY;		
+		if(typeClass == VDoubleArray.class)
+			return DataType.DOUBLE_ARRAY;
+		if(typeClass == VEnumArray.class)
+			return DataType.ENUM_ARRAY;
+		if(typeClass == VFloatArray.class)
+			return DataType.FLOAT_ARRAY;
+		if(typeClass == VIntArray.class)
+			return DataType.INT_ARRAY;
+		if(typeClass == VShortArray.class)
+			return DataType.SHORT_ARRAY;
+		if(typeClass == VStringArray.class)
+			return DataType.STRING_ARRAY;	
+		
+		return DataType.UNKNOWN;
+	}
+	
 	/**Get size of the PVManager object value.
 	 * @param obj
 	 * @return 1 for scalar. Otherwise return size of the array.
@@ -53,22 +102,7 @@ public class PVManagerHelper{
         }
 
         if (obj instanceof Array) {
-            Object array = ((Array<?>) obj).getArray();
-            if (array instanceof byte[]) {
-                return ((byte[]) array).length;
-            }
-            if (array instanceof short[]) {
-            	return ((short[]) array).length;
-            }
-            if (array instanceof int[]) {
-            	return ((int[]) array).length;
-            }
-            if (array instanceof float[]) {
-            	return ((float[]) array).length;
-            }
-            if (array instanceof double[]) {
-            	return ((double[]) array).length;
-            }
+            return ((Array<?>) obj).getSizes().get(0);
         }
         return 1;
 	}
