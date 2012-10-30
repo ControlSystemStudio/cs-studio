@@ -27,7 +27,7 @@ import org.epics.pvmanager.data.AlarmSeverity;
  */
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
 {
-	final private Map<AlarmSeverity, Image> images = new HashMap<>();
+	final private Map<AlarmSeverity, Image> images = new HashMap<AlarmSeverity, Image>();
 	
 	public PVTreeLabelProvider(final Control widget)
 	{

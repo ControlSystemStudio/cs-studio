@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS PV Tree Plug-in
 Bundle-SymbolicName: org.csstudio.diag.epics.pvtree;singleton:=true
-Bundle-Version: 3.1.2.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.diag.epics.pvtree.Plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Display EPICS record link hierarchy
@@ -18,4 +18,4 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil.ui,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
