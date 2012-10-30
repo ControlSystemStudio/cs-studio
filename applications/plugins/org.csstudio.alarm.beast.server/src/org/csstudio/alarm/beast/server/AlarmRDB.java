@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
@@ -221,7 +222,7 @@ public class AlarmRDB
                     final Timestamp time = result.getTimestamp(16);
                     final org.epics.util.time.Timestamp timestamp = result.wasNull()
                         ? org.epics.util.time.Timestamp.now()
-                        : org.epics.util.time.Timestamp.of(time.getTime()/1000L, time.getNanos());
+                        : TimestampHelper.toEPICSTime(time);
 
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
 
@@ -355,7 +356,7 @@ public class AlarmRDB
             updateStateStatement.setInt(3, severity_id);
             updateStateStatement.setInt(4, message_id);
             updateStateStatement.setString(5, value);
-            Timestamp sql_time = new Timestamp(timestamp.toDate().getTime());
+            Timestamp sql_time = TimestampHelper.toSQLTime(timestamp);
             if (sql_time.getTime() == 0)
             {    // MySQL will throw Data Truncation exception on 0 time stamps
                 sql_time = new Timestamp(new Date().getTime());
@@ -363,8 +364,6 @@ public class AlarmRDB
                         "State update for {0} corrects time stamp {1} to now",
                         new Object[] { pv.getPathName(), timestamp });
             }
-            else
-                sql_time.setNanos(timestamp.getNanoSec());
             updateStateStatement.setTimestamp(6, sql_time);
             updateStateStatement.setInt(7, pv.getID());
             updateStateStatement.execute();

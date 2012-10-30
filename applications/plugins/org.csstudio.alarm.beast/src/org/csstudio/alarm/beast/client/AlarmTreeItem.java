@@ -15,12 +15,12 @@ import java.util.List;
 
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.ITimestamp.Format;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
 
 /** Base class for items in the <u>client's</u> alarm configuration tree.
  *  <p>
@@ -65,7 +65,7 @@ public class AlarmTreeItem extends TreeItem
     private String message = SeverityLevel.OK.getDisplayName();
 
     /** Time of last configuration change */
-    private ITimestamp config_time;
+    private Timestamp config_time;
 
     /** Initialize alarm tree item
      *  @param parent Parent item or <code>null</code>
@@ -205,11 +205,11 @@ public class AlarmTreeItem extends TreeItem
     {
         if (config_time == null)
             return Messages.Unknown;
-        return config_time.format(Format.DateTimeSeconds);
+        return TimestampHelper.format(config_time);
     }
 
     /** @param config_time Time of last configuration change */
-    synchronized void setConfigTime(final ITimestamp config_time)
+    synchronized void setConfigTime(final Timestamp config_time)
     {
         this.config_time = config_time;
     }
