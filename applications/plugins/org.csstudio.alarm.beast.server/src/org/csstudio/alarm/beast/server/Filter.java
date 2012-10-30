@@ -11,16 +11,20 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.csstudio.data.values.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VType;
+
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 
 /** Filter that computes alarm enablement from expression.
  *  <p>
  *  Example:
  *  When configured with formula
- *    "2*PV1 > PV2",
+ *  <pre>2*PV1 > PV2</pre>
  *  Filter will subscribe to PVs "PV1" and "PV2".
  *  For each value change in the input PVs, the formula is
  *  evaluated and the listener is notified of the result.
@@ -33,7 +37,7 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Filter implements PVListener
+public class Filter
 {
     /** Listener to notify when the filter computes a new value */
 	final private FilterListener listener;
@@ -47,7 +51,7 @@ public class Filter implements PVListener
 	/** This array is linked to <code>variables</code>:
 	 *  Same size, and there's a PV for each VariableNode.
 	 */
-	final private PV pvs[];
+	final private PVReader<VType> pvs[];
 
 	/** Initialize
 	 *  @param filter_expression Formula that might contain PV names
@@ -63,89 +67,57 @@ public class Filter implements PVListener
 			variables = new VariableNode[0];
 		else
 		    variables = vars;
-		pvs = new PV[variables.length];
-		for (int i=0; i<pvs.length; ++i)
-			pvs[i] = PVFactory.createPV(variables[i].getName());
+
+		// TODO: Use one reader for all channels?
+		pvs = (PVReader<VType>[]) new PVReader[variables.length];
 	}
 
 	/** Start control system subscriptions */
 	public void start() throws Exception
 	{
-		for (PV	pv : pvs)
-		{
-			pv.addListener(this);
-			pv.start();
-		}
+        for (int i=0; i<pvs.length; ++i)
+        {
+            final int index = i;
+            final PVReaderListener pvlistener = new PVReaderListener()
+            {
+                @Override
+                public void pvChanged()
+                {
+                    final PVReader<VType> pv = pvs[index];
+                    final VariableNode var = variables[index];
+                    final Exception error = pv.lastException();
+                    if (error != null)
+                    {
+                        Activator.getLogger().log(Level.WARNING, "Error from PV " + pv.getName() + " (var. " + var.getName() + ")", error);
+                        var.setValue(Double.NaN);
+                    }
+                    else
+                    {
+                        final double value = VTypeHelper.toDouble(pv.getValue());
+                        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
+                                new Object[] { formula.getFormula(), pv.getName(), value });
+                        var.setValue(value);
+                    }
+                    evaluate();
+                }
+            };
+            pvs[i] = PVManager.read(vType(variables[i].getName())).listeners(pvlistener).timeout(ofSeconds(30)).maxRate(ofSeconds(0.5));
+        }
 	}
 
 	/** Stop control system subscriptions */
 	public void stop()
 	{
-		for (PV	pv : pvs)
-		{
-			pv.removeListener(this);
-			pv.stop();
-		}
-	}
-
-	/** Locate variable for a PV
-	 *  @param pv PV
-	 *  @return VariableNode that uses that PV or <code>null</code>
-	 */
-	private VariableNode findVariable(final PV pv)
-	{
-	    // pvs[] and variables[] are linked:
-	    // pvs[i] is the PV for variables[i].
-	    // Using linear lookup assuming there aren't many vars,
-	    // and a HashMap would mostly waste memory
-	    for (int i = 0; i < pvs.length; i++)
-        {
-            if (pv == pvs[i])
-                return variables[i];
-        }
-		return null;
+		for (PVReader<VType> pv : pvs)
+		    pv.close();
 	}
 
 	/** Evaluate filter formula with current input values */
 	private void evaluate()
 	{
 		final double value = formula.eval();
+		// TODO Only update on _change_, not whenever inputs send an update
 		listener.filterChanged(value);
-	}
-
-	/** @see PVListener */
-    @Override
-    public void pvDisconnected(final PV pv)
-	{
-	    // Ignore events from 'stop()' call
-	    if (!pv.isRunning())
-	        return;
-		final VariableNode var = findVariable(pv);
-		if (var == null)
-		{
-            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
-			return;
-		}
-		var.setValue(Double.NaN);
-		evaluate();
-	}
-
-	/** @see PVListener */
-	@Override
-    public void pvValueUpdate(final PV pv)
-	{
-		final VariableNode var = findVariable(pv);
-		if (var == null)
-		{
-            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
-			return;
-		}
-
-        final double value = ValueUtil.getDouble(pv.getValue());
-        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
-                new Object[] { formula.getFormula(), pv.getName(), value });
-        var.setValue(value);
-		evaluate();
 	}
 
 	/** @return String representation for debugging */
