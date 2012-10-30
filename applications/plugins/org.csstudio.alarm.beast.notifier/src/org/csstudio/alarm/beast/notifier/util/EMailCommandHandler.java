@@ -47,9 +47,11 @@ public class EMailCommandHandler extends AbstractCommandHandler {
 			break;
 		case Subject:
 			subject = data.trim();
+			validateNSF(subject);
 			break;
 		case Body:
 			body = data.trim();
+			validateNSF(body);
 			break;
 		}
 	}

@@ -16,6 +16,7 @@ import org.csstudio.alarm.beast.notifier.model.IActionHandler;
 public abstract class AbstractCommandHandler implements IActionHandler {
 
 	protected final static String DELIMITERS = ",;";
+	final protected static Pattern NLSPattern = Pattern.compile("\\{\\ *[01]\\ *\\}");
 	
 	protected enum ParamType {
 		To("to", 0), Cc("cc", 1), Cci("cci", 2), Subject("subject", 3), Body("body", 4);
@@ -81,5 +82,23 @@ public abstract class AbstractCommandHandler implements IActionHandler {
 		}
 		// no pattern found => final data
 		if (!found) handleParameter(data, type);
+	}
+	
+	protected void validateNSF(String data) throws Exception {
+		String dataCopy = new String(data);
+		int beginIndex = 0, endIndex = 0;
+		while (true) {
+			beginIndex = dataCopy.indexOf('{');
+			if (beginIndex == -1) break;
+			endIndex = dataCopy.indexOf('}');
+			if (endIndex == -1)
+				throw new Exception("Invalid field: "
+						+ dataCopy.substring(beginIndex));
+			String nls = dataCopy.substring(beginIndex, endIndex + 1);
+			Matcher nlsMatcher = NLSPattern.matcher(nls);
+			if (!nlsMatcher.matches())
+				throw new Exception("Invalid field: " + nls);
+			dataCopy = dataCopy.substring(endIndex + 1);
+		}
 	}
 }
