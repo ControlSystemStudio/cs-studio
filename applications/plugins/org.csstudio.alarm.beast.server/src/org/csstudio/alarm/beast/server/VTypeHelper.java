@@ -95,7 +95,7 @@ public class VTypeHelper
     final public static Timestamp getTimestamp(final VType value)
     {
         final Time time = ValueUtil.timeOf(value);
-        if (time != null)
+        if (time != null  &&  time.isTimeValid())
             return time.getTimestamp();
         return Timestamp.now();
     }
