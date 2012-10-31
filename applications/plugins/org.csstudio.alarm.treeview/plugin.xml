@@ -74,5 +74,14 @@
          </adapter>
       </factory>
    </extension>
-
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.alarm.treeview.model.ProcessVariableNode"
+            class="org.csstudio.alarm.treeview.model.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>
