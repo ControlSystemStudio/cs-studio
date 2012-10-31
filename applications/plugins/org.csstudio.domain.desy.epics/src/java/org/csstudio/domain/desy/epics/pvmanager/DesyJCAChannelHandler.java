@@ -21,21 +21,14 @@
  */
 package org.csstudio.domain.desy.epics.pvmanager;
 
-import gov.aps.jca.Channel;
-import gov.aps.jca.Context;
 import gov.aps.jca.dbr.DBR;
-import gov.aps.jca.dbr.STS;
-import gov.aps.jca.event.MonitorEvent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.epics.time.DesyDbrTimeValidator;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.jca.JCAChannelHandler;
-import org.epics.pvmanager.jca.TypeFactory;
+import org.epics.pvmanager.jca.JCADataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +43,9 @@ import com.google.common.base.Predicate;
  */
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
+    // TODO (2012-10-26 jp adapted to new pvmanager) massive changes, removed nearly everything
+
+
     private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private final Predicate<DBR> _validator;
@@ -60,54 +56,11 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
      * @param dataType
      */
     public DesyJCAChannelHandler(@Nonnull final String channelName,
-                                 @Nullable final Context context,
-                                 final int monitorMask) {
-        super(channelName, context, monitorMask);
+                                 @Nonnull final JCADataSource dataSource) {
+        // TODO (2012-10-26 jp adapted to new pvmanager)
+        super(channelName, dataSource);
         _validator = new DesyDbrTimeValidator();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("rawtypes")
-    @Override
-    @Nonnull
-    protected TypeFactory matchFactoryFor(@Nonnull final Class<?> desiredType,
-                                          @Nonnull final Channel pChannel) {
-        return DesyTypeFactoryProvider.matchFor(pChannel);
-    }
 
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public boolean updateCache(@Nonnull final MonitorEvent event,
-                               @Nonnull final ValueCache<?> cache) {
-        final DBR rawDBR = event.getDBR();
-
-        handleFirstCacheUpdate();
-
-        if (!_validator.apply(rawDBR)) {
-            STRANGE_LOG.info("{} has invalid timestamp.", getChannelName());
-            return false;
-        }
-
-        @SuppressWarnings("unchecked")
-        final EpicsSystemVariable newValue =
-            ((AbstractDesyJCATypeFactory) vTypeFactory).createValue(getChannelName(),
-                                                                    rawDBR,
-                                                                    metadata,
-                                                                    _desyMeta);
-        cache.setValue(newValue);
-        return true;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private void handleFirstCacheUpdate() {
-        if (_desyMeta == null) {
-            _desyMeta = EpicsMetaData.EMPTY_DATA;
-            if (metadata != null) {
-                _desyMeta = ((AbstractDesyJCATypeFactory) vTypeFactory).createMetaData((STS) metadata);
-            }
-        }
-    }
 }
