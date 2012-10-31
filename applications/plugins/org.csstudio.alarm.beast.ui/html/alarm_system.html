@@ -852,7 +852,7 @@ hierarchical alarm tree, including Alarm Trigger PVs, or to rearrange
 the alarm tree layout, use the context menu of the <a href="#tree">Alarm Tree</a>.
 </p>
 
-<img class="float" src="pv_config.png" width="639" height="722"/>
+<img class="float" src="pv_config2.png" width="639" height="722"/>
 
 <p>
 The context menu entry "Configure item" opens a dialog box similar to the one
@@ -1039,6 +1039,7 @@ Examples:
 <pre>
 mailto:user@my.org
 mailto:list1@example.com,list2@example.fr
+mailto:list1@example.com;list2@example.fr;list3@example.fr
 mailto:user1@my.org?cc=support@my.org&bcc=john.doe@gmail.com
 mailto:user@my.org?cc=rf@my.org&subject=*RF Source 1 in error&body={0} Alarm raised - Water below {1} m3
 </pre>
@@ -1048,6 +1049,24 @@ Within the configuration, the text <code>{0}</code> will be replaced with the al
 and <code>{1}</code> with the value that triggered the alarm.
 </p>
 
+<h4>SMS Notifications</h4>
+<p>
+SMS notifications start with "sms:", using the RFC 3966 URL schema. 
+It will send an email at the following adresse: [sms:<i>phone_number</i>(,<i>phone_number</i>)*].
+This formatting need to be handled by the email gateway.
+</p>
+<p>
+Examples:
+</p>
+<pre>
+sms: +33 4 42 17 64 21, +33 6 03 74 36 61; +33 4 42 17 61 08
+sms: +33 6 03 74 36 61?body={0} Alarm raised - Water below {1} m3
+</pre>
+
+<p>
+Within the configuration, the text <code>{0}</code> will be replaced with the alarm severity
+and <code>{1}</code> with the value that triggered the alarm.
+</p>
 
 <h4>External Command</h4>
 <p>
@@ -1076,8 +1095,17 @@ SMS: sms URL scheme (RFC 5724). Example: "sms:+15105550101,+15105550102"
 Phone: tel URL scheme (RFC 2806). Example: "tel:+15105550101,+15105550102"s
  -->
 
-
-
+<h4>Sequence of commands</h4>
+<p>
+Several commands can be executed one after an other in the same automated notification 
+using quotes and ';' as separators.
+</p>
+<p>
+Example:
+</p>
+<pre>
+"mailto:list1@example.com,list2@example.fr";"cmd:caput SomePV 1"
+</pre>
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier.test;
 
 import java.util.ArrayList;
@@ -10,9 +17,14 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
+import org.csstudio.alarm.beast.notifier.AAData;
+import org.csstudio.alarm.beast.notifier.ItemInfo;
+import org.csstudio.alarm.beast.notifier.PVSnapshot;
+import org.csstudio.alarm.beast.notifier.actions.CommandActionImpl;
+import org.csstudio.alarm.beast.notifier.model.IActionHandler;
 import org.csstudio.alarm.beast.notifier.model.IActionValidator;
+import org.csstudio.alarm.beast.notifier.model.IActionProvider;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
-import org.csstudio.alarm.beast.notifier.model.INotificationAction;
 import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
 
 /**
@@ -22,13 +34,24 @@ import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
  */
 @SuppressWarnings("nls")
 public class TestUtils {
+	
+	public static class EmptyAction implements IAutomatedAction {
+		@Override
+		public void init(ItemInfo item, AAData auto_action,
+				IActionHandler handler) throws Exception {
+		}
+
+		@Override
+		public void execute(List<PVSnapshot> pvs) throws Exception {
+		}
+	}
 
 	/** Build action extension point map with mock classes */
-    public static Map<String, IAutomatedAction> buildExtensionPoints()
+    public static Map<String, IActionProvider> buildExtensionPoints()
 	{
-	    final Map<String, IAutomatedAction> schemeMap = new HashMap<String, IAutomatedAction>();
+	    final Map<String, IActionProvider> schemeMap = new HashMap<String, IActionProvider>();
 
-	    schemeMap.put("mailto", new IAutomatedAction()
+	    schemeMap.put("mailto", new IActionProvider()
 		{
             @Override
             public IActionValidator getValidator()
@@ -37,13 +60,13 @@ public class TestUtils {
             }
 
             @Override
-            public INotificationAction getNotifier()
+            public IAutomatedAction getNotifier()
             {
-                return new MockEMailNotificationAction();
+                return new EmptyAction();
             }
 		});
 
-        schemeMap.put("smsto", new IAutomatedAction()
+        schemeMap.put("smsto", new IActionProvider()
         {
             @Override
             public IActionValidator getValidator()
@@ -52,9 +75,24 @@ public class TestUtils {
             }
 
             @Override
-            public INotificationAction getNotifier()
+            public IAutomatedAction getNotifier()
             {
-                return new MockSMSNotificationAction();
+                return new EmptyAction();
+            }
+        });
+        
+        schemeMap.put("cmd", new IActionProvider()
+        {
+            @Override
+            public IActionValidator getValidator()
+            {
+                return null;
+            }
+
+            @Override
+            public IAutomatedAction getNotifier()
+            {
+                return new CommandActionImpl();
             }
         });
 
@@ -74,7 +112,7 @@ public class TestUtils {
 				new GDCDataStructure("reset PV123", "caput PV123 Reset") };
 		final AADataStructure automated_actions[] = new AADataStructure[] {
 				new AADataStructure("Send EMail", "mailto:paul@home.there", 5),
-				new AADataStructure("Execute Cmd", "caput PV123 Reset", 4) };
+				new AADataStructure("Execute Cmd", "cmd:caput PV123 Reset", 4) };
 
         // Root
         // ---DTL

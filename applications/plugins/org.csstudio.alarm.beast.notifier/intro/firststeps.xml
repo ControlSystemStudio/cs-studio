@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+    <extensionContent id="org.csstudio.alarm.beast.notifier" name="CSS" style="css/style.css" path="firststeps/@">
+        <group id="content-group" style-id="content-group">
+            <link id="notifier" label="BEAST Notifier" style-id="content-link"
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.alarm.beast.ui/html/alarm_system.html#pv_config" >
+				<text>
+				  BEAST Notifier allows you to generate automated actions when some alarms are triggered.
+                </text>
+            </link>
+        </group>
+    </extensionContent>
+</introContent>
