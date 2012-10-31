@@ -7,19 +7,25 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.csstudio.alarm.beast.server.Matchers.atLeast;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 import static org.junit.Assert.assertThat;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.jca.JCADataSource;
 import org.epics.pvmanager.loc.LocalDataSource;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,14 +43,19 @@ public class FilterUnitTest implements FilterListener
     @Before
     public void setup()
     {
-        PVManager.setDefaultDataSource(new LocalDataSource());
+        final CompositeDataSource source = new CompositeDataSource();
+        source.putDataSource("loc", new LocalDataSource());
+        source.putDataSource("ca", new JCADataSource());
+        PVManager.setDefaultDataSource(source);
         
         Logger logger = Logger.getLogger("");
         logger.setLevel(Level.ALL);
         for (Handler handler : logger.getHandlers())
             handler.setLevel(Level.ALL);
         
+        // Disable most messages from PVManager and JCA
         Logger.getLogger("org.epics.pvmanager").setLevel(Level.SEVERE);
+        Logger.getLogger("com.cosylab.epics").setLevel(Level.SEVERE);
     }
     
     @Override
@@ -63,12 +74,12 @@ public class FilterUnitTest implements FilterListener
     public void testFilter() throws Exception
     {
         // Create local PVs
-        final PV<Object, Object> x = PVManager.readAndWrite(channel("x")).synchWriteAndMaxReadRate(ofSeconds(1.0));
-        final PV<Object, Object> y = PVManager.readAndWrite(channel("y")).synchWriteAndMaxReadRate(ofSeconds(1.0));
+        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x")).synchWriteAndMaxReadRate(ofSeconds(1.0));
+        final PV<Object, Object> y = PVManager.readAndWrite(channel("loc://y")).synchWriteAndMaxReadRate(ofSeconds(1.0));
         x.write(1.0);
         y.write(2.0);
         
-        final Filter filter = new Filter("x + y", this);
+        final Filter filter = new Filter("'loc://x' + 'loc://y'", this);
         filter.start();
 
         // Update 1?: May get initial update where vars are undefined, so filter computes NaN
@@ -79,11 +90,11 @@ public class FilterUnitTest implements FilterListener
             while (last_value != 3.0)
                 wait();
         }
-        assertThat(updates.get(), atLeast(0));
+        assertThat(updates.get(), atLeast(1));
         
-        // Update 2 or 3
+        // May get update for this.. (2 or 3), or not
         x.write(4.0);
-        // Update 3 or 4
+        // Definite update for both values: Anything from 2 to 4
         y.write(6.0);
 
         synchronized (this)
@@ -92,7 +103,39 @@ public class FilterUnitTest implements FilterListener
                 wait();
         }
         System.err.println("Received " + updates.get() + " updates");
-        assertThat(updates.get(), atLeast(3));
+        assertThat(updates.get(), atLeast(2));
+        
+        filter.stop();
+    }
+
+    @Test(timeout=50000)
+    public void testPVError() throws Exception
+    {
+        final Timestamp start = Timestamp.now();
+        final Filter filter = new Filter("'ca://bogus_pv_name' * 2", this);
+        filter.start();
+
+        System.err.println("Waiting for timeout from bogus PV name...");
+
+        // Default time out is 30 seconds
+        // Should not get any updates while waiting for the connection...
+        TimeUnit.SECONDS.sleep(Filter.TIMEOUT_SECS / 2);
+        assertThat(updates.get(), equalTo(0));
+        
+        // .. but then there should be an update
+        synchronized (this)
+        {
+            while (updates.get() < 1)
+                wait();
+            System.err.println("Received value " + last_value);
+        }
+        System.err.println("Received " + updates.get() + " updates");
+        assertThat(updates.get(), atLeast(1));
+
+        final Timestamp end = Timestamp.now();
+        final TimeDuration duration = end.durationFrom(start);
+        System.err.println("Timeout was " + duration);
+        assertThat(duration.toSeconds(), atLeast(Filter.TIMEOUT_SECS * 0.8));
         
         filter.stop();
     }

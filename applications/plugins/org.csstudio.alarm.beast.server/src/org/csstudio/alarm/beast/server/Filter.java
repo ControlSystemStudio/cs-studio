@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
 import java.util.logging.Level;
 
 import org.csstudio.apputil.formula.Formula;
@@ -15,10 +18,6 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
-
-import static org.epics.util.time.TimeDuration.ofSeconds;
-
-import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 
 /** Filter that computes alarm enablement from expression.
  *  <p>
@@ -39,42 +38,51 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 @SuppressWarnings("nls")
 public class Filter
 {
+    /** Timeout for PV connections */
+    public static final int TIMEOUT_SECS = 30;
+
     /** Listener to notify when the filter computes a new value */
-	final private FilterListener listener;
+    final private FilterListener listener;
 
-	/** Formula to evaluate */
-	final private Formula formula;
+    /** Formula to evaluate */
+    final private Formula formula;
 
-	/** Variables used in the formula. May be [0], but never null */
-	final private VariableNode[] variables;
+    /** Variables used in the formula. May be [0], but never null */
+    final private VariableNode[] variables;
 
-	/** This array is linked to <code>variables</code>:
-	 *  Same size, and there's a PV for each VariableNode.
-	 */
-	final private PVReader<VType> pvs[];
+    /** This array is linked to <code>variables</code>:
+     *  Same size, and there's a PV for each VariableNode.
+     */
+    final private PVReader<VType> pvs[];
 
-	/** Initialize
-	 *  @param filter_expression Formula that might contain PV names
-	 *  @throws Exception on error
-	 */
-	public Filter(final String filter_expression,
-			final FilterListener listener) throws Exception
-	{
-		this.listener = listener;
-		formula = new Formula(filter_expression, true);
-		final VariableNode vars[] = formula.getVariables();
-		if (vars == null)
-			variables = new VariableNode[0];
-		else
-		    variables = vars;
+    /** Initialize
+     *  @param filter_expression Formula that might contain PV names
+     *  @throws Exception on error
+     */
+    @SuppressWarnings("unchecked")
+    public Filter(final String filter_expression,
+            final FilterListener listener) throws Exception
+    {
+        this.listener = listener;
+        formula = new Formula(filter_expression, true);
+        final VariableNode vars[] = formula.getVariables();
+        if (vars == null)
+            variables = new VariableNode[0];
+        else
+            variables = vars;
+        
+        pvs = (PVReader<VType>[]) new PVReader[variables.length];
+    }
 
-		// TODO: Use one reader for all channels?
-		pvs = (PVReader<VType>[]) new PVReader[variables.length];
-	}
-
-	/** Start control system subscriptions */
-	public void start() throws Exception
-	{
+    /** Start control system subscriptions */
+    public void start() throws Exception
+    {
+        // Note:
+        // Could use
+        //   PVManager.read(listOf(latestValueOf(vTypes(pv_names)))).listeners(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
+        // to read all variables as a list, but then no idea which individual PV is causing an error
+        // in case of disconnects.
+        // Could also try the PVManager's formula support, but already had a formula package...
         for (int i=0; i<pvs.length; ++i)
         {
             final int index = i;
@@ -101,26 +109,26 @@ public class Filter
                     evaluate();
                 }
             };
-            pvs[i] = PVManager.read(vType(variables[i].getName())).listeners(pvlistener).timeout(ofSeconds(30)).maxRate(ofSeconds(0.5));
+            pvs[i] = PVManager.read(vType(variables[i].getName())).listeners(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
         }
-	}
+    }
 
-	/** Stop control system subscriptions */
-	public void stop()
-	{
-		for (PVReader<VType> pv : pvs)
-		    pv.close();
-	}
+    /** Stop control system subscriptions */
+    public void stop()
+    {
+        for (PVReader<VType> pv : pvs)
+            pv.close();
+    }
 
-	/** Evaluate filter formula with current input values */
-	private void evaluate()
-	{
-		final double value = formula.eval();
-		// TODO Only update on _change_, not whenever inputs send an update
-		listener.filterChanged(value);
-	}
+    /** Evaluate filter formula with current input values */
+    private void evaluate()
+    {
+        final double value = formula.eval();
+        // TODO Only update on _change_, not whenever inputs send an update
+        listener.filterChanged(value);
+    }
 
-	/** @return String representation for debugging */
+    /** @return String representation for debugging */
     @Override
     public String toString()
     {
