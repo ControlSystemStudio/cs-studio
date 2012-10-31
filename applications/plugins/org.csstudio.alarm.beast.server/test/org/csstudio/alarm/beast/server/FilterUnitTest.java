@@ -108,6 +108,46 @@ public class FilterUnitTest implements FilterListener
         filter.stop();
     }
 
+    @Test(timeout=8000)
+    public void testUpdates() throws Exception
+    {
+        // Create local PVs
+        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x")).synchWriteAndMaxReadRate(ofSeconds(1.0));
+        x.write(1.0);
+        
+        final Filter filter = new Filter("'loc://x' < 5 ? 1 : 2", this);
+        filter.start();
+
+        // Wait for initial value
+        synchronized (this)
+        {
+            while (last_value != 1.0)
+                wait();
+        }
+        final int received_updates = updates.get();
+        System.err.println("Received " + received_updates + " updates");
+
+        // Variable changes, but result of formula doesn't, so there shouldn't be an update
+        x.write(2.0);
+        TimeUnit.SECONDS.sleep(2);
+        assertThat(updates.get(), equalTo(received_updates));
+        
+        
+        // Once the value changes, there should be another update
+        x.write(6.0);
+        synchronized (this)
+        {
+            while (last_value != 2.0)
+                wait();
+        }
+        System.err.println("Received " + updates.get() + " updates");
+        assertThat(updates.get(), equalTo(received_updates + 1));
+        
+        filter.stop();
+    }
+
+    
+    
     @Test(timeout=50000)
     public void testPVError() throws Exception
     {

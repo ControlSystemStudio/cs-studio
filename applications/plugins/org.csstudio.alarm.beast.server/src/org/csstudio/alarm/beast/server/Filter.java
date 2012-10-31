@@ -55,6 +55,8 @@ public class Filter
      */
     final private PVReader<VType> pvs[];
 
+    private double previous_value = Double.NaN;
+
     /** Initialize
      *  @param filter_expression Formula that might contain PV names
      *  @throws Exception on error
@@ -124,7 +126,13 @@ public class Filter
     private void evaluate()
     {
         final double value = formula.eval();
-        // TODO Only update on _change_, not whenever inputs send an update
+        // Only update on _change_, not whenever inputs send an update
+        synchronized (this)
+        {
+            if (previous_value == value)
+                return;
+            previous_value  = value;
+        }
         listener.filterChanged(value);
     }
 
