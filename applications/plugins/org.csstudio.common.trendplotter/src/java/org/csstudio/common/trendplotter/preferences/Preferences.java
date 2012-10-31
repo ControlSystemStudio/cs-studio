@@ -47,6 +47,8 @@ public class Preferences
                                PLOT_BINS = "plot_bins",
                                URLS = "urls",
                                ARCHIVES = "archives",
+                               USE_DEFAULT_ARCHIVES = "use_default_archives",
+                               PROMPT_FOR_ERRORS="prompt_for_errors",
                                ARCHIVE_RESCALE = "archive_rescale",
                                COMPR_HIST = "compress_historic_samples",
                                HIST_BUFFER = "historic_buffer_size",
@@ -137,6 +139,26 @@ public class Preferences
             }
         }
         return archives.toArray(new ArchiveDataSource[archives.size()]);
+    }
+
+    /** @return <code>true</code> to use default archives,
+     *          ignoring data sources from config file
+     */
+    static public boolean useDefaultArchives()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.PLUGIN_ID, USE_DEFAULT_ARCHIVES, false, null);
+    }
+
+    /** @return <code>true</code> to prompt for errors */
+    static public boolean doPromptForErrors()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.PLUGIN_ID, PROMPT_FOR_ERRORS, false, null);
     }
 
     /** @return Archive rescale setting */

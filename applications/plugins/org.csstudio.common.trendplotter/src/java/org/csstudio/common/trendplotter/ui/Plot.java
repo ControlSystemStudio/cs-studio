@@ -32,6 +32,7 @@ import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -79,6 +80,9 @@ public class Plot {
      *  changes a value axis
      */
     private boolean plot_changes_valueaxis = false;
+    
+    /** Flag to suppress XYGraph events when the plot itself changes the graph */
+    private boolean plot_changes_graph = false;
 
     private final TimeConfigButton time_config_button;
 
@@ -279,24 +283,58 @@ public class Plot {
      *  @return IAxisListener
      */
     private IAxisListener createValueAxisListener(final int index) {
-//        TODO jhatje: change to new listener
-//        return new IAxisListener() {
-//            @Override
-//            public void axisRevalidated(final Axis axis) {
-//                // NOP
-//            }
-//
-//            @Override
-//            public void axisRangeChanged(final Axis axis,
-//                                         final Range old_range,
-//                                         final Range new_range) {
-//                if (plot_changes_valueaxis || old_range.equals(new_range) || listener == null) {
-//                    return;
-//                }
-//                listener.valueAxisChanged(index, new_range.getLower(), new_range.getUpper());
-//            }
-//        };
-        return null;
+        return new IAxisListener() {
+            @Override
+            public void axisRevalidated(final Axis axis) {
+                // NOP
+            }
+
+            @Override
+            public void axisRangeChanged(final Axis axis,
+                                         final Range old_range,
+                                         final Range new_range) {
+                if (plot_changes_graph || old_range.equals(new_range) || listener == null) {
+                    return;
+                }
+                listener.valueAxisChanged(index, new_range.getLower(), new_range.getUpper());
+            }
+            
+            @Override
+            public void axisForegroundColorChanged(final Axis axis, final Color oldColor,
+                    final Color newColor)
+            {
+                if (plot_changes_graph || newColor.equals(oldColor)  ||  listener == null)
+                    return;
+                listener.valueAxisForegroundColorChanged(index, oldColor, newColor);
+            }
+
+            @Override
+            public void axisTitleChanged(final Axis axis, final String oldTitle,
+                    final String newTitle)
+            {
+                if (plot_changes_graph || newTitle.equals(oldTitle) || listener == null)
+                    return;
+                listener.valueAxisTitleChanged(index, oldTitle, newTitle);
+            }
+
+            @Override
+            public void axisAutoScaleChanged(final Axis axis, final boolean oldAutoScale,
+                    final boolean newAutoScale)
+            {
+                if (plot_changes_graph || oldAutoScale == newAutoScale || listener == null)
+                    return;
+                listener.valueAxisAutoScaleChanged(index, oldAutoScale, newAutoScale);
+            }
+
+            @Override
+            public void axisLogScaleChanged(final Axis axis, final boolean old,
+                    final boolean logScale)
+            {
+                if (plot_changes_graph  ||  listener == null)
+                    return;
+                listener.valueAxisLogScaleChanged(index, old, logScale);
+            }
+        };
     }
 
     /** Update configuration of axis
