@@ -8,6 +8,9 @@
 package org.csstudio.common.trendplotter;
 
 import org.csstudio.common.trendplotter.editor.DataBrowserEditor;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -16,38 +19,18 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 /** Action connected to workbench menu action set for opening a new editor.
  *  @author Kay Kasemir
  */
-public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
-{
-    @Override
-    public void init(IWorkbenchWindow window)
-    {
-        // NOP
-    }
-
-    @Override
-    public void selectionChanged(IAction action, ISelection selection)
-    {
-        // NOP
-    }
+public class NewTrendHandler extends AbstractHandler {
 
     /** {@inheritDoc} */
     @Override
-    public void run(IAction action)
-    {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
         DataBrowserEditor.createInstance();
-        try
-        {
+        try {
         	Perspective.showPerspective();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
         	// never mind
         }
-    }
-
-    @Override
-    public void dispose()
-    {
-        // NOP
+        return null;
     }
 }
