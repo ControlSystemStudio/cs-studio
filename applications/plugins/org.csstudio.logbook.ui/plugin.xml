@@ -23,26 +23,18 @@
             allPopups="false"
             locationURI="menu:utility">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
                icon="icons/logentry-add-16.png"
                label="%MakeLogEntry"
-               style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logbook.ui.CreateLogEntry">
-            </parameter>
-         </command>
-         <command
-               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               label="Create Log Entry"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any">
          <menu
-               id="org.csstudio.ui.menu.popup.logentry"
-               label="Log Entry">
+               icon="icons/logbook-16.png"
+               id="org.csstudio.ui.menu.popup.logbook"
+               label="Logbook">
             <separator
                   name="main">
             </separator>
@@ -60,10 +52,11 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.csstudio.ui.menu.popup.logentry">
+            locationURI="popup:org.csstudio.ui.menu.popup.logbook">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               label="Create Log Entry"
+               icon="icons/logentry-add-16.png"
+               label="%MakeLogEntry"
                style="push">
          </command>
       </menuContribution>
@@ -79,7 +72,7 @@
       <command
             defaultHandler="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             id="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-            name="Create Log Entry">
+            name="%MakeLogEntry">
       </command>
    </extension>
    <extension
