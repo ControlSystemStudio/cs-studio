@@ -8,7 +8,7 @@ public class Olog {
 
 	}
 
-	public static void setClient(OlogClient client) {
+	public static void setClient(OlogClient client) throws Exception {
 		Olog.client = client;
 	}
 
