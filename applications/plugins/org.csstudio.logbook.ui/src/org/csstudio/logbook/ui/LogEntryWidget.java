@@ -126,7 +126,8 @@ public class LogEntryWidget extends Composite {
 		changeSupport.removePropertyChangeListener(listener);
 	}
 
-	public LogEntryWidget(final Composite parent, int style, final boolean newWindow) {
+	public LogEntryWidget(final Composite parent, int style,
+			final boolean newWindow) {
 		super(parent, style);
 		this.newWindow = newWindow;
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -569,7 +570,7 @@ public class LogEntryWidget extends Composite {
 		} catch (Exception ex) {
 			// Failed to get a client to the logbook
 			// Display exception and disable editing.
-			setLastException(ex);
+			setLastException(new Exception(ex.getCause()));
 		}
 
 	}

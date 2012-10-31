@@ -50,7 +50,7 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Collection<Logbook> listLogbooks() {
+	public Collection<Logbook> listLogbooks() throws Exception {
 		return Collections.unmodifiableCollection(Collections2.transform(
 				reader.listLogbooks(),
 				new Function<edu.msu.nscl.olog.api.Logbook, Logbook>() {
@@ -63,7 +63,7 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Collection<Tag> listTags() {
+	public Collection<Tag> listTags() throws Exception {
 		return Collections.unmodifiableCollection(Collections2.transform(
 				reader.listTags(),
 				new Function<edu.msu.nscl.olog.api.Tag, Tag>() {
@@ -76,7 +76,7 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Collection<Property> listProperties() {
+	public Collection<Property> listProperties() throws Exception {
 		return Collections.unmodifiableCollection(Collections2.transform(
 				reader.listProperties(),
 				new Function<edu.msu.nscl.olog.api.Property, Property>() {
@@ -89,7 +89,8 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public Collection<Attachment> listAttachments(final Object logId) {
+	public Collection<Attachment> listAttachments(final Object logId)
+			throws Exception {
 		return Collections.unmodifiableCollection(Collections2.transform(
 				reader.listAttachments((Long) logId),
 				new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
@@ -135,7 +136,7 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
 	@Override
-	public LogEntry createLogEntry(LogEntry logEntry) throws IOException {
+	public LogEntry createLogEntry(LogEntry logEntry) throws Exception {
 		OlogEntry ologEntry = new OlogEntry(writer.set(LogBuilder(logEntry)));
 		// creates the log entry and then adds all the attachments
 		// TODO (shroffk) multiple network calls, one for each attachment, need
@@ -156,8 +157,7 @@ public class OlogLogbookClient implements LogbookClient {
 
 	@Override
 	public Attachment addAttachment(Object logId, InputStream attachment,
-			String name) {
-
+			String name) throws Exception {
 		try {
 			File file = new File(name);
 			// file = File.createTempFile(name, null);
@@ -180,15 +180,14 @@ public class OlogLogbookClient implements LogbookClient {
 						response.getFileName()));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new Exception(e);
 		}
 		return null;
-
 	}
 
 	@Override
-	public void updateLogEntries(Collection<LogEntry> logEntires) {
+	public void updateLogEntries(Collection<LogEntry> logEntires)
+			throws Exception {
 		Collection<LogBuilder> logbuilders = new ArrayList<LogBuilder>();
 		for (LogEntry logEntry : logEntires) {
 			logbuilders.add(LogBuilder(logEntry));

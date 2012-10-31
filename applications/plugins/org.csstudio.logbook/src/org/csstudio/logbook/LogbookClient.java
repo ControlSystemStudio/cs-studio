@@ -15,24 +15,24 @@ public interface LogbookClient {
 	/**
 	 * @return
 	 */
-	public Collection<Logbook> listLogbooks();
+	public Collection<Logbook> listLogbooks() throws Exception;
 
 	/**
 	 * @return
 	 */
-	public Collection<Tag> listTags();
+	public Collection<Tag> listTags() throws Exception;
 
 	/**
 	 * @return
 	 */
-	public Collection<Property> listProperties();
+	public Collection<Property> listProperties() throws Exception;
 
 	/**
 	 * 
 	 * @param logId
 	 * @return
 	 */
-	public Collection<Attachment> listAttachments(Object logId);
+	public Collection<Attachment> listAttachments(Object logId) throws Exception;
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public interface LogbookClient {
 	 * @param attachment
 	 * @return
 	 */
-	public InputStream getAttachment(Object logId, String attachmentFileName);
+	public InputStream getAttachment(Object logId, String attachmentFileName) throws Exception;
 
 	/**
 	 * @param logId
@@ -73,7 +73,7 @@ public interface LogbookClient {
 	/**
 	 * @param logEntires
 	 */
-	public void updateLogEntries(Collection<LogEntry> logEntires);
+	public void updateLogEntries(Collection<LogEntry> logEntires) throws Exception;
 
 	/**
 	 * Attach the file to the log
@@ -82,5 +82,5 @@ public interface LogbookClient {
 	 * @param attachment
 	 * @return
 	 */
-	public Attachment addAttachment(Object logId, InputStream file, String name);
+	public Attachment addAttachment(Object logId, InputStream file, String name) throws Exception;
 }

@@ -8,25 +8,14 @@ import edu.msu.nscl.olog.api.Olog;
 public class OlogLogbookClientFactory implements LogbookClientFactory {
 
 	@Override
-	public LogbookClient getClient() {
-		try {
-			return new OlogLogbookClient(Olog.getClient());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	public LogbookClient getClient() throws Exception {
+		return new OlogLogbookClient(Olog.getClient());
 	}
 
 	@Override
-	public LogbookClient getClient(String username, String password) {
-		try {
-			return new OlogLogbookClient(Olog.getClient());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	public LogbookClient getClient(String username, String password)
+			throws Exception {
+		return new OlogLogbookClient(Olog.getClient());
 	}
 
 }

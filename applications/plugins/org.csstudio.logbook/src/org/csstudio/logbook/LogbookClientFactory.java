@@ -13,8 +13,9 @@ public interface LogbookClientFactory {
 	 * Get an instance of the client object used to make log entries
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public LogbookClient getClient();
+	public LogbookClient getClient() throws Exception;
 
 	/**
 	 * Get an instance of the logbookClient with the usercredentails.
@@ -22,7 +23,8 @@ public interface LogbookClientFactory {
 	 * @param username
 	 * @param password
 	 * @return
+	 * @throws Exception 
 	 */
-	public LogbookClient getClient(String username, String password);
+	public LogbookClient getClient(String username, String password) throws Exception;
 
 }
