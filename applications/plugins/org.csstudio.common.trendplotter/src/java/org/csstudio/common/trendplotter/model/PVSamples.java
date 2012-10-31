@@ -19,6 +19,7 @@ import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -294,4 +295,24 @@ public class PVSamples extends PlotSamples
         }
         historicSamples.clear();
     }
+    
+    /** @param index Waveform index to show */
+    public void setWaveformIndex(int index)
+    {
+        live.setWaveformIndex(index);
+        history.setWaveformIndex(index);
+
+        synchronized (listeners)
+        {
+            for (IDataProviderListener listener : listeners)
+            {
+                // Notify listeners of the change of the waveform index
+                // mainly in order to update the position of snapped
+                // annotations. For more details, see the comment in
+                // Annotation.dataChanged(IDataProviderListener).
+                listener.dataChanged(this);
+            }
+        }
+    }
+
 }

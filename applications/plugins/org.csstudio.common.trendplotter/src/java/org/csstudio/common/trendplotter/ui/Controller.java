@@ -22,6 +22,7 @@ import org.csstudio.common.trendplotter.archive.ArchiveFetchJob;
 import org.csstudio.common.trendplotter.archive.ArchiveFetchJobListener;
 import org.csstudio.common.trendplotter.imports.FileImportDialog;
 import org.csstudio.common.trendplotter.imports.ImportArchiveReaderFactory;
+import org.csstudio.common.trendplotter.model.AnnotationInfo;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ArchiveRescale;
 import org.csstudio.common.trendplotter.model.AxisConfig;
