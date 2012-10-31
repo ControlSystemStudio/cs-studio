@@ -64,21 +64,33 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
       <plugin id="org.antlr.runtime"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
       <plugin id="org.apache.log4j"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
       <plugin id="org.apache.tools.ant"/>
       <plugin id="org.apache.tools.ant.junit"/>
+      <plugin id="org.csstudio.alarm.dal2jms.log4j" fragment="true"/>
       <plugin id="org.csstudio.alarm.dbaccess"/>
       <plugin id="org.csstudio.alarm.intro"/>
+      <plugin id="org.csstudio.alarm.jms2ora.log4j" fragment="true"/>
       <plugin id="org.csstudio.alarm.service"/>
       <plugin id="org.csstudio.alarm.service.test" fragment="true"/>
       <plugin id="org.csstudio.alarm.table"/>
       <plugin id="org.csstudio.alarm.treeview"/>
       <plugin id="org.csstudio.alarm.treeview.test" fragment="true"/>
+      <plugin id="org.csstudio.ams.application.deliverysystem.log4j" fragment="true"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.test" fragment="true"/>
       <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.archive.sdds.server.log4j" fragment="true"/>
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.auth.ui"/>
@@ -90,8 +102,11 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.alarm.product"/>
+      <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.desy.css.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.desy.startuphelper"/>
+      <plugin id="org.csstudio.diag.interconnectionserver.log4j" fragment="true"/>
+      <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.common.test" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
@@ -130,6 +145,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.ui.menu.app"/>
+      <plugin id="org.csstudio.ui.preferences"/>
       <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.jms"/>
       <plugin id="org.csstudio.utility.ldap.service"/>
@@ -139,6 +155,12 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.utility.ldap.treeconfiguration"/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.csstudio.utility.product"/>
+      <plugin id="org.csstudio.utility.pv"/>
+      <plugin id="org.csstudio.utility.pv.epics"/>
+      <plugin id="org.csstudio.utility.pv.epics.test" fragment="true"/>
+      <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.utility.pv.simu.test" fragment="true"/>
+      <plugin id="org.csstudio.utility.pv.ui"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.treemodel"/>
       <plugin id="org.csstudio.utility.treemodel.test" fragment="true"/>
@@ -165,12 +187,16 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.frameworkadmin"/>
       <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
       <plugin id="org.eclipse.equinox.p2.core"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
@@ -186,12 +212,18 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
       <plugin id="org.eclipse.jdt.junit.core"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
       <plugin id="org.eclipse.ltk.core.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
