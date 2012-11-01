@@ -23,8 +23,6 @@ import org.csstudio.common.trendplotter.ui.TableHelper;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
-import org.csstudio.trends.databrowser2.propsheet.ChangeWaveformIndexCommand;
-import org.csstudio.trends.databrowser2.propsheet.EditSupportBase;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
