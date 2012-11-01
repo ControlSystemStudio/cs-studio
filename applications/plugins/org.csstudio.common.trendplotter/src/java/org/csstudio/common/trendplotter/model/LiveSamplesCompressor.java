@@ -73,13 +73,19 @@ public class LiveSamplesCompressor {
     }
 
     @Nonnull
-    public LimitedArrayCircularQueue<PlotSample> transform(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples) {
-
+    public LimitedArrayCircularQueue<PlotSample> transform(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
+                                                           PlotSample[] samplesArray) {
+        final PlotSample firstCompressionSample = samples.element();
+        final PlotSample firstCompressionSample2 = samplesArray[0];
+        final PlotSample lastCompressionSample = samples.get(samples.size() - _noUncompressed - 1);
+        final PlotSample lastCompressionSample2 = samplesArray[samplesArray.length-_noUncompressed-1];
+        if (firstCompressionSample==firstCompressionSample2 && lastCompressionSample==lastCompressionSample2) {
+        } else {
+            System.out.println("ERROR XXXXXXXXXXX   UNGLEICH");
+        }
         if (samples.size() < _noUncompressed) {
             return samples;
         }
-        final PlotSample firstCompressionSample = samples.element();
-        final PlotSample lastCompressionSample = samples.get(samples.size() - _noUncompressed - 1);
 
         final long startMillis = BaseTypeConversionSupport.toTimeInstant(firstCompressionSample.getTime()).getMillis();
         final long endMillis = BaseTypeConversionSupport.toTimeInstant(lastCompressionSample.getTime()).getMillis();
@@ -149,7 +155,6 @@ public class LiveSamplesCompressor {
                 max = next;
             }
         }
-        //System.out.println("--------------------------------------c");
 
         return result;
     }

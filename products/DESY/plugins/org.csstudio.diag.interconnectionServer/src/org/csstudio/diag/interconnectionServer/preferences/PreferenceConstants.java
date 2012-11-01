@@ -29,9 +29,9 @@ public class PreferenceConstants {
 	public static final String XMPP_USER_NAME = "xmppUserName";
 	public static final String XMPP_PASSWORD = "xmppPassword";
 	public static final String XMPP_SERVER = "xmppServer";
-	public static final String DATA_PORT_NUMBER = "dataPortNumber";
-	public static final String COMMAND_PORT_NUMBER = "commandPortNumber";
-	public static final String IOC_BROADCAST_PORT_NUMBER = "iocBroadcastPortNumber";
+	public static final String ICS_DATA_PORT_NUMBER = "dataPortNumber"; // server port at ics for everything (beacons and other stuff)
+	public static final String IOC_COMMAND_PORT_NUMBER = "commandPortNumber"; // command port at ioc
+	public static final String IOC_BROADCAST_PORT_NUMBER = "iocBroadcastPortNumber"; // broadcast port at ioc
 	public static final String IOC_BROADCAST_ADDRESS = "iocBroadcastAddress";
 	public static final String IOC_BROADCAST_CYCLE_TIME = "iocBroadcastCycleTime";
 	public static final String BEACON_TIMEOUT = "beaconTimeout";

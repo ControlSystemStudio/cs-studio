@@ -1,6 +1,6 @@
 package org.csstudio.utility.quickstart;
 
-import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
 
 public class StartupServiceListener implements IStartupServiceListener {
 

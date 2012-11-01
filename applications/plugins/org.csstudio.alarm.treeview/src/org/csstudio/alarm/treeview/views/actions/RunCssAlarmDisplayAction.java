@@ -18,15 +18,16 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.ProcessVariableNode;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.treeview.preferences.AlarmTreePreference;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.core.runtime.IPath;
@@ -34,6 +35,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RunCssAlarmDisplayAction
@@ -44,8 +47,7 @@ import org.eclipse.jface.viewers.TreeViewer;
  * @since 17.06.2010
  */
 public final class RunCssAlarmDisplayAction extends Action {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(RunCssAlarmDisplayAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RunCssAlarmDisplayAction.class);
 
     private final TreeViewer _viewer;
 
@@ -69,7 +71,8 @@ public final class RunCssAlarmDisplayAction extends Action {
             final IPath path = new Path(node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY));
             final Map<String, String> aliases = new HashMap<String, String>();
             if (node instanceof ProcessVariableNode) {
-                aliases.put("channel", node.getName());
+                String key = AlarmTreePreference.ALARM_DISPLAY_ALIAS.getValue();
+                aliases.put(key, node.getName());
             }
             LOG.debug("Opening display: " + path);
             RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);

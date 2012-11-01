@@ -14,7 +14,7 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.cagateway.management.StopServer"
             id="org.csstudio.diag.interconnectionServer.management.StopServer"
@@ -33,6 +33,4 @@
          </property>
       </product>
    </extension>
-
-
 </plugin>

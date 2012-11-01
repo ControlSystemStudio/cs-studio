@@ -21,10 +21,10 @@
  */
  package org.csstudio.sds.ui.internal.properties.propertydescriptors;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.properties.PropertyDescriptor;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.LabelProvider;

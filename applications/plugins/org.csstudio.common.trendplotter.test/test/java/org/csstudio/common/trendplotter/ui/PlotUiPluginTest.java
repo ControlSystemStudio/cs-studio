@@ -10,12 +10,11 @@ package org.csstudio.common.trendplotter.ui;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import org.csstudio.common.trendplotter.model.ArchiveDataSource;
+import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PlotSampleArray;
 import org.csstudio.common.trendplotter.model.PlotSamples;
 import org.csstudio.common.trendplotter.model.TestSampleBuilder;
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IValue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -75,7 +74,7 @@ public class PlotUiPluginTest
         }
 
         @Override
-        public void droppedPVName(final ProcessVariable name, final ArchiveDataSource archive)
+        public void droppedPVName(final String name, final IArchiveDataSource archive)
         {
             System.out.println("PV Name dropped: " + name);
         }
@@ -157,8 +156,9 @@ public class PlotUiPluginTest
         final Display display = Display.getDefault();
         while (run  &&  !shell.isDisposed())
         {
-            if (!display.readAndDispatch())
+            if (!display.readAndDispatch()) {
                 display.sleep();
+            }
         }
         shell.close();
     }

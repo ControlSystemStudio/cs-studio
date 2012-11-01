@@ -26,6 +26,7 @@ package org.csstudio.websuite;
 import javax.servlet.ServletException;
 
 import org.csstudio.platform.httpd.HttpServiceHelper;
+import org.csstudio.websuite.ams.servlet.AmsServlet;
 import org.csstudio.websuite.dao.AlarmMessageListProvider;
 import org.csstudio.websuite.dao.ChannelMessagesProvider;
 import org.csstudio.websuite.internal.PreferenceConstants;
@@ -41,6 +42,8 @@ import org.csstudio.websuite.servlet.ChannelViewServletXml;
 import org.csstudio.websuite.servlet.DataExporter;
 import org.csstudio.websuite.servlet.FlashInfoServlet;
 import org.csstudio.websuite.servlet.Halle55;
+import org.csstudio.websuite.servlet.HowToSearchServlet;
+import org.csstudio.websuite.servlet.HowToServlet;
 import org.csstudio.websuite.servlet.HowToViewServletHtml;
 import org.csstudio.websuite.servlet.InfoServlet;
 import org.csstudio.websuite.servlet.IocViewServlet;
@@ -200,12 +203,22 @@ public class WebSuiteApplication implements IApplication, Stoppable,
         http.registerServlet("/ChannelViewer", new ChannelViewServlet(), null, httpContext);
         http.registerServlet("/IocViewer", new IocViewServlet(), null, httpContext);
         http.registerServlet("/HowToViewer", new HowToViewServletHtml(), null, httpContext);
+        http.registerServlet("/HowToSearch", new HowToServlet(), null, httpContext);
+        http.registerServlet("/HowToSearchHandler", new HowToSearchServlet(), null, httpContext);
         http.registerServlet("/Info", new InfoServlet(), null, httpContext);
         http.registerServlet("/FlashInfo", new FlashInfoServlet(), null, httpContext);
         http.registerServlet("/PersonalPVInfo", new PersonalPVInfoServlet(), null, httpContext);
         http.registerServlet("/PersonalPVInfoList", new PersonalPVInfoListServlet(), null, httpContext);
         http.registerServlet("/PersonalPVInfoEdit", new PersonalPVInfoEditServlet(), null, httpContext);
-
+        
+        boolean enableAmsServlet = preferences.getBoolean(WebSuiteActivator.PLUGIN_ID,
+                                                          PreferenceConstants.ENABLE_AMS_SERVLET,
+                                                          false,
+                                                          null);
+        if (enableAmsServlet) {
+            http.registerServlet("/AmsConfiguration", new AmsServlet(), null, httpContext);
+        }
+        
         // Two servlets from project MeasuredData
         http.registerServlet("/Halle55", new Halle55(), null, httpContext);
         http.registerServlet("/Wetter", new Wetter(), null, httpContext);

@@ -21,17 +21,18 @@
  */
 package org.csstudio.platform.internal.simpledal.local;
 
+import org.csstudio.dal.Timestamp;
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.internal.simpledal.AbstractConnector;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.csstudio.dal.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Local Connectors are connected to a simulated channels that live in the local
@@ -44,6 +45,9 @@ import org.csstudio.dal.Timestamp;
  */
 @SuppressWarnings("unchecked")
 public class LocalConnector extends AbstractConnector implements ILocalChannelListener {
+	
+    private static final Logger LOG = LoggerFactory.getLogger(LocalConnector.class);
+
 	/**
 	 * Constructor.
 	 */
@@ -70,7 +74,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 				try {
 				    listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
 				}catch(NumberFormatException nfe) {
-				    CentralLogger.getInstance().warn(this, nfe);
+				    LOG.warn(nfe.toString());
 				}
 			}
 		};

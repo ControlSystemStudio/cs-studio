@@ -158,9 +158,6 @@ public abstract class AbstractCheckProcessor
         }
     }
     
-    /**
-     * 
-     */
     protected void closeJms() {
         if(amsReceiver != null) { amsReceiver.closeAll(); }
         if(amsPublisher != null) { amsPublisher.closeAll(); }

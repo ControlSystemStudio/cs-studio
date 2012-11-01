@@ -8,6 +8,7 @@ import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,7 +31,7 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class AlarmMessageTable extends MessageTable {
 
-    private static final String SECURITY_ID = "operating";
+    private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
     public AlarmMessageTable(final TableViewer viewer, final String[] colNames, final AbstractMessageList j) {
         super(viewer, colNames, j);
@@ -43,12 +44,12 @@ public class AlarmMessageTable extends MessageTable {
 
         _tableViewer.setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
 
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 
         final TableColumn[] columns = _table.getColumns();
         for (final TableColumn tableColumn : columns) {
-            if (tableColumn.getText().equals("SEVERITY")) {
-                tableColumn.removeSelectionListener(_selectionListenerMap.get("SEVERITY"));
+            if (tableColumn.getText().equals("SEVERITY")) { //$NON-NLS-1$
+                tableColumn.removeSelectionListener(_selectionListenerMap.get("SEVERITY")); //$NON-NLS-1$
                 tableColumn.addSelectionListener(new SelectionAdapter() {
                     @Override
                     public void widgetSelected(final SelectionEvent e) {
@@ -91,9 +92,9 @@ public class AlarmMessageTable extends MessageTable {
                     } else {
                         ti.setChecked(false);
                         final Shell activeShell = Display.getCurrent().getActiveShell();
-                        final MessageDialog md = new MessageDialog(activeShell, "Authorization", null,
-                                "Not Acknowledged!\n\rPermission denied.", MessageDialog.WARNING,
-                                new String[] { "Ok" }, 0);
+                        final MessageDialog md = new MessageDialog(activeShell, Messages.AlarmMessageTable_Authorization_Title, null,
+                                Messages.AlarmMessageTable_Not_Acknowledged, MessageDialog.WARNING,
+                                new String[] { Messages.AlarmMessageTable_Ok }, 0);
                         md.open();
                     }
                     // Click on other columns but ack should not check or

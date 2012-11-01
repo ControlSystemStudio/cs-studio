@@ -23,8 +23,6 @@ package org.csstudio.sds.ui;
 
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.ColorAndFontSaxHandler;
@@ -40,8 +38,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -50,7 +51,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision: 1.31 $
  * 
  */
-public final class SdsUiPlugin extends AbstractCssUiPlugin {
+public final class SdsUiPlugin extends AbstractUIPlugin {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SdsUiPlugin.class);
 
 	/**
 	 * The ID of this _plugin.
@@ -109,7 +112,7 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 			_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
 			_preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
 				public void propertyChange(final PropertyChangeEvent event) {
-					CentralLogger.getInstance().info(this, "Property [" + event.getProperty() //$NON-NLS-1$
+					LOG.info("Property [" + event.getProperty() //$NON-NLS-1$
 							+ "] changed from [" //$NON-NLS-1$
 							+ event.getOldValue() + "] to [" //$NON-NLS-1$
 							+ event.getNewValue() + "]"); //$NON-NLS-1$
@@ -123,7 +126,8 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
 		// if there are errors within the scripts, tell the user!
 		if (RuleService.getInstance().isErrorOccurred()) {
 			List<String> errorMessages = RuleService.getInstance().getErrorMessages();
@@ -141,15 +145,8 @@ public final class SdsUiPlugin extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStop(final BundleContext context) throws Exception {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
+	public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 	}
 
 	public IColorAndFontService getColorAndFontService() {

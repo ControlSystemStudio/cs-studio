@@ -17,8 +17,10 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import java.io.FileNotFoundException;
+import java.util.Collection;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,17 +28,14 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.AlarmResource;
+import org.csstudio.alarm.service.declaration.AlarmServiceException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.alarm.service.internal.localization.Messages;
-import org.csstudio.utility.ldap.service.LdapServiceException;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.domain.common.collection.ChunkableCollection;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.dal.DynamicValueAdapter;
 import org.csstudio.dal.DynamicValueEvent;
 import org.csstudio.dal.SimpleProperty;
@@ -60,30 +59,25 @@ import com.cosylab.util.CommonException;
 public class AlarmConnectionDALImpl implements IAlarmConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlarmConnectionDALImpl.class);
-
+    
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
-
-    private final IAlarmConfigurationService _alarmConfigService;
-    private final SimpleDALBroker _simpleDALBroker;
-
+    
+    private SimpleDALBroker _simpleDALBroker;
+    
     private final Map<String, ListenerItem> _pv2listenerItem = new HashMap<String, AlarmConnectionDALImpl.ListenerItem>();
-
-    // The listener and resource are given once at connect
+    
+    // The listener is given once at connect
     private IAlarmListener _listener;
-    private IAlarmResource _resource;
-
+    
     /**
      * Constructor must be called only from the AlarmService.
-     *
-     * @param alarmConfigService
      * @param simpleDALBroker
      */
-    public AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService, @Nonnull final SimpleDALBroker simpleDALBroker) {
-        _alarmConfigService = alarmConfigService;
+    public AlarmConnectionDALImpl(@Nonnull final SimpleDALBroker simpleDALBroker) {
         _simpleDALBroker = simpleDALBroker;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -91,57 +85,61 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
     public boolean canHandleTopics() {
         return false;
     }
-
+    
     @Override
     public void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                         @Nonnull final IAlarmListener listener,
-                        @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
-        LOG.info("Connecting to DAL for resource " + resource + ".");
-
+                        @Nonnull final AlarmResource resource) throws AlarmConnectionException {
+        LOG.info("Connecting to DAL.");
+        
         _listener = listener;
-        _resource = resource;
         registerAllFromResource();
-
+        
         // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
         connectionMonitor.onConnect();
     }
-
+    
     private void registerAllFromResource() throws AlarmConnectionException {
-        final Set<String> simpleNames = getPVNamesFromResource();
-        for (final String recordName : simpleNames) {
-            LOG.debug("Connecting to " + recordName);
-            registerPV(recordName);
+        Set<String> simpleNames = getPVNamesFromResource();
+        LOG.debug("About to connect " + simpleNames.size() + " PVs");
+        ChunkableCollection<String> chunkableCollection = new ChunkableCollection<String>(simpleNames, 100);
+        for (Collection<String> chunkOfSimpleNames : chunkableCollection) {
+            for (final String recordName : chunkOfSimpleNames) {
+                LOG.trace("Connecting to " + recordName);
+                registerPV(recordName);
+            }
+            LOG.debug("Wait for system to keep up");
+            sleep(1000);
         }
+        
     }
 
+    private void sleep(final int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            LOG.debug("sleep was interrupted");
+            // so what?
+        }
+    }
+    
     /**
-     * This method encapsulates access to the framework. It may be overridden by a test so it is not necessary to run a plugin test.
-     *
+     * This method encapsulates retrieval of data from ldap or an xml file.
+     * It is protected so it may be overridden by a test, another option for tests is to mock the alarm service.
+     * 
      * @return all the pv names from the initially given resource
      * @throws AlarmConnectionException
      */
     @Nonnull
     protected Set<String> getPVNamesFromResource() throws AlarmConnectionException {
-        ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
+        IAlarmService alarmService = ServiceLocator.getService(IAlarmService.class);
         try {
-            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
-            } else {
-                model = _alarmConfigService.retrieveInitialContentModelFromFile(_resource
-                        .getFilepath());
-            }
-        } catch (final CreateContentModelException e) {
-            LOG.error("Could not create content model", e);
-            throw new AlarmConnectionException(Messages.CouldNotCreateContentModel, e);
-        } catch (final FileNotFoundException e) {
-            LOG.error("Resource not found: " + _resource.getFilepath(), e);
-            throw new AlarmConnectionException(Messages.ResourceNotFound + ": " + _resource.getFilepath(), e);
-        } catch (final LdapServiceException e) {
-            throw new AlarmConnectionException(Messages.LdapServiceError, e);
+            return alarmService.getPvNames();
+        } catch (AlarmServiceException e) {
+            throw new AlarmConnectionException(e.getMessage(), e);
         }
-        return model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
     }
-
+    
     @Override
     public void registerPV(@Nonnull final String pvName) {
         // A pv is only registered once
@@ -158,7 +156,7 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
             // TODO (jpenning) use constants for parameterization of expert mode
             item._parameters = new HashMap<String, Object>();
             item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
-
+            
             try {
                 // the same listener is used for all pvs
                 _simpleDALBroker.registerListener(item._connectionParameters,
@@ -172,42 +170,72 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
             }
         }
     }
-
+    
     @Override
     public void deregisterPV(@Nonnull final String pvName) {
-        final ListenerItem item = _pv2listenerItem.remove(pvName);
+        ListenerItem item = _pv2listenerItem.remove(pvName);
         if (item != null) {
             disconnectItem(item);
         } else {
             LOG.warn("Trying to deregister a pv named '" + pvName + "' which was not registered.");
         }
     }
-
+    
     @Override
     public void reloadPVsFromResource() throws AlarmConnectionException {
-        deregisterAll();
-        registerAllFromResource();
+        // calculate change sets: toBeRemoved = current - new, toBeConnected = new - current
+        Set<String> currentPVs = new HashSet<String>(_pv2listenerItem.keySet());
+        Set<String> newPVs = new HashSet<String>(getPVNamesFromResource());
+        
+        Set<String> toBeConnectedPvs = new HashSet<String>(newPVs);
+        toBeConnectedPvs.removeAll(currentPVs);
+        
+        Set<String> toBeRemovedPvs =  new HashSet<String>(currentPVs);
+        toBeRemovedPvs.removeAll(newPVs);
+        
+        deregister(toBeRemovedPvs);
+        register(toBeConnectedPvs);
+        
+        // this was the old-fashioned brute-force method:
+        //        deregisterAll();
+        //        registerAllFromResource();
     }
-
-
-
+    
+    private void register(@Nonnull final Set<String> pvSet) {
+        LOG.info("Registering " + pvSet.size() + " PVs.");
+        for (String pvName : pvSet) {
+            registerPV(pvName);
+        }
+        
+    }
+    
+    private void deregister(@Nonnull final Set<String> pvSet) {
+        LOG.info("Deregistering " + pvSet.size() + " PVs.");
+        for (String pvName : pvSet) {
+            ListenerItem item = _pv2listenerItem.get(pvName);
+            disconnectItem(item);
+            _pv2listenerItem.remove(pvName);
+        }
+    }
+    
     private void deregisterAll() {
-        LOG.debug("Deregistering all PVs.");
+        LOG.info("Deregistering all PVs.");
         for (final ListenerItem item : _pv2listenerItem.values()) {
             disconnectItem(item);
         }
         _pv2listenerItem.clear();
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void disconnect() {
-        LOG.debug("Disconnecting from DAL.");
+        LOG.info("Disconnecting from DAL.");
         deregisterAll();
+        _simpleDALBroker.releaseAll();
     }
-
+    
     private void disconnectItem(@Nonnull final ListenerItem item) {
         try {
             _simpleDALBroker.deregisterListener(item._connectionParameters,
@@ -219,7 +247,7 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
             LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
         }
     }
-
+    
     /**
      * Object-based adapter.
      * Adapts the IAlarmListener and the IAlarmConnectionMonitor
@@ -227,54 +255,63 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
-        private static final Logger LOG_INNER = LoggerFactory
-                .getLogger(AlarmConnectionDALImpl.DynamicValueListenerAdapter.class);
-
+        private static final Logger LOG_INNER = LoggerFactory.getLogger(DynamicValueListenerAdapter.class);
+        
         private final IAlarmListener _alarmListener;
-
-        public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener
-//                                           ,
-//                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor
-                                           ) {
-            // The alarmConnectionMonitor is not used by the DynamicValueListenerAdapter, instead the connect is sent
-            // directly after connectWithListenerForResource()
+        
+        public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener) {
             _alarmListener = alarmListener;
         }
-
+        
         @Override
-        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
-            // Currently we are not interested in conditionChange-Events
-//            LOG_INNER.debug("conditionChange received " + event.getCondition() + " for "
-//                    + event.getProperty().getUniqueName());
+        public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
+            logEvent("conditionChange", event);
         }
-
+        
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
-            if (event != null) {
-//                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
-//                        + event.getProperty().getUniqueName());
-                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
-                        .getData())) {
-                    _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event
-                            .getProperty(), event.getData()));
-                } else {
-                    LOG_INNER.warn("Could not create alarm message for "
-                            + event.getProperty().getUniqueName());
-                }
-            } // else ignore
+            logEvent("valueChanged", event);
+            forwardEvent(event);
         }
 
-    }
+        @Override
+        public void valueUpdated(@CheckForNull final DynamicValueEvent<T, P> event) {
+            logEvent("valueUpdated", event);
+            forwardEvent(event);
+        }
+        
+        private void logEvent(@Nonnull final String nameOfCallback,
+                              @Nonnull final DynamicValueEvent<T, P> event) {
+            try {
+                LOG_INNER.trace("{} received {} for {} value {} / {}", new Object[] {
+                        nameOfCallback, event.getCondition(), event.getProperty().getUniqueName(),
+                        event.getValue(), event.getData().stringValue() });
+            } catch (Exception e) {
+                LOG_INNER.trace(nameOfCallback + " received but failed to retrieve data", e);
+            }
+        }
 
+        private void forwardEvent(@Nonnull final DynamicValueEvent<T, P> event) {
+            if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event.getData())) {
+                _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(),
+                                                                             event.getData()));
+            } else {
+                LOG_INNER.warn("Could not create alarm message for "
+                        + event.getProperty().getUniqueName());
+            }
+        }
+    }
+    
+    
     /**
      * These items are stored in a list for later disconnection.
      */
     // CHECKSTYLE:OFF
     private static final class ListenerItem {
         ConnectionParameters _connectionParameters;
-        DynamicValueAdapter<?, ?> _dynamicValueAdapter;
+        DynamicValueAdapter<String, StringProperty> _dynamicValueAdapter;
         Map<String, Object> _parameters;
     }
     // CHECKSTYLE:ON
-
+    
 }

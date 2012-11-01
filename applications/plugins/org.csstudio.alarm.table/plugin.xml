@@ -146,12 +146,12 @@
 
       </actionSet>
    </extension>
-   <extension
+<!--   <extension
          point="org.csstudio.platform.controlSystemItemFactories">
       <controlSystemItemFactory
             class="org.csstudio.alarm.table.dataModel.TextContainerFactory"
             typeId="org.csstudio.alarm.table.controlSystemItemFactory1"/>
-   </extension>
+   </extension>-->
       <extension
          point="org.eclipse.help.toc">
       <toc
@@ -192,7 +192,7 @@
       </factory>
    </extension>
    <extension
-         point="org.csstudio.platform.startupListener">
+         point="org.csstudio.desy.startuphelper.startupListener">
       <startupService
             class="org.csstudio.alarm.table.MessageListAutoStart"
             id="org.csstudio.alarm.table.startupMessageLists"

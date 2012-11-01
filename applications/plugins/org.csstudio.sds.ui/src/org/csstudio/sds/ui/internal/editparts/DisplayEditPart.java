@@ -56,7 +56,7 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
 	public DisplayModel getDisplayModel() {
 		return (DisplayModel) getContainerModel();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,6 +115,11 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
 			}
 		};
 		setPropertyChangeHandler(DisplayModel.PROP_DISPLAY_BORDER_VISIBILITY, displayBorderHandler);
+	}
+
+	@Override
+	protected boolean determineChildrenSelectability() {
+		return true;
 	}
 
 }

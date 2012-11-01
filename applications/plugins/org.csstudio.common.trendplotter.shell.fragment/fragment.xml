@@ -43,10 +43,10 @@
       </objectContribution>
    </extension>
          <extension
-            point="org.csstudio.platform.ui.striptool">
-         <striptool
-               class="org.csstudio.common.trendplotter.StripToolService">
-         </striptool>
-      </extension>
+               point="org.csstudio.desy.startuphelper.striptool">
+            <striptool
+                  class="org.csstudio.common.trendplotter.StripToolService">
+            </striptool>
+         </extension>
 
 </fragment>

@@ -23,6 +23,7 @@
 package org.csstudio.alarm.treeview.ldap;
 
 import java.net.MalformedURLException;
+
 import java.net.URL;
 
 import javax.annotation.CheckForNull;
@@ -31,10 +32,10 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -48,7 +49,7 @@ public final class AlarmTreeNodeModifier {
     /**
      * The logger that is used by this class.
      */
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeNodeModifier.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTreeNodeModifier.class);
 
 	/**
 	 * Private constructor.

@@ -21,6 +21,9 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.ui;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -30,20 +33,11 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
+public class ShowNamespaceBrowser extends AbstractHandler {
 
-    /** A workbench window handle. */
-    private IWorkbenchWindow _window;
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-	public void dispose() {
-	    // EMPTY
-	}
-
-	public void init(final IWorkbenchWindow window) {
-        _window = window;
-    }
-
-	public void run(final IAction action) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         final IWorkbenchPage page = window.getActivePage();
@@ -52,14 +46,6 @@ public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
 	    } catch (final PartInitException e) {
 	        e.printStackTrace();
 	    }
+	    return null;
 	}
-
-	public void selectionChanged(final IAction action, final ISelection selection) {
-	    // EMPTY
-	}
-
-    public IWorkbenchWindow getWorkbenchWindow()
-    {
-        return _window;
-    }
 }

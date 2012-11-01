@@ -24,9 +24,9 @@
 package org.csstudio.alarm.jms2ora.management;
 
 import org.csstudio.alarm.jms2ora.RemotelyAccesible;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * @author Markus Moeller

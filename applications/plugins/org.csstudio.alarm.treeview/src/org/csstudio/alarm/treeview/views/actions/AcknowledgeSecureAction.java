@@ -18,6 +18,7 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,15 +27,15 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Acknowledge action.
@@ -46,11 +47,9 @@ import org.eclipse.jface.viewers.TreeViewer;
  */
 public final class AcknowledgeSecureAction extends AbstractUserDependentAction {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AcknowledgeSecureAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AcknowledgeSecureAction.class);
 
     private static final String RIGHT_ID = "operating";
-    private static final boolean DEFAULT_PERMISSION = true;
 
     private final TreeViewer _viewer;
 
@@ -59,7 +58,7 @@ public final class AcknowledgeSecureAction extends AbstractUserDependentAction {
      * @param viewer
      */
     AcknowledgeSecureAction(@Nonnull final TreeViewer viewer) {
-        super(RIGHT_ID, DEFAULT_PERMISSION);
+        super(RIGHT_ID);
         _viewer = viewer;
     }
 

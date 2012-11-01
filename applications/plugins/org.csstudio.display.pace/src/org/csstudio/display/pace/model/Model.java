@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
 /** PACE Data model
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 01/28/09
  */
 public class Model
@@ -36,17 +36,17 @@ public class Model
 
     /** Overall title */
     final private String title;
-    
+
     /** Column definitions */
     final private ArrayList<Column> columns = new ArrayList<Column>();
-    
+
     /** Instances, rows with cells */
     final private ArrayList<Instance> instances = new ArrayList<Instance>();
-    
+
     /** Listener to be notified of model changes */
     final private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
-    
+
     /** Initialize model from XML file stream
      *  @param stream Stream for XML file
      *  @throws Exception on error: Missing XML elements, errors in macros,
@@ -67,10 +67,10 @@ public class Model
             throw new Exception("Got " + root_name + " instead of 'paceconfig'");
 
         // Using org.csstudio.apputil.xml.DOMHelper plugin for parsing the XML file
-        
+
         // Get Title
         title = DOMHelper.getSubelementString(root_node, XML_TITLE);
-       
+
         // Read column definitions: Locate list of columns
         final Element cols_node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), XML_COLUMNS);
         if (cols_node == null)
@@ -84,7 +84,7 @@ public class Model
             columns.add(column);
             col_node = DOMHelper.findNextElementNode(col_node, XML_COLUMN);
         }
-        
+
         // Locate instance definitions
         final Element insts_node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), XML_INSTANCES);
         if (insts_node == null)
@@ -98,7 +98,7 @@ public class Model
             instances.add(instance);
             inst_node = DOMHelper.findNextElementNode(inst_node, XML_INSTANCE);
         }
-        
+
         // Create cells, passing exceptions back up
         for (Instance instance : instances)
             instance.createCells(columns);
@@ -115,7 +115,7 @@ public class Model
     {
         listeners.remove(listener);
     }
-    
+
     /** @return Overall title of the Model */
     public String getTitle()
     {
@@ -149,7 +149,7 @@ public class Model
     {
         return instances.get(i);
     }
-    
+
     /** @return <code>true</code> if any cell has been edited. */
     public boolean isEdited()
     {
@@ -192,8 +192,26 @@ public class Model
             for (int c = 0; c < getColumnCount(); c++)
                 instance.getCell(c).saveUserValue(user_name);
         }
-        // If there was no exception, we assume the 'save' worked
-        // and we can clear the model
+    }
+
+    /** Restore cells to state before trying to save user values
+     *  @throws Exception on error writing to the PV
+     */
+    public void revertOriginalValues() throws Exception
+    {
+        for (Instance instance : instances)
+        {
+            for (int c = 0; c < getColumnCount(); c++)
+                instance.getCell(c).revertOriginalValue();
+        }
+    }
+
+    /** Clear all user values.
+     *  <p>Meant to be called after user values have been saved,
+     *  or to globally clear anything entered.
+     */
+    public void clearUserValues()
+    {
         for (Instance instance : instances)
         {
             for (int c = 0; c < getColumnCount(); c++)

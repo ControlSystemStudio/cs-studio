@@ -21,9 +21,10 @@
  */
  package org.csstudio.sds.internal.persistence;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Descriptor for extensions of the <code>propertyPersistenceHandlers</code>
@@ -34,6 +35,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * 
  */
 public final class PropertyPersistenceHandlerDescriptor {
+    private static final Logger LOG = LoggerFactory.getLogger(PropertyPersistenceHandlerDescriptor.class);
+
 	/**
 	 * Reference to a configuration element of the Eclipse plugin registry.
 	 */
@@ -67,7 +70,7 @@ public final class PropertyPersistenceHandlerDescriptor {
 				_persistenceHandler = (AbstractPropertyPersistenceHandler) _configurationElement
 						.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 		}
 

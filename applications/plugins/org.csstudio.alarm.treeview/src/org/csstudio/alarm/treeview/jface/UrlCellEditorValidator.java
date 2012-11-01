@@ -26,6 +26,7 @@ import java.net.URL;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.UrlValidator;
 import org.csstudio.alarm.treeview.model.UrlValidator.Result;
 import org.eclipse.jface.viewers.ICellEditorValidator;
@@ -54,11 +55,11 @@ final class UrlCellEditorValidator implements ICellEditorValidator {
         
         if (value instanceof String) {
             if (UrlValidator.checkUrl((String) value) == Result.URL_INVALID) {
-                return "Malformed URL! Please enter a valid file or web path.";
+                return Messages.UrlCellEditorValidator_Malformed;
             }
             return null;
         }
-        return "Entered value is not valid. Please enter a String representation of a URL.";
+        return Messages.UrlCellEditorValidator_Invalid;
     }
     
 }

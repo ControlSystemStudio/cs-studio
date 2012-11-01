@@ -12,14 +12,14 @@ import org.csstudio.config.ioconfig.model.service.internal.ProfiBusIoNameService
 import org.csstudio.config.ioconfig.model.service.internal.ProfibusSensorService;
 import org.csstudio.dct.ISensorIdService;
 import org.csstudio.dct.IoNameService;
-import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.servicelocator.ServiceLocatorFactory;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class IOConfigActivator extends AbstractCssPlugin {
+public class IOConfigActivator extends Plugin {
 
     /**
      *  The plug-in ID.
@@ -55,7 +55,8 @@ public class IOConfigActivator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(@Nonnull final BundleContext context) throws Exception {
+    public void start(@Nonnull final BundleContext context) throws Exception {
+    	super.start(context);
         ServiceLocatorFactory.registerServiceWithTracker("LogbookDocumentService", context, IDocumentService.class, new LogbookDocumentService());
         ServiceLocatorFactory.registerServiceWithTracker("InternId2IONameImplemation", context, IInternId2IONameService.class, new InternId2IONameImplemation());
         ServiceLocatorFactory.registerServiceWithTracker("ProcessVariable2IONameImplemation", context, IProcessVariable2IONameService.class, new ProcessVariable2IONameImplemation());
@@ -67,17 +68,8 @@ public class IOConfigActivator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStop(@Nonnull final BundleContext context) throws Exception {
+    public void stop(@Nonnull final BundleContext context) throws Exception {
+    	super.stop(context);
         // nothing to stop
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getPluginId() {
-        return PLUGIN_ID;
-    }
-
 }

@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Font;
 import org.slf4j.Logger;
@@ -53,13 +52,17 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     private final String _topicSetPreferenceKey;
     private final String _columnSetPreferenceKey;
 
+    private IPreferenceStore _preferenceStore;
+
     public TopicSetColumnService(@Nonnull final String topicSetPreferenceKey,
                                  @Nonnull final String columnSetPreferenceKey,
-                                 @Nonnull final List<ColumnDescription> columnDescriptions) {
+                                 @Nonnull final List<ColumnDescription> columnDescriptions,
+                                 @Nonnull final IPreferenceStore preferenceStore) {
         _topicSetPreferenceKey = topicSetPreferenceKey;
         _columnSetPreferenceKey = columnSetPreferenceKey;
-
         _columnDescriptions = new ArrayList<ColumnDescription>(columnDescriptions);
+        
+        _preferenceStore = preferenceStore;
     }
 
     /**
@@ -124,7 +127,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
      */
     @Override
     @Nonnull
-    public TopicSet getJMSTopics(@Nonnull final String currentTopicSet) {
+    public TopicSet getTopicSetByName(@Nonnull final String currentTopicSet) {
         List<TopicSet> topicSets = readTopicSet();
         for (TopicSet topicSetTmp : topicSets) {
             if (topicSetTmp.getName().equals(currentTopicSet)) {
@@ -134,6 +137,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
         return topicSets.get(0);
     }
 
+    @Nonnull
     @Override
     public List<ColumnDescription> getColumnDescriptions() {
         return Collections.unmodifiableList(_columnDescriptions);
@@ -154,8 +158,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
 
     @Nonnull
     private List<String[]> readColumnSets() {
-        IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-        return createColumnSetsFromPreference(store.getString(_columnSetPreferenceKey));
+        return createColumnSetsFromPreference(_preferenceStore.getString(_columnSetPreferenceKey));
     }
 
     @Nonnull
@@ -173,8 +176,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
 
     @Nonnull
     private List<TopicSet> readTopicSet() {
-        IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-        return readTopicSetsFromPreference(store.getString(_topicSetPreferenceKey));
+        return readTopicSetsFromPreference(_preferenceStore.getString(_topicSetPreferenceKey));
     }
 
     @Nonnull
@@ -196,7 +198,8 @@ public class TopicSetColumnService implements ITopicSetColumnService {
         TopicSet topicSet = new TopicSet.Builder().setDefaultTopic(topicSetItems[0])
                 .setTopics(topicSetItems[1]).setName(topicSetItems[2])
                 .setPopUp(topicSetItems[3]).setStartUp(topicSetItems[4])
-                .setFont(topicSetItems[5]).setRetrieveInitialState(topicSetItems[6]).build();
+                .setFont(topicSetItems[5]).setRetrieveInitialState(topicSetItems[6])
+                .setSynchedToTree(topicSetItems[7]).build();
         return topicSet;
     }
 

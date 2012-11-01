@@ -28,10 +28,11 @@ package org.csstudio.ams.remotetool;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
+
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
@@ -43,8 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 16.12.2011
@@ -58,8 +57,11 @@ public class ApplicationStopper {
     
     private IRosterManager rosterManager;
     
-    public ApplicationStopper(ISessionService xmpp) {
+    private String amsRosterGroup;
+    
+    public ApplicationStopper(ISessionService xmpp, String rosterGroup) {
         xmppSession = xmpp;
+        amsRosterGroup = rosterGroup;
         rosterManager = xmppSession.getRosterManager();
     }
     
@@ -99,7 +101,7 @@ public class ApplicationStopper {
         LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
         
         // Get the group of JMS applications
-        IRosterGroup jmsApplics = getApplicationGroup(rosterItems, "jms-applications");
+        IRosterGroup jmsApplics = getApplicationGroup(rosterItems, amsRosterGroup);
         
         // Get the application
         if(jmsApplics != null) {

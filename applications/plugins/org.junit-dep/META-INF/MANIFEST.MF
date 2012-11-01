@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JUnit Library (Without copies of dependencies)
+Bundle-SymbolicName: org.junit-dep
+Bundle-Version: 4.10.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: junit-dep-4.10.jar
+Require-Bundle: org.hamcrest;bundle-version="1.3.0";visibility:=reexport
+Export-Package: org.junit,
+ org.junit.matchers
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Description: JUnit Library (excluding copy of hamcrest, using hamcrest plugin)

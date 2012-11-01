@@ -5,12 +5,12 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figureparts.AlphaLabel;
-import org.csstudio.swt.xygraph.linearscale.LinearScale;
-import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
+import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FigureUtilities;

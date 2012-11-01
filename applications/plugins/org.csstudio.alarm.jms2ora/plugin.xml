@@ -20,7 +20,7 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.alarm.jms2ora.management.Stop"
             id="org.csstudio.alarm.jms2ora.Stop"

@@ -26,7 +26,7 @@ package org.csstudio.websuite.dataModel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.csstudio.platform.model.IProcessVariable;
+
 import org.csstudio.websuite.dataModel.preferences.SeverityMapping;
 import org.eclipse.core.runtime.PlatformObject;
 
@@ -38,7 +38,8 @@ import org.eclipse.core.runtime.PlatformObject;
  * @author jhatje
  * 
  */
-public class BasicMessage extends PlatformObject implements IProcessVariable {
+//TODO jhatje: implement new datatypes
+public class BasicMessage extends PlatformObject {// implements IProcessVariable {
 
     /**
      * The properties of the message.
@@ -123,14 +124,17 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
         return SeverityMapping.getSeverityNumber(_messageProperties.get("SEVERITY"));
     }
 
-    @Override
+ //TODO jhatje: implement new datatypes
+
+//    @Override
 	public String getName() {
         return this.getProperty("NAME"); //$NON-NLS-1$
     }
 
-    @Override
+//    @Override
 	public String getTypeId() {
-        return TYPE_ID;
+		return null;
+//        return TYPE_ID;
     }
 
 

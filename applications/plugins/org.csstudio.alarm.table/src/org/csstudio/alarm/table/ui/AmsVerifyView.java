@@ -19,6 +19,7 @@
 
 package org.csstudio.alarm.table.ui;
 
+
 import java.text.SimpleDateFormat;
 
 import javax.jms.MapMessage;
@@ -31,7 +32,7 @@ import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceCons
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
-import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.desy.startuphelper.CSSPlatformInfo;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

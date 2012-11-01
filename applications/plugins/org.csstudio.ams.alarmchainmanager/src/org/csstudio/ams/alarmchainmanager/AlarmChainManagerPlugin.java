@@ -24,19 +24,20 @@
 
 package org.csstudio.ams.alarmchainmanager;
 
+
 import java.sql.Connection;
 
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class AlarmChainManagerPlugin extends AbstractCssUiPlugin {
+public class AlarmChainManagerPlugin extends AbstractUIPlugin {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.ams.alarmchainmanager";
@@ -92,19 +93,16 @@ public class AlarmChainManagerPlugin extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+    	super.start(context);
         final IWorkbench workbench = PlatformUI.getWorkbench();
         window = workbench.getWorkbenchWindows()[0];
         display = window.getShell().getDisplay();
     }
 
     @Override
-    protected void doStop(final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
+    	super.stop(context);
         plugin = null;
-    }
-
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
 }

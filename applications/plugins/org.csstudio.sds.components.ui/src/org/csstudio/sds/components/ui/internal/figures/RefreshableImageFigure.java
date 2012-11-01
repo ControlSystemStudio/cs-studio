@@ -24,8 +24,6 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.figures.BorderAdapter;
@@ -34,6 +32,7 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.csstudio.sds.util.ExecutionService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -52,6 +51,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -63,6 +64,8 @@ import org.eclipse.swt.widgets.Display;
 
 public final class RefreshableImageFigure extends Figure implements IAdaptable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RefreshableImageFigure.class);
+	
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
@@ -382,7 +385,7 @@ public final class RefreshableImageFigure extends Figure implements IAdaptable {
 			}
 		} catch (Exception e) {
 			loadingError = true;
-			CentralLogger.getInstance().error(this, "ERROR in loading image\n"+_path, e);
+			LOG.error("ERROR in loading image\n"+_path, e);
 		}
 		if(animated){
 			stopAnimation();

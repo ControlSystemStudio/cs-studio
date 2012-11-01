@@ -18,15 +18,13 @@
 package org.csstudio.alarm.table;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
-import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.dataModel.SeverityRegistry;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
@@ -41,7 +39,7 @@ import org.csstudio.alarm.table.service.AlarmSoundService;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.service.TopicsetService;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -55,7 +53,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class JmsLogsPlugin extends AbstractCssUiPlugin {
+public class JmsLogsPlugin extends AbstractUIPlugin {
     
     private static final Logger LOG = LoggerFactory.getLogger(JmsLogsPlugin.class);
 
@@ -64,14 +62,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 	// The shared instance.
 	private static JmsLogsPlugin PLUGIN;
-
-	private IMessageTypes _messageTypes;
-
-	private ServiceReference _serviceReferenceMessageTypes;
-
-	private ServiceReference _serviceReferenceArchiveAccess;
-
-	private ILogMessageArchiveAccess _archiveAccess;
 
 	private ServiceReference _serviceReferenceSendMapMessage;
 
@@ -91,9 +81,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	// The alarm sound service
 	private IAlarmSoundService _alarmSoundService;
 
-	// The alarm service
-	private IAlarmService _alarmService;
-
 	// The alarm configuration service
 	private IAlarmConfigurationService _alarmConfigurationService;
 
@@ -108,19 +95,13 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		PLUGIN = this;
 	}
 
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
-
 	/**
 	 * This method is called upon plug-in activation
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
-		_alarmService = getService(context, IAlarmService.class);
-		_alarmConfigurationService = getService(context,
-				IAlarmConfigurationService.class);
+    public void start(final BundleContext context) throws Exception {
+		super.start(context);
+		_alarmConfigurationService = ServiceLocator.getService(IAlarmConfigurationService.class);
 
 		// Might be registered as OSGI services
 		_topicsetServiceForLogViews = new TopicsetService("for log views");
@@ -129,15 +110,15 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		_topicSetColumnServiceForLogViews = new TopicSetColumnService(
 				LogViewPreferenceConstants.TOPIC_SET,
 				LogViewPreferenceConstants.P_STRING,
-				getColumnDescriptionsForLogViews());
+				getColumnDescriptionsForLogViews(), getPreferenceStore());
 		_topicSetColumnServiceForAlarmViews = new TopicSetColumnService(
 				AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString(),
 				AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
-				getColumnDescriptionsForAlarmViews());
+				getColumnDescriptionsForAlarmViews(), getPreferenceStore());
 		_topicSetColumnServiceForVerifyViews = new TopicSetColumnService(
 				AmsVerifyViewPreferenceConstants.TOPIC_SET,
 				AmsVerifyViewPreferenceConstants.P_STRING,
-				getColumnDescriptionsForVerifyViews());
+				getColumnDescriptionsForVerifyViews(), getPreferenceStore());
 
 		SeverityRegistry.setSeverityMapping(new SeverityMapping());
 
@@ -154,36 +135,24 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 					.getService(_serviceReferenceSendMapMessage);
 		}
 
-		_serviceReferenceMessageTypes = context
-				.getServiceReference(IMessageTypes.class.getName());
-		if (_serviceReferenceMessageTypes != null) {
-			_messageTypes = (IMessageTypes) context
-					.getService(_serviceReferenceMessageTypes);
-		}
-		_serviceReferenceArchiveAccess = context
-				.getServiceReference(ILogMessageArchiveAccess.class.getName());
-		if (_serviceReferenceArchiveAccess != null) {
-			_archiveAccess = (ILogMessageArchiveAccess) context
-					.getService(_serviceReferenceArchiveAccess);
-		}
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
+    public void stop(@Nonnull final BundleContext context) throws Exception {
+		super.stop(context);
 		LOG.info("doStop");
+
 		safelyDisconnect(_topicsetServiceForAlarmViews);
 		safelyDisconnect(_topicsetServiceForLogViews);
 
-		context.ungetService(_serviceReferenceMessageTypes);
-		context.ungetService(_serviceReferenceArchiveAccess);
 		context.ungetService(_serviceReferenceSendMapMessage);
 		PLUGIN = null;
 	}
 
-	private void safelyDisconnect(final ITopicsetService topicsetService) {
+	private void safelyDisconnect(@Nonnull final ITopicsetService topicsetService) {
 		try {
 			topicsetService.disconnectAll();
 		} catch (final RuntimeException e) {
@@ -237,14 +206,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
 	}
 
-	public IMessageTypes getMessageTypes() {
-		return _messageTypes;
-	}
-
-	public ILogMessageArchiveAccess getArchiveAccess() {
-		return _archiveAccess;
-	}
-
 	public ISendMapMessage getSendMapMessage() {
 		return _sendMapMessage;
 	}
@@ -285,14 +246,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	}
 
 	/**
-	 * @return the alarm service or null
-	 */
-	@CheckForNull
-	public IAlarmService getAlarmService() {
-		return _alarmService;
-	}
-
-	/**
 	 * @return the alarm configuration service or null
 	 */
 	@CheckForNull
@@ -307,6 +260,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		result.add(ColumnDescription.TOPIC_SET);
 		result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
 		result.add(ColumnDescription.AUTO_START);
+		result.add(ColumnDescription.SYNCHED_TO_TREE);
 		result.add(ColumnDescription.FONT);
 		return result;
 	}
@@ -319,6 +273,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 		result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
 		result.add(ColumnDescription.AUTO_START);
 		result.add(ColumnDescription.RETRIEVE_INITIAL_STATE);
+		result.add(ColumnDescription.SYNCHED_TO_TREE);
 		result.add(ColumnDescription.FONT);
 		return result;
 	}

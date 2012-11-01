@@ -19,6 +19,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -455,20 +456,28 @@ public class PVItem extends ModelItem implements PVListener
 
         item.configureFromDocument(model, node);
 
-        if (Preferences.useDefaultArchives())
-            item.useDefaultArchiveDataSources();
-        else
-        {   // Load archives from saved configuration
-            Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
-            while (archive != null)
-            {
-                final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
-                final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
-                final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
-                item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
-                archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
-            }
+        // Load archives from saved configuration
+        boolean have_imported_data = false;
+        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
+        while (archive != null)
+        {
+            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
+            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
+            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
+
+            if (url.startsWith(ImportArchiveReaderFactory.PREFIX))
+                have_imported_data = true;
+
+            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
+            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
         }
+
+        // When requested, use default archive sources for 'real' archives (RDB, ...)
+        // Do not clobber an imported archive data source, a specific file which was
+        // probably not meant to be replaced by a default.
+        if (Preferences.useDefaultArchives()  &&  !have_imported_data)
+            item.useDefaultArchiveDataSources();
+
         return item;
     }
 }

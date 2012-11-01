@@ -24,11 +24,10 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
+import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.annotation.Nonnull;
-
 import org.csstudio.alarm.jms2ora.IMessageConverter;
 import org.csstudio.alarm.jms2ora.IMessageProcessor;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
@@ -37,8 +36,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author mmoeller
- * @version 1.0
- * @since 29.08.2011
+ * @version 1.1
+ * @since 27.08.2012
  */
 public class MessageConverter extends Thread implements IMessageConverter {
 
@@ -57,17 +56,18 @@ public class MessageConverter extends Thread implements IMessageConverter {
     /** Object that creates the MessageContent objects */
     private final MessageContentCreator contentCreator;
 
-    private final Object lock;
-
     private boolean working;
+    
+    private boolean stoppedClean;
 
     public MessageConverter(@Nonnull final IMessageProcessor processor, @Nonnull final StatisticCollector c) {
         messageProcessor = processor;
-        messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator(c);
-        lock = new Object();
         working = true;
+        stoppedClean = false;
+        messageAcceptor = new MessageAcceptor(this, c);
+        this.setName("MessageConverter-Thread");
         this.start();
     }
 
@@ -78,10 +78,10 @@ public class MessageConverter extends Thread implements IMessageConverter {
 
         while (working) {
 
-            synchronized (lock) {
+            synchronized (this) {
                 try {
                     if (rawMessages.isEmpty()) {
-                        lock.wait();
+                        this.wait();
                     }
                 } catch (final InterruptedException ie) {
                     LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
@@ -99,6 +99,7 @@ public class MessageConverter extends Thread implements IMessageConverter {
         }
 
         messageAcceptor.closeAllReceivers();
+        stoppedClean = true;
     }
 
     public int getQueueSize() {
@@ -108,9 +109,22 @@ public class MessageConverter extends Thread implements IMessageConverter {
     @Override
     public final void putRawMessage(@Nonnull final RawMessage m) {
         rawMessages.add(m);
-        synchronized (lock) {
-            lock.notify();
+        synchronized (this) {
+            this.notify();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<RawMessage> getRawMessages() {
+        Vector<RawMessage> result = null;
+        if (rawMessages.isEmpty()) {
+            result = new Vector<RawMessage>();
+        }
+        result = new Vector<RawMessage>(rawMessages);
+        return result;
     }
 
     /**
@@ -118,8 +132,12 @@ public class MessageConverter extends Thread implements IMessageConverter {
      */
     public void stopWorking() {
         working = false;
-        synchronized (lock) {
-            lock.notify();
+        synchronized (this) {
+            this.notify();
         }
+    }
+    
+    public boolean stoppedClean() {
+        return stoppedClean;
     }
 }

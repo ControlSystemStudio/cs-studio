@@ -4,8 +4,8 @@ import static org.csstudio.dct.PreferenceSettings.DATALINK_FUNCTION_PARAMETER_3_
 import static org.csstudio.dct.PreferenceSettings.DATALINK_FUNCTION_PARAMETER_4_PROPOSAL;
 import static org.csstudio.dct.PreferenceSettings.FIELD_DESCRIPTION_SHOW_DESCRIPTION;
 import static org.csstudio.dct.PreferenceSettings.FIELD_DESCRIPTION_SHOW_INITIAL_VALUE;
-import static org.csstudio.dct.PreferenceSettings.SENSOR_ID_SERVICE_ID;
 import static org.csstudio.dct.PreferenceSettings.IO_NAME_SERVICE_ID;
+import static org.csstudio.dct.PreferenceSettings.SENSOR_ID_SERVICE_ID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import org.csstudio.dct.ISensorIdService;
 import org.csstudio.dct.IoNameService;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.BooleanFieldEditor;

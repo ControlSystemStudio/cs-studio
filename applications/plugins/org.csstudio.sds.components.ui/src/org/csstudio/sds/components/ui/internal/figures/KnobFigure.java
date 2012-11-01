@@ -3,12 +3,12 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figureparts.Bulb;
 import org.csstudio.sds.components.ui.internal.figureparts.PolarPoint;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
 import org.csstudio.sds.util.RotationUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;

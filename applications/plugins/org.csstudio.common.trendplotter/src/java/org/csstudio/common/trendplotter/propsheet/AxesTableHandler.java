@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.propsheet;
 
+import java.util.ArrayList;
+
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.AxisConfig;
@@ -25,6 +27,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -427,12 +431,33 @@ public class AxesTableHandler implements ILazyContentProvider
                     menu.add(new DeleteAxesAction(operations_manager, axes_table, model));
                 if (model.getEmptyAxis() != null)
                     menu.add(new RemoveUnusedAxesAction(operations_manager, model));
+                AxisConfig[] selectedAxesConfigs = getSelectedAxesConfigs();
+                if (selectedAxesConfigs.length > 1) {
+                    menu.add(new BulkEditValueAction(axes_table.getTable().getShell(), selectedAxesConfigs, operations_manager, model));
+                }
+
             }
         });
         final Table table = axes_table.getTable();
         table.setMenu(menu.createContextMenu(table));
     }
 
+    /** @return Currently selected AxisConfigs in the table of valueAxes. Never <code>null</code> */
+    protected AxisConfig[] getSelectedAxesConfigs() {
+        final IStructuredSelection selection = (IStructuredSelection) axes_table.getSelection();
+        if (selection.isEmpty()) {
+            return new AxisConfig[0];
+        }
+        final Object obj[] = selection.toArray();
+        final ArrayList<AxisConfig> pvs = new ArrayList<AxisConfig>();
+        for (int i = 0; i < obj.length; ++i) {
+            if (obj[i] instanceof AxisConfig) {
+                pvs.add((AxisConfig) obj[i]);
+            }
+        }
+        return pvs.toArray(new AxisConfig[pvs.size()]);
+    }
+    
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
      */

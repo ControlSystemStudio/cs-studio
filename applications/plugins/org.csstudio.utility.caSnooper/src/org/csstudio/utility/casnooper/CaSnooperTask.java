@@ -1,8 +1,8 @@
 package org.csstudio.utility.casnooper;
 
 
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.StartupServiceEnumerator;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;

@@ -23,11 +23,14 @@
  */
 package org.csstudio.servicelocator;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.servicelocator.ServiceLocator.IServiceProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
@@ -35,38 +38,40 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Support for the service locator. Helps registering services with service trackers.
- *
+ * 
  * @author jpenning
  * @since 25.01.2012
  */
 public final class ServiceLocatorFactory {
-
+    
     private static final Logger LOG = LoggerFactory.getLogger(ServiceLocatorFactory.class);
-
+    
     private ServiceLocatorFactory() {
         // utility class, no objects will be created
     }
-
+    
     /**
      * Creates a service tracker for the given service type at the given bundle context
-     *
+     * 
      * @param <T> the type of the service
      * @param context the bundle context of the calling activator
      * @param service the interface type of the service
      * @return the newly created service tracker
      */
     @Nonnull
-    public static <T> ServiceTracker createServiceTracker(@Nonnull final BundleContext context,
+    public static <T> ServiceTracker<T, Object> createServiceTracker(@Nonnull final BundleContext context,
                                                                      @Nonnull final Class<T> service) {
-        final ServiceTracker serviceTracker = new ServiceTracker(context, service.getName(), null);
+        ServiceTracker<T, Object> serviceTracker = new ServiceTracker<T, Object>(context,
+                                                                                 service,
+                                                                                 null);
         serviceTracker.open();
         return serviceTracker;
     }
-
+    
     /**
      * Register the given service (consists of the interface type and the implementation)
      * at the osgi service registry and also at the service locator for singleton-style easy access.
-     *
+     * 
      * @param <T> type of the service interface
      * @param <I> implementation of the service
      * @param description only a descriptive string useful in the osgi console
@@ -79,14 +84,25 @@ public final class ServiceLocatorFactory {
                                                                    @Nonnull final Class<T> service,
                                                                    @Nonnull final I impl) {
         LOG.info("Registering OSGi service: " + description);
-
+        
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", description);
-
-        context.registerService(service.getName(), impl, properties);
+        
+        context.registerService(service, impl, properties);
         ServiceLocator.registerServiceTracker(service, ServiceLocatorFactory
                 .createServiceTracker(context, service));
     }
-
+    
+    public static <T, I extends T> void registerRemoteService(@Nonnull final String description,
+                                                              @Nonnull final String rmiServer,
+                                                              final int rmiPort,
+                                                              @Nonnull final Class<T> service) throws RemoteException,
+                                                                                              NotBoundException {
+        LOG.info("Registering remote service: " + description);
+        
+        IServiceProvider<T> serviceProvider = new ServiceLocator.ServiceProviderForRemote<T, I>(rmiServer, rmiPort, service);
+        ServiceLocator.registerServiceProvider(service, serviceProvider);
+    }
+    
 }

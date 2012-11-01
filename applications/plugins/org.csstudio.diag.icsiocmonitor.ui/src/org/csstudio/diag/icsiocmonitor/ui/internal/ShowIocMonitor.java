@@ -22,7 +22,6 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**

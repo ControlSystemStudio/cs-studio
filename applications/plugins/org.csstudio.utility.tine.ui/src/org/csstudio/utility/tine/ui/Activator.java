@@ -22,6 +22,7 @@
  package org.csstudio.utility.tine.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+
 import org.osgi.framework.BundleContext;
 
 /**

@@ -25,12 +25,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A property, which is able to handle a map values.
@@ -40,6 +41,8 @@ import org.csstudio.sds.util.ChannelReferenceValidationUtil;
  * 
  */
 public class StringMapProperty extends WidgetProperty {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StringMapProperty.class);
 
 	/**
 	 * Constructor.
@@ -98,7 +101,7 @@ public class StringMapProperty extends WidgetProperty {
 			try {
 				resolvedValue = ChannelReferenceValidationUtil.createCanonicalName(value, getWidgetModel().getAllInheritedAliases());
 			} catch (ChannelReferenceValidationException e) {
-				CentralLogger.getInstance().debug(this, "Aliases in \"" + value + "\" cannot be resolved, error message is: " + e.getMessage());
+				LOG.debug("Aliases in \"" + value + "\" cannot be resolved, error message is: " + e.getMessage());
 				resolvedValue = alias.getValue();
 			}
 			tooltip.append(resolvedValue);

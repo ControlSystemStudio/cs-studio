@@ -34,9 +34,9 @@
 		*/
 package org.csstudio.sds.ui.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.draw2d.Figure;

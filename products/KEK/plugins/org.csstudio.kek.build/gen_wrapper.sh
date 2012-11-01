@@ -10,7 +10,7 @@
 #
 #  ACC - One of valid accelerators name. See VALID_ACC varible defined
 #        in acc_settings.sh
-#  TARGET - WIN, MACOSX or LINUX
+#  TARGET - only "WIN" is supported.
 #
 # Author
 #  - Takashi Nakamoto (Cosylab)
@@ -37,32 +37,25 @@ source ${SCRIPTDIR}/css_kek_functions.sh
 css_kek_settings
 
 if [ "${TARGET}" = "WIN" ]; then
-cat <<EOF
+    cat <<EOF
 cd %~dp0
 
 echo org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST} > %TEMP%\plugin_customization_${ACC}.ini
 echo org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
 echo org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
 
-start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini
-EOF
+echo org.csstudio.opibuilder/color_file=${COLOR_DEF} >> %TEMP%\plugin_customization_${ACC}.ini
+echo org.csstudio.opibuilder/font_file=${FONT_DEF} >> %TEMP%\plugin_customization_${ACC}.ini
 
+EOF
+    
+    if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+	echo "start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini -share_link ${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST} %*"
+    else
+	echo "start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini %*"
+    fi
 else
-
-cat <<EOF
-SCRIPTDIR=\$(cd \$(dirname \$0) && pwd)
-TMP_INI=/tmp/plugin_customization_\$\$.ini
-CSS=\${SCRIPTDIR}/css
-
-cat <<EOS
-org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST}
-
-org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES}
-org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS}
-EOS
-
-\${CSS} -pluginCustomization \${TMP_INI}
-EOF
-
+    echo "This script supports only WIN." 1>&2
+    exit 1
 fi
 

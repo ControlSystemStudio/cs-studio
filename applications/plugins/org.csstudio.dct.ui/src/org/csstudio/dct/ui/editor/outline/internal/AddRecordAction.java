@@ -6,13 +6,10 @@ import java.util.UUID;
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 

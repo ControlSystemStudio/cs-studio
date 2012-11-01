@@ -29,8 +29,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
-import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
@@ -38,6 +37,8 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+import org.csstudio.utility.namespace.utility.ProcessVariableItem;
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -47,6 +48,8 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -119,8 +122,8 @@ public class CSSView extends Composite implements Observer {
          */
         @Override
         public String getText(final Object element) {
-            if (element instanceof IControlSystemItem) {
-                final String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
+            if (element instanceof ProcessVariable) {
+                final String[] name = ((ProcessVariable) element).getName().split("[/ ]");
                 return name[name.length - 1];
             }
             return element.toString();
@@ -347,8 +350,15 @@ public class CSSView extends Composite implements Observer {
 
             final String selectionString = _tableViewer.getSelection().toString();
             final String stringWithoutBrackets = selectionString.substring(1, selectionString.length() - 1);
-            final ControlSystemItem csi = _itemList.get(stringWithoutBrackets);
-
+            final String stringWithoutPrefix[] = stringWithoutBrackets.split("\\s+");
+            final ControlSystemItem csi;
+            if (stringWithoutPrefix.length>1) {
+            	final String stringWithoutColon = stringWithoutPrefix[1].substring(1, stringWithoutPrefix[1].length() - 1);
+            	System.out.println(stringWithoutColon);
+            	csi = _itemList.get(stringWithoutColon);
+            } else {
+            	csi = new ControlSystemItem("","");
+            }
             _child = new CSSView(_parent,
                                  _automat,
                                  _nameSpace.createNew(),
@@ -585,8 +595,8 @@ public class CSSView extends Composite implements Observer {
                 final ArrayList<Object> al = new ArrayList<Object>();
                 for (final Object element : elements) {
                     String name = ""; //$NON-NLS-1$
-                    if (element instanceof IControlSystemItem) {
-                        final String[] names = ((IControlSystemItem) element).getName().split("[/ ]");
+                    if (element instanceof ProcessVariable) {
+                        final String[] names = ((ProcessVariable) element).getName().split("[/ ]");
                         name = names[names.length - 1];
                         // name= ((IControlSystemItem) element).getName();
                     }
@@ -627,10 +637,23 @@ public class CSSView extends Composite implements Observer {
         _parent.layout();
         _parent.pack();
 
+        new ControlSystemDragSource(_tableViewer.getControl()) {
+			
+			@Override
+			public Object getSelection() {
+                final Object[] obj = ((IStructuredSelection)_tableViewer.getSelection()).toArray();
+                final ProcessVariable[] pvs = new ProcessVariable[obj.length];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(((ProcessVariableItem)obj[i]).getName());
+                return pvs;
+			}
+		};
+        
+		
         // Make List Drageble
         //        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
         //        new ProcessVariableDragSource(listViewer.getList(), listViewer);
-        new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
+//        new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
         // MB3
         makeContextMenu();
 

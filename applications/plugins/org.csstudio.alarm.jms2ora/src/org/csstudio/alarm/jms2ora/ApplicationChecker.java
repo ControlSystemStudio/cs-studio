@@ -24,10 +24,14 @@
 
 package org.csstudio.alarm.jms2ora;
 
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,12 +39,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.alarm.jms2ora.util.CheckErrorState;
 import org.csstudio.alarm.jms2ora.util.JmsSender;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ecf.core.identity.ID;
@@ -54,6 +58,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.joda.time.DateTime;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 import org.slf4j.Logger;
@@ -72,6 +77,9 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
     /** The SessionService for the XMPP login */
     private ISessionService xmppSession;
 
+    /** */
+    private CheckErrorState errorState;
+
     /**
      * Max. time difference between now and the last received message (ms).
      * The preference value is given as minutes and has to be converted.
@@ -83,9 +91,6 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
      * The preference value is given as minutes and has to be converted.
      */
     private long maxStoreDiffTime;
-
-    /** */
-    private boolean errorState;
 
     /**
      *
@@ -106,7 +111,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         maxStoreDiffTime *= 60000L;
         LOG.info("Max store time difference: {}", maxStoreDiffTime);
 
-        errorState = this.existsErrorFile();
+        errorState = this.readErrorState();
         xmppSession = null;
     }
 
@@ -116,7 +121,9 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
      * @param host
      * @param user
      */
-    public boolean checkExternInstance(final String applicationName, final String host, final String user) {
+    public boolean checkExternInstance(final String applicationName,
+                                       final String host,
+                                       final String user) throws XmppLoginException {
 
         Vector<IRosterItem> rosterItems = null;
         IRosterGroup jmsApplics = null;
@@ -128,15 +135,15 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         final Object lock = new Object();
         synchronized (lock) {
             try {
-                lock.wait(3000);
+                lock.wait(10000L);
             } catch (final InterruptedException ie) {
                 // Can be ignored
             }
         }
 
         if (xmppSession == null) {
-            LOG.info("XMPP login failed. Stopping application.");
-            return success;
+            LOG.warn("XMPP login failed. Stopping application.");
+            throw new XmppLoginException("Cannot check the status of Jms2Ora.");
         }
 
         rosterItems = getRosterItems();
@@ -157,6 +164,10 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             return success;
         }
 
+        if (errorState != null) {
+            this.deleteErrorFile();
+        }
+
         LOG.info("Manager initialized");
         LOG.info("Anzahl Directory-Elemente: {}", rosterItems.size());
 
@@ -168,6 +179,13 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         }
 
         if (xmppSession != null) {
+            synchronized (xmppSession) {
+                try {
+                    xmppSession.wait(500);
+                } catch (InterruptedException ie) {
+                    LOG.info("xmppService.wait(500) has been interrupted.");
+                }
+            }
             xmppSession.disconnect();
         }
 
@@ -184,9 +202,8 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
 
         CommandDescription getStatisticsAction = null;
         String returnValue = null;
-        boolean result = false;
-
         IManagementCommandService service = null;
+        boolean isWorking = false;
 
         if (currentApplic != null) {
 
@@ -211,7 +228,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
 
             if (service == null) {
                 LOG.error("Cannot get the management command service.");
-                return result;
+                return false;
             }
 
             if (getStatisticsAction != null) {
@@ -219,40 +236,49 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                 final CommandResult retValue = service.execute(getStatisticsAction.getIdentifier(), null);
                 if (retValue != null) {
                     returnValue = (String) retValue.getValue();
-                    result = isApplicWorking(returnValue);
+                    isWorking = isApplicWorking(returnValue);
                 } else {
                     LOG.warn("Command action value is null!");
-                    result = false;
+                    isWorking = false;
                 }
             }
 
-            if (result == false) {
-
-                if (errorState == false) {
-
-                    // Retrieve the check interval
+            if (isWorking == false) {
+                if (errorState == null) {
                     final IPreferencesService pref = Platform.getPreferencesService();
                     final String url = pref.getString(Jms2OraActivator.PLUGIN_ID,
                                                 PreferenceConstants.JMS_PRODUCER_URL, "", null);
 
                     JmsSender sender = new JmsSender(url, "ALARM");
-                    sender.sendMessage("alarm", "APPLIC:Jms2Ora", "Jms2Ora does not work properly.", "MAJOR");
+                    sender.sendMessage("alarm", "APPLIC:Jms2Ora", "Jms2Ora is NOT working.", "MAJOR");
                     sender.closeAll();
                     sender = null;
 
-                    // The flag indicates that the alarm message was sent
-                    errorState = true;
+                    // The object indicates that the alarm message was sent
+                    errorState = new CheckErrorState(new DateTime(), true);
                 }
             } else {
-                errorState = false;
+                if (errorState != null) {
+                    if (errorState.isNotificationSent()) {
+                        final IPreferencesService pref = Platform.getPreferencesService();
+                        final String url = pref.getString(Jms2OraActivator.PLUGIN_ID,
+                                                    PreferenceConstants.JMS_PRODUCER_URL, "", null);
+
+                        JmsSender sender = new JmsSender(url, "ALARM");
+                        sender.sendMessage("alarm", "APPLIC:Jms2Ora", "Jms2Ora is working again.", "NO_ALARM");
+                        sender.closeAll();
+                        sender = null;
+                    }
+                    errorState = null;
+                }
             }
         }
 
-        if(errorState) {
-            this.createErrorFile();
+        if(errorState != null) {
+            this.createErrorFile(errorState);
         }
 
-        return result;
+        return isWorking;
     }
 
     /**
@@ -314,14 +340,14 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                     }
 
                     if (timeStoredDiff > maxStoreDiffTime) {
-
-                        if (filteredDate.getTime() > storedDate.getTime()
-                            || discardedDate.getTime() > storedDate.getTime()) {
-
-                            result = true;
-                        } else {
-                            result = false;
-                        }
+                        result = false;
+//                        if (filteredDate.getTime() > storedDate.getTime()
+//                            || discardedDate.getTime() > storedDate.getTime()) {
+//
+//                            result = true;
+//                        } else {
+//                            result = false;
+//                        }
                     } else {
                         result = true;
                     }
@@ -515,7 +541,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         return currentApplic;
     }
 
-    private boolean existsErrorFile() {
+    private CheckErrorState readErrorState() {
 
         String workspaceLocation = null;
 
@@ -530,17 +556,39 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             workspaceLocation = "./";
         }
 
-        final File errorFile = new File(workspaceLocation + "error");
-        if (errorFile.exists()) {
-            errorFile.delete();
+        final File errorFile = new File(workspaceLocation + "errorState.ser");
+        if (!errorFile.exists()) {
+            return null;
         }
 
-        return errorFile.exists();
+        CheckErrorState result = null;
+        ObjectInputStream fileStream = null;
+        
+        try {
+            fileStream = new ObjectInputStream(new FileInputStream(errorFile));
+            Object o = fileStream.readObject();
+            if (o instanceof CheckErrorState) {
+                result = (CheckErrorState) o;
+            }
+        } catch (FileNotFoundException e) {
+            LOG.error("[*** FileNotFoundException ***]: {}", e.getMessage());
+        } catch (IOException e) {
+            LOG.error("[*** IOException ***]: {}", e.getMessage());
+        } catch (ClassNotFoundException e) {
+            LOG.error("[*** ClassNotFoundException ***]: {}", e.getMessage());
+        } finally {
+            if (fileStream != null) {
+                try{fileStream.close();}catch(final Exception e) { /*Can be ignored */ }
+                fileStream = null;
+            }
+        }
+        
+        return result;
     }
 
-    private void createErrorFile() {
+    private void createErrorFile(CheckErrorState state) {
 
-        FileOutputStream errorFileStream = null;
+        ObjectOutputStream errorFile = null;
         String workspaceLocation = null;
 
         // Retrieve the location of the workspace directory
@@ -554,22 +602,43 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             workspaceLocation = "./";
         }
 
-        final File errorFile = new File(workspaceLocation + "error");
+        final File file = new File(workspaceLocation + "errorState.ser");
         try {
-            errorFileStream = new FileOutputStream(errorFile);
-            errorFileStream.write(1);
+            errorFile = new ObjectOutputStream(new FileOutputStream(file));
+            errorFile.writeObject(state);
         } catch (final FileNotFoundException fnfe) {
             LOG.error("[*** FileNotFoundException ***]: {}", fnfe.getMessage());
         } catch (final IOException ioe) {
             LOG.error("[*** IOException ***]: {}", ioe.getMessage());
         } finally {
-            if (errorFileStream != null) {
-                try{errorFileStream.close();}catch(final Exception e) { /*Can be ignored */ }
-                errorFileStream = null;
+            if (errorFile != null) {
+                try{errorFile.close();}catch(final Exception e) { /*Can be ignored */ }
+                errorFile = null;
             }
         }
     }
 
+    private void deleteErrorFile() {
+        
+        String workspaceLocation = null;
+        
+        // Retrieve the location of the workspace directory
+        try {
+            workspaceLocation = Platform.getLocation().toPortableString();
+            if (!workspaceLocation.endsWith("/")) {
+                workspaceLocation = workspaceLocation + "/";
+            }
+        } catch (final IllegalStateException ise) {
+            LOG.warn("Workspace location could not be found. Using working directory '.'");
+            workspaceLocation = "./";
+        }
+        
+        File file = new File(workspaceLocation + "errorState.ser");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+    
     @Override
     public final void bindService(final ISessionService service) {
 
@@ -582,10 +651,11 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
         try {
+            LOG.info("ISessionService: {}", service.toString());
             service.connect(xmppUser, xmppPassword, xmppServer);
             xmppSession = service;
         } catch (final Exception e) {
-            LOG.error("XMPP login is NOT possible: {}" + e.getMessage());
+            LOG.error("XMPP login is NOT possible: {}", e.getMessage());
             xmppSession = null;
         }
     }

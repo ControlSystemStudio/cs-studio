@@ -305,6 +305,20 @@
            name="Maintenance Rule ">
      </page>
   </extension>
+     <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.display.pvtable.PVpopup"
+               icon="icons/run.gif"
+               label="Run As Shell"
+               style="push"
+               tooltip="Run As Shell">
+         </command>
+      </menuContribution>
+      </extension>
   <extension
         point="org.eclipse.ui.popupMenus">
      <objectContribution
@@ -312,13 +326,13 @@
            id="RunModeActions"
            nameFilter="*.css-sds"
            objectClass="org.eclipse.core.resources.IResource">
-           <!--
+<!--
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewAction"
               icon="icons/run.gif"
               id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsViewAction"
               label="Run As View"/>
-              -->
+-->
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsShellAction"
               icon="icons/run.gif"
@@ -580,10 +594,10 @@
              plugin="org.csstudio.sds.ui">
        </contexts>
     </extension>
-    <extension
+<!--    <extension
           point="org.eclipse.ui.popupMenus">
        <objectContribution
-             adaptable="true"
+             adaptable="false"
              id="Contribs.OpenDefaultDisplayAction"
              objectClass="org.csstudio.platform.model.IProcessVariable">
           <menu
@@ -607,6 +621,7 @@
           </action>
        </objectContribution>
     </extension>
+    -->
     <extension
           point="org.eclipse.ui.keywords">
        <keyword

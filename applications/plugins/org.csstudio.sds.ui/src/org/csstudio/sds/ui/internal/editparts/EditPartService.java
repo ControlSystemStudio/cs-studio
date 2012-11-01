@@ -24,7 +24,6 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.eclipse.core.runtime.CoreException;
@@ -32,6 +31,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access service for contributions to the org.csstudio.sds.editParts.
@@ -40,6 +41,8 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
  * 
  */
 public final class EditPartService {
+    private static final Logger LOG = LoggerFactory.getLogger(EditPartService.class);
+
 	/**
 	 * The singleton instance.
 	 */
@@ -158,7 +161,7 @@ public final class EditPartService {
 				editPart = (AbstractGraphicalEditPart) _configurationElement
 						.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			}
 			return editPart;
 		}

@@ -3,8 +3,8 @@ package org.csstudio.sds.ui.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
 import org.csstudio.sds.internal.rules.RuleService;
+import org.csstudio.ui.util.wizards.WizardNewFileCreationPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class NewScriptWizardPage extends WizardNewFileCreationPage {

@@ -1,13 +1,14 @@
 package org.csstudio.utility.recordproperty;
 
+
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
 
-public class RecordPropertyEntry extends PlatformObject implements IProcessVariable, Serializable{
+//TODO jhatje: implement new datatype
+public class RecordPropertyEntry extends PlatformObject implements Serializable { //, IProcessVariable {
 
 	/**
 	 * The serial version UID.
@@ -78,8 +79,9 @@ public class RecordPropertyEntry extends PlatformObject implements IProcessVaria
 	}
 
 	public String getTypeId() {
-
-		return IProcessVariable.TYPE_ID;
+		//TODO jhatje: implement new datatype
+//		return IProcessVariable.TYPE_ID;
+		return null;
 	}
 	
 	private String validateRecord(String _record) {

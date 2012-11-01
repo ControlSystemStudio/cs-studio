@@ -44,5 +44,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.getPluginId());
         prefs.put(PreferenceConstants.MESSAGE_DIRECTORY, "./var/nirvana");
+        prefs.put(PreferenceConstants.MESSAGE_ALT_DIRECTORY, "");
     }
 }

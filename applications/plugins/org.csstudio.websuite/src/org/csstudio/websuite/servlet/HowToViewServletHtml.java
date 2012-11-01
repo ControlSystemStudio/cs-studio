@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.dao.DatabaseHandler;
+import org.csstudio.websuite.dao.HowToEntry;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.HowToBlockingList;
 import org.eclipse.core.runtime.Platform;
@@ -44,8 +45,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Markus Moeller
  *
  */
-public class HowToViewServletHtml extends HttpServlet
-{
+public class HowToViewServletHtml extends HttpServlet {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -8359344448026481735L;
 
@@ -59,8 +60,8 @@ public class HowToViewServletHtml extends HttpServlet
      * 
      */
     @Override
-	public void init(ServletConfig config) throws ServletException
-    {
+	public void init(ServletConfig config) throws ServletException {
+        
         super.init(config);
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -69,12 +70,9 @@ public class HowToViewServletHtml extends HttpServlet
         String user = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.DATABASE_USER, "", null);
         String password = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.DATABASE_PASSWORD, "", null);
         
-        try
-        {
+        try {
             dbHandler = new DatabaseHandler(url, user, password);
-        }
-        catch(SQLException sqle)
-        {
+        } catch(SQLException sqle) {
             dbHandler = null;
             log("[*** SQLException ***]: " + sqle.getMessage());
         }
@@ -117,7 +115,7 @@ public class HowToViewServletHtml extends HttpServlet
         page.append("<html>\n");
         page.append("<head>\n");
         page.append("<title>HowTo Viewer</title>\n");
-        page.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style/webviewer.css\">");
+        page.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style/webviewer.css\">\n");
         page.append("<meta http-equiv=\"Pragma\" content=\"no-cache\">\n");
         page.append("</head>\n");
         page.append("<body>\n");
@@ -182,38 +180,34 @@ public class HowToViewServletHtml extends HttpServlet
      * @param page
      * @param value
      */
-    private void appendHowToText(StringBuilder page, String value)
-    {
-        String text = null;
+    private void appendHowToText(StringBuilder page, String value) {
         
-        if(dbHandler == null)
-        {
+        if(dbHandler == null) {
             page.append("<tr>\n");
             page.append("<td><font color=\"#ff0000\"><b>ERROR:</b> Cannot connect to the database.</font></td>\n");
             page.append("</tr>\n");
-            
             return;
         }
         
-        if(blockingList.blockEntry(value))
-        {
+        if(blockingList.blockEntry(value)) {
             page.append("<tr>\n");
             page.append("<td align=\"center\"><font color=\"#ff0000\">The entry " + value + " is blocked.</font></td>\n");
             page.append("</tr>\n");
-            
             return;
         }
         
-        try
-        {
-            text = dbHandler.getHowToEntryText(value);
-            
-            page.append("<tr>\n");
-            page.append("<td class=\"howto\">\n" + text + "\n</td>\n");
-            page.append("</tr>\n");
-        }
-        catch(SQLException sqle)
-        {
+        try {
+            HowToEntry entry = dbHandler.getHowToEntryText(value);
+            if (entry != null) {
+                page.append("<tr>\n");
+                page.append("<td class=\"howto\">\n" + entry.getDescription() + "\n</td>\n");
+                page.append("</tr>\n");
+            } else {
+                page.append("<tr>\n");
+                page.append("<td><font color=\"#ff0000\"><b>ERROR:</b> Es konnte kein Eintrag gefunden werden.</font></td>\n");
+                page.append("</tr>\n");
+            }
+        } catch(SQLException sqle) {
             page.append("<tr>\n");
             page.append("<td><font color=\"#ff0000\"><b>ERROR:</b> [*** SQLException ***]: " + sqle.getMessage() + "</font></td>\n");
             page.append("</tr>\n");

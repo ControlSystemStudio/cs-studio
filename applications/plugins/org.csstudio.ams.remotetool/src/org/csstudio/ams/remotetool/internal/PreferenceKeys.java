@@ -32,8 +32,8 @@ package org.csstudio.ams.remotetool.internal;
  * @since 14.04.2010
  */
 public class PreferenceKeys {
-
     public static final String P_XMPP_SERVER = "xmppServer";
     public static final String P_XMPP_USER = "xmppUser";
     public static final String P_XMPP_PASSWORD = "xmppPassword";
+    public static final String P_AMS_ROSTER_GROUP = "amsRosterGroup";
 }

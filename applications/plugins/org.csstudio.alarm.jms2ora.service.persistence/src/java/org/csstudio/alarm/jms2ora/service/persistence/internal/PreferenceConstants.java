@@ -33,7 +33,8 @@ package org.csstudio.alarm.jms2ora.service.persistence.internal;
  */
 public final class PreferenceConstants {
 
-    public static final String MESSAGE_DIRECTORY = "messageDirectory";
+    public static final String MESSAGE_DIRECTORY = "messageDir";
+    public static final String MESSAGE_ALT_DIRECTORY = "messageAltDir";
 
     private PreferenceConstants() {
         // Avoid instantiation

@@ -25,7 +25,7 @@ package org.csstudio.management.internal.xmpplogindialog;
 import org.csstudio.auth.securestore.SecureStore;
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.ui.dialogs.LoginDialog;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;

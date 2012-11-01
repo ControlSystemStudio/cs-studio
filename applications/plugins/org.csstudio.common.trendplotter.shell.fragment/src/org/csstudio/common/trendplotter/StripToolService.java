@@ -1,6 +1,7 @@
 package org.csstudio.common.trendplotter;
 
-import org.csstudio.platform.ui.trends.IStripTool;
+
+import org.csstudio.desy.startuphelper.IStripTool;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;

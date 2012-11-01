@@ -317,7 +317,7 @@
       </toc>
    </extension>
    <extension
-         point="org.csstudio.platform.startupListener">
+         point="org.csstudio.desy.startuphelper.startupListener">
       <startupService
             class="org.csstudio.utility.quickstart.StartupServiceListener"
             id="org.csstudio.utility.quickstart.startupService"

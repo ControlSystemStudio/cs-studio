@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.tools.filebrowser;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor;
-import org.csstudio.opibuilder.visualparts.FilePathCellDialogEditorWithFilter;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 

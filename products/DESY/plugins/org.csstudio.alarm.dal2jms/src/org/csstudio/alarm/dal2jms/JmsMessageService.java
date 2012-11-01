@@ -30,12 +30,12 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.dal2jms.preferences.Preference;
+import org.csstudio.alarm.dal2jms.preferences.Dal2JmsPreferences;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Local service directly used by the alarm handler.
@@ -49,8 +49,7 @@ import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
  */
 class JmsMessageService {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(JmsMessageService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JmsMessageService.class);
 
     // Given as preference
     private final String _alarmTopicName;
@@ -59,8 +58,8 @@ class JmsMessageService {
     private final int _timeToLiveForAlarms;
 
     public JmsMessageService() {
-        _timeToLiveForAlarms = Preference.JMS_TIME_TO_LIVE_ALARMS.getValue();
-        _alarmTopicName = Preference.JMS_ALARM_TOPIC_NAME.getValue();
+        _timeToLiveForAlarms = Dal2JmsPreferences.JMS_TIME_TO_LIVE_ALARMS.getValue();
+        _alarmTopicName = Dal2JmsPreferences.JMS_ALARM_DESTINATION_TOPIC_NAME.getValue();
     }
 
     public void sendAlarmMessage(@Nonnull final IAlarmMessage alarmMessage) {
@@ -71,7 +70,7 @@ class JmsMessageService {
             copyAlarmMsgToJmsMsg(alarmMessage, message);
             sendViaMessageProducer(session, message);
         } catch (final JMSException jmse) {
-            LOG.debug("dal2jms could not forward alarm message.", jmse);
+            LOG.warn("dal2jms could not send alarm message.", jmse);
         } finally {
             tryToCloseSession(session);
         }
@@ -102,7 +101,7 @@ class JmsMessageService {
             try {
                 messageProducer.close();
             } catch (final JMSException e) {
-                LOG.warn("Failed to close message producer", e);
+                LOG.debug("Failed to close message producer", e);
             }
         }
     }
@@ -118,7 +117,7 @@ class JmsMessageService {
             try {
                 session.close();
             } catch (final JMSException e) {
-                LOG.warn("Failed to close JMS session", e);
+                LOG.debug("Failed to close JMS session", e);
             }
         }
     }
@@ -126,7 +125,7 @@ class JmsMessageService {
     private void copyAlarmMsgToJmsMsg(@Nonnull final IAlarmMessage alarmMessage,
                                       @Nonnull final MapMessage message) throws JMSException {
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
-            message.setString(key.name(), alarmMessage.getString(key));
+            message.setString(key.getDefiningName(), alarmMessage.getString(key));
         }
     }
 }

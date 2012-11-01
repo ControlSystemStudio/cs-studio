@@ -14,22 +14,6 @@
             name="CSS"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.nameSpaceSearch.ui.ActionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
-               icon="icons/LDAPLupe.gif"
-               id="org.csstudio.utility.nameSpaceSearch.ui.action2"
-               label="Namespace Search"
-               menubarPath="css/utility/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
@@ -78,5 +62,53 @@
                id="org.csstudio.utility.nameSpaceSearch.ui.MainView">
          </viewShortcut>
       </perspectiveExtension>
+   </extension>
+      <extension
+           point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
+            id="org.csstudio.utility.namespacesearch.newnamespacesearch"
+            name="New NamespaceSearch">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.nameSpaceSearch.PVpopupAction"
+            id="org.csstudio.utility.namespacesearch.pvpopup"
+            name="Popup Name Space Search">
+      </command>
+     </extension>
+      <extension
+           point="org.eclipse.ui.menus">    
+       <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.namespacesearch.newnamespacesearch"
+               icon="icons/LDAPLupe.gif"
+               label="NameSpaceSearch"
+               style="push"
+               tooltip="NameSpaceSearch">
+         </command>
+      </menuContribution>
+            <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.utility.namespacesearch.pvpopup"
+               icon="icons/LDAPLupe.gif"
+               label="Name Space Search"
+               style="push"
+               tooltip="Name Space Search">
+         </command>
+      </menuContribution>
+     </extension>
+        <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.utility.nameSpaceSearch.ui.ProcessVariableItem"
+            class="org.csstudio.utility.nameSpaceSearch.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
 </plugin>

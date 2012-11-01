@@ -6,7 +6,6 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.utility.ioc_socket_communication.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform,
  org.eclipse.help
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.utility.ioc_socket_communication

@@ -29,6 +29,9 @@ import java.net.InetAddress;
 
 import javax.naming.NamingException;
 
+import org.csstudio.servicelocator.ServiceLocator;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+
 /**
  * Sends messages to an IOC via a datagram socket.
  *
@@ -61,8 +64,9 @@ public class SocketMessageSender implements IIocMessageSender {
 	/**
 	 * {@inheritDoc}
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	public void send(final String message) throws NamingException {
+	public void send(final String message) throws NamingException, LdapServiceException {
 		final byte[] networkMessage = (message + "\0").getBytes();
 		final DatagramPacket packet = new DatagramPacket(networkMessage,
 				networkMessage.length, _address, _port);
@@ -70,10 +74,10 @@ public class SocketMessageSender implements IIocMessageSender {
 			_socket.send(packet);
 
 			// TODO: should not have to call getter here. Refactor!
-			IocConnectionManager.INSTANCE.getIocConnection(_address, _port).setTime(false); // false = sent
+			ServiceLocator.getService(IIocConnectionManager.class).getIocConnection(_address, _port).setTime(false); // false = sent
 		} catch (final IOException e) {
 			// XXX: Is this enough error handling?
-			IocConnectionManager.INSTANCE.getIocConnection(_address, _port).incrementErrorCounter();
+		    ServiceLocator.getService(IIocConnectionManager.class).getIocConnection(_address, _port).incrementErrorCounter();
 		}
 	}
 

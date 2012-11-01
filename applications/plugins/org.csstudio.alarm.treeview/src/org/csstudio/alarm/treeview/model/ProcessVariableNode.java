@@ -22,13 +22,13 @@
  package org.csstudio.alarm.treeview.model;
 
 
+
 import java.sql.Date;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
 /**
@@ -36,8 +36,9 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguratio
  *
  * @author Joerg Rathlev
  */
-public final class ProcessVariableNode extends AbstractAlarmTreeNode
-    implements IProcessVariable, IAlarmProcessVariableNode {
+public final class ProcessVariableNode extends AbstractAlarmTreeNode implements IAlarmProcessVariableNode {
+// TODO jhatje: implement new datatype
+	//	IProcessVariable  {
 
 
 	/**
@@ -153,10 +154,12 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
     /**
 	 * {@inheritDoc}
 	 */
-	@Override
+//	@Override
     @Nonnull
 	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
+		// TODO jhatje: implement new datatype
+//		return IProcessVariable.TYPE_ID;
+		return null;
 	}
 
 	/**

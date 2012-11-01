@@ -1,11 +1,11 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaleTickMarks;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
 import org.csstudio.sds.util.RotationUtil;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;

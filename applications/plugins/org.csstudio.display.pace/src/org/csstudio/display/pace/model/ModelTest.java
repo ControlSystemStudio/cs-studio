@@ -7,12 +7,18 @@
  ******************************************************************************/
 package org.csstudio.display.pace.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.data.values.ValueUtil;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.junit.Test;
 
 /** JUnit plug-in test of Model
@@ -33,7 +39,7 @@ public class ModelTest
      *  and some also expect to actually connect to
      *  the PVs in there.
      */
-    private static final String TEST_CONFIG_FILE = "configFiles/rf_admin.pace";
+    private static final String TEST_CONFIG_FILE = "configFiles/rf_pwr_limits.pace";
 
     /** Counter for received updates from cells */
     private AtomicInteger updates = new AtomicInteger(0);
@@ -88,13 +94,13 @@ public class ModelTest
 
         assertEquals("HPRF Pwr and Duty Cycle Limits", model.getTitle());
 
-        assertEquals(6, model.getColumnCount());
-        assertEquals("DutyLmt", model.getColumn(3).getName());
+        assertEquals(10, model.getColumnCount());
+        assertEquals("PwrLmtRad", model.getColumn(3).getName());
 
         assertEquals(96, model.getInstanceCount());
         assertEquals("DTL 2", model.getInstance(6).getName());
 
-        assertEquals("DTL_HPRF:Cav2:DutyLmt", model.getInstance(6).getCell(3).getName());
+        assertEquals("DTL_HPRF:Cav2:PwrLmtRad", model.getInstance(6).getCell(3).getName());
     }
 
     /** Check editing */
@@ -157,5 +163,69 @@ public class ModelTest
         assertFalse(model.isEdited());
         // ... should have received a few (initial) updates
         assertTrue(updates.get() > 0);
+     }
+
+
+    /** Check PV changes, using local PV */
+    @Test(timeout=20000)
+    public void testSaveRestore() throws Exception
+    {
+        // Get PV that we'll change
+        final PV pv = PVFactory.createPV("loc://limit1");
+        pv.start();
+        while (!pv.isConnected())
+            Thread.sleep(100);
+        pv.setValue(3.140);
+
+        // Start model for that PV
+        final Model model =
+            new Model(new FileInputStream("configFiles/localtest.pace"));
+        assertEquals("loc://limit1", model.getInstance(0).getCell(0).getName());
+
+        model.addListener(listener);
+        // Reset counter
+        updates.set(0);
+        model.start();
+
+        // Give it some time to reflect current value
+        while (updates.get() < 1)
+            Thread.sleep(100);
+        assertEquals("3.140", model.getInstance(0).getCell(0).getCurrentValue());
+        assertFalse(model.isEdited());
+
+        // Simulate user-entered value
+        model.getInstance(0).getCell(0).setUserValue("6.28");
+        assertTrue(model.isEdited());
+
+        // Write model to PVs
+        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+        model.saveUserValues("test");
+        assertEquals(6.28, ValueUtil.getDouble(pv.getValue()), 0.01);
+        // Model is still 'edited' because we didn't revert nor clear
+        assertTrue(model.isEdited());
+
+        // Revert
+        model.revertOriginalValues();
+        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+
+        // We're back to having user-entered values, they're not written
+        assertTrue(model.isEdited());
+        model.clearUserValues();
+        assertFalse(model.isEdited());
+
+
+        // Simulate user-entered value
+        model.getInstance(0).getCell(0).setUserValue("10.0");
+        assertTrue(model.isEdited());
+
+        // Write model to PVs, submit
+        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+        model.saveUserValues("test");
+        model.clearUserValues();
+        assertFalse(model.isEdited());
+        assertEquals(10.0, ValueUtil.getDouble(pv.getValue()), 0.01);
+
+        model.stop();
+        pv.stop();
      }
 }

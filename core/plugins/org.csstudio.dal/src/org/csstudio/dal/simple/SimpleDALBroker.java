@@ -122,7 +122,7 @@ public class SimpleDALBroker {
 	 * @return singleton instance of SimpleDALBroker
 	 */
 	public static SimpleDALBroker getInstance() {
-		return newInstance(null);
+		return newInstance(null, null);
 	}
 
 	/**

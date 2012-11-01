@@ -29,7 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
@@ -58,9 +57,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Helge Rickens, Kai Meyer
  * 
  */
-public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
-        IProcessVariableWithSamples {
+public final class MenuButtonEditPart extends AbstractWidgetEditPart { //implements IProcessVariableWithSamples {
 
+	
     /**
      * {@inheritDoc}
      */

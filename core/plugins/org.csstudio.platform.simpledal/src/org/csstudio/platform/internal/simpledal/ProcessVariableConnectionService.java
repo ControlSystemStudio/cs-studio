@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionException;
@@ -36,6 +35,8 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Standard implementation of {@link IProcessVariableConnectionService}.
@@ -43,6 +44,8 @@ import org.csstudio.platform.simpledal.SettableState;
  * @author Sven Wende
  */
 public class ProcessVariableConnectionService implements IProcessVariableConnectionService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessVariableConnectionService.class);
 
 	private Map<ConnectorIdentification, AbstractConnector> _connectors;
 
@@ -106,7 +109,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 				value = connector.getValueSynchronously();
 			}
 		} catch (Exception e) {
-			CentralLogger.getInstance().debug(null, e);
+			LOG.debug(e.toString());
 			throw new ConnectionException(e);
 		}
 
@@ -137,7 +140,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		try {
 			result = connector.setValueSynchronously(value);
 		} catch (Exception e) {
-			CentralLogger.getInstance().debug(null, e);
+			LOG.debug(e.toString());
 			throw new ConnectionException(e);
 		}
 
@@ -168,7 +171,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		synchronized (_connectors) {
 			for (AbstractConnector c : _connectors.values()) {
 				if (c.removeProcessVariableValueListener(listener)) {
-					CentralLogger.getInstance().debug(null, "UNREGISTER '" + c.getName());
+					LOG.debug("UNREGISTER '" + c.getName());
 				}
 			}
 		}
@@ -317,7 +320,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 				connector.dispose();
 			}
 
-			CentralLogger.getInstance().debug(null, "Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
+			LOG.debug("Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
 		}
 	}
 

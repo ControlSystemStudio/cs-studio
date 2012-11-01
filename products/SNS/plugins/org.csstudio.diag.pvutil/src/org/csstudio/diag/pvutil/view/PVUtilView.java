@@ -44,8 +44,6 @@ public class PVUtilView extends ViewPart
 {
     // View ID defined in plugin.xml
     final public static String ID = "org.csstudio.diag.pvutil.view.PVUtilView";
-    //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
-    public static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod";
     private PVUtilModel model = null;
     private GUI gui;
 

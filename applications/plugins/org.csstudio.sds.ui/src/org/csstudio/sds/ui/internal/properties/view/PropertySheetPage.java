@@ -21,10 +21,10 @@
  */
  package org.csstudio.sds.ui.internal.properties.view;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.csstudio.sds.ui.internal.localization.Messages;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.help.IContext;
 import org.eclipse.jface.action.IMenuManager;

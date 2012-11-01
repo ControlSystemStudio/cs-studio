@@ -21,32 +21,41 @@
  */
 package org.csstudio.utility.nameSpaceSearch;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.utility.nameSpaceSearch.ui.MainView;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class PVpopupAction extends ProcessVariablePopupAction{
+public class PVpopupAction extends AbstractHandler {
 
-	public void handlePVs(IProcessVariable pv_names[])
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        if (pv_names.length < 1)
-            return;
+        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+        final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+
+        if (pvs.length < 1)
+            return null;
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
         MainView view;
 		try {
 			view = (MainView) page.showView(MainView.ID);
-			view.startSearch(pv_names[0].getName());
+			view.startSearch(pvs[0].getName());
 		} catch (PartInitException e) {
 			// TODO Error handling
 			e.printStackTrace();
 		}
-
+		return null;
     }
 }

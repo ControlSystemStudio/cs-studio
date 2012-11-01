@@ -3,8 +3,9 @@ package org.csstudio.alarm.table.database;
 import java.io.File;
 
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
+import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
-import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -18,8 +19,7 @@ public class AsynchronousDatabaseAccess {
         Job readJob = new Job("Reader") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                JmsLogsPlugin.getDefault().getArchiveAccess().getLogMessages(
-                        newFilter, result);
+                getArchiveAccess().getLogMessages(newFilter, result);
                 listener.onReadFinished(result);
                 return Status.OK_STATUS;
             }
@@ -33,9 +33,7 @@ public class AsynchronousDatabaseAccess {
         Job exportJob = new Job("Export") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                JmsLogsPlugin.getDefault().getArchiveAccess()
-                        .exportLogMessages(newFilter, result, filePath,
-                                columnNames);
+                getArchiveAccess().exportLogMessages(newFilter, result, filePath, columnNames);
                 listener.onExportFinished(result);
                 return Status.OK_STATUS;
             }
@@ -49,8 +47,7 @@ public class AsynchronousDatabaseAccess {
         Job countJob = new Job("CountMessages") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                JmsLogsPlugin.getDefault().getArchiveAccess()
-                        .countDeleteLogMessages(newFilter, result);
+                getArchiveAccess().countDeleteLogMessages(newFilter, result);
                 listener.onMessageCountFinished(result);
                 return Status.OK_STATUS;
             }
@@ -64,13 +61,16 @@ public class AsynchronousDatabaseAccess {
         Job deleteJob = new Job("DeleteMessages") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                result.setAccessResult(JmsLogsPlugin.getDefault()
-                        .getArchiveAccess().deleteLogMessages(newFilter));
+                result.setAccessResult(getArchiveAccess().deleteLogMessages(newFilter));
                 listener.onDeletionFinished(result);
                 return Status.OK_STATUS;
             }
         };
         deleteJob.schedule();
+    }
+
+    protected ILogMessageArchiveAccess getArchiveAccess() {
+        return ServiceLocator.getService(ILogMessageArchiveAccess.class);
     }
 
 }

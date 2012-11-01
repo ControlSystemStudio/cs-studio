@@ -3,8 +3,8 @@ package org.csstudio.management.contactscommands.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.IManagementCommandService;
+import org.csstudio.remote.management.CommandDescription;
+import org.csstudio.remote.management.IManagementCommandService;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;

@@ -42,13 +42,16 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.treeview.ldap.AlarmTreeBuilder;
+import org.csstudio.alarm.treeview.localization.Messages;
 import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.alarm.treeview.views.AlarmTreeView;
 import org.csstudio.alarm.treeview.AlarmTreePlugin;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
@@ -88,7 +91,7 @@ public final class ImportXmlFileJob extends Job {
     public ImportXmlFileJob(@Nonnull final AlarmTreeView alarmTreeView,
                             @Nonnull final IAlarmConfigurationService configService,
                             @Nonnull final IAlarmSubtreeNode rootNode) {
-        super("ImportFileJob");
+        super(Messages.ImportXmlFileJob_Name);
         _alarmTreeView = alarmTreeView;
         _configService = configService;
         _rootNode = rootNode;
@@ -101,17 +104,20 @@ public final class ImportXmlFileJob extends Job {
     @Override
     @Nonnull
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
-        monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
+        monitor.beginTask(Messages.ImportXmlFileJob_Begin_Reading, IProgressMonitor.UNKNOWN);
         
         try {
             _xmlRootNodes = new ArrayList<IAlarmSubtreeNode>();
             final ContentModel<LdapEpicsAlarmcfgConfiguration> model = _configService
                     .retrieveInitialContentModelFromFile(_filePath);
             
-            final IStatus status = checkForExistingFacilities(model, _rootNode);
-            if (!status.isOK()) {
-                return status;
-            }
+			if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
+				final IStatus status = checkForExistingFacilities(model,
+						_rootNode);
+				if (!status.isOK()) {
+					return status;
+				}
+			}
             
             final boolean canceled = AlarmTreeBuilder.build(_rootNode,
                                                             _alarmTreeView.getPVNodeListener(),
@@ -124,22 +130,22 @@ public final class ImportXmlFileJob extends Job {
             
             retrieveXMLRootNodes();
         } catch (final CreateContentModelException e) {
-            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not import file: "
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, Messages.ImportXmlFileJob_Import_Failed
                     + e.getMessage(), e);
         } catch (final NamingException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Could not properly build the full alarm tree: " + e.getMessage(),
+                              Messages.ImportXmlFileJob_Build_Failed + e.getMessage(),
                               e);
         } catch (final FileNotFoundException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Could not properly open the input file stream: " + e.getMessage(),
+                              Messages.ImportXmlFileJob_OpenSource_Failed + e.getMessage(),
                               e);
         } catch (LdapServiceException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Error accessing LDAP service: " + e.getMessage(),
+                              Messages.ImportXmlFileJob_LdapAccess_Failed + e.getMessage(),
                               e);
         } finally {
             monitor.done();
@@ -189,8 +195,8 @@ public final class ImportXmlFileJob extends Job {
         if (!existingFacilityNames.isEmpty()) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Following facility names from XML file already exist in the current view or in LDAP.\n"
-                                      + "Please rename them in your file to import:\n"
+                              Messages.ImportXmlFileJob_FacilityNameClash
+                                      + Messages.ImportXmlFileJob_FacilityNameClash_Hint
                                       + existingFacilityNames.toString(),
                               null);
         }
@@ -208,10 +214,9 @@ public final class ImportXmlFileJob extends Job {
     
     @Nonnull
     private Set<String> getExistingFacilityNamesFromLdap() throws NamingException, LdapServiceException {
-        
-        final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+        final ILdapService service = ServiceLocator.getService(ILdapService.class);
         if (service == null) {
-            throw new ServiceUnavailableException("LDAP service not available. Existing facilities could not be retrieved from LDAP.");
+            throw new ServiceUnavailableException(Messages.ImportXmlFileJob_LdapService_Missing);
         }
         
         final ILdapSearchResult searchResult = service

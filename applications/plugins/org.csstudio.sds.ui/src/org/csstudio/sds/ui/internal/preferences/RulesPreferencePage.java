@@ -1,6 +1,6 @@
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.sds.ui.internal.localization.Messages;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;

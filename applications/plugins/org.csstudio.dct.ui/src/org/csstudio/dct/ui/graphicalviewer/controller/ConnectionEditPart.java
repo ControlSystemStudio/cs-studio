@@ -5,13 +5,10 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.dct.ui.graphicalviewer.model.Connection;
 import org.csstudio.dct.ui.graphicalviewer.view.ConnectionFigure;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PolygonDecoration;
-import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;

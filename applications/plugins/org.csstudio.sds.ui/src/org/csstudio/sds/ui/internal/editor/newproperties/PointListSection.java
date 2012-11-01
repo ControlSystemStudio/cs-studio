@@ -3,13 +3,13 @@ package org.csstudio.sds.ui.internal.editor.newproperties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.PointlistProperty;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ColumnConfig;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ConvenienceTableWrapper;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ITableRow;
 import org.csstudio.sds.ui.internal.properties.IntegerCellEditor;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.jface.dialogs.Dialog;

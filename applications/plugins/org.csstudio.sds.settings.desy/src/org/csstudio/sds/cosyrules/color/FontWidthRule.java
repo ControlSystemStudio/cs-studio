@@ -36,11 +36,12 @@ package org.csstudio.sds.cosyrules.color;
 
 import java.util.Arrays;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.IRule;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.TextLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (hrickens) :
@@ -51,6 +52,7 @@ import org.eclipse.swt.graphics.TextLayout;
  * @since 14.09.2010
  */
 public class FontWidthRule implements IRule {
+    private static final Logger LOG = LoggerFactory.getLogger(FontWidthRule.class);
 
     private static final int MIN_FONT_SIZE = 7;
     private static final String DEFAULT_FONT = "Arial, 10";
@@ -62,7 +64,7 @@ public class FontWidthRule implements IRule {
      */
     @Override
     public Object evaluate(final Object[] arguments) {
-        CentralLogger.getInstance().error(this, "Arguments: "+Arrays.toString(arguments));
+        LOG.error("Arguments: "+Arrays.toString(arguments));
         if (arguments.length >= 4) {
             String text = "100.00";
             if (arguments[0] instanceof String) {
@@ -71,12 +73,12 @@ public class FontWidthRule implements IRule {
                 text = ((Number) arguments[0]).toString();
             }
 
-            CentralLogger.getInstance().error(this, "\ttext.length(): "+text.length()+"\t_lastText.length():"+_lastText.length());
-                CentralLogger.getInstance().error(this, "Calculate Size from "+text);
+            LOG.error("\ttext.length(): "+text.length()+"\t_lastText.length():"+_lastText.length());
+                LOG.error("Calculate Size from "+text);
                 _lastText = text;
                 return calulateSize(arguments, text);
         }
-        CentralLogger.getInstance().error(this, "Default: "+DEFAULT_FONT);
+        LOG.error("Default: "+DEFAULT_FONT);
         return DEFAULT_FONT;
     }
 
@@ -126,7 +128,7 @@ public class FontWidthRule implements IRule {
                                     final int maxHeight,
                                     final int maxWidth,
                                     final String font) {
-        CentralLogger.getInstance().error(this, "Text :"+text+"\tmaxHeight :"+maxHeight+"\tmaxWidth :"+maxWidth+"\tfont :"+font);
+        LOG.error("Text :"+text+"\tmaxHeight :"+maxHeight+"\tmaxWidth :"+maxWidth+"\tfont :"+font);
         int fontSize = (int) Math.ceil(maxHeight * 0.6);
         if (fontSize < MIN_FONT_SIZE) {
             fontSize = 10;
@@ -138,14 +140,14 @@ public class FontWidthRule implements IRule {
             FontData fd = new FontData(font, fontSize, 0);
             Font f = new Font(null, fd);
             tl.setFont(f);
-            CentralLogger.getInstance().error(this, "Text: "+text+"\twidth:  "+tl.getBounds().width+"\theight: "+tl.getBounds().height+"\tfontSize: "+fontSize);
+            LOG.error("Text: "+text+"\twidth:  "+tl.getBounds().width+"\theight: "+tl.getBounds().height+"\tfontSize: "+fontSize);
             while ( ((maxWidth -2 < tl.getBounds().width) || (maxHeight < tl.getBounds().height)) && (fontSize > MIN_FONT_SIZE)) {
                 fontSize--;
                 f.dispose();
                 fd = new FontData(font, fontSize, 0);
                 f = new Font(null, fd);
                 tl.setFont(f);
-                CentralLogger.getInstance().error(this, "Text: "+text+"\twidth:  "+tl.getBounds().width+"\theight: "+tl.getBounds().height+"\tfontSize: "+fontSize);
+                LOG.error("Text: "+text+"\twidth:  "+tl.getBounds().width+"\theight: "+tl.getBounds().height+"\tfontSize: "+fontSize);
             }
             tl.dispose();
         }

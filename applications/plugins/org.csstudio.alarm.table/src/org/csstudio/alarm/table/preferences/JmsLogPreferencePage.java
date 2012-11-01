@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.table.preferences;
 
+
 import java.util.StringTokenizer;
 
 import javax.annotation.Nonnull;
@@ -28,7 +29,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;

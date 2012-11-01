@@ -24,10 +24,11 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ActionType;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The service performs the action depending on the given {@link ActionType}. 
@@ -36,6 +37,8 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
  */
 public final class WidgetActionHandlerService {
 	
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetActionHandlerService.class);
+
 	/**
 	 * The instance of the service.
 	 */
@@ -91,7 +94,7 @@ public final class WidgetActionHandlerService {
 	 * Performs the unspecified  action.
 	 */
 	private void doUnknownAction() {
-		CentralLogger.getInstance().info(this, "Unknown WidgetAction performed!");
+		LOG.info("Unknown WidgetAction performed!");
 	}
 
 }

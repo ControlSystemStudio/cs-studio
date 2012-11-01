@@ -1,6 +1,6 @@
 package org.csstudio.runtimetests;
 
-import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.desy.startuphelper.startupservice.IStartupServiceListener;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;

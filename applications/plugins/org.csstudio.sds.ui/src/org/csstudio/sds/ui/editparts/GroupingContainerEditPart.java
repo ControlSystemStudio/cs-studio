@@ -36,30 +36,32 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 		// Transparent background
 		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				GroupingContainerFigure container = (GroupingContainerFigure) refreshableFigure;
 				container.setTransparent((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT, transparentHandler);
+		setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT,
+				transparentHandler);
 
 		// Rotation
 		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				rotateChildren((Double)newValue);
+					final Object newValue, final IFigure refreshableFigure) {
+				rotateChildren((Double) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(GroupingContainerModel.PROP_ROTATION, rotationHandler);
+		setPropertyChangeHandler(GroupingContainerModel.PROP_ROTATION,
+				rotationHandler);
 	}
 
 	/**
 	 * Rotates all children.
-	 * @param angle the angle to rotate
+	 * 
+	 * @param angle
+	 *            the angle to rotate
 	 */
 	protected void rotateChildren(final double angle) {
 		double trueAngle = angle - _previousRotationAngle;
@@ -72,14 +74,18 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 				Point point = childBounds.getCenter();
 				Rectangle groupBounds = this.getFigure().getBounds();
 				Point center = groupBounds.getCenter();
-				Point rotationPoint = new Point(center.x-groupBounds.x, center.y-groupBounds.y);
+				Point rotationPoint = new Point(center.x - groupBounds.x,
+						center.y - groupBounds.y);
 
-				Point rotatedPoint = RotationUtil.rotate(point, trueAngle, rotationPoint);
+				Point rotatedPoint = RotationUtil.rotate(point, trueAngle,
+						rotationPoint);
 
-				editPart.getCastedModel().setLocation(rotatedPoint.x-childBounds.width/2, rotatedPoint.y-childBounds.height/2);
+				editPart.getCastedModel().setLocation(
+						rotatedPoint.x - childBounds.width / 2,
+						rotatedPoint.y - childBounds.height / 2);
 
 				if (editPart.getCastedModel().isRotatable()) {
-					//rotate children if it is rotatable
+					// rotate children if it is rotatable
 					editPart.getCastedModel().setRotationAngle(angle);
 				}
 			}
@@ -99,20 +105,19 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
-		GroupingContainerModel model = (GroupingContainerModel) this.getCastedModel();
+		GroupingContainerModel model = (GroupingContainerModel) this
+				.getCastedModel();
 		groupingContainerFigure.setTransparent(model.getTransparent());
-		boolean parentsChildrenSelectable = true;
-		if (getParent() instanceof AbstractContainerEditPart) {
-			AbstractContainerEditPart abep = (AbstractContainerEditPart) getParent();
-			parentsChildrenSelectable=  abep.isChildrenSelectable();
-		}
-//		setChildrenSelectable(parentsChildrenSelectable && model.isLive());
-		setChildrenSelectable(parentsChildrenSelectable);
 		return groupingContainerFigure;
 	}
 
 	@Override
-	public boolean isSelectable() {
-		return getSelected() != SELECTED_NONE || ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
+	public void setSelected(int value) {
+		super.setSelected(value);
+	}
+
+	@Override
+	protected boolean determineChildrenSelectability() {
+		return isSelected() || isAnyChildSelected();
 	}
 }

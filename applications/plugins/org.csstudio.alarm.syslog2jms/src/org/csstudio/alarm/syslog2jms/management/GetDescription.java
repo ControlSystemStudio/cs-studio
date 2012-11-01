@@ -25,10 +25,10 @@
 package org.csstudio.alarm.syslog2jms.management;
 
 import org.csstudio.alarm.syslog2jms.Activator;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.alarm.syslog2jms.preferences.PreferenceConstants;
+import org.csstudio.remote.management.CommandParameters;
+import org.csstudio.remote.management.CommandResult;
+import org.csstudio.remote.management.IManagementCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

@@ -6,10 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.preferences.CategorizationType;
 import org.csstudio.sds.model.WidgetModelFactoryService;
 import org.csstudio.sds.ui.internal.feedback.GraphicalFeedbackContributionsService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;

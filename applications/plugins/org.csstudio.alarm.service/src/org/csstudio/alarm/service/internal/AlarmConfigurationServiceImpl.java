@@ -23,13 +23,6 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
-import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -40,8 +33,8 @@ import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
-import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -52,6 +45,12 @@ import org.csstudio.utility.treemodel.ContentModelExporter;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.csstudio.utility.ldap.service.util.LdapUtils.*;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.*;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.*;
 
 /**
  * Alarm configuration service implementation
@@ -63,6 +62,8 @@ import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilder;
  */
 public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmConfigurationServiceImpl.class);
+
     /**
      * {@inheritDoc}
      */
@@ -70,16 +71,18 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
     @Nonnull
     public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException, LdapServiceException {
 
-        final ContentModel<LdapEpicsAlarmcfgConfiguration> model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
+        ContentModel<LdapEpicsAlarmcfgConfiguration> model;
+        model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
 
-        final ILdapService ldapService = AlarmServiceActivator.getDefault().getLdapService();
+        final ILdapService ldapService = ServiceLocator.getService(ILdapService.class);
         if (ldapService == null) {
             throw new CreateContentModelException("LDAP service is unavailable.", null);
         }
-        final ILdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
+        final ILdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder = 
             ldapService.getLdapContentModelBuilder(model);
 
         for (final String facility : facilityNames) {
+            LOG.trace("retrieve from ldap for facility {}", facility);
             final ILdapSearchResult result =
                 ldapService.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), facility,
                                                                              UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
@@ -87,7 +90,9 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
                                                                              SearchControls.SUBTREE_SCOPE);
             if (result != null) {
                 builder.setSearchResult(result);
+                LOG.trace("build model for facility {}", facility);
                 builder.build();
+                LOG.trace("build finished for facility {}", facility);
             }
         }
         final ContentModel<LdapEpicsAlarmcfgConfiguration> enrichedModel = builder.getModel();

@@ -62,6 +62,6 @@ public class LogViewPreferenceInitializer extends
 		store.setDefault(LogViewPreferenceConstants.MAX, 200);
 		store
 				.setDefault(LogViewPreferenceConstants.TOPIC_SET,
-						"default?ALARM,ACK?Default?false?false?Tahoma,0,8?false;"); //$NON-NLS-1$
+						"default?ALARM,ACK?Default?false?false?Tahoma,0,8?false?false;"); //$NON-NLS-1$
 	}
 }

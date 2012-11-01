@@ -24,16 +24,6 @@ package org.csstudio.platform.internal.simpledal.dal;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.platform.internal.simpledal.AbstractConnector;
-import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.platform.simpledal.IProcessVariableValueListener;
-import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
-import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.dal.CharacteristicInfo;
 import org.csstudio.dal.DataExchangeException;
 import org.csstudio.dal.DynamicValueCondition;
@@ -47,6 +37,17 @@ import org.csstudio.dal.context.ConnectionEvent;
 import org.csstudio.dal.context.LinkListener;
 import org.csstudio.dal.simple.RemoteInfo;
 import org.csstudio.dal.spi.PropertyFactory;
+import org.csstudio.platform.internal.simpledal.AbstractConnector;
+import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
+import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
+import org.csstudio.platform.simpledal.SettableState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAL Connectors are connected to the control system via the DAL API.
@@ -66,6 +67,8 @@ import org.csstudio.dal.spi.PropertyFactory;
 @SuppressWarnings("unchecked")
 public final class DalConnector extends AbstractConnector implements DynamicValueListener, LinkListener, ResponseListener,
 		PropertyChangeListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DalConnector.class);
 
 	private static final int CONNECTION_TIMEOUT = 3000;
 	/**
@@ -344,20 +347,20 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 							if (listener != null) {
 								listener.success();
 							}
-							CentralLogger.getInstance().debug(null, event.getResponse().toString());
+							LOG.debug(event.getResponse().toString());
 						}
 
 						public void responseError(ResponseEvent event) {
 							if (listener != null) {
 								listener.error(event.getResponse().getError());
 							}
-							CentralLogger.getInstance().error(null, event.getResponse().getError());
+							LOG.error(event.getResponse().getError().toString());
 						}
 					});
 
 				} catch (NumberFormatException nfe) {
 					// Do nothing! Is a invalid value format!
-					CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to " + getName());
+					LOG.warn("Invalid value format. (" + value + ") is not set to " + getName());
 					return;
 				}
 			} else {
@@ -381,9 +384,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 					_dalProperty.setValue(ConverterUtil.convert(value, getValueType()));
 					success = true;
 				} catch (NumberFormatException nfe) {
-					CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to" + getName());
+					LOG.warn("Invalid value format. (" + value + ") is not set to" + getName());
 				} catch (DataExchangeException e) {
-					CentralLogger.getInstance().error(null, e);
+					LOG.error(e.toString());
 				}
 			} else {
 				printDebugInfo("Property not settable");
@@ -508,7 +511,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 				result = _dalProperty.isSettable() ? SettableState.SETTABLE : SettableState.NOT_SETTABLE;
 			}
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "We could not check the settable-state of [" + getProcessVariableAddress().toString() + "]",
+			LOG.error("We could not check the settable-state of [" + getProcessVariableAddress().toString() + "]",
 					e);
 			result = SettableState.UNKNOWN;
 		}

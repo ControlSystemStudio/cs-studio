@@ -26,7 +26,7 @@
       <initializer class="org.csstudio.diag.interconnectionServer.preferences.PreferenceInitializer"/>
    </extension>
    <extension
-         point="org.csstudio.platform.managementCommands">
+         point="org.csstudio.remote.managementCommands">
       <command
             class="org.csstudio.diag.interconnectionServer.internal.management.GetListOfIocs"
             id="org.csstudio.diag.interconnectionServer.management.GetListOfIocs"

@@ -34,8 +34,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.IDynamicParameterValues;
+import org.csstudio.remote.management.CommandParameterEnumValue;
+import org.csstudio.remote.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapupdater.LdapUpdaterActivator;

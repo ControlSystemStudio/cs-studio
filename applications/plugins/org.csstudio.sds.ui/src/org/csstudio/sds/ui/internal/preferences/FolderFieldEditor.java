@@ -3,7 +3,7 @@
  */
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.window.Window;

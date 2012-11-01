@@ -53,7 +53,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 		super(GRID);
         // TODO (jpenning) ML old school pref store used here.
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.AlarmViewerPreferencePage_columnsHint + "\n" + Messages.fontHint);
+        setDescription(Messages.columnsHint + "\n" + Messages.fontHint + "\n" + Messages.syncHint);
 	}
 
 	@Override

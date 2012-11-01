@@ -44,16 +44,14 @@ public interface IAlarmConnection {
      * Connects to the underlying system.
      * You have to provide a connectionMonitor to track connection state.
      * You have to provide a listener to receive messages.
-     * You have to provide the alarm resource (create it via alarm service) which supplies the parameters.
      *
-     * @param connectionMonitor
-     * @param listener
-     * @param resource
+     * @param connectionMonitor to track connection state
+     * @param listener to receive messages
+     * @param resource to give parameters depending on implementation
      * @throws AlarmConnectionException
      */
     void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                 @Nonnull final IAlarmListener listener,
-                 @Nonnull final IAlarmResource resource) throws AlarmConnectionException;
+                 @Nonnull final IAlarmListener listener, @Nonnull final AlarmResource resource) throws AlarmConnectionException;
     
     /**
      * Register another pv. The listener which was given at connect is used for this pv also.

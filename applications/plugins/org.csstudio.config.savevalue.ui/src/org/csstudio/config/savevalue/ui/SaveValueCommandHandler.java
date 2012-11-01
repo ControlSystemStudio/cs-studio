@@ -1,10 +1,10 @@
 package org.csstudio.config.savevalue.ui;
+
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -72,23 +72,24 @@ public class SaveValueCommandHandler extends AbstractHandler {
 				throw new ExecutionException("Invalid parameterization: no value parameter provided"); //$NON-NLS-1$
 			}
 		} else {
+//			TODO jhatje: implement new datatypes
 			// called on a selection
-			ISelection selection = HandlerUtil.getActiveMenuSelectionChecked(event);
-			IProcessVariableWithSamples pvWithSamples = getSelectedProcessVariable(selection);
-			pv = pvWithSamples.getName();
-			try {
-				IValue iv = pvWithSamples.getSample(0);
-				value = valueToString(iv);
-			} catch (IllegalStateException e) {
-				// This happens if the _pv is actually a TextInputEditPart with
-				// the value type set to "double", but the text input cannot be
-				// parsed as a double value.
-				MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_TEXT_IS_NOT_A_DOUBLE);
-				return null;
-			}
+//			ISelection selection = HandlerUtil.getActiveMenuSelectionChecked(event);
+//			IProcessVariableWithSamples pvWithSamples = getSelectedProcessVariable(selection);
+//			pv = pvWithSamples.getName();
+//			try {
+//				IValue iv = pvWithSamples.getSample(0);
+//				value = valueToString(iv);
+//			} catch (IllegalStateException e) {
+//				// This happens if the _pv is actually a TextInputEditPart with
+//				// the value type set to "double", but the text input cannot be
+//				// parsed as a double value.
+//				MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_TEXT_IS_NOT_A_DOUBLE);
+//				return null;
+//			}
 		}
-		pv = withoutPrefix(pv);
-		saveValue(pv, value);
+//		pv = withoutPrefix(pv);
+//		saveValue(pv, value);
 		return null;
 	}
 
@@ -157,19 +158,20 @@ public class SaveValueCommandHandler extends AbstractHandler {
 	 *         <code>IProcessVariableWithSamples</code> or if the selection is
 	 *         empty or not a structured selection.
 	 */
-	private IProcessVariableWithSamples getSelectedProcessVariable(final ISelection selection) {
-		if (!(selection instanceof IStructuredSelection)) {
-			return null;
-		}
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-		Object selectedObject = structuredSelection.getFirstElement();
-		if (selectedObject instanceof IProcessVariableWithSamples) {
-			return (IProcessVariableWithSamples) selectedObject;
-		} else if (selectedObject instanceof IAdaptable) {
-			return (IProcessVariableWithSamples) ((IAdaptable) selectedObject)
-					.getAdapter(IProcessVariableWithSamples.class);
-		} else {
-			return null;
-		}
-	}
+//	TODO jhatje: implement new datatypes
+//	private IProcessVariableWithSamples getSelectedProcessVariable(final ISelection selection) {
+//		if (!(selection instanceof IStructuredSelection)) {
+//			return null;
+//		}
+//		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+//		Object selectedObject = structuredSelection.getFirstElement();
+//		if (selectedObject instanceof IProcessVariableWithSamples) {
+//			return (IProcessVariableWithSamples) selectedObject;
+//		} else if (selectedObject instanceof IAdaptable) {
+//			return (IProcessVariableWithSamples) ((IAdaptable) selectedObject)
+//					.getAdapter(IProcessVariableWithSamples.class);
+//		} else {
+//			return null;
+//		}
+//	}
 }

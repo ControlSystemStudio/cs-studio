@@ -26,6 +26,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -479,6 +480,16 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				final Bypass bypass = (Bypass) cell.getElement();
 				cell.setText(bypass.getFullName());
 			}
+
+            @Override
+            public String getToolTipText(final Object element)
+            {
+                final Bypass bypass = (Bypass) element;
+                final String tt = bypass.getRDBSignalName();
+                if (tt == null)
+                    return "";
+                return "RDB signal '" + tt + "'";
+            }
 		});
         new TableColumnSortHelper<Bypass>(table_viewer, view_col)
         {
@@ -577,6 +588,8 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
         };
 
 		table_viewer.setContentProvider(ArrayContentProvider.getInstance());
+
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
 
 		return table_viewer;
     }

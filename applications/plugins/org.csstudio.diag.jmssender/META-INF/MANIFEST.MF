@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.diag.jmssender.JmsSenderPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.csstudio.alarm.table,
- org.csstudio.platform.ui,
- org.csstudio.platform.libs.jms
+ org.csstudio.platform.libs.jms,
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.csstudio.desy.startuphelper;bundle-version="1.0.0"
 Eclipse-LazyStart: true

@@ -12,6 +12,10 @@ public enum MessageKeyEnum {
      */
     ACK_TIME("ACK_TIME"),
     /**
+     * XXX Comment
+     */
+    ALARMUSERGROUP("ALARMUSERGROUP"),
+    /**
 	 * XXX Comment
 	 */
 	AMS_FILTERID("AMS-FILTERID"),
@@ -55,10 +59,6 @@ public enum MessageKeyEnum {
      * XXX Comment
      */
 	FILENAME("FILENAME"),
-	/**
-	 * XXX Comment
-	 */
-	GROUP("GROUP"),
 	/**
 	 * XXX Comment
 	 */

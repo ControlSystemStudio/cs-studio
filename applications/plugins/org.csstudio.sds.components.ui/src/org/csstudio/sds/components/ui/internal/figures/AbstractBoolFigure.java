@@ -2,12 +2,11 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.util.Arrays;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -15,6 +14,8 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base figure for a widget based on {@link AbstractBoolWidgetModel}.
@@ -23,6 +24,8 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public class AbstractBoolFigure extends Figure implements IAdaptable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractBoolFigure.class);
 
     protected Label boolLabel;
 
@@ -133,7 +136,7 @@ public class AbstractBoolFigure extends Figure implements IAdaptable {
                 try {
                     throw new Exception("bit is out of range: [-1,63]");
                 } catch (Exception e) {
-                    CentralLogger.getInstance().error(this, e);
+                    LOG.error(e.toString());
                 }
             } else {
                 char[] bin64Array = new char[64];

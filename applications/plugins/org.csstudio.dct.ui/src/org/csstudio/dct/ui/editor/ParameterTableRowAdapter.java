@@ -2,7 +2,7 @@ package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.graphics.Image;
 

@@ -21,6 +21,7 @@
  */
 package org.csstudio.common.trendplotter.model;
 
+import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
@@ -30,6 +31,8 @@ import org.csstudio.domain.common.collection.LimitedArrayCircularQueue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,6 +42,8 @@ import org.joda.time.Interval;
  * @since 11.10.2011
  */
 public class CompressedLiveSamples extends LiveSamples {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CompressedLiveSamples.class);
 
     public interface Transformer<S, T> {
         @Nonnull T transform(@Nonnull final S s);
@@ -74,6 +79,7 @@ public class CompressedLiveSamples extends LiveSamples {
             if (interval != null) {
                 _samples = compress(_samples, interval);
             }
+            LOG.info("samples compression, new sample size: " + _samples.size());
         }
     }
 
@@ -93,7 +99,7 @@ public class CompressedLiveSamples extends LiveSamples {
                 _compressor.setCompressionWindows(windowsMS);
             }
 
-            return _compressor.transform(samples);
+            return _compressor.transform(samples, samples.toArray(new PlotSample[0]));
     }
 
     /**

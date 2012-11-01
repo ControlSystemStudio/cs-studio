@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -40,7 +41,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.DuplicateMessageDetector;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.IDuplicateMessageHandler;
@@ -49,10 +49,12 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.IocMessagePar
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.CommandResult;
+import org.csstudio.servicelocator.ServiceLocator;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Thread created for each message which arrives from the IOC
@@ -61,36 +63,35 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Matthias Clausen
  */
 public class ClientRequest implements Runnable {
+    private static final Logger LOG = LoggerFactory.getLogger(ClientRequest.class);
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ClientRequest.class);
 
     private String				packetData 		= null;
 	private DatagramSocket      socket          = null;
-    private IocConnectionManager			statistic		= null;
-    private IocConnection  statisticContent = null;
-    private InterconnectionServer icServer = null;
-    private final boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
-    private final boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
+    private IIocConnectionManager iocConnectionManager = null;
+    private IocConnection  iocConnection = null;
+    private IInterconnectionServer icServer = null;
     private final int statusMessageDelay = 0;
-	private final InetAddress _address;
-	private final int _port;
+	private final InetAddress _replyAddress;
+	private final int _replyPort;
 	private final int _length;
 	private static Map<String, DuplicateMessageDetector>
 			_duplicateMessageDetectors =
 				new HashMap<String, DuplicateMessageDetector>();
 	private GregorianCalendar _startTime = null;
 
-	public ClientRequest( final InterconnectionServer icServer, final String packetData,
-			final DatagramSocket d, final InetAddress replyAddress, final int replyPort, final int packetLength, final GregorianCalendar startTime)
+	public ClientRequest( final String packetData, final DatagramSocket d,
+			final InetAddress replyAddress, final int replyPort, final int packetLength, final GregorianCalendar startTime)
 	{
-        this.icServer = icServer;
+        this.icServer = ServiceLocator.getService(IInterconnectionServer.class);
+        this.iocConnectionManager = ServiceLocator.getService(IIocConnectionManager.class);
+
         this.packetData = packetData;
 		this.socket = d;
-		_address = replyAddress;
-        _port = replyPort;
+		_replyAddress = replyAddress;
+        _replyPort = replyPort;
         _length = packetLength;
 
-        this.statistic	  = IocConnectionManager.INSTANCE;
         this._startTime = startTime;
 	}
 
@@ -134,22 +135,24 @@ public class ClientRequest implements Runnable {
         // change statistic ID from hostName to hostAddress
         //
         try {
-            statisticContent = statistic.getIocConnection( _address, _port);
+            iocConnection = iocConnectionManager.getIocConnection( _replyAddress, _replyPort);
         } catch (final NamingException e1) {
-            LOG.error("IOC connection failed for this address " + _address + ", port " + _port);
+            LOG.error("IOC connection failed for this address " + _replyAddress + ", port " + _replyPort, e1);
             return;
+        } catch (LdapServiceException e) {
+            LOG.error("IOC connection failed for this address " + _replyAddress + ", port " + _replyPort, e);
         }
-        statisticContent.setTime( true);
+        iocConnection.setTime( true);
 
-        if (statisticContent.isDisabled()) {
+        if (iocConnection.isDisabled()) {
         	// If the IOC connection is disabled, all messages from the IOC are
         	// ignored.
         	return;
         }
 
-        statisticContent.setLastMessageSize( _length);
-        hostName = statisticContent.getHost();
-        hostAndPort = hostName + ":" + _port;
+        iocConnection.setLastMessageSize( _length);
+        hostName = iocConnection.getNames().getHostName();
+        hostAndPort = hostName + ":" + _replyPort;
         /*
 		 * find logical name of IOC by the IP address
 		 * do NOT check on the LDAP server if the name was already found...
@@ -163,7 +166,7 @@ public class ClientRequest implements Runnable {
 //        	/*
 //        	 * save ldapIocName
 //        	 */
-//        	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
+//        	LOG.trace("ClientRequest:  ldapIocName = " + iocNames[1]);
 //        	statisticContent.setLdapIocName(iocNames[1]);
 //        }
 
@@ -172,7 +175,7 @@ public class ClientRequest implements Runnable {
         final Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
 
         final DuplicateMessageDetector duplicateMessageDetector =
-        	getDuplicateMessageDetectorForIoc(statisticContent.getLogicalIocName());
+        	getDuplicateMessageDetectorForIoc(iocConnection.getNames().getLogicalIocName());
 
         final IocMessageParser parser = new IocMessageParser();
 		final IocMessage iocMessage = parser.parse(packetData);
@@ -181,7 +184,7 @@ public class ClientRequest implements Runnable {
 				tagValuePairs);
 
 		if (iocMessage.isValid()) {
-			CentralLogger.getInstance().debug(this, "Packet parsed as valid IocMessage: " + iocMessage);
+			LOG.debug("Packet parsed as valid IocMessage: " + iocMessage);
 
         	parseTime = new GregorianCalendar();
         	boolean status	= true;
@@ -196,9 +199,9 @@ public class ClientRequest implements Runnable {
     		// set beacon time locally (set to current time - retrigger)
         	// to be performed in ANY case !!
     		//
-    		statisticContent.setBeaconTime();	// set beacon ONLY for beacon messages!
+    		iocConnection.setBeaconTime();	// set beacon ONLY for beacon messages!
 
-    		final IIocMessageSender sender = new SocketMessageSender(_address, _port, socket);
+    		final IIocMessageSender sender = new SocketMessageSender(_replyAddress, _replyPort, socket);
     		Session session;
 
         	switch (TagList.getMessageType(iocMessage.getMessageTypeString())) {
@@ -231,15 +234,9 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+                    LOG.warn("ClientRequest : send ALARM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-                	if (session != null) {
-                		try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-                	}
+                	tryToCloseSession(session);
                 }
         		//
         		// just send a reply
@@ -261,10 +258,8 @@ public class ClientRequest implements Runnable {
     			}
    				ReplySender.send(iocMessage.getMessageId(), status, sender);
 
-        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE);
-
         		if (showMessageIndicatorB) {
-        			System.out.print("A");
+        			LOG.trace("A");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -296,15 +291,9 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+                    LOG.warn("ClientRequest : send ALARM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-                	if (session != null) {
-                		try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-                	}
+                	tryToCloseSession(session);
                 }
         		//
         		// just send a reply
@@ -326,14 +315,8 @@ public class ClientRequest implements Runnable {
 
     			ReplySender.send(iocMessage.getMessageId(), status, sender);
 
-        		//
-        		// time to update the LDAP server entry
-        		//
-
-        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
-
         		if (showMessageIndicatorB) {
-        			System.out.print("AS");
+        		    LOG.trace("AS");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -367,15 +350,9 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send SIM message : *** EXCEPTION *** : " + jmse.getMessage());
+                    LOG.warn("ClientRequest : send SIM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-                	if (session != null) {
-                		try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-                	}
+                	tryToCloseSession(session);
                 }
         		//
         		// just send a reply
@@ -412,15 +389,9 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send SIM message : *** EXCEPTION *** : " + jmse.getMessage());
+                    LOG.warn("ClientRequest : send SIM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-                	if (session != null) {
-                		try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-                	}
+                	tryToCloseSession(session);
                 }
         		//
         		// just send a reply
@@ -464,22 +435,15 @@ public class ClientRequest implements Runnable {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                 } finally {
-                	if (session != null) {
-                		try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-                	}
+                	tryToCloseSession(session);
                 }
         		//
         		// just send a reply
         		//
         		ReplySender.send(iocMessage.getMessageId(), status, sender);
-        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
 
         		if (showMessageIndicatorB) {
-        			System.out.print("S");
+        		    LOG.trace("S");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -488,13 +452,13 @@ public class ClientRequest implements Runnable {
         	case TagList.BEACON_MESSAGE:
         		// IOC versions that use this message type should no longer be
         		// in use anywhere.
-        		CentralLogger.getInstance().warn(this,
-        				"Received message with TYPE=beacon, " +
+        		LOG.warn("Received message with TYPE=beacon, " +
         				"message type not supported! (ioc: " +
-        				statisticContent.getLogicalIocName() +
+        				iocConnection.getNames().getLogicalIocName() +
         				"; message: " + iocMessage + ")");
 
-        	case TagList.BEACON_MESSAGE_SELECTED:
+                    //$FALL-THROUGH$
+                case TagList.BEACON_MESSAGE_SELECTED:
         		//
         		// just send a reply
         		//
@@ -505,27 +469,22 @@ public class ClientRequest implements Runnable {
         		 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
         		 * -> trigger the IOC to send all alarms!
         		 */
-        		if ( statisticContent.isDidWeSetAllChannelToDisconnect()) {
+        		if ( iocConnection.isDidWeSetAllChannelToDisconnect()) {
         			/*
         			 * yes - did set all channel to disconnect
         			 * we'll have to get all alarm-states from the IOC
-        			 *
-        			 * XXX: This will send the command to the same port to which
-        			 * a reply would be sent. All other users of SendCommandToIoc
-        			 * send the command to the command port configured in the
-        			 * preferences.
         			 */
-        		    try {
-        		        final IocCommandSender sendCommandToIoc =
-        		            new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-
-        		        icServer.getCommandExecutor().execute(sendCommandToIoc);
-
-        		        statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
-        		        statisticContent.setDidWeSetAllChannelToDisconnect(false);
-        		        CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
-        		    } catch (final IllegalArgumentException e) {
-        		        CentralLogger.getInstance().fatal(this, "Creation of command sender failed:\n" + e.getMessage());
+                        try {
+                            final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection,
+                                                                                           PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+                            
+                            icServer.getCommandExecutor().execute(sendCommandToIoc);
+                            
+                            iocConnection.setGetAllAlarmsOnSelectChange(false); // we set the trigger to get the alarms...
+                            iocConnection.setDidWeSetAllChannelToDisconnect(false);
+                            LOG.info("IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+                        } catch (final IllegalArgumentException e) {
+        		        LOG.error("Creation of command sender failed:\n" + e.getMessage());
         		    }
         		}
 
@@ -533,17 +492,17 @@ public class ClientRequest implements Runnable {
         		 * we are selected!
         		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
         		 */
-        		if (!statisticContent.isSelectState()) {
+        		if (!iocConnection.isSelectState()) {
         			//remember we're selected
-        			statisticContent.setSelectState(true);
+        			iocConnection.setSelectState(true);
 
         			String selectMessage = "SELECTED";
-        			if ( statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
+        			if ( iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
         				selectMessage = "SELECTED - switch over";
         			}
         			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					icServer.getLocalHostName() + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",					// name
         					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					selectMessage, 														// status
@@ -556,20 +515,14 @@ public class ClientRequest implements Runnable {
         			 * this is a switch over from one IC-Server to another and thus
         			 * we DO NOT have to ask for an update on all alarms!
         			 */
-        			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts() &&
-        					statisticContent.isGetAllAlarmsOnSelectChange()) {
-        				/*
-	        			 * XXX: This will send the command to the same port to which
-	        			 * a reply would be sent. All other users of SendCommandToIoc
-	        			 * send the command to the command port configured in the
-	        			 * preferences.
-        				 */
-        				final IocCommandSender sendCommandToIoc = new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			if ( ! iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts() &&
+        					iocConnection.isGetAllAlarmsOnSelectChange()) {
+        				final IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				icServer.getCommandExecutor().execute(sendCommandToIoc);
-        				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
-        				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
+        				iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+        				LOG.info("This is a fail over from one IC-Server to this one - get an update on all alarms!");
         			} else {
-        				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
+        				LOG.info("Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
         			}
         		}
 
@@ -577,16 +530,16 @@ public class ClientRequest implements Runnable {
         		//
         		// generate system log message if connection state changed
         		//
-        		if ( !statisticContent.getConnectState()) {
+        		if ( !iocConnection.getConnectState()) {
         			//
         			// connect state changed!
         			//
-        			statisticContent.setConnectState (true);
-        			statisticContent.setTimeReConnected();
+        			iocConnection.setConnectState (true);
+        			iocConnection.setTimeReConnected();
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent, true);
+        			new IocChangedState (iocConnection, true);
 
         			/*
         			 * create JMS sender
@@ -614,17 +567,11 @@ public class ClientRequest implements Runnable {
             			status = false;
             			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     } finally {
-                    	if (session != null) {
-                    		try {
-								session.close();
-							} catch (final JMSException e) {
-								CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-							}
-                    	}
+                    	tryToCloseSession(session);
                     }
         		}
         		if (showMessageIndicatorB) {
-        			System.out.print("B");
+        		    LOG.trace("B");
         		}
         		// statistic for beacon reply time
         		icServer.getBeaconReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -645,11 +592,11 @@ public class ClientRequest implements Runnable {
         		 */
         		if (isSwitchOverMessage) {
         			//remember we're selected
-        			statisticContent.setSelectState(true);
+        			iocConnection.setSelectState(true);
 
         			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					icServer.getLocalHostName() + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",					// name
         					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					"SELECTED - switch over", 												// status
@@ -667,7 +614,7 @@ public class ClientRequest implements Runnable {
         		//
 
         		if (showMessageIndicatorB) {
-        			System.out.print("SO");
+        		    LOG.trace("SO");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -683,13 +630,13 @@ public class ClientRequest implements Runnable {
         		 * we are not selected any more
         		 * in case we were selected before - we'll have to create a JMS message
         		 */
-        		if ( statisticContent.isSelectState()) {
+        		if ( iocConnection.isSelectState()) {
         			//remember we're not selected any more
-        			statisticContent.setSelectState(false);
+        			iocConnection.setSelectState(false);
 
         			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",	// name
+        					icServer.getLocalHostName() + ":" + iocConnection.getNames().getLogicalIocName() + ":selectState",	// name
         					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_MINOR, 											// severity
         					"NOT-SELECTED", 													// status
@@ -700,16 +647,16 @@ public class ClientRequest implements Runnable {
         		//
         		// generate system log message if connection state changed
         		//
-        		if ( !statisticContent.getConnectState()) {
+        		if ( !iocConnection.getConnectState()) {
         			//
         			// connect state changed!
         			//
-        			statisticContent.setConnectState (true);
-        			statisticContent.setTimeReConnected();
+        			iocConnection.setConnectState (true);
+        			iocConnection.setTimeReConnected();
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent, true);
+        			new IocChangedState (iocConnection, true);
 
         			/*
         			 * create JMS sender
@@ -738,17 +685,11 @@ public class ClientRequest implements Runnable {
             			status = false;
             			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     } finally {
-                    	if (session != null) {
-                    		try {
-								session.close();
-							} catch (final JMSException e) {
-								CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-							}
-                    	}
+                    	tryToCloseSession(session);
                     }
         		}
         		if (showMessageIndicatorB) {
-        			System.out.print("B");
+        		    LOG.trace("B");
         		}
         		// statistic for beacon reply time
         		icServer.getBeaconReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -777,19 +718,13 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+                    LOG.warn("ClientRequest : send ALARM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-        			if (session != null) {
-						try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-					}
+        			tryToCloseSession(session);
         		}
         		ReplySender.send(iocMessage.getMessageId(), status, sender);
         		if (showMessageIndicatorB) {
-        			System.out.print("P");
+        		    LOG.trace("P");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -818,19 +753,13 @@ public class ClientRequest implements Runnable {
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+        			LOG.warn("ClientRequest : send ALARM message : *** EXCEPTION *** : ", jmse);
                 } finally {
-        			if (session != null) {
-						try {
-							session.close();
-						} catch (final JMSException e) {
-							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
-						}
-					}
+        			tryToCloseSession(session);
         		}
         		ReplySender.send(iocMessage.getMessageId(), status, sender);
         		if (showMessageIndicatorB) {
-        			System.out.print("SN");
+        		    LOG.trace("SN");
         		}
         		// statistic for message reply time
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
@@ -838,7 +767,7 @@ public class ClientRequest implements Runnable {
 
         	case TagList.TEST_COMMAND:
             	if (showMessageIndicatorB) {
-        			System.out.print("T");
+            	    LOG.trace("T");
         		}
             	break;
         	case TagList.UNKNOWN_MESSAGE:
@@ -846,7 +775,7 @@ public class ClientRequest implements Runnable {
         		status = false;
         		ReplySender.send(iocMessage.getMessageId(), status, sender);
         		if (showMessageIndicatorB) {
-        			System.out.print("U");
+        		    LOG.trace("U");
         		}
         	}
 
@@ -855,6 +784,16 @@ public class ClientRequest implements Runnable {
         icServer.getClientRequestTheadCollector().decrementValue();
 
 	}
+
+    private void tryToCloseSession(@CheckForNull final Session session) {
+        if (session != null) {
+        	try {
+        		session.close();
+        	} catch (final JMSException e) {
+        		LOG.warn("Failed to close JMS session", e);
+        	}
+        }
+    }
 
 	/**
 	 * Prepares a JMS message for logging that a new client was connected. (At
@@ -890,8 +829,7 @@ public class ClientRequest implements Runnable {
 			//        caller knows about the error and does not simply continue
 			//        and use an uninitialized message!
 
-			// TODO: make it a log message
-			System.out.println("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : " + e.getMessage());
+			LOG.warn("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : ", e);
 		}
 	}
 
@@ -927,9 +865,7 @@ public class ClientRequest implements Runnable {
 			//        the caller. This method must throw an exception so the
 			//        caller knows about the error and does not simply continue
 			//        and use an uninitialized message!
-
-			// TODO: make it a log message
-			System.out.println("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
+			LOG.warn("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : ", jmse);
 		}
 	}
 
@@ -941,19 +877,19 @@ public class ClientRequest implements Runnable {
 	 *            the IOC.
 	 * @return the duplicate message detector.
 	 */
-	// TODO: public for testing. Should be refactored!
+	// TODO: package scoped for testing. Should be refactored!
 	// TODO: this method also should not be static but in some IOC connection scope
-	public static DuplicateMessageDetector getDuplicateMessageDetectorForIoc(
+	static DuplicateMessageDetector getDuplicateMessageDetectorForIoc(
 			final String ioc) {
 		DuplicateMessageDetector result = _duplicateMessageDetectors.get(ioc);
 		if (result == null) {
 			result = new DuplicateMessageDetector(new IDuplicateMessageHandler() {
-				public void duplicateMessageDetected(final IocMessage first,
+				@SuppressWarnings("synthetic-access")
+                public void duplicateMessageDetected(final IocMessage first,
 						final IocMessage duplicate) {
-					CentralLogger.getInstance().warn(ClientRequest.class,
-							"DUPLICATED Message from [" + ioc + "] OLD: " + first + " NEW: " + duplicate);
+					LOG.warn("DUPLICATED Message from [" + ioc + "] OLD: " + first + " NEW: " + duplicate);
 					// increase counter in statistic
-					InterconnectionServer.getInstance().getNumberOfDuplicateMessagesCollector().incrementValue();
+					ServiceLocator.getService(IInterconnectionServer.class).getNumberOfDuplicateMessagesCollector().incrementValue();
 				}
 			});
 			_duplicateMessageDetectors.put(ioc, result);
@@ -974,8 +910,8 @@ public class ClientRequest implements Runnable {
 	 *            a vector which will be filled with all tag/value pairs parsed
 	 *            by this method, except ID and TYPE.
 	 */
-	// TODO: public for testing. Should be refactored!
-	public static void putIocMessageDataIntoLegacyDataStructures(
+	// TODO: package-scoped for testing. Should be refactored!
+	static void putIocMessageDataIntoLegacyDataStructures(
 			final IocMessage message, final Hashtable<String, String> tagValue,
 			final Vector<TagValuePair> tagValuePairs) {
 		for (final TagValuePair item : message.getItems()) {
@@ -1024,114 +960,4 @@ public class ClientRequest implements Runnable {
 		return new TagValuePair("EVENTTIME", value);
 	}
 
-	/**
-	 * Update the LDAP database.
-	 * Analyse the tag/value pairs in tagValue (must contain at least: NAME and SEVERITY
-	 * If time is omitted - localTime will be used.
-	 * @param tagValue Hashtable with tag/value pairs.
-	 * @param resetHighestUnacknowledgedAlarm True/False defines whether - or not to reset the highest unacknowledged alarm in the LDAP database.
-	 *
-	 */
-	private void updateLdapEntry ( final Hashtable<String,String> tagValue, final boolean resetHighestUnacknowledgedAlarm) {
-		//
-		// find necessary entries and activate ldapUpdateMethod
-		//
-		String channel,status,severity,timeStamp = null;
-		///System.out.println("tagValue : " + tagValue.toString());
-
-		if ( tagValue.containsKey("NAME") && tagValue.containsKey("SEVERITY")) {
-
-			channel = tagValue.get("NAME");
-			severity = tagValue.get("SEVERITY");
-
-			/*
-			 * is severity set?
-			 */
-			if ( tagValue.containsKey("STATUS")) {
-				status = tagValue.get("STATUS");
-			} else {
-				status = "unknown";
-			}
-
-			/*
-			 * TODO: if we decide to use separate fields for event and create-time this is he place to change it!
-			 */
-			if ( tagValue.containsKey("EVENTTIME")) {
-				timeStamp = tagValue.get("EVENTTIME");
-			} else if ( tagValue.containsKey("CREATETIME")){
-				timeStamp = tagValue.get("CREATETIME");
-			} else {
-				// no time available
-				final SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
-		        final java.util.Date currentDate = new java.util.Date();
-		        timeStamp = sdf.format(currentDate);
-			}
-
-			/*
-			 * change the epicsAlarmHighUnAckn field in the LDAP server?
-			 */
-
-			if ( resetHighestUnacknowledgedAlarm ) {
-				/*
-				 * check for actual alarm state
-				 */
-
-			    // FIXME (jpenning, bknerr) alarm status not to be retrieved via LDAP
-
-//				final String currentSeverity = Engine.getInstance().getAttribute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
-//				CentralLogger.getInstance().debug( this, "Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
-//
-//				if ( getSeverityEnum(severity) > getSeverityEnum(currentSeverity)) {
-//					/*
-//					 * new highest alarm!
-//					 * set highest unacknowledged alarm to new severity
-//					 * else we keep the highest unacknowledged alarm as it is
-//					 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view
-//					 * - or other applications will be set to ""
-//					 */
-//					Engine.getInstance().addLdapWriteRequest (LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK, channel, severity);
-//				}
-			}
-
-			//
-			// send values to LDAP engine
-			//
-//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_SEVERITY, channel, severity);
-//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_STATUS, channel, status);
-//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_TIMESTAMP, channel, timeStamp);
-
-		}
-
-	}
-	/**
-	 * return severity - as number -
-	 * - INVALID = 5
-	 * - NO_ALARM = 0
-	 * - MINOR = 1
-	 * - MAJOR = 2
-	 * - NONE = -1
-	 * @param severity
-	 * @return
-	 */
-	private int getSeverityEnum ( final String severity) {
-		int severityAsNumber = 0;
-		if ( severity != null && severity.length()> 0) {
-			if (severity.startsWith( "INVALID")) {
-				severityAsNumber = 5;
-			} else if (severity.startsWith( "INVALID")) {
-				severityAsNumber = 5;
-			} else if (severity.startsWith( "NO_ALARM")) {
-				severityAsNumber = 0;
-			} else if (severity.startsWith( "MINOR")) {
-				severityAsNumber = 1;
-			} else if (severity.startsWith( "MAJOR")) {
-				severityAsNumber = 2;
-			} else if (severity.startsWith( "NONE")) {
-				severityAsNumber = -1;
-			} else {
-				severityAsNumber = 0;
-			}
-		}
-		return severityAsNumber;
-	}
 }

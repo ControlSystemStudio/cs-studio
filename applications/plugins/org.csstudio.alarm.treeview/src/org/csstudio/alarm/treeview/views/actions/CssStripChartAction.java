@@ -18,11 +18,12 @@
  */
 package org.csstudio.alarm.treeview.views.actions;
 
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
-import org.csstudio.platform.ui.util.EditorUtil;
+import org.csstudio.alarm.treeview.util.EditorUtil;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;

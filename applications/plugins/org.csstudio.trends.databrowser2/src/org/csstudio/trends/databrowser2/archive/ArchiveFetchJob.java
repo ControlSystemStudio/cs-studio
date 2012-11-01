@@ -146,7 +146,7 @@ public class ArchiveFetchJob extends Job
                 {   // Tell listener unless it's the result of a 'cancel'?
                     if (! cancelled)
                         listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
-                    break;
+                    // Continue with the next data source
                 }
                 finally
                 {

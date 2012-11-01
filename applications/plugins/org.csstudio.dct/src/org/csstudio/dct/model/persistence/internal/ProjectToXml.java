@@ -11,7 +11,7 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Project;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.jdom.Document;
 import org.jdom.Element;
 

@@ -18,6 +18,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.NativeTextFigure;
 import org.csstudio.opibuilder.widgets.model.NativeTextModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
+import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
@@ -112,10 +113,10 @@ public class NativeTextEditpart extends TextInputEditpart {
 							 text.getShell().setFocus();
 							 break;
 						case NEXT:
-							text.traverse(SWT.TRAVERSE_TAB_PREVIOUS);
+							SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
 							break;
 						case PREVIOUS:
-							text.traverse(SWT.TRAVERSE_TAB_NEXT);
+							SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
 							break;
 						case KEEP:
 						default:

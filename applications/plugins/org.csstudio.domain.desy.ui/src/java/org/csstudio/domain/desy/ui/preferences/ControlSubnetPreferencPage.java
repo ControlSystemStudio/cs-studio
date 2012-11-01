@@ -25,8 +25,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.domain.common.strings.StringUtil;
 import org.csstudio.domain.desy.preferences.ControlSubnetPreference;
-import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;

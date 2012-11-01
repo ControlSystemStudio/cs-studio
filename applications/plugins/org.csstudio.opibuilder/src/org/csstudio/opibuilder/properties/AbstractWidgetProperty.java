@@ -273,6 +273,8 @@ public abstract class AbstractWidgetProperty {
 	
 	public void setWidgetModel(AbstractWidgetModel widgetModel) {
 		this.widgetModel = widgetModel;
+		if(widgetModel != null)
+			setExecutionMode(widgetModel.getExecutionMode());
 	}
 	
 	public void setExecutionMode(ExecutionMode executionMode) {

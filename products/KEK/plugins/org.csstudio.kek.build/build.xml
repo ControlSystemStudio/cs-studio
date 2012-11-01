@@ -12,7 +12,7 @@
      WORKSPACE
      VERSION
      
-     Kay Kasemir
+     Author: Kay Kasemir, Takashi Nakamoto (Cosylab)
   -->
 <project name="sns_css" default="all">
     <!-- Map all environment variables XYZ to ${env.XYZ} -->
@@ -85,6 +85,14 @@
             </fileset>
         </copy>
 
+    	<echo>SNS product</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+             <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+
     	<echo>KEK plugins</echo>
         <copy todir="${build_dir}/plugins" overwrite="true">
              <fileset dir="${repo_dir}/products/KEK/plugins" includesfile="plugins.list">
@@ -124,6 +132,10 @@
                 <exclude name="**/classes/**"/>
             </fileset>
             <fileset dir="${repo_dir}/products/SNS/plugins" includesfile="plugins.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>

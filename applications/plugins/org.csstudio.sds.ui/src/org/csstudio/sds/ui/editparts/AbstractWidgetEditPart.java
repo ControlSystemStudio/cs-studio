@@ -27,7 +27,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.ui.internal.commands.ChangeSettingsFromDroppedPvCommand;
 import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
-import org.csstudio.sds.ui.internal.editor.DropPvRequest;
+import org.csstudio.sds.ui.internal.editor.dnd.DropPvRequest;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -102,8 +102,4 @@ public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implem
 	protected void createEditPoliciesHook() {
 	}
 	
-	@Override
-	public boolean isSelectable() {
-		return getSelected() != SELECTED_NONE || ! (getParent() instanceof GroupingContainerEditPart) || getParent().getSelected() != SELECTED_NONE;
-	}
 }

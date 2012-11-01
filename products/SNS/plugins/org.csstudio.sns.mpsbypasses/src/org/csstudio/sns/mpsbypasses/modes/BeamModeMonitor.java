@@ -1,44 +1,50 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.vEnum;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
+import org.epics.util.time.TimeDuration;
 
 /** Read beam mode from MPS PVs
+ *
+ *  <p>This is convoluted because instead of one PV to indicate the current mode,
+ *  there are N PVs to reflect the on/off state of the possible modes,
+ *  with only one PV supposed to be active at a given time.
+ *
+ *  <p>Additionally, the sense of 'active' differs for the RDTL vs. Switch mode PVs.
  *
  *  @author Delphy Armstrong - Original RTDL_Switch_Modes
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class BeamModeMonitor implements PVListener
+public class BeamModeMonitor
 {
-	final private BeamModeListener listener;
+    final private Logger logger = Logger.getLogger(getClass().getName());
 
-	final private PV[] rtdl_pvs;
-	final private PV[] switch_pvs;
+    final private BeamMode[] modes = BeamMode.values();
+    final private BeamModeListener listener;
+
+	private PVReader<List<VEnum>> rtdl_reader, switch_reader;
 
 	private volatile BeamMode rtdl_mode = null;
 	private volatile BeamMode switch_mode = null;
 
 	/** Initialize
-	 *  @throws Exception on error
+	 *  @param listener
 	 */
-	public BeamModeMonitor(final BeamModeListener listener) throws Exception
+	public BeamModeMonitor(final BeamModeListener listener)
 	{
-		this.listener = listener;
-		// Create PVs
-		final BeamMode[] modes = BeamMode.values();
-		rtdl_pvs = new PV[modes.length];
-		switch_pvs = new PV[modes.length];
-		for (int i=0; i<modes.length; ++i)
-		{
-			rtdl_pvs[i] = PVFactory.createPV("ICS_MPS:RTDL_BmMd:" + modes[i].getSignal());
-			switch_pvs[i] = PVFactory.createPV("ICS_MPS:Switch_BmMd:" + modes[i].getSignal());
-			rtdl_pvs[i].addListener(this);
-			switch_pvs[i].addListener(this);
-		}
+	    this.listener = listener;
 	}
 
 	/** Connect PVs
@@ -46,82 +52,97 @@ public class BeamModeMonitor implements PVListener
 	 */
 	public void start() throws Exception
 	{
-		for (PV pv : rtdl_pvs)
-			pv.start();
-		for (PV pv : switch_pvs)
-			pv.start();
+        // Handle 'RTDL' PVs
+	    DesiredRateExpressionList<VEnum> channels = new DesiredRateExpressionListImpl<VEnum>();
+	    for (int i=0; i<modes.length; ++i)
+	        channels.and(latestValueOf(vEnum("ICS_MPS:RTDL_BmMd:" + modes[i].getSignal())));
+	    rtdl_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
+	    rtdl_reader.addPVReaderListener(new PVReaderListener()
+	    {
+	        @Override
+	        public void pvChanged()
+	        {
+	            final BeamMode mode;
+	            final Exception error = rtdl_reader.lastException();
+	            if (error != null)
+	            {
+	                logger.log(Level.WARNING, "RTDL Reader Error", error);
+	                mode = null;
+	            }
+	            else
+	                mode = getSelectedMode(rtdl_reader.getValue(), 1);
+	            logger.log(Level.FINE, "RTDL Mode: {0}", mode);
+	            updateModes(mode, switch_mode);
+	        }
+	    });
+
+        // Handle 'Switch' PVs
+	    channels = new DesiredRateExpressionListImpl<VEnum>();
+	    for (int i=0; i<modes.length; ++i)
+	        channels.and(latestValueOf(vEnum("ICS_MPS:Switch_BmMd:" + modes[i].getSignal())));
+	    switch_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
+	    switch_reader.addPVReaderListener(new PVReaderListener()
+	    {
+	        @Override
+	        public void pvChanged()
+	        {
+	            final BeamMode mode;
+	            final Exception error = switch_reader.lastException();
+	            if (error != null)
+	            {
+	                logger.log(Level.WARNING, "Switch Reader Error", error);
+	                mode = null;
+	            }
+	            else
+	                mode = getSelectedMode(switch_reader.getValue(), 0);
+                logger.log(Level.FINE, "Swtich Mode: {0}", mode);
+                updateModes(rtdl_mode, mode);
+	        }
+	    });
+	}
+
+	/** Determine which of the values indicates an active mode
+	 *  @param values Values of the mode PVs
+	 *  @param active_value Value that indicates the active mode
+	 *  @return Selected {@link BeamMode} or <code>null</code>
+	 */
+	private BeamMode getSelectedMode(final List<VEnum> values, final int active_value)
+	{
+	    if (values == null)
+	        return null;
+
+	    if (values.size() != modes.length)
+	        throw new IllegalStateException();
+
+	    int active = -1;
+	    for (int i=0; i<modes.length; ++i)
+	    {
+	        if (values.get(i).getIndex() == active_value)
+	        {
+	            if (active >= 0)
+	            {
+	                Logger.getLogger(getClass().getName()).
+	                    log(Level.WARNING,
+	                        "Both {0} and {1} active at the same time",
+	                        new Object[] { modes[active], modes[i] });
+	                return null;
+	            }
+	            active = i;
+	        }
+	    }
+
+	    if (active >= 0)
+	        return modes[active];
+	    return null;
 	}
 
 	/** Disconnect PVs */
 	public void stop()
 	{
-		for (PV pv : rtdl_pvs)
-			pv.stop();
-		for (PV pv : switch_pvs)
-			pv.stop();
+	    switch_reader.close();
+	    rtdl_reader.close();
 		updateModes(null, null);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-    public void pvDisconnected(final PV any_pv)
-    {
-		updateModes(null, null);
-    }
-
-	/** {@inheritDoc} */
-	@Override
-    public void pvValueUpdate(final PV pv)
-    {
-		// System.out.println(pv.getName() + " = " + pv.getValue() + " (" + ValueUtil.getDouble(pv.getValue()) + ")");
-
-		// Decode RTDL PVs
-		BeamMode new_rtdl = null;
-		for (int i=0; i<rtdl_pvs.length; ++i)
-		{
-			final IValue value = rtdl_pvs[i].getValue();
-			if (value == null)
-			{	// Any PV missing -> cannot be certain about mode
-				new_rtdl = null;
-				break;
-			}
-			final boolean active = ValueUtil.getDouble(value) > 0.0;
-			if (active)
-			{
-				if (new_rtdl != null)
-				{	// More than one mode at the same time?
-					new_rtdl = null;
-					break;
-				}
-				new_rtdl = BeamMode.values()[i];
-			}
-		}
-
-		// Decode MPS switch PVs
-		BeamMode new_switch = null;
-		for (int i=0; i<switch_pvs.length; ++i)
-		{
-			final IValue value = switch_pvs[i].getValue();
-			if (value == null)
-			{	// Any PV missing -> cannot be certain about mode
-				new_switch = null;
-				break;
-			}
-			// Active low!
-			final boolean active = ValueUtil.getDouble(value) < 1.0;
-			if (active)
-			{
-				if (new_switch != null)
-				{	// More than one mode at the same time?
-					new_switch = null;
-					break;
-				}
-				new_switch = BeamMode.values()[i];
-			}
-		}
-
-		updateModes(new_rtdl, new_switch);
-    }
 
 	/** Update modes and notify listeners on change
 	 *  @param new_rtdl_mode

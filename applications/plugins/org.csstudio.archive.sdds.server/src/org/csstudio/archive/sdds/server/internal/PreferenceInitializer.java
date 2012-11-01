@@ -71,5 +71,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         node.putBoolean(ServerPreferenceKey.P_IGNORE_BIG_FILES, true);
 
         node.putLong(ServerPreferenceKey.P_MAX_FILE_SIZE, 5242880L);
+
+        node.putBoolean(ServerPreferenceKey.P_USE_COMPRESSED_FILES, true);
     }
 }

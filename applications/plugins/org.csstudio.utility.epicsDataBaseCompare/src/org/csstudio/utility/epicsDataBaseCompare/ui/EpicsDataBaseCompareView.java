@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.epicsDataBaseCompare.ui;
 
+
 import java.io.IOException;
 
 import javax.annotation.CheckForNull;

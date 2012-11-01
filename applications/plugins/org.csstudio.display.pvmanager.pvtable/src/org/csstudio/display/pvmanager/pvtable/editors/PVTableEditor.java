@@ -195,6 +195,8 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				for (ProcessVariable processVariable : processVariables) {
 					model.addPVName(processVariable);
 					group.add(latestValueOf(channel(processVariable.getName())));
+					isDirty = true;
+					firePropertyChange(PROP_DIRTY);
 				}
 			}
 		}
@@ -236,7 +238,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 		if (newResourcePath.getFileExtension() == null
 				|| !ext.equals("css-pvtable")) {
 			newResourcePath = newResourcePath.removeFileExtension();
-			newResourcePath.addFileExtension("css-pvtable");
+			newResourcePath = newResourcePath.addFileExtension("css-pvtable");
 		}
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IFile newFile = root.getFile(newResourcePath);
@@ -642,26 +644,6 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 				ViewerCell cell = null;
 				switch (event.keyCode) {
-				// case SWT.ARROW_LEFT:
-				// if (currentSelectedCell != null) {
-				// cell = currentSelectedCell.getNeighbor(
-				// ViewerCell.ABOVE, false);
-				// }
-				// if (cell != null) {
-				// tableViewer.getTable().setSelection(
-				// (TableItem) cell.getItem());
-				// }
-				// break;
-				// case SWT.ARROW_RIGHT:
-				// if (currentSelectedCell != null) {
-				// cell = currentSelectedCell.getNeighbor(
-				// ViewerCell.BELOW, false);
-				// }
-				// if (cell != null) {
-				// tableViewer.getTable().setSelection(
-				// (TableItem) cell.getItem());
-				// }
-				// break;
 				case SWT.CR:
 					if (currentSelectedCell != null) {
 						cell = currentSelectedCell.getNeighbor(

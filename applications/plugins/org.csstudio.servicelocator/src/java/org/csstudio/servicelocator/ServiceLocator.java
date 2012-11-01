@@ -21,6 +21,10 @@
  */
 package org.csstudio.servicelocator;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,43 +32,47 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a configurable service locator.
- *
+ * 
  * Usage: The service provider registers services directly with their implementation (for tests) or
  * dynamically using a service tracker (which is more appropriate in an OSGi environment).
- *
+ * 
  * The client gets the service by its interface type, it does not know how the service is provided.
  * Therefore the client uses the service locator as a singleton, so we have simple client code.
- *
+ * 
  * @author jpenning
  * @since 20.01.2012
  */
 public final class ServiceLocator {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceLocator.class);
 
     /**
      * Provides the accessor function for the service implementation
      * A function is necessary because we may register a service tracker to dynamically retrieve the service implementation.
      * It is also possible to close the service provider. This is used to close the service trackers.
      */
-    private interface IServiceProvider<T> {
+    interface IServiceProvider<T> {
         @CheckForNull
         T getService();
-
+        
         void close();
     }
-
+    
     // map from interface type to the accessor function for the service implementation
     private static Map<Class<?>, IServiceProvider<?>> TYPE2IMPL = new HashMap<Class<?>, IServiceProvider<?>>();
-
+    
     // flag to detect close
     private static boolean IS_CLOSED = false;
-
+    
     private ServiceLocator() {
         // used internally only
     }
-
+    
     /**
      * Clears all registered services.
      * CAREFUL: Use only for tests. Therefore this method is package-scoped.
@@ -73,19 +81,19 @@ public final class ServiceLocator {
         TYPE2IMPL = new HashMap<Class<?>, IServiceProvider<?>>();
         IS_CLOSED = false;
     }
-
+    
     static void close() {
-        for (final IServiceProvider<?> serviceProvider : TYPE2IMPL.values()) {
+        for (IServiceProvider<?> serviceProvider : TYPE2IMPL.values()) {
             serviceProvider.close();
         }
         IS_CLOSED = true;
     }
-
+    
     /**
      * Register a service implementation for the given type.
      * Typically this is called from the activator of a plugin for production services
      * or from a test for mocks.
-     *
+     * 
      * @param <T> type of the service (its interface)
      * @param <I> type of the implementation of the service
      * @param service
@@ -93,28 +101,41 @@ public final class ServiceLocator {
      */
     public static <T, I extends T> void registerService(@Nonnull final Class<T> service,
                                                  @Nonnull final I impl) {
-        final IServiceProvider<T> serviceProvider = createServiceProvider(impl);
+        IServiceProvider<T> serviceProvider = createServiceProvider(impl);
         // If called more than once, the last one will survive.
         // This simplifies tests, where more than one call to register a service will usually be
         // made from within the setup method.
-        TYPE2IMPL.put(service, serviceProvider);
+        registerServiceProvider(service, serviceProvider);
     }
-
+    
     /**
      * Register a service tracker giving dynamic access to the implementation for the given type.
      * Typically this is called from the activator of a plugin for production services.
-     *
+     * 
      * @param <T> type of the service (its interface)
      * @param <I> type of the implementation of the service
      * @param service
      * @param serviceTracker
      */
     public static <T, I extends T> void registerServiceTracker(@Nonnull final Class<T> service,
-                                                        @Nonnull final ServiceTracker serviceTracker) {
-        final IServiceProvider<T> serviceProvider = createServiceProviderFromTracker(serviceTracker);
-        TYPE2IMPL.put(service, serviceProvider);
+                                                        @Nonnull final ServiceTracker<?, ?> serviceTracker) {
+        IServiceProvider<T> serviceProvider = createServiceProviderFromTracker(serviceTracker);
+        registerServiceProvider(service, serviceProvider);
     }
 
+    /**
+     * Register the service type and its provider in a map. If the client wants to retrieve the implementation,
+     * the map yields the provider for the type and uses it to retrieve the implementation.
+     * 
+     * @param <T> type of the service (its interface)
+     * @param service
+     * @param serviceProvider
+     */
+    static <T> void registerServiceProvider(final Class<T> service,
+                                                    final IServiceProvider<T> serviceProvider) {
+        TYPE2IMPL.put(service, serviceProvider);
+    }
+    
     /**
      * Get the implementation of the service with the given type
      * Because of the dynamic nature of OSGi there may be no service present, in that case <code>null</code> is returned.
@@ -130,66 +151,107 @@ public final class ServiceLocator {
             throw new IllegalStateException("Trying to get s service of type " + typeOfService +
             		" but service locator has already been closed.");
         }
-
-        final IServiceProvider<?> serviceProvider = TYPE2IMPL.get(typeOfService);
-
+        
+        IServiceProvider<?> serviceProvider = TYPE2IMPL.get(typeOfService);
+        
         if (serviceProvider == null) {
             throw new IllegalStateException("Request for service type " + typeOfService + " which has not been registered.");
         }
         return (T) serviceProvider.getService();
     }
-
+    
     @Nonnull
     private static <T, I extends T> IServiceProvider<T> createServiceProvider(@Nonnull final I service) {
         return new IServiceProvider<T>() {
-
+            
             @Override
             @CheckForNull
             public T getService() {
                 return service;
             }
-
+            
             @Override
             public void close() {
                 // nothing to do
             }
         };
     }
-
+    
     @Nonnull
-    private static <T> IServiceProvider<T> createServiceProviderFromTracker(@Nonnull final ServiceTracker serviceTracker) {
+    private static <T> IServiceProvider<T> createServiceProviderFromTracker(@Nonnull final ServiceTracker<?, ?> serviceTracker) {
         return new ServiceProviderBasedOnServiceTracker<T>(serviceTracker);
     }
-
+    
     /**
-     * Encapsulates the service tracker-based access to the service implementation.
+     * Encapsulates the service tracker-based access to the service implementation. 
      */
     private static class ServiceProviderBasedOnServiceTracker<T> implements IServiceProvider<T> {
-
-        private final ServiceTracker _serviceTracker;
-
-        public ServiceProviderBasedOnServiceTracker(@Nonnull final ServiceTracker serviceTracker) {
+        
+        private final ServiceTracker<?, ?> _serviceTracker;
+        
+        public ServiceProviderBasedOnServiceTracker(@Nonnull final ServiceTracker<?, ?> serviceTracker) {
             _serviceTracker = serviceTracker;
         }
-
+        
         @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public T getService() {
-            final T service = (T) _serviceTracker.getService();
+            T service = (T) _serviceTracker.getService();
             if (service == null) {
                 Thread.dumpStack();
                 throw new IllegalStateException("Service unavailabe from tracker: "
                         + _serviceTracker.toString());
             }
-
+            
             return service;
         }
-
+        
         @Override
         public void close() {
             _serviceTracker.close();
         }
-
+        
     }
+    
+    /**
+     * Remote service will be looked up from the rmi registry each time the reference is retrieved.
+     * This allows for reconnection after problems with the server.
+     */
+    static class ServiceProviderForRemote<T, I extends T> implements IServiceProvider<T> {
+        
+        private final String _rmiServer;
+        private final int _rmiPort;
+        private final Class<T> _service;
+        
+        public ServiceProviderForRemote(@Nonnull final String rmiServer, final int rmiPort, @Nonnull final Class<T> service) {
+            _rmiServer = rmiServer;
+            _rmiPort = rmiPort;
+            _service = service;
+        }
+        
+        @Override
+        @SuppressWarnings({ "unchecked", "synthetic-access" })
+        @CheckForNull
+        public T getService() {
+            I result = null;
+            Registry registry;
+            try {
+                registry = LocateRegistry.getRegistry(_rmiServer, _rmiPort);
+                result = (I) registry.lookup(_service.getCanonicalName());
+            } catch (RemoteException e) {
+                LOG.error("Cannot get remote service: " + _service.getCanonicalName(), e);
+            } catch (NotBoundException e) {
+                LOG.error("Cannot get remote service (not bound): " + _service.getCanonicalName(), e);
+            }
+            return result;
+        }
+        
+        @Override
+        public void close() {
+            // nothing to do
+        }
+        
+    }
+
 }

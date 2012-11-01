@@ -42,7 +42,7 @@ public class AlarmTreePreferenceInitializer extends AbstractPreferenceInitialize
     public final void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
 
-        final List<AbstractPreference<?>> allPreferences = AlarmTreePreference.JMS_URL_PRIMARY.getAllPreferences();
+        final List<AbstractPreference<?>> allPreferences = AlarmTreePreference.JMS_QUEUE.getAllPreferences();
         for (final AbstractPreference<?> preference : allPreferences) {
             prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
         }
