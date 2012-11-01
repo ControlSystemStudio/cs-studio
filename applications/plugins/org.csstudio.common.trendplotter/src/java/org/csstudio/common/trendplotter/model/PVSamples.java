@@ -49,6 +49,7 @@ public class PVSamples extends PlotSamples
 
     boolean show_deadband = false;
 
+    
     /**
      * Constructor.
      */
@@ -69,6 +70,47 @@ public class PVSamples extends PlotSamples
      */
     public PVSamples(@Nonnull final RequestType request_type) {
         this (request_type, null);
+    }
+
+    private ArrayList<IDataProviderListener> listeners = new ArrayList<IDataProviderListener>();
+    
+    /** {@inheritDoc} */
+    @Override
+    public void addDataProviderListener(IDataProviderListener listener)
+    {
+        synchronized (listeners)
+        {
+            listeners.add(listener);
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean removeDataProviderListener(IDataProviderListener listener)
+    {
+        synchronized (listeners)
+        {
+            return listeners.remove(listener);
+        }
+    }
+    
+    /** @param index Waveform index to show */
+    public void setWaveformIndex(int index)
+    {
+        liveSamples.setWaveformIndex(index);
+        historicSamples.setWaveformIndex(index);
+
+        synchronized (listeners)
+        {
+            for (IDataProviderListener listener : listeners)
+            {
+                // Notify listeners of the change of the waveform index
+                // mainly in order to update the position of snapped
+                // annotations. For more details, see the comment in
+                // Annotation.dataChanged(IDataProviderListener).
+                listener.dataChanged(this);
+            }
+        }
     }
 
     /** @return Maximum number of liveSamples samples in ring buffer */
@@ -231,7 +273,6 @@ public class PVSamples extends PlotSamples
      */
     synchronized public void addLiveSample(final PlotSample sample)
     {
-//        System.out.println("----------- live size: " + liveSamples.getSize() + " - " + historicSamples.getSize());
         liveSamples.add(sample);
         // History ends before the start of 'liveSamples' samples.
         // Adding a liveSamples sample might have moved the ring buffer,
@@ -295,24 +336,4 @@ public class PVSamples extends PlotSamples
         }
         historicSamples.clear();
     }
-    
-    /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
-    {
-        live.setWaveformIndex(index);
-        history.setWaveformIndex(index);
-
-        synchronized (listeners)
-        {
-            for (IDataProviderListener listener : listeners)
-            {
-                // Notify listeners of the change of the waveform index
-                // mainly in order to update the position of snapped
-                // annotations. For more details, see the comment in
-                // Annotation.dataChanged(IDataProviderListener).
-                listener.dataChanged(this);
-            }
-        }
-    }
-
 }
