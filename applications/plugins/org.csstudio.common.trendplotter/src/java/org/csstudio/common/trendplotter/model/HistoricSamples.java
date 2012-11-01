@@ -127,7 +127,9 @@ public class HistoricSamples extends PlotSamples
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize(sample_map.get(request_type));
-        have_new_samples = true;
+        synchronized (this) {
+            have_new_samples = true;
+        }
     }
 
     /** Update visible size */
