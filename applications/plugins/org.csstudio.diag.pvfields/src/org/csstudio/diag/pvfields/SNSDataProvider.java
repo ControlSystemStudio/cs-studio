@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
@@ -46,10 +48,10 @@ public class SNSDataProvider implements DataProvider
                 properties.put("Boot Time", result.getString(6));
     
                 // Get first field
-                fields.add(new PVField(result.getString(1), result.getString(2)));
+                fields.add(new PVField(name + "." + result.getString(1), result.getString(2)));
                 // Get remaining fields
                 while (result.next())
-                    fields.add(new PVField(result.getString(1), result.getString(2)));
+                    fields.add(new PVField(name + "." + result.getString(1), result.getString(2)));
             }
         }
         finally
@@ -57,6 +59,8 @@ public class SNSDataProvider implements DataProvider
             rdb.close();
         }
 
-        return new PVInfo(properties, fields);
+        final PVInfo info = new PVInfo(properties, fields);
+        Logger.getLogger(getClass().getName()).log(Level.FINE, "SNS Info for {0}: {1}", new Object[] { name, info });
+		return info;
     }
 }

@@ -1,5 +1,9 @@
 package org.csstudio.diag.pvfields;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.jca.JCADataSource;
 
@@ -16,6 +20,12 @@ public class TestSetup
     
     public static void setup() throws Exception
     {
+    	// Logging
+    	Logger logger = Logger.getLogger("");
+    	logger.setLevel(Level.FINE);
+    	for (Handler handler : logger.getHandlers())
+    		handler.setLevel(Level.ALL);
+    	
     	// Channel Access settings
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", ADDR_LIST);
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);

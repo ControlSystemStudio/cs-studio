@@ -13,7 +13,22 @@ public class PVField
         this.original_value = original_value;
     }
 
-    @Override
+    public String getName()
+    {
+    	return name;
+    }
+
+    public String getOriginalValue()
+    {
+    	return original_value;
+    }
+    
+    public String getCurrentValue()
+    {
+		return current_value;
+	}
+
+	@Override
     public String toString()
     {
         return String.format(
