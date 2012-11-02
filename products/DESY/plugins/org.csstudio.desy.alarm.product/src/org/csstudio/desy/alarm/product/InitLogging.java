@@ -69,7 +69,7 @@ public class InitLogging  {
     @Nonnull
     private static String getFilePath() throws IOException {
         // actually the log4j properties are found inside the org.apache.log4j fragment
-        // take care that there is exactly one fragment with log4j propertied defined in the launcher
+        // take care that there is exactly one fragment with log4j properties defined in the launcher
         Bundle bundle = Platform.getBundle("org.apache.log4j");
         Path path = new Path("log4j.properties");
         URL url = FileLocator.find(bundle, path, null);
