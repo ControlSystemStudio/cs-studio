@@ -99,6 +99,9 @@ public class PVModel
 		}
         listener.updateProperties(properties);
         listener.updateFields(fields);
+        // Start individual field updates
+        for (PVField field : fields)
+        	field.start(listener);
      }
 
     /** Add field only if it is unique, otherwise replace it
@@ -133,4 +136,10 @@ public class PVModel
     {
         return fields;
     }
+
+	public void stop()
+	{
+		for (PVField field : fields)
+			field.stop();
+	}
 }

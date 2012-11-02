@@ -55,7 +55,17 @@ public class PVField
 				if (ex != null)
 					current_value = "Error: " + ex.getMessage();
 				else
-					current_value = VTypeHelper.toString(pv.getValue());
+				{
+					try
+					{
+						current_value = VTypeHelper.toString(pv.getValue());
+					}
+					catch (Throwable err)
+					{
+						System.err.println("PV " + pv.getName());
+						err.printStackTrace();
+					}
+				}
 				listener.updateField(PVField.this);
 			}
 		};
@@ -71,7 +81,7 @@ public class PVField
 	public String toString()
 	{
 	    return String.format(
-	            "%s: original_value=%s, current_value=%s",
+	            "%s: original '%s', current '%s'",
 	            name, original_value, current_value);
 	}
 }

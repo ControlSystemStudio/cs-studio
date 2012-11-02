@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.csstudio.diag.pvfields.PVField;
 
-public interface PVModelListener
+public interface PVModelListener extends PVFieldListener
 {
     public void updateProperties(Map<String, String> properties);
 
