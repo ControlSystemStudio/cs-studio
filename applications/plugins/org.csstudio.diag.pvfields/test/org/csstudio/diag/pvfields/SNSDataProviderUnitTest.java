@@ -1,5 +1,6 @@
 package org.csstudio.diag.pvfields;
 
+import org.csstudio.diag.pvfields.model.SNSDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 

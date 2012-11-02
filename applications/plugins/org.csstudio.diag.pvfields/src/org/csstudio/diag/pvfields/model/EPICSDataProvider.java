@@ -1,4 +1,4 @@
-package org.csstudio.diag.pvfields;
+package org.csstudio.diag.pvfields.model;
 
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vType;
@@ -13,6 +13,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.diag.pvfields.DataProvider;
+import org.csstudio.diag.pvfields.PVField;
+import org.csstudio.diag.pvfields.PVInfo;
+import org.csstudio.diag.pvfields.Preferences;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;

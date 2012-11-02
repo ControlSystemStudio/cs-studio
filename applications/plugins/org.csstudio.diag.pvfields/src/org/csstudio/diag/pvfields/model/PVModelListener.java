@@ -1,7 +1,9 @@
-package org.csstudio.diag.pvfields;
+package org.csstudio.diag.pvfields.model;
 
 import java.util.List;
 import java.util.Map;
+
+import org.csstudio.diag.pvfields.PVField;
 
 public interface PVModelListener
 {

@@ -5,6 +5,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofMillis;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 
+import org.csstudio.diag.pvfields.model.PVFieldListener;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;

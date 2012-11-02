@@ -1,5 +1,6 @@
 package org.csstudio.diag.pvfields;
 
+
 public class Preferences
 {
 	/** Timeout for querying {@link DataProvider}s

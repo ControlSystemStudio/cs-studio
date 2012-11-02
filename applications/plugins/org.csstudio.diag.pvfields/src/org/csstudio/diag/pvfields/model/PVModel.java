@@ -1,4 +1,4 @@
-package org.csstudio.diag.pvfields;
+package org.csstudio.diag.pvfields.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import org.csstudio.diag.pvfields.Activator;
+import org.csstudio.diag.pvfields.DataProvider;
+import org.csstudio.diag.pvfields.PVField;
+import org.csstudio.diag.pvfields.PVInfo;
+import org.csstudio.diag.pvfields.Preferences;
 
 public class PVModel
 {

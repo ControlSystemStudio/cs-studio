@@ -1,4 +1,4 @@
-package org.csstudio.diag.pvfields;
+package org.csstudio.diag.pvfields.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.diag.pvfields.DataProvider;
+import org.csstudio.diag.pvfields.PVField;
+import org.csstudio.diag.pvfields.PVInfo;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Data provider for SNS

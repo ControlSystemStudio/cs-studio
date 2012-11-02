@@ -3,6 +3,7 @@ package org.csstudio.diag.pvfields;
 import java.util.List;
 import java.util.Map;
 
+
 /** Information about a PV
  * 
  *  <p>Properties are static name/value pairs.

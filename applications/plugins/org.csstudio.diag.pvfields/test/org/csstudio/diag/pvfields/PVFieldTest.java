@@ -2,6 +2,7 @@ package org.csstudio.diag.pvfields;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.csstudio.diag.pvfields.model.PVFieldListener;
 import org.junit.Before;
 import org.junit.Test;
 
