@@ -216,6 +216,7 @@ public class Messages extends NLS
     public static String SearchArchiveConfirmFmt;
     public static String SearchChannelFmt;
     public static String SearchPatternConfirmMessage;
+    public static String SearchPatternEmptyMessage;
     public static String Search_URL;
     public static String Search_URL_TT;
     public static String SearchPattern;

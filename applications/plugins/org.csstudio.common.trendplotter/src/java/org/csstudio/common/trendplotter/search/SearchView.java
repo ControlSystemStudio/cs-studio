@@ -9,8 +9,10 @@ package org.csstudio.common.trendplotter.search;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
@@ -18,12 +20,14 @@ import org.csstudio.common.trendplotter.archive.SearchJob;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ChannelInfo;
 import org.csstudio.common.trendplotter.ui.TableHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -49,14 +53,15 @@ import org.eclipse.ui.part.ViewPart;
 /** Eclipse View for searching the archive
  *  @author Kay Kasemir
  */
-public class SearchView extends ViewPart {
+public class SearchView extends ViewPart
+{
     /** View ID (same ID as original Data Browser) registered in plugin.xml */
-    public static String ID = "org.csstudio.trends.databrowser.archiveview.ArchiveView"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.trends.databrowser.archiveview.ArchiveView"; //$NON-NLS-1$
 
     /** Memento tags */
     private static final String TAG_REGEX = "regex", //$NON-NLS-1$
-            TAG_REPLACE = "replace", //$NON-NLS-1$
-            TAG_CHANNELS = "channels"; //$NON-NLS-1$
+                                TAG_REPLACE = "replace", //$NON-NLS-1$
+                                TAG_CHANNELS = "channels"; //$NON-NLS-1$
 
     /** Archive URL and list of archives */
     private ArchiveListGUI archive_gui;
@@ -70,34 +75,39 @@ public class SearchView extends ViewPart {
     private IMemento memento;
 
     @Override
-    public void init(final IViewSite site, final IMemento memento) throws PartInitException {
+    public void init(final IViewSite site, final IMemento memento) throws PartInitException
+    {
         super.init(site, memento);
         this.memento = memento;
     }
 
     @Override
-    public void saveState(final IMemento memento) {
+    public void saveState(final IMemento memento)
+    {
         memento.putBoolean(TAG_REGEX, regex.getSelection());
         memento.putBoolean(TAG_REPLACE, result_replace.getSelection());
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(final Composite parent)
+    {
         createGUI(parent);
         configureActions();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setFocus() {
+    public void setFocus()
+    {
         archive_gui.setFocus();
     }
 
     /** Create GUI elements
      *  @param parent Parent widget
      */
-    private void createGUI(final Composite parent) {
+    private void createGUI(final Composite parent)
+    {
         // Upper Sash: Server URL, archives on server
         // Lower Sash: PV search
         parent.setLayout(new FillLayout());
@@ -113,17 +123,21 @@ public class SearchView extends ViewPart {
     /** Create the 'upper' sash for selecting a server and archives
      *  @param sashform
      */
-    private void createServerSash(final SashForm sashform) {
+    private void createServerSash(final SashForm sashform)
+    {
         final Composite parent = new Composite(sashform, SWT.BORDER);
-        archive_gui = new ArchiveListGUI(parent) {
+        archive_gui = new ArchiveListGUI(parent)
+        {
             @Override
-            protected void handleArchiveUpdate() {
+            protected void handleArchiveUpdate()
+            {
                 pattern.setEnabled(true);
                 search.setEnabled(true);
             }
 
             @Override
-            protected void handleServerError(final String url, final Exception ex) {
+            protected void handleServerError(final String url, final Exception ex)
+            {
                 SearchView.this.handleServerError(url, ex);
             }
         };
@@ -132,13 +146,14 @@ public class SearchView extends ViewPart {
     /** Create the 'lower' sash for searching archives
      *  @param sashform
      */
-    private void createSearchSash(final SashForm sashform) {
+    private void createSearchSash(final SashForm sashform)
+    {
         final Composite parent = new Composite(sashform, SWT.BORDER);
         final GridLayout layout = new GridLayout(3, false);
         parent.setLayout(layout);
 
         // Pattern:  ___pattern___ [x] [search]
-        final Label l = new Label(parent, 0);
+        Label l = new Label(parent, 0);
         l.setText(Messages.SearchPattern);
         l.setLayoutData(new GridData());
 
@@ -152,10 +167,13 @@ public class SearchView extends ViewPart {
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
 
-        final ComboHistoryHelper pattern_history = new ComboHistoryHelper(Activator.getDefault()
-                .getDialogSettings(), TAG_CHANNELS, pattern) {
+        final ComboHistoryHelper pattern_history =
+            new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+                    TAG_CHANNELS, pattern)
+        {
             @Override
-            public void newSelection(final String entered_pattern) {
+            public void newSelection(final String entered_pattern)
+            {
                 searchForChannels();
             }
         };
@@ -188,36 +206,46 @@ public class SearchView extends ViewPart {
         final Composite table_parent = new Composite(parent, 0);
         final TableColumnLayout table_layout = new TableColumnLayout();
         table_parent.setLayout(table_layout);
-        table_parent.setLayoutData(new GridData(SWT.FILL,
-                                                SWT.FILL,
-                                                true,
-                                                true,
-                                                layout.numColumns,
-                                                1));
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        channel_table = new TableViewer(table_parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.BORDER | SWT.FULL_SELECTION);
+        channel_table = new TableViewer(table_parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         channel_table.setContentProvider(new ArrayContentProvider());
-        TableViewerColumn col = TableHelper.createColumn(table_layout,
-                                                         channel_table,
-                                                         Messages.PVName,
-                                                         200,
-                                                         100);
-        col.setLabelProvider(new CellLabelProvider() {
+        TableViewerColumn col = TableHelper.createColumn(table_layout, channel_table, Messages.PVName, 200, 100);
+        col.setLabelProvider(new CellLabelProvider()
+        {
             @Override
-            public void update(final ViewerCell cell) {
+            public void update(final ViewerCell cell)
+            {
                 final ChannelInfo channel = (ChannelInfo) cell.getElement();
                 cell.setText(channel.getProcessVariable().getName());
             }
         });
-        col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
-        col.setLabelProvider(new CellLabelProvider() {
+        new TableColumnSortHelper<ChannelInfo>(channel_table, col)
+        {
             @Override
-            public void update(final ViewerCell cell) {
+            public int compare(final ChannelInfo item1, final ChannelInfo item2)
+            {
+                return item1.getProcessVariable().getName().compareTo(item2.getProcessVariable().getName());
+            }
+        };
+        col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
                 final ChannelInfo channel = (ChannelInfo) cell.getElement();
                 cell.setText(channel.getArchiveDataSource().getName());
             }
         });
+        new TableColumnSortHelper<ChannelInfo>(channel_table, col)
+        {
+            @Override
+            public int compare(final ChannelInfo item1, final ChannelInfo item2)
+            {
+                return item1.getArchiveDataSource().getName().compareTo(item2.getArchiveDataSource().getName());
+            }
+        };
         final Table table = channel_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -228,32 +256,48 @@ public class SearchView extends ViewPart {
         // Load previously entered patterns
         pattern_history.loadSettings();
         // Restore settings from memento
-        if (memento != null) {
-            if (memento.getBoolean(TAG_REGEX) != null) {
+        if (memento != null)
+        {
+            if (memento.getBoolean(TAG_REGEX) != null)
                 regex.setSelection(memento.getBoolean(TAG_REGEX));
-            }
-            if (memento.getBoolean(TAG_REPLACE) != null) {
+            if (memento.getBoolean(TAG_REPLACE) != null)
+            {
                 final boolean replace = memento.getBoolean(TAG_REPLACE);
-                result_append.setSelection(!replace);
+                result_append.setSelection(! replace);
                 result_replace.setSelection(replace);
             }
         }
     }
 
     /** React to selections, button presses, ... */
-    private void configureActions() {
+    private void configureActions()
+    {
         // Start a channel search
-        search.addSelectionListener(new SelectionAdapter() {
+        search.addSelectionListener(new SelectionAdapter()
+        {
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e)
+            {
                 searchForChannels();
             }
         });
 
         // Channel Table: Allow dragging of PVs with archive
         final Table table = channel_table.getTable();
-//        TODO jhatje: implement new datatype
-//        new ProcessVariableWithArchiveDragSource(table, channel_table);
+        new ControlSystemDragSource(table)
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection selection = (IStructuredSelection) channel_table.getSelection();
+                // To allow transfer of array, the data must be
+                // of the actual array type, not Object[]
+                final Object[] objs = selection.toArray();
+                final ChannelInfo[] channels = Arrays.copyOf(objs, objs.length, ChannelInfo[].class);
+                return channels;
+                // return selection.getFirstElement();
+            }
+        };
 
         // Add context menu for object contributions
         final MenuManager menu = new MenuManager();
@@ -266,23 +310,22 @@ public class SearchView extends ViewPart {
      *  @param url Server URL
      *  @param ex Error
      */
-    private void handleServerError(final String url, final Exception ex) {
-        if (pattern.isDisposed()) {
+    private void handleServerError(final String url, final Exception ex)
+    {
+        if (pattern.isDisposed())
             return;
-        }
-        pattern.getDisplay().asyncExec(new Runnable() {
+        pattern.getDisplay().asyncExec(new Runnable()
+        {
             @Override
-            public void run() {
-                if (pattern.isDisposed()) {
+            public void run()
+            {
+                if (pattern.isDisposed())
                     return;
-                }
                 pattern.setEnabled(false);
                 search.setEnabled(false);
                 MessageDialog.openError(pattern.getShell(),
-                                        Messages.Error,
-                                        NLS.bind(Messages.ArchiveServerErrorFmt,
-                                                 url,
-                                                 ex.getMessage()));
+                    Messages.Error,
+                    NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
             }
         });
     }
@@ -291,31 +334,37 @@ public class SearchView extends ViewPart {
      *  <code>channel_table</code> with the result
      *  @see #channel_table
      */
-    private void searchForChannels() {
+    private void searchForChannels()
+    {
         final ArchiveDataSource archives[] = archive_gui.getSelectedArchives();
-        if (archives == null) {
+        if (archives == null)
             return;
-        }
 
         final String pattern_txt = pattern.getText().trim();
 
         // Warn when searching ALL channels
-        if (pattern_txt.length() <= 0
-                && !MessageDialog.openConfirm(pattern.getShell(),
-                                              Messages.Search,
-                                              Messages.SearchPatternConfirmMessage)) {
+        if (pattern_txt.length() <= 0)
+        {
+            MessageDialog.openInformation(pattern.getShell(),
+                    Messages.Search,
+                    Messages.SearchPatternEmptyMessage);
+            // Aborted, move focus to search pattern
+            pattern.setFocus();
             return;
         }
 
         final ArchiveReader reader = archive_gui.getArchiveReader();
-        new SearchJob(reader, archives, pattern_txt, !regex.getSelection()) {
+        new SearchJob(reader, archives, pattern_txt, !regex.getSelection())
+        {
             @Override
-            protected void receivedChannelInfos(final ChannelInfo channels[]) {
+            protected void receivedChannelInfos(final ChannelInfo channels[])
+            {
                 displayChannelInfos(channels);
             }
 
             @Override
-            protected void archiveServerError(final String url, final Exception ex) {
+            protected void archiveServerError(final String url, final Exception ex)
+            {
                 handleServerError(url, ex);
             }
         }.schedule();
@@ -324,32 +373,31 @@ public class SearchView extends ViewPart {
     /** Update the <code>channel_table</code> with received channel list
      *  @param channels Channel infos to add/replace
      */
-    private void displayChannelInfos(final ChannelInfo[] channels) {
+    private void displayChannelInfos(final ChannelInfo[] channels)
+    {
         final Table table = channel_table.getTable();
-        if (table.isDisposed()) {
+        if (table.isDisposed())
             return;
-        }
-        table.getDisplay().asyncExec(new Runnable() {
+        table.getDisplay().asyncExec(new Runnable()
+        {
             @Override
-            public void run() {
-                if (result_replace.isDisposed()) {
+            public void run()
+            {
+                if (result_replace.isDisposed())
                     return;
-                }
-                if (result_replace.getSelection()) {
+                if (result_replace.getSelection())
                     channel_table.setInput(channels);
-                } else { // Combine new channels with existing list
+                else
+                {   // Combine new channels with existing list
                     final ChannelInfo old[] = (ChannelInfo[]) channel_table.getInput();
                     final ArrayList<ChannelInfo> full = new ArrayList<ChannelInfo>();
-                    for (final ChannelInfo channel : old) {
+                    for (ChannelInfo channel : old)
                         full.add(channel);
-                    }
                     // Add new channels but avoid duplicates
-                    for (final ChannelInfo channel : channels) {
-                        if (!full.contains(channel)) {
+                    for (ChannelInfo channel : channels)
+                        if (! full.contains(channel))
                             full.add(channel);
-                        }
-                    }
-                    channel_table.setInput(full.toArray(new ChannelInfo[full.size()]));
+                    channel_table.setInput((ChannelInfo[]) full.toArray(new ChannelInfo[full.size()]));
                 }
             }
         });
