@@ -43,6 +43,7 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
 org.csstudio.display.multichannelviewer
 org.csstudio.display.waterfall
+org.csstudio.dummyauthorization
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.graphene
