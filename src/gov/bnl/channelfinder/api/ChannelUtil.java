@@ -1,8 +1,8 @@
-/*
- * Copyright 2010 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-2012 Brookhaven National Laboratory
+ * Copyright (C) 2010-2012 Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
  * All rights reserved. Use is subject to license terms.
  */
-
 package gov.bnl.channelfinder.api;
 
 import gov.bnl.channelfinder.api.Channel.Builder;
@@ -37,7 +37,7 @@ public class ChannelUtil {
 	 * Return a list of tag names associated with this channel
 	 * 
 	 * @param channel
-	 * @return
+	 * @return Collection of names of tags
 	 */
 	public static Collection<String> getTagNames(Channel channel) {
 		Collection<String> tagNames = new HashSet<String>();
@@ -66,7 +66,7 @@ public class ChannelUtil {
 	 * Return a list of property names associated with this channel
 	 * 
 	 * @param channel
-	 * @return
+	 * @return Collection of names of properties
 	 */
 	public static Collection<String> getPropertyNames(Channel channel) {
 		Collection<String> propertyNames = new HashSet<String>();
@@ -85,7 +85,7 @@ public class ChannelUtil {
 	 * 
 	 * @param channel
 	 * @param tagName
-	 * @return
+	 * @return Tag
 	 */
 	@Deprecated
 	public static Tag getTag(Channel channel, String tagName) {
@@ -121,7 +121,7 @@ public class ChannelUtil {
 	 * 
 	 * @param channel
 	 * @param propertyName
-	 * @return
+	 * @return Property
 	 */
 	@Deprecated
 	public static Property getProperty(Channel channel, String propertyName) {
@@ -203,7 +203,7 @@ public class ChannelUtil {
 	 *            - the input list of channels
 	 * @param propNames
 	 *            - the list of properties required on all channels
-	 * @return
+	 * @return Collection of Channels which contains all properties with propNames 
 	 */
 	public static Collection<Channel> filterbyProperties(
 			Collection<Channel> channels, Collection<String> propNames) {
@@ -226,7 +226,7 @@ public class ChannelUtil {
 	 *            - the input list of channels
 	 * @param tagNames
 	 *            - the list of tags required on all channels
-	 * @return
+	 * @return Collections of Channels which have all the tags within tagNames
 	 */
 	public static Collection<Channel> filterbyTags(
 			Collection<Channel> channels, Collection<String> tagNames) {
@@ -251,7 +251,7 @@ public class ChannelUtil {
 	 *            - the list of properties required on all channels
 	 * @param tagNames
 	 *            - the list of tags required on all channels
-	 * @return
+	 * @return Collection of channels with all the properties and tags within propNames and tagNames
 	 */
 	public static Collection<Channel> filterbyElements(
 			Collection<Channel> channels, Collection<String> propNames,
