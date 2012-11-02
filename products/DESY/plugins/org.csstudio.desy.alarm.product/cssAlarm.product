@@ -76,22 +76,17 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.lucene.core"/>
       <plugin id="org.apache.tools.ant"/>
       <plugin id="org.apache.tools.ant.junit"/>
-      <plugin id="org.csstudio.alarm.dal2jms.log4j" fragment="true"/>
       <plugin id="org.csstudio.alarm.dbaccess"/>
       <plugin id="org.csstudio.alarm.intro"/>
-      <plugin id="org.csstudio.alarm.jms2ora.log4j" fragment="true"/>
       <plugin id="org.csstudio.alarm.service"/>
       <plugin id="org.csstudio.alarm.service.test" fragment="true"/>
       <plugin id="org.csstudio.alarm.table"/>
       <plugin id="org.csstudio.alarm.treeview"/>
       <plugin id="org.csstudio.alarm.treeview.test" fragment="true"/>
-      <plugin id="org.csstudio.ams.application.deliverysystem.log4j" fragment="true"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.test" fragment="true"/>
       <plugin id="org.csstudio.apputil.ui"/>
-      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
-      <plugin id="org.csstudio.archive.sdds.server.log4j" fragment="true"/>
       <plugin id="org.csstudio.auth"/>
       <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.csdata"/>
@@ -102,10 +97,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.desy.alarm.product"/>
-      <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.desy.css.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.desy.startuphelper"/>
-      <plugin id="org.csstudio.diag.interconnectionserver.log4j" fragment="true"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.common.test" fragment="true"/>
