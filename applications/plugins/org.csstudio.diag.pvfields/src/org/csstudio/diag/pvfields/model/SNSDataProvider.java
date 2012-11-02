@@ -45,10 +45,10 @@ public class SNSDataProvider implements DataProvider
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {
-                properties.put("Record Type", result.getString(3));
-                properties.put("IOC Name", result.getString(4));
-                properties.put("File Name", result.getString(5));
-                properties.put("Boot Time", result.getString(6));
+                properties.put("RDB: Record Type", result.getString(3));
+                properties.put("RDB: IOC Name", result.getString(4));
+                properties.put("RDB: File Name", result.getString(5));
+                properties.put("RDB: Last Boot Time", result.getString(6));
     
                 // Get first field
                 fields.add(new PVField(name + "." + result.getString(1), result.getString(2)));

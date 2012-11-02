@@ -51,7 +51,7 @@ public class EPICSDataProvider implements DataProvider
                 {
                     final Map<String, Object> properties = channel.getProperties();
                     for (String prop : properties.keySet())
-                        properties.put(prop, properties.get(prop).toString());
+                    	EPICSDataProvider.this.properties.put("PV: " + prop, properties.get(prop).toString());
                 }
                 done.countDown();
             }

@@ -19,23 +19,16 @@ import org.csstudio.diag.pvfields.Preferences;
 
 public class PVModel
 {
+	final private String name;
     final private PVModelListener listener;
-    private String name;
     private Map<String, String> properties;
     private List<PVField> fields;
     
-    public PVModel(PVModelListener listener)
+    public PVModel(final String name, final PVModelListener listener)
     {
+    	this.name = name;
         this.listener = listener;
-    }
 
-    public void setPVName(final String name) throws Exception
-    {
-        synchronized (this)
-        {
-            this.name = name;
-        }
-        
         // Perform the lookup in a thread
         final Runnable lookup = new Runnable()
         {

@@ -53,8 +53,7 @@ public class PVModelUnitTest implements PVModelListener
 	@Test
     public void testPVModel() throws Exception
     {
-    	final PVModel model = new PVModel(this);
-        model.setPVName(TestSetup.CHANNEL_NAME);
+    	final PVModel model = new PVModel(TestSetup.CHANNEL_NAME, this);
         updates.await();
         
         assertThat(TestSetup.CHANNEL_NAME, equalTo(model.getPVName()));
