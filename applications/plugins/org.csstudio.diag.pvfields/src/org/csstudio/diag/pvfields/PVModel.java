@@ -20,35 +20,12 @@ public class PVModel
         {
             this.name = name;
         }
-
-        // TODO Check if a site-specific data provider was registered
-        final DataProvider data_provider
-            //= new DefaultDataProvider();
-            = new SNSDataProvider();
         
-        data_provider.run(name, new PVModelListener()
-        {
-            @Override
-            public void updateProperties(Map<String, String> properties)
-            {
-                synchronized (PVModel.this)
-                {
-                    PVModel.this.properties = properties;
-                }
-                listener.updateProperties(properties);
-            }
-
-            @Override
-            public void updateFields(PVField[] fields)
-            {
-                synchronized (PVModel.this)
-                {
-                    PVModel.this.fields = fields;
-                }
-                listener.updateFields(fields);
-            }
-        });
-    }
+        // Locate all DataProviders
+        // Execute them
+        // Merge their results
+        // Notify listeners
+     }
 
     public synchronized String getPVName()
     {

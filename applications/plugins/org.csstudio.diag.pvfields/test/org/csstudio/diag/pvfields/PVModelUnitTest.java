@@ -47,7 +47,9 @@ public class PVModelUnitTest implements PVModelListener
         
         PVModel model = new PVModel(this);
         
-        model.setPVName("DTL_LLRF:IOC1:Load"); // TestSetup.CHANNEL_NAME);
+        model.setPVName(
+        		//"DTL_LLRF:IOC1:Load");
+        		TestSetup.CHANNEL_NAME);
         updates.await();
         
         assertThat(TestSetup.CHANNEL_NAME, equalTo(model.getPVName()));

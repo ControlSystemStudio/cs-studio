@@ -9,10 +9,18 @@ import java.util.Map;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
+/** Data provider for SNS
+ * 
+ *  <p>Fetches channel information from RDB
+ *  (Oracle, similar to older IRMIS)
+ *  
+ *  @author Kay Kasemir
+ *  @author Dave Purcell - Original SQL code
+ */
 public class SNSDataProvider implements DataProvider
 {
     @Override
-    public void run(final String name, final PVModelListener listener) throws Exception
+    public PVInfo lookup(final String name) throws Exception
     {
         final String url = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
         final String user = "sns_reports";
@@ -49,7 +57,6 @@ public class SNSDataProvider implements DataProvider
             rdb.close();
         }
 
-        listener.updateProperties(properties);
-        listener.updateFields(fields.toArray(new PVField[fields.size()]));
+        return new PVInfo(properties, fields);
     }
 }
