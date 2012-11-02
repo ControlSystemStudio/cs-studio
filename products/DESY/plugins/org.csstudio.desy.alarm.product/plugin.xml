@@ -55,6 +55,9 @@
    </extension>
    <extension
          point="org.csstudio.startup.module">
+      <startupParameters
+            class="org.csstudio.desy.alarm.product.StartupLogging">
+      </startupParameters>
       <services
             class="org.csstudio.desy.startuphelper.startupservice.DesyServicesStartup">
       </services>
