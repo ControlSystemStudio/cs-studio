@@ -3,6 +3,7 @@ package org.csstudio.diag.pvfields;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofSeconds;
+import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ import org.epics.pvmanager.data.VType;
  */
 public class EPICSDataProvider implements DataProvider
 {
-    final public static int TIMEOUT_SECS = 10;
     final private CountDownLatch done = new CountDownLatch(1);
     final private Map<String, String> properties = new HashMap<String, String>();
     private PVReader<VType> pv;
@@ -52,7 +52,10 @@ public class EPICSDataProvider implements DataProvider
                 done.countDown();
             }
         };
-        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofSeconds(TIMEOUT_SECS)).listeners(pv_listener).maxRate(ofSeconds(0.5));
+        
+        
+        // TODO PVManager will default to SWT thread, but that is not necessary for this
+        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).listeners(pv_listener).maxRate(ofSeconds(0.5));
         // Wait for value from reader
         done.await();
         pv.close();

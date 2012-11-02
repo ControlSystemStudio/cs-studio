@@ -25,7 +25,10 @@ public class TestSetup
     	logger.setLevel(Level.FINE);
     	for (Handler handler : logger.getHandlers())
     		handler.setLevel(Level.ALL);
-    	
+
+    	Logger.getLogger("com.cosylab").setLevel(Level.SEVERE);
+    	Logger.getLogger("org.csstudio.platform").setLevel(Level.SEVERE);
+    	    	
     	// Channel Access settings
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", ADDR_LIST);
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);
