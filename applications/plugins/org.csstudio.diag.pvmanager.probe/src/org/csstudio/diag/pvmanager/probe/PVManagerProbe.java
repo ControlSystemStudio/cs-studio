@@ -44,6 +44,7 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
@@ -520,23 +521,22 @@ public class PVManagerProbe extends ViewPart {
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.readAndWrite(channel(pvName.getName()))
 				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
+				.readListener(new PVReaderListener<Object>() {
+					@Override
+					public void pvChanged(PVReaderEvent<Object> event) {
+						Object obj = pv.getValue();
+						setLastError(pv.lastException());
+						setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
+						setTime(ValueUtil.timeOf(obj));
+						setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+						if (pv.isConnected()) {
+							setStatus(Messages.Probe_statusConnected);
+						} else {
+							setStatus(Messages.Probe_statusSearching);
+						}
+					}
+				})
 				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				Object obj = pv.getValue();
-				setLastError(pv.lastException());
-				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
-				setTime(ValueUtil.timeOf(obj));
-				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
-				if (pv.isConnected()) {
-					setStatus(Messages.Probe_statusConnected);
-				} else {
-					setStatus(Messages.Probe_statusSearching);
-				}
-			}
-		});
 		
 		pv.addPVWriterListener(new PVWriterListener() {
 			
