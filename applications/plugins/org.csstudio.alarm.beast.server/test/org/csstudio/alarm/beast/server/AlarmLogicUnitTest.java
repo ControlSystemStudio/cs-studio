@@ -11,19 +11,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
-/** JUnit plug-in test of AlarmLogic
+/** JUnit test of AlarmLogic
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmLogicHeadlessTest
+public class AlarmLogicUnitTest
 {
     private static final String OK = "OK";
 
@@ -89,7 +89,7 @@ public class AlarmLogicHeadlessTest
         @Override
         public void globalStateChanged(final AlarmState alarm)
         {
-        	System.out.println(TimestampFactory.now() + ": Global alarm state: " + alarm);
+        	System.out.println(new Date() + ": Global alarm state: " + alarm);
         	global_alarm.set(alarm);
         	global_updates.incrementAndGet();
         }
@@ -141,7 +141,7 @@ public class AlarmLogicHeadlessTest
         public void computeNewState(final String value, final SeverityLevel sevr,
                 final String msg)
         {
-        	logic.computeNewState(new AlarmState(sevr, msg, value, TimestampFactory.now()));
+        	logic.computeNewState(new AlarmState(sevr, msg, value, Timestamp.now()));
         }
 
 		public AlarmState getAlarmState()
@@ -465,7 +465,7 @@ public class AlarmLogicHeadlessTest
         assertEquals("b", logic.getAlarmState().getValue());
 
         // Neither has MAJOR
-        final ITimestamp now = TimestampFactory.now();
+        final Timestamp now = Timestamp.now();
         logic.computeNewState(new AlarmState(SeverityLevel.MAJOR, "too high", "d", now));
         logic.check(true, false, SeverityLevel.MAJOR, "too high", SeverityLevel.OK, OK);
         Thread.sleep(delay * 100);
@@ -715,7 +715,7 @@ public class AlarmLogicHeadlessTest
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
     }
 
-    @Test
+    @Test(timeout=60000)
     public void testGlobalNotifications() throws Exception
     {
         System.out.println("* testGlobalNotifications");
@@ -855,7 +855,7 @@ public class AlarmLogicHeadlessTest
         // Initial, Minor alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        final ITimestamp initial_alarm_time = logic.getAlarmState().getTime();
+        final Timestamp initial_alarm_time = logic.getAlarmState().getTime();
 
         // Within the 'global' delay, escalates to Major
         Thread.sleep(global_delay * 500);
@@ -872,13 +872,13 @@ public class AlarmLogicHeadlessTest
         // After the 'global' delay from the _initial_ (!) alarm, there should be a global update
         for (int i=0; logic.getGlobalUpdates() < 1  &&  i < global_delay * 10; ++i)
             Thread.sleep(100);
-        final ITimestamp now = TimestampFactory.now();
+        final Timestamp now = Timestamp.now();
         logic.checkGlobalUpdates(1);
 
         System.out.println("Initial alarm      : " + initial_alarm_time);
         System.out.println("Global notification: " + now);
         // Should use global_delay from the initial alarm...
-        assertEquals(global_delay, now.toDouble() - initial_alarm_time.toDouble(), 0.2);
+        assertEquals(global_delay, now.durationBetween(initial_alarm_time).toSeconds(), 0.2);
 
         // .. but reflect the most severe alarm in the notification.
         // Not really checking what was in the notification,

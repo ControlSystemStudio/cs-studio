@@ -7,15 +7,19 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
-import static org.junit.Assert.*;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link GlobalAlarm}
@@ -33,7 +37,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         configurations.clear();
         final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations,
                 "/Root/Area/System/TheAlarm",
-                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo", Timestamp.now());
         final AlarmTreeRoot root = alarm.getClientRoot();
         root.dump(System.out);
         // New root should be in list of configurations
@@ -43,7 +47,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         // Create another alarm with same path
         final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations,
                 "/Root/Area/System/OtherAlarm",
-                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo", Timestamp.now());
         root.dump(System.out);
         assertSame(root, alarm2.getRoot());
         assertSame(alarm.getParent(), alarm2.getParent());
@@ -51,7 +55,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         // Update existing alarm
         final GlobalAlarm alarm_copy = GlobalAlarm.fromPath(configurations,
                 "/Root/Area/System/TheAlarm",
-                SeverityLevel.MAJOR, "Demo2", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo2", Timestamp.now());
         // Locates existing alarm, changes its alarm message
         assertSame(alarm, alarm_copy);
         assertEquals("Demo2", alarm.getMessage());
@@ -84,7 +88,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
             return;
         }
         final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations, full_path,
-                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo", Timestamp.now());
         // It lacks ID, guidance etc.
         assertEquals(-1, alarm.getID());
         assertEquals(0, alarm.getGuidance().length);
@@ -144,9 +148,9 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         }
         // Start with 2 'global' alarms
         final GlobalAlarm alarm1 = GlobalAlarm.fromPath(configurations, full_path,
-                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo", Timestamp.now());
         final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations, full_path2,
-                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+                SeverityLevel.MAJOR, "Demo", Timestamp.now());
         // Same root, no detail from RDB, yet
         final AlarmTreeRoot root = alarm1.getClientRoot();
         assertNotSame(alarm1, alarm2);

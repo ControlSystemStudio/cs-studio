@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit Test of AlarmTreeItem
@@ -99,7 +99,7 @@ public class AlarmTreeItemUnitTest
         assertEquals(SeverityLevel.OK, ccl.getSeverity());
         pv.setAlarmState(SeverityLevel.MINOR, "Nuissance",
                          SeverityLevel.MAJOR, "Problem",
-                         "Value", TimestampFactory.now());
+                         "Value", Timestamp.now());
         assertEquals(SeverityLevel.MINOR, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR, ccl.getSeverity());
         assertEquals("Problem", ccl.getMessage());
@@ -108,7 +108,7 @@ public class AlarmTreeItemUnitTest
         // Check propagation of alarm that clears
         pv.setAlarmState(SeverityLevel.OK, "Nuissance",
                 SeverityLevel.MAJOR_ACK, "Problem2",
-                "Value2", TimestampFactory.now());
+                "Value2", Timestamp.now());
         assertEquals(SeverityLevel.OK, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR_ACK, ccl.getSeverity());
         assertEquals("Problem2", ccl.getMessage());

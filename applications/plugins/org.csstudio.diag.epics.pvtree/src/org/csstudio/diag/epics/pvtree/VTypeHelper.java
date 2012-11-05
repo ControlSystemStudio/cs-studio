@@ -64,8 +64,7 @@ public class VTypeHelper
         else if (value instanceof VEnum)
         {
             final VEnum item = (VEnum) value;
-            buf.append(item.getValue()).append(" [").append(item.getIndex()).append("]");
-
+            buf.append(item.getValue()).append(" (").append(item.getIndex()).append(")");
         }
         else
             buf.append(value.getClass().getName());
@@ -78,8 +77,8 @@ public class VTypeHelper
             return;
         if (alarm.getAlarmSeverity() == AlarmSeverity.NONE)
             return;
-        buf.append("\t").append(alarm.getAlarmSeverity());
-        buf.append("/").append(alarm.getAlarmStatus());
+        buf.append(" [").append(alarm.getAlarmSeverity());
+        buf.append(",").append(alarm.getAlarmName()).append("]");
     }
 
     public static String formatValue(final VType value)
@@ -93,7 +92,18 @@ public class VTypeHelper
     {
         final StringBuilder buf = new StringBuilder();
         appendValue(buf, value);
-        appendAlarm(buf, value);
+        // If there is no value, suppress the alarm.
+        // TODO Check note in PVTreeItem#updateLinks():
+        // If a link is empty, the record could still be in alarm.
+        // So in here we must NOT return "'' [MINOR/Whatever]" for
+        // an empty value ('') with alarm, because updateLinks()
+        // would consider that overall a non-empty string,
+        // and the tree item would appear.
+        // So in here we suppress the alarm for empty values,
+        // but in other cases the empty value could well be
+        // a valid alarm to display...
+        if (buf.length() > 0)
+        	appendAlarm(buf, value);
         return buf.toString();
     }
 }

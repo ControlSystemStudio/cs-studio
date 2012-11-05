@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 /** Ring buffer of AlarmState entries with time stamp that
  *  can check for N errors within some time
@@ -47,7 +47,7 @@ public class AlarmStateHistory
     {
         history.add(state);
     }
-
+    
     /** Check if we received 'count' alarms within the given number of seconds
      *  @param seconds Time range to check
      *  @return <code>true</code> if there were 'count' alarms received and
@@ -58,9 +58,9 @@ public class AlarmStateHistory
         final int capacity = history.getCapacity();
         if (history.size() < capacity)
             return false;
-        final ITimestamp oldest = history.get(0).getTime();
-        final ITimestamp newest = history.get(capacity-1).getTime();
-        final double span = newest.toDouble() - oldest.toDouble();
+        final Timestamp oldest = history.get(0).getTime();
+        final Timestamp newest = history.get(capacity-1).getTime();
+        final double span = newest.durationFrom(oldest).toSeconds();
         return span <= seconds;
     }
 
@@ -81,9 +81,9 @@ public class AlarmStateHistory
             span = 0.0;
         else
         {
-            final ITimestamp oldest = history.get(0).getTime();
-            final ITimestamp newest = history.get(capacity-1).getTime();
-            span = newest.toDouble() - oldest.toDouble();
+            final Timestamp oldest = history.get(0).getTime();
+            final Timestamp newest = history.get(capacity-1).getTime();
+            span = newest.durationFrom(oldest).toSeconds();
         }
         return String.format("AlarmStateHistory: %d/%d entries, span %.1f secs", //$NON-NLS-1$
                              count, capacity, span);

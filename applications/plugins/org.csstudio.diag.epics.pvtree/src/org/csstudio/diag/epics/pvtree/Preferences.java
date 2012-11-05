@@ -19,7 +19,16 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+    public static final String UPDATE_PERIOD = "update_period";
     public static final String FIELDS = "fields";
+
+    /** @return Max update period in seconds */
+    public static double getUpdatePeriod()
+    {
+        final IPreferencesService preferences = Platform.getPreferencesService();
+        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.1, null);
+    }
+
 
     /** @return Field info for all record types
      *  @throws Exception on error in the preference setting

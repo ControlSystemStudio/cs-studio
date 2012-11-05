@@ -125,7 +125,7 @@ public class PVTreeView extends ViewPart
             return;
         }
         viewer.setContentProvider(model);
-        viewer.setLabelProvider(new PVTreeLabelProvider());
+        viewer.setLabelProvider(new PVTreeLabelProvider(tree));
         viewer.setInput(getViewSite());
 
         // Support drop

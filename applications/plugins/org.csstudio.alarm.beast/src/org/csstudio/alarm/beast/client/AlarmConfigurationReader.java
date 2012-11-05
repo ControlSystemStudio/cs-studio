@@ -19,8 +19,7 @@ import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Helper for reading alarm configuration from RDB
@@ -255,7 +254,7 @@ public class AlarmConfigurationReader
                 item = pv;
             }
             if (config_time != null)
-                item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
+                item.setConfigTime(TimestampHelper.toEPICSTime(config_time));
         }
         finally
         {
@@ -375,7 +374,7 @@ public class AlarmConfigurationReader
         final Timestamp sql_time = result.getTimestamp(16);
         if (!result.wasNull())
         {
-            final ITimestamp timestamp = TimestampFactory.fromSQLTimestamp(sql_time);
+            final org.epics.util.time.Timestamp timestamp = TimestampHelper.toEPICSTime(sql_time);
             pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
         }
     }

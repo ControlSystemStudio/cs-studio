@@ -25,8 +25,8 @@ import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SQL;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.apputil.time.DelayCheck;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -300,7 +300,7 @@ public class AlarmConfiguration
                 item = pv;
             }
             if (config_time != null)
-                item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
+                item.setConfigTime(TimestampHelper.toEPICSTime(config_time));
             config_reader.readGuidanceDisplaysCommands(item);
         }
         result.close();
@@ -542,7 +542,7 @@ public class AlarmConfiguration
             update_item_config_time.setInt(2, item.getID());
             update_item_config_time.executeUpdate();
             connection.commit();
-            item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
+            item.setConfigTime(TimestampHelper.toEPICSTime(config_time));
         }
         catch (SQLException ex)
         {
