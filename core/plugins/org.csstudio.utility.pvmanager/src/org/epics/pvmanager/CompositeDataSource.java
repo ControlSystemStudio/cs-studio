@@ -190,24 +190,23 @@ public class CompositeDataSource extends DataSource {
     @Override
     public void prepareWrite(WriteBuffer writeBuffer, ExceptionHandler exceptionHandler) {
         // Chop the buffer along different data sources
-        Map<String, Map<String, WriteCache<?>>> buffers = new HashMap<String, Map<String, WriteCache<?>>>();
-        for (Map.Entry<String, WriteCache<?>> en : writeBuffer.getWriteCaches().entrySet()) {
-            String channelName = nameOf(en.getKey());
-            String dataSource = sourceOf(en.getKey());
-            WriteCache<?> cache = en.getValue();
-            Map<String, WriteCache<?>> buffer = buffers.get(dataSource);
+        Map<String, Collection<ChannelWriteBuffer>> buffers = new HashMap<String, Collection<ChannelWriteBuffer>>();
+        for (ChannelWriteBuffer channelWriteBuffer : writeBuffer.getChannelWriteBuffers()) {
+            String channelName = nameOf(channelWriteBuffer.getChannelName());
+            String dataSource = sourceOf(channelWriteBuffer.getChannelName());
+            Collection<ChannelWriteBuffer> buffer = buffers.get(dataSource);
             if (buffer == null) {
-                buffer = new HashMap<String, WriteCache<?>>();
+                buffer = new ArrayList<ChannelWriteBuffer>();
                 buffers.put(dataSource, buffer);
             }
-            buffer.put(channelName, cache);
+            buffer.add(channelWriteBuffer);
         }
         
         Map<String, WriteBuffer> splitBuffers = new HashMap<String, WriteBuffer>();
-        for (Map.Entry<String, Map<String, WriteCache<?>>> en : buffers.entrySet()) {
+        for (Map.Entry<String, Collection<ChannelWriteBuffer>> en : buffers.entrySet()) {
             String dataSource = en.getKey();
-            Map<String, WriteCache<?>> val = en.getValue();
-            WriteBuffer newWriteBuffer = new WriteBufferBuilder().addCaches(val).build();
+            Collection<ChannelWriteBuffer> val = en.getValue();
+            WriteBuffer newWriteBuffer = new WriteBuffer(val);
             splitBuffers.put(dataSource, newWriteBuffer);
             dataSources.get(dataSource).prepareWrite(newWriteBuffer, exceptionHandler);
         }

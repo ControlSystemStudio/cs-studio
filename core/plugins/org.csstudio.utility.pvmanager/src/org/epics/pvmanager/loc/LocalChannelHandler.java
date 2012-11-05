@@ -48,9 +48,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void addWriter(WriteCache<?> cache, ExceptionHandler handler) {
+    protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
         // Override for test visibility purposes
-        super.addWriter(cache, handler);
+        super.addWriter(subscription);
     }
 
     @Override
@@ -60,9 +60,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void removeWrite(WriteCache<?> cache, ExceptionHandler exceptionHandler) {
+    protected synchronized void removeWrite(ChannelHandlerWriteSubscription subscription) {
         // Override for test visibility purposes
-        super.removeWrite(cache, exceptionHandler);
+        super.removeWrite(subscription);
     }
     
     private Object wrapValue(Object value) {
@@ -87,6 +87,11 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         } catch (Exception ex) {
             callback.channelWritten(ex);
         }
+    }
+
+    @Override
+    protected boolean isWriteConnected(Object payload) {
+        return isConnected(payload);
     }
     
 }

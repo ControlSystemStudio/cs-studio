@@ -15,6 +15,7 @@ import java.util.Map;
 public class WriteBufferBuilder {
 
     private final Map<String, WriteCache<?>> caches;
+    private ExceptionHandler exceptionHandler;
 
     /**
      * A new builder
@@ -44,6 +45,11 @@ public class WriteBufferBuilder {
         caches.putAll(buffer.caches);
         return this;
     }
+    
+    public WriteBufferBuilder exceptionHandler(ExceptionHandler handler) {
+        this.exceptionHandler = handler;
+        return this;
+    }
 
     /**
      * Creates a new WriteBuffer.
@@ -51,6 +57,6 @@ public class WriteBufferBuilder {
      * @return a new WriteBuffer
      */
     public WriteBuffer build() {
-        return new WriteBuffer(new HashMap<String, WriteCache<?>>(caches));
+        return new WriteBuffer(new HashMap<String, WriteCache<?>>(caches), exceptionHandler);
     }
 }

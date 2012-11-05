@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PVManager CSS Integration
 Bundle-SymbolicName: org.csstudio.utility.pvmanager;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.Activator
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: PVManager integration with CSS
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.epics;resolution:=optional,
  org.epics.util;bundle-version="0.1.0",
  org.antlr.runtime;bundle-version="3.4.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager,
  org.epics.pvmanager.data,
