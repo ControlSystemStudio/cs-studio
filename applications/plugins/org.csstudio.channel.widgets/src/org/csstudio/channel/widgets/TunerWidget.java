@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VDouble;
@@ -773,17 +774,16 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 								.getChannelNames(tunerChannelTableModel
 										.getChannels()), VDouble.class,
 								Double.class)))).notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<Map<String, VDouble>>() {
+					@Override
+					public void pvChanged(
+							PVReaderEvent<Map<String, VDouble>> event) {
+						if (pv.getValue() != null) {
+							setLastResult(pv.getValue());
+						}
+					}
+				})
 				.asynchWriteAndMaxReadRate(ofHertz(2));
-
-		pv.addPVReaderListener(new PVReaderListener() {
-
-			@Override
-			public void pvChanged() {
-				if (pv.getValue() != null) {
-					setLastResult(pv.getValue());
-				}
-			}
-		});
 
 		pv.addPVWriterListener(new PVWriterListener() {
 

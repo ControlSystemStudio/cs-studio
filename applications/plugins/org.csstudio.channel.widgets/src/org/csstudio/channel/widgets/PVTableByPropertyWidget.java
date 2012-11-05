@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
@@ -140,10 +141,10 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	private List<String> rowNames;
 	
 	private PVReader<VTable> pv;
-	private PVReaderListener listener = new PVReaderListener() {
+	private PVReaderListener<VTable> listener = new PVReaderListener<VTable>() {
 		
 		@Override
-		public void pvChanged() {
+		public void pvChanged(PVReaderEvent<VTable> event) {
 			if (!table.isDisposed()) {
 				setLastException(pv.lastException());
 				table.setVTable(pv.getValue());
@@ -173,8 +174,8 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		// Increasing the notification rate will make the tooltips not work,
 		// so it's limited to 500 ms.
-		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).maxRate(ofMillis(500));
-		pv.addPVReaderListener(listener);
+		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread())
+				.readListener(listener).maxRate(ofMillis(500));
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
 	}
 	

@@ -243,15 +243,14 @@ implements ConfigurableWidget, ISelectionProvider {
 			plot = waterfallPlotOf(vNumberArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
-			pv.addPVReaderListener(new PVReaderListener() {
-				
-				@Override
-				public void pvChanged() {
-					setLastError(pv.lastException());
-					imageDisplay.setVImage(pv.getValue());
-				}
-			});
+				.notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<VImage>() {
+					public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
+						setLastError(pv.lastException());
+						imageDisplay.setVImage(pv.getValue());
+					};
+				})
+				.maxRate(ofHertz(50));
 			return;
 		}
 		
@@ -260,15 +259,14 @@ implements ConfigurableWidget, ISelectionProvider {
 			plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-					.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
-			pv.addPVReaderListener(new PVReaderListener() {
-				
-				@Override
-				public void pvChanged() {
-					setLastError(pv.lastException());
-					imageDisplay.setVImage(pv.getValue());
-				}
-			});
+				.notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<VImage>() {
+					public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
+						setLastError(pv.lastException());
+						imageDisplay.setVImage(pv.getValue());
+					};
+				})
+				.maxRate(ofHertz(50));
 			return;
 		}
 	}

@@ -47,6 +47,7 @@ import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraphRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VImage;
@@ -527,26 +528,24 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				.imageWidth(imageDisplay.getSize().x)
 				.interpolation(InterpolationScheme.LINEAR));
 		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<Plot2DResult>() {
+					@Override
+					public void pvChanged(PVReaderEvent<Plot2DResult> event) {
+						Exception ex = pv.lastException();
+
+						if (ex != null) {
+							setLastError(ex);
+						}
+						if (pv.getValue() != null) {
+							setRange(xRangeControl, pv.getValue().getxRange());
+							setRange(yRangeControl, pv.getValue().getyRange());
+							imageDisplay.setVImage(pv.getValue().getImage());
+						} else {
+							imageDisplay.setVImage(null);
+						}
+					}
+				})
 				.maxRate(ofHertz(50));
-		pv.addPVReaderListener(new PVReaderListener() {
-
-			@Override
-			public void pvChanged() {
-				Exception ex = pv.lastException();
-
-				if (ex != null) {
-					setLastError(ex);
-				}
-				if (pv.getValue() != null) {
-					setRange(xRangeControl, pv.getValue().getxRange());
-					setRange(yRangeControl, pv.getValue().getyRange());
-					imageDisplay.setVImage(pv.getValue().getImage());
-				} else {
-					imageDisplay.setVImage(null);
-				}
-			}
-
-		});
 	}
 
 	/**
