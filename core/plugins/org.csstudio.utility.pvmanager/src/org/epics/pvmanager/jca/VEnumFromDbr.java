@@ -30,6 +30,13 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
         if (metadata.getLabels() == null) {
             return Integer.toString(getIndex());
         }
+        
+        // There are also pathologica cases in which the labels
+        // are less than the actual value
+        if (getIndex() >= metadata.getLabels().length || getIndex() < 0) {
+            return Integer.toString(getIndex());
+        }
+        
         return getLabels().get(getIndex());
     }
 
