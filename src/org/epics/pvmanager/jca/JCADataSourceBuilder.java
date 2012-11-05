@@ -113,7 +113,8 @@ public class JCADataSourceBuilder {
     /**
      * If true, monitors will setup using "0" length, which will make
      * the server a variable length array in return (if supported) or a "0"
-     * length array (if not supported).
+     * length array (if not supported). Variable array support was added
+     * to EPICS 3.14.12.2 and to CAJ 1.1.10.
      * <p>
      * By default it tries to auto-detected whether the client library
      * implements the proper checks.
@@ -128,8 +129,8 @@ public class JCADataSourceBuilder {
     
     /**
      * If true, for fields that match ".*\.RTYP.*" only the value will be
-     * read; alarm and time will be created at client side. Some old version
-     * of EPICS would not send correct data (would send only the value),
+     * read; alarm and time will be created at client side. Version of EPICS
+     * before 3.14.11 do not send correct data (would send only the value),
      * which would make the client behave incorrectly.
      * <p>
      * Default is false.

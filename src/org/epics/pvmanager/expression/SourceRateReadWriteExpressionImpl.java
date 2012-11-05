@@ -4,9 +4,8 @@
  */
 package org.epics.pvmanager.expression;
 
-import java.util.List;
 import org.epics.pvmanager.Function;
-import org.epics.pvmanager.WriteBuffer;
+import org.epics.pvmanager.WriteBufferBuilder;
 import org.epics.pvmanager.WriteFunction;
 
 /**
@@ -70,7 +69,7 @@ public class SourceRateReadWriteExpressionImpl<R, W> extends SourceRateReadWrite
     }
 
     @Override
-    public final WriteBuffer createWriteBuffer() {
+    public final WriteBufferBuilder createWriteBuffer() {
         return writeExpression.createWriteBuffer();
     }
     

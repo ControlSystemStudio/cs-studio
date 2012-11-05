@@ -93,10 +93,10 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         for (PVWriterListener pVWriterListener : writeListeners) {
             pvWriter.addPVWriterListener(pVWriterListener);
         }
-        WriteBuffer writeBuffer = writeExpression.createWriteBuffer();
         if (exceptionHandler == null) {
             exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
         }
+        WriteBuffer writeBuffer = writeExpression.createWriteBuffer().exceptionHandler(exceptionHandler).build();
         WriteFunction<T> writeFunction =writeExpression.getWriteFunction();
 
         try {
@@ -107,6 +107,10 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
+        
+        WriteNotifier<T> notifier = new WriteNotifier<T>(pvWriter, new LastValueAggregator<Boolean>(writeBuffer.getConnectionCollector()), 
+                PVManager.getReadScannerExecutorService(), notificationExecutor, exceptionHandler);
+        notifier.startScan(TimeDuration.ofMillis(100));
         return pvWriter;
     }
 

@@ -111,10 +111,10 @@ public class WriteExpressionImpl<W> extends WriteExpressionListImpl<W> implement
      * @return a data recipe
      */
     @Override
-    public final WriteBuffer createWriteBuffer() {
+    public final WriteBufferBuilder createWriteBuffer() {
         WriteBufferBuilder buffer = new WriteBufferBuilder();
         buffer.addCaches(writeCaches);
-        return buffer.build();
+        return buffer;
     }
 
     @Override

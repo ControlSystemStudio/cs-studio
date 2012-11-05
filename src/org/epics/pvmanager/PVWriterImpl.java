@@ -29,6 +29,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
     private volatile  WriteDirector<T> writeDirector;
     private final boolean syncWrite;
     private final boolean notifyFirstListener; 
+    private volatile boolean writeConnected = false;
 
     PVWriterImpl(boolean syncWrite, boolean notifyFirstListener) {
         this.syncWrite = syncWrite;
@@ -138,6 +139,15 @@ class PVWriterImpl<T> implements PVWriter<T> {
     @Override
     public Exception lastWriteException() {
         return lastWriteException.getAndSet(null);
+    }
+
+    @Override
+    public boolean isWriteConnected() {
+        return writeConnected;
+    }
+    
+    public void setWriteConnected(boolean writeConnected) {
+        this.writeConnected = writeConnected;
     }
     
 }

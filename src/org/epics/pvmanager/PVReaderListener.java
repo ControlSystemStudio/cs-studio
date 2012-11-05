@@ -12,11 +12,11 @@ package org.epics.pvmanager;
  *
  * @author carcassi
  */
-public interface PVReaderListener {
+public interface PVReaderListener<T> {
 
     /**
      * Notified when the value of the PV has changed.
      */
-    void pvChanged();
+    void pvChanged(PVReaderEvent<T> event);
 
 }

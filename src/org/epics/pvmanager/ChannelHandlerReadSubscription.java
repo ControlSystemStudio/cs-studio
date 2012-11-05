@@ -2,10 +2,6 @@
  * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.epics.pvmanager;
 
 /**
@@ -15,6 +11,7 @@ package org.epics.pvmanager;
  */
 public class ChannelHandlerReadSubscription {
 
+    // TODO: Does not need to be public if tests use mock
     public ChannelHandlerReadSubscription(Collector<?> collector, ValueCache<?> cache, ExceptionHandler handler, Collector<Boolean> connCollector, ValueCache<Boolean> connCache) {
         this.collector = collector;
         this.cache = cache;

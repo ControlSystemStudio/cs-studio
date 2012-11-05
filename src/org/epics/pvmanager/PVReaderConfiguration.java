@@ -46,7 +46,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
     
     private DesiredRateExpression<T> aggregatedPVExpression;
     private ExceptionHandler exceptionHandler;
-    private List<PVReaderListener> readListeners = new ArrayList<PVReaderListener>();
+    private List<PVReaderListener<T>> readListeners = new ArrayList<PVReaderListener<T>>();
 
     PVReaderConfiguration(DesiredRateExpression<T> aggregatedPVExpression) {
         this.aggregatedPVExpression = aggregatedPVExpression;
@@ -57,10 +57,10 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
      * @param listeners
      * @return 
      */
-    public PVReaderConfiguration<T> listeners(PVReaderListener... listeners) {
-        for (PVReaderListener pVReaderListener : listeners) {
-            readListeners.add(pVReaderListener);
-        }
+    public PVReaderConfiguration<T> readListener(PVReaderListener<? super T> listener) {
+        @SuppressWarnings("unchecked")
+        PVReaderListener<T> convertedListener = (PVReaderListener<T>) listener;
+        readListeners.add(convertedListener);
         return this;
     }
 
@@ -102,7 +102,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVReaderImpl<T> pv = new PVReaderImpl<T>(aggregatedPVExpression.getName(), Executors.localThread() == notificationExecutor);
-        for (PVReaderListener pVReaderListener : readListeners) {
+        for (PVReaderListener<T> pVReaderListener : readListeners) {
             pv.addPVReaderListener(pVReaderListener);
         }
         DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
