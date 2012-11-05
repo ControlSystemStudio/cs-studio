@@ -19,6 +19,7 @@ import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
 
@@ -114,22 +115,23 @@ public class VImageDisplayDemo extends ViewPart {
 			pv.close();
 		}
 		pv = PVManager.read(waterfallPlotOf(vDoubleArray("sim://gaussianWaveform(1, 50, 0.1)")))
-		.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				topLeft.setVImage(pv.getValue());
-				top.setVImage(pv.getValue());
-				topRight.setVImage(pv.getValue());
-				centerLeft.setVImage(pv.getValue());
-				center.setVImage(pv.getValue());
-				centerRight.setVImage(pv.getValue());
-				bottomLeft.setVImage(pv.getValue());
-				bottom.setVImage(pv.getValue());
-				bottomRight.setVImage(pv.getValue());
-			}
-		});
+				.readListener(new PVReaderListener<VImage>() {
+
+					@Override
+					public void pvChanged(PVReaderEvent<VImage> event) {
+						topLeft.setVImage(pv.getValue());
+						top.setVImage(pv.getValue());
+						topRight.setVImage(pv.getValue());
+						centerLeft.setVImage(pv.getValue());
+						center.setVImage(pv.getValue());
+						centerRight.setVImage(pv.getValue());
+						bottomLeft.setVImage(pv.getValue());
+						bottom.setVImage(pv.getValue());
+						bottomRight.setVImage(pv.getValue());
+					}
+				})
+				.notifyOn(SWTUtil.swtThread())
+				.maxRate(ofHertz(50));
 		updateStretch();
 	}
 	
