@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VType;
@@ -56,10 +57,10 @@ class PVTreeItem
     /** Most recent severity. */
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
-    private PVReaderListener pv_listener = new PVReaderListener()
+    private PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
     {
         @Override
-        public void pvChanged()
+        public void pvChanged(PVReaderEvent<VType> event)
         {
             final Exception error = pv.lastException();
             if (error != null)
@@ -74,10 +75,10 @@ class PVTreeItem
     /** The PV used for getting the record type. */
     private PVReader<VType> type_pv;
     private String type;
-    private PVReaderListener type_pv_listener = new PVReaderListener()
+    private PVReaderListener<VType> type_pv_listener = new PVReaderListener<VType>()
     {
         @Override
-        public void pvChanged()
+        public void pvChanged(PVReaderEvent<VType> event)
         {
             final String type_txt = VTypeHelper.formatValue(type_pv.getValue());
             // type should be a text.
@@ -101,10 +102,10 @@ class PVTreeItem
     /** Used to read the links of this pv. */
     private PVReader<VType> link_pv = null;
     private String link_value;
-    private PVReaderListener link_pv_listener = new PVReaderListener()
+    private PVReaderListener<VType> link_pv_listener = new PVReaderListener<VType>()
     {
         @Override
-        public void pvChanged()
+        public void pvChanged(PVReaderEvent<VType> event)
         {
             try
             {
