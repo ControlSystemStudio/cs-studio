@@ -16,6 +16,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVHelper;
 import org.csstudio.diag.pvfields.model.PVModel;
+import org.csstudio.diag.pvfields.model.PVModelExport;
 import org.csstudio.diag.pvfields.model.PVModelListener;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
@@ -35,8 +36,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -52,8 +56,6 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * 
  *  <p>Allow entering PV name,
  *  set name in model, display data from model.
- *  
- *  TODO Export to file?!
  * 
  * @author Kay Kasemir
  */
@@ -65,6 +67,7 @@ public class GUI implements PVModelListener
 	private ComboHistoryHelper combo_history;
 	private TableViewer property_view;
 	private TableViewer field_view;
+	private Button export;
 
 	/** Initialize
 	 *  @param parent Parent widget
@@ -106,10 +109,10 @@ public class GUI implements PVModelListener
 	/** Create GUI components */
 	private void createComponents()
 	{
-		final GridLayout layout = new GridLayout(2, false);
+		final GridLayout layout = new GridLayout(3, false);
 		parent.setLayout(layout);
 		
-		// PV: _________
+		// PV: _________ [Export]
 		Label l = new Label(parent, 0);
 		l.setText("PV Name:");
 		l.setLayoutData(new GridData());
@@ -117,6 +120,21 @@ public class GUI implements PVModelListener
 		combo = new Combo(parent, SWT.DROP_DOWN);
 		combo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		combo.setToolTipText("Enter PV Name");
+		
+		export = new Button(parent, SWT.PUSH);
+		export.setText("Export");
+		export.setToolTipText("Export displayed values to file");
+		export.setLayoutData(new GridData());
+		export.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(final SelectionEvent e)
+			{
+				if (model != null)
+					PVModelExport.export(model, parent.getShell());
+			}
+		});
+		export.setEnabled(false);
 		
 		// Sash for property and field tables
 		final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
@@ -301,7 +319,14 @@ public class GUI implements PVModelListener
 			model = null;
 		}
 		
+		if (name.isEmpty())
+		{
+			showMessage("Enter PV name", "");
+			export.setEnabled(false);
+		}
+		
 		showMessage("Please wait...", "Getting data for " + name);
+		export.setEnabled(true);
 		
 		// Create model for PV name
 		try
@@ -335,6 +360,7 @@ public class GUI implements PVModelListener
 	private void showMessage(final String text1, final String text2)
 	{
 		property_view.setInput(new String[][] { { text1, text2 }});
+		field_view.setInput(new PVField[0]);
 	}
 
 	/** {@inheritDoc} */
