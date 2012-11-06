@@ -21,6 +21,7 @@ import org.csstudio.diag.pvfields.Preferences;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
 
@@ -40,11 +41,12 @@ public class EPICSDataProvider implements DataProvider
     @Override
     public PVInfo lookup(final String name) throws Exception
     {
-        final PVReaderListener pv_listener = new PVReaderListener()
+        final PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
         {
             @Override
-            public void pvChanged()
+            public void pvChanged(final PVReaderEvent<VType> event)
             {
+                final PVReader<VType> pv = event.getPvReader();
             	final Exception error = pv.lastException();
             	if (error != null)
             	{
@@ -76,7 +78,7 @@ public class EPICSDataProvider implements DataProvider
             }
         };
         
-        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).listeners(pv_listener).maxRate(ofSeconds(0.5));
+        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
         // Wait for value from reader
         done.await();
         pv.close();

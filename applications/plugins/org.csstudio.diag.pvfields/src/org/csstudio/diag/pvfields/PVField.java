@@ -8,6 +8,7 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
 import org.csstudio.diag.pvfields.model.PVFieldListener;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
 
@@ -87,11 +88,12 @@ public class PVField
 		if (pv != null)
 			throw new IllegalStateException("Already started");
 		
-		final PVReaderListener pv_listener = new PVReaderListener()
+		final PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
         {
 			@Override
-			public void pvChanged()
+			public void pvChanged(final PVReaderEvent<VType> event)
 			{
+				final PVReader<VType> pv = event.getPvReader();
 				final Exception ex = pv.lastException();
 				if (ex != null)
 					current_value = "Error: " + ex.getMessage();
@@ -110,7 +112,7 @@ public class PVField
 				listener.updateField(PVField.this);
 			}
 		};
-		pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).listeners(pv_listener).maxRate(ofSeconds(0.5));
+		pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
 	}
 
 	/** Stop updates of current value, unsubscribe from control system */
