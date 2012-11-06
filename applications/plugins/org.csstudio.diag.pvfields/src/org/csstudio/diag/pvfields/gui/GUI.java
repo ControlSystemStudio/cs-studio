@@ -17,10 +17,11 @@ import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVHelper;
 import org.csstudio.diag.pvfields.model.PVModel;
 import org.csstudio.diag.pvfields.model.PVModelListener;
-import org.csstudio.diag.pvfields.view.PVFieldsView;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,16 +42,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the Model
  * 
  *  <p>Allow entering PV name,
  *  set name in model, display data from model.
  *  
- *  TODO context menu
- * 
  *  TODO Export to file?!
  * 
  * @author Kay Kasemir
@@ -67,8 +69,9 @@ public class GUI implements PVModelListener
 	/** Initialize
 	 *  @param parent Parent widget
 	 *  @param settings Saved settings or <code>null</code>
+	 *  @param site Part site or <code>null</code>
 	 */
-	public GUI(final Composite parent, final IDialogSettings settings)
+	public GUI(final Composite parent, final IDialogSettings settings, final IWorkbenchPartSite site)
 	{
 		this.parent = parent;
 		createComponents();
@@ -87,6 +90,17 @@ public class GUI implements PVModelListener
 		hookDrop(combo);
 		hookDrop(property_view.getControl());
 		hookDrop(field_view.getControl());
+		
+		if (site != null)
+		{
+	        // Add empty context menu so that other CSS apps can
+	        // add themselves to it
+	        final MenuManager menuMgr = new MenuManager("");
+	        menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+	        final Menu menu = menuMgr.createContextMenu(field_view.getControl());
+	        field_view.getControl().setMenu(menu);
+	        site.registerContextMenu(menuMgr, field_view);
+		}
 	}
 
 	/** Create GUI components */
@@ -271,8 +285,10 @@ public class GUI implements PVModelListener
     /** Set or update the PV name
      *  @param name Name of PV for which to get data
      */
-	public void setPVName(final String name)
+	public void setPVName(String name)
 	{
+		name = PVHelper.getPV(name);
+		
 		if (! combo.getText().equals(name))
 		{
 			combo.setText(name);

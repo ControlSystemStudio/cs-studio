@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.Activator;
 import org.csstudio.diag.pvfields.gui.GUI;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -23,6 +22,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+/** Eclipse View for the {@link GUI}
+ *  @author Kay Kasemir
+ */
 public class PVFieldsView  extends ViewPart
 {
     final public static String ID = PVFieldsView.class.getName();
@@ -48,10 +50,11 @@ public class PVFieldsView  extends ViewPart
         memento.putString(PV_TAG, gui.getPVName());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void createPartControl(Composite parent)
     {
-    	gui = new GUI(parent,  Activator.getDefault().getDialogSettings());
+    	gui = new GUI(parent, Activator.getDefault().getDialogSettings(), getSite());
     	
     	// Restore
     	if (memento != null)
@@ -60,14 +63,6 @@ public class PVFieldsView  extends ViewPart
             if (pv_name != null  &&  pv_name.length() > 0)
                 setPVName(pv_name);
         }
-
-        // TODO Add empty context menu so that other CSS apps can
-        // add themselves to it
-        final MenuManager menuMgr = new MenuManager("");
-//        menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-//        Menu menu = menuMgr.createContextMenu(fields_viewer.getControl());
-//        fields_viewer.getControl().setMenu(menu);
-//        getSite().registerContextMenu(menuMgr, fields_viewer);
     }
 
     /** Create or re-display a probe view with the given PV name.
@@ -95,7 +90,7 @@ public class PVFieldsView  extends ViewPart
         return false;
     }
 
-    // ViewPart interface
+    /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
@@ -103,6 +98,7 @@ public class PVFieldsView  extends ViewPart
             gui.setFocus();
     }
 
+    /** @param pv_name PV name to display */
     private void setPVName(final String pv_name)
     {
         gui.setPVName(pv_name);

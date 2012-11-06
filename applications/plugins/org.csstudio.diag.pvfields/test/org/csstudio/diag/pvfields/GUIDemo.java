@@ -36,7 +36,7 @@ public class GUIDemo
 		final Shell shell = new Shell(display);
 		shell.setSize(600, 400);
 		
-		final GUI gui = new GUI(shell, null);
+		final GUI gui = new GUI(shell, null, null);
 		gui.setFocus();
 		gui.setPVName(TestSetup.CHANNEL_NAME);
 

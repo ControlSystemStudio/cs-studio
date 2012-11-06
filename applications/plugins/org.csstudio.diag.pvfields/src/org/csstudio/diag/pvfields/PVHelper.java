@@ -23,4 +23,15 @@ public class PVHelper
     	// No field name? Assume "VAL"
     	return "VAL";
     }
+
+    /** @param name Full name: record.field
+     *  @return record
+     */
+	public static String getPV(final String name)
+	{
+		final int dot = name.lastIndexOf('.');
+		if (dot > 0)
+			return name.substring(0, dot);
+		return name;
+	}
  }
