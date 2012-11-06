@@ -28,7 +28,6 @@ public class PVFieldsView  extends ViewPart
     final public static String ID = PVFieldsView.class.getName();
     /** Memento tag */
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
-    final public static String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
 
     private GUI gui;
     private IMemento memento;
@@ -43,12 +42,10 @@ public class PVFieldsView  extends ViewPart
 
     /** ViewPart interface, persist state */
     @Override
-    public void saveState(IMemento memento)
+    public void saveState(final IMemento memento)
     {
         super.saveState(memento);
-        // TODO
-//        memento.putString(PV_TAG, gui.getPVName());
-//        memento.putString(FIELD_TAG, gui.getFieldValue());
+        memento.putString(PV_TAG, gui.getPVName());
     }
 
     @Override
@@ -56,38 +53,13 @@ public class PVFieldsView  extends ViewPart
     {
     	gui = new GUI(parent,  Activator.getDefault().getDialogSettings());
     	
-    	// TODO Restore
-//    	if (memento != null)
-//        {
-//            String pv_name = memento.getString(PV_TAG);
-//            String field = memento.getString(FIELD_TAG);
-//            if (field != null  &&  field.length() > 0 )
-//                field_value.getCombo().setText(field);
-//            if (pv_name != null  &&  pv_name.length() > 0)
-//                setPVName(pv_name);
-//        }
-
-    	// TODO Enable 'Drop' on to combo box (entry box)
-//        new ControlSystemDropTarget(cbo_name.getCombo(), ProcessVariable.class, String.class)
-//        {
-//            @Override
-//            public void handleDrop(final Object item)
-//            {
-//                PVFieldsView.this.handleDrop(item);
-//            }
-//        };
-//
-//        final Table fields_table = gui.getFieldsTable().getTable();
-//
-//        // Enable 'Drop' on to table.
-//        new ControlSystemDropTarget(fields_table, ProcessVariable.class, String.class)
-//        {
-//            @Override
-//            public void handleDrop(final Object item)
-//            {
-//                PVFieldsView.this.handleDrop(item);
-//            }
-//        };
+    	// Restore
+    	if (memento != null)
+        {
+            String pv_name = memento.getString(PV_TAG);
+            if (pv_name != null  &&  pv_name.length() > 0)
+                setPVName(pv_name);
+        }
 
         // TODO Add empty context menu so that other CSS apps can
         // add themselves to it
@@ -98,17 +70,6 @@ public class PVFieldsView  extends ViewPart
 //        getSite().registerContextMenu(menuMgr, fields_viewer);
     }
 
-    /** Set PV name from dropped item, if possible
-     *  @param item ProcessVariable or String
-     */
-    private void handleDrop(final Object item)
-    {
-        if (item instanceof ProcessVariable)
-            setPVName(((ProcessVariable)item).getName());
-        else if (item instanceof String)
-            setPVName(item.toString().trim());
-    }
-
     /** Create or re-display a probe view with the given PV name.
      *  <p>
      *  Invoked by the PVpopupAction.
@@ -116,14 +77,14 @@ public class PVFieldsView  extends ViewPart
      *  @param pv_name The PV to 'probe'
      *  @return Returns <code>true</code> when successful.
      */
-    public static boolean activateWithPV(ProcessVariable pv_name)
+    public static boolean activateWithPV(final ProcessVariable pv_name)
     {
         try
         {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
-            PVFieldsView pvFields = (PVFieldsView) page.showView(PVFieldsView.ID);
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            final PVFieldsView pvFields = (PVFieldsView) page.showView(PVFieldsView.ID);
             pvFields.setPVName(pv_name.getName());
             return true;
         }

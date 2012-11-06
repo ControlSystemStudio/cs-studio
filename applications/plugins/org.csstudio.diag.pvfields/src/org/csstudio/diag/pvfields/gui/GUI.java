@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.pvfields.gui;
 
 import java.util.Arrays;
@@ -5,12 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVHelper;
 import org.csstudio.diag.pvfields.model.PVModel;
 import org.csstudio.diag.pvfields.model.PVModelListener;
+import org.csstudio.diag.pvfields.view.PVFieldsView;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -28,17 +38,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-/**
- * TODO enter new PV name
+/** GUI for the Model
  * 
- * TODO View, drag/drop, context menu
+ *  <p>Allow entering PV name,
+ *  set name in model, display data from model.
+ *  
+ *  TODO context menu
  * 
- * TODO Export to file?!
+ *  TODO Export to file?!
  * 
  * @author Kay Kasemir
  */
@@ -47,14 +60,20 @@ public class GUI implements PVModelListener
 	final private Composite parent;
 	private PVModel model = null;
 	private Combo combo;
+	private ComboHistoryHelper combo_history;
 	private TableViewer property_view;
 	private TableViewer field_view;
 
+	/** Initialize
+	 *  @param parent Parent widget
+	 *  @param settings Saved settings or <code>null</code>
+	 */
 	public GUI(final Composite parent, final IDialogSettings settings)
 	{
 		this.parent = parent;
 		createComponents();
-		new ComboHistoryHelper(settings, "pv_name", combo)
+		
+		combo_history = new ComboHistoryHelper(settings, "pv_name", combo)
 		{
 			@Override
 			public void newSelection(final String name)
@@ -62,8 +81,15 @@ public class GUI implements PVModelListener
 				setPVName(name);
 			}
 		};
+		combo_history.loadSettings();
+		
+    	// Enable 'Drop' on to combo box (entry box) and tables
+		hookDrop(combo);
+		hookDrop(property_view.getControl());
+		hookDrop(field_view.getControl());
 	}
 
+	/** Create GUI components */
 	private void createComponents()
 	{
 		final GridLayout layout = new GridLayout(2, false);
@@ -77,7 +103,6 @@ public class GUI implements PVModelListener
 		combo = new Combo(parent, SWT.DROP_DOWN);
 		combo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		combo.setToolTipText("Enter PV Name");
-		
 		
 		// Sash for property and field tables
 		final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
@@ -205,22 +230,62 @@ public class GUI implements PVModelListener
         view_col.setLabelProvider(provider);
 	}
 	
+	/** Allow dropping PV names
+	 *  @param control Control that should allow dropping the names
+	 */
+    private void hookDrop(final Control control)
+    {
+        new ControlSystemDropTarget(control, ProcessVariable.class, String.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+            	GUI.this.handleDrop(item);
+            }
+        };
+	}
+
+    /** Use dropped PV name
+     *  @param item PV or string
+     */
+	private void handleDrop(final Object item)
+    {
+        if (item instanceof ProcessVariable)
+            setPVName(((ProcessVariable)item).getName());
+        else if (item instanceof String)
+            setPVName(item.toString().trim());
+    }
+
+	/** Set focus */
     public void setFocus()
     {
     	combo.setFocus();
     }
 	
+    /** @return Currently entered PV name */
+    public String getPVName()
+    {
+    	return combo.getText();
+    }
+    
     /** Set or update the PV name
      *  @param name Name of PV for which to get data
      */
 	public void setPVName(final String name)
 	{
+		if (! combo.getText().equals(name))
+		{
+			combo.setText(name);
+			combo_history.addEntry(name);
+		}
 		// Stop previous model
 		if (model != null)
 		{
 			model.stop();
 			model = null;
 		}
+		
+		showMessage("Please wait...", "Getting data for " + name);
 		
 		// Create model for PV name
 		try
@@ -245,6 +310,15 @@ public class GUI implements PVModelListener
 				}
 			}
 		});
+	}
+
+	/** Display a message by (mis-) using the property table
+	 *  @param text1 Short text to display
+	 *  @param text2 ..
+	 */
+	private void showMessage(final String text1, final String text2)
+	{
+		property_view.setInput(new String[][] { { text1, text2 }});
 	}
 
 	/** {@inheritDoc} */
