@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
@@ -51,11 +52,10 @@ public class MachineModeMonitor
         DesiredRateExpressionList<VEnum> channels = new DesiredRateExpressionListImpl<VEnum>();
         for (int i=1; i<modes.length; ++i)
             channels.and(latestValueOf(vEnum("ICS_MPS:RTDL_MachMd:" + modes[i].name())));
-        rtdl_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
-        rtdl_reader.addPVReaderListener(new PVReaderListener()
+	    PVReaderListener<List<VEnum>> listener = new PVReaderListener<List<VEnum>>()
         {
             @Override
-            public void pvChanged()
+	        public void pvChanged(final PVReaderEvent<List<VEnum>> event)
             {
                 final MachineMode mode;
                 final Exception error = rtdl_reader.lastException();
@@ -69,17 +69,17 @@ public class MachineModeMonitor
                 logger.log(Level.FINE, "RTDL Mode: {0}", mode);
                 updateModes(mode, switch_mode);
             }
-        });
+        };
+        rtdl_reader = PVManager.read(listOf(channels)).readListener(listener).maxRate(TimeDuration.ofSeconds(1.0));
 
         // Handle 'Switch' PVs
         channels = new DesiredRateExpressionListImpl<VEnum>();
         for (int i=1; i<modes.length; ++i)
             channels.and(latestValueOf(vEnum("ICS_MPS:Switch_MachMd:" + modes[i].name())));
-        switch_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
-        switch_reader.addPVReaderListener(new PVReaderListener()
+        listener = new PVReaderListener<List<VEnum>>()
         {
             @Override
-            public void pvChanged()
+            public void pvChanged(final PVReaderEvent<List<VEnum>> event)
             {
                 final MachineMode mode;
                 final Exception error = switch_reader.lastException();
@@ -93,7 +93,8 @@ public class MachineModeMonitor
                 logger.log(Level.FINE, "Swtich Mode: {0}", mode);
                 updateModes(rtdl_mode, mode);
             }
-        });
+        };
+        switch_reader = PVManager.read(listOf(channels)).readListener(listener).maxRate(TimeDuration.ofSeconds(1.0));
 	}
 
 	/** Determine which of the values indicates an active mode
