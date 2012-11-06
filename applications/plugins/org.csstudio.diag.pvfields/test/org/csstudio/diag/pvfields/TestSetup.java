@@ -4,6 +4,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.jca.JCADataSource;
 
@@ -34,6 +35,9 @@ public class TestSetup
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);
         
         // Use Channel Access as data source
-        PVManager.setDefaultDataSource(new JCADataSource());
+        final CompositeDataSource sources = new CompositeDataSource();
+        sources.putDataSource("epics", new JCADataSource());
+        sources.setDefaultDataSource("epics");
+        PVManager.setDefaultDataSource(sources);
     }
 }

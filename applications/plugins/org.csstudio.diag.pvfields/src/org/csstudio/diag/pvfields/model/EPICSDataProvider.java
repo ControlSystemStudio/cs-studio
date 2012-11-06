@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.diag.pvfields.Activator;
 import org.csstudio.diag.pvfields.DataProvider;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVInfo;
@@ -44,9 +45,27 @@ public class EPICSDataProvider implements DataProvider
             @Override
             public void pvChanged()
             {
-                final ChannelHandler channel = PVManager.getDefaultDataSource().getChannels().get(pv.getName());
+            	final Exception error = pv.lastException();
+            	if (error != null)
+            	{
+                	Activator.getLogger().log(Level.WARNING, "Error for " + pv.getName(), error);
+                	// Done (with no data)
+                    done.countDown();
+            	}
+            
+            	// No error:
+            	final String full_name;
+            	
+            	if (name.indexOf("://") > 0)
+            		full_name = name;
+            	else
+            		full_name = "epics://" + name;
+                final Map<String, ChannelHandler> channels = PVManager.getDefaultDataSource().getChannels();
+				final ChannelHandler channel = channels.get(full_name);
                 if (channel == null)
-                    System.err.println("No channel info for " + pv.getName());
+                {
+                	Activator.getLogger().log(Level.WARNING, "No channel info for {0}", full_name);
+                }
                 else
                 {
                     final Map<String, Object> properties = channel.getProperties();
@@ -57,18 +76,16 @@ public class EPICSDataProvider implements DataProvider
             }
         };
         
-        
-        // TODO PVManager will default to SWT thread, but that is not necessary for this
         pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).listeners(pv_listener).maxRate(ofSeconds(0.5));
         // Wait for value from reader
         done.await();
         pv.close();
 
-        // TODO Determine better set of fields based on record type
+        // TODO Determine better set of fields based on record type?
         final List<PVField> fields = Arrays.asList(
-            new PVField(name + ".DESC", ""),
-            new PVField(name + ".SCAN", ""),
-            new PVField(name + ".VAL", "")
+            new PVField(name + ".DESC"),
+            new PVField(name + ".SCAN"),
+            new PVField(name + ".VAL")
         );
         
         final PVInfo info = new PVInfo(properties, fields);

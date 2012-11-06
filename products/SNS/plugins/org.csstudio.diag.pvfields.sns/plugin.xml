@@ -7,10 +7,9 @@
             file="toc.xml"
             primary="true"/>
    </extension>
-   <extension
-         point="org.csstudio.diag.pvfields.pvfielddata">
-      <pvfielddata
-            class="org.csstudio.diag.pvfields.sns.SNSPVFieldsData"
-            name="org.csstudio.diag.pvfields.sns.SNSPVFieldsData"/>
+   <extension point="org.csstudio.diag.pvfields.dataprovider">
+      <dataprovider
+            class="org.csstudio.diag.pvfields.sns.SNSDataProvider"
+            name="SNS RDB Data"/>
    </extension>
 </plugin>

@@ -1,4 +1,4 @@
-package org.csstudio.diag.pvfields.model;
+package org.csstudio.diag.pvfields.sns;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

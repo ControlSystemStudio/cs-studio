@@ -1,6 +1,5 @@
 package org.csstudio.diag.pvfields.gui;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +28,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+/**
+ * TODO enter new PV name
+ * 
+ * TODO View, drag/drop, context menu
+ * 
+ * TODO Export to file?!
+ * 
+ * @author Kay Kasemir
+ */
 public class GUI implements PVModelListener
 {
 	final private Composite parent;
@@ -140,6 +149,7 @@ public class GUI implements PVModelListener
 		ColumnViewerToolTipSupport.enableFor(viewer);
 		viewer.setContentProvider(new ArrayContentProvider());
 		
+		final Display display = viewer.getTable().getDisplay();
 		createColumn(viewer, table_layout, "Field", 40, new CellLabelProvider()
         {
 			@Override
@@ -156,6 +166,10 @@ public class GUI implements PVModelListener
 			{
 				final PVField field = (PVField) cell.getElement();
 				cell.setText(field.getOriginalValue());
+				if (field.isChanged())
+					cell.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+				else
+					cell.setBackground(null);
 			}
 		});
 		createColumn(viewer, table_layout, "Current Value", 60, new CellLabelProvider()
@@ -165,6 +179,10 @@ public class GUI implements PVModelListener
 			{
 				final PVField field = (PVField) cell.getElement();
 				cell.setText(field.getCurrentValue());
+				if (field.isChanged())
+					cell.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+				else
+					cell.setBackground(null);
 			}
 		});
 		return viewer;
@@ -187,6 +205,14 @@ public class GUI implements PVModelListener
         view_col.setLabelProvider(provider);
 	}
 	
+    public void setFocus()
+    {
+    	combo.setFocus();
+    }
+	
+    /** Set or update the PV name
+     *  @param name Name of PV for which to get data
+     */
 	public void setPVName(final String name)
 	{
 		// Stop previous model
@@ -212,12 +238,16 @@ public class GUI implements PVModelListener
 			@Override
 			public void widgetDisposed(DisposeEvent e)
 			{
-				model.stop();
-				model = null;
+				if (model != null)
+				{
+					model.stop();
+					model = null;
+				}
 			}
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateProperties(final Map<String, String> properties)
 	{
@@ -242,6 +272,7 @@ public class GUI implements PVModelListener
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateFields(final List<PVField> fields)
 	{
@@ -255,9 +286,17 @@ public class GUI implements PVModelListener
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateField(final PVField field)
 	{
-		field_view.update(field, null);
+		parent.getDisplay().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				field_view.update(field, null);
+			}
+		});
 	}
 }
