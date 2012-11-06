@@ -24,6 +24,8 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
  */
 public class SNSDataProvider implements DataProvider
 {
+	final private static String PREFIX = "Irmis: ";
+	
     @Override
     public PVInfo lookup(final String name) throws Exception
     {
@@ -45,10 +47,10 @@ public class SNSDataProvider implements DataProvider
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {
-                properties.put("RDB: Record Type", result.getString(3));
-                properties.put("RDB: IOC Name", result.getString(4));
-                properties.put("RDB: File Name", result.getString(5));
-                properties.put("RDB: Last Boot Time", result.getString(6));
+                properties.put(PREFIX + "Record Type", result.getString(3));
+                properties.put(PREFIX + "IOC Name", result.getString(4));
+                properties.put(PREFIX + "File Name", result.getString(5));
+                properties.put(PREFIX + "Last Boot Time", result.getString(6));
     
                 // Get first field
                 fields.add(new PVField(name + "." + result.getString(1), result.getString(2)));

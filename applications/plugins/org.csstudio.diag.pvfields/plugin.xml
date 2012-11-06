@@ -3,6 +3,12 @@
 <plugin>
    <extension-point id="dataprovider" name="DataProvider" schema="schema/dataprovider.exsd"/>
    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
          point="org.eclipse.ui.views">
       <category
             id="org.csstudio"
