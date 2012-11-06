@@ -64,7 +64,15 @@ public class VTypeHelper
         else if (value instanceof VEnum)
         {
             final VEnum item = (VEnum) value;
-            buf.append(item.getValue()).append(" (").append(item.getIndex()).append(")");
+        	try
+        	{
+                buf.append(item.getValue()).append(" ");
+        	}
+        	catch (ArrayIndexOutOfBoundsException ex)
+        	{
+        		// PVManager doesn't handle enums that have no label. Ignore
+        	}
+            buf.append("(").append(item.getIndex()).append(")");
         }
         else
             buf.append(value.getClass().getName());

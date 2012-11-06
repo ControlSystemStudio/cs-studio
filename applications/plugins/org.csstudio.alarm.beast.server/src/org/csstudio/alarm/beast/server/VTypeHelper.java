@@ -44,7 +44,16 @@ public class VTypeHelper
         if (value instanceof VNumber)
             return ((VNumber)value).getValue().toString();
         if (value instanceof VEnum)
-            return ((VEnum)value).getValue();
+        {
+        	try
+        	{
+        		return ((VEnum)value).getValue();
+        	}
+        	catch (ArrayIndexOutOfBoundsException ex)
+        	{	// PVManager doesn't handle enums that have no label
+        		return "<enum " + ((VEnum)value).getIndex() + ">";
+        	}
+        }
         if (value instanceof VString)
             return ((VString)value).getValue();
         if (value == null)
@@ -95,7 +104,7 @@ public class VTypeHelper
     final public static Timestamp getTimestamp(final VType value)
     {
         final Time time = ValueUtil.timeOf(value);
-        if (time != null)
+        if (time != null  &&  time.isTimeValid())
             return time.getTimestamp();
         return Timestamp.now();
     }
