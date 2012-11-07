@@ -54,29 +54,46 @@ public abstract class DataSource {
      * @return a new or cached handler
      */
     ChannelHandler channel(String channelName) {
-        String channelHandlerName = channelHandlerFor(channelName);
-        ChannelHandler channel = usedChannels.get(channelHandlerName);
+        ChannelHandler channel = usedChannels.get(channelHandlerLookupName(channelName));
         if (channel == null) {
-            channel = createChannel(channelHandlerName);
+            channel = createChannel(channelName);
             if (channel == null)
                 return null;
-            usedChannels.put(channelHandlerName, channel);
+            usedChannels.put(channelHandlerRegisterName(channelName, channel), channel);
         }
         return channel;
     }
     
     /**
-     * Returns the channel handler name to be used for the given channel.
-     * By default, it returns the channel name itself. If a datasource
-     * needs to multiple different channels to the same channel handler
-     * (e.g. parts of the channel name are parameters for the read/write)
-     * then it can override this method to do the appropriate mapping.
+     * Returns the lookup name to use to find the channel handler in
+     * the cache. By default, it returns the channel name itself.
+     * If a datasource needs multiple different channel names to
+     * be the same channel handler (e.g. parts of the channel name
+     * are initialization parameters) then it can override this method
+     * to change the lookup.
      * 
-     * @param channelName
-     * @return the channel handler name
+     * @param channelName the channel name
+     * @return the channel handler to look up in the cache
      */
-    String channelHandlerFor(String channelName) {
+    protected String channelHandlerLookupName(String channelName) {
         return channelName;
+    }
+    
+    /**
+     * Returns the name the given handler should be registered as.
+     * By default, it returns the lookup name, so that lookup and
+     * registration in the cache are consistent. If a datasource
+     * needs multiple different channel names to be the same 
+     * channel handler (e.g. parts of the channel name are read/write
+     * parameters) then it can override this method to change the
+     * registration.
+     * 
+     * @param channelName the name under which the ChannelHandler was created
+     * @param handler the handler to register
+     * @return the name under which to register in the cache
+     */
+    protected String channelHandlerRegisterName(String channelName, ChannelHandler handler) {
+        return channelHandlerLookupName(channelName);
     }
 
     /**

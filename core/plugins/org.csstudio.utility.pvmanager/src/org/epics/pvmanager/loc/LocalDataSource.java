@@ -36,20 +36,29 @@ public final class LocalDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         // Parse the channel name
-        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
-        if (parsedTokens == null || parsedTokens.size() > 2)
-            throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
-        
-        // If the channel was already created, return it (no matter what the argument is)
-        ChannelHandler handler = getChannels().get(parsedTokens.get(0).toString());
-        if (handler != null)
-            return handler;
+        List<Object> parsedTokens = parseName(channelName);
         
         if (parsedTokens.size() == 1) {
             return new LocalChannelHandler(parsedTokens.get(0).toString(), 0.0);
         } else {
             return new LocalChannelHandler(parsedTokens.get(0).toString(), parsedTokens.get(1));
         }
+    }
+    
+    private List<Object> parseName(String channelName) {
+        // Parse the channel name
+        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
+        if (parsedTokens == null || parsedTokens.size() > 2) {
+            throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+        }
+        
+        return parsedTokens;
+    }
+
+    @Override
+    protected String channelHandlerLookupName(String channelName) {
+        List<Object> parsedTokens = parseName(channelName);
+        return parsedTokens.get(0).toString();
     }
 
 }

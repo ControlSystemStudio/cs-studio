@@ -199,7 +199,7 @@ public class CompositeDataSource extends DataSource {
                 buffer = new ArrayList<ChannelWriteBuffer>();
                 buffers.put(dataSource, buffer);
             }
-            buffer.add(channelWriteBuffer);
+            buffer.add(new ChannelWriteBuffer(channelName, channelWriteBuffer.getWriteSubscription()));
         }
         
         Map<String, WriteBuffer> splitBuffers = new HashMap<String, WriteBuffer>();
