@@ -16,6 +16,7 @@ import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
 
@@ -87,31 +88,30 @@ public class Filter
         // Could also try the PVManager's formula support, but already had a formula package...
         for (int i=0; i<pvs.length; ++i)
         {
-            final int index = i;
-            final PVReaderListener pvlistener = new PVReaderListener()
+        	final VariableNode variable = variables[i];
+            final PVReaderListener<VType> pvlistener = new PVReaderListener<VType>()
             {
                 @Override
-                public void pvChanged()
+                public void pvChanged(final PVReaderEvent<VType> event)
                 {
-                    final PVReader<VType> pv = pvs[index];
-                    final VariableNode var = variables[index];
+                    final PVReader<VType> pv = event.getPvReader();
                     final Exception error = pv.lastException();
                     if (error != null)
                     {
-                        Activator.getLogger().log(Level.WARNING, "Error from PV " + pv.getName() + " (var. " + var.getName() + ")", error);
-                        var.setValue(Double.NaN);
+                        Activator.getLogger().log(Level.WARNING, "Error from PV " + pv.getName() + " (var. " + variable.getName() + ")", error);
+                        variable.setValue(Double.NaN);
                     }
                     else
                     {
                         final double value = VTypeHelper.toDouble(pv.getValue());
                         Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
                                 new Object[] { formula.getFormula(), pv.getName(), value });
-                        var.setValue(value);
+                        variable.setValue(value);
                     }
                     evaluate();
                 }
             };
-            pvs[i] = PVManager.read(vType(variables[i].getName())).listeners(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
+            pvs[i] = PVManager.read(vType(variables[i].getName())).readListener(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
         }
     }
 

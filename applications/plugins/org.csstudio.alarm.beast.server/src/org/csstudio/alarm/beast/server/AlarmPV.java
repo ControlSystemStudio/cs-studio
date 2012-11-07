@@ -19,6 +19,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
@@ -135,11 +136,12 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     /** Connect to control system */
     public void start() throws Exception
     {
-        final PVReaderListener listener = new PVReaderListener()
+        final PVReaderListener<VType> listener = new PVReaderListener<VType>()
         {
             @Override
-            public void pvChanged()
+            public void pvChanged(final PVReaderEvent<VType> event)
             {
+            	final PVReader<VType> pv = event.getPvReader();
                 final Exception error = pv.lastException();
                 if (error != null)
                 {
@@ -166,7 +168,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 }
             }
         };
-        pv = PVManager.read(vType(getName())).listeners(listener).timeout(ofSeconds(Preferences.getConnectionGracePeriod())).maxRate(ofSeconds(0.5));
+        pv = PVManager.read(vType(getName())).readListener(listener).timeout(ofSeconds(Preferences.getConnectionGracePeriod())).maxRate(ofSeconds(0.5));
         if (filter != null)
             filter.start();
     }

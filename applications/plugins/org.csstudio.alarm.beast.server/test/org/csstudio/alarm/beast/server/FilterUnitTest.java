@@ -74,10 +74,8 @@ public class FilterUnitTest implements FilterListener
     public void testFilter() throws Exception
     {
         // Create local PVs
-        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x")).synchWriteAndMaxReadRate(ofSeconds(1.0));
-        final PV<Object, Object> y = PVManager.readAndWrite(channel("loc://y")).synchWriteAndMaxReadRate(ofSeconds(1.0));
-        x.write(1.0);
-        y.write(2.0);
+        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x(1.0)")).synchWriteAndMaxReadRate(ofSeconds(1.0));
+        final PV<Object, Object> y = PVManager.readAndWrite(channel("loc://y(2.0)")).synchWriteAndMaxReadRate(ofSeconds(1.0));
         
         final Filter filter = new Filter("'loc://x' + 'loc://y'", this);
         filter.start();
@@ -112,9 +110,7 @@ public class FilterUnitTest implements FilterListener
     public void testUpdates() throws Exception
     {
         // Create local PVs
-        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x")).synchWriteAndMaxReadRate(ofSeconds(1.0));
-        x.write(1.0);
-        
+        final PV<Object, Object> x = PVManager.readAndWrite(channel("loc://x(1.0)")).synchWriteAndMaxReadRate(ofSeconds(1.0));
         final Filter filter = new Filter("'loc://x' < 5 ? 1 : 2", this);
         filter.start();
 
