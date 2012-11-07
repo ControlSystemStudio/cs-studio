@@ -22,7 +22,6 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VType;
 import org.epics.util.time.TimeDuration;
 
@@ -181,8 +180,14 @@ public class Cell
             return;
         if (pv != null)
         {
+        	if (! isPVWriteAllowed())
+        		throw new Exception(pv.getName() + " is read-only");
             original_pv_value = current_value;
         	pv.write(user_value);
+        	// TODO This is not really seeing write errors
+        	final Exception error = pv.lastWriteException();
+        	if (error != null)
+        		throw error;
         }
         if (last_name_pv != null)
         {
@@ -291,21 +296,7 @@ public class Cell
                     instance.getModel().fireCellUpdate(Cell.this);
                 }
             };
-        	pv = PVManager.readAndWrite(vType(pv_name)).readListener(read_listener).asynchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
-
-    		// TODO Update when new write listener becomes available
-        	pv.addPVWriterListener(new PVWriterListener()
-            {
-                @Override
-                public void pvWritten()
-                {
-                    final Exception error = pv.lastWriteException();
-                    if (error != null)
-                    {
-                        logger.log(Level.WARNING, "PV Write error", error);
-                    }
-                }
-            });
+        	pv = PVManager.readAndWrite(vType(pv_name)).readListener(read_listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
         }
 
         // Create the optional comment pvs.
@@ -330,7 +321,7 @@ public class Cell
 					instance.getModel().fireCellUpdate(Cell.this);
 				}
 			};
-            last_name_pv = PVManager.readAndWrite(vType(name)).readListener(listener).asynchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+            last_name_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
         }
         name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
@@ -353,7 +344,7 @@ public class Cell
                     instance.getModel().fireCellUpdate(Cell.this);
                 }
             };
-            last_date_pv = PVManager.readAndWrite(vType(name)).readListener(listener).asynchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+            last_date_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
         }
 
         name = MacroUtil.replaceMacros(column.getCommentPvWithMacros(), instance.getMacros());
@@ -377,7 +368,7 @@ public class Cell
                     instance.getModel().fireCellUpdate(Cell.this);
                 }
             };
-            last_comment_pv = PVManager.readAndWrite(vType(name)).readListener(listener).asynchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+            last_comment_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
         }
     }
 
