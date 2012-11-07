@@ -5,10 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.display.pace.gui;
+package org.csstudio.display.pace;
 
 import java.io.FileInputStream;
 
+import org.csstudio.display.pace.gui.GUI;
 import org.csstudio.display.pace.model.Model;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

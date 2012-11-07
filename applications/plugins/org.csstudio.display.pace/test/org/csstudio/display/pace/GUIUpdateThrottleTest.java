@@ -5,12 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.display.pace.gui;
+package org.csstudio.display.pace;
 
 import static org.junit.Assert.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.display.pace.gui.GUIUpdateThrottle;
 import org.junit.Test;
 
 /** JUnit test of GUIUpdateThrottle

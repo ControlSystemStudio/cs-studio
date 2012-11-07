@@ -5,20 +5,36 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.display.pace.model;
+package org.csstudio.display.pace;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.csstudio.data.values.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
+import org.csstudio.display.pace.model.Cell;
+import org.csstudio.display.pace.model.Model;
+import org.csstudio.display.pace.model.ModelListener;
+import org.csstudio.display.pace.model.VTypeHelper;
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.jca.JCADataSource;
+import org.epics.pvmanager.loc.LocalDataSource;
+import org.epics.util.time.TimeDuration;
+import org.junit.Before;
 import org.junit.Test;
 
 /** JUnit plug-in test of Model
@@ -28,8 +44,6 @@ import org.junit.Test;
  *  (See comments in GUITest.java for more on that)
  *
  *  @author Kay Kasemir
- *
- *    reviewed by Delphy 01/29/09
  */
 @SuppressWarnings("nls")
 public class ModelTest
@@ -43,6 +57,20 @@ public class ModelTest
 
     /** Counter for received updates from cells */
     private AtomicInteger updates = new AtomicInteger(0);
+    private AtomicInteger values = new AtomicInteger(0);
+    
+    @Before
+    public void setup()
+    {
+    	System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", "127.0.0.1 160.91.228.17");
+    	System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", "127.0.0.1 160.91.228.17");
+    	
+    	final CompositeDataSource sources = new CompositeDataSource();
+    	sources.putDataSource("loc", new LocalDataSource());
+    	sources.putDataSource("ca", new JCADataSource());
+    	sources.setDefaultDataSource("ca");
+    	PVManager.setDefaultDataSource(sources);
+    }
 
     /** ModelListener that counts received updates.
      *  @see #updates
@@ -55,6 +83,9 @@ public class ModelTest
             // Atomically count up; thread-safe
             updates.incrementAndGet();
             System.out.println("CellUpdate: " + cell);
+            String value = cell.getCurrentValue();
+            if (value != null  &&  !value.isEmpty())
+                values.incrementAndGet();
         }
     };
 
@@ -163,19 +194,44 @@ public class ModelTest
         assertFalse(model.isEdited());
         // ... should have received a few (initial) updates
         assertTrue(updates.get() > 0);
-     }
-
+        // ... should have received a few real values
+        assertTrue(values.get() > 0);
+    }
 
     /** Check PV changes, using local PV */
-    @Test(timeout=20000)
+    @Test //(timeout=20000)
     public void testSaveRestore() throws Exception
     {
-        // Get PV that we'll change
-        final PV pv = PVFactory.createPV("loc://limit1");
-        pv.start();
-        while (!pv.isConnected())
-            Thread.sleep(100);
-        pv.setValue(3.140);
+    	final AtomicReference<String> pv_value = new AtomicReference<>("");
+    	
+        // Get PV that we'll change via the Cell
+    	final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1"))
+    			.readListener(new PVReaderListener<VType>()
+				{
+					@Override
+					public void pvChanged(final PVReaderEvent<VType> event)
+					{
+				    	final PVReader<VType> pv = event.getPvReader();
+				    	final Exception error = pv.lastException();
+				    	if (error != null)
+				    		error.printStackTrace();
+				    	final String value = VTypeHelper.getString(pv.getValue());
+						pv_value.set(value);
+						System.out.println("PV update: " + value);
+				    	synchronized (pv_value)
+				    	{
+				    		pv_value.notifyAll();
+						}
+					}
+				}).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.1));
+
+    	while (!pv.isConnected())
+    		Thread.sleep(100);
+    	pv.write("3.14");
+    	// Allow time for update
+    	synchronized (pv_value) { pv_value.wait(1000); }
+    	System.out.println("PV is " + pv_value.get());
+    	assertThat(pv_value.get(), equalTo("3.14"));
 
         // Start model for that PV
         final Model model =
@@ -190,23 +246,27 @@ public class ModelTest
         // Give it some time to reflect current value
         while (updates.get() < 1)
             Thread.sleep(100);
-        assertEquals("3.140", model.getInstance(0).getCell(0).getCurrentValue());
+        assertEquals("3.14", model.getInstance(0).getCell(0).getCurrentValue());
         assertFalse(model.isEdited());
 
         // Simulate user-entered value
         model.getInstance(0).getCell(0).setUserValue("6.28");
         assertTrue(model.isEdited());
 
-        // Write model to PVs
-        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+        // Write model to PVs: PV is unchanged...
+        assertThat(pv_value.get(), equalTo("3.14"));
+        // .. until values get saved
         model.saveUserValues("test");
-        assertEquals(6.28, ValueUtil.getDouble(pv.getValue()), 0.01);
+    	synchronized (pv_value) { pv_value.wait(1000); }
+    	System.out.println("PV is " + pv_value.get());
+        assertThat(pv_value.get(), equalTo("6.28"));
         // Model is still 'edited' because we didn't revert nor clear
         assertTrue(model.isEdited());
 
         // Revert
         model.revertOriginalValues();
-        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+    	synchronized (pv_value) { pv_value.wait(1000); }
+        assertThat(pv_value.get(), equalTo("3.14"));
 
         // We're back to having user-entered values, they're not written
         assertTrue(model.isEdited());
@@ -219,13 +279,14 @@ public class ModelTest
         assertTrue(model.isEdited());
 
         // Write model to PVs, submit
-        assertEquals(3.14, ValueUtil.getDouble(pv.getValue()), 0.01);
+        assertThat(pv_value.get(), equalTo("3.14"));
         model.saveUserValues("test");
         model.clearUserValues();
         assertFalse(model.isEdited());
-        assertEquals(10.0, ValueUtil.getDouble(pv.getValue()), 0.01);
+    	synchronized (pv_value) { pv_value.wait(1000); }
+        assertThat(pv_value.get(), equalTo("10.0"));
 
         model.stop();
-        pv.stop();
+        pv.close();
      }
 }
