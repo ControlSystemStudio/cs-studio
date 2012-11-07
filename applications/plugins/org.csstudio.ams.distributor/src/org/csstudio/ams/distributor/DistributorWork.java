@@ -919,7 +919,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 		}
 
 		HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
-				fa.getFilterActionTypeRef(), user, null, 0, 0, 0, topic);
+				fa.getFilterActionTypeRef(), user, null, -1, 0, 0, topic);
 		return ErrorState.STAT_OK.getStateNumber();
 	}
 
@@ -1002,7 +1002,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
 					fa.getFilterActionTypeRef(), aUser.getUser(),
-					userGroup.getUsergroup(), 0, 0, 0,
+					userGroup.getUsergroup(), -1, 0, 0,
 					TopicDAO.select(memoryCacheDb, fa.getReceiverRef()));
 			iOneSended = ErrorState.STAT_OK.getStateNumber();
 		}

@@ -772,7 +772,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
                         && (!item.getType().equals("Announce")))
                     return "";
 
-                if (item.getReceiverPos() == 0)
+                if (item.getReceiverPos() < 0)
                     return "-";
 
                 return Integer.toString(item.getReceiverPos());
