@@ -93,6 +93,8 @@ public class WriteCache<T> extends WriteFunction<T> {
      * @return the channel name
      */
     public String getChannelName() {
+        // TODO: to remove. The name should not be taken here because
+        // the datasource may redirect it
         return channelName;
     }
     
