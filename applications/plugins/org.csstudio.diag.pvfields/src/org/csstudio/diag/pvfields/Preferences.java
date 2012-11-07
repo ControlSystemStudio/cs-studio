@@ -1,18 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.pvfields.model;
+package org.csstudio.diag.pvfields;
 
-/** Listener interface to PVFieldsModel */
-public interface PVFieldsListener
+public class Preferences
 {
-	/** Something changed in the model
-	 *  @param field Field that changed (new 'live' value)
-	 *               or <code>null</code> if the whole model changed
+	/** Timeout for querying {@link DataProvider}s
+	 *  @return Milliseconds
 	 */
-	public void fieldChanged(PVInfo field);
+	public static int getTimeout()
+	{
+		return 60*1000;
+	}
 }
