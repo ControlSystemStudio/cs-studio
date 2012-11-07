@@ -205,7 +205,7 @@ public class ModelTest
     	final AtomicReference<String> pv_value = new AtomicReference<>("");
     	
         // Get PV that we'll change via the Cell
-    	final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1"))
+    	final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1(3.14)"))
     			.readListener(new PVReaderListener<VType>()
 				{
 					@Override
@@ -227,9 +227,6 @@ public class ModelTest
 
     	while (!pv.isConnected())
     		Thread.sleep(100);
-    	pv.write("3.14");
-    	// Allow time for update
-    	synchronized (pv_value) { pv_value.wait(1000); }
     	System.out.println("PV is " + pv_value.get());
     	assertThat(pv_value.get(), equalTo("3.14"));
 
