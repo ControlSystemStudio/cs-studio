@@ -67,5 +67,8 @@
             class="org.csstudio.desy.startuphelper.startupservice.DesyServicesStartup">
       </services>
       <workbench class="org.csstudio.utility.product.Workbench"/>
+      <startupParameters
+            class="org.csstudio.desy.product.StartupLogging">
+      </startupParameters>
    </extension>
 </plugin>

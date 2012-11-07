@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: jul-to-slf4j-bridge
+Bundle-Name: SLF4J to JUL bridge
 Bundle-SymbolicName: org.slf4j.bridge
-Bundle-Version: 1.6.1.201204101400
-Bundle-Vendor: SLF4J.ORG bundled by DESY <css-developer@desy.de>
-Export-Package: org.slf4j.bridge;version="1.6.1.201203211800"
+Bundle-Version: 1.7.2
+Export-Package: org.slf4j.bridge;version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.slf4j;bundle-version="1.6.1";visibility:=reexport
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
+Require-Bundle: org.slf4j;bundle-version="1.7.2"

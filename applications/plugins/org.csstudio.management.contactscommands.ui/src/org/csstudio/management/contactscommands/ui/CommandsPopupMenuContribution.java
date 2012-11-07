@@ -31,30 +31,35 @@ public class CommandsPopupMenuContribution extends ExtensionContributionFactory
 
 	}
 
-	@Override
-	public void createContributionItems(IServiceLocator serviceLocator,
-			IContributionRoot additions) {
+    @Override
+    public void createContributionItems(IServiceLocator serviceLocator, IContributionRoot additions) {
+        
+        ID userId = getSelectedUserId(serviceLocator);
+        
+        // possibly no user could be derived from the selection
+        if (userId != null) {
+            // 1. add dummy context menu
+            // addDummyContextItem(serviceLocator, additions);
+            
+            // 2. add real context menu
+            addContextItems(serviceLocator, additions, userId);
+        }
+    }
 
-		System.out.println("------------ create contribution items");
-		ID userId = getSelectedUserId(serviceLocator);
-
-		// 1. add dummy context menu
-//		 addDummyContextItem(serviceLocator, additions);
-
-		// 2. add real context menu
-		addContextItems(serviceLocator, additions, userId);
-
-	}
-
-	private ID getSelectedUserId(IServiceLocator serviceLocator) {
+	// returns null if no user could be derived from the selection
+    private ID getSelectedUserId(IServiceLocator serviceLocator) {
 		ISelectionService service = (ISelectionService) serviceLocator
 				.getService(ISelectionService.class);
 		IStructuredSelection selection = (IStructuredSelection) service
 				.getSelection();
 
-		IRosterEntry rosterEntry = (IRosterEntry) selection.getFirstElement();
-		IUser user = rosterEntry.getUser();
-		ID userId = user.getID();
+		ID userId = null;
+		if (selection.getFirstElement() instanceof IRosterEntry) {
+		    IRosterEntry rosterEntry = (IRosterEntry) selection.getFirstElement();
+		    IUser user = rosterEntry.getUser();
+		    userId = user.getID();
+        }
+		
 		return userId;
 	}
 
