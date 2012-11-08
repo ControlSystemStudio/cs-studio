@@ -7,10 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
 import org.csstudio.scan.server.SimulationInfo;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
 
 /** Simulated device
  *  @author Kay Kasemir
@@ -18,12 +17,7 @@ import org.csstudio.scan.server.SimulationInfo;
 @SuppressWarnings("nls")
 public class SimulatedDevice extends Device
 {
-    private volatile IValue value = ValueFactory.createDoubleValue(TimestampFactory.now(),
-			ValueFactory.createInvalidSeverity(),
-			"Unknown",
-			null,
-			IValue.Quality.Original,
-			new double[] { Double.NaN });;
+    private volatile VType value = ValueFactory.newVDouble(Double.NaN);
 
 	final private double slew_rate;
 
@@ -68,7 +62,7 @@ public class SimulatedDevice extends Device
 
 	/** {@inheritDoc} */
 	@Override
-    public IValue read() throws Exception
+    public VType read() throws Exception
     {
 	    return value;
     }
@@ -78,14 +72,7 @@ public class SimulatedDevice extends Device
     public void write(final Object value) throws Exception
     {
 		if (value instanceof Number)
-		{
-			this.value = ValueFactory.createDoubleValue(TimestampFactory.now(),
-					ValueFactory.createOKSeverity(),
-					"OK",
-					null,
-					IValue.Quality.Original,
-					new double[] { ((Number) value).doubleValue() });
-		}
+			this.value = ValueFactory.newVDouble( ((Number) value).doubleValue() );
 		fireDeviceUpdate();
     }
 }

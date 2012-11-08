@@ -9,17 +9,18 @@ package org.csstudio.scan.commandimpl;
 
 import java.util.Date;
 
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.ndarray.NDArray;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.IteratorNumber;
 
 /** Implementation of the {@link ScanScriptContext}
@@ -84,10 +85,10 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     public Object read(final String device_name) throws Exception
     {
         final Device device = context.getDevice(device_name);
-        final IValue value = device.read();
-        if (value instanceof IStringValue)
-            return ValueUtil.getString(value);
-        return ValueUtil.getDouble(value);
+        final VType value = device.read();
+        if (value instanceof VNumber)
+            return ValueUtil.numericValueOf(value);
+        return VTypeHelper.toString(value);
     }
 
     /** {@inheritDoc} */

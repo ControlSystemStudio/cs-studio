@@ -18,13 +18,13 @@ package org.csstudio.scan.commandimpl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.device.Device;
-import org.csstudio.scan.device.ValueConverter;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
+import org.epics.pvmanager.data.VType;
 
 /** {@link ScanCommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir
@@ -59,9 +59,9 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 		for (String device_name : device_names)
 		{
 			final Device device = context.getDevice(device_name);
-			final IValue value = device.read();
+			final VType value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
-			log.log(device_name, ValueConverter.createSample(serial, value));
+			log.log(device_name, VTypeHelper.createSample(serial, value));
 		}
         context.workPerformed(1);
 	}

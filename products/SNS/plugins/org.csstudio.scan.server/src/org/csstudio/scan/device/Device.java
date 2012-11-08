@@ -18,8 +18,7 @@ package org.csstudio.scan.device;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.epics.pvmanager.data.VType;
 
 /** Base interface for all devices
  *
@@ -100,7 +99,7 @@ public class Device
 	 *  @return Current value of the device
 	 *  @throws Exception on error: Cannot read, ...
 	 */
-	public IValue read() throws Exception
+	public VType read() throws Exception
     {
 		throw new Exception("Device '" + info.getName() + "' does not support reading");
     }
@@ -111,12 +110,8 @@ public class Device
 	 */
 	public double readDouble() throws Exception
     {
-		final IValue value = read();
-		if (value == null)
-			return Double.NaN;
-		return ValueUtil.getDouble(value);
+		return VTypeHelper.toDouble(read());
     }
-
 
 	/** Write a value to the device
 	 *  @param value Value to write (Double, String)

@@ -19,13 +19,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
-import org.csstudio.scan.device.ValueConverter;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
@@ -127,7 +126,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             final SimulatedDevice device, final double value) throws Exception
     {
 		// Get previous value
-		final double original = ValueUtil.getDouble(device.read());
+		final double original = device.readDouble();
 
 		// Estimate execution time
 		final double time_estimate = command.getWait()
@@ -209,7 +208,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         {
             final DataLog log = context.getDataLog();
 	        final long serial = log.getNextScanDataSerial();
-	        log.log(readback.getInfo().getAlias(), ValueConverter.createSample(serial, readback.read()));
+	        log.log(readback.getInfo().getAlias(), VTypeHelper.createSample(serial, readback.read()));
         }
 
         // Execute loop body
