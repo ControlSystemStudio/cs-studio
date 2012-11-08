@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsDistributorProduct" id="org.csstudio.ams.distributor.AmsDistributorProduct" application="org.csstudio.ams.distributor.AmsDistributor" useFeatures="false" includeLaunchers="true">
+<product name="AmsDistributorProduct" id="org.csstudio.ams.distributor.AmsDistributorProduct" application="org.csstudio.ams.distributor.AmsDistributor" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
