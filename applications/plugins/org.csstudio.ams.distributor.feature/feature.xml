@@ -3,7 +3,10 @@
       id="org.csstudio.ams.distributor.feature"
       label="AmsDistributor Feature"
       version="1.0.0.qualifier"
-      provider-name="DESY &lt;css-developer@desy.de&gt;, Markus Moeller">
+      provider-name="DESY &lt;css-developer@desy.de&gt;, Markus Moeller"
+      os="win32"
+      ws="win32"
+      arch="x86">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -338,14 +341,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.filesystem.win32.x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.jobs"
          download-size="0"
          install-size="0"
@@ -361,14 +356,6 @@
 
    <plugin
          id="org.eclipse.core.net.win32.x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.net.win32.x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -759,14 +746,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.security.win32.x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.simpleconfigurator"
          download-size="0"
          install-size="0"
@@ -880,14 +859,6 @@
 
    <plugin
          id="org.eclipse.swt.win32.win32.x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.swt.win32.win32.x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
