@@ -72,8 +72,8 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
     
-    public PVConfiguration<R, W>  listeners(PVWriterListener... listeners) {
-        pvWriterConfiguration.listeners(listeners);
+    public PVConfiguration<R, W>  writeListener(PVWriterListener<? extends W> listener) {
+        pvWriterConfiguration.writeListener(listener);
         return this;
     }
 

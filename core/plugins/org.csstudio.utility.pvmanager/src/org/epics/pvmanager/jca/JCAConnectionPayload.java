@@ -53,4 +53,13 @@ public class JCAConnectionPayload {
         return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
     
+    /**
+     * True if the channel is not null, connected, and can be written to.
+     * 
+     * @return true if the channel is ready for write
+     */
+    public boolean isWriteConnected() {
+        return isChannelConnected() && channel.getWriteAccess();
+    }
+    
 }

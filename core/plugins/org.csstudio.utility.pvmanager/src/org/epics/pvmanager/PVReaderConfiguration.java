@@ -46,7 +46,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
     
     private DesiredRateExpression<T> aggregatedPVExpression;
     private ExceptionHandler exceptionHandler;
-    private List<PVReaderListener<T>> readListeners = new ArrayList<PVReaderListener<T>>();
+    private List<PVReaderListener<T>> readListeners = new ArrayList<>();
 
     PVReaderConfiguration(DesiredRateExpression<T> aggregatedPVExpression) {
         this.aggregatedPVExpression = aggregatedPVExpression;

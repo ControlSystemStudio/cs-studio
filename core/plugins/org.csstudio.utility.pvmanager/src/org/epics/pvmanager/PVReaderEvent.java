@@ -4,17 +4,15 @@
  */
 package org.epics.pvmanager;
 
-import java.awt.event.ActionEvent;
-
 /**
  *
  * @author carcassi
  */
 public class PVReaderEvent<T> {
     
-    public static int VALUE_MASK = 0b000001;
-    public static int CONNECTION_MASK = 0b000010;
-    public static int EXCEPTION_MASK = 0b000100;
+    public static int CONNECTION_MASK = 0b000001;
+    public static int EXCEPTION_MASK  = 0b000010;
+    public static int VALUE_MASK      = 0b000100;
     
     private final int notificationMask;
     private final PVReader<T> pvReader;
