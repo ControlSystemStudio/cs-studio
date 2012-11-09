@@ -46,6 +46,7 @@ import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
 import org.epics.pvmanager.WriteFailException;
@@ -504,7 +505,7 @@ public class PVManagerProbe extends ViewPart {
 		setValue(null, null);
 		setTime(null);
 		setMeter(null, null);
-		setReadOnly(false);
+		setReadOnly(true);
 
 		// If name is blank, update status to waiting and quit
 		if ((pvName.getName() == null) || pvName.getName().trim().isEmpty()) {
@@ -536,18 +537,15 @@ public class PVManagerProbe extends ViewPart {
 						}
 					}
 				})
+				.writeListener(new PVWriterListener<Object>() {
+					@Override
+					public void pvChanged(PVWriterEvent<Object> event) {
+						Exception lastException = pv.lastWriteException();
+						setReadOnly(!pv.isWriteConnected());
+					}
+				})
 				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
 		
-		pv.addPVWriterListener(new PVWriterListener() {
-			
-			@Override
-			public void pvWritten() {
-				Exception lastException = pv.lastWriteException();
-				if (lastException instanceof WriteFailException) {
-					setReadOnly(true);
-				}
-			}
-		});
 		
 		this.PVName = pvName;
 
