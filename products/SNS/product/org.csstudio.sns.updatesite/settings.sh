@@ -6,6 +6,8 @@
 
 export VERSION=3.2.0I
 
+export PATH=/Library/Java/JavaVirtualMachines/1.6.0_23-b05-318.jdk/Contents/Home/bin:$PATH
+
 # Top of repository tree
 export TOP=/Users/ky9/git/cs-studio
 
