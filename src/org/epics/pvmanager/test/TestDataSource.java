@@ -39,6 +39,12 @@ public final class TestDataSource extends DataSource {
         if ("delayedConnectionError".equals(channelName)) {
             return new DelayedConnectionErrorChannel(channelName);
         }
+        if ("brokenWrite".equals(channelName)) {
+            return new BrokenWriteChannel(channelName);
+        }
+        if ("normal".equals(channelName)) {
+            return new NormalChannel(channelName);
+        }
         return null;
     }
 

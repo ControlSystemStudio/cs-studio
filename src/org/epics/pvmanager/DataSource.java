@@ -341,6 +341,14 @@ public abstract class DataSource {
                         @Override
                         public void channelWritten(Exception ex) {
                             planner.removeChannel(channelName);
+                            
+                            // If there was an error, notify the exception
+                            // and don't schedule anything else
+                            if (ex != null) {
+                                exceptionHandler.handleException(ex);
+                                return;
+                            }
+                            
                             // Notify only when the last channel was written
                             if (planner.isDone()) {
                                 callback.run();

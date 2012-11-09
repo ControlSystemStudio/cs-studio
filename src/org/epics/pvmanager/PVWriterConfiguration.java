@@ -47,7 +47,7 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
     
     private WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
-    private List<PVWriterListener> writeListeners = new ArrayList<PVWriterListener>();
+    private List<PVWriterListener<T>> writeListeners = new ArrayList<>();
 
     PVWriterConfiguration(WriteExpression<T> writeExpression) {
         this.writeExpression = writeExpression;
@@ -58,10 +58,10 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
      * @param listeners
      * @return 
      */
-    public PVWriterConfiguration<T> listeners(PVWriterListener... listeners) {
-        for (PVWriterListener pVWriterListener : listeners) {
-            writeListeners.add(pVWriterListener);
-        }
+    public PVWriterConfiguration<T> writeListener(PVWriterListener<? extends T> listener) {
+        @SuppressWarnings("unchecked")
+        PVWriterListener<T> convertedListener = (PVWriterListener<T>) listener;
+        writeListeners.add(convertedListener);
         return this;
     }
 
@@ -69,10 +69,6 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
      * Forwards exception to the given exception handler. No thread switch
      * is done, so the handler is notified on the thread where the exception
      * was thrown.
-     * <p>
-     * Giving a custom exception handler will disable the default handler,
-     * so {@link PVWriter#lastWriteException() } is no longer set and no notification
-     * is done.
      *
      * @param exceptionHandler an exception handler
      * @return this
@@ -90,7 +86,7 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
-        for (PVWriterListener pVWriterListener : writeListeners) {
+        for (PVWriterListener<T> pVWriterListener : writeListeners) {
             pvWriter.addPVWriterListener(pVWriterListener);
         }
         if (exceptionHandler == null) {
@@ -102,7 +98,7 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         try {
             if (timeoutMessage == null)
                 timeoutMessage = "Write timeout";
-            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), exceptionHandler,
+            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), notificationExecutor, exceptionHandler,
                     timeout, timeoutMessage));
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);

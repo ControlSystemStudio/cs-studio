@@ -26,12 +26,12 @@ public class PV<R, W> implements PVReader<R>, PVWriter<W> {
     }
 
     @Override
-    public void addPVWriterListener(PVWriterListener listener) {
+    public void addPVWriterListener(PVWriterListener<? extends W> listener) {
         writer.addPVWriterListener(listener);
     }
 
     @Override
-    public void removePVWriterListener(PVWriterListener listener) {
+    public void removePVWriterListener(PVWriterListener<? extends W> listener) {
         writer.removePVWriterListener(listener);
     }
 

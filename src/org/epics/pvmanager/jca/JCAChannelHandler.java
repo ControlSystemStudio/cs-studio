@@ -282,6 +282,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     @Override
+    protected boolean isWriteConnected(JCAConnectionPayload connPayload) {
+        return connPayload != null && connPayload.isWriteConnected();
+    }
+
+    @Override
     public synchronized Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<String, Object>();
         if (channel != null) {
