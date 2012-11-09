@@ -60,6 +60,7 @@ import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VDouble;
 
@@ -783,14 +784,14 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 						}
 					}
 				})
+				.writeListener(new PVWriterListener<Map<String,Double>>() {
+					@Override
+					public void pvChanged(
+							PVWriterEvent<Map<String, Double>> event) {
+					}
+				})
 				.asynchWriteAndMaxReadRate(ofHertz(2));
 
-		pv.addPVWriterListener(new PVWriterListener() {
-
-			@Override
-			public void pvWritten() {
-			}
-		});
 	}
 
 	private List<Map<String, Double>> calculateSetpoints() {
