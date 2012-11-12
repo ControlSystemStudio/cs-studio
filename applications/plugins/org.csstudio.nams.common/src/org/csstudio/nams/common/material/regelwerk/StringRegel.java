@@ -5,11 +5,9 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
@@ -32,11 +30,14 @@ public class StringRegel implements VersandRegel {
 
 	private final MessageKeyEnum messageKey;
 
+	private final SimpleDateFormat amsDateFormat; 
+	
 	public StringRegel(final StringRegelOperator operator,
 			final MessageKeyEnum messageKey, final String compareString) {
 		this.operator = operator;
 		this.messageKey = messageKey;
 		this.compareString = compareString;
+		this.amsDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	}
 
 	/*
@@ -197,10 +198,13 @@ public class StringRegel implements VersandRegel {
 
 	private int timeCompare(final String value, final String compare)
 			throws ParseException {
-		final Date dateValue = DateFormat.getDateInstance(DateFormat.SHORT,
-				Locale.US).parse(value);
-		final Date dateCompValue = DateFormat.getDateInstance(DateFormat.SHORT,
-				Locale.US).parse(compare);
+//		final Date dateValue = DateFormat.getDateInstance(DateFormat.SHORT,
+//				Locale.US).parse(value);
+//		final Date dateCompValue = DateFormat.getDateInstance(DateFormat.SHORT,
+//				Locale.US).parse(compare);
+
+	    final Date dateValue = amsDateFormat.parse(value);
+	    final Date dateCompValue = amsDateFormat.parse(compare);
 
 		return dateValue.compareTo(dateCompValue);
 	}
