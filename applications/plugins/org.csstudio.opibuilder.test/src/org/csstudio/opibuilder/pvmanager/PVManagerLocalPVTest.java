@@ -7,6 +7,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PVManagerLocalPVTest {
@@ -14,7 +15,7 @@ public class PVManagerLocalPVTest {
 	private static int updates = 0;
 
 	static String pvName;
-	private static PVManagerPV pv;
+	private static PVManagerPV pv, pv2;
 
 	private static PVListener listener;
 
@@ -28,8 +29,8 @@ public class PVManagerLocalPVTest {
 		// "Ring_Diag:VFM:image";
 		//"Ring_IDmp:Foil_Plunge:Psn";
 		// "css:sensor";
-		// "sim://noise";
-		"loc://test";
+		"sim://noise";
+		//"loc://test";
 		// "CG1D:Cam:Cam1:AcquireTime";
 
 		listener = new PVListener() {
@@ -46,26 +47,38 @@ public class PVManagerLocalPVTest {
 			}
 		};
 
-		pv = PVManagerPVFactory.getInstance().createPV(pvName);
+		pv = new PVManagerPV(pvName, false, 100);
 		pv.start();
-		System.out.println("Connecting...");
+		
 		while (!pv.isConnected()) {
-			Thread.sleep(100);
+			System.out.println("Connecting 1...");
+			Thread.sleep(1000);
+		}
+		
+		pv2 = new PVManagerPV(pvName, false, 100);
+		pv2.start();
+		
+		while (!pv2.isConnected()) {
+			System.out.println("Connecting 2...");
+			Thread.sleep(1000);
 		}
 
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		Thread.sleep(3000);
+		Thread.sleep(30000);
 		pv.stop();
+		pv2.stop();
 	}
 
 	@Test
 	public void testAddListener() throws InterruptedException {
 		pv.addListener(listener);
+		pv2.addListener(listener);
 	}
 
+	@Ignore
 	@Test
 	public void testWrite() throws Exception {
 		int oldUpdates = updates;

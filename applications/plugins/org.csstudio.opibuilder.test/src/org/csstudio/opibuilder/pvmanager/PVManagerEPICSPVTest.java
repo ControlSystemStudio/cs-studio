@@ -50,7 +50,7 @@ public class PVManagerEPICSPVTest {
 			}
 		};
 
-		pv = PVManagerPVFactory.getInstance().createPV(pvName, true, 1000);
+		pv = new PVManagerPV(pvName, true, 100);
 		pv.start();
 		System.out.println("Connecting...");
 		while (!pv.isConnected()) {
@@ -61,7 +61,7 @@ public class PVManagerEPICSPVTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		Thread.sleep(3000);
+		Thread.sleep(30000);
 		pv.stop();
 	}
 

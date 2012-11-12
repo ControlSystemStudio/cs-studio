@@ -6,7 +6,13 @@ import static org.epics.util.time.TimeDuration.ofMillis;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
@@ -16,18 +22,21 @@ import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.ValueUtil;
 import org.epics.pvmanager.jca.JCADataSource;
 import org.epics.pvmanager.sim.SimulationDataSource;
+import org.epics.pvmanager.util.Executors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 
 public class PVManagerTest {
 
 	private static int updates = 0;
 	
 	String pvName = //"css:sine";
-			"css:count";
+			//"css:count";
+			"loc://test";
 			//"css:setpoint";
 			//"Ring_Diag:VFM:image"; 
 			//"Ring_IDmp:Foil_Plunge:Psn";
@@ -68,60 +77,85 @@ public class PVManagerTest {
 		}
 		reader.close();
 	}
-	@Ignore
+
 	@Test
 	public void testPVReadAndWrite() throws InterruptedException{
-		final PV<Object, Object> pv = PVManager.readAndWrite(channel(pvName)).
-				asynchWriteAndMaxReadRate(ofMillis(1));
+		final Display display = new Display ();
+		Shell shell = new Shell (display);
+		shell.setLayout(new FillLayout());
+		Button ok = new Button (shell, SWT.PUSH);
+		ok.setText ("OK");
+		shell.open ();
+		 Executor SWTThread = new Executor() {
+
+             @Override
+             public void execute(Runnable task) {
+                 try {
+                     if (!display.isDisposed()) {
+                         display.asyncExec(task);
+                     }
+                             } catch (Exception e) {
+                                     e.printStackTrace();
+                             }
+             }
+         };
+		final PVReader<Object> pv = PVManager.read(channel(pvName)).notifyOn(SWTThread)
+				.maxRate(ofMillis(10));
+		
 		Thread.sleep(1000);
+		//for(long i=0; i<10000000L; i++){}
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
 			public void pvChanged() {
-				Object newValue =pv.getValue();
-				if(newValue ==null){
-					System.out.println("null"+ " Connected: " + pv.isConnected());
-					return;
-				}
-				
-				Class<?> type = ValueUtil.typeOf(newValue);
-				System.out.println(type + " " + ValueUtil.timeOf(newValue).getTimestamp() + " " + 
-						ValueUtil.numericValueOf(newValue) + " "+
-						ValueUtil.alarmOf(newValue).getAlarmSeverity() + " " + 
-						ValueUtil.alarmOf(newValue).getAlarmStatus() +" " +
-//						ValueUtil.displayOf(newValue).getFormat().format(ValueUtil.numericValueOf(newValue)) + " "+
-						" Connected: " + pv.isConnected());
-				if(newValue instanceof VEnum){
-					System.out.println(((VEnum)newValue).getValue() + " " + 
-				((VEnum)newValue).getIndex() +" " + ((VEnum)newValue).getLabels());
-				}
-				Exception ex = pv.lastException();
-				if(ex != null)
-					System.out.println(ex);
-				ex = pv.lastWriteException();
-				if(ex != null)
-					System.out.println(ex);
-				updates++;
+				System.out.println("First Listener: " + ValueUtil.numericValueOf(pv.getValue()));
+				System.out.println(Thread.currentThread().getName());
+
+//				Object newValue =pv.getValue();
+//				if(newValue ==null){
+//					System.out.println("null"+ " Connected: " + pv.isConnected());
+//					return;
+//				}
+//				
+//				Class<?> type = ValueUtil.typeOf(newValue);
+//				System.out.println(type + " " + ValueUtil.timeOf(newValue).getTimestamp() + " " + 
+//						ValueUtil.numericValueOf(newValue) + " "+
+//						ValueUtil.alarmOf(newValue).getAlarmSeverity() + " " + 
+//						ValueUtil.alarmOf(newValue).getAlarmStatus() +" " +
+////						ValueUtil.displayOf(newValue).getFormat().format(ValueUtil.numericValueOf(newValue)) + " "+
+//						" Connected: " + pv.isConnected());
+//				if(newValue instanceof VEnum){
+//					System.out.println(((VEnum)newValue).getValue() + " " + 
+//				((VEnum)newValue).getIndex() +" " + ((VEnum)newValue).getLabels());
+//				}
+//				Exception ex = pv.lastException();
+//				if(ex != null)
+//					System.out.println(ex);				
+//				updates++;
 			}
 		});
 
 		
-//		while(updates < 10){
-			Thread.sleep(1000);
-//			pv.write(updates);
-//		}
-		System.out.println(pv.isConnected());
+		//Thread.sleep(1000);
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
 			public void pvChanged() {
-					System.out.println("Second Listener: " + pv.getValue());
+					System.out.println("Second Listener: " + ValueUtil.numericValueOf(pv.getValue()));
 			}
 		});
-		Thread.sleep(1000);
+		//while(updates < 10){
+		//	Thread.sleep(20000);
+		//}
+			
+			while (!shell.isDisposed ()) {
+				if (!display.readAndDispatch ()) display.sleep ();
+			}
+			display.dispose ();
 		pv.close();
 	}
 	
+	@Ignore
 	@Test
 	public void testReadAllValues() throws InterruptedException{
 		 final PVReader<List<Object>> pvReader = PVManager.read(newValuesOf(

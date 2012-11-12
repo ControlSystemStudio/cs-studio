@@ -11,3 +11,4 @@ Bundle-ClassPath: lib/jython/jython.jar,
  .
 Require-Bundle: org.junit4,
  org.eclipse.core.resources
+Import-Package: org.csstudio.utility.pvmanager.ui
