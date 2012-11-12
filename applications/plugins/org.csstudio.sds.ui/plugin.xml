@@ -41,7 +41,7 @@
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewMenuAction"
               definitionId="org.csstudio.sds.ui.displayRunAsView"
-              icon="icons/run.gif"
+              icon="icons/run.gif" 
               id="org.csstudio.sds.ui.internal.runmode.OpenAsViewlMenuAction"
               label="Display run as View">
         </action>
