@@ -32,47 +32,31 @@ public class MkkPvValidationService implements IProcessVariableAddressValidation
 			List<IProcessVariableAddress> pvAddresses,
 			IProcessVariableAddressValidationCallback callback) {
 
-		final List<Future<?>> submittedValidations = new ArrayList<Future<?>>(pvAddresses.size());
-		
-		for (IProcessVariableAddress iPvAdress : pvAddresses) {
-			final Future<?> submittedValidation = executor.submit(new ValidationRunnable(iPvAdress, callback));
-			
-		}
+		final Future<?> submittedValidation = executor.submit(new ValidationRunnable(pvAddresses, callback));
 		
 		return new IValidationProcess() {
 			
 			@Override
 			public void cancel() {
-				for (Future<?> ivalidationProcess : submittedValidations) {
-					ivalidationProcess.cancel(true);
-				}
-				
+					submittedValidation.cancel(true);
 			}
 		};
 	}
 	
 	private class ValidationRunnable implements Runnable {
 		
-		private IProcessVariableAddress _pvAdress;
 		private IProcessVariableAddressValidationCallback _callback;
+		private List<IProcessVariableAddress> _pvAdresses;
 
-		public ValidationRunnable(IProcessVariableAddress pvAdress, IProcessVariableAddressValidationCallback callback) {
-			_pvAdress = pvAdress;
+		public ValidationRunnable(List<IProcessVariableAddress> pvAddresses, IProcessVariableAddressValidationCallback callback) {
+			_pvAdresses = pvAddresses;
 			_callback = callback;
 		}
 
 		@Override
 		public void run() {
-			ValidationResult validationResult = null;
-			String comment = null;
-			
 			MkkDbExample validator = new MkkDbExample();
-			validationResult = validator.checkPv(_pvAdress);
-			
-			_callback.onValidate(_pvAdress, validationResult, comment);
+			validator.checkPv(_pvAdresses, _callback);
 		}
-		
-		
 	}
-
 }
