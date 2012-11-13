@@ -1,6 +1,8 @@
 package org.csstudio.sds.service.pvvalidation.mkk;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback.ValidationResult;
@@ -21,20 +23,41 @@ public class MkkDbExample {
             + "(FAILOVER_MODE = " + "(TYPE = NONE) " + "(METHOD = BASIC) "
             + "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
 
-    private String _user = "kryklogt";
-    private String _password = "kryklogt";
+    private String _user = "mkklog";
+    private String _password = "mkklog";
 
+    private String _pvStmt = "select count(*) from EPICS_REC where RECORD_NAME like ?";
 	
 	public ValidationResult checkPv(IProcessVariableAddress _pvAdress) {
+		ValidationResult result = ValidationResult.VALIDATION_ERROR;
 		RDBUtil _rdbUtil;
 		Connection connection;
 		try {
 			_rdbUtil = RDBUtil.connect(_url, _user, _password, true);
 			connection = _rdbUtil.getConnection();
+	        final PreparedStatement checkPvName =
+	                connection
+	                        .prepareStatement(_pvStmt);
+            String rawName = _pvAdress.getRawName();
+			checkPvName.setString(1, rawName);
+            ResultSet query = checkPvName.executeQuery();
+            if(query.next()) {
+            	int pvCount = Integer.parseInt(query.getString(1));
+            	if (pvCount == 0) {
+            		System.out.println(rawName + "no pv");
+            		result = ValidationResult.INVALID;
+            	} else {
+            		result = ValidationResult.VALID;
+            		System.out.println(rawName + pvCount);
+            	}
+            } else {
+            	System.out.println(rawName + "error");
+            }
+
 		} catch (final Exception e) {
 			LOG.error("SQL Connection error ", e);
 		}
-		return ValidationResult.VALID;
+		return result;
 	}
 
 }
