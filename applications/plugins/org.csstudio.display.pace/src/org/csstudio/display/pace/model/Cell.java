@@ -184,7 +184,9 @@ public class Cell
         		throw new Exception(pv.getName() + " is read-only");
             original_pv_value = current_value;
         	pv.write(user_value);
-        	// TODO This is not really seeing write errors
+        	// When PV is read-only, the pv.write() will already throw an
+        	// exception and the following is not reached.
+        	// Still, to be certain, check for errors once more:
         	final Exception error = pv.lastWriteException();
         	if (error != null)
         		throw error;
@@ -321,6 +323,8 @@ public class Cell
 					instance.getModel().fireCellUpdate(Cell.this);
 				}
 			};
+			// No writeListener: Using SyncWrite, which will
+			// throw exceptions right away in saveUserValue()
             last_name_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
         }
         name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
