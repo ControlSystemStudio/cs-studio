@@ -123,6 +123,7 @@ record(calc, "signal")
 
 record(waveform, "text")
 {
+    field(DESC, "Text PV")
     field(FTVL, "CHAR")
     field(NELM, "100")
 }
