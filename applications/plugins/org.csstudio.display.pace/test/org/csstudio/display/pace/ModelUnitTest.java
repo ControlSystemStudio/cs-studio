@@ -8,12 +8,12 @@
 package org.csstudio.display.pace;
 
 import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,37 +24,23 @@ import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.display.pace.model.VTypeHelper;
-import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.jca.JCADataSource;
-import org.epics.pvmanager.loc.LocalDataSource;
 import org.epics.util.time.TimeDuration;
 import org.junit.Before;
 import org.junit.Test;
 
 /** JUnit plug-in test of Model
- *  Runs as headless application.
- *
- *  For PV connections to work, use junit_customization.ini
- *  (See comments in GUITest.java for more on that)
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelTest
+public class ModelUnitTest
 {
-    /** Configuration file name used for testing.
-     *  Tests are specific to this file,
-     *  and some also expect to actually connect to
-     *  the PVs in there.
-     */
-    private static final String TEST_CONFIG_FILE = "configFiles/rf_pwr_limits.pace";
-
     /** Counter for received updates from cells */
     private AtomicInteger updates = new AtomicInteger(0);
     private AtomicInteger values = new AtomicInteger(0);
@@ -62,14 +48,7 @@ public class ModelTest
     @Before
     public void setup()
     {
-    	System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", "127.0.0.1 160.91.228.17");
-    	System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", "127.0.0.1 160.91.228.17");
-    	
-    	final CompositeDataSource sources = new CompositeDataSource();
-    	sources.putDataSource("loc", new LocalDataSource());
-    	sources.putDataSource("ca", new JCADataSource());
-    	sources.setDefaultDataSource("ca");
-    	PVManager.setDefaultDataSource(sources);
+    	TestSettings.setup();
     }
 
     /** ModelListener that counts received updates.
@@ -121,7 +100,7 @@ public class ModelTest
     public void testModel() throws Exception
     {
         final Model model =
-            new Model(new FileInputStream(TEST_CONFIG_FILE));
+            new Model(new FileInputStream(TestSettings.TEST_CONFIG_FILE));
 
         assertEquals("HPRF Pwr and Duty Cycle Limits", model.getTitle());
 
@@ -140,7 +119,7 @@ public class ModelTest
     {
         // Create model that's not actually listening to PV updates
         final Model model =
-            new Model(new FileInputStream(TEST_CONFIG_FILE));
+            new Model(new FileInputStream(TestSettings.TEST_CONFIG_FILE));
         model.addListener(listener);
 
         // Model has not been edited, find a cell to test changes
@@ -181,7 +160,7 @@ public class ModelTest
     public void testModelPVs() throws Exception
     {
         final Model model =
-            new Model(new FileInputStream(TEST_CONFIG_FILE));
+            new Model(new FileInputStream(TestSettings.TEST_CONFIG_FILE));
         model.addListener(listener);
         // Reset counter
         updates.set(0);

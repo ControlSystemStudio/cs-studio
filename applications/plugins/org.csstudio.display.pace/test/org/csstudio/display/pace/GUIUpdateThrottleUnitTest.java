@@ -18,7 +18,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GUIUpdateThrottleTest
+public class GUIUpdateThrottleUnitTest
 {
     private static final long INITIAL = 100;
     private static final long SUPPRESS = 1000;

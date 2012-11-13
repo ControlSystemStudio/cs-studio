@@ -13,33 +13,22 @@ import org.csstudio.display.pace.gui.GUI;
 import org.csstudio.display.pace.model.Model;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.Before;
 import org.junit.Test;
 
-/** Standalone GUI test, run as headless JUnit plugin test.
- *  For PV connections to work, use junit_customization.ini:
- *  
- *  When first using "Run/Run As/JUnit plugin test" on this file,
- *  it should start but the PVs will probably not connect
- *  because of missing ChannelAccess settings.
- *  
- *  Edit ChannelAccess settings in junit_customization.ini,
- *  then use "Run/Run Configurations..." to edit the run configuration
- *  which was initialized with defaults in the previous step by adding
- *  something like this under "Arguments", "Program Arguments":
- *  
- *   -pluginCustomization /full/path/to/the/Workspace/org.csstudio.display.pace/junit_customization.ini
- *
- *  While editing the Run Configuration, one can also select 
- *     Main, Program To Run, Application: No Application (headless mode)
- *  to prevent the rest of the Eclipse Workbench from starting up.
+/** Standalone GUI test, run as JUnit test.
  *  
  *  @author Kay Kasemir
- *  
- *    reviewed by Delphy 01/28/09
  */
 @SuppressWarnings("nls")
-public class GUITest
+public class GUIDemo
 {
+    @Before
+    public void setup()
+    {
+    	TestSettings.setup();
+    }
+
     @Test
     public void testGUI() throws Exception
     {
@@ -52,7 +41,7 @@ public class GUITest
         // Exceptions are not expected and handled by JUnit
         // framework by displaying them.
         final Model model =
-            new Model(new FileInputStream("configFiles/rf_admin.pace"));
+            new Model(new FileInputStream(TestSettings.TEST_CONFIG_FILE));
         new GUI(shell, model, null);
         model.start();
 
