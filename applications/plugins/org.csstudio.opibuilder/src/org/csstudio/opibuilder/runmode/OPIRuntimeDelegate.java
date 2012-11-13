@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.RefreshOPIAction;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -163,10 +164,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
 			displayModel.setOpiRuntime(opiRuntime);
-		}		
+		}
 		
+		getActionRegistry().registerAction(new RefreshOPIAction(opiRuntime));
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
-
+		
 
 		// hide close button
 		hideCloseButton(site);
