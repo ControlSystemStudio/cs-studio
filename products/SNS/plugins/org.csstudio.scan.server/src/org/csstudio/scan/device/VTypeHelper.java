@@ -63,7 +63,25 @@ public class VTypeHelper
 		return Double.NaN;
 	}
 
-	
+	/** Get VType as double[]; empty array if not possible
+	 *  @param value {@link VType}
+	 *  @return double[]
+	 */
+	public static double[] toDoubles(final VType value)
+	{
+		final double[] array;
+		if (value instanceof VNumberArray)
+		{
+			final ListNumber list = ((VNumberArray) value).getData();
+			array = new double[list.size()];
+			for (int i=0; i<array.length; ++i)
+				array[i] = list.getDouble(i);
+		}
+		else
+			array = new double[0];
+		return array;
+	}
+
 	/** Create ScanSample for control system value
      *  @param serial Serial to identify when the sample was taken
      *  @param value {@link VType}

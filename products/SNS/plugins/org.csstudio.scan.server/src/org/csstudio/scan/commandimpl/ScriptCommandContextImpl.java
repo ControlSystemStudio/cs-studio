@@ -19,6 +19,7 @@ import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.IteratorNumber;
@@ -88,6 +89,8 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         final VType value = device.read();
         if (value instanceof VNumber)
             return ValueUtil.numericValueOf(value);
+        if (value instanceof VNumberArray)
+        	return VTypeHelper.toDoubles(value);
         return VTypeHelper.toString(value);
     }
 
