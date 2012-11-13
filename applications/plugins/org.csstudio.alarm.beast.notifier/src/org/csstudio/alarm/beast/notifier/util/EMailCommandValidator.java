@@ -1,10 +1,17 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier.util;
 
-import org.csstudio.alarm.beast.notifier.actions.EmailNotificationAction;
+import org.csstudio.alarm.beast.notifier.actions.EmailActionImpl;
 import org.csstudio.alarm.beast.notifier.model.IActionValidator;
 
 /**
- * Validator for {@link EmailNotificationAction}.
+ * Validator for {@link EmailActionImpl}.
  * Uses a {@link EMailCommandHandler} to validate an EMail command.
  * @author Fred Arnaud (Sopra Group)
  *
@@ -17,7 +24,6 @@ public class EMailCommandValidator implements IActionValidator {
 	public void init(String details) {
 		this.details = details.trim();
 		handler = new EMailCommandHandler(details);
-		handler.parse();
 	}
 	
 	/** @return handler for EMail command */
@@ -27,18 +33,14 @@ public class EMailCommandValidator implements IActionValidator {
 	
 	@Override
 	public boolean validate() throws Exception {
-		if (details == null || "".equals(details))
-			throw new Exception("Missing details from automated action");
-		if (handler.getTo() == null || handler.getTo().isEmpty())
-			throw new Exception("Missing recipient");
+		if (details == null || "".equals(details)) {
+			throw new Exception("Missing automated action details");
+		}
+		handler.parse();
+		if (handler.getTo() == null || handler.getTo().isEmpty()) {
+			throw new Exception("Missing email command recipient");
+		}
 		return true;
 	}
 	
-	/** @return <code>true</code> if the EMail command define a recipient, a subject and a body */
-	public boolean isComplete() {
-		return ((handler.getTo() != null && !handler.getTo().isEmpty())
-				&& (handler.getSubject() != null && !"".equals(handler.getSubject().trim())) 
-				&& (handler.getBody() != null && !"".equals(handler.getBody().trim())));
-	}
-
 }

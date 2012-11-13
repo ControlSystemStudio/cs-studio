@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EC0101.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.25622in"
+		height="0.25622in" viewBox="0 0 18.4479 18.4479" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<title>document de base</title>
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="TagSeparator" v:prompt="" v:val="VT4(-)"/>
+		</v:userDefs>
+	</v:documentProperties>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape357-1" v:mID="357" v:groupContext="shape" transform="translate(0.72,-14.0428)">
+			<title>Feuille.357</title>
+			<v:userDefs>
+				<v:ud v:nameU="guid" v:prompt="" v:val="VT4({F5C01C00-9F38-478F-9737-BC467A962FDD})"/>
+				<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({F5C01C00-9F38-478F-9737-BC467A962FDD})"/>
+				<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+			</v:userDefs>
+			<path d="M0 18.45 L0 14.76 L17.01 14.76 L17.01 18.45" class="st1"/>
+		</g>
+		<g id="shape358-4" v:mID="358" v:groupContext="shape" transform="translate(17.7279,32.4907) rotate(180)">
+			<title>Feuille.358</title>
+			<v:userDefs>
+				<v:ud v:nameU="guid" v:prompt="" v:val="VT4({652CE491-89BC-4C29-8C08-28CACE75EE05})"/>
+				<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({652CE491-89BC-4C29-8C08-28CACE75EE05})"/>
+				<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+			</v:userDefs>
+			<path d="M0 18.45 L0 14.76 L17.01 14.76 L17.01 18.45" class="st1"/>
+		</g>
+	</g>
+</svg>

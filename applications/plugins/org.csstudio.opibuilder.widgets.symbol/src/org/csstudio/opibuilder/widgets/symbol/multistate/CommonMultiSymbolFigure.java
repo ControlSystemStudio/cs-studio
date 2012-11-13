@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import java.io.IOException;
@@ -8,11 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
@@ -34,6 +44,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * @author Fred Arnaud (Sopra Group)
+ */
 public abstract class CommonMultiSymbolFigure extends Figure {
 
 	// delegation pattern
@@ -190,8 +203,16 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 			String imageBasePath = ImageUtils
 					.getMultistateBaseImagePath(symbolImagePath);
 			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
-			if (path == null)
-				return;
+			if (path == null) {
+				// If double value, try to remove decimal values
+				// (usefull for sim://ramp for example)
+				Pattern doublePattern = Pattern.compile("-?(\\d+)\\.\\d+");
+				Matcher m = doublePattern.matcher(state);
+				if (m.matches())
+					path = ImageUtils.searchStateImage(m.group(1), imageBasePath);
+				if (path == null)
+					return;
+			}
 			states.add(state);
 			remainingImagesToLoad = 1;
 			loadImageFromFile(path, state);
@@ -221,7 +242,14 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		for (String state : states) {
 			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
 			if (path == null) { // Test existence
-				decrementLoadingCounter();
+				// If double value, try to remove decimal values
+				// (usefull for sim://ramp for example)
+				Pattern doublePattern = Pattern.compile("-?(\\d+)\\.\\d+");
+				Matcher m = doublePattern.matcher(state);
+				if (m.matches())
+					path = ImageUtils.searchStateImage(m.group(1), imageBasePath);
+				if (path == null)
+					decrementLoadingCounter();
 				// TODO: alert state image missing
 			} else {
 				// Launch loading !
@@ -629,15 +657,15 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		}
 		repaint();
 	}
-	public void setImageState(String imageState) {
+	public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
 		if (symbolProperties != null) {
-			symbolProperties.setDisposition(imageState);
+			symbolProperties.setMatrix(permutationMatrix);
 			updateProperties();
 		}
 		repaint();
 	}
-	public String getImageState() {
-		return getSymbolImage().getImageState();
+	public PermutationMatrix getPermutationMatrix() {
+		return getSymbolImage().getPermutationMatrix();
 	}
 	public boolean isStretch() {
 		return getSymbolImage().isStretch();

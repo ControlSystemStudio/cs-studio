@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EI010303.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.37433in"
+		height="0.374408in" viewBox="0 0 26.9518 26.9574" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719999}
+		.st2 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719999}
+		.st3 {fill:none;stroke:none;stroke-width:0.999997}
+		.st4 {fill:none}
+		.st5 {stroke:#000000;stroke-linecap:butt;stroke-width:0.719999}
+		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50393"
+				v:shadowOffsetY="-8.50393"/>
+		<g id="group1-1" transform="translate(0.719999,-0.719999)" v:mID="1" v:groupContext="group">
+			<title>format_img</title>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-25.4958)">
+				<title>point1</title>
+				<rect x="0" y="26.9414" width="0.0159449" height="0.0159449" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(25.4958,0)">
+				<title>point2</title>
+				<rect x="0" y="26.9414" width="0.0159449" height="0.0159449" class="st1"/>
+			</g>
+		</g>
+		<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(0.719999,-0.727434)">
+			<title>Hexa</title>
+			<path d="M6.38 1.45 L19.13 1.45 L25.51 14.21 L19.13 26.96 L6.38 26.96 L0 14.21 L6.38 1.45 Z" class="st2"/>
+		</g>
+		<g id="group5-8" transform="translate(1.2736,-14.3205)" v:mID="5" v:groupContext="group">
+			<title>trait1</title>
+			<g id="shape6-9" v:mID="6" v:groupContext="shape">
+				<title>Feuille.6</title>
+				<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st3"/>
+			</g>
+			<g id="group7-11" v:mID="7" v:groupContext="group">
+				<title>Feuille.7</title>
+				<g id="shape8-12" v:mID="8" v:groupContext="shape">
+					<title>Feuille.8</title>
+					<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st3"/>
+				</g>
+				<g id="shape9-14" v:mID="9" v:groupContext="shape">
+					<title>Feuille.9</title>
+					<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st4"/>
+					<path d="M0 26.96 L24.38 26.96" class="st5"/>
+				</g>
+			</g>
+		</g>
+		<g id="group10-17" transform="translate(1.2746,-12.7205)" v:mID="10" v:groupContext="group">
+			<title>trait2</title>
+			<g id="shape11-18" v:mID="11" v:groupContext="shape">
+				<title>Feuille.9</title>
+				<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st3"/>
+			</g>
+			<g id="group12-20" v:mID="12" v:groupContext="group">
+				<title>Feuille.10</title>
+				<g id="shape13-21" v:mID="13" v:groupContext="shape">
+					<title>Feuille.13</title>
+					<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st3"/>
+				</g>
+				<g id="shape14-23" v:mID="14" v:groupContext="shape">
+					<title>Feuille.14</title>
+					<path d="M0 26.96 L24.38 26.96 L0 26.96 Z" class="st4"/>
+					<path d="M0 26.96 L24.38 26.96" class="st5"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>
