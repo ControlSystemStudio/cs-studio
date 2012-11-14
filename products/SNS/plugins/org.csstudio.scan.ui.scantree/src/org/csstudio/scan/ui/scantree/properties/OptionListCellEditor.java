@@ -168,7 +168,11 @@ abstract public class OptionListCellEditor extends CellEditor
     final protected void doSetValue(final Object value)
     {
         final String label = labelForOption(value);
-        getCombo().select(getSelectionIndex(label));
+        final CCombo combo = getCombo();
+        // Display current value
+        combo.setText(label);
+        // Possibly also select this label in list
+        combo.select(getSelectionIndex(label));
     }
 
     /** To be implemented by derived class:
