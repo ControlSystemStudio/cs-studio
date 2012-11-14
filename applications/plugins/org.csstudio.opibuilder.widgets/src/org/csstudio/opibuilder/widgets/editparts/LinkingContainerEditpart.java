@@ -180,12 +180,12 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			}
 			//Load system macro
 			if(loadTarget.getMacrosInput().isInclude_parent_macros())
-				loadTarget.setMacroMap(
+				loadTarget.getMacroMap().putAll(
 						(LinkedHashMap<String, String>) tempDisplayModel.getParentMacroMap());
 			//Load macro from its macrosInput
 			loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
 			//It also include the macros on this linking container. It will replace the old one too.
-			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());
+			loadTarget.getMacroMap().putAll(getWidgetModel().getMacrosInput().getMacrosMap());
 			
 			for(AbstractWidgetModel child : loadTarget.getChildren()){
 				getWidgetModel().addChild(child, false); //don't change model's parent.

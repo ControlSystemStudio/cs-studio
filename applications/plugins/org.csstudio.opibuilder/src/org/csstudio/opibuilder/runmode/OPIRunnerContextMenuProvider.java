@@ -26,6 +26,7 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -33,6 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
@@ -65,10 +67,14 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		addWidgetActionToMenu(menu);
 		GEFActionConstants.addStandardActionGroups(menu);
 		
-		IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		
 		ActionRegistry actionRegistry =
-			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
+				(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
+		IAction action = actionRegistry.getAction(ActionFactory.REFRESH.getId());
+		if (action != null)
+			menu.appendToGroup(GEFActionConstants.GROUP_PRINT, action);
+		
+		IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				
 		if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
@@ -82,6 +88,7 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
 		// ELog and EMail actions may not be available
 		SingleSourceHelper.appendRCPRuntimeActionsToMenu(actionRegistry, menu);
+		
 		if(OPIBuilderPlugin.isRAP()){
 			menu.add(new Separator("additions")); //$NON-NLS-1$
 			menu.add(new AboutWebOPIAction());
