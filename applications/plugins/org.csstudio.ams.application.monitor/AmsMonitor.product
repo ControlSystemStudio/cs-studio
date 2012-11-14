@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsMonitor" id="org.csstudio.ams.application.monitor.AmsMonitorProduct" application="org.csstudio.ams.application.monitor.AmsMonitorApplication" useFeatures="false" includeLaunchers="true">
+<product name="AmsMonitor" id="org.csstudio.ams.application.monitor.AmsMonitorProduct" application="org.csstudio.ams.application.monitor.AmsMonitorApplication" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -188,6 +188,10 @@
       <plugin id="org.slf4j"/>
       <plugin id="org.slf4j-log4j12"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.ams.application.monitor.feature" version="1.0.0.qualifier"/>
+   </features>
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
