@@ -65,6 +65,7 @@ public class OrderService {
 			}
 		}
 
+		
 		if (subQuerySearchTerms.isEmpty()) {
 			return findWithFilter(mainQuerySearchTerms, orderBy);
 		} else {

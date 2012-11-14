@@ -170,7 +170,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 			for (Object object : articlesInGroup) {
 				try {
 					em.refresh(object);
-					// Remove Listener, aber wie remove ich die Listenr von nich
+					// Remove Listener, aber wie remove ich die Listenr von nicht
 					// mehr erreichbaren Objekten
 				} catch (Exception e) {
 					// ignore anny exception here
@@ -182,6 +182,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 		retiredView.dispose();
 		maintenanceView.dispose();
 		deliveredView.dispose();
+		storeView.dispose();
 	}
 
 	// An IStructuredSelection is provided if the article search is called from
@@ -197,7 +198,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 			searchTerms.add(searchTerm);
 		}
 	}
-	
+
 	@Override
 	protected void afterExecuteSearch(List<SearchTerm> searchTerms) {
 		setButtonsEnabled(false);
@@ -210,33 +211,38 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 					.equalsIgnoreCase(AbstractGuiFormTemplate.CREATE_COPY_BUTTON)));
 	}
 
-	private void markError(Article article, Set<ConstraintViolation<Article>> validationErrors) {
-		System.out.println("mark error article");
-		// must be implemented
+	private void markError(Set<ConstraintViolation<Article>> validationErrors) {
+		StringBuffer sb = new StringBuffer();
+		for (ConstraintViolation<Article> violation: validationErrors) {
+			sb.append(violation.getPropertyPath().toString()).append(" : ").append(violation.getMessage()).append("\n");
+		}
+		Dialogs.message("Error in Article-View", sb.toString());
 	}
 
-	private void markErrorSubView(Article article, Set<ConstraintViolation<BindingEntity>> validationErrors) {
-		System.out.println("mark error subview");
-		System.out.println(validationErrors);
-		// must be implemented
+	private void markErrorSubView(Set<ConstraintViolation<BindingEntity>> validationErrors) {
+		StringBuffer sb = new StringBuffer();
+		for (ConstraintViolation<BindingEntity> violation: validationErrors) {
+			sb.append(violation.getPropertyPath().toString()).append(" : ").append(violation.getMessage()).append("\n");
+		}
+		Dialogs.message("Error in State-View", sb.toString());
 	}
 
 	// We handle the save manually. This is neccessary since whe handle a list
 	// of entities here. Alll other forms work on a single entity.
-	// Therefore we always return false here.
+	// Therefore we always return CanSaveAction.ABORT_SAVE here.
 	@Override
 	protected CanSaveAction canSave() {
 		updateModels();
 		for (Object article : articlesInGroup) {
 			Set<ConstraintViolation<Article>> validationErrors = validator.validate((Article) article);
 			if (!validationErrors.isEmpty()) {
-				markError((Article) article, validationErrors);
+				markError(validationErrors);
 				return CanSaveAction.ABORT_SAVE;
 			}
 			Set<ConstraintViolation<BindingEntity>> subViewValidationErrors = subViewDataProvider
 						.validateSubViewFor((Article) article);
 			if (!subViewValidationErrors.isEmpty()) {
-				markErrorSubView((Article) article, subViewValidationErrors);
+				markErrorSubView(subViewValidationErrors);
 				return CanSaveAction.ABORT_SAVE;
 			}
 		}
@@ -251,7 +257,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 						subViewDataProvider.assignId(articleEntity);
 						em.merge(article);
 					}
-					for (LagerArtikel lagerArtikel: lagerArtikelList) {
+					for (LagerArtikel lagerArtikel : lagerArtikelList) {
 						em.merge(lagerArtikel);
 					}
 					subViewDataProvider.mergeStatusViewEntities();
@@ -262,7 +268,6 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 			} else {
 				throw new IllegalStateException("Unexpected state in ArticelGuiForm.canSave");
 			}
-			em.clear();
 			return CanSaveAction.SAVE_HANDLED;
 		} catch (Exception e) {
 			logger.logError(e);
@@ -310,8 +315,8 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 							}
 						}).build();
 
-			wf.text(composite, "baNr").label("BA Number:").isJoined().limitInputToDigits().useBigDecimalConverter()
-						.hint("growx, wrap, h 21!").build();
+			wf.text(composite, "baNr", SearchTermType.STRING_IGNORE_FIRST_CHAR).label("BA Number:").isJoined()
+						.limitInputToDigits().hint("growx, wrap, h 21!").build();
 
 		} else {
 			wf.text(composite, "lieferantName").multiLine().label("Company:").hint("growx, wrap, h 21!").build();
@@ -322,7 +327,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 		} else {
 
 			final Text baNr = wf.text(composite, "baNr").label("BA Number:").noBinding().style(SWT.READ_ONLY)
-						.limitInputToDigits().useBigDecimalConverter().hint("growx, wrap, h 21!").build();
+						.useBigDecimalConverter().hint("growx, wrap, h 21!").build();
 
 			createItemSelectionCombo(composite, getEditorInput());
 			createButtonComposite(composite);
@@ -364,29 +369,29 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 		}
 		wf.text(composite, "serienNr").label("Serial-Nr:").hint("wrap, growx").build();
 		wf.text(composite, "gruppeArtikel").label("Article Group:").hint("growx").build();
-		wf.text(composite, "inventarNr").label("Inventory-Nr:").hint("wrap,growx").build();
+		wf.text(composite, "inventarNr").label("Inventory-Nr:").hint("wrap,growx").useBigDecimalConverter().build();
 		wf.combo(composite, "status").label("Status:").data(articleStateService.findAll()).hint("growx").build();
 		wf.text(composite, "gruppe").label("Group:").hint("wrap,growx").build();
 	}
 
 	private Option<IStructuredSelection> currentSelection = new None<IStructuredSelection>();
-	
+
 	private void setButtonsEnabled(boolean enabled) {
 		wf.setEnabled(P("showHistory"), enabled);
 		wf.setEnabled(P("contains"), enabled);
-		wf.setEnabled(P("isContainedIn"), enabled);	
+		wf.setEnabled(P("isContainedIn"), enabled);
 	}
-	
+
 	protected void createAdditionalSearchResultButtons(Composite composite, final TableViewer viewer) {
-				
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {			
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				setButtonsEnabled(true);
-				currentSelection = new Some<IStructuredSelection>((IStructuredSelection)event.getSelection());
+				currentSelection = new Some<IStructuredSelection>((IStructuredSelection) event.getSelection());
 			}
 		});
-		
+
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
 		buttonComposite.setLayoutData("span 7");
 		MigLayout ml = new MigLayout("ins 0", "[150,fill][150, fill][150, fill]", "[fill]");
@@ -397,7 +402,7 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							if (currentSelection.hasValue()) {
-								Article article = (Article)currentSelection.get().getFirstElement();
+								Article article = (Article) currentSelection.get().getFirstElement();
 								articleGuiFormActionHandler.showHistory(article);
 							}
 						}
@@ -407,8 +412,8 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (currentSelection.hasValue()) {
-					Article article = (Article)currentSelection.get().getFirstElement();
-					articleGuiFormActionHandler.showContains(article);				
+					Article article = (Article) currentSelection.get().getFirstElement();
+					articleGuiFormActionHandler.showContains(article);
 				}
 			}
 		}).hint("h 29!").build();
@@ -417,10 +422,10 @@ public class ArticleGuiForm extends AbstractGuiFormTemplate<Article> implements 
 					.listener(new SimpleSelectionListener() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							Article article = (Article)currentSelection.get().getFirstElement();
-							articleGuiFormActionHandler.showIsContainedIn(article);							
+							Article article = (Article) currentSelection.get().getFirstElement();
+							articleGuiFormActionHandler.showIsContainedIn(article);
 						}
-					}).hint("h 29!").build();		
+					}).hint("h 29!").build();
 	}
 
 	// Register listener for change of article selection

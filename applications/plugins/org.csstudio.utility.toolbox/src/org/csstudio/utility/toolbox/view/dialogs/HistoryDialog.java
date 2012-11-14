@@ -73,7 +73,7 @@ public class HistoryDialog extends TitleAreaDialog {
 
 	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		createColumns(parent, viewer);
+		createColumns();
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -96,11 +96,11 @@ public class HistoryDialog extends TitleAreaDialog {
 	}
 
 	// This will create the columns for the table
-	private void createColumns(final Composite parent, final TableViewer viewer) {
+	private void createColumns() {
 		String[] titles = { "Date", "Status" };
 		int[] bounds = { 300, 300};
 
-		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
+		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0]);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -110,18 +110,18 @@ public class HistoryDialog extends TitleAreaDialog {
 			}
 		});
 
-		col = createTableViewerColumn(titles[1], bounds[1], 1);
+		col = createTableViewerColumn(titles[1], bounds[1]);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {				
 				ArticleHistoryInfo ahi = (ArticleHistoryInfo) element;
-				return ahi.getStatus();
+				return ahi.getStatusDescritpion();
 			}
 		});
 
 	}
 
-	private TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
+	private TableViewerColumn createTableViewerColumn(String title, int bound) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 		final TableColumn column = viewerColumn.getColumn();
 		column.setText(title);

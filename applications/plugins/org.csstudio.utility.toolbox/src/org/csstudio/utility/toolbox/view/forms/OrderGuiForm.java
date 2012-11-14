@@ -23,6 +23,7 @@ import org.csstudio.utility.toolbox.framework.ColumnCreator;
 import org.csstudio.utility.toolbox.framework.celleditors.CustomDialogCellEditor;
 import org.csstudio.utility.toolbox.framework.listener.SimpleSelectionListener;
 import org.csstudio.utility.toolbox.framework.property.Property;
+import org.csstudio.utility.toolbox.framework.property.SearchTermType;
 import org.csstudio.utility.toolbox.framework.template.AbstractGuiFormTemplate;
 import org.csstudio.utility.toolbox.func.Func1Void;
 import org.csstudio.utility.toolbox.func.Func2;
@@ -121,7 +122,7 @@ public class OrderGuiForm extends AbstractGuiFormTemplate<Order> {
 
 	private void createPart(final Composite composite) {
 
-		orderGuiFormActionHandler.init(isSearchMode(), getEditorInput());
+		orderGuiFormActionHandler.init(isSearchMode(), getEditorInput(), wf);
 
 		getEditorInput().setBeforeCommit(new BeforeCommit());
 
@@ -153,11 +154,15 @@ public class OrderGuiForm extends AbstractGuiFormTemplate<Order> {
 		Text nummer;
 
 		if (isSearchMode() || getEditorInput().isNewData()) {
-			nummer = wf.numericText(composite, "nummer").label("BA Number:").limitInputToDigits()
-						.useBigDecimalConverter().build();
+			nummer = wf.text(composite, "nummer", SearchTermType.STRING_IGNORE_FIRST_CHAR).label("BA Number:").limitInputToDigits().build();
 		} else {
-			nummer = wf.numericText(composite, "nummer").label("BA Number:").readOnly().useBigDecimalConverter()
-						.build();
+			nummer = wf.numericText(composite, "nummer").label("BA Number:").readOnly().noBinding().build();
+			getEditorInput().processData(new Func1Void<Some<Order>>() {				
+				@Override
+				public void apply(Some<Order> order) {
+					wf.setText(P("nummer"), order.get().getBaNummer());						
+				}
+			});
 		}
 
 		setFocusWidget(nummer);
@@ -324,6 +329,13 @@ public class OrderGuiForm extends AbstractGuiFormTemplate<Order> {
 	@Override
 	protected void saveComplete() {
 		wf.setReadOnly(P("nummer"));
+		getEditorInput().processData(new Func1Void<Some<Order>>() {			
+			@Override
+			public void apply(Some<Order> order) {
+				wf.setText(P("nummer"), order.get().getBaNummer());
+				getCrudController().get().setDirty(false);
+			}
+		});
 	}
 	
 	class BeforeCommit implements Func1Void<Order> {

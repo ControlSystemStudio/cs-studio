@@ -24,8 +24,9 @@ import org.apache.commons.lang.Validate;
 import org.csstudio.utility.toolbox.AppLogger;
 import org.csstudio.utility.toolbox.common.Dialogs;
 import org.csstudio.utility.toolbox.common.Environment;
+import org.csstudio.utility.toolbox.framework.annotations.InputLength;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.csstudio.utility.toolbox.framework.property.Property;
 import org.csstudio.utility.toolbox.func.Func0Void;
 import org.csstudio.utility.toolbox.func.Func1Void;
@@ -143,21 +144,31 @@ public class GenericEditorInput<T extends BindingEntity> implements IEditorInput
 
 	public void saveData() {
 		try {
-			if (Environment.isTestMode()) {
-				refreshData();
-			} else {
-				transactionContext.doRun(new Func0Void() {
-					@Override
-					public void apply() {
-						em.merge(data.get());
-						em.flush();
-						if (beforeCommit != null) {
-							beforeCommit.apply(data.get());
-						}
+			transactionContext.doRun(new Func0Void() {
+				@Override
+				public void apply() {
+					Object mergedObject = em.merge(data.get());
+					// try to copy ID
+					// This is neccessary since we only use merge and the id
+					// is only
+					// updated on an attached object.
+					try {
+						BeanUtils.setProperty(data.get(), "id", BeanUtils.getProperty(mergedObject, "id"));
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				});
-				em.clear();
-			}
+					if (!Environment.isTestMode()) {
+						em.flush();
+					}
+					if (beforeCommit != null) {
+						beforeCommit.apply(data.get());
+					}
+					if (Environment.isTestMode()) {
+						em.clear();
+					}
+				}
+			});
+			em.clear();
 			data.get().setNewRecord(false);
 			saveSuccessful = true;
 		} catch (RollbackException e) {
@@ -186,14 +197,18 @@ public class GenericEditorInput<T extends BindingEntity> implements IEditorInput
 	}
 
 	public Option<Integer> getSizeLimit(Property property) {
-		Validate.notNull(property, "Propertyt not be null");
-
+		Validate.notNull(property, "Property must not be null");
 		if (data.hasValue()) {
 			try {
 				Option<AccessibleObject> accessibleObject = getAccessibleObject(property);
-				if (accessibleObject.hasValue() && accessibleObject.get().isAnnotationPresent(Size.class)) {
-					Size size = accessibleObject.get().getAnnotation(Size.class);
-					return new Some<Integer>(size.max());
+				if (accessibleObject.hasValue()) {
+					if (accessibleObject.get().isAnnotationPresent(Size.class)) {
+						Size size = accessibleObject.get().getAnnotation(Size.class);
+						return new Some<Integer>(size.max());
+					} else if (accessibleObject.get().isAnnotationPresent(InputLength.class)) {
+						InputLength inputLength = accessibleObject.get().getAnnotation(InputLength.class);
+						return new Some<Integer>(inputLength.value());
+					}
 				}
 			} catch (Exception e) {
 				logger.logError(e);
