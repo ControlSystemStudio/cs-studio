@@ -58,14 +58,14 @@ public class StoreArticleGuiForm extends AbstractGuiFormTemplate<LagerArtikel> {
 	@Override
 	protected TableViewer createSearchResultComposite(Composite composite) {
 
-		String[] titles = { "Stock-ID", "Description", "Actual", "Target Inventory" };
-		int[] bounds = { 40, 40, 10, 10 };
+		String[] titles = { "Stock-Article-ID", "Description", "Actual", "Target Inventory" };
+		int[] bounds = { 30, 50, 10, 10 };
 
 		setSearchResultTableViewer(createTableViewer(composite, SEARCH_RESULT_TABLE_VIEWER, titles, bounds));
 
 		final Table table = getSearchResultTableViewer().getTable();
 
-		table.setLayoutData("spanx 7, ay top, growy, growx, height 250:259:1250, width 500:800:2000, wrap");
+		table.setLayoutData("spanx 7, ay top, growy, growx, height 250:259:1250, width 500:750:2000, wrap");
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
@@ -92,10 +92,8 @@ public class StoreArticleGuiForm extends AbstractGuiFormTemplate<LagerArtikel> {
 		getEditorInput().processData(new Func1Void<Some<LagerArtikel>>() {
 			@Override
 			public void apply(Some<LagerArtikel> lagerArtikel) {
-				if (selectedArticleDescription.hasValue()) {
-					if (lagerArtikel.hasValue()) {
-						lagerArtikel.get().setArticleDescription(selectedArticleDescription.get());
-					}
+				if (selectedArticleDescription.hasValue() && (lagerArtikel.hasValue())) {
+					lagerArtikel.get().setArticleDescription(selectedArticleDescription.get());
 				}
 				lookupDataAutoCreator
 							.autoCreateLocation(lagerArtikel.get().getLagerName(), lagerArtikel.get().getOrt());
@@ -166,7 +164,7 @@ public class StoreArticleGuiForm extends AbstractGuiFormTemplate<LagerArtikel> {
 			}
 		});
 
-		wf.text(composite, "id").label("Stock ID:").build();
+		wf.text(composite, "id").label("Stock-Article-ID:").build();
 
 		wf.text(composite, "ort").label("Stock location:").emptyData().build();
 

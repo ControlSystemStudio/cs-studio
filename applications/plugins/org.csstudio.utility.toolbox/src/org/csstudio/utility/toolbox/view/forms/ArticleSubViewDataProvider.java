@@ -219,7 +219,16 @@ public class ArticleSubViewDataProvider {
 	
 	public void mergeStatusViewEntities() {
 		for (BindingEntity bindingEntity : assignments.values()) {
-			em.merge(bindingEntity);
+			BindingEntity mergedObject = em.merge(bindingEntity);
+			try {
+				BeanUtils.setProperty(bindingEntity, "id", 	BeanUtils.getProperty(mergedObject,"id"));
+			} catch (IllegalAccessException e) {
+				throw new IllegalStateException(e);
+			} catch (InvocationTargetException e) {
+				throw new IllegalStateException(e);
+			} catch (NoSuchMethodException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 	}
 

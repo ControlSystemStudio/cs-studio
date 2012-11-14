@@ -83,6 +83,7 @@ public class TextBuilder extends AbstractControlWithLabelBuilder<TextBuilder> {
 		controlDecoration.hide();
 
 		text.setData(BuilderConstant.USE_BIG_DECIMAL_CONVERTER, Boolean.valueOf(useBigDecimalConverter));
+		
 		text.setData(BuilderConstant.NO_BINDING, Boolean.valueOf(isNoBinding()));
 
 		binder.bindPropertyToText(getProperty(), text, controlDecoration, useBigDecimalConverter);

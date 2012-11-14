@@ -9,7 +9,7 @@ public class Environment {
 	
 	private static boolean lastValidationFailed;
 
-	private static boolean hadException = false;
+	private static boolean hadException = false;;
 
 	public static void enableTest() {
 		Environment.executionMode = ExecutionMode.TEST;
@@ -48,6 +48,6 @@ public class Environment {
 	}
 
 	public String getActiveLogGroup() {
-		return "KRY-";
+		return "MKS-2";
 	}
 }
