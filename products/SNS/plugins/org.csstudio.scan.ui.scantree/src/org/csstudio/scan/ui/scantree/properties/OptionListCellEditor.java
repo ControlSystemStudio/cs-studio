@@ -169,10 +169,10 @@ abstract public class OptionListCellEditor extends CellEditor
     {
         final String label = labelForOption(value);
         final CCombo combo = getCombo();
-        // Display current value
-        combo.setText(label);
-        // Possibly also select this label in list
+        // Possibly select this label in list
         combo.select(getSelectionIndex(label));
+        // In any case, display current value
+        combo.setText(label);
     }
 
     /** To be implemented by derived class:
