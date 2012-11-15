@@ -57,17 +57,24 @@ public class NewSmsCheckProcessor extends AbstractCheckProcessor implements Mess
     
     private long waitTime;
 
+    private boolean blockIt;
+    
     public NewSmsCheckProcessor(String subscriberName, String ws) {
-        this(subscriberName, ws, 0L);
+        this(subscriberName, ws, 0L, false);
     }
     
     public NewSmsCheckProcessor(String subscriberName, String ws, long interval) {
+        this(subscriberName, ws, interval, false);
+    }
+    
+    public NewSmsCheckProcessor(String subscriberName, String ws, long interval, boolean block) {
         
         super(LOG, ws, subscriberName, interval);
         
         messageQueue = new ConcurrentLinkedQueue<DeliveryWorkerAnswerMessage>();
         waitTime = AmsMonitorPreference.DELIVERY_WORKER_CHECK_WAIT_TIME.getValue();
-
+        blockIt = block;
+        
         // Assume that the wait time has to be converted to ms
         waitTime *= 1000L;
         LOG.info("Wait time: {}", waitTime);
@@ -180,6 +187,15 @@ public class NewSmsCheckProcessor extends AbstractCheckProcessor implements Mess
         }
         
         closeJms();
+    }
+    
+    @Override
+    public boolean doCheckNow() {
+        boolean checkNow = false;
+        if (!blockIt) {
+            checkNow = super.doCheckNow();
+        }
+        return checkNow;
     }
     
     @Override

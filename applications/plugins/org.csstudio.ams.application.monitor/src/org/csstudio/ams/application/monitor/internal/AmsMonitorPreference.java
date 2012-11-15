@@ -36,13 +36,16 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
 public class AmsMonitorPreference<T> extends AbstractPreference<T> {
 
     public static final AmsMonitorPreference<String> XMPP_SERVER =
-            new AmsMonitorPreference<String>("xmppServer", "krynfs.desy.de");
+            new AmsMonitorPreference<String>("xmppServer", "");
     
     public static final AmsMonitorPreference<String> XMPP_USER =
-            new AmsMonitorPreference<String>("xmppUser", "ams-system-monitor");
+            new AmsMonitorPreference<String>("xmppUser", "");
 
     public static final AmsMonitorPreference<String> XMPP_PASSWORD =
-            new AmsMonitorPreference<String>("xmppPassword", "ams");
+            new AmsMonitorPreference<String>("xmppPassword", "");
+
+    public static final AmsMonitorPreference<String> XMPP_GROUP_NAME =
+            new AmsMonitorPreference<String>("xmppGroupName", "");
 
     public static final AmsMonitorPreference<String> JMS_PUBLISHER_URL =
             new AmsMonitorPreference<String>("jmsPublisherUrl", "tcp://localhost:62616");
@@ -57,7 +60,10 @@ public class AmsMonitorPreference<T> extends AbstractPreference<T> {
             new AmsMonitorPreference<String>("jmsConsumerUrl2", "tcp://localhost:64616");
 
     public static final AmsMonitorPreference<String> JMS_CONSUMER_TOPIC_MONITOR =
-            new AmsMonitorPreference<String>("jmsConsumerTopicMonitor", "T_AMS_SYSTEM_MONITOR");
+            new AmsMonitorPreference<String>("jmsConsumerTopicMonitor", "DUMMY");
+
+    public static final AmsMonitorPreference<Boolean> BLOCK_MODEM_CHECK =
+            new AmsMonitorPreference<Boolean>("blockModemCheck", false);
 
     public static final AmsMonitorPreference<Long> AMS_CHECK_WAIT_TIME =
             new AmsMonitorPreference<Long>("amsCheckWaitTime", 10L);
@@ -75,23 +81,23 @@ public class AmsMonitorPreference<T> extends AbstractPreference<T> {
             new AmsMonitorPreference<Integer>("maxAllowedAmsError", 3);
 
     public static final AmsMonitorPreference<String> JMX_HOST_1 =
-            new AmsMonitorPreference<String>("jmxHostname1", "krykjmsa.desy.de");
+            new AmsMonitorPreference<String>("jmxHostname1", "");
     
     public static final AmsMonitorPreference<Integer> JMX_PORT_1 =
             new AmsMonitorPreference<Integer>("jmxPort1", 1199);
 
     public static final AmsMonitorPreference<String> JMX_HOST_2 =
-            new AmsMonitorPreference<String>("jmxHostname2", "krykjmsb.desy.de");
+            new AmsMonitorPreference<String>("jmxHostname2", "");
     
     public static final AmsMonitorPreference<Integer> JMX_PORT_2 =
             new AmsMonitorPreference<Integer>("jmxPort2", 1199);
 
     public static final AmsMonitorPreference<String> AMS_HOST =
-            new AmsMonitorPreference<String>("amsHost", "KRYKAMS");
+            new AmsMonitorPreference<String>("amsHost", "");
 
     public static final AmsMonitorPreference<String> AMS_USER =
-            new AmsMonitorPreference<String>("amsUser", "applic");
-
+            new AmsMonitorPreference<String>("amsUser", "");
+    
     public static final AmsMonitorPreference<String> AMS_PROCESS_LIST =
             new AmsMonitorPreference<String>("amsProcessList", "");
 

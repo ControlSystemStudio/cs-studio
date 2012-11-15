@@ -124,11 +124,13 @@ public class AmsCheckAnalyser implements ICheckAnalyser {
         String amsHost = AmsMonitorPreference.AMS_HOST.getValue().toLowerCase();
         String amsUser = AmsMonitorPreference.AMS_USER.getValue().toLowerCase();
         String amsProc = AmsMonitorPreference.AMS_PROCESS_LIST.getValue();
+        String groupName = AmsMonitorPreference.XMPP_GROUP_NAME.getValue();
         String[] procArray = amsProc.split(",");
         long restartTime = AmsMonitorPreference.RESTART_WAIT_TIME.getValue();
 
         if (procArray != null) {
             IRemoteService remoteService = new XmppRemoteService(xmppService,
+                                                                 groupName,
                                                                  checkProcessor.getWorkspaceLocation(),
                                                                  restartTime);
             success = remoteService.restart(procArray, amsHost, amsUser);
