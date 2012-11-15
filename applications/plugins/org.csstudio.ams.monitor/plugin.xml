@@ -14,19 +14,25 @@
             name="AMS Monitor"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.ams.monitor.actionSet"
-            label="amsMonitor Actionset"
-            visible="true">
-         <action
-               class="org.csstudio.ams.monitor.ShowPluginAction"
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.ams.monitor.ShowPluginAction"
+            id="org.csstudio.ams.monitor.showamsmonitor"
+            name="AMS Monitor">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.ams.monitor.showamsmonitor"
                icon="icons/ams.gif"
-               id="org.csstudio.ams.monitor.action1"
                label="AMS Monitor"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
-
+               style="push"
+               tooltip="AMS Monitor">
+         </command>
+      </menuContribution>
+     </extension>
 </plugin>

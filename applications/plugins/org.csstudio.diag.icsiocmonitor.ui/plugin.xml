@@ -12,20 +12,25 @@
             restorable="true">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.diag.icsiocmonitor.ui.IocMonitorActionSet"
-            label="ICS/IOC Monitor"
-            visible="true">
-         <action
-               class="org.csstudio.diag.icsiocmonitor.ui.internal.ShowIocMonitor"
-               id="org.csstudio.diag.icsiocmonitor.ui.ShowIocMonitorAction"
-               label="ICS/IOC Monitor"
-               menubarPath="css/diag/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-
+        <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.diag.icsiocmonitor.ui.internal.ShowIocMonitor"
+            id="org.csstudio.diag.icsiocmonitor.ui.internal.showiocmonitor"
+            name="Show IOC Monitor">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.diag.icsiocmonitor.ui.internal.showiocmonitor"
+               label="IOC Monitor"
+               style="push"
+               tooltip="IOC Monitor">
+         </command>
+      </menuContribution>
+      </extension>
 </plugin>

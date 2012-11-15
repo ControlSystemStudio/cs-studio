@@ -16,20 +16,27 @@
             name="Jms message sender"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="de.desy.css.jmsSender.actionSet"
-            label="jmsSender Actionset"
-            visible="true">
-         <action
-               class="org.csstudio.diag.jmssender.views.ShowJMSSender"
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.diag.jmssender.views.ShowJMSSender"
+            id="org.csstudio.diag.jmssender.views.showjmssender"
+            name="New JmsSender">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.diag.jmssender.views.showjmssender"
                icon="icons/JMSSender.PNG"
-               id="de.desy.css.jmsSender.action"
                label="JMS Sender"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
+               style="push"
+               tooltip="JMS Sender">
+         </command>
+      </menuContribution>
+  </extension>
       <extension
          point="org.eclipse.help.toc">
       <toc
