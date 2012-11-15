@@ -103,6 +103,12 @@ public class NewSmsCheckProcessor extends AbstractCheckProcessor implements Mess
     @Override
     public void run() {
         
+        if (blockIt) {
+            closeJms();
+            LOG.warn("This CheckProcessor is blocked! Leaving...");
+            return;
+        }
+        
         hasBeenStarted = true;
         
         // Create a new initiator message for this check cycle (always a new message!)
