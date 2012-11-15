@@ -4,6 +4,7 @@
 
 record(mbbi, "enum")
 {
+   field(ASG, "ALWAYS")
    field(NOBT, "2")
    field(ZRVL, "0")
    field(ONVL, "1")

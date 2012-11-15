@@ -36,6 +36,8 @@ public class TestUtil
             handler.setLevel(log_level);
 
         PVContext.use_pure_java = true;
+        PVContext.support_dbe_property = true;
+
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");
         //                 "gov.aps.jca.event.QueuedEventDispatcher");
