@@ -12,24 +12,28 @@
             name="caSnooper viewer">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.caSnooper.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.caSnooperUi.ui.ChangeView.ShowSnooperAction"
+           <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.utility.caSnooperUi.ui.ChangeView.ShowSnooper"
+            id="org.csstudio.utility.casnooperui.ui.changeview.showsnooper"
+            name="CA Snooper">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.casnooperui.ui.changeview.showsnooper"
                icon="icon/snooper.jpg"
-               id="org.csstudio.utility.caSnooper.ui.ChangeView.ShowSnooperAction"
-               label="caSnooper"
-               menubarPath="css/utility/"
+               label="CA Snooper"
                style="push"
-               tooltip="ShowCaSnooper">
-         </action>
-      </actionSet>
-   </extension>
+               tooltip="CA Snooper">
+         </command>
+      </menuContribution>
+      </extension>
    <extension
          point="org.eclipse.help.toc">
       <toc

@@ -203,23 +203,28 @@
          </action>
       </objectContribution>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.nams.configurator.ui.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.nams.configurator.views.ShowAMS"
+           <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.nams.configurator.views.ShowAMS"
+            id="org.csstudio.nams.configurator.views.showams"
+            name="AMS Configurator">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:configuration">
+         <command
+               commandId="org.csstudio.nams.configurator.views.showams"
                icon="icons/ams.gif"
-               id="org.csstudio.nams.configurator.ui.ShowAMS"
-               label="NAMS"
-               menubarPath="css/configuration/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
+               label="AMS Configurator"
+               style="push"
+               tooltip="AMS Configurator">
+         </command>
+      </menuContribution>
+      </extension>
    <extension
          point="org.csstudio.auth.authorizationId">
       <id
