@@ -43,22 +43,26 @@
             restorable="true">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.cssstudio.utility.documentViewer.actionSet"
-            label="Document Viewer"
-            visible="true">
-         <action
-               class="org.csstudio.utility.documentviewer.ShowViewerAction"
+        <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.utility.documentviewer.ShowDocumentViewer"
+            id="org.csstudio.utility.documentviewer.showdocumentviewer"
+            name="Document Viewer">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.documentviewer.showdocumentviewer"
                icon="icons/bookmarks_view.gif"
-               id="org.cssstudio.utility.documentViewer.action"
                label="Document Viewer"
-               menubarPath="css/utility/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-
+               style="push"
+               tooltip="Document Viewer">
+         </command>
+      </menuContribution>
+      </extension>
 </plugin>

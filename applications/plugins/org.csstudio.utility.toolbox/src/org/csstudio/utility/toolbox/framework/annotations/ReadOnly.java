@@ -1,4 +1,4 @@
-package org.csstudio.utility.toolbox.framework.jpa;
+package org.csstudio.utility.toolbox.framework.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

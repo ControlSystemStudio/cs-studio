@@ -25,9 +25,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.InputLength;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.annotations.Immutable;
 
 @Table(name = "artikel_daten")
@@ -62,6 +63,7 @@ public class Article extends BindingEntity implements TextValue, Cloneable<Artic
 	private BigDecimal gruppeArtikel;
 
 	@Column(name = "inventar_nr")
+	@InputLength(10)
 	private BigDecimal inventarNr;
 
 	@Column(name = "gruppe")

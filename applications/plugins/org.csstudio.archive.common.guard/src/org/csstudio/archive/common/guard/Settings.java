@@ -18,7 +18,8 @@ public class Settings {
 //	public static final String GROUP_ID = "12"; //Wetter
 //	public static final String GROUP_ID = "5";
 //	public static final String GROUP_ID = "3"; //Kryo
-	public static final String GROUP_ID = "7"; //Kryo2
+//	public static final String GROUP_ID = "7"; //Kryo2
+	public static final String GROUP_ID = "4"; //MKK
 //	public static final int RANGE_START_IN_SECONDS = 1327937579;
 //	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*24;
 	
@@ -28,6 +29,8 @@ public class Settings {
 //	public static final int RANGE_START_IN_SECONDS = ?;
 //Zeitpintervall 2012-02-11 12:00
 //	2012-09-11 8:00  Beginn Wartungstag mit IOC Boots: 1347343200 
-	public static final int RANGE_START_IN_SECONDS = 1322042400;
-	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*12*1;
+//	public static final int RANGE_START_IN_SECONDS = 1322042400;
+//	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*12*1;
+	public static final int RANGE_START_IN_SECONDS = 1352869200;
+	public static final int RANGE_END_IN_SECONDS = RANGE_START_IN_SECONDS + 60*60*6*1;
 }

@@ -16,22 +16,28 @@
             name="CSS">
       </category>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.utility.displayBrowser.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.displaybrowser.ui.ShowDisplayBrowser"
+           <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.utility.displaybrowser.ShowDisplayBrowser"
+            id="org.csstudio.utility.displaybrowser.ui.showdisplaybrowser"
+            name="Display Browser">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.displaybrowser.ui.showdisplaybrowser"
                icon="icons/DisplayBrowser.gif"
-               id="org.csstudio.utility.displayBrowser.ShowDisplayBrowser"
                label="Display Browser"
-               menubarPath="css/utility/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
+               style="push"
+               tooltip="Display Browser">
+         </command>
+      </menuContribution>
+      </extension>
 <!--   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -74,7 +80,7 @@
 	<extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.utility.displaybrowser.ShowDispBrowser"
+            defaultHandler="org.csstudio.utility.displaybrowser.ShowDisplayBrowser"
             id="org.csstudio.utility.displaybrowser.pvpopup"
             name="Display Browser">
       </command>

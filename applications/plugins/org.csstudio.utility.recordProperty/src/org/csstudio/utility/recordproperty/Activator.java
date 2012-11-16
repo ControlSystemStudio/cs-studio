@@ -34,7 +34,7 @@ public class Activator extends AbstractUIPlugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-    	super.stop(context);
+    	super.start(context);
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
     }

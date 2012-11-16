@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_eingebaut")
@@ -191,7 +191,7 @@ public class ArticleInstalled extends BindingEntity implements ArticleHistoryInf
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatusDescritpion() {
 		return "Eingebaut";
 	}
 	

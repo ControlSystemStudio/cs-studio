@@ -20,8 +20,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 
 @Table(name = "BA_POSITION")
 @NamedQueries({

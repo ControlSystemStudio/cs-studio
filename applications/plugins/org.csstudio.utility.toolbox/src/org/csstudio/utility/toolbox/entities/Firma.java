@@ -15,9 +15,9 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "FIRMA")

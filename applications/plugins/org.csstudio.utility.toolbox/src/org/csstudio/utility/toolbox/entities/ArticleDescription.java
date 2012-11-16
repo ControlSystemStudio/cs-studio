@@ -20,8 +20,8 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 
 @Table(name = "artikel_beschreibung")
 @NamedQueries({ @NamedQuery(name = ArticleDescription.FIND_ALL, query = "from ArticleDescription ad order by ad.beschreibung") })
@@ -89,6 +89,10 @@ public class ArticleDescription extends BindingEntity implements Cloneable<Artic
 
 	public BigDecimal getId() {
 		return id;
+	}
+
+	public void setId(BigDecimal id) {
+		this.id = id;
 	}
 
 	public String getDfgSchluessel() {

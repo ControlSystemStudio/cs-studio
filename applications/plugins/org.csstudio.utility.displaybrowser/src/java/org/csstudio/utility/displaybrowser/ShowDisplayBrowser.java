@@ -21,44 +21,34 @@
  */
 package org.csstudio.utility.displaybrowser;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.utility.displaybrowser.ui.SearchView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShowDispBrowser extends AbstractHandler {
+public class ShowDisplayBrowser extends AbstractHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShowDispBrowser.class);    
+	private static final Logger LOG = LoggerFactory.getLogger(ShowDisplayBrowser.class);    
 
-    @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
-    {
-        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-        final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-        if (pvs.length < 1)
-            return null;
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        SearchView view;
-		try {
-			view = (SearchView) page.showView(SearchView.ID);
-			view.setFilter(pvs[0].getName());
-		} catch (PartInitException e) {
-			LOG.error("Error opening Display Browser: " + e.toString());
-		}
-		return null;
-    }
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
+	    try {
+	        page.showView(SearchView.ID);
+	    } catch (PartInitException e) {
+	    	LOG.error("Error opening Display Browser: " + e.toString());
+	    }
+	    return null;
+	}
+
 }

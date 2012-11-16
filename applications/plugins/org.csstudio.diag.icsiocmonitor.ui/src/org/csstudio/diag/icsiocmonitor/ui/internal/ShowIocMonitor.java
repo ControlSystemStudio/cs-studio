@@ -22,18 +22,33 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Actions which opens the IOC Monitor View.
  * 
  * @author Joerg Rathlev
  */
-public class ShowIocMonitor extends OpenViewAction implements
-		IWorkbenchWindowActionDelegate {
-	
-	public ShowIocMonitor() {
-		super(IocMonitorView.ID);
-	}
+public class ShowIocMonitor extends AbstractHandler {
 
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
+	    try {
+	        page.showView(IocMonitorView.ID);
+	    } catch (final PartInitException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
 }

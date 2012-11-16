@@ -86,20 +86,26 @@
          </adapter>
       </factory>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.config.savevalue.ui.SaveValueActionSet"
-            label="Save Value"
-            visible="true">
-         <action
-               class="org.csstudio.config.savevalue.ui.changelogview.ShowChangelogView"
-               id="org.csstudio.config.savevalue.ui.OpenChangelog"
+        <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.config.savevalue.ui.changelogview.ShowChangelogView"
+            id="org.csstudio.config.savevalue.ui.OpenChangelog"
+            name="Changelog View">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.utility.ldap.newnamespacebrowser"
+               icon="icons/save.gif"
                label="%ChangelogView.Name"
-               menubarPath="css/diag/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-
+               style="push"
+               tooltip="%ChangelogView.Name">
+         </command>
+      </menuContribution>
+      </extension>
 </plugin>

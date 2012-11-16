@@ -11,6 +11,9 @@
 
 source settings.sh
 
+type javac
+java -version
+
 # Fetch new copy of sources
 $ANT clean
 

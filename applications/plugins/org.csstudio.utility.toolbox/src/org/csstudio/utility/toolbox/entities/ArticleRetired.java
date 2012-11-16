@@ -16,8 +16,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_ausgemustert")
@@ -109,7 +109,7 @@ public class ArticleRetired extends BindingEntity implements ArticleHistoryInfo 
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatusDescritpion() {
 		return "Ausgemustert";
 	}
 

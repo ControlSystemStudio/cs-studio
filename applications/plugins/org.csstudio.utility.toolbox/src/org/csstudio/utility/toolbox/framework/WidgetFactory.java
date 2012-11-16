@@ -89,7 +89,7 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 		this.isSearchMode = true;
 		this.editorInput = null;
 	}
-	
+
 	public void init(GenericEditorInput<T> editorInput, Option<CrudController<T>> crudController, boolean isSearchMode,
 				Binder<T> binder) {
 		this.isSearchMode = isSearchMode;
@@ -97,11 +97,27 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 		this.binder = binder;
 	}
 
-	public void setText(Property property, String text) {
+	public void setText(Property property, final String text) {
 		Widget widget = getWidget(property);
 		if (widget instanceof Text) {
 			((Text) widget).setText(StringUtils.trimToEmpty(text));
 		} else if (widget instanceof Combo) {
+			AbstractListViewer viewer = (AbstractListViewer) viewers.get(property);
+			Object list = viewer.getInput();
+			if (list instanceof ArrayList) {
+				TextValue textValue = new TextValue() {
+					@Override
+					public String getValue() {
+						return text;
+					}
+				};
+				@SuppressWarnings("unchecked")
+				ArrayList<TextValue> arrayList = (ArrayList<TextValue>)list;
+				if (!arrayList.contains(textValue)) {
+					arrayList.add(textValue);
+				}
+				viewer.setInput(list);
+			}
 			((Combo) widget).setText(StringUtils.trimToEmpty(text));
 		} else {
 			throw new IllegalStateException("Unsupported widget for setText");
@@ -110,8 +126,9 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 
 	public void setReadOnly(Property property) {
 		Widget widget = getWidget(property);
-		if (widget instanceof Text) {			
-			((Text) widget).setBackground(AbstractControlWithLabelBuilder.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		if (widget instanceof Text) {
+			((Text) widget).setBackground(AbstractControlWithLabelBuilder.getDisplay().getSystemColor(
+						SWT.COLOR_INFO_BACKGROUND));
 			((Text) widget).setEditable(false);
 		} else {
 			throw new IllegalStateException("Unsupported widget for setText");
@@ -272,7 +289,7 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 	}
 
 	public void replaceBindings(T data) {
-		binder.replaceBindings(properties,data);
+		binder.replaceBindings(properties, data);
 	}
 
 	public boolean markError(Path propertyPath, String message) {
@@ -348,6 +365,11 @@ public class WidgetFactory<T extends BindingEntity> implements Iterable<SearchTe
 
 	public LabelBuilder label(Composite composite) {
 		return new LabelBuilder(composite, editorInput);
+	}
+
+	public TextBuilder text(Composite composite, String propertyName, SearchTermType searchTermType) {
+		return new TextBuilder(composite, propertyName, properties, editorInput, binder, searchTermType,
+					isSearchMode);
 	}
 
 	public TextBuilder text(Composite composite, String propertyName) {
