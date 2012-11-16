@@ -1,6 +1,6 @@
 ASG(DEFAULT)
 {
-    INPA("enum")
+    INPA("allow")
 
 # Everybody can always read
     RULE(1, READ)

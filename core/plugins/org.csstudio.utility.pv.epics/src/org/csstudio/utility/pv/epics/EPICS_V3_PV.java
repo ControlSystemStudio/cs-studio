@@ -773,6 +773,14 @@ public class EPICS_V3_PV extends PlatformObject
     {
     	if (! running)
     		return;
+    	// Access permission changes are treated like value updates:
+    	// Fire a value update.
+    	// The permission change actually already creates a value update,
+    	// so this separate AccessRightsListener simply doubles the value
+    	// updates, BUT:
+    	// In the plain value update, the write access sometimes still shows
+    	// the old state.
+    	// In this AccessRightsListener, the write access will always be correct.
         Activator.getLogger().log(Level.FINEST, "{0} write access: {1}",
                 new Object[] { name, ev.getWriteAccess() });
     	fireValueUpdate();

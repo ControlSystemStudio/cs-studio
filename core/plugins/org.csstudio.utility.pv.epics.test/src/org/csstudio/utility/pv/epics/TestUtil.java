@@ -23,7 +23,7 @@ public class TestUtil
 
     final private static String NETWORK = "127.0.0.1";
 
-    final private static Level log_level = Level.ALL;
+    public static Level log_level = Level.ALL;
 
     /** Perform setup that's usually done by the CSS plugin
      *  based on Eclipse preferences.

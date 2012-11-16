@@ -2,6 +2,21 @@
 #
 #   softIoc -s -d test.db
 
+record(bi, "allow")
+{
+   field(ASG, "ALWAYS")
+   field(ZNAM, "Allow")
+   field(ONAM, "disable")
+   field(VAL, "0")
+   field(PINI, "YES")
+}
+
+record(ai, "check_access")
+{
+   field(INP, "42")
+   field(PINI, "YES")
+}
+
 record(mbbi, "enum")
 {
    field(ASG, "ALWAYS")
