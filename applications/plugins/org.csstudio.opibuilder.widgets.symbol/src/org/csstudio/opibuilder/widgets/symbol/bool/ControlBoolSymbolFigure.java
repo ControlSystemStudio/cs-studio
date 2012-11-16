@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.bool;
 
 import java.io.IOException;
@@ -9,6 +16,7 @@ import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
 import org.csstudio.opibuilder.widgets.symbol.image.ControlSymbolImage;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
@@ -32,6 +40,8 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Control figure for Boolean Symbol Image widget based on
  * {@link ControlBoolSymbolModel}
+ * 
+ * @author SOPRA Group
  * 
  */
 public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
@@ -464,16 +474,16 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		getOffImage().setDegree(degree);
 		repaint();
 	}
-	public void setImageState(String imageState) {
+	public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
 		if (symbolProperties != null) {
-			symbolProperties.setDisposition(imageState);
+			symbolProperties.setMatrix(permutationMatrix);
 		}
-		getOnImage().setImageState(imageState);
-		getOffImage().setImageState(imageState);
+		getOnImage().setPermutationMatrix(permutationMatrix);
+		getOffImage().setPermutationMatrix(permutationMatrix);
 		repaint();
 	}
-	public String getImageState() {
-		return getCurrentImage().getImageState();
+	public PermutationMatrix getPermutationMatrix() {
+		return getCurrentImage().getPermutationMatrix();
 	}
 	public boolean isStretch() {
 		return getCurrentImage().isStretch();

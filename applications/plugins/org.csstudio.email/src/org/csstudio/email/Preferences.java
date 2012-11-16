@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     final public static String SMTP_HOST = "smtp_host";
+    final public static String SMTP_SENDER = "smtp_sender";
 
     /** @return SMTP URL */
     public static String getSMTP_Host()
@@ -28,5 +29,14 @@ public class Preferences
         if (service != null)
             host = service.getString(Activator.ID, SMTP_HOST, host, null);
         return host;
+    }
+    
+    /** @return SMTP URL */
+    public static String getSMTP_Sender()
+    {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service != null)
+			return service.getString(Activator.ID, SMTP_SENDER, null, null);
+		return null;
     }
 }

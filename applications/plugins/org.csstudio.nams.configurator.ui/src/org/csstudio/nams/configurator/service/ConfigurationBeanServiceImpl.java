@@ -1124,7 +1124,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			boolean useOld = false;
 			for (FilterActionDTO actionDTO : filterActionDTOs) {
 				if (filterAction.getReceiver().getID() == actionDTO
-						.getIReceiverRef()) {
+						.getIReceiverRef() && filterActionType.equals(actionDTO.getFilterActionType())) {
 					actionDTO.setMessage(filterAction.getMessage());
 					actionDTO.setReceiver(findDTO4Bean(filterAction
 							.getReceiver()));

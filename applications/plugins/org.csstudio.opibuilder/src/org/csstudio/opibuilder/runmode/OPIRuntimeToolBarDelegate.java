@@ -79,6 +79,8 @@ public class OPIRuntimeToolBarDelegate{
 			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
 		bars.setGlobalActionHandler(ActionFactory.PRINT.getId(), 
 				actionRegistry.getAction(ActionFactory.PRINT.getId()));
+		bars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), 
+				actionRegistry.getAction(ActionFactory.REFRESH.getId()));
 		bars.setGlobalActionHandler(partZoomInAction.getId(), partZoomInAction);
 		bars.setGlobalActionHandler(partZoomOutAction.getId(), partZoomOutAction);
 		bars.updateActionBars();

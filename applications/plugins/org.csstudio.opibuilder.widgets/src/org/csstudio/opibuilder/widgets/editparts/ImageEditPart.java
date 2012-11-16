@@ -27,6 +27,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageFigure;
+import org.csstudio.swt.widgets.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -69,6 +70,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		figure.setBottomCrop(model.getBottomCrop());
 		figure.setLeftCrop(model.getLeftCrop());
 		figure.setRightCrop(model.getRightCrop());
+		figure.setPermutationMatrix(model.getPermutationMatrix());
 		return figure;
 	}
 	
@@ -220,6 +222,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ImageModel.PROP_WIDTH, handle);
 		
 		registerCropPropertyHandlers();
+		registerImageRotationPropertyHandlers();
 	}
 	
 	
@@ -252,4 +255,81 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		
 	}
 	
+	/**
+	 * Registers image rotation property change handlers for the properties
+	 * defined in {@link MonitorBoolSymbolModel}.
+	 */
+	public void registerImageRotationPropertyHandlers() {
+		// degree rotation property
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				ImageFigure imageFigure = (ImageFigure) figure;
+				int newDegree = getWidgetModel().getDegree((Integer) newValue);
+				int oldDegree = getWidgetModel().getDegree((Integer) oldValue);
+
+				PermutationMatrix oldMatrix = new PermutationMatrix((double[][]) getPropertyValue(ImageModel.PERMUTATION_MATRIX));
+				PermutationMatrix newMatrix = PermutationMatrix.generateRotationMatrix(newDegree - oldDegree);
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+				
+				// As we use only % Pi/2 angles, we can round to integer values
+				// => equals work better
+				result.roundToIntegers();
+
+				setPropertyValue(ImageModel.PERMUTATION_MATRIX, result.getMatrix());
+				setPropertyValue(ImageModel.PROP_DEGREE, (Integer) newValue);
+				imageFigure.setPermutationMatrix(result);
+				autoSizeWidget(imageFigure);
+					
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ImageModel.PROP_DEGREE, handler);
+
+		// flip horizontal rotation property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				ImageFigure imageFigure = (ImageFigure) figure;
+				// imageFigure.setFlipH((Boolean) newValue);
+				PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
+				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+
+				// As we use only % Pi/2 angles, we can round to integer values
+				// => equals work better
+				result.roundToIntegers();
+				
+				setPropertyValue(ImageModel.PERMUTATION_MATRIX, result.getMatrix());
+				setPropertyValue(ImageModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
+				imageFigure.setPermutationMatrix(result);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ImageModel.PROP_FLIP_HORIZONTAL, handler);
+
+		// flip vertical rotation property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				ImageFigure imageFigure = (ImageFigure) figure;
+				// imageFigure.setFlipV((Boolean) newValue);
+				PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
+				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+				
+				// As we use only % Pi/2 angles, we can round to integer values
+				// => equals work better
+				result.roundToIntegers();
+
+				setPropertyValue(ImageModel.PERMUTATION_MATRIX, result.getMatrix());
+				setPropertyValue(ImageModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
+				imageFigure.setPermutationMatrix(result);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ImageModel.PROP_FLIP_VERTICAL, handler);
+	}
 }

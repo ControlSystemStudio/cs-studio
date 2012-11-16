@@ -1,0 +1,21 @@
+ASG(DEFAULT)
+{
+    INPA("allow")
+
+# Everybody can always read
+    RULE(1, READ)
+
+# if enum==0, everybody can write
+    RULE(1, WRITE)
+    {
+        CALC("A=0")
+    }
+}
+
+ASG(ALWAYS)
+{
+    RULE(1, READ)
+    RULE(1, WRITE)
+}
+
+

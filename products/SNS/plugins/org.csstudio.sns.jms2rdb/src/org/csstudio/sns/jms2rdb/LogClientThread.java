@@ -130,10 +130,11 @@ public class LogClientThread extends Thread
                 // First open RDB, then the JMS client that writes to RDB
                 rdb_writer = new RDBWriter(rdb_url, rdb_schema);
                 Activator.getLogger().log(Level.INFO, "Connected to RDB {0}", rdb_url);
-                jms_connection = connectJMS();
 
                 // Add start message
                 rdb_writer.write("JMS Log Tool started");
+
+                jms_connection = connectJMS();
 
                 // Incoming JMS messages are handled in onMessage,
                 // so nothing to do here but wait...

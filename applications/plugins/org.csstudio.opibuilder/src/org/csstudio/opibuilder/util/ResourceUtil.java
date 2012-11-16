@@ -14,6 +14,16 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.URLPath;
@@ -227,6 +237,45 @@ public class ResourceUtil {
 	 * @throws IOException
 	 */
 	public static InputStream openURLStream(final URL url) throws IOException{
+		if(url.getProtocol().equals("https")){			//$NON-NLS-1$
+			//The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
+	        // Create a trust manager that does not validate certificate chains
+	        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+	                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                    return null;
+	                }
+	                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	                }
+	                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	                }
+	            }
+	        };
+	
+	        // Install the all-trusting trust manager
+	        SSLContext sc = null;
+	        try {
+	            sc = SSLContext.getInstance("SSL");
+	        } catch (NoSuchAlgorithmException e) {
+	            e.printStackTrace();
+	        }
+	        try {
+	            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        } catch (KeyManagementException e) {
+	            e.printStackTrace();
+	        }
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	
+	        // Create all-trusting host name verifier
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        };
+	
+	        // Install the all-trusting host verifier
+	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+		}
+		
 		URLConnection connection = url.openConnection();
 		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
 		return connection.getInputStream();

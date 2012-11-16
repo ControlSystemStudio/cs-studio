@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.ToolBar;
 public class RuleDataEditDialog extends HelpTrayDialog {
 	
 	private Action addAction;
+	private Action copyAction;	
 	private Action removeAction;
 	private Action moveUpAction;
 	private Action moveDownAction;
@@ -286,6 +287,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
 		toolBar.setLayoutData(grid);
 		createActions();
 		toolbarManager.add(addAction);
+		toolbarManager.add(copyAction);
 		toolbarManager.add(removeAction);
 		toolbarManager.add(moveUpAction);
 		toolbarManager.add(moveDownAction);
@@ -350,6 +352,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
 				.getSelection();
 		boolean enabled = !selection.isEmpty()
 				&& selection.getFirstElement() instanceof Expression;
+		copyAction.setEnabled(enabled);
 		removeAction.setEnabled(enabled);
 		moveUpAction.setEnabled(enabled);
 		moveDownAction.setEnabled(enabled);
@@ -483,6 +486,28 @@ public class RuleDataEditDialog extends HelpTrayDialog {
 		addAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/add.gif")); //$NON-NLS-1$
+		
+		copyAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) expressionViewer
+						.getSelection();
+				if (!selection.isEmpty()
+						&& selection.getFirstElement() instanceof Expression) {
+					Expression expression = ((Expression) selection
+							.getFirstElement()).getCopy();
+					expressionList.add(expression);
+					setExpressionViewerSelection(expression);					
+				}
+			}
+		};
+		copyAction.setText("Copy");
+		copyAction.setToolTipText("Copy selected expression");
+		copyAction.setImageDescriptor(CustomMediaFactory.getInstance()
+				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
+						"icons/copy.gif")); //$NON-NLS-1$
+		copyAction.setEnabled(false);
+		
 		
 		
 		removeAction = new Action() {
