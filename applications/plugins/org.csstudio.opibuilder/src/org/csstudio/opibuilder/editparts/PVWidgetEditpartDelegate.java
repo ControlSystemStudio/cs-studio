@@ -58,9 +58,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 			//write access
 			if(controlPVPropId != null &&
 					controlPVPropId.equals(pvPropID) &&
-					pv.isWriteAllowed() != lastWriteAccess){
-				lastWriteAccess = pv.isWriteAllowed();
-				if(lastWriteAccess){
+					!writeAccessMarked){
+				writeAccessMarked = true;
+				if(pv.isWriteAllowed()){
 					UIBundlingThread.getInstance().addRunnable(
 							editpart.getViewer().getControl().getDisplay(),new Runnable(){
 						public void run() {
@@ -153,7 +153,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	private PropertyChangeListener[] pvValueListeners;
 	private AbstractBaseEditPart editpart;
-	private volatile boolean lastWriteAccess = true;
+	private boolean writeAccessMarked = false;
 	private Cursor savedCursor;
 
 	private Color saveForeColor, saveBackColor;
@@ -420,7 +420,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 				}
 				try {
 					PV newPV = BOYPVFactory.createPV(newPVName);
-					lastWriteAccess = true;
+					writeAccessMarked = false;
 					PVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);
 					pvMap.put(pvNamePropID, newPV);
