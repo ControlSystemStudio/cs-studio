@@ -26,9 +26,7 @@ package org.csstudio.ams.application.monitor.service;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.Vector;
-
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.configdb.UserGroupDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupKey;
@@ -52,23 +50,24 @@ public class DatabaseService {
                     (ArrayList<UserGroupKey>) UserGroupDAO.selectKeyList(connection);
 
             int groupId = 0;
-            StringTokenizer token = new StringTokenizer(groupNames, ",");
-            while(token.hasMoreTokens()) {
+            String[] token = groupNames.split(",");
+            for (String name : token) {
                 
-                String name = token.nextToken();
-                for(final UserGroupKey k : groupKey) {
-                    if(k.userGroupName.compareTo(name) == 0) {
-                        groupId = k.userGroupID;
-                        break;
+                if (name != null) {
+                    for (UserGroupKey k : groupKey) {
+                        if (k.userGroupName.compareToIgnoreCase(name.trim()) == 0) {
+                            groupId = k.userGroupID;
+                            break;
+                        }
                     }
-                }
-
-                final Vector<UserTObject> users = 
-                        UserGroupUserDAO.selectByGroupAndState(connection, groupId, 1);
-                if(users.isEmpty() == false) {
-                    for(final UserTObject u : users) {
-                        if(number.contains(u.getMobilePhone()) == false) {
-                            number.add(u.getMobilePhone());
+    
+                    final Vector<UserTObject> users = 
+                            UserGroupUserDAO.selectByGroupAndState(connection, groupId, 1);
+                    if(users.isEmpty() == false) {
+                        for(final UserTObject u : users) {
+                            if(number.contains(u.getMobilePhone()) == false) {
+                                number.add(u.getMobilePhone());
+                            }
                         }
                     }
                 }
@@ -101,24 +100,24 @@ public class DatabaseService {
                     (ArrayList<UserGroupKey>) UserGroupDAO.selectKeyList(connection);
 
             int groupId = 0;
-            StringTokenizer token = new StringTokenizer(groupNames, ",");
-            while(token.hasMoreTokens()) {
+            String[] token = groupNames.split(",");
+            for (String name : token) {
                 
-                String name = token.nextToken();
-
-                for(final UserGroupKey k : groupKey) {
-                    if(k.userGroupName.compareTo(name) == 0) {
-                        groupId = k.userGroupID;
-                        break;
+                if (name != null) {
+                    for(final UserGroupKey k : groupKey) {
+                        if(k.userGroupName.compareTo(name.trim()) == 0) {
+                            groupId = k.userGroupID;
+                            break;
+                        }
                     }
-                }
-
-                final Vector<UserTObject> users = 
-                        UserGroupUserDAO.selectByGroupAndState(connection, groupId, 1);
-                if(users.isEmpty() == false) {
-                    for(final UserTObject u : users) {
-                        if(adr.contains(u.getEmail()) == false) {
-                            adr.add(u.getEmail());
+    
+                    final Vector<UserTObject> users = 
+                            UserGroupUserDAO.selectByGroupAndState(connection, groupId, 1);
+                    if(users.isEmpty() == false) {
+                        for(final UserTObject u : users) {
+                            if(adr.contains(u.getEmail()) == false) {
+                                adr.add(u.getEmail());
+                            }
                         }
                     }
                 }

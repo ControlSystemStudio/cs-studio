@@ -207,9 +207,11 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
        boolean success = false;
        String amsHost = AmsMonitorPreference.AMS_HOST.getValue().toLowerCase();
        String amsUser = AmsMonitorPreference.AMS_USER.getValue().toLowerCase();
+       String groupName = AmsMonitorPreference.XMPP_GROUP_NAME.getDefaultValue();
        String[] procArray = new String[] {"ams-delivery-system"};
        long restartTime = AmsMonitorPreference.RESTART_WAIT_TIME.getValue();
        IRemoteService remoteService = new XmppRemoteService(xmppService,
+                                                            groupName,
                                                             checkProcessor.getWorkspaceLocation(),
                                                             restartTime);
        success = remoteService.restart(procArray, amsHost, amsUser);

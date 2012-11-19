@@ -64,12 +64,15 @@ public class XmppRemoteService implements IRemoteService {
     
     private ISessionService xmppService;
     
+    private String xmppGroupName;
+    
     private String workspaceLocation;
     
     private long restartWaitTime;
     
-    public XmppRemoteService(ISessionService xmpp, String ws, long waitTime) {
+    public XmppRemoteService(ISessionService xmpp, String groupName, String ws, long waitTime) {
         xmppService = xmpp;
+        xmppGroupName = groupName;
         workspaceLocation = ws;
         restartWaitTime = waitTime;
     }
@@ -151,7 +154,7 @@ public class XmppRemoteService implements IRemoteService {
        LOG.info("Manager initialized");
        LOG.info("Anzahl Directory-Elemente: {}", rosterItems.size());
 
-       IRosterGroup jmsApplics = this.getRosterGroup(rosterItems, "jms-applications");
+       IRosterGroup jmsApplics = this.getRosterGroup(rosterItems, xmppGroupName);
        
        for (String s : applicationName) {
            if (s != null) {
