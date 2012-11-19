@@ -187,6 +187,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </features>
 
    <configurations>
+      <plugin id="org.csstudio.archive.common.service" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.archive.common.service.mysqlimpl" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.ldap.service.impl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
