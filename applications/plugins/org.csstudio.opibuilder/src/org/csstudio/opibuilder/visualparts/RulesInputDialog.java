@@ -46,7 +46,6 @@ public class RulesInputDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action editAction;
-	private Action copyAction;
 	private Action removeAction;
 	private Action moveUpAction;
 	private Action moveDownAction;
@@ -159,7 +158,6 @@ public class RulesInputDialog extends HelpTrayDialog {
 		createActions();
 		toolbarManager.add(addAction);
 		toolbarManager.add(editAction);
-		toolbarManager.add(copyAction);
 		toolbarManager.add(removeAction);
 		toolbarManager.add(moveUpAction);
 		toolbarManager.add(moveDownAction);
@@ -195,7 +193,6 @@ public class RulesInputDialog extends HelpTrayDialog {
 		boolean enabled = !rulesViewer.getSelection().isEmpty();
 		removeAction.setEnabled(enabled);
 		editAction.setEnabled(enabled);	
-		copyAction.setEnabled(enabled);
 		moveUpAction.setEnabled(enabled);
 		moveDownAction.setEnabled(enabled);
 	}
@@ -264,27 +261,6 @@ public class RulesInputDialog extends HelpTrayDialog {
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/edit.gif")); //$NON-NLS-1$
 		editAction.setEnabled(false);
-		
-		copyAction = new Action("Copy") {
-			@Override
-			public void run() {
-				IStructuredSelection selection = (IStructuredSelection) rulesViewer
-						.getSelection();
-				if (!selection.isEmpty()
-						&& selection.getFirstElement() instanceof RuleData) {
-					RuleData ruleData = ((RuleData) selection
-							.getFirstElement()).getCopy();
-					ruleDataList.add(ruleData);					
-					setRulesViewerSelection(ruleData);				
-				}
-			}
-		};
-		copyAction.setToolTipText("Copy Selected Rule");
-		copyAction.setImageDescriptor(CustomMediaFactory.getInstance()
-				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/copy.gif")); //$NON-NLS-1$
-		copyAction.setEnabled(false);
-		
 		removeAction = new Action() {
 			@Override
 			public void run() {

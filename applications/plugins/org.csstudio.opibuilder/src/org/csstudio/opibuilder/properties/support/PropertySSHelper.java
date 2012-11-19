@@ -75,7 +75,4 @@ public abstract class PropertySSHelper {
 	public abstract PropertyDescriptor FilePathPropertyDescriptorWithFilter(
 			String prop_id, String description, AbstractWidgetModel widgetModel, String[] filters);
 	
-	public abstract PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
-			String description);
-	
 }

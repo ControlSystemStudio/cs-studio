@@ -1,10 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import java.util.ArrayList;
@@ -17,7 +10,9 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageOperation;
+import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.platform.data.ValueUtil;
@@ -26,11 +21,9 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * @author Fred Arnaud (Sopra Group)
- */
 public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart {
 
 	private PVListener loadItemsFromPVListener;
@@ -62,7 +55,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		sip.setDegree(model.getDegree());
 		sip.setFlipH(model.isFlipHorizontal());
 		sip.setFlipV(model.isFlipVertical());
-		sip.setMatrix(model.getPermutationMatrix());
+		sip.setDisposition(model.getDisposition());
 		
 		figure.setSymbolProperties(sip);
 		figure.setOnColor(model.getOnColor());
@@ -72,8 +65,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		figure.setShowSymbolLabel(model.isShowSymbolLabel());
 		figure.setSymbolLabelPosition(model.getSymbolLabelPosition());
 		
-		if (!model.isItemsFromPV()
-				&& !(getExecutionMode() == ExecutionMode.EDIT_MODE)) {
+		if (!model.isItemsFromPV()) {
 			List<String> items = getWidgetModel().getItems();
 			if (items != null)
 				figure.setStates(items);
@@ -198,7 +190,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS, itemsHandler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS,
+				itemsHandler);
 	}
 	
 	@Override
@@ -366,34 +359,43 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	/**
 	 * Registers image rotation property change handlers
 	 */
-	public void registerImageRotationPropertyHandlers() {
+	private void registerImageRotationPropertyHandlers() {
 		// degree rotation property
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				int newDegree = (Integer) newValue;
-				int oldDegree = (Integer) oldValue;
-
-				PermutationMatrix oldMatrix = new PermutationMatrix(
-						(double[][]) getPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX));
-				PermutationMatrix newMatrix = PermutationMatrix
-						.generateRotationMatrix(newDegree - oldDegree);
-				PermutationMatrix result = newMatrix.multiply(oldMatrix);
-				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
-
-//				if (newDegree != 0 && newDegree != 90 && newDegree != 180
-//						&& newDegree != 270) { // Reset with previous value
-//					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE, oldValue);
-//					Activator.getLogger().log(Level.WARNING,
-//									"ERROR in value of old degree " + oldDegree
-//									+ ". The degree can only be 0, 90, 180 or 270");
-//				} else {
-					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE, newDegree);
+				if (newDegree != 0 && newDegree != 90 && newDegree != 180
+						&& newDegree != 270) { // Reset with previous value
+					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE,
+							oldValue);
+				} else {
 					// imageFigure.setDegree(newDegree);
-					imageFigure.setPermutationMatrix(result);
+					int oldDegree = (Integer) oldValue;
+					int direction = ImageUtils.getRotationDirection(oldDegree,
+							newDegree);
+					if (direction != -1) {
+						ImageOperation IOp = null;
+						String disposition = imageFigure.getImageState();
+						switch (direction) {
+						case SWT.LEFT: // left 90 degrees
+							IOp = ImageOperation.RL90;
+							break;
+						case SWT.RIGHT: // right 90 degrees
+							IOp = ImageOperation.RR90;
+							break;
+						case SWT.DOWN: // 180 degrees
+							IOp = ImageOperation.R180;
+							break;
+						}
+						char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), IOp);
+						disposition = String.valueOf(result);
+						setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+						imageFigure.setImageState(disposition);
+					}
 					autoSizeWidget(imageFigure);
-//				}
+				}
 				return false;
 			}
 		};
@@ -405,18 +407,17 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				// imageFigure.setFlipH((Boolean) newValue);
-				PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
-				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
-				PermutationMatrix result = newMatrix.multiply(oldMatrix);
-				
-				setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
-				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
-				imageFigure.setPermutationMatrix(result);
+				String disposition = imageFigure.getImageState();
+				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FH);
+				disposition = String.valueOf(result);
+				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+				imageFigure.setImageState(disposition);
 				autoSizeWidget(imageFigure);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL,
+				handler);
 
 		// flip vertical rotation property
 		handler = new IWidgetPropertyChangeHandler() {
@@ -424,18 +425,17 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				// imageFigure.setFlipV((Boolean) newValue);
-				PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
-				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
-				PermutationMatrix result = newMatrix.multiply(oldMatrix);
-				
-				setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
-				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
-				imageFigure.setPermutationMatrix(result);
+				String disposition = imageFigure.getImageState();
+				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FV);
+				disposition = String.valueOf(result);
+				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+				imageFigure.setImageState(disposition);
 				autoSizeWidget(imageFigure);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_VERTICAL,
+				handler);
 	}
 
 	/**

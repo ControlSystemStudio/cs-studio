@@ -1,15 +1,8 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.alarm.beast.notifier.actions;
 
 import org.csstudio.alarm.beast.notifier.model.IActionValidator;
-import org.csstudio.alarm.beast.notifier.model.IActionProvider;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
+import org.csstudio.alarm.beast.notifier.model.INotificationAction;
 import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
 
 /** Automated action that sends email.
@@ -17,7 +10,7 @@ import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
  *  <p>plugin.xml registers this for the "mailto" scheme.
  *  @author Kay Kasemir
  */
-public class AutomatedEmailAction implements IActionProvider
+public class AutomatedEmailAction implements IAutomatedAction
 {
     /** {@inheritDoc} */
     @Override
@@ -28,8 +21,8 @@ public class AutomatedEmailAction implements IActionProvider
 
     /** {@inheritDoc} */
     @Override
-    public IAutomatedAction getNotifier()
+    public INotificationAction getNotifier()
     {
-        return new EmailActionImpl();
+        return new EmailNotificationAction();
     }
 }

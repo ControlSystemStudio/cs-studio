@@ -6,8 +6,6 @@
 
 export VERSION=3.2.0I
 
-export PATH=/Library/Java/JavaVirtualMachines/1.6.0_23-b05-318.jdk/Contents/Home/bin:$PATH
-
 # Top of repository tree
 export TOP=/Users/ky9/git/cs-studio
 
@@ -19,9 +17,6 @@ export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
 # Deltapack can list several sites: delta pack;SVN support;...
 export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/site-1.6.18"
 export ECLIPSE=$ECLIPSE_BASE/eclipse
-
-export JRE_Macosx64=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/jre
-export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
 
 # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
 export BUILDDIR=/Kram/build

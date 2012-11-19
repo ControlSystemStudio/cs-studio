@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS-PANDA Product
 Bundle-SymbolicName: org.csstudio.panda.product;singleton:=true
-Bundle-Version: 3.1.1.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.panda.product.Activator
 Bundle-Vendor: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de> - RUB
 Require-Bundle: org.eclipse.ui,

@@ -1,10 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.opibuilder.imagelib;
 
 import java.util.logging.Logger;
@@ -13,18 +6,20 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
+ * 
  * The activator class controls the Image Library plug-in life cycle 
- * @author Greg Darcourt (Sopra Group)
+ * @author SOPRA Group
+ *
  */
 public class Activator extends AbstractUIPlugin {
 
 	/**
-	 * The Symbol plug-in ID
+	 *  The Symbol plug-in ID
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.opibuilder.imagelib";
+	public static final String PLUGIN_ID = "org.csstudio.opibuilder.imagelib"; 
 
 	/**
-	 * The shared instance of the Symbol plug-in
+	 *  The shared instance of the Symbol plug-in
 	 */
 	private static Activator plugin;
 
@@ -32,7 +27,7 @@ public class Activator extends AbstractUIPlugin {
 	 * The logger
 	 */
 	private static final Logger LOGGER = Logger.getLogger(PLUGIN_ID);
-
+	
 	/**
 	 * The default constructor
 	 */
@@ -41,10 +36,7 @@ public class Activator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-	 * )
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -53,10 +45,7 @@ public class Activator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -65,6 +54,7 @@ public class Activator extends AbstractUIPlugin {
 
 	/**
 	 * Get the shared instance of the Symbol plug-in.
+	 *
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
@@ -73,9 +63,9 @@ public class Activator extends AbstractUIPlugin {
 
 	/**
 	 * Get the logger for Symbol plug-in.
-	 * @return the logger
+	 * @return the logger 
 	 */
 	public static Logger getLogger() {
-		return LOGGER;
+	    return LOGGER;
 	}
 }

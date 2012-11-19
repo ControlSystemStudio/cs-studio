@@ -1,10 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol;
 
 import java.util.logging.Logger;
@@ -13,8 +6,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
+ * 
  * The activator class controls the Symbol plug-in life cycle 
  * @author SOPRA Group
+ *
  */
 public class Activator extends AbstractUIPlugin {
 

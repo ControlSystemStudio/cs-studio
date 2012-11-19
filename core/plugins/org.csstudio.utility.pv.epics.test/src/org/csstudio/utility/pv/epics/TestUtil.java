@@ -23,7 +23,7 @@ public class TestUtil
 
     final private static String NETWORK = "127.0.0.1";
 
-    public static Level log_level = Level.ALL;
+    final private static Level log_level = Level.ALL;
 
     /** Perform setup that's usually done by the CSS plugin
      *  based on Eclipse preferences.
@@ -36,8 +36,6 @@ public class TestUtil
             handler.setLevel(log_level);
 
         PVContext.use_pure_java = true;
-        PVContext.support_dbe_property = true;
-
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");
         //                 "gov.aps.jca.event.QueuedEventDispatcher");

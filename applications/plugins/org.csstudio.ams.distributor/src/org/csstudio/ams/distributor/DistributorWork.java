@@ -670,7 +670,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 						final MessageChainTObject messageChainObject = new MessageChainTObject(
 								-1, iMessageId, filter.getFilterID(),
-								fa.getFilterActionID(), -1, null, null,
+								fa.getFilterActionID(), 0, null, null,
 								MESSAGECHAIN_WORK, null);
 						MessageChainDAO.insert(localAppDb, messageChainObject);
 						MessageChainDAO.insert(memoryCacheDb, messageChainObject);
@@ -919,7 +919,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 		}
 
 		HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
-				fa.getFilterActionTypeRef(), user, null, -1, 0, 0, topic);
+				fa.getFilterActionTypeRef(), user, null, 0, 0, 0, topic);
 		return ErrorState.STAT_OK.getStateNumber();
 	}
 
@@ -1002,7 +1002,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
 					fa.getFilterActionTypeRef(), aUser.getUser(),
-					userGroup.getUsergroup(), -1, 0, 0,
+					userGroup.getUsergroup(), 0, 0, 0,
 					TopicDAO.select(memoryCacheDb, fa.getReceiverRef()));
 			iOneSended = ErrorState.STAT_OK.getStateNumber();
 		}
@@ -1925,9 +1925,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 							aUser = userGroup.getUsers().get(0);
 						}
 
-						String userConfirmCode = aUser.getUser().getConfirmCode();
 						if (aUser != null
-								&& userConfirmCode != null && userConfirmCode.equals(confirmCode)) {
+								&& aUser.getUser().getConfirmCode()
+										.equals(confirmCode)) {
 							chainDb.setChainState(MESSAGECHAIN_REPLIED);
 							MessageChainDAO.update(localAppDb, chainDb);
 							MessageChainDAO.update(memoryCacheDb, chainDb);
@@ -1978,9 +1978,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					err = "message chain not in work.";
 				} else if (chainDb.getReceiverPos() != msgChainPos) {
 					err = "user not in time interval.";
-				} else if (aUser.getUser().getConfirmCode() == null) {
-					err = "use has no confirmation code.";
-				} else if(!aUser.getUser().getConfirmCode()
+				} else if (!aUser.getUser().getConfirmCode()
 						.equals(confirmCode)) {
 					err = "wrong confirmation code.";
 				}
@@ -2043,7 +2041,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			final FilterTObject filter = FilterDAO.select(memoryCacheDb,
 					msgChain.getFilterRef());
-			final FilterActionTObject filterAction = FilterActionDAO.select(
+			final FilterActionTObject fa = FilterActionDAO.select(
 					memoryCacheDb, msgChain.getFilterActionRef());
 
 			AggrUserGroupUserTObject aNextUser = null;
@@ -2051,9 +2049,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 			boolean bOneActive = false; // if no one possible break up complete
 			// chain
 
-			if (filterAction != null && filter != null) {
+			if (fa != null && filter != null) {
 				userGroup = AggrUserGroupDAO.selectList(memoryCacheDb,
-						filterAction.getReceiverRef()); // ggf. eine Topic-ID!
+						fa.getReceiverRef()); // ggf. eine Topic-ID!
 
 				final Iterator<?> iter = userGroup.getUsers().iterator();
 				while (iter.hasNext()) {
@@ -2064,13 +2062,13 @@ public class DistributorWork extends Thread implements AmsConstants,
 						Log.log(Log.WARN, "UserGroupRel not active: User "
 								+ aUser.getUser().getUserID() + " of Group "
 								+ aUser.getUserGroupUser().getUserGroupRef()
-								+ " in FilterAction: " + filterAction.getFilterActionID());
+								+ " in FilterAction: " + fa.getFilterActionID());
 						continue;
 					}
 					if (aUser.getUser().getActive() == 0) {
 						Log.log(Log.WARN, "User not active: "
 								+ aUser.getUser().getUserID()
-								+ " in FilterAction: " + filterAction.getFilterActionID());
+								+ " in FilterAction: " + fa.getFilterActionID());
 						continue;
 					}
 
@@ -2104,7 +2102,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 			if (aNextUser != null) // send next
 			{
 				int iPref = 0;
-				final String text = prepareMessageText(extMsg, filter, filterAction,
+				final String text = prepareMessageText(extMsg, filter, fa,
 						msgChain); // throws
 				// no
 				// JMSException
@@ -2121,7 +2119,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					break;
 				case USERFILTERALARMTYPE_JMS:
 					final TopicTObject topic = TopicDAO.select(memoryCacheDb,
-							filterAction.getReceiverRef());
+							fa.getReceiverRef());
 					publishToConnectorJms(text, topic.getTopicName(), null); // JMS
 					msgChain.setReceiverAdress(topic.getTopicName());
 					iPref = USERFILTERALARMTYPE_JMS;
@@ -2138,7 +2136,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					iPref = USERFILTERALARMTYPE_MAIL;
 					break;
 				default:
-					switch (filterAction.getFilterActionTypeRef()) {
+					switch (fa.getFilterActionTypeRef()) {
 					case FILTERACTIONTYPE_SMS_GR:
 						publishToConnectorSms(text, user.getMobilePhone());// SMS
 						msgChain.setReceiverAdress(user.getMobilePhone());
@@ -2156,7 +2154,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 					default:
 						throw new AMSException(
 								"Configuration is invalid. FilterActionType="
-										+ filterAction.getFilterActionTypeRef());
+										+ fa.getFilterActionTypeRef());
 					}
 					break;
 				}
@@ -2170,14 +2168,14 @@ public class DistributorWork extends Thread implements AmsConstants,
 									localAppDb,
 									extMsg,
 									text,
-									filterAction.getFilterActionTypeRef(),
+									fa.getFilterActionTypeRef(),
 									user,
 									(userGroup != null ? userGroup
 											.getUsergroup() : null), msgChain
 											.getReceiverPos(), msgChain
 											.getMessageChainID(), iPref,
 									TopicDAO.select(memoryCacheDb,
-											filterAction.getReceiverRef()));
+											fa.getReceiverRef()));
 				} catch (final JMSException e) // JMSException
 				// (STAT_ERR_JMSCON_EXT)
 				{
@@ -2190,7 +2188,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 						+ msgChain.getMessageChainID() + ", Pos="
 						+ msgChain.getReceiverPos()
 						+ " Reason: nobody replied the chain.";
-				if (filterAction == null || filter == null) // log if error only
+				if (fa == null || filter == null) // log if error only
 				{
 					err = "Chain failed for ChainId="
 							+ msgChain.getMessageChainID() + ", Pos="
@@ -2206,11 +2204,11 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 				HistoryWriter.logHistoryReply(localAppDb, "Failed", null, null,
 						null, err,
-						(filterAction == null ? 0 : filterAction.getFilterActionTypeRef()),
+						(fa == null ? 0 : fa.getFilterActionTypeRef()),
 						msgChain.getMessageChainID(),
 						msgChain.getReceiverPos(), null, null);
 
-				if (bOneActive == true || filterAction == null || filter == null) {
+				if (bOneActive == true || fa == null || filter == null) {
 					try {
 						extMsg.setString(MSGPROP_REINSERTED, "TRUE"); // store
 						// it

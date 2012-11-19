@@ -5,7 +5,6 @@ org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
 org.csstudio.alarm.beast.msghist/**
-org.csstudio.alarm.beast.notifier/**
 org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**

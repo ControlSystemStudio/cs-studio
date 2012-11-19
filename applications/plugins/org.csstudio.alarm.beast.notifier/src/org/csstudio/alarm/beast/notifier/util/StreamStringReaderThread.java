@@ -19,39 +19,50 @@ import java.io.InputStreamReader;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class StreamStringReaderThread extends Thread {
-	final private InputStream stream;
-	final private StringBuilder buf = new StringBuilder();
-
-	public StreamStringReaderThread(final InputStream stream) {
-		super("StreamStringReader");
-		this.stream = stream;
-	}
-
-	/** @return Text that has been read so far */
-	public String getText() {
-		synchronized (buf) {
-			return buf.toString();
-		}
-	}
-
-	@Override
-	public void run() {
-		try {
-			final InputStreamReader isr = new InputStreamReader(stream);
-			// Buffer the reads, but use smaller buffer because
-			// we hope to read very little from the external command
-			final BufferedReader br = new BufferedReader(isr, 512);
-			String line;
-			while ((line = br.readLine()) != null) {
-				synchronized (buf) {
-					buf.append(line + "\n");
-				}
-			}
-		} catch (IOException e) {
-			synchronized (buf) {
-				buf.append(e.getMessage());
-			}
-		}
-	}
+class StreamStringReaderThread extends Thread
+{
+    final private InputStream stream;
+    final private StringBuilder buf = new StringBuilder();
+    
+    public StreamStringReaderThread(final InputStream stream)
+    {
+        super("StreamStringReader");
+        this.stream = stream;
+    }
+    
+    /** @return Text that has been read so far */
+    public String getText()
+    {
+        synchronized (buf)
+        {
+            return buf.toString();
+        }
+    }
+    
+    @Override
+    public void run()
+    {
+        try
+        {
+            final InputStreamReader isr = new InputStreamReader(stream);
+            // Buffer the reads, but use smaller buffer because
+            // we hope to read very little from the external command
+            final BufferedReader br = new BufferedReader(isr, 512);
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                synchronized (buf)
+                {
+                    buf.append(line + "\n");
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            synchronized (buf)
+            {
+                buf.append(e.getMessage());
+            }
+        }
+    }
 }

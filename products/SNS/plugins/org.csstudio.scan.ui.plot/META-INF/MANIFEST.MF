@@ -9,7 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.eclipse.draw2d,
  org.csstudio.apputil.ui;bundle-version="3.0.1",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.swt.xygraph;bundle-version="1.1.3",

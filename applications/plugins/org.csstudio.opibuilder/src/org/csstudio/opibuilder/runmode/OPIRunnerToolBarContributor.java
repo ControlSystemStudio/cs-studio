@@ -21,6 +21,10 @@ import org.eclipse.ui.part.EditorActionBarContributor;
  */
 public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
 
+	// private NavigateOPIsAction backwardAction, forwardAction;
+	// private ZoomInRetargetAction zoomInAction;
+	// private ZoomOutRetargetAction zoomOutAction;
+
 	private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
 
 	@Override
@@ -30,7 +34,12 @@ public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
 	}
 
 	public OPIRunnerToolBarContributor() {
-		opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();	
+		opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
+		// backwardAction = new NavigateOPIsAction(false);
+		// forwardAction = new NavigateOPIsAction(true);
+		// zoomInAction = new ZoomInRetargetAction();
+		// zoomOutAction = new ZoomOutRetargetAction();
+		// //autoNavigateAction = new AutoNavigateAction();
 	}
 
 	@Override

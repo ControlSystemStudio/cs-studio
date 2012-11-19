@@ -1,10 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.alarm.beast.notifier.rdb;
 
 import java.util.logging.Level;
@@ -28,7 +21,6 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
     
     /** Alarm model */
     final private AlarmClientModel model;
-    
     
 	public AlarmRDBHandler(final String root) throws Exception {
 		model = AlarmClientModel.getInstance();
@@ -74,11 +66,8 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
 	@Override
 	public void newAlarmState(AlarmClientModel model, AlarmTreePV pv,
 			boolean parent_changed) {
-		if (pv == null) return;
-		if (!pv.isEnabled()) {
-			// Ignore PV, it's disabled
+		if (pv == null)
 			return;
-		}
 		notifier.handleAlarmUpdate(pv);
 	}
 	

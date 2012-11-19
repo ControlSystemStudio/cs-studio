@@ -46,7 +46,6 @@ public class Messages extends NLS
     public static String AutoActionInfoFmt;
     public static String AutoActionError;
     public static String AutoActionErrorFmt;
-    public static String AutoActionValidErrorFmt;
     public static String CannotUpdateConfigurationErrorFmt;
     public static String Command;
     public static String CommandError;

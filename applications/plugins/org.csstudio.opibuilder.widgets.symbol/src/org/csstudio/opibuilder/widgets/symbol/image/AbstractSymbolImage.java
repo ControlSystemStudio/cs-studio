@@ -1,17 +1,8 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.image;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.logging.Level;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
@@ -21,15 +12,13 @@ import org.apache.batik.utils.SimpleImageTranscoder;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
+import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
-import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -38,42 +27,29 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Document;
 
-/**
- * Modified 
- * Add of imageUri variable : Use instead of imagePath when image stored in plugin sources
- * @author ITER, patard
- */
-
-/**
- * Main class for Symbol Image display.
- * @author Fred Arnaud (Sopra Group)
- */
 public abstract class AbstractSymbolImage extends Figure {
 	
 	private IPath imagePath;
 	
-	private Image image;
 	private ImageData imageData;
 	private ImageData originalImageData;
 	
-	private Color oldColor;
-	private Color currentColor;
+	protected Color oldColor;
+	protected Color currentColor;
 	
-	private Dimension imgDimension;
-	
+	private int imgWidth = 0;
+	private int imgHeight = 0;
 	private int topCrop = 0;
 	private int bottomCrop = 0;
 	private int leftCrop = 0;
 	private int rightCrop = 0;
+	private int cropedWidth = 0;
+	private int cropedHeight = 0;
 	private boolean stretch = false;
-	private double scale = 1.0;
 	
 	private int degree = 0;
 	private boolean flipV = false;
 	private boolean flipH = false;
-	
-	private Rectangle srcArea = null;
-	private Rectangle destArea = null;
 
 	protected boolean imageDisposed = false;
 	private ExecutionMode executionMode;
@@ -83,27 +59,18 @@ public abstract class AbstractSymbolImage extends Figure {
 	private boolean failedToLoadDocument;
 	private SimpleImageTranscoder transcoder;
 	private Document svgDocument;
-
-	private PermutationMatrix oldPermutationMatrix = null;
-	private PermutationMatrix permutationMatrix = PermutationMatrix
-			.generateIdentityMatrix();
 	
-	
-	private URI imageUri = null;
+	private String oldImageSate = "1234";
+	private String imageState;
 	
 	public AbstractSymbolImage(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
-		imgDimension = new Dimension(0, 0);
 	}
 
 	public void setImagePath(IPath imagePath) {
 		this.imagePath = imagePath;
-		callLoadDocument(imagePath.getFileExtension());
-	}
-	
-	private void callLoadDocument(String fileExtension){
-		if ("svg".compareToIgnoreCase(fileExtension) == 0) {
+		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 			transcoder = null;
 			failedToLoadDocument = false;
@@ -129,8 +96,8 @@ public abstract class AbstractSymbolImage extends Figure {
 		}
 		tmpData.transparentPixel = originalImageData.transparentPixel;
 		this.originalImageData = (ImageData) tmpData.clone();
-		imgDimension = new Dimension(originalImageData.width,
-				originalImageData.height);
+		this.imgWidth = originalImageData.width;
+		this.imgHeight = originalImageData.height;
 	}
 	
 	public ImageData getOriginalImageData() {
@@ -142,10 +109,10 @@ public abstract class AbstractSymbolImage extends Figure {
 	 */
 	public synchronized void dispose() {
 		imageDisposed = true;
-		if (image != null) {
-			image.dispose();
-			image = null;
-		}
+		// Reset parameters
+		imageData = null;
+		oldImageSate = "1234";
+		oldColor = null;
 	}
 
 	public boolean isDisposed() {
@@ -161,32 +128,12 @@ public abstract class AbstractSymbolImage extends Figure {
 	}
 	
 	@Override
-	public void setBounds(Rectangle newBounds) {
-		Rectangle oldBounds = getBounds().getCopy();
-		if (oldBounds.width != newBounds.width
-				|| oldBounds.height != newBounds.height) {
-			if(workingWithSVG) imageData = null;
+	public void setBounds(Rectangle rect) {
+		Rectangle bounds = getBounds().getCopy();
+		if (bounds.width != rect.width || bounds.height != rect.height) {
+			resizeImage();
 		}
-		super.setBounds(newBounds);
-	}
-	
-	@Override
-	public void setBorder(Border newBorder) {
-		Border oldBoder = getBorder();
-		Insets oldInsets = (oldBoder == null) ? null : oldBoder.getInsets(this);
-		Insets newInsets = (newBorder == null) ? null : newBorder.getInsets(this);
-		if ((newInsets == null && oldInsets != null)
-				|| (newInsets != null && !newInsets.equals(oldInsets))) {
-			if(workingWithSVG) imageData = null;
-		}
-		super.setBorder(newBorder);
-	}
-	
-	public void setAbsoluteScale(double newScale) {
-		if (this.scale == newScale) return;
-		this.scale = newScale;
-		// resize SVG
-		if (workingWithSVG) imageData = null;
+		super.setBounds(rect);
 	}
 	
 	// ************************************************************
@@ -197,12 +144,12 @@ public abstract class AbstractSymbolImage extends Figure {
 		return currentColor;
 	}
 
-	public void setCurrentColor(Color newColor) {
-		if (newColor == null || (oldColor != null && oldColor.equals(newColor)))
-			return;
-		this.oldColor = this.currentColor;
-		this.currentColor = newColor;
-		imageData = null;
+	public void setCurrentColor(Color stateColor) {
+		this.currentColor = stateColor;
+		if ((currentColor != null && oldColor == null)
+				|| !currentColor.equals(oldColor)) {
+			dispose();
+		}
 	}
 	
 	/**
@@ -214,130 +161,167 @@ public abstract class AbstractSymbolImage extends Figure {
 	public synchronized void paintFigure(final Graphics gfx) {
 		if (originalImageData == null)
 			return;
-		if (imageData == null)
-			updateData();
-		// Create image
-		if (image == null) {
-			if (stretch && !workingWithSVG) {
-				image = new Image(Display.getDefault(), imageData.scaledTo(
-						imgDimension.width + leftCrop + rightCrop,
-						imgDimension.height + topCrop + bottomCrop));
-			} else {
-				image = new Image(Display.getDefault(), imageData);
-			}
-			imageDisposed = false; // ImageData is set
-		}
-		updateAreas();
-		// Draw graphic image
-		if (image != null) {
-			gfx.drawImage(image, srcArea, destArea);
-		}
-	}
-	
-	private void updateData() {
-		dispose();
-		if (workingWithSVG) generateSVGData();
-		else generateData();
-	}
-	
-	private void updateAreas() {
-		if (image == null)
-			return;
-		// Update dimensions
-		int imgWidth = image.getBounds().width;
-		int imgHeight = image.getBounds().height;
-		imgDimension = new Dimension(imgWidth, imgHeight);
-		
-		// Avoid negative number
-		topCrop = topCrop > imgHeight ? 0 : topCrop;
-		leftCrop = leftCrop > imgWidth ? 0 : leftCrop;
-		bottomCrop = (imgHeight - topCrop - bottomCrop) < 0 ? 0 : bottomCrop;
-		rightCrop = (imgWidth - leftCrop - rightCrop) < 0 ? 0 : rightCrop;
-		
-		// Calculate areas
+		// SVG image need specific operations on size
 		if (workingWithSVG) {
-			int cropedWidth = imgWidth - (int) Math.round(scale * (leftCrop + rightCrop));
-			int cropedHeight = imgHeight - (int) Math.round(scale * (bottomCrop + topCrop));
-			srcArea = new Rectangle(leftCrop, topCrop, cropedWidth, cropedHeight);
-			destArea = new Rectangle(bounds.x, bounds.y,
-					(int) Math.round(cropedWidth / scale),
-					(int) Math.round(cropedHeight / scale));
-		} else {
-			int cropedWidth = imgWidth - leftCrop - rightCrop;
-			int cropedHeight = imgHeight - bottomCrop - topCrop;
-			srcArea = new Rectangle(leftCrop, topCrop, cropedWidth, cropedHeight);
-			destArea = new Rectangle(bounds.x, bounds.y, cropedWidth, cropedHeight);
-		}
-	}
-	
-	private void generateData() {
-		if (originalImageData == null)
+			paintSVG(gfx);
 			return;
+		}
+		Image image = null;
+		Rectangle bounds = getBounds().getCopy();
 		if (imageData == null) {
 			imageData = (ImageData) originalImageData.clone();
 		}
+
+		// Set flip/rotate 
+		if (oldImageSate != imageState) {
+			ImagePermuter imp = new ImagePermuter();
+			imageData = imp.applyPermutation(imageData, imageState);
+			oldImageSate = imageState;
+		}
+		
 		// Set color
 		if (isEditMode()) { // Color for edit mode is black
 			currentColor = new Color(null, new RGB(0, 0, 0));
 		}
-		ImageUtils.changeImageColor(currentColor, imageData);
-		
-		// Set flip/rotate
-		imageData = ImageUtils.applyMatrix(imageData, permutationMatrix);
-		
-		Rectangle bounds = getBounds().getCopy();
-		int imgWidth = imageData.width;
-		int imgHeight = imageData.height;
-		if(stretch) {
-			imgWidth = bounds.width;
-			imgHeight = bounds.height;
+		if ((currentColor != null && oldColor == null)
+				|| !currentColor.equals(oldColor)) {
+			ImageUtils.changeImageColor2(currentColor, imageData);
+			oldColor = currentColor;
 		}
-		imgDimension = new Dimension(imgWidth, imgHeight);
+		imageDisposed = false; // ImageData is set
+		
+		// Create image
+		if (stretch) {
+			image = new Image(Display.getDefault(), imageData.scaledTo(
+					bounds.width + leftCrop + rightCrop, bounds.height
+							+ topCrop + bottomCrop));
+		} else {
+			image = new Image(Display.getDefault(), imageData);
+		}
+		imgWidth = image.getBounds().width;
+		imgHeight = image.getBounds().height;
+		
 		// Avoid negative number
-		topCrop = topCrop > imgHeight ? 0 : topCrop;
-		leftCrop = leftCrop > imgWidth ? 0 : leftCrop;
-		bottomCrop = (imgHeight - topCrop - bottomCrop) < 0 ? 0 : bottomCrop;
-		rightCrop = (imgWidth - leftCrop - rightCrop) < 0 ? 0 : rightCrop;
-	}
-	
-	private void generateSVGData() {
-		// Load document if do not exist
-		Document document = getDocument();
-		if (document == null) {
+		updateDimensions();
+		if (leftCrop + cropedWidth > imgWidth
+				|| topCrop + cropedHeight > imgHeight) {
 			return;
 		}
-		if (isEditMode()) { // Color for edit mode is black
-			currentColor = new Color(null, new RGB(0, 0, 0));
-		}
-		transcoder.setColor(currentColor);
-		transcoder.setTransformMatrix(permutationMatrix.getMatrix());
 		
-		// Scale image
-		java.awt.Dimension dims = transcoder.getDocumentSize();
-		int imgWidth = dims.width;
-		int imgHeight = dims.height;
-		if(stretch) {
-			Rectangle bounds = getBounds().getCopy();
-			imgWidth = bounds.width;
-			imgHeight = bounds.height;
+		// Draw graphic image
+		if (image != null) {
+			try {
+				gfx.drawImage(image, leftCrop, topCrop, cropedWidth, cropedHeight, 
+						bounds.x, bounds.y, cropedWidth, cropedHeight);
+			} finally {
+				image.dispose();
+			}
 		}
+	}
+	
+	public void paintSVG(final Graphics gfx) {
+		Image image = null;
+		Rectangle bounds = getBounds().getCopy();
+		
+		// Crop is applied on original image without flip/rotate
+		// so we need to apply this permutation to crop
+		int lc = leftCrop, rc = rightCrop, bc = bottomCrop, tc = topCrop;
+		String imgState = imageState;
+		if (imageDisposed && oldImageSate != null) {
+			imgState = oldImageSate;
+		}
+		switch (imgState.indexOf('1')) {
+		case 1:
+			rc = topCrop;
+			bc = rightCrop;
+			lc = bottomCrop;
+			tc = leftCrop;
+			break;
+		case 2:
+			rc = leftCrop;
+			bc = topCrop;
+			lc = rightCrop;
+			tc = bottomCrop;
+			break;
+		case 3:
+			rc = bottomCrop;
+			bc = leftCrop;
+			lc = topCrop;
+			tc = rightCrop;
+			break;
+		default:
+		}
+		
+		// SVG image size rendering
+		if (imageData == null) {
+			Document document = getDocument();
+			if (document == null) {
+				return;
+			}
+			// Scale image
+			if (stretch) {
+				transcoder.setCanvasSize(bounds.width + lc + rc, 
+						bounds.height + bc + tc);
+			} else {
+				transcoder.setCanvasSize(-1, -1);
+			}
+			// Set color
+			if (isEditMode()) { // Color for edit mode is black
+				currentColor = new Color(null, new RGB(0, 0, 0));
+			}
+			if ((currentColor != null && oldColor == null)
+					|| !currentColor.equals(oldColor)) {
+				transcoder.setColor(currentColor);
+				oldColor = currentColor;
+			}
+			BufferedImage awtImage = transcoder.getBufferedImage();
+			if (awtImage != null) {
+				imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
+			}
+		}
+		
+		// Set flip/rotate
+		if (oldImageSate != imageState) {
+			ImagePermuter imp = new ImagePermuter();
+			imageData = imp.applyPermutation(imageData, imageState);
+			oldImageSate = imageState;
+		}
+		imageDisposed = false; // ImageData is set
+		
+		// Create image
+		image = new Image(Display.getDefault(), imageData);
+		imgWidth = image.getBounds().width;
+		imgHeight = image.getBounds().height;
+		
+		updateDimensions();
 		// Avoid negative number
-		topCrop = topCrop > imgHeight ? 0 : topCrop;
-		leftCrop = leftCrop > imgWidth ? 0 : leftCrop;
-		bottomCrop = (imgHeight - topCrop - bottomCrop) < 0 ? 0 : bottomCrop;
-		rightCrop = (imgWidth - leftCrop - rightCrop) < 0 ? 0 : rightCrop;
-		imgWidth = (int) Math.round(scale * (imgWidth + leftCrop + rightCrop));
-		imgHeight = (int) Math.round(scale * (imgHeight + bottomCrop + topCrop));
-		transcoder.setCanvasSize(imgWidth, imgHeight);
-		
-		BufferedImage awtImage = transcoder.getBufferedImage();
-		if (awtImage != null) {
-			imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
+		if (leftCrop + cropedWidth > imgWidth
+				|| topCrop + cropedHeight > imgHeight) {
+			return;
 		}
-		// Calculate areas
-		imgWidth = imageData.width;
-		imgHeight = imageData.height;
-		imgDimension = new Dimension(imgWidth, imgHeight);
+		
+		// Draw graphic image
+		if (image != null) {
+			try {
+				gfx.drawImage(image, leftCrop, topCrop, cropedWidth, cropedHeight, 
+						bounds.x, bounds.y, cropedWidth, cropedHeight);
+			} finally {
+				image.dispose();
+			}
+		}
+	}
+	
+	private void updateDimensions() {
+		if(imgWidth == 0 || imgHeight == 0) {
+			imgWidth = originalImageData.width;
+			imgHeight = originalImageData.height;
+		}
+		leftCrop = leftCrop > imgWidth ? 0 : leftCrop;
+		topCrop = topCrop > imgHeight ? 0 : topCrop;
+		cropedWidth = (imgWidth - leftCrop - rightCrop) > 0 ? 
+				(imgWidth - leftCrop - rightCrop) : imgWidth;
+		cropedHeight = (imgHeight - topCrop - bottomCrop) > 0 ? 
+				(imgHeight - topCrop - bottomCrop) : imgHeight;
 	}
 
 	// ************************************************************
@@ -348,8 +332,7 @@ public abstract class AbstractSymbolImage extends Figure {
 	 * Resizes the image.
 	 */
 	public synchronized void resizeImage() {
-		// TODO: too much call to this method always reset data
-//		dispose();
+		dispose();
 	}
 
 	/**
@@ -360,7 +343,7 @@ public abstract class AbstractSymbolImage extends Figure {
 	 */
 	public synchronized void setAutoSize(final boolean autoSize) {
 		if (!stretch && autoSize) {
-			imageData = null;
+			resizeImage();
 		}
 	}
 	
@@ -370,10 +353,10 @@ public abstract class AbstractSymbolImage extends Figure {
 	 * @return The auto sized widget dimension.
 	 */
 	public synchronized Dimension getAutoSizedDimension() {
-		updateAreas();
-		if (destArea != null) {
-			return new Dimension(destArea.width + getInsets().getWidth(),
-					destArea.height + getInsets().getHeight());
+		if (originalImageData != null) {
+			updateDimensions();
+			return new Dimension(cropedWidth + getInsets().getWidth(),
+					cropedHeight + getInsets().getHeight());
 		} else {
 			return null;
 		}
@@ -391,7 +374,7 @@ public abstract class AbstractSymbolImage extends Figure {
 			return;
 		}
 		leftCrop = newval;
-		imageData = null;
+		resizeImage();
 	}
 
 	/**
@@ -402,7 +385,7 @@ public abstract class AbstractSymbolImage extends Figure {
 			return;
 		}
 		rightCrop = newval;
-		imageData = null;
+		resizeImage();
 	}
 
 	/**
@@ -413,7 +396,7 @@ public abstract class AbstractSymbolImage extends Figure {
 			return;
 		}
 		bottomCrop = newval;
-		imageData = null;
+		resizeImage();
 	}
 
 	/**
@@ -424,7 +407,7 @@ public abstract class AbstractSymbolImage extends Figure {
 			return;
 		}
 		topCrop = newval;
-		imageData = null;
+		resizeImage();
 	}
 	
 	public int getLeftCrop() {
@@ -455,37 +438,30 @@ public abstract class AbstractSymbolImage extends Figure {
 			return;
 		}
 		stretch = newval;
-		if(workingWithSVG) imageData = null;
-	}
-	
-	public void setPermutationMatrix(final PermutationMatrix permutationMatrix) {
-		if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix)) 
-				|| permutationMatrix == null)
-			return;
-		this.oldPermutationMatrix = this.permutationMatrix;
-		this.permutationMatrix = permutationMatrix;
-		imageData = null;
+		resizeImage();
 	}
 	
 	public synchronized void setFlipV(boolean flipV) {
 		this.flipV = flipV;
-//		imageData = null;
 	}
 
 	public synchronized void setFlipH(boolean flipH) {
 		this.flipH = flipH;
-//		imageData = null;
 	}
 	
 	public synchronized void setDegree(Integer degree) {
 		this.degree = degree;
-//		imageData = null;
 	}
 	
-	public PermutationMatrix getPermutationMatrix() {
-		return permutationMatrix;
+	public void setImageState(String imageState) {
+		this.imageState = imageState;
+		dispose();
 	}
 
+	public String getImageState() {
+		return this.imageState;
+	}
+	
 	public boolean isStretch() {
 		return stretch;
 	}
@@ -504,39 +480,25 @@ public abstract class AbstractSymbolImage extends Figure {
 	
 	// ************************************************************
 	// SVG specific methods
-	// Additional treatment for images come from plugin development   
-	// ************************************************************ 
+	// ************************************************************
+	
 	private void loadDocument() {
 		transcoder = null;
 		failedToLoadDocument = true;
-	
+		if (imagePath == null || imagePath.isEmpty()) {
+			return;
+		}
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
 		try {
+			IPath workSpacePath=ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
 			
-			// If image is stored in a plugin sources
-			if(getImageUri() != null){
-				
-				final InputStream inputStrImage = ResourceUtil.openURLStream(imageUri.toURL());
-				svgDocument = factory.createDocument(getImageUri().getPath(), inputStrImage);
-			}
-			// Else if image come from widget model property
-			else{
-				
-				if (imagePath == null || imagePath.isEmpty()) {
-					return;
-				}
-				
-				IPath workSpacePath=ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
-				
-				String uri = "file://"
-						+  (workSpacePath == null? "" : workSpacePath.toOSString())//$NON-NLS-1$ //ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
-						+ imagePath.toString();
-			
-				final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
-				svgDocument = factory.createDocument(uri, inputStream);
-			}
-			
+			String uri = "file://"
+					+  (workSpacePath == null? "" : workSpacePath.toOSString())//$NON-NLS-1$ //ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
+					+ imagePath.toString();
+		
+			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
+			svgDocument = factory.createDocument(uri, inputStream);
 			transcoder = new SimpleImageTranscoder(svgDocument);
 			initRenderingHints();
 			BufferedImage awtImage = transcoder.getBufferedImage();
@@ -550,7 +512,7 @@ public abstract class AbstractSymbolImage extends Figure {
 		}
 	}
 	
-	private final Document getDocument() {
+	protected final Document getDocument() {
 		if (failedToLoadDocument) {
 			return null;
 		}
@@ -578,48 +540,4 @@ public abstract class AbstractSymbolImage extends Figure {
 				RenderingHints.VALUE_STROKE_PURE);
 	}
 	
-
-	/**
-	 * @return the imageUri
-	 */
-	public URI getImageUri() {
-		return imageUri;
-	}
-
-	/**
-	 * @param The imageUri to set and Input Stream Image when image come from
-	 * plugin development
-	 */
-	public void setImageUri(URI imageUri) {
-		// TODO Auto-generated method stub
-		this.imageUri = imageUri;
-		
-		String fileName = new String(""); // Svg File name
-		int index = 0;					  // Index for search extension file
-		String fileExtension = new String("");
-		
-		try {
-		
-			fileName = imageUri.toURL().getFile();
-			
-			// Find svg file extension
-			index = fileName.lastIndexOf('.');
-			
-			// If dot not found
-			if (index == -1) {
-				System.out.println("No . find in "+fileName);
-			}
-			
-			// Set svg file extention
-			fileExtension = fileName.substring(index + 1);
-		
-			
-			callLoadDocument(fileExtension);
-		
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			Activator.getLogger().log(Level.WARNING,
-					"Malformed URL : " +this.imageUri, e);
-		}	
-	}
 }

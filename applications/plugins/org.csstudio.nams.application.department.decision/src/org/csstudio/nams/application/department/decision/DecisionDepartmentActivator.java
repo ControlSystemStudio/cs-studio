@@ -939,8 +939,20 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
                     if (message.enthaeltAlarmnachricht()) {
                         try {
                             eingangskorb.ablegen(new Vorgangsmappe(
-                                    Vorgangsmappenkennung.createNew(
-                                    InetAddress.getLocalHost(),
+                                    Vorgangsmappenkennung.createNew(/**
+                                                                     * TODO Host
+                                                                     * Service
+                                                                     * statt new
+                                                                     * InetAddress()
+                                                                     * .getLocalHost
+                                                                     * benutzen
+                                                                     */
+                                    InetAddress.getLocalHost(), /**
+                                                                 * TODO Calender
+                                                                 * Service statt
+                                                                 * new Date()
+                                                                 * benutzen
+                                                                 */
                                     new Date()), message.alsAlarmnachricht()));
                             simpleFilterWorker.bearbeiteAlarmnachricht(message.alsAlarmnachricht());
                         } catch (final UnknownHostException e) {

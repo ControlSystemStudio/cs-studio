@@ -13,7 +13,7 @@
 
    <windowImages/>
 
-   <launcher name="alarm-notifier">
+   <launcher name="alarm-notification">
       <solaris/>
       <win useIco="false">
          <bmp/>

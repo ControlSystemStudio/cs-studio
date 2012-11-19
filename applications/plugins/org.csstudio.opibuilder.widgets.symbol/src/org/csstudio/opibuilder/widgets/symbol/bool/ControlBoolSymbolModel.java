@@ -1,10 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2010-2012 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.bool;
 
 import java.util.logging.Level;
@@ -14,14 +7,11 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.FilePathPropertyWithFilter;
 import org.csstudio.opibuilder.properties.IntegerProperty;
-import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
-import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
-import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.RGB;
@@ -81,11 +71,15 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 	 */
 	public static final String PROP_FLIP_VERTICAL = "flip_vertical";
 	/**
-	 * Image disposition (permutation matrix)
+	 * Image disposition (matrix)
+	 * Image is split in 4 and each corner is numbered
+	 * 1 = top right corner
+	 * 2 = bottom right corner
+	 * 3 = bottom left corner
+	 * 4 = top left corner
+	 * "1234" is the default disposition
 	 */
-	public static final String PERMUTATION_MATRIX = "permutation_matrix";
-	// Obsolete property
-	public static final String IMAGE_DISPOSITION = "image_disposition";
+	public static final String PROP_DISPOSITION = "image_disposition";
 
 	/** The default string of the on label property. */
 	private static final String DEFAULT_ON_LABEL = "ON";
@@ -154,14 +148,9 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 //		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
 		
-		addProperty(new MatrixProperty(PERMUTATION_MATRIX,
-				"Permutation Matrix", WidgetPropertyCategory.Image,
-				PermutationMatrix.generateIdentityMatrix().getMatrix()));
-		setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
-		// Obsolete property
-		addProperty(new StringProperty(IMAGE_DISPOSITION, "Image Disposition",
+		addProperty(new StringProperty(PROP_DISPOSITION, "Image Disposition",
 				WidgetPropertyCategory.Image, "1234"));
-		setPropertyVisibleAndSavable(IMAGE_DISPOSITION, false, false);
+		setPropertyVisibleAndSavable(PROP_DISPOSITION, false, true);
 	}
 
 	/* ************************* */
@@ -270,11 +259,10 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 	/**
 	 * Get the current disposition of the image.
 	 * 
-	 * @return The permutation matrix
+	 * @return The disposition matrix
 	 */
-	public PermutationMatrix getPermutationMatrix() {
-		return new PermutationMatrix((double[][]) getProperty(
-				PERMUTATION_MATRIX).getPropertyValue());
+	public String getDisposition() {
+		return (String) getProperty(PROP_DISPOSITION).getPropertyValue();
 	}
 
 	@Override
@@ -310,18 +298,6 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 	public void flipVertically() {
 		boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL);
 		setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL, !oldValue);
-	}
-	
-	@Override
-	public void setPropertyValue(Object id, Object value) {
-		// Override obsolete properties
-		if (id != null && id instanceof String) {
-			if (((String) id).equals(IMAGE_DISPOSITION)) {
-				id = PERMUTATION_MATRIX;
-				value = ImagePermuter.getMatrix((String) value);
-			}
-		}
-		super.setPropertyValue(id, value);
 	}
 
 }
