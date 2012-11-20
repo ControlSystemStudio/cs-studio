@@ -182,19 +182,28 @@ public class RDBArchiveReader implements ArchiveReader
             {
             	final int id = result.getInt(1);
                 final String text = result.getString(2);
-                for (AlarmSeverity severity : AlarmSeverity.values())
+                AlarmSeverity severity = null;
+                for (AlarmSeverity s : AlarmSeverity.values())
                 {
-                	if (severity.name().equalsIgnoreCase(text))
-                		severities.put(id, severity);
-                	else if ("OK".equalsIgnoreCase(text) || "".equalsIgnoreCase(text))
-                		severities.put(id, AlarmSeverity.NONE);
-                	else
+                	if (text.startsWith(s.name()))
                 	{
-                        Activator.getLogger().log(Level.WARNING,
-                            "Undefined severity level {0}", text);
-                		severities.put(id, AlarmSeverity.UNDEFINED);     
+                		severity = s;
+                		break;
+                	}
+                	if	("OK".equalsIgnoreCase(text) || "".equalsIgnoreCase(text))
+                	{
+                		severity = AlarmSeverity.NONE;
+                		break;
                 	}
                 }
+                if (severity == null)
+            	{
+                    Activator.getLogger().log(Level.WARNING,
+                        "Undefined severity level {0}", text);
+            		severities.put(id, AlarmSeverity.UNDEFINED);     
+            	}
+                else
+                	severities.put(id, severity);
             }
             return severities;
         }
