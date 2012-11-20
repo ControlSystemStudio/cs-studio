@@ -16,15 +16,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.archive.reader.Severity;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.util.time.Timestamp;
 
 /** ArchiveReader for RDB data
  *  @author Kay Kasemir
@@ -59,7 +59,7 @@ public class RDBArchiveReader implements ArchiveReader
     final private HashMap<Integer, String> stati;
 
     /** Map of severity IDs to Severities */
-    final private HashMap<Integer, ISeverity> severities;
+    final private HashMap<Integer, AlarmSeverity> severities;
 
     /** List of statements to cancel in cancel() */
     private ArrayList<Statement> cancellable_statements =
@@ -165,12 +165,12 @@ public class RDBArchiveReader implements ArchiveReader
         }
     }
 
-    /** @return Map of all severity ID/ISeverity mappings
+    /** @return Map of all severity ID/AlarmSeverity mappings
      *  @throws Exception on error
      */
-    private HashMap<Integer, ISeverity> getSeverityValues() throws Exception
+    private HashMap<Integer, AlarmSeverity> getSeverityValues() throws Exception
     {
-        final HashMap<Integer, ISeverity> severities = new HashMap<Integer, ISeverity>();
+        final HashMap<Integer, AlarmSeverity> severities = new HashMap<Integer, AlarmSeverity>();
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
@@ -180,8 +180,21 @@ public class RDBArchiveReader implements ArchiveReader
             final ResultSet result = statement.executeQuery(sql.sel_severities);
             while (result.next())
             {
-                final ISeverity severity = new Severity(result.getString(2));
-                severities.put(result.getInt(1), severity);
+            	final int id = result.getInt(1);
+                final String text = result.getString(2);
+                for (AlarmSeverity severity : AlarmSeverity.values())
+                {
+                	if (severity.name().equalsIgnoreCase(text))
+                		severities.put(id, severity);
+                	else if ("OK".equalsIgnoreCase(text) || "".equalsIgnoreCase(text))
+                		severities.put(id, AlarmSeverity.NONE);
+                	else
+                	{
+                        Activator.getLogger().log(Level.WARNING,
+                            "Undefined severity level {0}", text);
+                		severities.put(id, AlarmSeverity.UNDEFINED);     
+                	}
+                }
             }
             return severities;
         }
@@ -217,12 +230,14 @@ public class RDBArchiveReader implements ArchiveReader
     /** @param severity_id Numeric severity ID
      *  @return ISeverity for ID
      */
-    ISeverity getSeverity(int severity_id)
+    AlarmSeverity getSeverity(int severity_id)
     {
-        final ISeverity severity = severities.get(severity_id);
-        if (severity == null)
-            return new Severity("<" + severity_id + ">");
-        return severity;
+        final AlarmSeverity severity = severities.get(severity_id);
+        if (severity != null)
+        	return severity;
+        Activator.getLogger().log(Level.WARNING, "Undefined alarm severity ID {0}", severity_id);
+        severities.put(severity_id, AlarmSeverity.UNDEFINED);
+        return AlarmSeverity.UNDEFINED;
     }
 
     /** {@inheritDoc} */
@@ -323,7 +338,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getRawValues(final int key, final String name,
-            final ITimestamp start, final ITimestamp end) throws UnknownChannelException, Exception
+            final Timestamp start, final Timestamp end) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
         return getRawValues(channel_id, start, end);
@@ -337,7 +352,7 @@ public class RDBArchiveReader implements ArchiveReader
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(final int channel_id,
-            final ITimestamp start, final ITimestamp end) throws Exception
+            final Timestamp start, final Timestamp end) throws Exception
     {
         return new RawSampleIterator(this, channel_id, start, end);
     }
@@ -345,7 +360,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
-            final ITimestamp start, final ITimestamp end, int count) throws UnknownChannelException, Exception
+            final Timestamp start, final Timestamp end, int count) throws UnknownChannelException, Exception
     {
         // MySQL version of the stored proc. requires count > 1
     	if (count <= 1)
@@ -363,8 +378,8 @@ public class RDBArchiveReader implements ArchiveReader
         try
         {
 	        count_samples.setInt(1, channel_id);
-	        count_samples.setTimestamp(2, start.toSQLTimestamp());
-	        count_samples.setTimestamp(3, end.toSQLTimestamp());
+	        count_samples.setTimestamp(2, TimestampUtil.toSQLTimestamp(start));
+	        count_samples.setTimestamp(3, TimestampUtil.toSQLTimestamp(end));
 	        final ResultSet result = count_samples.executeQuery();
 	        if (! result.next())
 	        	throw new Exception("Cannot count samples");
@@ -382,7 +397,7 @@ public class RDBArchiveReader implements ArchiveReader
         	return raw_data;
         
         // Else: Perform averaging to reduce sample count
-        final double seconds = (end.toDouble() - start.toDouble()) / count;
+        final double seconds = end.durationFrom(start).toSeconds() / count;
         return new AveragedValueIterator(raw_data, seconds);
     }
 

@@ -9,11 +9,11 @@ package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 
 /** Value Iterator that reads from the SAMPLE table.
  *  @author Kay Kasemir
@@ -30,7 +30,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
-    private IValue value = null;
+    private VType value = null;
 
     /** Initialize
      *  @param reader RDBArchiveReader
@@ -40,8 +40,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  @throws Exception on error
      */
     public RawSampleIterator(final RDBArchiveReader reader,
-            final int channel_id, final ITimestamp start,
-            final ITimestamp end) throws Exception
+            final int channel_id, final Timestamp start,
+            final Timestamp end) throws Exception
     {
         super(reader, channel_id);
         try
@@ -63,10 +63,10 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  @param end End time
      *  @throws Exception on error, including cancellation
      */
-    private void determineInitialSample(final ITimestamp start, final ITimestamp end) throws Exception
+    private void determineInitialSample(final Timestamp start, final Timestamp end) throws Exception
     {
-        Timestamp start_stamp = start.toSQLTimestamp();
-        final Timestamp end_stamp = end.toSQLTimestamp();
+        java.sql.Timestamp start_stamp = TimestampUtil.toSQLTimestamp(start);
+        final java.sql.Timestamp end_stamp = TimestampUtil.toSQLTimestamp(end);
 
         // Get time of initial sample
         final PreparedStatement statement =
@@ -134,14 +134,14 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("nls")
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {
         // This should not happen...
         if (result_set == null)
             throw new Exception("RawSampleIterator.next(" + channel_id + ") called after end");
 
         // Remember value to return...
-        final IValue result = value;
+        final VType result = value;
         // ... and prepare next value
         try
         {

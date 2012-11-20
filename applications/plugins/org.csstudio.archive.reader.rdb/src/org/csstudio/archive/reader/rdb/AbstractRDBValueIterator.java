@@ -12,24 +12,19 @@ import java.io.DataInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.archive.reader.Severity;
+import org.csstudio.archive.rdb.IVEnum;
+import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
+import org.epics.pvmanager.util.NumberFormats;
+import org.epics.util.time.Timestamp;
 
 /** Base for ValueIterators that read from the RDB
  *  @author Kay Kasemir
@@ -38,16 +33,11 @@ import org.csstudio.data.values.ValueFactory;
 @SuppressWarnings("nls")
 abstract public class AbstractRDBValueIterator  implements ValueIterator
 {
-    /** Special Severity that's INVALID without a value */
-    private static ISeverity no_value_severity = null;
-
-    /** Numeric meta data used as default if nothing else is known */
-    private static INumericMetaData default_numeric_meta = null;
-
     final protected RDBArchiveReader reader;
     final protected int channel_id;
     
-    protected IMetaData meta = null;
+    protected Display display = null;
+    protected List<String> labels = null;
 
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
@@ -79,7 +69,8 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         this.channel_id = channel_id;
         try
         {
-            this.meta = determineMetaData();
+            this.display = determineDisplay();
+            this.labels = determineLabels();
         }
         catch (final Exception ex)
         {
@@ -89,35 +80,55 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                 throw ex;
             // Else: Not a real error, return empty iterator
         }
+        if (labels == null  &&  display == null)
+        	display = ValueFactory.newDisplay(0.0, 0.0, 0.0, "", NumberFormats.format(0), 0.0, 0.0, 10.0, 0.0, 10.0);
     }
 
-    /** @return Meta data information for the channel or <code>null</code>
+    /** @return Numeric meta data information for the channel or <code>null</code>
      *  @throws Exception on error
      */
-    private IMetaData determineMetaData() throws Exception
+    private Display determineDisplay() throws Exception
     {
         // Try numeric meta data
-        PreparedStatement statement =
+        final PreparedStatement statement =
             reader.getRDB().getConnection().prepareStatement(reader.getSQL().numeric_meta_sel_by_channel);
         try
         {
             statement.setInt(1, channel_id);
             final ResultSet result = statement.executeQuery();
             if (result.next())
-                return ValueFactory.createNumericMetaData(
-                        result.getDouble(1), result.getDouble(2), // display range
-                        result.getDouble(3), result.getDouble(4), // warn range
-                        result.getDouble(5), result.getDouble(6), // alarm range
-                        result.getInt(7), result.getString(8));   // prev, units
+            {
+            	final NumberFormat format = NumberFormats.format(result.getInt(7));   // prec
+                return ValueFactory.newDisplay(
+                		result.getDouble(1),  // lowerDisplayLimit
+                		result.getDouble(5),  // lowerAlarmLimit
+                		result.getDouble(3),  // lowerWarningLimit
+                		result.getString(8),   // units
+                		format,               // numberFormat
+                		result.getDouble(4),  // upperWarningLimit
+                		result.getDouble(6),  // upperAlarmLimit
+                		result.getDouble(2),  // upperDisplayLimit
+                		result.getDouble(1),  // lowerCtrlLimit
+                		result.getDouble(2)); // upperCtrlLimit
+            
+            }
         }
         finally
         {
             statement.close();
         }
-
+        // No numeric display meta data
+        return null;
+    }
+    
+    /** @return Numeric meta data information for the channel or <code>null</code>
+     *  @throws Exception on error
+     */
+    private List<String> determineLabels() throws Exception
+    {
         // Try enumerated meta data
-        ArrayList<String> enums = null;
-        statement = reader.getRDB().getConnection().prepareStatement(
+        List<String> labels = null;
+        final PreparedStatement statement = reader.getRDB().getConnection().prepareStatement(
                                 reader.getSQL().enum_sel_num_val_by_channel);
         try
         {
@@ -125,16 +136,16 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {
-                enums = new ArrayList<String>();
+                labels = new ArrayList<String>();
                 do
                 {
                     final int id = result.getInt(1);
                     final String val = result.getString(2);
                     // Expect vals for ids 0, 1, 2, ...
-                    if (id != enums.size())
+                    if (id != labels.size())
                         throw new Exception("Enum IDs for channel with ID "
                                 + channel_id + " not in sequential order");
-                    enums.add(val);
+                    labels.add(val);
                 }
                 while (result.next());
             }
@@ -144,21 +155,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             statement.close();
         }
         // Anything found?
-        if (enums == null  ||  enums.size() <= 0)
+        if (labels == null  ||  labels.size() <= 0)
             return null; // Nothing found
-        // Convert to plain array, then IEnumeratedMetaData
-        return ValueFactory.createEnumeratedMetaData(enums.toArray(new String[enums.size()]));
-    }
-
-
-
-    /** @return Some default numeric meta data */
-    protected INumericMetaData getDefaultNumericMeta()
-    {
-        if (default_numeric_meta == null)
-            default_numeric_meta =
-                ValueFactory.createNumericMetaData(0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 2, ""); //$NON-NLS-1$
-        return default_numeric_meta;
+        return labels;
     }
 
     /** Extract value from SQL result
@@ -166,18 +165,18 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      *  @return IValue Decoded IValue
      *  @throws Exception on error, including cancellation
      */
-    protected IValue decodeSampleTableValue(final ResultSet result) throws Exception
+    protected VType decodeSampleTableValue(final ResultSet result) throws Exception
     {
         // Get time stamp
-        final Timestamp stamp = result.getTimestamp(1);
+        final java.sql.Timestamp stamp = result.getTimestamp(1);
         // Oracle has nanoseconds in TIMESTAMP, other RDBs in separate column
         if (!reader.isOracle())
             stamp.setNanos(result.getInt(7));
-        final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
+        final Timestamp time = TimestampUtil.fromSQLTimestamp(stamp);
 
         // Get severity/status
         final String status = reader.getStatus(result.getInt(3));
-        final ISeverity severity = filterSeverity(reader.getSeverity(result.getInt(2)), status);
+        final AlarmSeverity severity = filterSeverity(reader.getSeverity(result.getInt(2)), status);
 
         // Determine the value type
         // Try double
@@ -187,123 +186,50 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // Is it an error to have enumeration strings for double samples?
             // In here, we handle it by returning enumeration samples,
             // because the meta data would be wrong for double values.
-            if (meta instanceof IEnumeratedMetaData)
-                return ValueFactory.createEnumeratedValue(time, severity, status,
-                        (IEnumeratedMetaData) meta, IValue.Quality.Original,
-                        new int [] { (int) dbl0 });
+            if (labels != null)
+            	return new IVEnum(time, severity, status, labels, (int) dbl0);
             // Double data. Get array elements - if any.
             final double data[] = reader.useArrayBlob()
         		? readBlobArrayElements(dbl0, result)
-				: readArrayElements(stamp, dbl0, severity);
-            if (meta instanceof INumericMetaData)
-                return ValueFactory.createDoubleValue(time, severity, status,
-                        (INumericMetaData)meta, IValue.Quality.Original, data);
-            // Make some meta data up
-            return ValueFactory.createDoubleValue(time, severity, status,
-                    getDefaultNumericMeta(), IValue.Quality.Original, data);
+				: readArrayElements(time, dbl0, severity);
+    		if (data.length == 1)
+    			return ValueFactory.newVDouble(data[0], ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
+    		else
+    			return ValueFactory.newVDoubleArray(data, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
         }
 
         // Try integer
         final int num = result.getInt(4);
         if (! result.wasNull())
         {   // Enumerated integer?
-            if (meta instanceof IEnumeratedMetaData)
-                return ValueFactory.createEnumeratedValue(time, severity, status,
-                        (IEnumeratedMetaData) meta, IValue.Quality.Original,
-                        new int [] { num });
-            // Fall back to plain (long) integer
-            if (meta instanceof INumericMetaData)
-                return ValueFactory.createLongValue(time, severity, status,
-                        (INumericMetaData)meta, IValue.Quality.Original,
-                        new long [] { num });
-            // Numeric, but not meta data
-            return ValueFactory.createLongValue(time, severity, status,
-                    getDefaultNumericMeta(), IValue.Quality.Original,
-                    new long [] { num });
+            if (labels != null)
+            	return new IVEnum(time, severity, status, labels, num);
+            return ValueFactory.newVInt(num, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
         }
 
         // Default to string
         final String txt = result.getString(6);
-        return ValueFactory.createStringValue(time, severity, status,
-                IValue.Quality.Original, new String [] { txt });
+        return ValueFactory.newVString(txt, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time));
     }
 
     /** @param severity Original severity
      *  @param status Status text
-     *  @return If the severity/status indicate that there is no actual value,
+     *  @return If the status indicates that there is no actual value,
      *          provide the special 'no value' severity
      */
-    protected ISeverity filterSeverity(final ISeverity severity, final String status)
+    protected AlarmSeverity filterSeverity(final AlarmSeverity severity, final String status)
     {
         // Hard-coded knowledge:
         // When the severity is INVALID and the status indicates
         // that the archive is off or channel was disconnected,
         // we use the special INVALID severity that marks a sample
         // without a value.
-        if (severity.isInvalid() &&
-             (status.equalsIgnoreCase("Archive_Off") ||
-              status.equalsIgnoreCase("Disconnected") ||
-              status.equalsIgnoreCase("Write_Error")))
-            return getNoValueSeverity();
+        if (status.equalsIgnoreCase("Archive_Off") ||
+            status.equalsIgnoreCase("Disconnected") ||
+            status.equalsIgnoreCase("Write_Error"))
+        	return AlarmSeverity.UNDEFINED;
         return severity;
     }
-
-    /** @return Special Severity that's INVALID without a value */
-    private static ISeverity getNoValueSeverity()
-    {
-        // Lazy init.
-        if (no_value_severity  == null)
-            no_value_severity = new ISeverity()
-        {
-			private static final long serialVersionUID = 1L;
-			@Override
-            public boolean hasValue()  { return false; }
-            @Override
-            public boolean isInvalid() { return true;  }
-            @Override
-            public boolean isMajor()   { return false; }
-            @Override
-            public boolean isMinor()   { return false; }
-            @Override
-            public boolean isOK()      { return false; }
-            @Override
-            public String toString()   { return Severity.Level.INVALID.toString(); }
-        };
-        return no_value_severity;
-    }
-
-    /** Create new value with specific time stamp
-     *  @param value Original Value
-     *  @param time Desired time stamp
-     *  @return New value with given time stamp
-     */
-    protected IValue changeTimestamp(final IValue value,
-            final ITimestamp time)
-    {
-        final ISeverity severity = value.getSeverity();
-        final String status = value.getStatus();
-        final Quality quality = value.getQuality();
-        final IMetaData meta = value.getMetaData();
-        if (value instanceof IDoubleValue)
-            return ValueFactory.createDoubleValue(time , severity, status,
-                            (INumericMetaData)meta, quality,
-                            ((IDoubleValue)value).getValues());
-        else if (value instanceof ILongValue)
-            return ValueFactory.createLongValue(time, severity, status,
-                            (INumericMetaData)meta, quality,
-                            ((ILongValue)value).getValues());
-        else if (value instanceof IEnumeratedValue)
-            return ValueFactory.createEnumeratedValue(time, severity, status,
-                            (IEnumeratedMetaData)meta, quality,
-                            ((IEnumeratedValue)value).getValues());
-        else if (value instanceof IStringValue)
-            return ValueFactory.createStringValue(time, severity, status,
-                            quality, ((IStringValue)value).getValues());
-        // Else: Log unknown data type as text
-        return ValueFactory.createStringValue(time, severity, status,
-                quality, new String[] { value.toString() });
-    }
-
 
     /** Given the time and first element of the  sample, see if there
      *  are more array elements.
@@ -315,7 +241,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      */
     private double[] readArrayElements(final Timestamp stamp,
             final double dbl0,
-            final ISeverity severity) throws Exception
+            final AlarmSeverity severity) throws Exception
     {
         // For performance reasons, only look for array data until we hit a scalar sample.
         if (is_an_array==false)
@@ -328,10 +254,10 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                     reader.getSQL().sample_sel_array_vals);
         }
         sel_array_samples.setInt(1, channel_id);
-        sel_array_samples.setTimestamp(2, stamp);
+        sel_array_samples.setTimestamp(2, TimestampUtil.toSQLTimestamp(stamp));
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
         if (! reader.isOracle())
-            sel_array_samples.setInt(3, stamp.getNanos());
+            sel_array_samples.setInt(3, stamp.getNanoSec());
 
         // Assemble array of unknown size in ArrayList ....
         final ArrayList<Double> vals = new ArrayList<Double>();
@@ -354,7 +280,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         for (int i = 0; i < N; i++)
             ret[i] = vals.get(i).doubleValue();
         // Check if it's in fact just a scalar, and a valid one
-        if (N == 1  &&  !severity.isInvalid())
+        if (N == 1  &&  severity != AlarmSeverity.UNDEFINED)
         {   // Found a perfect non-array sample:
             // Assume that the data is scalar, skip the array check from now on
         	is_an_array = false;
@@ -412,7 +338,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             if (i > 1)
                 System.out.print(", ");
             if (meta.getColumnName(i).equals("SMPL_TIME"))
-                System.out.print(meta.getColumnName(i) + ": " + TimestampFactory.fromSQLTimestamp(result.getTimestamp(i)));
+                System.out.print(meta.getColumnName(i) + ": " + TimestampUtil.fromSQLTimestamp(result.getTimestamp(i)));
             else
                 System.out.print(meta.getColumnName(i) + ": " + result.getString(i));
         }

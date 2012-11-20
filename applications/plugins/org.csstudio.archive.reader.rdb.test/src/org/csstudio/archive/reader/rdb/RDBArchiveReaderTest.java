@@ -17,13 +17,15 @@ import java.util.TimerTask;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.rdb.VTypeHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +38,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReaderTest
 {
-    final private static double TIMERANGE_SECONDS = 60*60*24*14;
+    final private static TimeDuration TIMERANGE = TimeDuration.ofMinutes(10.0);
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
@@ -145,8 +147,8 @@ public class RDBArchiveReaderTest
     	if (reader == null)
     		return;
         System.out.println("Raw samples for " + name + ":");
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
         
         final BenchmarkTimer timer = new BenchmarkTimer();
         final ValueIterator values = reader.getRawValues(0, name, start, end);
@@ -154,13 +156,13 @@ public class RDBArchiveReaderTest
         if (dump)
         {
         	int count = 0;
-            IMetaData meta = null;
+        	Display display = null;
             while (values.hasNext())
             {
-                IValue value = values.next();
-                System.out.println(value);
-                if (meta == null)
-                    meta = value.getMetaData();
+                VType value = values.next();
+                System.out.println(VTypeHelper.toString(value));
+                if (display == null)
+                	display = ValueUtil.displayOf(value);
                 ++count;
                 if (count > 10)
                 {
@@ -169,14 +171,14 @@ public class RDBArchiveReaderTest
                 }
             }
             values.close();
-            System.out.println("Meta data: " + meta);
+            System.out.println("Meta data: " + display);
         }
         else
         {
             int count = 0;
             while (values.hasNext())
             {
-            	final IValue value = values.next();
+            	final VType value = values.next();
                 // System.out.println(value);
                 assertNotNull(value);
                 ++count;
@@ -204,60 +206,60 @@ public class RDBArchiveReaderTest
         }
     }
 
-    /** Get raw data for waveform */
-    @Test
-    public void testRawWaveformData() throws Exception
-    {
-    	if (reader == null  ||  array_name == null)
-    		return;
-        System.out.println("Raw samples for waveform " + array_name + ":");
-        
-        if (reader.useArrayBlob())
-        	System.out.println(".. using BLOB");
-        else
-        	System.out.println(".. using non-BLOB array table");
-        
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-
-        // Cancel after 10 secs
-        // scheduleCancellation(reader, 10.0);
-        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
-        IMetaData meta = null;
-        while (values.hasNext())
-        {
-            final IValue value = values.next();
-            System.out.println(value);
-            if (meta == null)
-                meta = value.getMetaData();
-        }
-        values.close();
-        System.out.println("Meta data: " + meta);
-    }
-
-    /** Get optimized data for scalar */
-    @Test
-    public void testJavaOptimizedScalarData() throws Exception
-    {
-    	if (reader == null)
-    		return;
-        System.out.println("Optimized samples for " + name + ":");
-        System.out.println("-- Java implementation --");
-
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
-        IMetaData meta = null;
-        while (values.hasNext())
-        {
-            IValue value = values.next();
-            System.out.println(value);
-            if (meta == null)
-                meta = value.getMetaData();
-        }
-        values.close();
-        System.out.println("Meta data: " + meta);
-    }
+//    /** Get raw data for waveform */
+//    @Test
+//    public void testRawWaveformData() throws Exception
+//    {
+//    	if (reader == null  ||  array_name == null)
+//    		return;
+//        System.out.println("Raw samples for waveform " + array_name + ":");
+//        
+//        if (reader.useArrayBlob())
+//        	System.out.println(".. using BLOB");
+//        else
+//        	System.out.println(".. using non-BLOB array table");
+//        
+//        final ITimestamp end = TimestampFactory.now();
+//        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+//
+//        // Cancel after 10 secs
+//        // scheduleCancellation(reader, 10.0);
+//        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
+//        IMetaData meta = null;
+//        while (values.hasNext())
+//        {
+//            final IValue value = values.next();
+//            System.out.println(value);
+//            if (meta == null)
+//                meta = value.getMetaData();
+//        }
+//        values.close();
+//        System.out.println("Meta data: " + meta);
+//    }
+//
+//    /** Get optimized data for scalar */
+//    @Test
+//    public void testJavaOptimizedScalarData() throws Exception
+//    {
+//    	if (reader == null)
+//    		return;
+//        System.out.println("Optimized samples for " + name + ":");
+//        System.out.println("-- Java implementation --");
+//
+//        final ITimestamp end = TimestampFactory.now();
+//        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+//        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
+//        IMetaData meta = null;
+//        while (values.hasNext())
+//        {
+//            IValue value = values.next();
+//            System.out.println(value);
+//            if (meta == null)
+//                meta = value.getMetaData();
+//        }
+//        values.close();
+//        System.out.println("Meta data: " + meta);
+//    }
     
 //    /** Get optimized data for scalar */
 //    @Ignore
