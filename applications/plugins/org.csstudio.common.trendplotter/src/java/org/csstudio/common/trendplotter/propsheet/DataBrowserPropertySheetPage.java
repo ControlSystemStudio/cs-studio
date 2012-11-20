@@ -8,6 +8,7 @@
 package org.csstudio.common.trendplotter.propsheet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
@@ -21,6 +22,7 @@ import org.csstudio.common.trendplotter.model.PVItem;
 import org.csstudio.common.trendplotter.ui.AddPVAction;
 import org.csstudio.common.trendplotter.ui.StartEndTimeAction;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -219,6 +221,18 @@ public class DataBrowserPropertySheetPage extends Page implements IPropertySheet
 
         trace_table.setContentProvider(tth);
         trace_table.setInput(model);
+        
+        new ControlSystemDragSource(trace_table.getControl())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection selection = (IStructuredSelection) trace_table.getSelection();
+                final Object[] objs = selection.toArray();
+                final ModelItem[] items = Arrays.copyOf(objs, objs.length, ModelItem[].class);
+                return items;
+            }
+        };
     }
 
     /** Within SashForm of the "Traces" tab, create the Item item detail panel:
@@ -696,5 +710,17 @@ public class DataBrowserPropertySheetPage extends Page implements IPropertySheet
     @Override
     public void scrollEnabled(final boolean scroll_enabled) {
         changedTimerange();
+    }
+
+    @Override
+    public void changedAnnotations() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void changedXYGraphConfig() {
+        // TODO Auto-generated method stub
+
     }
 }

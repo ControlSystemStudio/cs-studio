@@ -22,6 +22,9 @@ public class LiveSamples extends PlotSamples {
 
     protected LimitedArrayCircularQueue<PlotSample> _samples;
 
+    /** Waveform index */
+    private int waveform_index = 0;
+    
     /**
      * Constructor.
      */
@@ -30,6 +33,17 @@ public class LiveSamples extends PlotSamples {
 
     }
 
+    /** @param index Waveform index to show */
+    synchronized public void setWaveformIndex(int index)
+    {
+        waveform_index = index;
+
+        // Change the index of all samples in this instance
+        for (int i=0; i<_samples.size(); i++) {
+            _samples.get(i).setWaveformIndex(waveform_index);
+        }
+    }
+    
     /** @return Maximum number of samples in ring buffer */
     synchronized public int getCapacity() {
         return _samples.getCapacity();
@@ -47,6 +61,7 @@ public class LiveSamples extends PlotSamples {
 
     /** @param sample Sample to add to circular buffer */
     protected synchronized void add(final PlotSample sample) {
+        sample.setWaveformIndex(waveform_index);
         sample.setDeadband(deadband);
         _samples.add(sample);
         have_new_samples = true;

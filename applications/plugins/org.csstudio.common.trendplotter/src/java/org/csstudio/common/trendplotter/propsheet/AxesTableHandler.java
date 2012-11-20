@@ -89,6 +89,11 @@ public class AxesTableHandler implements ILazyContentProvider
         public void changedItemDataConfig(PVItem item)   { /* NOP */ }
         @Override
         public void scrollEnabled(boolean scrollEnabled) { /* NOP */ }
+
+        @Override
+        public void changedAnnotations()                 { /* NOP */ }
+        @Override
+        public void changedXYGraphConfig()               { /* NOP */ }
     };
 
     /** Initialize

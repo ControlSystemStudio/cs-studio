@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+
 import java.io.PrintWriter;
 
 import org.csstudio.apputil.xml.DOMHelper;
@@ -17,7 +18,7 @@ import org.w3c.dom.Element;
 
 /** Base of {@link PVItem} and {@link FormulaItem},
  *  i.e. the items held by the {@link Model}.
- * 
+ *
  *  @author Kay Kasemir
  */
 abstract public class ModelItem
@@ -35,7 +36,7 @@ abstract public class ModelItem
 
     /** Show item's samples? */
     private boolean visible = true;
-    
+
     /** RGB for item's color
      *  <p>
      *  Technically, swt.graphics.RGB adds a UI dependency to the Model.
@@ -43,10 +44,10 @@ abstract public class ModelItem
      *  or Shell, this might be OK.
      */
     private RGB rgb = null;
-    
+
     /** Line width [pixel] */
     private int line_width = Preferences.getLineWidths();
-    
+
     /** How to display the trace */
     private TraceType trace_type = TraceType.AREA;
 
@@ -61,7 +62,7 @@ abstract public class ModelItem
         this.name = name;
         this.display_name = name;
     }
-    
+
     /** @return Model that contains this item */
     public Model getModel()
     {
@@ -78,18 +79,26 @@ abstract public class ModelItem
             throw new RuntimeException("Item re-assigned to same model: " + name); //$NON-NLS-1$
         this.model = model;
     }
-    
-    /** @return Name of this item (PV, Formula, ...) */
+
+    /** @return Name of this item (PV, Formula, ...), may contain macros */
     public String getName()
     {
         return name;
+    }
+
+    /** @return Name of this item (PV, Formula, ...) with all macros resolved */
+    public String getResolvedName()
+    {
+        if (model == null)
+            return name;
+        return model.resolveMacros(name);
     }
 
     /** @param new_name New item name
      *  @see #getName()
      *  @return <code>true</code> if name was actually changed
      *  @throws Exception on error (cannot create PV for new name, ...)
-     *  
+     *
      */
     public boolean setName(String new_name) throws Exception
     {
@@ -101,10 +110,22 @@ abstract public class ModelItem
         return true;
     }
 
-    /** @return Preferred display name, used in plot legend */
+    /** @return Preferred display name, used in plot legend.
+     *  May contain macros.
+     */
     public String getDisplayName()
     {
         return display_name;
+    }
+
+    /** @return Preferred display name, used in plot legend,
+     *          with macros resolved.
+     */
+    public String getResolvedDisplayName()
+    {
+        if (model == null)
+            return display_name;
+        return model.resolveMacros(display_name);
     }
 
     /** @param new_display_name New display name
@@ -118,7 +139,7 @@ abstract public class ModelItem
         display_name = new_display_name;
         fireItemLookChanged();
     }
-    
+
     /** @return <code>true</code> if item should be displayed */
     public boolean isVisible()
     {
@@ -193,7 +214,7 @@ abstract public class ModelItem
         this.trace_type = trace_type;
         fireItemLookChanged();
     }
-    
+
     /** @return Y-Axis */
     public AxisConfig getAxis()
     {
@@ -217,9 +238,28 @@ abstract public class ModelItem
         fireItemLookChanged();
     }
 
+    /**
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.
+     * If it is not overridden, this method always return 0.
+     * @return Waveform index */
+    public int getWaveformIndex()
+    {
+        return 0;
+    }
+
+    /**
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.
+     * @param index New waveform index */
+    public void setWaveformIndex(int index)
+    {
+        // Do nothing.
+    }
+
     /** @return Samples held by this item */
     abstract public PlotSamples getSamples();
-    
+
     @Override
     public String toString()
     {
@@ -243,6 +283,7 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
         Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
+        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
     /** Load common XML configuration elements into this item
@@ -270,5 +311,12 @@ abstract public class ModelItem
         {
             trace_type = TraceType.AREA;
         }
+
+        final int waveform_index = DOMHelper.getSubelementInt(node, Model.TAG_WAVEFORM_INDEX, 0);
+
+        // If this method is overridden by the child class, the child's method will be called
+        // to set the waveform index. If it is not overridden, ModelItem's method will be called,
+        // which does nothing.
+        setWaveformIndex(waveform_index);
     }
 }

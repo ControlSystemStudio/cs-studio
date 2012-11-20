@@ -38,7 +38,10 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-
+    
+    /** Waveform index */
+    private int waveform_index = 0;
+    
     private Number deadband = null;
 
     boolean show_deadband = false;
@@ -79,6 +82,18 @@ public class PlotSample implements ISample
                IValue.Quality.Original, new double[] { y }));
     }
 
+    /** @return Waveform index */
+    public int getWaveformIndex()
+    {
+        return waveform_index;
+    }
+    
+    /** @param index Waveform index to plot */
+    public void setWaveformIndex(int index)
+    {
+        this.waveform_index = index;
+    }
+    
     /** @return Source of the data */
     public String getSource()
     {
@@ -112,8 +127,8 @@ public class PlotSample implements ISample
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue()) {
-            return ValueUtil.getDouble(value);
+        if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
+            return ValueUtil.getDouble(value, waveform_index);
         }
         // No numeric value. Plot shows NaN as marker.
         return Double.NaN;
@@ -152,6 +167,16 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue)) {
             return 0;
         }
+        // Although the behavior of getMinimum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the minimum value of the first element. This minimum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0) {
+            return 0;
+        }
+
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         if (show_deadband) {
             return getDeadband().doubleValue();
@@ -164,6 +189,16 @@ public class PlotSample implements ISample
     public double getYPlusError()
     {
         if (!(value instanceof IMinMaxDoubleValue)) {
+            return 0;
+        }
+        
+        // Although the behavior of getMaximum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the maximum value of the first element. This maximum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0) {
             return 0;
         }
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
