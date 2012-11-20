@@ -206,36 +206,32 @@ public class RDBArchiveReaderTest
         }
     }
 
-//    /** Get raw data for waveform */
-//    @Test
-//    public void testRawWaveformData() throws Exception
-//    {
-//    	if (reader == null  ||  array_name == null)
-//    		return;
-//        System.out.println("Raw samples for waveform " + array_name + ":");
-//        
-//        if (reader.useArrayBlob())
-//        	System.out.println(".. using BLOB");
-//        else
-//        	System.out.println(".. using non-BLOB array table");
-//        
-//        final ITimestamp end = TimestampFactory.now();
-//        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-//
-//        // Cancel after 10 secs
-//        // scheduleCancellation(reader, 10.0);
-//        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
-//        IMetaData meta = null;
-//        while (values.hasNext())
-//        {
-//            final IValue value = values.next();
-//            System.out.println(value);
-//            if (meta == null)
-//                meta = value.getMetaData();
-//        }
-//        values.close();
-//        System.out.println("Meta data: " + meta);
-//    }
+    /** Get raw data for waveform */
+    @Test
+    public void testRawWaveformData() throws Exception
+    {
+    	if (reader == null  ||  array_name == null)
+    		return;
+        System.out.println("Raw samples for waveform " + array_name + ":");
+        
+        if (reader.useArrayBlob())
+        	System.out.println(".. using BLOB");
+        else
+        	System.out.println(".. using non-BLOB array table");
+        
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
+
+        // Cancel after 10 secs
+        // scheduleCancellation(reader, 10.0);
+        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
+        while (values.hasNext())
+        {
+            final VType value = values.next();
+            System.out.println(value);
+        }
+        values.close();
+    }
 
 //    /** Get optimized data for scalar */
 //    @Test
