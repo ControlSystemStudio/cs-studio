@@ -16,7 +16,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.archive.rdb.IVEnum;
+import org.csstudio.archive.rdb.ArchiveVDoubleArray;
+import org.csstudio.archive.rdb.ArchiveVNumber;
+import org.csstudio.archive.rdb.ArchiveVEnum;
+import org.csstudio.archive.rdb.ArchiveVString;
 import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.archive.reader.ValueIterator;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -187,15 +190,15 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // In here, we handle it by returning enumeration samples,
             // because the meta data would be wrong for double values.
             if (labels != null)
-            	return new IVEnum(time, severity, status, labels, (int) dbl0);
+            	return new ArchiveVEnum(time, severity, status, labels, (int) dbl0);
             // Double data. Get array elements - if any.
             final double data[] = reader.useArrayBlob()
         		? readBlobArrayElements(dbl0, result)
 				: readArrayElements(time, dbl0, severity);
     		if (data.length == 1)
-    			return ValueFactory.newVDouble(data[0], ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
+    			return new ArchiveVNumber(time, severity, status, display, data[0]);
     		else
-    			return ValueFactory.newVDoubleArray(data, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
+    			return new ArchiveVDoubleArray(time, severity, status, display, data);
         }
 
         // Try integer
@@ -203,13 +206,13 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (! result.wasNull())
         {   // Enumerated integer?
             if (labels != null)
-            	return new IVEnum(time, severity, status, labels, num);
-            return ValueFactory.newVInt(num, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time), display);
+            	return new ArchiveVEnum(time, severity, status, labels, num);
+			return new ArchiveVNumber(time, severity, status, display, num);
         }
 
         // Default to string
         final String txt = result.getString(6);
-        return ValueFactory.newVString(txt, ValueFactory.newAlarm(severity, status), ValueFactory.newTime(time));
+        return new ArchiveVString(time, severity, status, txt);
     }
 
     /** @param severity Original severity

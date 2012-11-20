@@ -160,7 +160,7 @@ public class RDBArchiveReaderTest
             while (values.hasNext())
             {
                 VType value = values.next();
-                System.out.println(VTypeHelper.toString(value));
+                System.out.println(value);
                 if (display == null)
                 	display = ValueUtil.displayOf(value);
                 ++count;
@@ -236,7 +236,7 @@ public class RDBArchiveReaderTest
 //        values.close();
 //        System.out.println("Meta data: " + meta);
 //    }
-//
+
 //    /** Get optimized data for scalar */
 //    @Test
 //    public void testJavaOptimizedScalarData() throws Exception
@@ -246,19 +246,15 @@ public class RDBArchiveReaderTest
 //        System.out.println("Optimized samples for " + name + ":");
 //        System.out.println("-- Java implementation --");
 //
-//        final ITimestamp end = TimestampFactory.now();
-//        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+//        final Timestamp end = Timestamp.now();
+//        final Timestamp start = end.minus(TIMERANGE);
 //        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
-//        IMetaData meta = null;
 //        while (values.hasNext())
 //        {
-//            IValue value = values.next();
-//            System.out.println(value);
-//            if (meta == null)
-//                meta = value.getMetaData();
+//        	VType value = values.next();
+//            System.out.println(VTypeHelper.toString(value));
 //        }
 //        values.close();
-//        System.out.println("Meta data: " + meta);
 //    }
     
 //    /** Get optimized data for scalar */

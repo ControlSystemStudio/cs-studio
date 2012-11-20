@@ -7,45 +7,30 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb;
 
-import java.util.List;
-
+import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
-import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.Time;
+import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
 
-/** {@link VEnum} implementation
- * 
- *  <p>VType system currently lacks one.
+/** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir
  */
-public class IVEnum implements VEnum
+public class ArchiveVType implements Alarm, Time, VType
 {
 	final private Timestamp timestamp;
 	final private AlarmSeverity severity;
 	final private String status;
-	final private List<String> labels;
-	final private int index;
-
 	
-	public IVEnum(final Timestamp timestamp,
-			final AlarmSeverity severity, final String status,
-			final List<String> labels, final int index)
+	public ArchiveVType(final Timestamp timestamp,
+			final AlarmSeverity severity, final String status)
 	{
 		this.timestamp = timestamp;
 		this.severity = severity;
 		this.status = status;
-		this.labels = labels;
-		this.index = index;
 	}
 	
-	
-	@Override
-	public List<String> getLabels()
-	{
-		return labels;
-	}
-
 	@Override
 	public AlarmSeverity getAlarmSeverity() 
 	{
@@ -80,25 +65,6 @@ public class IVEnum implements VEnum
 	@Override
 	public boolean isTimeValid()
 	{
-		return true;
-	}
-
-	@Override
-	public String getValue()
-	{
-		try
-		{
-			return labels.get(index);
-		}
-		catch (RuntimeException ex)
-		{
-			return "Enum <" + index + ">";
-		}
-	}
-
-	@Override
-	public int getIndex()
-	{
-		return index;
+		return timestamp.getSec() > 0;
 	}
 }
