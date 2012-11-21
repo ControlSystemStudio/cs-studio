@@ -5,34 +5,33 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb;
+package org.csstudio.archive.vtype;
 
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VString;
 import org.epics.util.time.Timestamp;
 
-/** Archive-derived {@link VNumber} implementation
+/** Archive-derived {@link VString} implementation
  *  @author Kay Kasemir
  */
-public class ArchiveVNumber extends ArchiveVDisplayType implements VNumber
+public class ArchiveVString extends ArchiveVType implements VString
 {
-	final private Number value;
+	final private String value;
 
-	public ArchiveVNumber(final Timestamp timestamp,
+	public ArchiveVString(final Timestamp timestamp,
 			final AlarmSeverity severity, final String status,
-			final Display display, final Number value)
+			final String value)
 	{
-		super(timestamp, severity, status, display);
+		super(timestamp, severity, status);
 		this.value = value;
 	}
 
 	@Override
-	public Number getValue()
+	public String getValue()
 	{
 		return value;
 	}
-	
+
 	@Override
 	public String toString()
 	{

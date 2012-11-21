@@ -16,12 +16,12 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.archive.rdb.ArchiveVDoubleArray;
-import org.csstudio.archive.rdb.ArchiveVNumber;
-import org.csstudio.archive.rdb.ArchiveVEnum;
-import org.csstudio.archive.rdb.ArchiveVString;
-import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.ArchiveVDoubleArray;
+import org.csstudio.archive.vtype.ArchiveVEnum;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVString;
+import org.csstudio.archive.vtype.TimestampUtil;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VType;

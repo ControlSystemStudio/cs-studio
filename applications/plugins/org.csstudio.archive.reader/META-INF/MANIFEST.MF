@@ -6,8 +6,7 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
- org.epics.util;bundle-version="0.1.0";visibility:=reexport,
- org.csstudio.utility.pvmanager;bundle-version="2.0.0";visibility:=reexport
+ org.csstudio.archive.vtype;bundle-version="1.0.0";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.archive.reader

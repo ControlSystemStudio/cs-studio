@@ -16,11 +16,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.archive.rdb.TimestampUtil;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.AlarmSeverity;

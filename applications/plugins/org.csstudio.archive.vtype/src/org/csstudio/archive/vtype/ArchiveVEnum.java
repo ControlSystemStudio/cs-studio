@@ -5,31 +5,54 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb;
+package org.csstudio.archive.vtype;
+
+import java.util.List;
 
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VString;
+import org.epics.pvmanager.data.VEnum;
 import org.epics.util.time.Timestamp;
 
-/** Archive-derived {@link VString} implementation
+/** Archive-derived {@link VEnum} implementation
  *  @author Kay Kasemir
  */
-public class ArchiveVString extends ArchiveVType implements VString
+public class ArchiveVEnum extends ArchiveVType implements VEnum
 {
-	final private String value;
+	final private List<String> labels;
+	final private int index;
 
-	public ArchiveVString(final Timestamp timestamp,
+	public ArchiveVEnum(final Timestamp timestamp,
 			final AlarmSeverity severity, final String status,
-			final String value)
+			final List<String> labels, final int index)
 	{
 		super(timestamp, severity, status);
-		this.value = value;
+		this.labels = labels;
+		this.index = index;
+	}
+	
+	@Override
+	public List<String> getLabels()
+	{
+		return labels;
 	}
 
 	@Override
 	public String getValue()
 	{
-		return value;
+		try
+		{
+			return labels.get(index);
+		}
+		catch (RuntimeException ex)
+		{
+			return "Enum <" + index + ">";
+		}
+	}
+
+	@Override
+	public int getIndex()
+	{
+		return index;
 	}
 
 	@Override

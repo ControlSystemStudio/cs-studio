@@ -5,56 +5,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb;
-
-import java.util.List;
+package org.csstudio.archive.vtype;
 
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.VNumber;
 import org.epics.util.time.Timestamp;
 
-/** Archive-derived {@link VEnum} implementation
+/** Archive-derived {@link VNumber} implementation
  *  @author Kay Kasemir
  */
-public class ArchiveVEnum extends ArchiveVType implements VEnum
+public class ArchiveVNumber extends ArchiveVDisplayType implements VNumber
 {
-	final private List<String> labels;
-	final private int index;
+	final private Number value;
 
-	public ArchiveVEnum(final Timestamp timestamp,
+	public ArchiveVNumber(final Timestamp timestamp,
 			final AlarmSeverity severity, final String status,
-			final List<String> labels, final int index)
+			final Display display, final Number value)
 	{
-		super(timestamp, severity, status);
-		this.labels = labels;
-		this.index = index;
+		super(timestamp, severity, status, display);
+		this.value = value;
+	}
+
+	@Override
+	public Number getValue()
+	{
+		return value;
 	}
 	
-	@Override
-	public List<String> getLabels()
-	{
-		return labels;
-	}
-
-	@Override
-	public String getValue()
-	{
-		try
-		{
-			return labels.get(index);
-		}
-		catch (RuntimeException ex)
-		{
-			return "Enum <" + index + ">";
-		}
-	}
-
-	@Override
-	public int getIndex()
-	{
-		return index;
-	}
-
 	@Override
 	public String toString()
 	{

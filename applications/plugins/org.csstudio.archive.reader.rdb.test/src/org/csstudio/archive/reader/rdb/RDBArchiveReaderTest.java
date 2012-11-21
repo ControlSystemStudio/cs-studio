@@ -17,7 +17,6 @@ import java.util.TimerTask;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archive.rdb.VTypeHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;

@@ -10,7 +10,7 @@ package org.csstudio.archive.reader.rdb;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.csstudio.archive.rdb.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
