@@ -13,7 +13,6 @@ import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.AxisConfig;
 import org.csstudio.common.trendplotter.model.FormulaInput;
 import org.csstudio.common.trendplotter.model.FormulaItem;
-import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 import org.csstudio.common.trendplotter.model.Model;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PVItem;
@@ -48,13 +47,13 @@ public class AddModelItemCommand implements IUndoableCommand {
                                             final String pv_name,
                                             final double period,
                                             final AxisConfig axis,
-                                            final IArchiveDataSource archive) {
+                                            final ArchiveDataSource archive) {
         // Create item
         final PVItem item;
         try {
             item = new PVItem(pv_name, period);
             if (archive != null) {
-                item.addArchiveDataSource(new ArchiveDataSource(archive));
+                item.addArchiveDataSource(archive);
             } else {
                 item.useDefaultArchiveDataSources();
             }

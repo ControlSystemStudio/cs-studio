@@ -9,11 +9,10 @@ package org.csstudio.common.trendplotter.ui;
 
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.AxisConfig;
-import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.eclipse.swt.graphics.Color;
 
 /** Interface used by Plot to send events in response to user input:
