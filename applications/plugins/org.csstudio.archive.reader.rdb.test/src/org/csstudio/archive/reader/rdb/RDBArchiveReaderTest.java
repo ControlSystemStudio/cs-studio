@@ -232,25 +232,25 @@ public class RDBArchiveReaderTest
         values.close();
     }
 
-//    /** Get optimized data for scalar */
-//    @Test
-//    public void testJavaOptimizedScalarData() throws Exception
-//    {
-//    	if (reader == null)
-//    		return;
-//        System.out.println("Optimized samples for " + name + ":");
-//        System.out.println("-- Java implementation --");
-//
-//        final Timestamp end = Timestamp.now();
-//        final Timestamp start = end.minus(TIMERANGE);
-//        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
-//        while (values.hasNext())
-//        {
-//        	VType value = values.next();
-//            System.out.println(VTypeHelper.toString(value));
-//        }
-//        values.close();
-//    }
+    /** Get optimized data for scalar */
+    @Test
+    public void testJavaOptimizedScalarData() throws Exception
+    {
+    	if (reader == null)
+    		return;
+        System.out.println("Optimized samples for " + name + ":");
+        System.out.println("-- Java implementation --");
+
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
+        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
+        while (values.hasNext())
+        {
+        	final VType value = values.next();
+            System.out.println(value);
+        }
+        values.close();
+    }
     
 //    /** Get optimized data for scalar */
 //    @Ignore

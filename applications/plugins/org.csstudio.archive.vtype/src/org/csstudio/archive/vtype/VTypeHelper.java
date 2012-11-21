@@ -32,7 +32,7 @@ public class VTypeHelper
 	final private static int MAX_ARRAY_ELEMENTS = 10;
 	
 	/** Time stamp format */
-	final private static Format time_format = new TimestampFormat("yyyy-MM-dd HH:mm:ss.NNNNNNNNN");
+	final private static Format time_format = new TimestampFormat(TimestampUtil.FORMAT_FULL);
 
 	/** Read number from a {@link VType}
      *  @param value Value
