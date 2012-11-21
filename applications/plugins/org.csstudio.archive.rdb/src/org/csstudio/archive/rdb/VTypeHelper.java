@@ -15,9 +15,11 @@ import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 
@@ -26,6 +28,10 @@ import org.epics.util.time.TimestampFormat;
  */
 public class VTypeHelper
 {
+	/** Number of array elements to show before shortening the printout */
+	final private static int MAX_ARRAY_ELEMENTS = 10;
+	
+	/** Time stamp format */
 	final private static Format time_format = new TimestampFormat("yyyy-MM-dd HH:mm:ss.NNNNNNNNN");
 
 	/** Read number from a {@link VType}
@@ -78,32 +84,82 @@ public class VTypeHelper
        	   .append(alarm.getAlarmName());
 	}
 
+	/** @param buf Buffer where number is added
+	 *  @param display Display information to use, may be <code>null</code>
+	 *  @param number Number to format
+	 */
+	final private static void addNumber(final StringBuilder buf,
+			final Display display, final double number)
+	{
+		if (display != null  &&  display.getFormat() != null)
+			buf.append(display.getFormat().format(number));
+		else
+			buf.append(number);
+	}
+
 	/** @param buf Buffer where value's actual value is added (number, ...)
 	 *  @param value {@link VType}
 	 */
 	final public static void addValue(final StringBuilder buf, final VType value)
 	{
-		if (value instanceof VNumber)
+		// After the time this is implemented, VEnum may change into a class
+		// that also implements VNumber and/or VString.
+		// Handle it first to assert that VEnum is always identified as such
+		// and not handled as Number.
+		if (value instanceof VEnum)
+		{
+			final VEnum enumerated = (VEnum)value;
+			try
+			{
+				buf.append(enumerated.getValue());
+				buf.append(" (").append(enumerated.getIndex()).append(")");
+			}
+			catch (ArrayIndexOutOfBoundsException ex)
+			{	// Error getting label for invalid index?
+				buf.append("<enum ").append(enumerated.getIndex()).append(">");
+			}
+		}
+		else if (value instanceof VNumber)
 		{
 			final VNumber number = (VNumber) value;
 			final Display display = ValueUtil.displayOf(number);
-			if (display != null  &&  display.getFormat() != null)
-				buf.append(display.getFormat().format(number.getValue()));
-			else
-				buf.append(number.getValue());
+			addNumber(buf, display, number.getValue().doubleValue());
 			if (display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}
-		else if (value instanceof VEnum)
+		else if (value instanceof VNumberArray)
 		{
-			try
+			final VNumberArray array = (VNumberArray) value;
+			final Display display = ValueUtil.displayOf(array);
+			final ListNumber list = array.getData();
+			final int N = list.size();
+			if (N <= MAX_ARRAY_ELEMENTS)
 			{
-				buf.append(((VEnum)value).getValue());
+				if (N > 0)
+					addNumber(buf, display, list.getDouble(0));
+				for (int i=1; i<N; ++i)
+				{
+					buf.append(", ");
+					addNumber(buf, display, list.getDouble(i));
+				}
 			}
-			catch (ArrayIndexOutOfBoundsException ex)
-			{	// PVManager doesn't handle enums that have no label
-				buf.append("<enum ").append(((VEnum)value).getIndex()).append(">");
+			else
+			{
+				addNumber(buf, display, list.getDouble(0));
+				for (int i=1; i<MAX_ARRAY_ELEMENTS/2; ++i)
+				{
+					buf.append(", ");
+					addNumber(buf, display, list.getDouble(i));
+				}
+				buf.append(", ... (total ").append(N).append(" elements) ...");
+				for (int i = N - MAX_ARRAY_ELEMENTS/2;  i<N;  ++i)
+				{
+					buf.append(", ");
+					addNumber(buf, display, list.getDouble(i));
+				}
 			}
+			if (display.getUnits() != null)
+				buf.append(" ").append(display.getUnits());
 		}
 		else if (value instanceof VString)
 			buf.append(((VString)value).getValue());
@@ -112,7 +168,7 @@ public class VTypeHelper
 		else
 			buf.append(value.toString());
 	}
-	
+
 	/** Format value as string
      *  @param value Value
      *  @return String representation
