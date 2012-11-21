@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
@@ -32,7 +33,8 @@ public class TabModel extends AbstractContainerModel {
 		FONT("font", "Font"),
 		FORECOLOR("foreground_color", "Foreground Color"),
 		BACKCOLOR("background_color", "Background Color"),
-		ICON_PATH("icon_path", "Icon Path");
+		ICON_PATH("icon_path", "Icon Path"),
+		ENABLED("enabled", "Enabled");
 		
 		
 		public String propIDPre;
@@ -57,6 +59,10 @@ public class TabModel extends AbstractContainerModel {
 	}
 	
 	public static final String PROP_TAB_COUNT = "tab_count"; //$NON-NLS-1$
+	
+	public static final String PROP_HORIZONTAL_TABS = "horizontal_tabs"; //$NON-NLS-1$
+	
+	public static final String PROP_ACTIVE_TAB = "active_tab"; //$NON-NLS-1$
 	
 	private static final RGB DEFAULT_TAB_FORECOLOR = new RGB(0,0,0);
 	
@@ -84,6 +90,10 @@ public class TabModel extends AbstractContainerModel {
 	protected void configureProperties() {
 		addProperty(new IntegerProperty(PROP_TAB_COUNT, "Tab Count",
 				WidgetPropertyCategory.Behavior, 1, 1, MAX_TABS_AMOUNT));	
+		addProperty(new BooleanProperty(PROP_HORIZONTAL_TABS, "Horizontal Tabs",
+				WidgetPropertyCategory.Display, true));
+		addProperty(new IntegerProperty(PROP_ACTIVE_TAB, "Active Tab",
+				WidgetPropertyCategory.Display, 0, 0, MAX_TABS_AMOUNT - 1));
 		setPropertyVisible(PROP_FONT, false);
 		addTabsProperties();		
 	}
@@ -123,6 +133,10 @@ public class TabModel extends AbstractContainerModel {
 			addProperty(new FilePathProperty(propID, tabProperty.toString(), 
 					category, null, FILE_EXTENSIONS));
 			break;
+		case ENABLED:
+			addProperty(new BooleanProperty(propID, tabProperty.toString(),
+					category, true));
+			break;
 		default:
 			break;
 		}
@@ -154,6 +168,20 @@ public class TabModel extends AbstractContainerModel {
 	 */
 	public int getTabsAmount() {
 		return (Integer) getProperty(PROP_TAB_COUNT).getPropertyValue();
+	}
+	
+	/**
+	 * @return tab position
+	 */
+	public boolean isHorizontal() {
+		return (Boolean) getProperty(PROP_HORIZONTAL_TABS).getPropertyValue();
+	}
+	
+	/**
+	 * @return The defined active tab.
+	 */
+	public int getActiveTab() {
+		return (Integer) getProperty(PROP_ACTIVE_TAB).getPropertyValue();
 	}
 	
 	public IPath toAbsolutePath(IPath path){
