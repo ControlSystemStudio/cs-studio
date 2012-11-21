@@ -198,6 +198,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 	protected IFigure doCreateFigure() {
 		TabFigure tabFigure = new TabFigure();
 		tabFigure.setHorizontal(getWidgetModel().isHorizontal());
+		tabFigure.setMinimumTabHeight(getWidgetModel().getMinimumTabHeight());
 		tabFigure.addTabListener(new ITabListener() {
 			public void activeTabIndexChanged(int oldIndex, int newIndex) {
 				for (AbstractWidgetModel child : getWidgetModel().getChildren())
@@ -324,6 +325,16 @@ public class TabEditPart extends AbstractContainerEditpart {
 			}
 		};
 		setPropertyChangeHandler(TabModel.PROP_ACTIVE_TAB, activeTabHandler);
+		
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((TabFigure)figure).setMinimumTabHeight((Integer)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(TabModel.PROP_MINIMUM_TAB_HEIGHT, handler);
 		
 		IWidgetPropertyChangeHandler updateTabAreaSizeHandler = new IWidgetPropertyChangeHandler() {
 			

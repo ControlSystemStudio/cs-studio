@@ -73,7 +73,7 @@ public class TabFigure extends Figure implements Introspectable{
 	private final static Color DEFAULT_TABCOLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
 	
-	private final static int MINIMUM_TAB_HEIGHT = 10;
+	private int minimumTabHeight = 10;
 	private final static int MINIMUM_TAB_WIDTH = 20;
 	private IFigure pane;
 
@@ -199,7 +199,7 @@ public class TabFigure extends Figure implements Introspectable{
 	}
 	
 	public int getTabLabelHeight(){
-		int h = MINIMUM_TAB_HEIGHT;
+		int h = minimumTabHeight;
 		for(Label label : tabLabelList){
 			if(label.getPreferredSize().height > h){
 				h = label.getPreferredSize().height;
@@ -234,9 +234,10 @@ public class TabFigure extends Figure implements Introspectable{
 				else label.setBounds(new Rectangle(left + GAP, top + 2, labelSize.width + MARGIN - GAP, height - 2));
 				left += (labelSize.width + MARGIN - 1);
 			} else {
-				if (getActiveTabIndex() == i) label.setBounds(new Rectangle(left, top, width, labelSize.height + MARGIN + GAP));
-				else label.setBounds(new Rectangle(left + 2, top + GAP, width - 2, labelSize.height + MARGIN - GAP));
-				top += (labelSize.height + MARGIN - 1);
+				int labelH = Math.max(labelSize.height, minimumTabHeight);
+				if (getActiveTabIndex() == i) label.setBounds(new Rectangle(left, top, width, labelH + MARGIN + GAP));
+				else label.setBounds(new Rectangle(left + 2, top + GAP, width - 2, labelH + MARGIN - GAP));
+				top += (labelH + MARGIN - 1);
 			}
 			i++;
 		}	
@@ -381,6 +382,11 @@ public class TabFigure extends Figure implements Introspectable{
 	
 	public void setHorizontal(boolean horizontal) {
 		this.horizontal = horizontal;
+		revalidate();
+	}
+	
+	public void setMinimumTabHeight(int minimumTabHeight) {
+		this.minimumTabHeight = minimumTabHeight;
 		revalidate();
 	}
 	

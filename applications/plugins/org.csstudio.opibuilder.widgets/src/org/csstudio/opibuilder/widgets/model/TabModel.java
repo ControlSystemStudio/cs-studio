@@ -64,6 +64,9 @@ public class TabModel extends AbstractContainerModel {
 	
 	public static final String PROP_ACTIVE_TAB = "active_tab"; //$NON-NLS-1$
 	
+	public static final String PROP_MINIMUM_TAB_HEIGHT = "minimum_tab_height"; //$NON-NLS-1$
+	
+	
 	private static final RGB DEFAULT_TAB_FORECOLOR = new RGB(0,0,0);
 	
 	private static final RGB DEFAULT_TAB_BACKCOLOR = new RGB(255,255,255);
@@ -94,6 +97,8 @@ public class TabModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Display, true));
 		addProperty(new IntegerProperty(PROP_ACTIVE_TAB, "Active Tab",
 				WidgetPropertyCategory.Display, 0, 0, MAX_TABS_AMOUNT - 1));
+		addProperty(new IntegerProperty(PROP_MINIMUM_TAB_HEIGHT, "Minimum Tab Height",
+				WidgetPropertyCategory.Display, 10, 10, 1000));
 		setPropertyVisible(PROP_FONT, false);
 		addTabsProperties();		
 	}
@@ -168,6 +173,10 @@ public class TabModel extends AbstractContainerModel {
 	 */
 	public int getTabsAmount() {
 		return (Integer) getProperty(PROP_TAB_COUNT).getPropertyValue();
+	}
+	
+	public int getMinimumTabHeight(){
+		return (Integer)getPropertyValue(PROP_MINIMUM_TAB_HEIGHT);
 	}
 	
 	/**
