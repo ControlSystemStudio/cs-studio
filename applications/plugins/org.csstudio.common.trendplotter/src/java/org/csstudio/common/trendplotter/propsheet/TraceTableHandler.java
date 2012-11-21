@@ -9,7 +9,6 @@ package org.csstudio.common.trendplotter.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.AxisConfig;
@@ -20,7 +19,6 @@ import org.csstudio.common.trendplotter.model.PVItem;
 import org.csstudio.common.trendplotter.model.RequestType;
 import org.csstudio.common.trendplotter.model.TraceType;
 import org.csstudio.common.trendplotter.ui.TableHelper;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,9 +38,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
-
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
 
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
@@ -72,23 +67,20 @@ public class TraceTableHandler implements IStructuredContentProvider
         public void changedTimerange() { /* Ignored */ }
 
         @Override
-        public void changedAxis(AxisConfig axis)
-        {
+        public void changedAxis(AxisConfig axis) {
             // In case an axis _name_ changed, this needs to be shown
             // in the "Axis" column.
             trace_table.refresh();
         }
 
         @Override
-        public void itemAdded(final ModelItem item)
-        {
+        public void itemAdded(final ModelItem item) {
             trace_table.cancelEditing();
-            trace_table.setItemCount(model.getItemCount());
+            trace_table.refresh();
         }
 
         @Override
-        public void itemRemoved(final ModelItem item)
-        {
+        public void itemRemoved(final ModelItem item) {
             // User will often click on an item,
             // which usually starts an editor, then press delete.
             // To get a clear table update, all of this seems to be required
@@ -99,31 +91,29 @@ public class TraceTableHandler implements IStructuredContentProvider
         }
 
         @Override
-        public void changedItemVisibility(ModelItem item)
-        {   // Update the item's row in table
+        public void changedItemVisibility(ModelItem item) {   // Update the item's row in table
             changedItemLook(item);
         }
 
         @Override
-        public void changedItemLook(final ModelItem item)
-        {
+        public void changedItemLook(final ModelItem item) {
             trace_table.refresh(item);
         }
 
         @Override
         public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
+        
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
         
         @Override
         public void changedAnnotations() {
             // TODO Auto-generated method stub
-            
         }
+
         @Override
         public void changedXYGraphConfig() {
             // TODO Auto-generated method stub
-            
         }
     };
 
