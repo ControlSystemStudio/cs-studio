@@ -123,6 +123,7 @@ public class PVItem extends ModelItem implements PVListener {
                 return null;
             }
         });
+        pv = PVFactory.createPV(name);
         _period = period;
     }
 
