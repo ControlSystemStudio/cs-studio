@@ -205,6 +205,8 @@ public class VTypeHelper
      */
     final public static String toString(final VType value)
     {
+    	if (value == null)
+    		return "null";
     	final StringBuilder buf = new StringBuilder();
     	addTimestamp(buf, value);
     	buf.append("\t");
