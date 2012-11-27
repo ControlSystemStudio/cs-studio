@@ -8,14 +8,17 @@
 package org.csstudio.archive.reader.rdb;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.StatisticsAccumulator;
+import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /** Averaging sample iterator.
  *
@@ -35,15 +38,15 @@ public class AveragedValueIterator implements ValueIterator
     final private long seconds;
 
     /** The most recent value from <code>base</code>, may be <code>null</code> */
-    private IValue base_value = null;
+    private VType base_value = null;
 
-    /** Meta data */
-    private INumericMetaData meta = null;
+    /** Display meta data */
+    private Display display = null;
 
     /** The average value that <code>next()</code> will return
      *  or <code>null</code> if there is none
      */
-    private IValue avg_value = null;
+    private VType avg_value = null;
 
     /** Initialize
      *  @param base Iterator for 'raw' values
@@ -81,57 +84,43 @@ public class AveragedValueIterator implements ValueIterator
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    private IValue determineNextAverage() throws Exception
+    private VType determineNextAverage() throws Exception
     {
         // Anything left to average?
         if (base_value == null)
             return null;
         // Determine next multiple of averaging period
-        final ITimestamp average_window_start = base_value.getTime();
-        final ITimestamp average_window_end =
+        final Timestamp average_window_start = VTypeHelper.getTimestamp(base_value);
+        final Timestamp average_window_end =
                 TimestampUtil.roundUp(average_window_start, seconds);
         if (debug)
-            System.out.println("Average until " + average_window_end.toString());
+            System.out.println("Average until " + TimestampUtil.format(average_window_end));
         // Determine average over values within the window
-        double sum = 0.0;
-        long count = 0;
-        double minimum = Double.MAX_VALUE, maximum = -Double.MAX_VALUE;
-        IValue last_value = null;
-        ISeverity severity = base_value.getSeverity();
-        String status = base_value.getStatus();
+        final StatisticsAccumulator stats = new StatisticsAccumulator();
+        VType last_value = null;
+        AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
+        String status = VTypeHelper.getMessage(base_value);
         while (base_value != null &&
-               base_value.getTime().isLessThan(average_window_end))
+        	   VTypeHelper.getTimestamp(base_value).compareTo(average_window_end) < 0)
         {
-            final Double num = getNumericValue(base_value);
+            final Number num = getNumericValue(base_value);
             if (num != null)
             {   // Has a numeric value
                 if (debug)
                     System.out.println("Using " + base_value.toString());
                 // Remember the first meta data that we can use
-                if (meta == null)
+                if (display == null)
                 {
-                    if (base_value.getMetaData() instanceof INumericMetaData)
-                        meta = (INumericMetaData) base_value.getMetaData();
-                    else if (base_value.getMetaData() instanceof IEnumeratedMetaData)
-                    {
-                        final IEnumeratedMetaData states = (IEnumeratedMetaData) base_value.getMetaData();
-                        meta = ValueFactory.createNumericMetaData(0, states.getStates().length-1,
-                                0, 0, 0, 0, 1, "<enumerated>");
-                    }
+                	if (base_value instanceof Display)
+                		display = (Display) base_value;
                 }
                 // Value average
-                sum += num;
-                ++count;
-                // Min/max
-                if (minimum > num)
-                    minimum = num;
-                if (maximum < num)
-                    maximum = num;
+                stats.add(num.doubleValue());
                 // Maximize the severity
-                if (isHigherSeverity(severity, base_value.getSeverity()))
+                if (isHigherSeverity(severity, VTypeHelper.getSeverity(base_value)))
                 {
-                    severity = base_value.getSeverity();
-                    status = base_value.getStatus();
+                    severity = VTypeHelper.getSeverity(base_value);
+                    status = VTypeHelper.getMessage(base_value);
                 }
                 // Load next base value
                 last_value = base_value;
@@ -140,7 +129,7 @@ public class AveragedValueIterator implements ValueIterator
             else
             {   // If some average has accumulated, return that;
                 // handle non-numeric base_value on the next call.
-                if (count > 0)
+                if (stats.getNSamples() > 0)
                     break;
                 if (debug)
                     System.out.println("Passing through: " + base_value.toString());
@@ -152,52 +141,48 @@ public class AveragedValueIterator implements ValueIterator
             }
         }
         // Only single value? Return as is
-        if (count <= 1)
+        if (stats.getNSamples() <= 1)
             return last_value;
+        // Create time stamp in center of averaging window ('bin')
+        final Timestamp bin_time = average_window_end.minus(TimeDuration.ofSeconds(seconds/2));
+        
         // Return the min/max/average
-        final double average = sum / count;
-        // Create time stamp in center of averaged samples
-        final long span =
-            last_value.getTime().seconds() - average_window_start.seconds();
-        final ITimestamp avg_time =
-            TimestampUtil.add(average_window_start, Math.round(span/2.0));
-        return ValueFactory.createMinMaxDoubleValue(avg_time,
-                severity, status, meta,
-                IValue.Quality.Interpolated,
-                new double[] { average }, minimum, maximum);
+        final ArchiveVStatistics result = new ArchiveVStatistics(bin_time, severity, status, display, stats);
+        if (debug)
+            System.out.println("Result: " + result.toString());
+		return result;
     }
 
     /** @return <code>true</code> if the <code>new_severity</code> is more
      *          severe than the <code>current</code> severity.
      */
-    private boolean isHigherSeverity(final ISeverity current,
-                                     final ISeverity new_severity)
+    private boolean isHigherSeverity(final AlarmSeverity current,
+                                     final AlarmSeverity new_severity)
     {
-        if (current.isInvalid()) // Nothing is higher
-            return false;
-        if (current.isMajor())   // invalid is higher
-            return new_severity.isInvalid();
-        if (current.isMinor())   // major, invalid are higher
-            return new_severity.isMajor() || new_severity.isInvalid();
-        if (current.isOK())      // Anything other than OK is higher
-            return ! new_severity.isOK();
-        return false;
+    	return new_severity.ordinal() > current.ordinal(); 
     }
 
-    /** Try to get numeric value out of an IValue.
-     *  @return <code>Double</code> or <code>null</code>
+    /** Try to get numeric value for interpolation.
+     *  <p>
+     *  Does <u>not</u> return numbers for enum.
+     *  @param value {@link VType}
+     *  @return {@link Number} or <code>null</code>
      */
-    private static Double getNumericValue(final IValue value)
+    private static Number getNumericValue(final VType value)
     {
-        // In contrast to ValueUtil.getDouble(), we don't want to average
-        // over enums.
-        if (value.getSeverity().hasValue())
-        {
-            if (value instanceof IDoubleValue)
-                return ((IDoubleValue) value).getValue();
-            if (value instanceof ILongValue)
-                return new Double(((ILongValue) value).getValue());
-        }
+    	if (value instanceof VNumber)
+    	{
+    		final VNumber number = (VNumber) value;
+    		if (number.getAlarmSeverity() != AlarmSeverity.UNDEFINED)
+    			return number.getValue();
+    	}
+    	if (value instanceof VNumberArray)
+    	{
+    		final VNumberArray numbers = (VNumberArray) value;
+    		if (numbers.getAlarmSeverity() != AlarmSeverity.UNDEFINED  &&
+    		    numbers.getData().size() > 0)
+    			return numbers.getData().getDouble(0);
+    	}
         // String or Enum, or no Value at all
         // Cannot decode that sample type as a number.
         return null;
@@ -212,9 +197,9 @@ public class AveragedValueIterator implements ValueIterator
 
     /** {@inheritDoc} */
     @Override
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {   // Save the value we're about to return, prepare the following avg.
-        final IValue ret_value = avg_value;
+        final VType ret_value = avg_value;
         avg_value = determineNextAverage();
         return ret_value;
     }

@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import java.text.Format;
-
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
@@ -16,12 +14,12 @@ import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
 
 /** {@link VType} helper
  *  @author Kay Kasemir
@@ -31,9 +29,6 @@ public class VTypeHelper
 	/** Number of array elements to show before shortening the printout */
 	final private static int MAX_ARRAY_ELEMENTS = 10;
 	
-	/** Time stamp format */
-	final private static Format time_format = new TimestampFormat(TimestampUtil.FORMAT_FULL);
-
 	/** Read number from a {@link VType}
      *  @param value Value
      *  @return double or NaN
@@ -65,12 +60,31 @@ public class VTypeHelper
 	final public static void addTimestamp(final StringBuilder buf, final VType value)
 	{
 		final Timestamp stamp = getTimestamp(value);
-		synchronized (time_format)
-		{
-			buf.append(time_format.format(stamp));
-		}
+		buf.append(TimestampUtil.format(stamp));
 	}
     
+	/** @param value {@link VType} value
+	 *  @return {@link AlarmSeverity}
+	 */
+	final public static AlarmSeverity getSeverity(VType value)
+	{
+		final Alarm alarm = ValueUtil.alarmOf(value);
+		if (alarm == null)
+			return AlarmSeverity.NONE;
+		return alarm.getAlarmSeverity();
+	}
+
+	/** @param value {@link VType} value
+	 *  @return Alarm message
+	 */
+	final public static String getMessage(VType value)
+	{
+		final Alarm alarm = ValueUtil.alarmOf(value);
+		if (alarm == null)
+			return "";
+		return alarm.getAlarmName();
+	}
+	
 	/** @param buf Buffer where value's alarm info is added (unless OK)
 	 *  @param value {@link VType}
 	 */
@@ -158,6 +172,16 @@ public class VTypeHelper
 					addNumber(buf, display, list.getDouble(i));
 				}
 			}
+			if (display.getUnits() != null)
+				buf.append(" ").append(display.getUnits());
+		}
+		else if (value instanceof VStatistics)
+		{
+			final VStatistics stats = (VStatistics) value;
+			final Display display = (Display) stats;
+			buf.append(stats.getAverage());
+			buf.append(" [").append(stats.getMin()).append(" ... ").append(stats.getMax());
+			buf.append(", dev ").append(stats.getStdDev()).append("]");
 			if (display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}

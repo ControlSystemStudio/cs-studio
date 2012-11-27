@@ -20,6 +20,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampUtil;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
@@ -37,7 +38,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReaderTest
 {
-    final private static TimeDuration TIMERANGE = TimeDuration.ofMinutes(10.0);
+    final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
@@ -232,7 +233,7 @@ public class RDBArchiveReaderTest
         values.close();
     }
 
-    /** Get optimized data for scalar */
+    /** Get optimized data for scalar, using the client-side {@link AveragedValueIterator} */
     @Test
     public void testJavaOptimizedScalarData() throws Exception
     {
@@ -243,7 +244,15 @@ public class RDBArchiveReaderTest
 
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
+        
+        
+        final ValueIterator raw = reader.getRawValues(0, name, start, end);
+        final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
+        System.out.println("Time range: "
+        		+ TimestampUtil.format(start) + " ... " + TimestampUtil.format(end)
+        		+ ", " + BUCKETS + " bins, "
+        		+ "i.e. every " + seconds + " seconds");
+        final ValueIterator values = new AveragedValueIterator(raw, seconds);
         while (values.hasNext())
         {
         	final VType value = values.next();

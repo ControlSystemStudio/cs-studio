@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.text.Format;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
+import org.epics.util.time.TimestampFormat;
 
 /** Time stamp gymnastics
  *  @author Kay Kasemir
@@ -21,6 +23,22 @@ public class TimestampUtil
 	final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.NNNNNNNNN";
 	final public static String FORMAT_SECONDS = "yyyy-MM-dd HH:mm:ss";
 
+	/** Time stamp format */
+	final private static Format time_format = new TimestampFormat(TimestampUtil.FORMAT_FULL);
+	
+    /** @param timestamp {@link Timestamp}, may be <code>null</code>
+	 *  @return Time stamp formatted as string
+	 */
+	public static String format(final Timestamp timestamp)
+	{
+		if (timestamp == null)
+			return "null";
+		synchronized (time_format)
+		{
+			return time_format.format(timestamp);
+		}
+	}
+	
 	/** @param timestamp EPICS Timestamp
 	 *  @return SQL Timestamp
 	 */
