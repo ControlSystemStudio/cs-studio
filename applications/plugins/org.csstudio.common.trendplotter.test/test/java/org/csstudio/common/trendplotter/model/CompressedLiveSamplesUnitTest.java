@@ -43,6 +43,7 @@ public class CompressedLiveSamplesUnitTest {
         final CompressedLiveSamples samples =
             new CompressedLiveSamples(new LiveSamplesCompressor(8, 11000L, 6000L),
                                       23,
+                                      4,
                                       new IIntervalProvider() {
                                           @Override
                                           @Nonnull
@@ -85,10 +86,11 @@ public class CompressedLiveSamplesUnitTest {
 
     @Test
     public void testLargeCompression() {
-        final LiveSamplesCompressor c = new LiveSamplesCompressor(Integer.valueOf(500));
+        final LiveSamplesCompressor c = new LiveSamplesCompressor(Integer.valueOf(400));
         final CompressedLiveSamples samples =
             new CompressedLiveSamples(c,
-                                      5000,
+                                      2000,
+                                      100,
                                       new IIntervalProvider() {
                                           @Override
                                           @Nonnull
@@ -98,7 +100,7 @@ public class CompressedLiveSamplesUnitTest {
                                       });
         samples.setDynamicCompression(true);
 
-        for (int i = 0; i < 3600*24*14*4; i++) {
+        for (int i = 0; i < 360000*24*14*4; i++) {
             samples.add(TestSampleBuilder.makePlotSample(i));
         }
         Assert.assertTrue(samples.getSize() == 1000);
@@ -110,6 +112,7 @@ public class CompressedLiveSamplesUnitTest {
         final CompressedLiveSamples samples =
             new CompressedLiveSamples(c,
                                       1,
+                                      0,
                                       new IIntervalProvider() {
                 @Override
                 @Nonnull
