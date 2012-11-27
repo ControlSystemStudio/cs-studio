@@ -17,6 +17,7 @@ import org.epics.util.time.Timestamp;
 /** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir
  */
+@SuppressWarnings("deprecation") // Must at this time support AlarmStatus
 public class ArchiveVType implements Alarm, Time, VType
 {
 	final private Timestamp timestamp;

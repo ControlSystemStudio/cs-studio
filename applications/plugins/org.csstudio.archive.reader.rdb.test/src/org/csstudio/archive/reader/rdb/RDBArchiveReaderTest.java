@@ -39,6 +39,8 @@ import org.junit.Test;
 public class RDBArchiveReaderTest
 {
     final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
+    final private static TimeDuration WAVEFORM_TIMERANGE = TimeDuration.ofMinutes(20.0);
+    
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
@@ -223,7 +225,7 @@ public class RDBArchiveReaderTest
         	System.out.println(".. using non-BLOB array table");
         
         final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(TIMERANGE);
+        final Timestamp start = end.minus(WAVEFORM_TIMERANGE);
 
         // Cancel after 10 secs
         // scheduleCancellation(reader, 10.0);

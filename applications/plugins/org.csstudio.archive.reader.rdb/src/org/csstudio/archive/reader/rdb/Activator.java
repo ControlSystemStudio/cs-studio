@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Plugin;
