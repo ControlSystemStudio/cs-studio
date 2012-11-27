@@ -59,8 +59,10 @@ public class PVSamples extends PlotSamples
 
         final int liveSampleBufferSize = Preferences.getLiveSampleBufferSize(); // 5000
         final int uncompressedSamples = Preferences.getUncompressedLiveSampleSize();
+        final int securityCompressedSamples = Preferences.getSecurityCompressedLiveSampleSize();
         liveSamples = new CompressedLiveSamples(new LiveSamplesCompressor(uncompressedSamples),
                                                 liveSampleBufferSize,
+                                                securityCompressedSamples,
                                                 prov);
         liveSamples.setDynamicCompression(true);
         historicSamples = new HistoricSamples(request_type, prov, new LiveSamplesCompressor(0));

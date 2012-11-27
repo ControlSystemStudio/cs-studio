@@ -52,7 +52,8 @@ public class Preferences
                                ARCHIVE_RESCALE = "archive_rescale",
                                COMPR_HIST = "compress_historic_samples",
                                HIST_BUFFER = "historic_buffer_size",
-                               UNCOMP_LIVE_SAMPLES = "uncompressed_live_sample_size";
+                               UNCOMP_LIVE_SAMPLES = "uncompressed_live_sample_size",
+                               SECURITY_COMP_LIVE_SAMPLES="security_compressed_live_sample_size";
 
     public static double getTimeSpan()
     {
@@ -187,7 +188,13 @@ public class Preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getInt(Activator.PLUGIN_ID, UNCOMP_LIVE_SAMPLES, 400, null);
     }
-
+    /**
+     * @return
+     */
+    public static int getSecurityCompressedLiveSampleSize() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Activator.PLUGIN_ID,  SECURITY_COMP_LIVE_SAMPLES, 100, null);
+    }
     /**
      * @return
      */

@@ -48,9 +48,10 @@ public class CompressedLiveSamples extends LiveSamples {
     public interface Transformer<S, T> {
         @Nonnull T transform(@Nonnull final S s);
     }
-
+    private int newSamples=0;
     private final LiveSamplesCompressor _compressor;
     private final IIntervalProvider _intervalPovider;
+    private final int _securityCap;
     private boolean _dynamicCompression;
 
     /**
@@ -58,8 +59,10 @@ public class CompressedLiveSamples extends LiveSamples {
      */
     public CompressedLiveSamples(@Nonnull final LiveSamplesCompressor c,
                                  final int cap,
+                                 final int securityCap,
                                  @Nullable final IIntervalProvider prov) {
         super(cap);
+        _securityCap=securityCap;
         _compressor = c;
         _intervalPovider = prov;
     }
@@ -74,17 +77,27 @@ public class CompressedLiveSamples extends LiveSamples {
     @Override
     protected synchronized void add(@Nonnull final PlotSample sample) {
         super.add(sample);
+        newSamples++;
         if (isCompressionDue(_samples)) {
+            newSamples=0;
             final Interval interval = _intervalPovider.getTimeInterval();
             if (interval != null) {
-                _samples = compress(_samples, interval);
-            }
-            LOG.info("samples compression, new sample size: " + _samples.size());
+                   _samples = compress(_samples, interval);
+              
+              }
+         
         }
     }
 
     private boolean isCompressionDue(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples) {
-        return samples.size() >= Math.max(samples.getCapacity(), 2);
+    
+        return samples.size() >= Math.max(samples.getCapacity(), 2) && newSamples>_securityCap;
+    }
+    @Nonnull
+    private LimitedArrayCircularQueue<PlotSample> reCompress(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
+                                                           @Nonnull final Interval interval) {
+            removeSamplesBeforeStart(samples, interval.getStartMillis());
+            return _compressor.reTransform(samples,getCapacity() );
     }
 
     @Nonnull
@@ -117,9 +130,12 @@ public class CompressedLiveSamples extends LiveSamples {
     private Long[] determinePerfectWindowForCompressedSamples(final int cap,
                                                               @Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                               final Interval intvl) {
-        final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(samples.size() - 1).getTime()).getMillis();
+      //  final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(samples.size() - 1).getTime()).getMillis();
+        final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(cap - 1).getTime()).getMillis();
+        
+     //   final long startMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(0).getTime()).getMillis();
         final long realEndMillis = Math.min(endMillis, intvl.getEndMillis());
-        final long windowLengthMS = (int) ((realEndMillis - intvl.getStartMillis()) / cap); // perfect
+        final long windowLengthMS = (int) ((realEndMillis - intvl.getStartMillis())/(cap-_securityCap)); // perfect
         return new Long[] {windowLengthMS*4}; // double - and don't forget - min and max are 2 samples per window
     }
 
