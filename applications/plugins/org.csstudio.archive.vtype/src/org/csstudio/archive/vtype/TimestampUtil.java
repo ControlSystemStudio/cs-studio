@@ -8,6 +8,7 @@
 package org.csstudio.archive.vtype;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
@@ -56,6 +57,10 @@ public class TimestampUtil
     	return roundUp(time, duration.getSec());
     }
 
+    final public static long SECS_PER_HOUR = TimeUnit.HOURS.toSeconds(1);
+    final public static long SECS_PER_MINUTE = TimeUnit.MINUTES.toSeconds(1);
+    final public static long SECS_PER_DAY = TimeUnit.DAYS.toSeconds(1);
+    
     /** Round time to next multiple of given seconds
      *  @param time Original time stamp
      *  @param seconds Seconds to use for rounding
@@ -67,7 +72,7 @@ public class TimestampUtil
             return time;
         
         // Directly round seconds within an hour
-        if (seconds <= 60*60)
+        if (seconds <= SECS_PER_HOUR)
         {
 	        long secs = time.getSec();
 	        if (time.getNanoSec() > 0)
@@ -81,18 +86,22 @@ public class TimestampUtil
         // the user likely expects "2012-01-19 14:00:00"
         // because 12.xx rounded up by 2 is 14.
         //
-        // Depending on the time zone, rounding up by 2 hours
-        // based on epoch seconds might however result in odd-numbered hours
-        // in local time.
-        
-        // Perform computation in local time, relative to midnight.
+        // In other words, rounding by 2 should result in an even hour,
+        // but this is in the user's time zone.
+        // When rounding based on the epoch seconds, which could differ
+        // by an odd number of hours from the local time zone, rounding by
+        // 2 hours could result in odd-numbered hours in local time.
+        //
+        // The addition of leap seconds can further confuse matters,
+        // so perform computations that go beyond an hour in local time,
+        // relative to midnight of the given time stamp.
         final Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(time.toDate());
 
         // Round the HH:MM within the day
-        long secs = cal.get(Calendar.HOUR_OF_DAY) * 60L * 60 +
-        		    cal.get(Calendar.MINUTE) * 60L;
+        long secs = cal.get(Calendar.HOUR_OF_DAY) * SECS_PER_HOUR +
+        		    cal.get(Calendar.MINUTE) * SECS_PER_MINUTE;
         final long periods = secs / seconds;
         secs = (periods + 1) * seconds;
 
