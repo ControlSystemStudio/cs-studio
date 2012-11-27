@@ -71,7 +71,33 @@ public class LiveSamplesCompressor {
     public int getNoUncompressed() {
         return _noUncompressed;
     }
-
+    @Nonnull
+    public LimitedArrayCircularQueue<PlotSample> reTransform(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples, int cap) {
+        List<PlotSample> targetList = Lists.newLinkedList();
+        PlotSample next = samples.peek();
+        PlotSample min = next;
+        PlotSample max = next;
+        int i=0;
+        while(2*i<(cap- getNoUncompressed())){
+            for(int j=0;j<4 && 2*i<(cap- getNoUncompressed());j++){
+                i++; 
+                min = next.getYValue() < min.getYValue() ? next : min;
+                max = next.getYValue() > max.getYValue() ? next : max;
+                samples.remove();
+                next = samples.peek();  
+            }
+            targetList = storeMinMax(min, max, targetList);
+            min = next;
+            max = next;
+           }
+    
+        synchronized (samples) {
+            samples.drainTo(targetList); // the rest remains uncompressed
+            samples.clear();
+            samples.addAll(targetList);
+        }
+        return samples;
+    }
     @Nonnull
     public LimitedArrayCircularQueue<PlotSample> transform(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                            PlotSample[] samplesArray) {
@@ -93,7 +119,7 @@ public class LiveSamplesCompressor {
 
         final List<PlotSample> targetList = Lists.newLinkedList();
         int i = 0;
-        for (final Long window : _windowLengthsMS) {
+        for (final Long window : _windowLengthsMS) { 
             targetList.addAll(compressMinMax(samples,
                                              startMillis + i*compressionStageLength,
                                              startMillis + (i+1)*compressionStageLength,
@@ -155,8 +181,7 @@ public class LiveSamplesCompressor {
                 max = next;
             }
         }
-
-        return result;
+       return result;
     }
 
     private boolean isSampleBefore(@CheckForNull final PlotSample sample,
