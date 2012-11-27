@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.AxisConfig;
-import org.csstudio.common.trendplotter.model.IArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PlotSampleArray;
 import org.csstudio.common.trendplotter.model.PlotSamples;
