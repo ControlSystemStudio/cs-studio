@@ -22,6 +22,7 @@
  package org.csstudio.sds.ui.internal.properties;
 
 import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.sds.ui.dialogs.SdsResourceSelectionDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -132,12 +133,12 @@ public final class ResourceCellEditor extends AbstractDialogCellEditor {
 	@Override
 	protected void openDialog(final Shell parentShell, final String dialogTitle) {
 		if (_onlyWorkSpace) {
-			ResourceSelectionDialog rsd = new ResourceSelectionDialog(
-					parentShell, "Select a resource", _fileExtensions);
-			rsd.setSelectedResource(_path);
+			SdsResourceSelectionDialog rsd = new SdsResourceSelectionDialog(
+					parentShell);
+//			rsd.setSelectedResource(_path);
 			if (rsd.open() == Window.OK) {
-				if (rsd.getSelectedResource() != null) {
-					_path = rsd.getSelectedResource();
+				if (rsd.getSelectedPath() != null) {
+					_path = rsd.getSelectedPath();
 				}
 			}
 		} else {

@@ -41,7 +41,7 @@
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewMenuAction"
               definitionId="org.csstudio.sds.ui.displayRunAsView"
-              icon="icons/run.gif"
+              icon="icons/run.gif" 
               id="org.csstudio.sds.ui.internal.runmode.OpenAsViewlMenuAction"
               label="Display run as View">
         </action>
@@ -71,6 +71,20 @@
            id="org.csstudio.sds.ui.internal.statistics.PerformanceMeasuresView"
            name="Performance Measures"/>
      <view
+           allowMultiple="false"
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.pvlistview.PvListView"
+           icon="icons/sdsProp.png"
+           id="org.csstudio.sds.ui.internal.pvlistview.PvListView"
+           name="Process Variables"/>
+     <view
+           allowMultiple="false"
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.pvlistview.PvSearchView"
+           icon="icons/sdsProp.png"
+           id="org.csstudio.sds.ui.internal.pvlistview.PvSearchView"
+           name="Search Process Variables"/>
+     <view
            allowMultiple="true"
            category="org.csstudio.sds.ui.viewCategory"
            class="org.csstudio.sds.ui.internal.runmode.DisplayViewPart"
@@ -91,6 +105,13 @@
            id="org.csstudio.sds.ui.ConnectionView"
            name="Connections"
            restorable="true">
+     </view>
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.sdslibrary.views.SdsLibraryView"
+           icon="icons/sample.gif"
+           id="org.csstudio.sds.ui.sdslibrary.views.SdsLibraryView"
+           name="SDS Library">
      </view>
   </extension>
   <extension
@@ -303,6 +324,18 @@
            class="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreferencePage"
            id="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreference"
            name="Maintenance Rule ">
+     </page>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.sdslibrary.preferences.LibraryFolderPreferencePage"
+           id="org.csstudio.sds.ui.sdslibrary.preferences.LibraryFoldersPreferencePage"
+           name="SDS Library Folders">
+     </page>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.pvlistview.preferences.PvSearchFolderPreferencePage"
+           id="org.csstudio.sds.ui.internal.pvlistview.preferences.PvSearchFolderPreferencePage"
+           name="Process Variable Search Folders">
      </page>
   </extension>
      <extension
@@ -697,5 +730,27 @@
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
+   </extension>
+      <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.sds.ui.pvsearchviewpopup"
+               icon="icons/zoom_in.png"
+               label="Search for PV in displays"
+               style="push"
+               tooltip="Search for this Process Variable in other displays">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.sds.ui.internal.pvlistview.OpenPvInSearchViewAction"
+            id="org.csstudio.sds.ui.pvsearchviewpopup"
+            name="SearchCommand">
+      </command>
    </extension>
 </plugin>

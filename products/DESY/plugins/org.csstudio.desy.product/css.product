@@ -183,10 +183,12 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
+      <plugin id="org.csstudio.sds.service.pvvalidation.mkk" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.common.service" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.common.service.mysqlimpl" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.ldap.service.impl" autoStart="true" startLevel="0" />

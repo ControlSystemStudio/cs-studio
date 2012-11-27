@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Sven Wende
  * 
  */
-public final class WidgetEditPartFactory implements EditPartFactory {
+public class WidgetEditPartFactory implements EditPartFactory {
     private static final Logger LOG = LoggerFactory.getLogger(WidgetEditPartFactory.class);
 
 	/**
@@ -94,7 +94,7 @@ public final class WidgetEditPartFactory implements EditPartFactory {
 			if (editPartService.canCreateEditPart(typeID)) {
 				result = editPartService.createEditPart(typeID);
 			} else {
-				LOG.info("No controller registered for widget´s of type: "
+				LOG.info("No controller registered for widgets of type: "
 										+ typeID
 										+ "! We are using a fallback controller instead.");
 				result = new FallbackEditpart();
