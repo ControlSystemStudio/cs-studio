@@ -29,63 +29,52 @@ import org.eclipse.swt.widgets.Shell;
  * @since 19.11.2010
  */
 public class DB2Shell {
-
-	private IFile _file;
-	private Shell _shell;
-	private Model model;
-
-	public DB2Shell(IFile file) {
-		_file = file;
-	}
-
-	public void openShell() {
-		_shell = new Shell();
-		_shell.setText(_file.getName());
-		_shell.setLocation(10, 10);
-		_shell.setSize(800, 600);
+    
+    private IFile _file;
+    private Shell _shell;
+    private Model model;
+    
+    public DB2Shell(IFile file) {
+        _file = file;
+    }
+    
+    public void openShell() {
+        _shell = new Shell();
+        _shell.setText(_file.getName());
+        _shell.setLocation(10, 10);
+        _shell.setSize(800, 600);
         model = new Model();
         // If it's a file, load content into Model
         final IFile file = _file;
-        if (file != null)
-        {
-            try
-            {
+        if (file != null) {
+            try {
                 model.read(file.getContents(true));
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Activator.getLogger().log(Level.SEVERE, "Error reading file", ex); //$NON-NLS-1$
             }
         }
-
+        
         // Create GUI elements (Plot)
         GridLayout layout = new GridLayout();
-		_shell.setLayout(layout);
-
+        _shell.setLayout(layout);
+        
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(_shell, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-
+        
         Plot plot = Plot.forCanvas(plot_box);
-
+        
         // Create and start controller
         Controller controller = new Controller(_shell, model, plot);
-        try
-        {
+        try {
             controller.start();
+        } catch (Exception ex) {
+            MessageDialog.openError(_shell, Messages.Error, NLS.bind(Messages.ControllerStartErrorFmt, ex.getMessage()));
         }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(_shell, Messages.Error,
-                    NLS.bind(Messages.ControllerStartErrorFmt, ex.getMessage()));
-        }
-
-		// open the shell
-		_shell.open();
-
-
-
-	}
-
-
+        
+        // open the shell
+        _shell.open();
+        
+    }
+    
 }

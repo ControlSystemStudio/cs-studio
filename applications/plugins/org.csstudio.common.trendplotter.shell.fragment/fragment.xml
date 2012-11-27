@@ -42,6 +42,28 @@
          </action>
       </objectContribution>
    </extension>
+      <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.common.trendplotter.shell.pvpopup"
+               icon="icons/trendplotter.png"
+               label="Trendplotter Shell"
+               style="push"
+               tooltip="Trendplotter Shell">
+         </command>
+      </menuContribution>
+   </extension>
+      <extension
+         point="org.eclipse.ui.commands">
+         <command
+            defaultHandler="org.csstudio.common.trendplotter.PVpopupHandler"
+            id="org.csstudio.common.trendplotter.shell.pvpopup"
+            name="%PVTable">
+      </command>
+   </extension>
          <extension
                point="org.csstudio.desy.startuphelper.striptool">
             <striptool

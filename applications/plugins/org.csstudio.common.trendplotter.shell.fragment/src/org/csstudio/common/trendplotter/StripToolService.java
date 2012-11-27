@@ -24,5 +24,4 @@ public class StripToolService implements IStripTool {
 			dbshell.openShell();
 	        return null;
 	    }
-
 }
