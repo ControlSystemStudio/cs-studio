@@ -10,11 +10,10 @@ package org.csstudio.archive.vtype;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Statistics;
-import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.util.time.Timestamp;
 
-/** Archive-derived {@link VNumber} implementation
+/** Archive-derived {@link VStatistics} implementation
  *  @author Kay Kasemir
  */
 public class ArchiveVStatistics extends ArchiveVDisplayType implements VStatistics

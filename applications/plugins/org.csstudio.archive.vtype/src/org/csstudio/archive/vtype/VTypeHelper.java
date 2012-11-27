@@ -48,9 +48,12 @@ public class VTypeHelper
 	 */
 	final public static Timestamp getTimestamp(final VType value)
 	{
-	    final Time time = ValueUtil.timeOf(value);
-	    if (time != null  &&  time.isTimeValid())
-	        return time.getTimestamp();
+		if (value instanceof Time)
+		{
+			final Time time = (Time) value;
+		    if (time.isTimeValid())
+		        return time.getTimestamp();
+		}
 	    return Timestamp.now();
 	}
 	
@@ -181,7 +184,10 @@ public class VTypeHelper
 			final Display display = (Display) stats;
 			buf.append(stats.getAverage());
 			buf.append(" [").append(stats.getMin()).append(" ... ").append(stats.getMax());
-			buf.append(", dev ").append(stats.getStdDev()).append("]");
+			final Double dev = stats.getStdDev();
+			if (dev > 0)
+				buf.append(", dev ").append(dev);
+			buf.append("]");
 			if (display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}

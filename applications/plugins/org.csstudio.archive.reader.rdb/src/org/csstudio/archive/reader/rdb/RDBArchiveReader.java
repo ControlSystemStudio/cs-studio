@@ -415,7 +415,8 @@ public class RDBArchiveReader implements ArchiveReader
      *  @throws UnknownChannelException when channel not known
      *  @throws Exception on error
      */
-    private int getChannelID(final String name) throws UnknownChannelException, Exception
+    // Allow access from 'package' for tests
+    int getChannelID(final String name) throws UnknownChannelException, Exception
     {
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
