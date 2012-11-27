@@ -8,18 +8,25 @@
 package org.csstudio.archive.reader.channelarchiver;
 
 import java.net.URL;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.xmlrpc.AsyncCallback;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVDoubleArray;
+import org.csstudio.archive.vtype.ArchiveVEnum;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.ArchiveVString;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
+import org.epics.pvmanager.util.NumberFormats;
+import org.epics.util.time.Timestamp;
 
 /** Handles the "archiver.values" request and its results.
  *  @author Kay Kasemir
@@ -63,17 +70,9 @@ public class ValueRequest implements AsyncCallback
 	final private ChannelArchiverReader reader;
 	final private int key;
 	final private String channels[];
-	final private ITimestamp start, end;
+	final private Timestamp start, end;
 	final private int how;
     final private Object parms[];
-
-    /** Quality to use for received samples unless automatic_quality */
-    final private IValue.Quality quality;
-
-	/** Determine quality automatically based on received sample?
-     *  With min/max: interpolated?
-     */
-    private boolean automatic_quality = false;
 
     // Possible 'type' IDs for the received values.
 	final private static int TYPE_STRING = 0;
@@ -84,7 +83,7 @@ public class ValueRequest implements AsyncCallback
     final private Result result = new Result();
 
     /** The result of the query */
-    private IValue samples[];
+    private VType samples[];
 
 	/** Constructor for new value request.
 	 *  @param reader ChannelArchiverReader
@@ -95,9 +94,9 @@ public class ValueRequest implements AsyncCallback
      *  @param optimized Get optimized or raw data?
 	 *  @param count Number of values
 	 */
-	public ValueRequest(ChannelArchiverReader reader,
-			int key, String channel,
-			ITimestamp start, ITimestamp end, boolean optimized, int count)
+	public ValueRequest(final ChannelArchiverReader reader,
+			final int key, final String channel,
+			final Timestamp start, final Timestamp end, final boolean optimized, final int count)
 	        throws Exception
 	{
         this.reader = reader;
@@ -109,7 +108,6 @@ public class ValueRequest implements AsyncCallback
         // Check parms
         if (optimized)
         {
-            quality = IValue.Quality.Interpolated;
             if (reader.getVersion() < 1)
             {   // Old server: Use plot-binning with bin count
                 how = reader.getRequestCode("plot-binning");
@@ -117,12 +115,11 @@ public class ValueRequest implements AsyncCallback
             }
             else
             {   // New server: Use min/max/average with seconds
-                int secs = (int) ((end.toDouble() - start.toDouble()) / count);
+                int secs = (int) (end.durationFrom(start).toSeconds() / count);
                 if (secs < 1)
                     secs = 1;
                 how = reader.getRequestCode("average");
                 parms = new Object[] { Integer.valueOf((int)secs) };
-                automatic_quality = true;
             }
         }
         else
@@ -130,7 +127,6 @@ public class ValueRequest implements AsyncCallback
             // Raw == Original, all else is somehow interpolated
             how = reader.getRequestCode("raw");
             parms = new Object[] { Integer.valueOf(count) };
-            quality = IValue.Quality.Original;
         }
 	}
 
@@ -141,10 +137,10 @@ public class ValueRequest implements AsyncCallback
         final Vector<Object> params = new Vector<Object>(8);
 		params.add(Integer.valueOf(key));
 		params.add(channels);
-		params.add(Integer.valueOf((int)start.seconds()));
-		params.add(Integer.valueOf((int)start.nanoseconds()));
-		params.add(Integer.valueOf((int)end.seconds()));
-		params.add(Integer.valueOf((int)end.nanoseconds()));
+		params.add(Integer.valueOf((int)start.getSec()));
+		params.add(Integer.valueOf(start.getNanoSec()));
+		params.add(Integer.valueOf((int)end.getSec()));
+		params.add(Integer.valueOf(end.getNanoSec()));
         params.add(parms[0]);
 		params.add(Integer.valueOf(how));
 		// xmlrpc.execute("archiver.values", params);
@@ -162,7 +158,7 @@ public class ValueRequest implements AsyncCallback
 			// Cancelled?
 			if (result.xml_rpc_result == null)
 			{
-			    samples = new IValue[0];
+			    samples = new VType[0];
 			    return;
 			}
 			xml_rpc_result = result.xml_rpc_result;
@@ -179,11 +175,27 @@ public class ValueRequest implements AsyncCallback
         final String name = (String)channel_data.get("name");
         final int type = (Integer)channel_data.get("type");
         final int count = (Integer)channel_data.get("count");
-		IMetaData meta;
 		try
 		{
-			meta = decodeMetaData(name, type, (Hashtable)channel_data.get("meta"));
-			samples = decodeValues(type, count, meta,
+			final Object meta = decodeMetaData(type, (Hashtable)channel_data.get("meta"));
+			final Display display;
+			final List<String> labels;
+			if (meta instanceof Display)
+			{
+				display = (Display) meta;
+				labels = null;
+			}
+			else if (meta instanceof List)
+			{
+				display = null;
+				labels = (List) meta;
+			}
+			else
+			{
+				display = null;
+				labels = null;
+			}
+			samples = decodeValues(type, count, display, labels,
 					(Vector)channel_data.get("values"));
 		}
 		catch (Exception e)
@@ -220,9 +232,12 @@ public class ValueRequest implements AsyncCallback
     }
 
     /** Parse the MetaData from the received XML-RPC response.
-	 * @param name */
+	 *  @param value_type Type code of received values
+	 *  @param meta_hash Hash with meta data to decode
+	 *  @return {@link Display} or List of {@link String}[] depending on data type
+	 */
 	@SuppressWarnings({ "rawtypes" })
-    private IMetaData decodeMetaData(final String name, int value_type, Hashtable meta_hash)
+    private Object decodeMetaData(final int value_type, final Hashtable meta_hash)
 		throws Exception
 	{
 		// meta := { int32 type;
@@ -243,15 +258,18 @@ public class ValueRequest implements AsyncCallback
             // The 2.8.1 server will give 'ENUM' type values
             // with Numeric meta data, units = "<No data>"
             // as an error message.
-			return ValueFactory.createNumericMetaData(
-	                (Double) meta_hash.get("disp_low"),
-                    (Double) meta_hash.get("disp_high"),
-                    (Double) meta_hash.get("warn_low"),
-                    (Double) meta_hash.get("warn_high"),
-                    (Double) meta_hash.get("alarm_low"),
+        	final NumberFormat format = NumberFormats.format((Integer) meta_hash.get("prec"));
+			return ValueFactory.newDisplay(
+					(Double) meta_hash.get("disp_low"),
+					(Double) meta_hash.get("alarm_low"),
+					(Double) meta_hash.get("warn_low"),
+					(String) meta_hash.get("units"),
+					format,
+					(Double) meta_hash.get("warn_high"),
 					(Double) meta_hash.get("alarm_high"),
-					(Integer) meta_hash.get("prec"),
-					(String) meta_hash.get("units"));
+					(Double) meta_hash.get("disp_high"),
+					(Double) meta_hash.get("disp_low"),
+					(Double) meta_hash.get("disp_high"));
 		}
         //  else
 		if (! (value_type == TYPE_ENUM  ||  value_type == TYPE_STRING))
@@ -260,17 +278,17 @@ public class ValueRequest implements AsyncCallback
 					+ value_type);
 		final Vector state_vec = (Vector) meta_hash.get("states");
 		final int N = state_vec.size();
-		final String states[] = new String[N];
+		final List<String> states = new ArrayList<String>(N);
 		// Silly loop because of type warnings from state_vec.toArray(states)
 		for (int i=0; i<N; ++i)
-			states[i] = (String) state_vec.get(i);
-		return ValueFactory.createEnumeratedMetaData(states);
+			states.add((String) state_vec.get(i));
+		return states;
 	}
 
 	/** Parse the values from the received XML-RPC response. */
 	@SuppressWarnings({ "rawtypes" })
-    private IValue [] decodeValues(int type, int count, IMetaData meta,
-			                      Vector value_vec) throws Exception
+    private VType[] decodeValues(final int type, final int count, final Display display,
+    		                     final List<String> labels, final Vector value_vec) throws Exception
 	{
         // values := { int32 stat,  int32 sevr,
 	    //             int32 secs,  int32 nano,
@@ -278,18 +296,19 @@ public class ValueRequest implements AsyncCallback
 		// [{secs=1137596340, stat=0, nano=344419666, value=[0.79351], sevr=0},
 		//  {secs=1137596400, stat=0, nano=330619666, value=[0.79343], sevr=0},..]
 		final int num_samples = value_vec.size();
-		final IValue samples[] = new IValue[num_samples];
+		final VType samples[] = new VType[num_samples];
 		for (int si=0; si<num_samples; ++si)
 		{
 			final Hashtable sample_hash = (Hashtable) value_vec.get(si);
 			final long secs = (Integer)sample_hash.get("secs");
-			final long nano = (Integer)sample_hash.get("nano");
-			final ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
+			final int nano = (Integer)sample_hash.get("nano");
+			final Timestamp time = Timestamp.of(secs, nano);
 			final int stat_code = (Integer)sample_hash.get("stat");
 			final int sevr_code = (Integer)sample_hash.get("sevr");
             final SeverityImpl sevr = reader.getSeverity(sevr_code);
             final String stat = reader.getStatus(sevr, stat_code);
 			final Vector vv = (Vector)sample_hash.get("value");
+			final AlarmSeverity severity = sevr.getSeverity();
 
 			if (type == TYPE_DOUBLE)
 			{
@@ -304,19 +323,17 @@ public class ValueRequest implements AsyncCallback
                 {   // It's a min/max double, certainly interpolated
                     final double min = (Double)sample_hash.get("min");
                     final double max = (Double)sample_hash.get("max");
-                    samples[si] = ValueFactory.createMinMaxDoubleValue(
-                                    time, sevr, stat, (INumericMetaData)meta,
-                                    IValue.Quality.Interpolated, values, min, max);
+                    samples[si] = new ArchiveVStatistics(time, severity, stat, display,
+                    		values[0], min, max, 0.0, 1);
                 }
                 else
                 {   // Was this from a min/max/avg request?
                     // Yes: Then we ran into a raw value.
                     // No: Then it's whatever quality we expected in general
-                    final IValue.Quality q = automatic_quality ?
-                                        IValue.Quality.Original : quality;
-                    samples[si] = ValueFactory.createDoubleValue(
-                                    time, sevr, stat, (INumericMetaData)meta,
-                                    q, values);
+                	if (values.length == 1)
+                		samples[si] = new ArchiveVNumber(time, severity, stat, display, values[0]);
+                	else
+                		samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
                 }
 			}
 			else if (type == TYPE_ENUM)
@@ -325,36 +342,45 @@ public class ValueRequest implements AsyncCallback
 	            // with Numeric meta data, units = "<No data>".
 	            // as an error message -> Handle it by returning
 			    // the data as long with the numeric meta that we have.
-				if (meta instanceof INumericMetaData)
+				if (labels != null)
 				{
-	                final long values[] = new long[count];
-	                for (int vi=0; vi<count; ++vi)
-	                    values[vi] = (long) ((Integer)vv.get(vi));
-	                samples[si] = ValueFactory.createLongValue(time, sevr, stat,
-	                                (INumericMetaData)meta, quality, values);
+					if (count < 0)
+						throw new Exception("No values");
+					final int index = (Integer)vv.get(0);
+					samples[si] = new ArchiveVEnum(time, severity, stat, labels, index);
 				}
 				else
 				{
-	                final int values[] = new int[count];
-	                for (int vi=0; vi<count; ++vi)
-	                    values[vi] = (Integer)vv.get(vi);
-	                samples[si] = ValueFactory.createEnumeratedValue(time, sevr, stat,
-                                (IEnumeratedMetaData)meta, quality, values);
+					if (count == 1)
+                		samples[si] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
+					else
+					{
+		                final double values[] = new double[count];
+		                for (int vi=0; vi<count; ++vi)
+		                    values[vi] = ((Integer)vv.get(vi));
+                		samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
+					}
 				}
 			}
 			else if (type == TYPE_STRING)
 			{
-				final String values[] = new String[] { (String)vv.get(0) };
-                samples[si] = ValueFactory.createStringValue(time, sevr, stat,
-                                quality, values);
+				final String value = (String)vv.get(0);
+                samples[si] = new ArchiveVString(time, severity, stat, value);
 			}
 			else if (type == TYPE_INT)
 			{
-				final long values[] = new long[count];
-				for (int vi=0; vi<count; ++vi)
-					values[vi] = (long) ((Integer)vv.get(vi));
-                samples[si] = ValueFactory.createLongValue(time, sevr, stat,
-                                (INumericMetaData)meta, quality, values);
+				if (count == 1)
+				{
+					final int value = (Integer)vv.get(0);
+					samples[si] = new ArchiveVNumber(time, severity, stat, display, value);
+				}
+				else
+				{
+					final double values[] = new double[count];
+					for (int vi=0; vi<count; ++vi)
+						values[vi] = ((Integer)vv.get(vi));
+					samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
+				}
 			}
 			else
 				throw new Exception("Unknown value type " + type);
@@ -363,7 +389,7 @@ public class ValueRequest implements AsyncCallback
 	}
 
 	/** @return Samples */
-	public IValue[] getSamples()
+	public VType[] getSamples()
 	{
 		return samples;
 	}
