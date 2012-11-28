@@ -21,6 +21,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
+import org.csstudio.common.trendplotter.imports.ImportArchiveReaderFactory;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.ILongValue;
@@ -51,7 +52,7 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
-public class PVItem extends ModelItem implements PVListener, IProcessVariableWithSamples {
+public class PVItem extends ModelItem implements PVListener {
     private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
 
     /** Historic and 'live' samples for this PV */
@@ -83,6 +84,9 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     private boolean first_pv_update = true;
 
     private boolean _minMaxFromFile;
+
+    /** Waveform Index */
+    private int waveform_index = 0;
 
     /** Initialize
      *  @param name PV name
@@ -123,21 +127,27 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         _period = period;
     }
 
-    /** IProcessVariable
-     *  {@inheritDoc}
-     */
+    /** @return Waveform index */
     @Override
-    public String getTypeId() {
-        return IProcessVariable.TYPE_ID;
+    public int getWaveformIndex()
+    {
+        return waveform_index;
     }
 
-    /** IProcessVariable
-     *  {@inheritDoc}
-     */
-    @SuppressWarnings("rawtypes")
+    /** @param index New waveform index */
     @Override
-    public Object getAdapter(final Class adapter) {
-        return null;
+    public void setWaveformIndex(int index)
+    {
+        if (index < 0)
+            index = 0;
+        if (index == waveform_index)
+            return;
+        waveform_index = index;
+
+        // change all the index of samples in this instance
+        samples.setWaveformIndex(waveform_index);
+
+        fireItemLookChanged();
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -155,7 +165,6 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         }
         samples.clear();
         // Create new PV, maybe start it
-        pv = PVFactory.createPV(getName());
         if (running) {
             start(scan_timer);
         }
@@ -359,7 +368,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     /** Disconnect from control system PV, stop scanning, ... */
     @SuppressWarnings("nls")
     public void stop() {
-        if (!pv.isRunning()) {
+        if (pv == null) {
             throw new RuntimeException("Not running " + getName());
         }
         if (scanner != null) {
@@ -368,7 +377,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         }
         pv.removeListener(this);
         pv.stop();
-
+        pv = null;
         if (pv_deadband != null && pv_deadband.isRunning()) {
             pv_deadband.stop();
         }
@@ -378,22 +387,6 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     @Override
     public PVSamples getSamples() {
         return samples;
-    }
-
-    /** Get sample for IProcessVariableWithSamples
-     *  {@inheritDoc}
-     */
-    @Override
-    public IValue getSample(final int index) {
-        return samples.getSample(index).getValue();
-    }
-
-    /** Get sample count for IProcessVariableWithSamples
-     *  {@inheritDoc}
-     */
-    @Override
-    public int size() {
-        return samples.getSize();
     }
 
     // PVListener
@@ -440,26 +433,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
 
         // In 'monitor' mode, add to live sample buffer
         if (_period <= 0) {
-            //            LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
-            //            LOG.debug("--------- sampleSize: " + samples.getSize() + " liveSampleSize: " + samples.getLiveSampleSize());
             samples.addLiveSample(value);
-            //            if (samples.getLiveCapacity() <= samples.getLiveSampleSize()) {
-            //                try {
-            //                    samples.cutOffLiveSamples(0.1);
-            //                } catch (final Exception e) {
-            //                    LOG.error("Error removing old live samples: " + e.getMessage());
-            //                }
-            //                Display.getDefault().asyncExec(new Runnable() {
-            //                    @Override
-            //                    public void run() {
-            //                        try {
-            //                            fireItemDataConfigChanged();
-            //                        } catch (final Exception e) {
-            //                            LOG.error("Error updating model: " + e.getMessage());
-            //                        }
-            //                    }
-            //                });
-            //            }
         }
     }
 
@@ -513,7 +487,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         XMLWriter.start(writer, 2, Model.TAG_PV);
         writer.println();
         writeCommonConfig(writer);
-        XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
+        XMLWriter.XML(writer, 3, Model.TAG_SCAN_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
         for (final ArchiveDataSource archive : archives) {
@@ -537,7 +511,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
      */
     public static PVItem fromDocument(final Model model, final Element node) throws Exception {
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
-        final double period = DOMHelper.getSubelementDouble(node, Model.TAG_PERIOD, 0.0);
+        final double period = DOMHelper.getSubelementDouble(node, Model.TAG_SCAN_PERIOD, 0.0);
 
         final PVItem item = new PVItem(name, period);
         final int buffer_size = DOMHelper.getSubelementInt(node,
@@ -557,16 +531,29 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         }
 
         item.configureFromDocument(model, node);
-        item.useDefaultArchiveDataSources();
-        // Load archives
-//        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
-//        while (archive != null) {
-//            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
-//            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
-//            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
-//            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
-//            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
-//        }
+
+        // Load archives from saved configuration
+        boolean have_imported_data = false;
+        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
+        while (archive != null)
+        {
+            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
+            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
+            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
+
+            if (url.startsWith(ImportArchiveReaderFactory.PREFIX))
+                have_imported_data = true;
+
+            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
+            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
+        }
+
+        // When requested, use default archive sources for 'real' archives (RDB, ...)
+        // Do not clobber an imported archive data source, a specific file which was
+        // probably not meant to be replaced by a default.
+        if (Preferences.useDefaultArchives()  &&  !have_imported_data)
+            item.useDefaultArchiveDataSources();
+
         return item;
     }
 

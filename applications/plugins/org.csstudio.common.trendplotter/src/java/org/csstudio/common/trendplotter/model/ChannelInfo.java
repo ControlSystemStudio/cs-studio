@@ -14,7 +14,7 @@ import org.csstudio.csdata.ProcessVariable;
 /** Archive search result, information about one channel
  *  @author Kay Kasemir
  */
-public class ChannelInfo implements Serializable, IProcessVariableWithArchive {
+public class ChannelInfo implements Serializable {
     /** Default ID for {@link Serializable} */
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,6 @@ public class ChannelInfo implements Serializable, IProcessVariableWithArchive {
     }
 
     /** @return ArchiveDataSource */
-    @Override
     public ArchiveDataSource getArchiveDataSource() {
         return archive;
     }
@@ -65,27 +64,5 @@ public class ChannelInfo implements Serializable, IProcessVariableWithArchive {
     @Override
     public String toString() {
         return name + " [" + archive.getName() + "]";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTypeId() {
-        return IProcessVariableWithArchive.TYPE_ID;
-    }
-
-    /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(final Class adapter) {
-        if (adapter == IArchiveDataSource.class) {
-            return getArchiveDataSource();
-        }
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return name.getName();
     }
 }
