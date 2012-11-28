@@ -124,7 +124,6 @@ public class ValueRequestIterator implements ValueIterator
         // From the end of the new samples, go backward:
         for (index=samples.length-1;  index>=0;  --index)
         {   // If we find the previous batch's last sample...
-        	// TODO 'EQUALS' must be implemented!
             if (samples[index].equals(result))
                 // Skip all the samples up to and including it
                 break;
