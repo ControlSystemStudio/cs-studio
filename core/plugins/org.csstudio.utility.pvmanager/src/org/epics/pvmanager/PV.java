@@ -26,12 +26,12 @@ public class PV<R, W> implements PVReader<R>, PVWriter<W> {
     }
 
     @Override
-    public void addPVWriterListener(PVWriterListener listener) {
+    public void addPVWriterListener(PVWriterListener<? extends W> listener) {
         writer.addPVWriterListener(listener);
     }
 
     @Override
-    public void removePVWriterListener(PVWriterListener listener) {
+    public void removePVWriterListener(PVWriterListener<? extends W> listener) {
         writer.removePVWriterListener(listener);
     }
 
@@ -46,7 +46,7 @@ public class PV<R, W> implements PVReader<R>, PVWriter<W> {
     }
 
     @Override
-    public void addPVReaderListener(PVReaderListener listener) {
+    public void addPVReaderListener(PVReaderListener<? super R> listener) {
         reader.addPVReaderListener(listener);
     }
 
@@ -56,7 +56,7 @@ public class PV<R, W> implements PVReader<R>, PVWriter<W> {
     }
 
     @Override
-    public void removePVReaderListener(PVReaderListener listener) {
+    public void removePVReaderListener(PVReaderListener<? super R> listener) {
         reader.removePVReaderListener(listener);
     }
 
@@ -99,6 +99,11 @@ public class PV<R, W> implements PVReader<R>, PVWriter<W> {
     @Override
     public boolean isConnected() {
         return reader.isConnected();
+    }
+
+    @Override
+    public boolean isWriteConnected() {
+        return writer.isWriteConnected();
     }
     
 }

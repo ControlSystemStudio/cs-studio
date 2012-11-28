@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 
@@ -49,14 +50,15 @@ public class VTableDisplayDemo extends ViewPart {
 		List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
 		pv = PVManager.read(vTable(column("Names", vStringConstants(names)),
 				column("Ramps", latestValueOf(vDoubles(ramps))),
-				column("Sines", latestValueOf(vDoubles(sines))))).notifyOn(SWTUtil.swtThread()).maxRate(ofMillis(250));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				table.setVTable(pv.getValue());
-			}
-		});
+				column("Sines", latestValueOf(vDoubles(sines)))))
+				.readListener(new PVReaderListener<VTable>() {
+					@Override
+					public void pvChanged(PVReaderEvent<VTable> event) {
+						table.setVTable(pv.getValue());
+					}
+				})
+				.notifyOn(SWTUtil.swtThread())
+				.maxRate(ofMillis(250));
 
 		//createActions();
 		//initializeToolBar();

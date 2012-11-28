@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier.util;
 
 import java.util.ArrayList;
@@ -7,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AADataStructure;
-import org.csstudio.alarm.beast.notifier.model.IActionHandler;
+import org.csstudio.email.EmailUtils;
 
 /**
  * Handler for EMail command:
@@ -17,89 +24,57 @@ import org.csstudio.alarm.beast.notifier.model.IActionHandler;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class EMailCommandHandler implements IActionHandler {
-
-	private String details;
+public class EMailCommandHandler extends AbstractCommandHandler {
+	
 	private List<String> to, cc, cci;
 	private String subject, body;
 	
-	private final String emailPattern = "[_A-Za-z0-9-]+(?:\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(?:\\.[A-Za-z0-9]+)*(?:\\.[A-Za-z]{2,})";
-	private final String emailListPattern = "((?:" + emailPattern + "(?:\\ *;\\ *)?)+)";
-	private final String attributeSeparator = "(?:\\ *\\?\\ *)?";
-	private final String textContent = "([^&]+)";
-	
-	private final String toPattern = emailListPattern + attributeSeparator;
-	private final String ccPattern = "\\ *cc\\ *=\\ *" + emailListPattern + attributeSeparator;
-	private final String cciPattern = "\\ *cci\\ *=\\ *" + emailListPattern + attributeSeparator;
-	private final String subjectPattern = "\\ *subject\\ *=\\ *" + textContent + attributeSeparator;
-	private final String bodyPattern = "\\ *body\\ *=\\ *" + textContent + attributeSeparator;
-	
-	
 	public EMailCommandHandler(String details) {
-		this.details = details;
+		super(details, "mailto");
 	}
 	
-	private void parseCC(String entry) {
-		Pattern p = Pattern.compile(ccPattern);
-		Matcher m = p.matcher(entry);
-		if (m.find()) {
-			String ccList = m.group(1);
-			StringTokenizer st = new StringTokenizer(ccList, ";");
-			cc = new ArrayList<String>();
-			while (st.hasMoreElements()) {
-				cc.add(st.nextToken());
-			}
-		}
-	}
-
-	private void parseCCi(String entry) {
-		Pattern p = Pattern.compile(cciPattern);
-		Matcher m = p.matcher(entry);
-		if (m.find()) {
-			String cciList = m.group(1);
-			StringTokenizer st = new StringTokenizer(cciList, ";");
-			cci = new ArrayList<String>();
-			while (st.hasMoreElements()) {
-				cci.add(st.nextToken());
-			}
-		}
-	}
-
-	private void parseSubject(String entry) {
-		Pattern p = Pattern.compile(subjectPattern);
-		Matcher m = p.matcher(entry);
-		if (m.find()) {
-			subject = m.group(1);
-		}
-	}
-
-	private void parseBody(String entry) {
-		Pattern p = Pattern.compile(bodyPattern);
-		Matcher m = p.matcher(entry);
-		if (m.find()) {
-			body = m.group(1);
+	protected void handleParameter(String data, ParamType type) throws Exception {
+		if (type == null || data == null) return;
+		switch (type) {
+		case To:
+			to = extractEmailAdresses(data.toLowerCase());
+			break;
+		case Cc:
+			cc = extractEmailAdresses(data.toLowerCase());
+			break;
+		case Cci:
+			cci = extractEmailAdresses(data.toLowerCase());
+			break;
+		case Subject:
+			subject = data.trim();
+			validateNSF(subject);
+			break;
+		case Body:
+			body = data.trim();
+			validateNSF(body);
+			break;
 		}
 	}
 	
-	public void parse() {
-		Pattern p = Pattern.compile("^mailto:\\ *" + toPattern + "(.*)$");
-		Matcher m = p.matcher(details);
-		String params = null;
-		if (m.matches()) {
-			String toList = m.group(1);
-			StringTokenizer st = new StringTokenizer(toList, ";");
-			to = new ArrayList<String>();
-			while (st.hasMoreElements()) {
-				to.add(st.nextToken().trim());
-			}
-			params = m.group(2).trim();
+	private List<String> extractEmailAdresses(String data) throws Exception {
+		final Pattern emailPattern = Pattern.compile(EmailUtils.EMAIL_REG_EXP);
+		StringTokenizer st = new StringTokenizer(data, DELIMITERS);
+		List<String> emailList = new ArrayList<String>();
+		while (st.hasMoreElements()) {
+			String token = st.nextToken().trim();
+			Matcher emailMatcher = emailPattern.matcher(token);
+			if (emailMatcher.matches())
+				emailList.add(token);
+			else throw new Exception("Invalid email address: " + token);
 		}
-		if (params == null || "".equals(params))
-			return;
-		parseCC(params);
-		parseCCi(params);
-		parseSubject(params);
-		parseBody(params);
+		return emailList;
+	}
+
+	/** @return <code>true</code> if the EMail command define a recipient, a subject and a body */
+	public boolean isComplete() {
+		return ((getTo() != null && !getTo().isEmpty())
+				&& (getSubject() != null && !"".equals(getSubject().trim())) 
+				&& (getBody() != null && !"".equals(getBody().trim())));
 	}
 	
 	public List<String> getTo() {

@@ -17,9 +17,9 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
 
 /** A 'global' alarm
  *  Similar to the AlarmTreePV, but doesn't track 'current' state, value,
@@ -49,7 +49,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
      */
     static GlobalAlarm fromPath(final List<AlarmTreeRoot> configurations, final String full_path,
             final SeverityLevel severity, final String message,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
         final String path[] = AlarmTreePath.splitPath(full_path);
         if (path.length <= 1)
@@ -72,7 +72,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
      */
     private static GlobalAlarm findOrCreateAlarm(final AlarmTreeItem parent,
             final String name, final SeverityLevel severity, final String message,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
         // Check for existing item
         for (int i=0; i<parent.getChildCount(); ++i)
@@ -137,7 +137,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
      *  @param timestamp Alarm time stamp
      */
     private GlobalAlarm(final AlarmTreeItem parent, final String name,
-            final SeverityLevel severity, final String message, final ITimestamp timestamp)
+            final SeverityLevel severity, final String message, final Timestamp timestamp)
     {
         super(parent, name, -1);
         setAlarmState(severity, severity, message, timestamp);

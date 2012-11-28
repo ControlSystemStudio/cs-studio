@@ -113,6 +113,9 @@ class Notifier<T> {
         // Calculate new connection
         final boolean connected = connFunction.getValue();
         
+        // TODO: if payload is immutable, the difference test should be done here
+        // and not in the runnable (to save SWT time)
+        
         // Prepare values to ship to the other thread.
         // The data will be shipped as part of the task,
         // which is properly synchronized by the executor
@@ -128,7 +131,7 @@ class Notifier<T> {
                     // Proceed with notification only if PVReader was not garbage
                     // collected
                     if (pv != null) {
-                        pv.setConnectd(connected);
+                        pv.setConnected(connected);
                         
                         // XXX Are we sure that we should skip notifications if values are null?
                         if (finalCalculationSucceeded && finalValue != null) {

@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.epics.pvmanager.expression.WriteExpressionImpl;
 import org.epics.pvmanager.expression.WriteExpression;
 import java.util.concurrent.Executor;
@@ -45,19 +47,28 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
     
     private WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
+    private List<PVWriterListener<T>> writeListeners = new ArrayList<>();
 
     PVWriterConfiguration(WriteExpression<T> writeExpression) {
         this.writeExpression = writeExpression;
+    }
+    
+    /**
+     * 
+     * @param listeners
+     * @return 
+     */
+    public PVWriterConfiguration<T> writeListener(PVWriterListener<? extends T> listener) {
+        @SuppressWarnings("unchecked")
+        PVWriterListener<T> convertedListener = (PVWriterListener<T>) listener;
+        writeListeners.add(convertedListener);
+        return this;
     }
 
     /**
      * Forwards exception to the given exception handler. No thread switch
      * is done, so the handler is notified on the thread where the exception
      * was thrown.
-     * <p>
-     * Giving a custom exception handler will disable the default handler,
-     * so {@link PVWriter#lastWriteException() } is no longer set and no notification
-     * is done.
      *
      * @param exceptionHandler an exception handler
      * @return this
@@ -75,20 +86,27 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
-        WriteBuffer writeBuffer = writeExpression.createWriteBuffer();
+        for (PVWriterListener<T> pVWriterListener : writeListeners) {
+            pvWriter.addPVWriterListener(pVWriterListener);
+        }
         if (exceptionHandler == null) {
             exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
         }
+        WriteBuffer writeBuffer = writeExpression.createWriteBuffer().exceptionHandler(exceptionHandler).build();
         WriteFunction<T> writeFunction =writeExpression.getWriteFunction();
 
         try {
             if (timeoutMessage == null)
                 timeoutMessage = "Write timeout";
-            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), exceptionHandler,
+            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), notificationExecutor, exceptionHandler,
                     timeout, timeoutMessage));
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
+        
+        WriteNotifier<T> notifier = new WriteNotifier<T>(pvWriter, new LastValueAggregator<Boolean>(writeBuffer.getConnectionCollector()), 
+                PVManager.getReadScannerExecutorService(), notificationExecutor, exceptionHandler);
+        notifier.startScan(TimeDuration.ofMillis(100));
         return pvWriter;
     }
 

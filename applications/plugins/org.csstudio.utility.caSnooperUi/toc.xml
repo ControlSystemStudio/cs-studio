@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="caSnooper">
-	<topic label="caSnooper"  href="html/caSnooperUi.html">
-	</topic>
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#utility" label="caSnooperTopic">
+	<topic label="caSnooper" href="html/caSnooperUI.html" />
 </toc>

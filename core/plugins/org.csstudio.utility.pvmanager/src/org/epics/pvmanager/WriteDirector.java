@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import org.epics.util.time.TimeDuration;
@@ -25,18 +26,20 @@ class WriteDirector<T> {
     private final WriteBuffer writeBuffer;
     private final DataSource dataSource;
     private final ScheduledExecutorService executor;
+    private final Executor notificationExecutor;
     private final ExceptionHandler exceptionHandler;
     private final TimeDuration timeout;
     private final String timeoutMessage;
 
     public WriteDirector(WriteFunction<T> writeFunction, WriteBuffer writeBuffer, DataSource dataSource,
-            ScheduledExecutorService executor, ExceptionHandler exceptionHandler,
+            ScheduledExecutorService executor, Executor notificationExecutor, ExceptionHandler exceptionHandler,
             TimeDuration timeout, String timeoutMessage) {
         this.writeFunction = writeFunction;
         this.writeBuffer = writeBuffer;
         this.dataSource = dataSource;
         this.executor = executor;
         this.exceptionHandler = exceptionHandler;
+        this.notificationExecutor = notificationExecutor;
         this.timeout = timeout;
         this.timeoutMessage = timeoutMessage;
     }
@@ -56,7 +59,7 @@ class WriteDirector<T> {
     private class WriteTask implements Runnable {
         final PVWriterImpl<T> pvWriter;
         final T newValue;
-        private volatile boolean done = false;
+        private AtomicBoolean done = new AtomicBoolean();
 
         public WriteTask(PVWriterImpl<T> pvWriter, T newValue) {
             this.pvWriter = pvWriter;
@@ -68,7 +71,7 @@ class WriteDirector<T> {
 
                 @Override
                 public void run() {
-                    if (!done) {
+                    if (!done.get()) {
                         exceptionHandler.handleException(new TimeoutException(timeoutMessage));
                     }
                 }
@@ -83,10 +86,34 @@ class WriteDirector<T> {
 
                     @Override
                     public void run() {
-                        done = true;
-                        pvWriter.firePvWritten();
+                        done.set(true);
+                        notificationExecutor.execute(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                pvWriter.fireWriteSuccess();
+                            }
+                        });
                     }
-                }, exceptionHandler);
+                }, new ExceptionHandler() {
+
+                    @Override
+                    public void handleException(final Exception ex) {
+                        boolean previousDone = done.getAndSet(true);
+                        if (!previousDone) {
+                            notificationExecutor.execute(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    pvWriter.fireWriteFailure(ex);
+                                }
+                            });
+                        } else {
+                            pvWriter.setLastWriteException(ex);
+                        }
+                    }
+                    
+                });
             }
         }
     
@@ -108,16 +135,28 @@ class WriteDirector<T> {
                             @Override
                             public void run() {
                                 log.finest("Writing done, releasing latch");
-                                pvWriter.firePvWritten();
-                                latch.countDown();
+                                notificationExecutor.execute(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        pvWriter.fireWriteSuccess();
+                                        latch.countDown();
+                                    }
+                                });
                             }
                         }, new ExceptionHandler() {
 
                             @Override
-                            public void handleException(Exception ex) {
+                            public void handleException(final Exception ex) {
                                 exception.set(ex);
-                                exceptionHandler.handleException(ex);
-                                latch.countDown();
+                                notificationExecutor.execute(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        pvWriter.fireWriteFailure(ex);
+                                        latch.countDown();
+                                    }
+                                });
                             }
 
                         });

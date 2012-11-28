@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.Executors;
@@ -44,9 +46,22 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
     
     private DesiredRateExpression<T> aggregatedPVExpression;
     private ExceptionHandler exceptionHandler;
+    private List<PVReaderListener<T>> readListeners = new ArrayList<>();
 
     PVReaderConfiguration(DesiredRateExpression<T> aggregatedPVExpression) {
         this.aggregatedPVExpression = aggregatedPVExpression;
+    }
+    
+    /**
+     * 
+     * @param listeners
+     * @return 
+     */
+    public PVReaderConfiguration<T> readListener(PVReaderListener<? super T> listener) {
+        @SuppressWarnings("unchecked")
+        PVReaderListener<T> convertedListener = (PVReaderListener<T>) listener;
+        readListeners.add(convertedListener);
+        return this;
     }
 
     /**
@@ -87,6 +102,9 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVReaderImpl<T> pv = new PVReaderImpl<T>(aggregatedPVExpression.getName(), Executors.localThread() == notificationExecutor);
+        for (PVReaderListener<T> pVReaderListener : readListeners) {
+            pv.addPVReaderListener(pVReaderListener);
+        }
         DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
         if (exceptionHandler == null) {
             dataRecipe = dataRecipe.withExceptionHandler(ExceptionHandler.createDefaultExceptionHanderl(pv, notificationExecutor));

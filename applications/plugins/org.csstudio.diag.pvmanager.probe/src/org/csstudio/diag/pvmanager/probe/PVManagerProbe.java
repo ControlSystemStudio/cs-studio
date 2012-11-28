@@ -44,7 +44,9 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
 import org.epics.pvmanager.WriteFailException;
@@ -503,7 +505,7 @@ public class PVManagerProbe extends ViewPart {
 		setValue(null, null);
 		setTime(null);
 		setMeter(null, null);
-		setReadOnly(false);
+		setReadOnly(true);
 
 		// If name is blank, update status to waiting and quit
 		if ((pvName.getName() == null) || pvName.getName().trim().isEmpty()) {
@@ -520,34 +522,30 @@ public class PVManagerProbe extends ViewPart {
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.readAndWrite(channel(pvName.getName()))
 				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
+				.readListener(new PVReaderListener<Object>() {
+					@Override
+					public void pvChanged(PVReaderEvent<Object> event) {
+						Object obj = pv.getValue();
+						setLastError(pv.lastException());
+						setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
+						setTime(ValueUtil.timeOf(obj));
+						setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+						if (pv.isConnected()) {
+							setStatus(Messages.Probe_statusConnected);
+						} else {
+							setStatus(Messages.Probe_statusSearching);
+						}
+					}
+				})
+				.writeListener(new PVWriterListener<Object>() {
+					@Override
+					public void pvChanged(PVWriterEvent<Object> event) {
+						Exception lastException = pv.lastWriteException();
+						setReadOnly(!pv.isWriteConnected());
+					}
+				})
 				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				Object obj = pv.getValue();
-				setLastError(pv.lastException());
-				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
-				setTime(ValueUtil.timeOf(obj));
-				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
-				if (pv.isConnected()) {
-					setStatus(Messages.Probe_statusConnected);
-				} else {
-					setStatus(Messages.Probe_statusSearching);
-				}
-			}
-		});
 		
-		pv.addPVWriterListener(new PVWriterListener() {
-			
-			@Override
-			public void pvWritten() {
-				Exception lastException = pv.lastWriteException();
-				if (lastException instanceof WriteFailException) {
-					setReadOnly(true);
-				}
-			}
-		});
 		
 		this.PVName = pvName;
 

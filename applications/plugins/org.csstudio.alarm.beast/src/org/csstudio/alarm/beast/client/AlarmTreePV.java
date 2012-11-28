@@ -13,8 +13,8 @@ import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.data.values.ITimestamp;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,
  *  tracking the current and alarm state, value, timestamp info
@@ -201,7 +201,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
             final String current_message,
             final SeverityLevel severity, final String message,
             final String value,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
     	// Changing the alarm state will eventually recurse up to the root
     	// to maximize the severities.

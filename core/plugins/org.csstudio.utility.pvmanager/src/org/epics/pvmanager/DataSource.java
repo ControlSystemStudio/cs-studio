@@ -54,29 +54,46 @@ public abstract class DataSource {
      * @return a new or cached handler
      */
     ChannelHandler channel(String channelName) {
-        String channelHandlerName = channelHandlerFor(channelName);
-        ChannelHandler channel = usedChannels.get(channelHandlerName);
+        ChannelHandler channel = usedChannels.get(channelHandlerLookupName(channelName));
         if (channel == null) {
-            channel = createChannel(channelHandlerName);
+            channel = createChannel(channelName);
             if (channel == null)
                 return null;
-            usedChannels.put(channelHandlerName, channel);
+            usedChannels.put(channelHandlerRegisterName(channelName, channel), channel);
         }
         return channel;
     }
     
     /**
-     * Returns the channel handler name to be used for the given channel.
-     * By default, it returns the channel name itself. If a datasource
-     * needs to multiple different channels to the same channel handler
-     * (e.g. parts of the channel name are parameters for the read/write)
-     * then it can override this method to do the appropriate mapping.
+     * Returns the lookup name to use to find the channel handler in
+     * the cache. By default, it returns the channel name itself.
+     * If a datasource needs multiple different channel names to
+     * be the same channel handler (e.g. parts of the channel name
+     * are initialization parameters) then it can override this method
+     * to change the lookup.
      * 
-     * @param channelName
-     * @return the channel handler name
+     * @param channelName the channel name
+     * @return the channel handler to look up in the cache
      */
-    String channelHandlerFor(String channelName) {
+    protected String channelHandlerLookupName(String channelName) {
         return channelName;
+    }
+    
+    /**
+     * Returns the name the given handler should be registered as.
+     * By default, it returns the lookup name, so that lookup and
+     * registration in the cache are consistent. If a datasource
+     * needs multiple different channel names to be the same 
+     * channel handler (e.g. parts of the channel name are read/write
+     * parameters) then it can override this method to change the
+     * registration.
+     * 
+     * @param channelName the name under which the ChannelHandler was created
+     * @param handler the handler to register
+     * @return the name under which to register in the cache
+     */
+    protected String channelHandlerRegisterName(String channelName, ChannelHandler handler) {
+        return channelHandlerLookupName(channelName);
     }
 
     /**
@@ -91,6 +108,8 @@ public abstract class DataSource {
     // The executor used by the data source to perform asynchronous operations,
     // such as connections and writes. I am current using a single thread for
     // all data sources, which can be changed if needed.
+    // Since it's a single executor for all data sources, it should not be
+    // shut down at data source close.
     private static ExecutorService exec = Executors.newSingleThreadExecutor(namedPool("PVMgr DataSource Worker "));
     
     // Keeps track of the recipes and buffers that were opened with
@@ -108,22 +127,50 @@ public abstract class DataSource {
      * @param recipe the instructions for the data connection
      */
     public void connect(final DataRecipe recipe) {
+        // Add the recipe first, so that if a problem comes out
+        // while processing the request, we still keep
+        // track of it.
+        recipes.add(recipe);
+
+        // Let's go through all the recipes first, so if something
+        // breaks unexpectadely, either everything works or nothing works
+        final Map<ChannelHandler, ChannelRecipe> handlersWithSubscriptions =
+                new HashMap<ChannelHandler, ChannelRecipe>();
         for (final ChannelRecipe channelRecipe : recipe.getChannelRecipes()) {
-            String channelName = channelRecipe.getChannelName();
-            final ChannelHandler channelHandler = channel(channelName);
-            if (channelHandler == null) {
-                throw new ReadFailException();
+            try {
+                String channelName = channelRecipe.getChannelName();
+                ChannelHandler channelHandler = channel(channelName);
+                if (channelHandler == null) {
+                    throw new ReadFailException("Channel named '" + channelName + "' not found");
+                }
+                handlersWithSubscriptions.put(channelHandler, channelRecipe);
+            } catch (Exception ex) {
+                // If any error happens while creating the channel,
+                // report it to the exception handler of that channel
+                channelRecipe.getReadSubscription().getHandler().handleException(ex);
             }
             
-            exec.execute(new Runnable() {
-
-                @Override
-                public void run() {
-                    channelHandler.addMonitor(channelRecipe.getReadSubscription());
-                }
-            });
         }
-        recipes.add(recipe);
+        
+        // Now that we went through all channels,
+        // add a monitor to the ones that were found
+        exec.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                for (Map.Entry<ChannelHandler, ChannelRecipe> entry : handlersWithSubscriptions.entrySet()) {
+                    ChannelHandler channelHandler = entry.getKey();
+                    ChannelRecipe channelRecipe = entry.getValue();
+                    try {
+                        channelHandler.addMonitor(channelRecipe.getReadSubscription());
+                    } catch(Exception ex) {
+                        // If an error happens while adding the read subscription,
+                        // notify the appropriate handler
+                        channelRecipe.getReadSubscription().getHandler().handleException(ex);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -146,10 +193,12 @@ public abstract class DataSource {
             Collector<?> collector = channelRecipe.getReadSubscription().getCollector();
             String channelName = channelRecipe.getChannelName();
             ChannelHandler channelHandler = usedChannels.get(channelName);
-            if (channelHandler == null) {
-                log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
+            // If the channel is not found, it means it was not found during
+            // connection and a proper notification was sent then. Silently
+            // ignore it.
+            if (channelHandler != null) {
+                channelHandler.removeMonitor(collector);
             }
-            channelHandler.removeMonitor(collector);
         }
 
         recipes.remove(recipe);
@@ -168,14 +217,23 @@ public abstract class DataSource {
         if (!isWriteable())
             throw new WriteFailException("Data source is read only");
         
-        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
-        for (String channelName : writeBuffer.getWriteCaches().keySet()) {
-            ChannelHandler handler = channel(channelName);
-            if (handler == null)
-                throw new WriteFailException("Channel " + channelName + " does not exist");
-            handlers.add(handler);
-            caches.add(writeBuffer.getWriteCaches().get(channelName));
+        // Register right away, so that if a failure happen
+        // we still keep track of it
+        registeredBuffers.add(writeBuffer);
+        
+        // Let's go through the whole request first, so if something
+        // breaks unexpectadely, either everything works or nothing works
+        final Map<ChannelHandler, ChannelHandlerWriteSubscription> handlers = new HashMap<ChannelHandler, ChannelHandlerWriteSubscription>();
+        for (ChannelWriteBuffer channelWriteBuffer : writeBuffer.getChannelWriteBuffers()) {
+            try {
+                String channelName = channelWriteBuffer.getChannelName();
+                ChannelHandler handler = channel(channelName);
+                if (handler == null)
+                    throw new WriteFailException("Channel " + channelName + " does not exist");
+                handlers.put(handler, channelWriteBuffer.getWriteSubscription());
+            } catch (Exception ex) {
+                channelWriteBuffer.getWriteSubscription().getHandler().handleException(ex);
+            }
         }
 
         // Connect using another thread
@@ -183,12 +241,19 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (int i = 0; i < handlers.size(); i++) {
-                    handlers.get(i).addWriter(caches.get(i), exceptionHandler);
+                for (Map.Entry<ChannelHandler, ChannelHandlerWriteSubscription> entry : handlers.entrySet()) {
+                    try {
+                        ChannelHandler channelHandler = entry.getKey();
+                        ChannelHandlerWriteSubscription subscription = entry.getValue();
+                        channelHandler.addWriter(subscription);
+                    } catch (Exception ex) {
+                        // If an error happens while adding the write subscription,
+                        // notify the appropriate handler
+                        entry.getValue().getHandler().handleException(ex);
+                    }
                 }
             }
         });
-        registeredBuffers.add(writeBuffer);
     }
     
     /**
@@ -209,11 +274,22 @@ public abstract class DataSource {
         }
 
         registeredBuffers.remove(writeBuffer);
-        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
-        for (String channelName : writeBuffer.getWriteCaches().keySet()) {
-            handlers.add(channel(channelName));
-            caches.add(writeBuffer.getWriteCaches().get(channelName));
+        final Map<ChannelHandler, ChannelHandlerWriteSubscription> handlers = new HashMap<ChannelHandler, ChannelHandlerWriteSubscription>();
+        for (ChannelWriteBuffer channelWriteBuffer : writeBuffer.getChannelWriteBuffers()) {
+            try {
+                String channelName = channelWriteBuffer.getChannelName();
+                ChannelHandler handler = channel(channelName);
+                // If the channel does not exist, simply skip it: it must have
+                // not be there while preparing the write, so an appropriate
+                // notification has already been sent
+                if (handler != null) {
+                    handlers.put(handler, channelWriteBuffer.getWriteSubscription());
+                }
+            } catch (Exception ex) {
+                // No point in sending the exception through the exception handler:
+                // nothing will be listening by now. Just log the exception
+                log.log(Level.WARNING, "Error while preparing channel '" + channelWriteBuffer.getChannelName() + "' for closing.", ex);
+            }
         }
 
         // Connect using another thread
@@ -221,8 +297,10 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (int i = 0; i < handlers.size(); i++) {
-                    handlers.get(i).removeWrite(caches.get(i), exceptionHandler);
+                for (Map.Entry<ChannelHandler, ChannelHandlerWriteSubscription> entry : handlers.entrySet()) {
+                    ChannelHandler channelHandler = entry.getKey();
+                    ChannelHandlerWriteSubscription channelHandlerWriteSubscription = entry.getValue();
+                    channelHandler.removeWrite(channelHandlerWriteSubscription);
                 }
             }
         });
@@ -244,9 +322,10 @@ public abstract class DataSource {
             throw new UnsupportedOperationException("This data source is read only");
         
         final WritePlanner planner = new WritePlanner();
-        for (Map.Entry<String, WriteCache<?>> entry : writeBuffer.getWriteCaches().entrySet()) {
-            ChannelHandler channel = channel(entry.getKey());
-            planner.addChannel(channel, entry.getValue().getValue(), entry.getValue().getPrecedingChannels());
+        for (ChannelWriteBuffer channelWriteBuffer : writeBuffer.getChannelWriteBuffers()) {
+            ChannelHandler channel = channel(channelWriteBuffer.getChannelName());
+            planner.addChannel(channel, channelWriteBuffer.getWriteSubscription().getCache().getValue(),
+                    channelWriteBuffer.getWriteSubscription().getCache().getPrecedingChannels());
         }
 
         // Connect using another thread
@@ -262,6 +341,14 @@ public abstract class DataSource {
                         @Override
                         public void channelWritten(Exception ex) {
                             planner.removeChannel(channelName);
+                            
+                            // If there was an error, notify the exception
+                            // and don't schedule anything else
+                            if (ex != null) {
+                                exceptionHandler.handleException(ex);
+                                return;
+                            }
+                            
                             // Notify only when the last channel was written
                             if (planner.isDone()) {
                                 callback.run();
@@ -293,7 +380,6 @@ public abstract class DataSource {
      * Closes the DataSource and the resources associated with it.
      */
     public void close() {
-        exec.shutdown();
     }
     
 }

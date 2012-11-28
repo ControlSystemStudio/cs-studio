@@ -15,37 +15,43 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVDevice extends Device implements PVListener
+public class PVDevice extends Device
 {
-	/** Underlying control system PV */
-	final private PV pv;
-
 	/** Value that is used to identify a disconnected PV */
-	final private static IValue DISCONNECTED =
-	        ValueFactory.createStringValue(TimestampFactory.now(),
-	                ValueFactory.createInvalidSeverity(),
-	                "Disconnected",
-	                IValue.Quality.Original,
-	                new String[] { "Disconnected" });
+	final private static VType DISCONNECTED =
+			ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.INVALID, "Disconnected"), ValueFactory.timeNow());
+	
+	/** Most recent value of the PV
+	 *  SYNC on this
+	 */
+	private VType value = DISCONNECTED;
 
-	/** Most recent value of the PV */
-	private volatile IValue value = DISCONNECTED;
-
+	/** Underlying control system PV
+	 *  SYNC on this
+	 */
+	private PV<VType, Object> pv;
+	
 	/** Initialize
 	 *  @param info {@link DeviceInfo}
 	 *  @throws Exception on error during PV setup
@@ -53,55 +59,71 @@ public class PVDevice extends Device implements PVListener
 	public PVDevice(final DeviceInfo info) throws Exception
     {
 	    super(info);
-	    pv = PVFactory.createPV(info.getName());
-	    pv.addListener(this);
     }
 
 	/** {@inheritDoc} */
 	@Override
     public void start() throws Exception
 	{
-		pv.start();
+		final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+		{
+			@Override
+			public void pvChanged(final PVReaderEvent<VType> event)
+			{
+				final PVReader<VType> pv = event.getPvReader();
+				final Exception error = pv.lastException();
+					
+				synchronized (PVDevice.this)
+				{					
+					if (error != null)
+						value = DISCONNECTED;
+					else
+					{
+						value = pv.getValue();
+						if (value == null)
+							value = DISCONNECTED;
+					}
+				}
+				fireDeviceUpdate();
+			}
+		};
+		synchronized (this)
+		{
+			pv = PVManager.readAndWrite(latestValueOf(vType(getInfo().getName()))).readListener(listener).asynchWriteAndMaxReadRate(ofSeconds(0.1));
+		}
 	}
 
 	   /** {@inheritDoc} */
     @Override
-    public boolean isReady()
+    public synchronized boolean isReady()
     {
-        return value != DISCONNECTED  &&  pv.isConnected();
+        return value != DISCONNECTED  &&  pv != null  && pv.isConnected();
     }
 
 	/** {@inheritDoc} */
 	@Override
     public void stop()
 	{
-		pv.stop();
-		value = DISCONNECTED;
+		final PV<VType, Object> copy;
+		synchronized (this)
+		{
+			copy = pv;
+		}
+		copy.close();
+		synchronized (this)
+		{
+			pv = null;
+			value = DISCONNECTED;
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-    public void pvValueUpdate(PV pv)
+    public synchronized VType read() throws Exception
     {
-	    this.value = pv.getValue();
-		fireDeviceUpdate();
-    }
-
-	/** {@inheritDoc} */
-	@Override
-    public void pvDisconnected(PV pv)
-    {
-		value = DISCONNECTED;
-        fireDeviceUpdate();
-    }
-
-    /** {@inheritDoc} */
-	@Override
-    public IValue read() throws Exception
-    {
-		final IValue current = this.value;
+		final VType current = this.value;
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
-				new Object[] { pv, current });
+				new Object[] { getInfo().getName(), current });
 		return current;
     }
 
@@ -109,15 +131,21 @@ public class PVDevice extends Device implements PVListener
 	@Override
     public void write(final Object value) throws Exception
     {
-		pv.setValue(value);
+		synchronized (this)
+		{
+			pv.write(value);
+		}
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
-				new Object[] { pv, value });
+				new Object[] { getInfo().getName(), value });
     }
 
 	/** @return Human-readable representation of this device */
     @Override
-    public String toString()
+    public synchronized String toString()
     {
-        return super.toString() + ", PV '" + pv.getName() + "'";
+    	if (pv == null)
+            return super.toString() + ", no PV";
+    	else
+    		return super.toString() + ", PV '" + pv.getName() + "'";
     }
 }

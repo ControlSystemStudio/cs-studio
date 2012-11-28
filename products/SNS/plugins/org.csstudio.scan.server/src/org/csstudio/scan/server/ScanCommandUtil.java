@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
-import org.csstudio.scan.device.ValueConverter;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
+import org.epics.pvmanager.data.VType;
 
 /** Utilities for command implementations
  *
@@ -71,10 +71,10 @@ public class ScanCommandUtil
         // Log the value?
         if (context.isAutomaticLogMode())
         {
-            final IValue log_value = readback.read();
+            final VType log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();
-            log.log(readback.getInfo().getAlias(), ValueConverter.createSample(serial, log_value));
+            log.log(readback.getInfo().getAlias(), VTypeHelper.createSample(serial, log_value));
         }
     }
 }

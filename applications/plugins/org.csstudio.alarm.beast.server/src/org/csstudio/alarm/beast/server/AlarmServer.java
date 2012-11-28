@@ -25,9 +25,9 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.logging.JMSLogMessage;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
 
 /** Alarm Server
  *
@@ -43,7 +43,7 @@ import org.eclipse.osgi.util.NLS;
 public class AlarmServer
 {
     /** Name of alarm tree root element */
-    final String root_name = Preferences.getAlarmTreeRoot();
+    final String root_name;
 
     /** Work queue in main thread of application */
     final private WorkQueue work_queue;
@@ -84,6 +84,7 @@ public class AlarmServer
      */
     public AlarmServer(final WorkQueue work_queue, final String root_name) throws Exception
     {
+        this.root_name = root_name;
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(),
@@ -402,7 +403,7 @@ public class AlarmServer
             final String current_message,
             final SeverityLevel severity,
             final String message,
-            final String value, final ITimestamp timestamp)
+            final String value, final Timestamp timestamp)
     {
     	messenger.sendStateUpdate(pv, current_severity, current_message,
     	        severity, message, value, timestamp);
@@ -444,7 +445,7 @@ public class AlarmServer
     public void sendGlobalUpdate(final AlarmPV pv,
             final SeverityLevel severity,
             final String message,
-            final String value, final ITimestamp timestamp)
+            final String value, final Timestamp timestamp)
     {
         // Send to JMS
         messenger.sendGlobalUpdate(pv, severity, message, value, timestamp);

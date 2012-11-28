@@ -23,8 +23,8 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.logging.JMSLogMessage;
+import org.epics.util.time.Timestamp;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
@@ -252,7 +252,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             final String current_message,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
         execute(new Runnable()
         {
@@ -270,7 +270,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
                     server_producer.send(map);
@@ -294,7 +294,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     protected void sendGlobalUpdate(final AlarmPV pv,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
         execute(new Runnable()
         {
@@ -309,7 +309,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
                     global_producer.send(map);
                 }
                 catch (Exception ex)

@@ -66,6 +66,16 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         pvWriterConfiguration.timeout(timeout, writeMessage);
         return this;
     }
+    
+    public PVConfiguration<R, W>  readListener(PVReaderListener<? super R> listener) {
+        pvReaderConfiguration.readListener(listener);
+        return this;
+    }
+    
+    public PVConfiguration<R, W>  writeListener(PVWriterListener<? extends W> listener) {
+        pvWriterConfiguration.writeListener(listener);
+        return this;
+    }
 
     /**
      * Forwards exception to the given exception handler. No thread switch
@@ -109,7 +119,9 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
     public PV<R, W> asynchWriteAndMaxReadRate(TimeDuration period) {
         PVReader<R> pvReader = pvReaderConfiguration.maxRate(period);
         PVWriter<W> pvWriter = pvWriterConfiguration.async();
-        return new PV<R, W>(pvReader, pvWriter);
+        PV<R, W> pv = new PV<R, W>(pvReader, pvWriter);
+        PVReaderImpl.implOf(pvReader).setReaderForNotification(pv);
+        return pv;
     }
     
 }

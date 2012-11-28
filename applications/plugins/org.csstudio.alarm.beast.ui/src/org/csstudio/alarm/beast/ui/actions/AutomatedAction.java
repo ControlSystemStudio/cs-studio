@@ -1,10 +1,25 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.ui.actions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.ui.AbstractAACommunicator;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.notifier.Activator;
+import org.csstudio.alarm.beast.notifier.PVSnapshot;
+import org.csstudio.alarm.beast.notifier.actions.AutomatedActionFactory;
+import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
+import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.eclipse.jface.action.Action;
@@ -18,7 +33,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 /** Automated actions executed for notifications.
- *  @author Sopra Group
+ *  @author Fred Arnaud (Sopra Group)
  */
 public class AutomatedAction extends Action
 {
@@ -27,34 +42,7 @@ public class AutomatedAction extends Action
     final private AlarmTreeItem item;
     final private AADataStructure auto_action;
     
-	private class AutomatedActionSender extends AbstractAACommunicator 
-	{
-		public AutomatedActionSender(String root_name) {
-			super(root_name);
-		}
 
-		@Override
-		protected void handleError(Exception ex) {
-			ex.printStackTrace();
-			MessageDialog.openError(shell,
-					Messages.AutoActionError,
-					NLS.bind(Messages.AutoActionErrorFmt, new Object[] {
-							auto_action, "-", ex.getMessage() }));
-		}
-
-		@Override
-		protected void handleNotifierResponse(String txt) {
-			final MessageConsoleStream console_out = getConsole().newMessageStream();
-			console_out.println(getText() + ": (" + item + ") '" + auto_action + "'");
-			try {
-				console_out.close();
-			} catch (IOException e) {
-				// Ignored
-			}
-		}
-	}
-	
-	
     /** Initialize
      *  @param shell Shell to use for displayed dialog
      *  @param tree_position Origin of this command in alarm tree
@@ -75,17 +63,54 @@ public class AutomatedAction extends Action
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
-    public void run()
-    {
-		AutomatedActionSender aas = new AutomatedActionSender("");
+	public void run() {
+    	final MessageConsoleStream console_out = getConsole().newMessageStream();
+		console_out.println(getText() + ": (" + item + ") '" + auto_action + "'");
 		try {
-			aas.start();
-			Thread.sleep(1000);
-			aas.sendAutomatedAction(item, auto_action);
-			aas.stop();
-		} catch (InterruptedException e) {
+			// Initialize factory
+			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
+			factory.init(NotifierUtils.getActions());
+			// Initialize automated action
+			IAutomatedAction action = factory.getNotificationAction(item, auto_action);
+			if (action == null)
+				throw new Exception("Failed to create automated action");
+			// Initialize alarms
+			List<PVSnapshot> pvs = new ArrayList<PVSnapshot>();
+			if (item instanceof AlarmTreePV) {
+				pvs.add(PVSnapshot.fromPVItem((AlarmTreePV) item));
+			} else {
+				findPVs(item, pvs);
+			}
+			// Execute
+			action.execute(pvs);
+			Activator.getLogger().log(Level.INFO, getInfos() + " => EXECUTED");
+		} catch (Exception ex) {
+			Activator.getLogger().log(Level.SEVERE,
+					"ERROR executing " + getInfos() + " => " + ex.getMessage());
+			MessageDialog.openError(shell,
+					Messages.AutoActionError,
+					NLS.bind(Messages.AutoActionErrorFmt, new Object[] {
+							auto_action, "-", ex.getMessage() }));
 		}
-    }
+		try { console_out.close();
+		} catch (IOException e) {
+			// Ignored
+		}
+	}
+    
+	private void findPVs(AlarmTreeItem item, List<PVSnapshot> snapshots) {
+		if (item instanceof AlarmTreePV) {
+			PVSnapshot snapshot = PVSnapshot.fromPVItem((AlarmTreePV) item);
+			snapshots.add(snapshot);
+		} else {
+			for (int index = 0; index < item.getChildCount(); index++)
+				findPVs(item.getClientChild(index), snapshots);
+		}
+	}
+	
+	private String getInfos() {
+		return item.getName() + ": " + auto_action.getTitle();
+	}
     
     /** Get a console in the Eclipse Console View for dumping the output
      *  of invoked alarm actions.

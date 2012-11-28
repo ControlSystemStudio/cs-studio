@@ -7,33 +7,29 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
 import java.io.PrintStream;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 
 /** A PV with alarm state
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener, FilterListener
+public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListener
 {
-    /** Timer used to check for connections at some delay after 'start */
-    final private static Timer connection_timer =
-        new Timer("Connection Check", true);
-
     final private AlarmLogic logic;
 
     /** Alarm server that handles this PV */
@@ -42,11 +38,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     /** Description of alarm, will be used to annunciation */
     private volatile String description;
 
-    /** Control system PV */
-    final private PV pv;
-
-    /** Started when pv is created to check if it ever connects */
-    private TimerTask connection_timeout_task = null;
+    /** Control system PV reader */
+    private PVReader<VType> pv = null;
 
     /** Filter that might be used to compute 'enabled' state;
      *  can be <code>null</code>
@@ -89,7 +82,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
             final SeverityLevel severity,
             final String message,
             final String value,
-            final ITimestamp timestamp) throws Exception
+            final Timestamp timestamp) throws Exception
     {
     	super(parent, name, id);
 
@@ -98,15 +91,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
               new AlarmState(severity, message, value, timestamp), global_delay);
         this.server = server;
         setDescription(description);
-        if (server == null)
-        {	// Unit test, don't create a PV
-        	pv = null;
-        }
-        else
-        {
-	        pv = PVFactory.createPV(name);
-	        setEnablement(enabled, filter);
-        }
+        setEnablement(enabled, filter);
     }
 
     /** @return AlarmLogic used by this PV */
@@ -138,8 +123,6 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
      */
     void setEnablement(final boolean enabled, final String filter) throws Exception
     {
-        if (pv.isRunning())
-            throw new Exception("Cannot change enablement while running");
         synchronized (logic)
         {
             if (filter == null  ||  filter.length() <= 0)
@@ -153,20 +136,39 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     /** Connect to control system */
     public void start() throws Exception
     {
-        // Seconds to millisecs
-        final long delay = Preferences.getConnectionGracePeriod() * 1000;
-        connection_timeout_task = new TimerTask()
+        final PVReaderListener<VType> listener = new PVReaderListener<VType>()
         {
             @Override
-            public void run()
+            public void pvChanged(final PVReaderEvent<VType> event)
             {
-                if (pv.isRunning() && !pv.isConnected())
-                    pvConnectionTimeout();
+            	final PVReader<VType> pv = event.getPvReader();
+                final Exception error = pv.lastException();
+                if (error != null)
+                {
+                    Activator.getLogger().log(Level.WARNING, "Channel " + getName() + " error", error);
+                    final AlarmState received;
+                    if (error instanceof org.epics.pvmanager.TimeoutException)
+                        received = new AlarmState(SeverityLevel.INVALID,
+                            Messages.AlarmMessageNotConnected, error.getMessage(), Timestamp.now());
+                    else
+                        received = new AlarmState(SeverityLevel.INVALID,
+                            Messages.AlarmMessageDisconnected, error.getMessage(), Timestamp.now());
+                    logic.computeNewState(received);
+                }
+                else
+                {
+                    // Inspect alarm state of received value
+                    final VType value = pv.getValue();
+                    final SeverityLevel new_severity = VTypeHelper.decodeSeverity(value);
+                    final String new_message = VTypeHelper.getStatusMessage(value);
+                    final AlarmState received = new AlarmState(new_severity, new_message,
+                            VTypeHelper.toString(value),
+                            VTypeHelper.getTimestamp(value));
+                    logic.computeNewState(received);
+                }
             }
         };
-        connection_timer.schedule(connection_timeout_task, delay);
-        pv.addListener(this);
-        pv.start();
+        pv = PVManager.read(vType(getName())).readListener(listener).timeout(ofSeconds(Preferences.getConnectionGracePeriod())).maxRate(ofSeconds(0.5));
         if (filter != null)
             filter.start();
     }
@@ -174,15 +176,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     /** Disconnect from control system */
     public void stop()
     {
-        if (connection_timeout_task != null)
-        {
-            connection_timeout_task.cancel();
-            connection_timeout_task = null;
-        }
     	if (filter != null)
     		filter.stop();
-        pv.removeListener(this);
-        pv.stop();
+        pv.close();
     }
 
     /** @see FilterListener */
@@ -194,58 +190,6 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     	        new Object[] { getName(), new_enable_state });
         logic.setEnabled(new_enable_state);
 	}
-
-    /** Invoked by <code>connection_timer</code> when PV fails to connect
-     *  after <code>start()</code>
-     */
-	private void pvConnectionTimeout()
-    {
-
-	    final AlarmState received = new AlarmState(SeverityLevel.INVALID,
-               Messages.AlarmMessageNotConnected, "", TimestampFactory.now());
-	    logic.computeNewState(received);
-    }
-
-    /** @see PVListener */
-    @Override
-    public void pvDisconnected(final PV pv)
-    {
-        // Also ignore the disconnect event that can result from stop()
-    	if (!pv.isRunning())
-    		return;
-        final AlarmState received = new AlarmState(SeverityLevel.INVALID,
-                Messages.AlarmMessageDisconnected, "", TimestampFactory.now());
-        logic.computeNewState(received);
-    }
-
-    /** @see PVListener */
-    @Override
-    public void pvValueUpdate(final PV pv)
-    {
-    	// Inspect alarm state of received value
-        final IValue value = pv.getValue();
-        final SeverityLevel new_severity = decodeSeverity(value);
-        final String new_message = value.getStatus();
-        final AlarmState received = new AlarmState(new_severity, new_message,
-                value.format(), value.getTime());
-        logic.computeNewState(received);
-    }
-
-    /** Decode a value's severity
-     *  @param value Value to decode
-     *  @return SeverityLevel
-     */
-    private SeverityLevel decodeSeverity(final IValue value)
-    {
-        final ISeverity sev = value.getSeverity();
-        if (sev.isInvalid())
-            return SeverityLevel.INVALID;
-        if (sev.isMajor())
-            return SeverityLevel.MAJOR;
-        if (sev.isMinor())
-            return SeverityLevel.MINOR;
-        return SeverityLevel.OK;
-    }
 
 	/** AlarmLogicListener: {@inheritDoc} */
     @Override
@@ -303,7 +247,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("'").append(getPathName()).append("' [").append(description).append("] - ");
+        buf.append("'").append(getPathName()).append("' (ID ").append(getID()).append(")");
+        buf.append(" [").append(description).append("] - ");
         if (pv != null)
         {
 	        if (pv.isConnected())

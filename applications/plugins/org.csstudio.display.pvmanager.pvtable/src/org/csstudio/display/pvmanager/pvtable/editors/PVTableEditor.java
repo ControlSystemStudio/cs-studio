@@ -95,6 +95,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.ValueFormat;
@@ -152,10 +153,10 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 	private DynamicGroup group = group();
 	private PVReader<List<Object>> pv = PVManager.read(group)
 			.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(2));
-	private final PVReaderListener pvListener = new PVReaderListener() {
+	private final PVReaderListener<List<Object>> pvListener = new PVReaderListener<List<Object>>() {
 
 		@Override
-		public void pvChanged() {
+		public void pvChanged(PVReaderEvent<List<Object>> event) {
 			PVTableModel model = (PVTableModel) tableViewer.getInput();
 			if (model != null) {
 				model.updateValues(pv.getValue(), group.lastExceptions());

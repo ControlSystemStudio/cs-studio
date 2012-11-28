@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.epics.pvmanager.data.VImage;
 
@@ -14,22 +15,27 @@ public class SWTUtil {
 		// Prevent creation
 	}
 	
-	private static Executor SWTThread = new Executor() {
-
-        @Override
-        public void execute(Runnable task) {
-            try {
-            	if (!PlatformUI.getWorkbench().getDisplay().isDisposed()) {
-            	    PlatformUI.getWorkbench().getDisplay().asyncExec(task);
-            	}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        }
-    };
+	private static Executor SWTThread =
+			swtThread(PlatformUI.getWorkbench().getDisplay());
     
 	public static Executor swtThread() {
 		return SWTThread;
+	}
+    
+	public static Executor swtThread(final Display display) {
+		return new Executor() {
+
+	        @Override
+	        public void execute(Runnable task) {
+	            try {
+	            	if (!display.isDisposed()) {
+	            	    display.asyncExec(task);
+	            	}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        }
+	    };
 	}
 	
 	public static Image toImage(GC gc, VImage vImage) {

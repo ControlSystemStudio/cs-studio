@@ -1,0 +1,81 @@
+# softIoc -s -d test.db
+
+record(ai, "RFQ_Vac:Pump1:Pressure")
+{
+    field(DESC, "Outflow Measure after Pump 1")
+    field(LOLO, "1")
+    field(LOW,  "2")
+    field(HIGH, "8")
+    field(HIHI, "9")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(LLSV, "MAJOR")
+    field(LSV , "MINOR")
+    field(HSV , "MINOR")
+    field(HHSV, "MAJOR")
+    field(PREC, "2")
+    field(ADEL, "2")
+    field(PINI, "YES")
+    field(INP,  "4.25")
+}
+
+record(ai, "RFQ_Vac:Pump2:Pressure")
+{
+    field(DESC, "Outflow Measure after Pump 2")
+    field(LOLO, "1")
+    field(LOW,  "2")
+    field(HIGH, "8")
+    field(HIHI, "9")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(LLSV, "MAJOR")
+    field(LSV , "MINOR")
+    field(HSV , "MINOR")
+    field(HHSV, "MAJOR")
+    field(PREC, "2")
+    field(ADEL, "2")
+    field(PINI, "YES")
+    field(INP,  "4.25")
+}
+
+record(bo,"RFQ_Vac:Pump1:Start_Cmd") {
+     field(DESC,"Control Discharge Pump 1")
+     field(DTYP,"Soft Channel")
+     field(OMSL, "supervisory")
+     field(DOL,  "1")
+     field(PINI, "YES")
+     field(ZNAM,"Stop")
+     field(ONAM,"Start")
+}
+
+
+record(bi,"RFQ_Vac:Pump1:Start_State") {
+     field(DESC,"State Discharge Pump 1")
+     field(DTYP,"Soft Channel")
+     field(SCAN, "1 second")
+     field(ZNAM,"Stopped")
+     field(ONAM,"Started")
+     field(INP, "RFQ_Vac:Pump1:Start_Cmd")
+     field(ZSV , "MINOR")
+}
+
+record(bo,"RFQ_Vac:Pump2:Start_Cmd") {
+     field(DESC,"Control Discharge Pump 2")
+     field(DTYP,"Soft Channel")
+     field(OMSL, "supervisory")
+     field(DOL,  "1")
+     field(PINI, "YES")
+     field(ZNAM,"Stop")
+     field(ONAM,"Start")
+}
+
+
+record(bi,"RFQ_Vac:Pump2:Start_State") {
+     field(DESC,"State Discharge Pump 2")
+     field(DTYP,"Soft Channel")
+     field(SCAN, "1 second")
+     field(ZNAM,"Stopped")
+     field(ONAM,"Started")
+     field(INP, "RFQ_Vac:Pump2:Start_Cmd")
+     field(ZSV , "MAJOR")
+}
