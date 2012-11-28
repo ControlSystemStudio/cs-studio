@@ -6,7 +6,7 @@ package org.epics.pvmanager.extra;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.DataRecipe;
+import org.epics.pvmanager.ReadRecipe;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
@@ -25,7 +25,7 @@ import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
 
     private final DataSource dataSource = PVManager.getDefaultDataSource();
-    private final List<DataRecipe> recipes = new ArrayList<DataRecipe>();
+    private final List<ReadRecipe> recipes = new ArrayList<ReadRecipe>();
 
     /**
      * Creates a new group.
@@ -56,8 +56,8 @@ public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
      */
     public synchronized DynamicGroup clear() {
         for (int index = recipes.size() - 1; index >= 0; index--) {
-            DataRecipe recipe = recipes.remove(index);
-            dataSource.disconnect(recipe);
+            ReadRecipe recipe = recipes.remove(index);
+            dataSource.disconnectRead(recipe);
             synchronized (getGroup()) {
                 getGroup().getArguments().remove(index);
                 getGroup().getExceptions().remove(index);
@@ -83,15 +83,15 @@ public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
      * @return this
      */
     public synchronized DynamicGroup add(DesiredRateExpression<?> expression) {
-        DataRecipe recipe = expression.getDataRecipe();
-        recipe = recipe.withExceptionHandler(handlerFor(recipes.size()));
+//        DataRecipe recipe = expression.getDataRecipe();
+//        recipe = recipe.withExceptionHandler(handlerFor(recipes.size()));
         synchronized (getGroup()) {
             getGroup().getArguments().add(expression.getFunction());
             getGroup().getExceptions().add(null);
             getGroup().getPreviousValues().add(null);
         }
-        dataSource.connect(recipe);
-        recipes.add(recipe);
+//        dataSource.connect(recipe);
+//        recipes.add(recipe);
         return this;
     }
 
@@ -102,8 +102,8 @@ public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
      * @return this
      */
     public synchronized DynamicGroup remove(int index) {
-        DataRecipe recipe = recipes.remove(index);
-        dataSource.disconnect(recipe);
+        ReadRecipe recipe = recipes.remove(index);
+        dataSource.disconnectRead(recipe);
         synchronized (getGroup()) {
             getGroup().getArguments().remove(index);
             getGroup().getExceptions().remove(index);
@@ -120,18 +120,18 @@ public class DynamicGroup extends DesiredRateExpressionImpl<List<Object>> {
      * @return this
      */
     public synchronized DynamicGroup set(int index, DesiredRateExpression<?> expression) {
-        DataRecipe recipe = expression.getDataRecipe();
-        recipe = recipe.withExceptionHandler(handlerFor(index));
-        DataRecipe oldRecipe = recipes.get(index);
-        dataSource.disconnect(oldRecipe);
+//        DataRecipe recipe = expression.getDataRecipe();
+//        recipe = recipe.withExceptionHandler(handlerFor(index));
+        ReadRecipe oldRecipe = recipes.get(index);
+        dataSource.disconnectRead(oldRecipe);
 
         synchronized (getGroup()) {
             getGroup().getArguments().set(index, expression.getFunction());
             getGroup().getExceptions().set(index, null);
             getGroup().getPreviousValues().set(index, null);
         }
-        dataSource.connect(recipe);
-        recipes.set(index, recipe);
+//        dataSource.connect(recipe);
+//        recipes.set(index, recipe);
         return this;
     }
 

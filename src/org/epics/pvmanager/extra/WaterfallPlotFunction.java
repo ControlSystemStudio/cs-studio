@@ -24,7 +24,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class WaterfallPlotFunction extends Function<VImage> {
+class WaterfallPlotFunction implements Function<VImage> {
 
     private volatile WaterfallPlotParameters.InternalCopy mutableParameters;
     private WaterfallPlotParameters.InternalCopy previousParameters;

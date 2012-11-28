@@ -4,7 +4,6 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.Function;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  *
  * @author carcassi
  */
-class ListOfFunction extends Function<List> {
+class ListOfFunction implements Function<List> {
 
     List<Function> functions;
 

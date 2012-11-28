@@ -38,9 +38,34 @@ public class PVReaderEvent<T> {
         return (notificationMask & VALUE_MASK) != 0;
     }
     
-    public boolean isExceptionChangesd() {
+    public boolean isExceptionChanged() {
         return (notificationMask & EXCEPTION_MASK) != 0;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ ");
+        boolean first = true;
+        if (isConnectionChanged()) {
+            builder.append("CONN");
+            first = false;
+        }
+        if (isValueChanged()) {
+            if (!first) {
+                builder.append(" | ");
+            }
+            builder.append("VAL");
+            first = false;
+        }
+        if (isExceptionChanged()) {
+            if (!first) {
+                builder.append(" | ");
+            }
+            builder.append("EXC");
+        }
+        builder.append(" ]");
+        return builder.toString();
+    }
     
 }

@@ -5,10 +5,16 @@
 package org.epics.pvmanager;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.util.time.TimeDuration;
 
 /**
@@ -16,16 +22,95 @@ import org.epics.util.time.TimeDuration;
  *
  * @author carcassi
  */
-class Notifier<T> {
+public class PVReaderDirector<T> {
+    
+    private static final Logger log = Logger.getLogger(PVReaderDirector.class.getName());
 
-    private final WeakReference<PVReaderImpl<T>> pvRef;
-    private final Function<T> function;
-    private final Function<Boolean> connFunction;
+    // Required for connection and exception notification
+
+    /** Executor used to notify of new values/connection/exception */
     private final Executor notificationExecutor;
+    /** Executor used to scan the connection/exception queues */
     private final ScheduledExecutorService scannerExecutor;
-    private volatile PVRecipe pvRecipe;
     private volatile ScheduledFuture<?> scanTaskHandle;
-    private final ExceptionHandler exceptionHandler;
+    /** PVReader to update during the notification */
+    private final WeakReference<PVReaderImpl<T>> pvRef;
+    /** Function for the new value */
+    private final Function<T> function;
+    
+    // Required to connect/disconnect expressions
+    private final DataSource dataSource;
+    private final Object lock = new Object();
+    private final Map<DesiredRateExpression<?>, ReadRecipe> recipes =
+            new HashMap<>();
+
+    // Required for multiple operations
+    /** Connection collector required to connect/disconnect expressions and for connection notification */
+    private final ConnectionCollector connCollector =
+            new ConnectionCollector();
+    /** Exception queue to be used to connect/disconnect expression and for exception notification */
+    private final QueueCollector<Exception> exceptionCollector =
+            new QueueCollector<>(1);
+    
+    
+    ReadRecipe getCurrentReadRecipe() {
+        ReadRecipeBuilder builder = new ReadRecipeBuilder();
+        for (Map.Entry<DesiredRateExpression<?>, ReadRecipe> entry : recipes.entrySet()) {
+            ReadRecipe readRecipe = entry.getValue();
+            for (ChannelReadRecipe channelReadRecipe : readRecipe.getChannelReadRecipes()) {
+                builder.addChannel(channelReadRecipe.getChannelName(), channelReadRecipe.getReadSubscription().getValueCache());
+            }
+        }
+        return builder.build(exceptionCollector, connCollector);
+    }
+    
+    /**
+     * Calculate the recipes and connects the channel to the datasource.
+     * 
+     * @param expression 
+     */
+    public void connectExpression(DesiredRateExpression<?> expression) {
+        ReadRecipeBuilder builder = new ReadRecipeBuilder();
+        expression.fillReadRecipe(this, builder);
+        ReadRecipe recipe = builder.build(exceptionCollector, connCollector);
+        synchronized(lock) {
+            recipes.put(expression, recipe);
+        }
+        if (!recipe.getChannelReadRecipes().isEmpty()) {
+            try {
+                dataSource.connectRead(recipe);
+            } catch(Exception ex) {
+                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().setValue(ex);
+            }
+        }
+    }
+    
+    public void disconnectExpression(DesiredRateExpression<?> expression) {
+        ReadRecipe recipe;
+        synchronized(lock) {
+            recipe = recipes.remove(expression);
+        }
+        if (recipe == null) {
+            log.log(Level.SEVERE, "Director was asked to disconnect expression '" + expression + "' which was not found.");
+        }
+        
+        if (!recipe.getChannelReadRecipes().isEmpty()) {
+            try {
+                dataSource.disconnectRead(recipe);
+            } catch(Exception ex) {
+                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().setValue(ex);
+            }
+        }
+    }
+    
+    public void close() {
+        synchronized(lock) {
+            while (!recipes.isEmpty()) {
+                DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
+                disconnectExpression(expression);
+            }
+        }
+    }
 
     /**
      * Creates a new notifier. The new notifier will notifier the given pv
@@ -39,13 +124,13 @@ class Notifier<T> {
      * @param function the function used to calculate new values
      * @param notificationExecutor the thread switching mechanism
      */
-    Notifier(PVReaderImpl<T> pv, Function<T> function, Function<Boolean> connFunction, ScheduledExecutorService scannerExecutor, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
-        this.pvRef = new WeakReference<PVReaderImpl<T>>(pv);
+    PVReaderDirector(PVReaderImpl<T> pv, Function<T> function, ScheduledExecutorService scannerExecutor,
+            Executor notificationExecutor, DataSource dataSource) {
+        this.pvRef = new WeakReference<>(pv);
         this.function = function;
-        this.connFunction = connFunction;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
-        this.exceptionHandler = exceptionHandler;
+        this.dataSource = dataSource;
     }
 
     /**
@@ -64,10 +149,6 @@ class Notifier<T> {
         if (pv != null && !pv.isClosed()) {
             return true;
         } else {
-            if (pvRecipe != null) {
-                pvRecipe.getDataSource().disconnect(pvRecipe.getDataSourceRecipe());
-                pvRecipe = null;
-            }
             return false;
         }
     }
@@ -107,11 +188,18 @@ class Notifier<T> {
             calculationSucceeded = true;
         } catch(RuntimeException ex) {
             // Calculation failed
-            exceptionHandler.handleException(ex);
+            exceptionCollector.setValue(ex);
         }
         
         // Calculate new connection
-        final boolean connected = connFunction.getValue();
+        final boolean connected = connCollector.getValue();
+        List<Exception> exceptions = exceptionCollector.getValue();
+        final Exception lastException;
+        if (exceptions.isEmpty()) {
+            lastException = null;
+        } else {
+            lastException = exceptions.get(exceptions.size() - 1);
+        }
         
         // TODO: if payload is immutable, the difference test should be done here
         // and not in the runnable (to save SWT time)
@@ -132,6 +220,9 @@ class Notifier<T> {
                     // collected
                     if (pv != null) {
                         pv.setConnected(connected);
+                        if (lastException != null) {
+                            pv.setLastException(lastException);
+                        }
                         
                         // XXX Are we sure that we should skip notifications if values are null?
                         if (finalCalculationSucceeded && finalValue != null) {
@@ -154,14 +245,6 @@ class Notifier<T> {
             }
         });
     }
-
-    void setPvRecipe(PVRecipe pvRecipe) {
-        this.pvRecipe = pvRecipe;
-    }
-
-    PVRecipe getPvRecipe() {
-        return pvRecipe;
-    }
     
     void startScan(TimeDuration duration) {
         scanTaskHandle = scannerExecutor.scheduleWithFixedDelay(new Runnable() {
@@ -175,6 +258,7 @@ class Notifier<T> {
                     }
                 } else {
                     stopScan();
+                    close();
                 }
             }
         }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);
@@ -187,7 +271,7 @@ class Notifier<T> {
             public void run() {
                 PVReaderImpl<T> pv = pvRef.get();
                 if (pv != null && pv.getValue() == null) {
-                    exceptionHandler.handleException(new TimeoutException(timeoutMessage));
+                    exceptionCollector.setValue(new TimeoutException(timeoutMessage));
                 }
             }
         }, timeout.toNanosLong(), TimeUnit.NANOSECONDS);

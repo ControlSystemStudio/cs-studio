@@ -7,7 +7,7 @@ package org.epics.pvmanager;
 import java.util.List;
 
 /**
- * Returns the last value in the time slice.
+ * Returns the last value of the list.
  * 
  * @author carcassi
  */

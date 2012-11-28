@@ -42,9 +42,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void addMonitor(ChannelHandlerReadSubscription subscription) {
+    protected synchronized void addReader(ChannelHandlerReadSubscription subscription) {
         // Override for test visibility purposes
-        super.addMonitor(subscription);
+        super.addReader(subscription);
     }
 
     @Override
@@ -54,9 +54,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void removeMonitor(Collector<?> collector) {
+    protected synchronized void removeReader(ChannelHandlerReadSubscription subscription) {
         // Override for test visibility purposes
-        super.removeMonitor(collector);
+        super.removeReader(subscription);
     }
 
     @Override

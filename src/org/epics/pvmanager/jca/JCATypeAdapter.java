@@ -82,6 +82,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<JCAConnect
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean updateCache(ValueCache cache, JCAConnectionPayload connPayload, JCAMessagePayload message) {
         Channel channel = connPayload.getChannel();
         

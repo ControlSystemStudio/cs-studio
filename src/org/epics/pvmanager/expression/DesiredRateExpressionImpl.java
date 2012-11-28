@@ -4,11 +4,10 @@
  */
 package org.epics.pvmanager.expression;
 
-import java.util.List;
-import org.epics.pvmanager.Collector;
-import org.epics.pvmanager.DataRecipe;
-import org.epics.pvmanager.DataRecipeBuilder;
+import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.Function;
+import org.epics.pvmanager.Collector;
+import org.epics.pvmanager.PVReaderDirector;
 
 /**
  * Implementation class for {@link DesiredRateExpression}.
@@ -18,9 +17,10 @@ import org.epics.pvmanager.Function;
  */
 public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<R> implements DesiredRateExpression<R> {
 
-    private final DataRecipeBuilder recipe;
     private final Function<R> function;
     private String name;
+    private final SourceRateExpression<?> sourceRateChild;
+    private final DesiredRateExpressionList<?> desiredRateChildren;
     
     {
         // Make sure that the list includes this expression
@@ -41,11 +41,9 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
      * @param collector the collector for the original source
      * @param defaultName the display name of the expression
      */
-    public DesiredRateExpressionImpl(SourceRateExpression<?> expression, Function<R> collector, String defaultName) {
-        if (!(collector instanceof Collector)){
-            throw new IllegalArgumentException("collector must be of type Collector");
-        }
-        this.recipe = expression.getSourceRateExpressionImpl().createDataRecipe((Collector) collector);
+    public DesiredRateExpressionImpl(SourceRateExpression<?> expression, Collector<?, R> collector, String defaultName) {
+        this.sourceRateChild = expression;
+        this.desiredRateChildren = null;
         this.function = collector;
         this.name = defaultName;
     }
@@ -60,22 +58,10 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
      * @param defaultName the display name of the expression
      */
     public DesiredRateExpressionImpl(DesiredRateExpressionList<?> childExpressions, Function<R> function, String defaultName) {
-        this.recipe = combineRecipes(childExpressions);
+        this.sourceRateChild = null;
+        this.desiredRateChildren = childExpressions;
         this.function = function;
         this.name = defaultName;
-    }
-
-    private static DataRecipeBuilder combineRecipes(DesiredRateExpressionList<?> expressions) {
-        if (expressions == null || expressions.getDesiredRateExpressions().isEmpty())
-            return new DataRecipeBuilder();
-
-        DataRecipeBuilder recipe = expressions.getDesiredRateExpressions().get(0).getDesiredRateExpressionImpl().recipe;
-        for (int i = 1; i < expressions.getDesiredRateExpressions().size(); i++) {
-            DataRecipeBuilder newRecipe = expressions.getDesiredRateExpressions().get(i).getDesiredRateExpressionImpl().recipe;
-            recipe.addAll(newRecipe);
-        }
-
-        return recipe;
     }
 
     /**
@@ -88,14 +74,16 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
         return name;
     }
 
-    /**
-     * The recipe for connect the channels for this expression.
-     *
-     * @return a data recipe
-     */
     @Override
-    public final DataRecipe getDataRecipe() {
-        return recipe.build();
+    @SuppressWarnings("unchecked")
+    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+        if (sourceRateChild != null) {
+            sourceRateChild.getSourceRateExpressionImpl().fillDataRecipe(director, (Collector) function, builder);
+        } else if (desiredRateChildren != null) {
+            for (DesiredRateExpression<?> desiredRateExpression : desiredRateChildren.getDesiredRateExpressions()) {
+                desiredRateExpression.fillReadRecipe(director, builder);
+            }
+        }
     }
 
     /**
