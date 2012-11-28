@@ -102,6 +102,7 @@
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.concurrent"/>
+      <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.frameworkadmin"/>
       <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
       <plugin id="org.eclipse.equinox.preferences"/>
@@ -111,6 +112,7 @@
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
@@ -135,6 +137,7 @@
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.epics.util"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
@@ -143,7 +146,9 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
+      <plugin id="org.remotercp.domain.authorization"/>
       <plugin id="org.remotercp.libs.mockito"/>
+      <plugin id="org.remotercp.service.authorization"/>
       <plugin id="org.remotercp.service.connection"/>
       <plugin id="org.slf4j"/>
       <plugin id="org.slf4j-log4j12"/>
@@ -153,7 +158,12 @@
       <plugin id="org.csstudio.utility.ldap.service.impl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.p2.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+      <plugin id="org.remotercp.service.authorization" autoStart="false" startLevel="0" />
+      <plugin id="org.remotercp.service.connection" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

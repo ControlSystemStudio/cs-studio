@@ -97,12 +97,15 @@ public class LdapUpdaterServer implements IApplication,
     public final Object start(@Nonnull final IApplicationContext context)
     throws Exception {
 
-        final long startTimeSec = _prefsService.getLdapAutoStart();
+    	LdapUpdaterActivator.getDefault().addSessionServiceListener(this);
+
+    	final long startTimeSec = _prefsService.getLdapAutoStart();
         final long intervalSec = _prefsService.getLdapStartInterval();
 
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
         LOG.info(now.formatted());
+
 
         final long delayInS = getDelayInS(context, startTimeSec, now);
 
