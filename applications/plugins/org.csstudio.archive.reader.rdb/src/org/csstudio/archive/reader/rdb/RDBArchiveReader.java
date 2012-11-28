@@ -20,7 +20,7 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -387,8 +387,8 @@ public class RDBArchiveReader implements ArchiveReader
         try
         {
 	        count_samples.setInt(1, channel_id);
-	        count_samples.setTimestamp(2, TimestampUtil.toSQLTimestamp(start));
-	        count_samples.setTimestamp(3, TimestampUtil.toSQLTimestamp(end));
+	        count_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
+	        count_samples.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
 	        final ResultSet result = count_samples.executeQuery();
 	        if (! result.next())
 	        	throw new Exception("Cannot count samples");

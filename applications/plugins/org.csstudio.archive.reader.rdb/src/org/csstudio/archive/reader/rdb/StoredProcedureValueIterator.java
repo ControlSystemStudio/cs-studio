@@ -20,7 +20,7 @@ import oracle.jdbc.OracleTypes;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -99,8 +99,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         	if (dialect == RDBUtil.Dialect.MySQL)
         	{	 //MySQL
         		 statement.setInt(1, channel_id);
-                 statement.setTimestamp(2, TimestampUtil.toSQLTimestamp(start));
-                 statement.setTimestamp(3, TimestampUtil.toSQLTimestamp(end));
+                 statement.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
+                 statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
                  statement.setInt(4, count);
                  result = statement.executeQuery();
         	}
@@ -108,8 +108,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         	{	//ORACLE
         		statement.registerOutParameter(1, OracleTypes.CURSOR);
                 statement.setInt(2, channel_id);
-                statement.setTimestamp(3, TimestampUtil.toSQLTimestamp(start));
-                statement.setTimestamp(4, TimestampUtil.toSQLTimestamp(end));
+                statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(start));
+                statement.setTimestamp(4, TimestampHelper.toSQLTimestamp(end));
                 statement.setInt(5, count);
                 statement.setFetchDirection(ResultSet.FETCH_FORWARD);
                 statement.setFetchSize(1000);
@@ -163,7 +163,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         while (result.next())
         {
             // Time stamp
-            final Timestamp time = TimestampUtil.fromSQLTimestamp(result.getTimestamp(2));
+            final Timestamp time = TimestampHelper.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
             AlarmSeverity severity = reader.getSeverity(result.getInt(3));

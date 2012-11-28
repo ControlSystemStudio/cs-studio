@@ -20,7 +20,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
@@ -253,7 +253,7 @@ public class RDBArchiveReaderTest
         final ValueIterator raw = reader.getRawValues(0, name, start, end);
         final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
         System.out.println("Time range: "
-        		+ TimestampUtil.format(start) + " ... " + TimestampUtil.format(end)
+        		+ TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)
         		+ ", " + BUCKETS + " bins, "
         		+ "i.e. every " + seconds + " seconds");
         final ValueIterator values = new AveragedValueIterator(raw, seconds);

@@ -63,13 +63,13 @@ public class VTypeHelper
 	final public static void addTimestamp(final StringBuilder buf, final VType value)
 	{
 		final Timestamp stamp = getTimestamp(value);
-		buf.append(TimestampUtil.format(stamp));
+		buf.append(TimestampHelper.format(stamp));
 	}
     
 	/** @param value {@link VType} value
 	 *  @return {@link AlarmSeverity}
 	 */
-	final public static AlarmSeverity getSeverity(VType value)
+	final public static AlarmSeverity getSeverity(final VType value)
 	{
 		final Alarm alarm = ValueUtil.alarmOf(value);
 		if (alarm == null)
@@ -80,7 +80,7 @@ public class VTypeHelper
 	/** @param value {@link VType} value
 	 *  @return Alarm message
 	 */
-	final public static String getMessage(VType value)
+	final public static String getMessage(final VType value)
 	{
 		final Alarm alarm = ValueUtil.alarmOf(value);
 		if (alarm == null)

@@ -18,13 +18,13 @@ import org.epics.util.time.TimestampFormat;
 /** Time stamp gymnastics
  *  @author Kay Kasemir
  */
-public class TimestampUtil
+public class TimestampHelper
 {
 	final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.NNNNNNNNN";
 	final public static String FORMAT_SECONDS = "yyyy-MM-dd HH:mm:ss";
 
 	/** Time stamp format */
-	final private static Format time_format = new TimestampFormat(TimestampUtil.FORMAT_FULL);
+	final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
 	
     /** @param timestamp {@link Timestamp}, may be <code>null</code>
 	 *  @return Time stamp formatted as string

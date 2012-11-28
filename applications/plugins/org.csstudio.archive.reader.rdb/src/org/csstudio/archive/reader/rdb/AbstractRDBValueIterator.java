@@ -21,7 +21,7 @@ import org.csstudio.archive.vtype.ArchiveVDoubleArray;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VType;
@@ -175,7 +175,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // Oracle has nanoseconds in TIMESTAMP, other RDBs in separate column
         if (!reader.isOracle())
             stamp.setNanos(result.getInt(7));
-        final Timestamp time = TimestampUtil.fromSQLTimestamp(stamp);
+        final Timestamp time = TimestampHelper.fromSQLTimestamp(stamp);
 
         // Get severity/status
         final String status = reader.getStatus(result.getInt(3));
@@ -257,7 +257,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                     reader.getSQL().sample_sel_array_vals);
         }
         sel_array_samples.setInt(1, channel_id);
-        sel_array_samples.setTimestamp(2, TimestampUtil.toSQLTimestamp(stamp));
+        sel_array_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(stamp));
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
         if (! reader.isOracle())
             sel_array_samples.setInt(3, stamp.getNanoSec());
@@ -341,7 +341,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             if (i > 1)
                 System.out.print(", ");
             if (meta.getColumnName(i).equals("SMPL_TIME"))
-                System.out.print(meta.getColumnName(i) + ": " + TimestampUtil.fromSQLTimestamp(result.getTimestamp(i)));
+                System.out.print(meta.getColumnName(i) + ": " + TimestampHelper.fromSQLTimestamp(result.getTimestamp(i)));
             else
                 System.out.print(meta.getColumnName(i) + ": " + result.getString(i));
         }

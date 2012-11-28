@@ -10,7 +10,7 @@ package org.csstudio.archive.reader.rdb;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.StatisticsAccumulator;
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
@@ -92,9 +92,9 @@ public class AveragedValueIterator implements ValueIterator
         // Determine next multiple of averaging period
         final Timestamp average_window_start = VTypeHelper.getTimestamp(base_value);
         final Timestamp average_window_end =
-                TimestampUtil.roundUp(average_window_start, seconds);
+                TimestampHelper.roundUp(average_window_start, seconds);
         if (debug)
-            System.out.println("Average until " + TimestampUtil.format(average_window_end));
+            System.out.println("Average until " + TimestampHelper.format(average_window_end));
         // Determine average over values within the window
         final StatisticsAccumulator stats = new StatisticsAccumulator();
         VType last_value = null;

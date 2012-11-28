@@ -10,7 +10,7 @@ package org.csstudio.archive.reader.rdb;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.csstudio.archive.vtype.TimestampUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
@@ -65,8 +65,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     private void determineInitialSample(final Timestamp start, final Timestamp end) throws Exception
     {
-        java.sql.Timestamp start_stamp = TimestampUtil.toSQLTimestamp(start);
-        final java.sql.Timestamp end_stamp = TimestampUtil.toSQLTimestamp(end);
+        java.sql.Timestamp start_stamp = TimestampHelper.toSQLTimestamp(start);
+        final java.sql.Timestamp end_stamp = TimestampHelper.toSQLTimestamp(end);
 
         // Get time of initial sample
         final PreparedStatement statement =
