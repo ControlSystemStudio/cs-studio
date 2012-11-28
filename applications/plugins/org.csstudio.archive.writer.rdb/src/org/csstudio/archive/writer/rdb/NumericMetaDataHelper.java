@@ -11,8 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.NumberFormat;
 
-import org.csstudio.data.values.INumericMetaData;
+import org.epics.pvmanager.data.Display;
+
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Helper for handling the numeric meta data table.
@@ -57,20 +59,24 @@ public class NumericMetaDataHelper
      *  @throws Exception on error
      */
     public static void insert(final RDBUtil rdb, final SQL sql,
-            final RDBWriteChannel channel, final INumericMetaData meta) throws Exception
+            final RDBWriteChannel channel, final Display meta) throws Exception
     {
         final Connection connection = rdb.getConnection();
         final PreparedStatement insert = connection.prepareStatement(sql.numeric_meta_insert);
         try
         {
             insert.setInt(1, channel.getId());
-            setDoubleOrNull(insert, 2, meta.getDisplayLow());
-            setDoubleOrNull(insert, 3, meta.getDisplayHigh());
-            setDoubleOrNull(insert, 4, meta.getWarnLow());
-            setDoubleOrNull(insert, 5, meta.getWarnHigh());
-            setDoubleOrNull(insert, 6, meta.getAlarmLow());
-            setDoubleOrNull(insert, 7, meta.getAlarmHigh());
-            insert.setInt(8, meta.getPrecision());
+            setDoubleOrNull(insert, 2, meta.getLowerDisplayLimit());
+            setDoubleOrNull(insert, 3, meta.getUpperDisplayLimit());
+            setDoubleOrNull(insert, 4, meta.getLowerWarningLimit());
+            setDoubleOrNull(insert, 5, meta.getUpperWarningLimit());
+            setDoubleOrNull(insert, 6, meta.getLowerAlarmLimit());
+            setDoubleOrNull(insert, 7, meta.getUpperAlarmLimit());
+            final NumberFormat format = meta.getFormat();
+            if (format == null)
+    			insert.setInt(8, 0);
+            else
+            	insert.setInt(8, format.getMinimumFractionDigits());
             // Oracle schema has NOT NULL units...
             String units = meta.getUnits();
             if (units == null  ||  units.length() < 1)
@@ -92,9 +98,9 @@ public class NumericMetaDataHelper
      *  @throws SQLException
      */
 	private static void setDoubleOrNull(final PreparedStatement statement, final int index,
-            final double number) throws SQLException
+            final Double number) throws SQLException
     {
-		if (Double.isInfinite(number) || Double.isNaN(number))
+		if (number == null  ||  number.isInfinite()  ||  number.isNaN())
 			statement.setNull(index, Types.DOUBLE);
 		else
 			statement.setDouble(index, number);

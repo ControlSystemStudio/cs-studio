@@ -8,7 +8,6 @@
 package org.csstudio.archive.writer.rdb;
 
 import org.csstudio.archive.writer.WriteChannel;
-import org.csstudio.data.values.IMetaData;
 
 /** Channel information for channel in RDB
  *  @author Kay Kasemir
@@ -18,7 +17,7 @@ public class RDBWriteChannel implements WriteChannel
 {
 	final private String name;
 	final private int id;
-	private IMetaData meta;
+	private Object meta = null;
 	
 	/** Initialize
 	 *  @param name Channel name
@@ -51,13 +50,13 @@ public class RDBWriteChannel implements WriteChannel
 	}
 
 	/** @return Meta data or <code>null</code> */
-	public IMetaData getMetadata()
+	public Object getMetadata()
 	{
 		return meta;
 	}
 	
 	/** @param meta Current meta data of channel */
-	public void setMetaData(final IMetaData meta)
+	public void setMetaData(final Object meta)
 	{
 		this.meta = meta;
 	}

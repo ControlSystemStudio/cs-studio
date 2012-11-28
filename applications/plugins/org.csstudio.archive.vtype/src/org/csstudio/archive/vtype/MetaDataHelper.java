@@ -20,14 +20,16 @@ public class MetaDataHelper
 	private static final double TEST_VALUE = 3.14;
 
 	/** @param display {@link Display}
-	 *  @param other Other {@link Display}
+	 *  @param obj Other {@link Display}
 	 *  @return <code>true</code> if both are numerically the same
 	 */
-	public static boolean equals(final Display display, final Display other)
+	public static boolean equals(final Display display, final Object obj)
 	{
-		if (display == other)
+		if (display == obj)
 			return true;
-		
+		if (! (obj instanceof Display))
+			return false;
+		final Display other = (Display) obj;
 		if (! (equals(display.getLowerDisplayLimit(), other.getLowerDisplayLimit())
             && equals(display.getUpperDisplayLimit(), other.getUpperDisplayLimit())
             && equals(display.getLowerCtrlLimit(), other.getLowerCtrlLimit())
@@ -61,8 +63,14 @@ public class MetaDataHelper
 	 *  @param other {@link Enum} labels to compare
 	 *  @return <code>true</code> if labels are equal
 	 */
-	public static boolean equals(final List<String> labels, final List<String> other)
+	public static boolean equals(final List<String> labels, final Object obj)
 	{
+		if (labels == obj)
+			return true;
+		if (! (obj instanceof List))
+			return false;
+		@SuppressWarnings("unchecked")
+		final List<String> other = (List<String>) obj;
 		return labels.equals(other);
 	}
 }

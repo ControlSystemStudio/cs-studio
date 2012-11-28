@@ -9,9 +9,9 @@ package org.csstudio.archive.writer.rdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.logging.Level;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Enumeration Strings for a channel.
@@ -56,25 +56,24 @@ public class EnumMetaDataHelper
      *  @param rdb RDBUtil
      *  @param sql SQL statements
      *  @param channel Channel
-     *  @param meta Meta data
+     *  @param states Enumeration labels
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
     public static void insert(final RDBUtil rdb, final SQL sql, final RDBWriteChannel channel,
-    		final IEnumeratedMetaData meta) throws Exception
+    		final List<String> states) throws Exception
     {
         final Connection connection = rdb.getConnection();
         // Define the new ones
         final PreparedStatement insert = connection.prepareStatement(sql.enum_insert_channel_num_val);
         try
         {
-            final String[] states = meta.getStates();
-            for (int i=0; i<states.length; ++i)
+            for (int i=0; i<states.size(); ++i)
             {
                 insert.setInt(1, channel.getId());
                 insert.setInt(2, i);
                 // Oracle doesn't allow empty==null state strings.
-                String state = states[i];
+                String state = states.get(i);
                 if (state == null  ||  state.length() < 1)
                 {   // Patch as "<#>"
                     state = "<" + i + ">";
