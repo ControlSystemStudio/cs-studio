@@ -17,7 +17,7 @@ import org.epics.pvmanager.data.*;
  *
  * @author carcassi
  */
-class LineGraphFunction extends Function<Plot2DResult> {
+class LineGraphFunction implements Function<Plot2DResult> {
     
     private Function<? extends VNumberArray> yArray;
     private Function<? extends VNumberArray> xArray;
