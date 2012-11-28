@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.writer.rdb;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.vtype.ArchiveVDoubleArray;
@@ -16,7 +18,6 @@ import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.writer.WriteChannel;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueFactory;
 import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.time.Timestamp;
@@ -88,32 +89,30 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double sample for channel " + name);
 		final WriteChannel channel = writer.getChannel(name);
-		
 		final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
+		// Write double
 		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
+		// .. double that could be int
 		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.00));
+		// write int
 		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3));
 		writer.flush();
+		// No good way to check in unit test, need to read raw SQL table to verify.
 	}
-//
-//	@Test
-//	public void testWriteDoubleArray() throws Exception
-//	{
-//		if (writer == null  ||  array_name == null)
-//			return;
-//		System.out.println("Writing double array sample for channel " + array_name);
-//		final WriteChannel channel = writer.getChannel(array_name);
-//		final IValue sample;
-//		sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
-//				ValueFactory.createOKSeverity(), "OK",
-//				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
-//				IValue.Quality.Original,
-//				new double[] { 3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-//
-//		writer.addSample(channel, sample);
-//		writer.flush();
-//	}
-//
+
+	@Test
+	public void testWriteDoubleArray() throws Exception
+	{
+		if (writer == null  ||  array_name == null)
+			return;
+		System.out.println("Writing double array sample for channel " + array_name);
+		final WriteChannel channel = writer.getChannel(array_name);
+		final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
+		writer.addSample(channel, new ArchiveVDoubleArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
+				3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+		writer.flush();
+	}
+
 //	@Test
 //	public void testWriteLongEnumText() throws Exception
 //	{
