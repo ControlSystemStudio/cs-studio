@@ -89,24 +89,19 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         for (PVWriterListener<T> pVWriterListener : writeListeners) {
             pvWriter.addPVWriterListener(pVWriterListener);
         }
-        if (exceptionHandler == null) {
-            exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
-        }
-        WriteBuffer writeBuffer = writeExpression.createWriteBuffer().exceptionHandler(exceptionHandler).build();
-        WriteFunction<T> writeFunction =writeExpression.getWriteFunction();
+        WriteFunction<T> writeFunction = writeExpression.getWriteFunction();
 
-        try {
-            if (timeoutMessage == null)
-                timeoutMessage = "Write timeout";
-            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), notificationExecutor, exceptionHandler,
-                    timeout, timeoutMessage));
-        } catch (Exception ex) {
-            exceptionHandler.handleException(ex);
-        }
         
-        WriteNotifier<T> notifier = new WriteNotifier<T>(pvWriter, new LastValueAggregator<Boolean>(writeBuffer.getConnectionCollector()), 
-                PVManager.getReadScannerExecutorService(), notificationExecutor, exceptionHandler);
-        notifier.startScan(TimeDuration.ofMillis(100));
+        // TODO: we are ignoring the exception handler for now
+        
+        if (timeoutMessage == null)
+            timeoutMessage = "Write timeout";
+        PVWriterDirector<T> writerDirector = new PVWriterDirector<T>(pvWriter, writeFunction, dataSource, PVManager.getAsyncWriteExecutor(),
+                notificationExecutor, PVManager.getReadScannerExecutorService(), timeout, timeoutMessage);
+        writerDirector.connectExpression(writeExpression);
+        writerDirector.startScan(TimeDuration.ofMillis(100));
+        pvWriter.setWriteDirector(writerDirector);
+        
         return pvWriter;
     }
 

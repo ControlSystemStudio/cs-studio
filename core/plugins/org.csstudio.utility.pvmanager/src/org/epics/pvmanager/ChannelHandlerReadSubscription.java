@@ -11,74 +11,56 @@ package org.epics.pvmanager;
  */
 public class ChannelHandlerReadSubscription {
 
-    // TODO: Does not need to be public if tests use mock
-    public ChannelHandlerReadSubscription(Collector<?> collector, ValueCache<?> cache, ExceptionHandler handler, Collector<Boolean> connCollector, ValueCache<Boolean> connCache) {
-        this.collector = collector;
-        this.cache = cache;
-        this.handler = handler;
-        this.connCollector = connCollector;
-        this.connCache = connCache;
+    /**
+     * Creates the parameters for a new subscription.
+     * 
+     * @param valueCache the cache where to write the value
+     * @param exceptionWriteFunction the write function to dispatch exceptions
+     * @param connectionWriteFunction the connection write function to dispatch exceptions
+     */
+    public ChannelHandlerReadSubscription(ValueCache<?> valueCache, WriteFunction<Exception> exceptionWriteFunction, WriteFunction<Boolean> connectionWriteFunction) {
+        this.valueCache = valueCache;
+        this.exceptionWriteFunction = exceptionWriteFunction;
+        this.connectionWriteFunction = connectionWriteFunction;
     }
     
-    private final Collector<?> collector;
-    private final ValueCache<?> cache;
-    private final ExceptionHandler handler;
-    private final Collector<Boolean> connCollector;
-    private final ValueCache<Boolean> connCache;
+    private final ValueCache<?> valueCache;
+    private final WriteFunction<Exception> exceptionWriteFunction;
+    private final WriteFunction<Boolean> connectionWriteFunction;
 
     /**
-     * The collector to lock and notify when a new value is available.
+     * The cache where to write the value.
      * 
-     * @return the value collector
+     * @return never null
      */
-    public Collector<?> getCollector() {
-        return collector;
+    public ValueCache<?> getValueCache() {
+        return valueCache;
     }
 
     /**
-     * The cache to update when a new value is available.
+     * The write function for exceptions.
      * 
-     * @return the value cache
+     * @return never null
      */
-    public ValueCache<?> getCache() {
-        return cache;
+    public WriteFunction<Exception> getExceptionWriteFunction() {
+        return exceptionWriteFunction;
     }
 
     /**
-     * The handler to notify whenever an exception is thrown.
+     * The write function for the connection flag.
      * 
-     * @return the exception handler
+     * @return never null
      */
-    public ExceptionHandler getHandler() {
-        return handler;
+    public WriteFunction<Boolean> getConnectionWriteFunction() {
+        return connectionWriteFunction;
     }
-
-    /**
-     * The collector to lock and notify whenever the connection state changes.
-     * 
-     * @return the connection state collector
-     */
-    public Collector<Boolean> getConnCollector() {
-        return connCollector;
-    }
-
-    /**
-     * The cache to update whenever the connection state changes.
-     * 
-     * @return the connection state cache
-     */
-    public ValueCache<Boolean> getConnCache() {
-        return connCache;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 67 * hash + (this.collector != null ? this.collector.hashCode() : 0);
-        hash = 67 * hash + (this.cache != null ? this.cache.hashCode() : 0);
-        hash = 67 * hash + (this.handler != null ? this.handler.hashCode() : 0);
-        hash = 67 * hash + (this.connCollector != null ? this.connCollector.hashCode() : 0);
-        hash = 67 * hash + (this.connCache != null ? this.connCache.hashCode() : 0);
+        hash = 67 * hash + (this.valueCache != null ? this.valueCache.hashCode() : 0);
+        hash = 67 * hash + (this.exceptionWriteFunction != null ? this.exceptionWriteFunction.hashCode() : 0);
+        hash = 67 * hash + (this.connectionWriteFunction != null ? this.connectionWriteFunction.hashCode() : 0);
         return hash;
     }
 
@@ -91,23 +73,16 @@ public class ChannelHandlerReadSubscription {
             return false;
         }
         final ChannelHandlerReadSubscription other = (ChannelHandlerReadSubscription) obj;
-        if (this.collector != other.collector && (this.collector == null || !this.collector.equals(other.collector))) {
+        if (this.valueCache != other.valueCache && (this.valueCache == null || !this.valueCache.equals(other.valueCache))) {
             return false;
         }
-        if (this.cache != other.cache && (this.cache == null || !this.cache.equals(other.cache))) {
+        if (this.exceptionWriteFunction != other.exceptionWriteFunction && (this.exceptionWriteFunction == null || !this.exceptionWriteFunction.equals(other.exceptionWriteFunction))) {
             return false;
         }
-        if (this.handler != other.handler && (this.handler == null || !this.handler.equals(other.handler))) {
-            return false;
-        }
-        if (this.connCollector != other.connCollector && (this.connCollector == null || !this.connCollector.equals(other.connCollector))) {
-            return false;
-        }
-        if (this.connCache != other.connCache && (this.connCache == null || !this.connCache.equals(other.connCache))) {
+        if (this.connectionWriteFunction != other.connectionWriteFunction && (this.connectionWriteFunction == null || !this.connectionWriteFunction.equals(other.connectionWriteFunction))) {
             return false;
         }
         return true;
     }
-    
     
 }

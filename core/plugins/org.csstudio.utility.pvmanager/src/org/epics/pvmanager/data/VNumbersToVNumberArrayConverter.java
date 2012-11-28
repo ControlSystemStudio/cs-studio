@@ -16,7 +16,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class VNumbersToVNumberArrayConverter extends Function<VNumberArray> {
+class VNumbersToVNumberArrayConverter implements Function<VNumberArray> {
     
     private final List<? extends Function<? extends VNumber>> arguments;
 

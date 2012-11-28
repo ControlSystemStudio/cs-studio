@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author carcassi
  */
-class MapOfWriteFunction<T> extends WriteFunction<Map<String, T>> {
+class MapOfWriteFunction<T> implements WriteFunction<Map<String, T>> {
     
     private Map<String, WriteFunction<T>> functionMap;
 

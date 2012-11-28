@@ -8,11 +8,11 @@ package org.epics.pvmanager;
  *
  * @author carcassi
  */
-public class ChannelWriteBuffer {
+public class ChannelWriteRecipe {
     private final String channelName;
     private final ChannelHandlerWriteSubscription writeSubscription;
 
-    public ChannelWriteBuffer(String channelName, ChannelHandlerWriteSubscription writeSubscription) {
+    public ChannelWriteRecipe(String channelName, ChannelHandlerWriteSubscription writeSubscription) {
         this.channelName = channelName;
         this.writeSubscription = writeSubscription;
     }
@@ -41,7 +41,7 @@ public class ChannelWriteBuffer {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ChannelWriteBuffer other = (ChannelWriteBuffer) obj;
+        final ChannelWriteRecipe other = (ChannelWriteRecipe) obj;
         if ((this.channelName == null) ? (other.channelName != null) : !this.channelName.equals(other.channelName)) {
             return false;
         }

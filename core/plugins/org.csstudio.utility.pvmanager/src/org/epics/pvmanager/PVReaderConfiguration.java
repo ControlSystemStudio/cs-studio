@@ -105,28 +105,20 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         for (PVReaderListener<T> pVReaderListener : readListeners) {
             pv.addPVReaderListener(pVReaderListener);
         }
-        DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
-        if (exceptionHandler == null) {
-            dataRecipe = dataRecipe.withExceptionHandler(ExceptionHandler.createDefaultExceptionHanderl(pv, notificationExecutor));
-        } else {
-            dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
-        }
         Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-        Function<Boolean> connFunction = new LastValueAggregator<Boolean>(dataRecipe.getConnectionCollector());
-        Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, connFunction, PVManager.getReadScannerExecutorService(), notificationExecutor, dataRecipe.getExceptionHandler());
-        notifier.startScan(rate);
+        
+        // TODO: we are ignoring the exception handler for now
+        
+        PVReaderDirector<T> director = new PVReaderDirector<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(),
+                notificationExecutor, dataSource);
         if (timeout != null) {
             if (timeoutMessage == null)
                 timeoutMessage = "Read timeout";
-            notifier.timeout(timeout, timeoutMessage);
+            director.timeout(timeout, timeoutMessage);
         }
-        try {
-            source.connect(dataRecipe);
-        } catch (RuntimeException ex) {
-            dataRecipe.getExceptionHandler().handleException(ex);
-        }
-        PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);
-        notifier.setPvRecipe(recipe);
+        director.connectExpression(aggregatedPVExpression);
+        director.startScan(rate);
+
         return pv;
     }
 }

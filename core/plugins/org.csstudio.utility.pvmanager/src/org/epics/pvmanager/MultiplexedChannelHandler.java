@@ -4,8 +4,6 @@
  */
 package org.epics.pvmanager;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -28,8 +26,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private boolean writeConnected = false;
     private MessagePayload lastMessage;
     private ConnectionPayload connectionPayload;
-    private Map<Collector<?>, MonitorHandler> monitors = new ConcurrentHashMap<Collector<?>, MonitorHandler>();
-    private Map<WriteCache<?>, ChannelHandlerWriteSubscription> writeCaches = new ConcurrentHashMap<WriteCache<?>, ChannelHandlerWriteSubscription>();
+    private Map<ValueCache<?>, MonitorHandler> monitors = new ConcurrentHashMap<>();
+    private Map<WriteCache<?>, ChannelHandlerWriteSubscription> writeSubscriptions = new ConcurrentHashMap<>();
 
     private class MonitorHandler {
 
@@ -41,10 +39,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         }
         
         public final void processConnection(boolean connection) {
-            synchronized (subscription.getConnCollector()) {
-                subscription.getConnCache().setValue(connection);
-                subscription.getConnCollector().collect();
-            }
+            subscription.getConnectionWriteFunction().setValue(connection);
         }
 
         public final void processValue(MessagePayload payload) {
@@ -52,14 +47,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
                 return;
             
             // Lock the collector and prepare the new value.
-            synchronized (subscription.getCollector()) {
-                try {
-                    if (typeAdapter.updateCache(subscription.getCache(), getConnectionPayload(), payload)) {
-                        subscription.getCollector().collect();
-                    }
-                } catch (RuntimeException e) {
-                    subscription.getHandler().handleException(e);
-                }
+            try {
+                typeAdapter.updateCache(subscription.getValueCache(), getConnectionPayload(), payload);
+            } catch (RuntimeException e) {
+                subscription.getExceptionWriteFunction().setValue(e);
             }
         }
         
@@ -68,9 +59,9 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
                 typeAdapter = null;
             } else {
                 try {
-                    typeAdapter = MultiplexedChannelHandler.this.findTypeAdapter(subscription.getCache(), getConnectionPayload());
+                    typeAdapter = MultiplexedChannelHandler.this.findTypeAdapter(subscription.getValueCache(), getConnectionPayload());
                 } catch(RuntimeException ex) {
-                    subscription.getHandler().handleException(ex);
+                    subscription.getExceptionWriteFunction().setValue(ex);
                 }
             }
         }
@@ -84,10 +75,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected synchronized final void reportExceptionToAllReadersAndWriters(Exception ex) {
         for (MonitorHandler monitor : monitors.values()) {
-            monitor.subscription.getHandler().handleException(ex);
+            monitor.subscription.getExceptionWriteFunction().setValue(ex);
         }
-        for (ChannelHandlerWriteSubscription subscription : writeCaches.values()) {
-            subscription.getHandler().handleException(ex);
+        for (ChannelHandlerWriteSubscription subscription : writeSubscriptions.values()) {
+            subscription.getExceptionWriteFunction().setValue(ex);
         }
     }
     
@@ -98,11 +89,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     }
     
     private void reportWriteConnectionStatus(boolean writeConnected) {
-        for (ChannelHandlerWriteSubscription subscription : writeCaches.values()) {
-            synchronized(subscription.getConnectionCollector()) {
-                subscription.getConnectionCache().setValue(writeConnected);
-                subscription.getConnectionCollector().collect();
-            }
+        for (ChannelHandlerWriteSubscription subscription : writeSubscriptions.values()) {
+            subscription.getConnectionWriteFunction().setValue(writeConnected);
         }
     }
 
@@ -157,6 +145,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public boolean updateCache(ValueCache cache, Object connection, Object message) {
                 Object oldValue = cache.getValue();
                 cache.setValue(message);
@@ -229,10 +218,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * @param subscription the data required for a subscription
      */
     @Override
-    protected synchronized void addMonitor(ChannelHandlerReadSubscription subscription) {
+    protected synchronized void addReader(ChannelHandlerReadSubscription subscription) {
         readUsageCounter++;
         MonitorHandler monitor = new MonitorHandler(subscription);
-        monitors.put(subscription.getCollector(), monitor);
+        monitors.put(subscription.getValueCache(), monitor);
         monitor.findTypeAdapter();
         guardedConnect();
         if (readUsageCounter > 1) {
@@ -248,11 +237,11 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     /**
      * Used by the data source to remove a read request.
      * 
-     * @param collector the collector that does not need to be notified anymore
+     * @param subscription the collector that does not need to be notified anymore
      */
     @Override
-    protected synchronized void removeMonitor(Collector<?> collector) {
-        monitors.remove(collector);
+    protected synchronized void removeReader(ChannelHandlerReadSubscription subscription) {
+        monitors.remove(subscription);
         readUsageCounter--;
         guardedDisconnect();
     }
@@ -266,13 +255,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     @Override
     protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
         writeUsageCounter++;
-        writeCaches.put(subscription.getCache(), subscription);
+        writeSubscriptions.put(subscription.getWriteCache(), subscription);
         guardedConnect();
         if (connectionPayload != null) {
-            synchronized(subscription.getConnectionCollector()) {
-                subscription.getConnectionCache().setValue(isWriteConnected());
-                subscription.getConnectionCollector().collect();
-            }
+            subscription.getConnectionWriteFunction().setValue(isWriteConnected());
         }
     }
 
@@ -284,7 +270,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     @Override
     protected synchronized void removeWrite(ChannelHandlerWriteSubscription subscription) {
         writeUsageCounter--;
-        writeCaches.remove(subscription.getCache());
+        writeSubscriptions.remove(subscription.getWriteCache());
         guardedDisconnect();
     }
 
