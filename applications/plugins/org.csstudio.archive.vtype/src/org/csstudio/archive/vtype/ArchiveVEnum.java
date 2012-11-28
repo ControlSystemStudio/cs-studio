@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VString;
 import org.epics.util.time.Timestamp;
 
 /** Archive-derived {@link VEnum} implementation
@@ -55,6 +57,42 @@ public class ArchiveVEnum extends ArchiveVType implements VEnum
 		return index;
 	}
 
+	/** @return Hash based on the index */
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		return super.hashCode() * prime + index;
+	}
+
+	/** Compare based on index
+	 *  @param obj Other {@link VNumber} or {@link VEnum} or {@link VString}
+	 *  @return <code>true</code> if the two numbers have the same index,
+	 *          so Enum(3) and Integer(3) will be 'equal'
+	 */
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (obj instanceof VEnum)
+			return index == ((VEnum)obj).getIndex();
+		if (obj instanceof VNumber)
+		{
+			final double dbl = ((VNumber)obj).getValue().doubleValue();
+			return index == dbl;
+		}
+		if (obj instanceof VString)
+		{
+			final VString str = (VString) obj;
+			return getValue().equals(str.getValue());
+		}
+		return false;
+	}
+
+	
 	@Override
 	public String toString()
 	{

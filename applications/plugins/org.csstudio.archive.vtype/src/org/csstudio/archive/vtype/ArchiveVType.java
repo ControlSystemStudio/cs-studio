@@ -68,4 +68,39 @@ public class ArchiveVType implements Alarm, Time, VType
 	{
 		return timestamp.getSec() > 0;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = severity.hashCode();
+		result = prime * result + status.hashCode();
+		result = prime * result + timestamp.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		
+		if (! (obj instanceof VType))
+			return false;
+		
+		if (! (obj instanceof Alarm))
+			return false;
+		final Alarm alarm = (Alarm) obj;
+		if (severity != alarm.getAlarmSeverity())
+			return false;
+		if (! status.equals(alarm.getAlarmName()))
+			return false;
+		
+		if (! (obj instanceof Time))
+			return false;
+
+		final Time time = (Time) obj;
+		return timestamp.equals(time.getTimestamp())
+		    && getTimeUserTag() == time.getTimeUserTag();
+	}
 }

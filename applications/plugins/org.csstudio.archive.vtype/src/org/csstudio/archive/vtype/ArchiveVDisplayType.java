@@ -87,4 +87,9 @@ public class ArchiveVDisplayType extends ArchiveVType implements Display
 	{
 		return display.getUpperDisplayLimit();
 	}
+
+	// hashCode() and equals() are specifically NOT implemented:
+	// Values are compared based on their timestamp and alarm via ArchiveVType,
+	// combined with the actual value from the derived class (ArchiveVNumber, ...).
+	// The display meta data is NOT used as part of the comparisons.
 }

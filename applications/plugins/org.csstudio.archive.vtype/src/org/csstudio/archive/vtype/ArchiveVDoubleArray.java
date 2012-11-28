@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ArchiveVDoubleArray extends ArchiveVDisplayType implements VDoubleA
 
 	public ArchiveVDoubleArray(final Timestamp timestamp,
 			final AlarmSeverity severity, final String status,
-			final Display display, final double[] data)
+			final Display display, final double... data)
 	{
 		super(timestamp, severity, status, display);
 		this.data = data;
@@ -48,6 +49,26 @@ public class ArchiveVDoubleArray extends ArchiveVDisplayType implements VDoubleA
 	public ListDouble getData()
 	{
 		return new ArrayDouble(data);
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		return super.hashCode() * prime + Arrays.hashCode(data);
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (! (obj instanceof VDoubleArray))
+			return false;
+		final double[] other = ((VDoubleArray) obj).getArray();
+		return Arrays.equals(data, other);
 	}
 
 	@Override

@@ -20,6 +20,20 @@ public class StatisticsAccumulator implements Statistics
 	private double max = -Double.MAX_VALUE;
 	private int count = 0;
 
+	/** Initialize empty statistics */
+	public StatisticsAccumulator()
+	{
+	}
+	
+	/** Initialize
+	 *  @param initial_values Initial values to add to the stats
+	 */
+	public StatisticsAccumulator(final double... initial_values)
+	{
+		for (double value : initial_values)
+			add(value);
+	}
+	
 	/** @param value Value to be added to the accumulator */
 	public void add(final double value)
 	{
