@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.ValueUtil;
 import org.epics.pvmanager.data.VImage;
@@ -24,7 +24,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class WaterfallPlotFunction extends Function<VImage> {
+class WaterfallPlotFunction implements ReadFunction<VImage> {
 
     private volatile WaterfallPlotParameters.InternalCopy mutableParameters;
     private WaterfallPlotParameters.InternalCopy previousParameters;
@@ -243,7 +243,7 @@ class WaterfallPlotFunction extends Function<VImage> {
     }
 
     @Override
-    public VImage getValue() {
+    public VImage readValue() {
         return drawImage();
     }
 

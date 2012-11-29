@@ -4,55 +4,106 @@
  */
 package org.epics.pvmanager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A specialized collector to handle multiple channels that can be added/removed
+ * dynamically and which gets translated to a single connection flag for a
+ * reader or writer.
  *
  * @author carcassi
  */
-class ConnectionCollector extends Collector<Boolean> {
-    
-    private final List<String> names;
-    private final List<Function<Boolean>> caches;
+class ConnectionCollector implements ReadFunction<Boolean> {
+
+    private final Object lock = new Object();
+    private final Map<String, Boolean> channelConnected = new HashMap<>();
+    private final Map<String, ConnectionWriteFunction> writeFunctions = new HashMap<>();
     private Boolean connected;
     
-    public ConnectionCollector(Map<String, ? extends Function<Boolean>> map) {
-        this.names = new ArrayList<String>(map.keySet());
-        this.caches = new ArrayList<Function<Boolean>>();
-        for (String name : names) {
-            this.caches.add(map.get(name));
+    private class ConnectionWriteFunction implements WriteFunction<Boolean> {
+        
+        private final String name;
+        private int counter = 1;
+
+        public ConnectionWriteFunction(String name) {
+            this.name = name;
         }
-    }
 
-    @Override
-    public synchronized void collect() {
-        connected = null;
-    }
-
-    @Override
-    public synchronized List<Boolean> getValue() {
-        if (connected == null) {
-            List<Boolean> connections = new ArrayList<Boolean>();
-            for (Function<Boolean> func : caches) {
-                connections.add(func.getValue());
+        @Override
+        public void writeValue(Boolean newValue) {
+            synchronized(lock) {
+                if (isClosed()) {
+                    throw new IllegalStateException("ConnectionCollector for '" + name + "' was closed.");
+                }
+                channelConnected.put(name, newValue);
+                connected = null;
             }
-
-            connected = calculate(names, connections);
         }
         
-        return Collections.singletonList(connected);
+        private void open() {
+            counter++;
+        }
+        
+        private boolean isClosed() {
+            return counter == 0;
+        }
+
+        private void close() {
+            counter--;
+        }
+        
     }
-    
-    protected boolean calculate(List<String> names, List<Boolean> connections) {
-        for (Boolean conn : connections) {
+
+    public WriteFunction<Boolean> addChannel(final String name) {
+        synchronized (lock) {
+            if (channelConnected.containsKey(name)) {
+                ConnectionWriteFunction writeFunction = writeFunctions.get(name);
+                writeFunction.open();
+                return writeFunction;
+            } else {
+                channelConnected.put(name, false);
+                ConnectionWriteFunction writeFunction = new ConnectionWriteFunction(name);
+                writeFunctions.put(name, writeFunction);
+                connected = null;
+                return writeFunction;
+            }
+        }
+    }
+
+    @Override
+    public Boolean readValue() {
+        synchronized (lock) {
+            if (connected == null) {
+                connected = calculate(channelConnected);
+            }
+
+            return connected;
+        }
+    }
+
+    protected boolean calculate(Map<String, Boolean> channelConnected) {
+        for (Boolean conn : channelConnected.values()) {
             if (conn != Boolean.TRUE) {
                 return false;
             }
         }
         return true;
     }
-    
+
+    public void removeChannel(String channelName) {
+        synchronized(lock) {
+            ConnectionWriteFunction function = writeFunctions.get(channelName);
+            if (function == null) {
+                throw new IllegalArgumentException("Trying to remove channel '" + channelName + "' from ConnectionCollector, but it was already removed or never added.");
+            } else {
+                function.close();
+                if (function.isClosed()) {
+                    channelConnected.remove(channelName);
+                    writeFunctions.remove(channelName);
+                    connected = null;
+                }
+            }
+        }
+    }
 }

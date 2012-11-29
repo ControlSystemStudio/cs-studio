@@ -5,33 +5,29 @@
 package org.epics.pvmanager.data;
 
 import java.util.*;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
-import org.epics.pvmanager.Function;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.TimeInterval;
 
-/**
+
+    /**
  *
  * @author carcassi
  */
-class TimedCacheCollector<T extends Time> extends Collector<T> {
+class TimedCacheCollector<T extends Time> implements Collector<T, List<T>> {
 
     private final Deque<T> buffer = new ArrayDeque<T>();
-    private final Function<T> function;
+    private final ReadFunction<T> function;
     private final TimeDuration cachedPeriod;
     
-    public TimedCacheCollector(Function<T> function, TimeDuration cachedPeriod) {
+    public TimedCacheCollector(ReadFunction<T> function, TimeDuration cachedPeriod) {
         this.function = function;
         this.cachedPeriod = cachedPeriod;
     }
-    /**
-     * Calculates the next value and puts it in the queue.
-     */
-    @Override
-    public synchronized void collect() {
-        // Calculation may take time, and is locked by this
-        T newValue = function.getValue();
 
+    @Override
+    public void writeValue(T newValue) {
         // Buffer is locked and updated
         if (newValue != null) {
             synchronized(buffer) {
@@ -46,7 +42,7 @@ class TimedCacheCollector<T extends Time> extends Collector<T> {
      * @return a new array with the value; never null
      */
     @Override
-    public List<T> getValue() {
+    public List<T> readValue() {
         synchronized(buffer) {
             if (buffer.isEmpty())
                 return Collections.emptyList();

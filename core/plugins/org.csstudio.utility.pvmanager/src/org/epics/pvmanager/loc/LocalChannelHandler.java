@@ -8,6 +8,7 @@ import org.epics.pvmanager.*;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -42,9 +43,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void addMonitor(ChannelHandlerReadSubscription subscription) {
+    protected synchronized void addReader(ChannelHandlerReadSubscription subscription) {
         // Override for test visibility purposes
-        super.addMonitor(subscription);
+        super.addReader(subscription);
     }
 
     @Override
@@ -54,9 +55,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void removeMonitor(Collector<?> collector) {
+    protected synchronized void removeReader(ChannelHandlerReadSubscription subscription) {
         // Override for test visibility purposes
-        super.removeMonitor(collector);
+        super.removeReader(subscription);
     }
 
     @Override
@@ -74,8 +75,12 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
             // Special support for strings
             return newVString(((String) value),
                     alarmNone(), timeNow());
+        } else if (value instanceof double[]) {
+            return newVDoubleArray(new ArrayDouble((double[]) value), alarmNone(), timeNow(), displayNone());
+        } else {
+            // TODO: need to implement all the other arrays
+            throw new UnsupportedOperationException("Type " + value.getClass().getName() + "  is not yet supported");
         }
-        return value;
     }
 
     @Override

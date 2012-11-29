@@ -49,7 +49,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
-import org.epics.pvmanager.WriteFailException;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;

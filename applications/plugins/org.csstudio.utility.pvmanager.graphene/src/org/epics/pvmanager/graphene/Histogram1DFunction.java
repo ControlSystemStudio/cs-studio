@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.ValueUtil;
@@ -18,9 +18,9 @@ import org.epics.pvmanager.data.ValueUtil;
  *
  * @author carcassi
  */
-class Histogram1DFunction extends Function<VImage> {
+class Histogram1DFunction implements ReadFunction<VImage> {
     
-    private Function<? extends List<? extends VNumber>> argument;
+    private ReadFunction<? extends List<? extends VNumber>> argument;
     private Point1DDataset dataset = new Point1DCircularBuffer(1000000);
     private Histogram1D histogram = Histograms.createHistogram(dataset);
     private Histogram1DRenderer renderer = new Histogram1DRenderer(300, 200);
@@ -28,7 +28,7 @@ class Histogram1DFunction extends Function<VImage> {
     private List<Histogram1DUpdate> histogramUpdates = Collections.synchronizedList(new ArrayList<Histogram1DUpdate>());
     private List<Histogram1DRendererUpdate> rendererUpdates = Collections.synchronizedList(new ArrayList<Histogram1DRendererUpdate>());
 
-    public Histogram1DFunction(Function<? extends List<? extends VNumber>> argument) {
+    public Histogram1DFunction(ReadFunction<? extends List<? extends VNumber>> argument) {
         this.argument = argument;
     }
     
@@ -43,8 +43,8 @@ class Histogram1DFunction extends Function<VImage> {
     }
 
     @Override
-    public VImage getValue() {
-        List<? extends VNumber> newData = argument.getValue();
+    public VImage readValue() {
+        List<? extends VNumber> newData = argument.readValue();
         if (newData.isEmpty() && previousImage != null && histogramUpdates.isEmpty() && rendererUpdates.isEmpty())
             return previousImage;
         

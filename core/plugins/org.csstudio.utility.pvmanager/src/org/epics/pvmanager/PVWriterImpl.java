@@ -36,7 +36,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
     private boolean writeConnected = false;
     private Exception lastWriteException;
     private List<PVWriterListener<T>> pvWriterListeners = new CopyOnWriteArrayList<PVWriterListener<T>>();
-    private WriteDirector<T> writeDirector;
+    private PVWriterDirector<T> writeDirector;
     private PVWriter<T> writerForNotification = this;
     private boolean needsConnectionNotification = false;
     private boolean needsExceptionNotification = false;
@@ -81,9 +81,8 @@ class PVWriterImpl<T> implements PVWriter<T> {
         }
     }
 
-    synchronized void setWriteDirector(WriteDirector<T> writeDirector) {
+    synchronized void setWriteDirector(PVWriterDirector<T> writeDirector) {
         this.writeDirector = writeDirector;
-        writeDirector.init();
     }
 
     /**
@@ -131,7 +130,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
         // the whole method can't be in a synchronized block, or
         // it would block the notifications in case of syncWrite
         // and would deadlock
-        WriteDirector<T> director;
+        PVWriterDirector<T> director;
         synchronized(this) {
             director = writeDirector;
         }

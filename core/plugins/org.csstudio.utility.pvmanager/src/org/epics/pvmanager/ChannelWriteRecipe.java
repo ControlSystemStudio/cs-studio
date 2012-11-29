@@ -5,22 +5,42 @@
 package org.epics.pvmanager;
 
 /**
+ * The recipe for the write connection to a single channel.
+ * <p>
+ * The recipe is made up of two parts to make it easy to forward
+ * the request to a channel with a different name.
  *
  * @author carcassi
  */
-public class ChannelWriteBuffer {
+public class ChannelWriteRecipe {
     private final String channelName;
     private final ChannelHandlerWriteSubscription writeSubscription;
 
-    public ChannelWriteBuffer(String channelName, ChannelHandlerWriteSubscription writeSubscription) {
+    /**
+     * Creates a new write recipe for the given channel.
+     * 
+     * @param channelName the name of the channel to connect to
+     * @param writeSubscription the subscription parameters for the write
+     */
+    public ChannelWriteRecipe(String channelName, ChannelHandlerWriteSubscription writeSubscription) {
         this.channelName = channelName;
         this.writeSubscription = writeSubscription;
     }
-
+    
+    /**
+     * The name of the channel to read.
+     *
+     * @return the channel name
+     */
     public String getChannelName() {
         return channelName;
     }
 
+    /**
+     * The write subscription parameters.
+     *
+     * @return the write subscription parameters
+     */
     public ChannelHandlerWriteSubscription getWriteSubscription() {
         return writeSubscription;
     }
@@ -41,7 +61,7 @@ public class ChannelWriteBuffer {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ChannelWriteBuffer other = (ChannelWriteBuffer) obj;
+        final ChannelWriteRecipe other = (ChannelWriteRecipe) obj;
         if ((this.channelName == null) ? (other.channelName != null) : !this.channelName.equals(other.channelName)) {
             return false;
         }

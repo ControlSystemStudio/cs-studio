@@ -14,12 +14,12 @@ import java.util.Map;
  *
  * @author carcassi
  */
-class MapOfFunction<T> extends Function<Map<String, T>> {
+class MapOfFunction<T> implements ReadFunction<Map<String, T>> {
 
-    private List<Function<T>> functions;
+    private List<ReadFunction<T>> functions;
     private List<String> names;
 
-    public MapOfFunction(List<String> names, List<Function<T>> functions) {
+    public MapOfFunction(List<String> names, List<ReadFunction<T>> functions) {
         if (names.size() != functions.size()) {
             throw new IllegalArgumentException("The number of names and functions must be the same.");
         }
@@ -31,10 +31,10 @@ class MapOfFunction<T> extends Function<Map<String, T>> {
     }
 
     @Override
-    public Map<String, T> getValue() {
+    public Map<String, T> readValue() {
         Map<String, T> map = new HashMap<String, T>();
         for (int nFunction = 0; nFunction < names.size(); nFunction++) {
-            T value = functions.get(nFunction).getValue();
+            T value = functions.get(nFunction).readValue();
             if (value!= null) {
                 map.put(names.get(nFunction), value);
             }

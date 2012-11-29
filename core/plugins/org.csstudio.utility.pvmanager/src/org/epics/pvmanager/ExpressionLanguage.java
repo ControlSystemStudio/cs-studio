@@ -19,13 +19,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.epics.pvmanager.expression.Cache;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionList;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionListImpl;
+import org.epics.pvmanager.expression.ReadMap;
+import org.epics.pvmanager.expression.Queue;
+import org.epics.pvmanager.expression.ReadWriteMap;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
 import org.epics.pvmanager.expression.SourceRateReadWriteExpressionList;
 import org.epics.pvmanager.expression.WriteExpressionList;
+import org.epics.pvmanager.expression.WriteMap;
 import org.epics.util.time.TimeDuration;
 
 /**
@@ -72,9 +77,9 @@ public class ExpressionLanguage {
         if (value != null)
             clazz = value.getClass();
         @SuppressWarnings("unchecked")
-        ValueCache<T> cache = (ValueCache<T>) new ValueCache(clazz);
+        ValueCache<T> cache = (ValueCache<T>) new ValueCacheImpl(clazz);
         if (value != null)
-            cache.setValue(value);
+            cache.writeValue(value);
         return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, name);
     }
 
@@ -171,7 +176,7 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>>
             newValuesOf(SourceRateExpression<T> expression) {
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new QueueCollector<T>(expression.getFunction()),
+                new QueueCollector<T>(10),
                 expression.getName());
     }
 
@@ -186,10 +191,10 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>>
             newValuesOf(SourceRateExpression<T> expression, int maxValues) {
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new QueueCollector<T>(expression.getFunction(), maxValues),
+                new QueueCollector<T>(maxValues),
                 expression.getName());
     }
-
+    
     /**
      * Expression that returns (only) the latest value computed
      * from a {@code SourceRateExpression}.
@@ -199,9 +204,8 @@ public class ExpressionLanguage {
      * @return a new expression
      */
     public static <T> DesiredRateExpression<T> latestValueOf(SourceRateExpression<T> expression) {
-        DesiredRateExpression<List<T>> queue = newValuesOf(expression, 1);
-        return new DesiredRateExpressionImpl<T>(queue,
-                new LastValueAggregator<T>((Collector<T>) queue.getFunction()),
+        return new DesiredRateExpressionImpl<T>(expression,
+                new LatestValueCollector<T>(),
                 expression.getName());
     }
 
@@ -299,11 +303,11 @@ public class ExpressionLanguage {
     public static <R, A> DesiredRateExpression<R> resultOf(final OneArgFunction<R, A> function,
             DesiredRateExpression<A> argExpression) {
         String name = function.getClass().getSimpleName() + "(" + argExpression.getName() + ")";
-        final Function<A> arg = argExpression.getFunction();
-        return new DesiredRateExpressionImpl<R>(argExpression, new Function<R>() {
+        final ReadFunction<A> arg = argExpression.getFunction();
+        return new DesiredRateExpressionImpl<R>(argExpression, new ReadFunction<R>() {
             @Override
-            public R getValue() {
-                return function.calculate(arg.getValue());
+            public R readValue() {
+                return function.calculate(arg.readValue());
             }
         }, name);
     }
@@ -339,16 +343,16 @@ public class ExpressionLanguage {
      */
     public static <R, A1, A2> DesiredRateExpression<R> resultOf(final TwoArgFunction<R, A1, A2> function,
             DesiredRateExpression<? extends A1> arg1Expression, DesiredRateExpression<? extends A2> arg2Expression, String name) {
-        final Function<? extends A1> arg1 = arg1Expression.getFunction();
-        final Function<? extends A2> arg2 = arg2Expression.getFunction();
+        final ReadFunction<? extends A1> arg1 = arg1Expression.getFunction();
+        final ReadFunction<? extends A2> arg2 = arg2Expression.getFunction();
         @SuppressWarnings("unchecked")
         DesiredRateExpressionList<? extends Object> argExpressions =
                 new DesiredRateExpressionListImpl<Object>().and(arg1Expression).and(arg2Expression);
         return new DesiredRateExpressionImpl<R>(argExpressions,
-                new Function<R>() {
+                new ReadFunction<R>() {
                     @Override
-                    public R getValue() {
-                        return function.calculate(arg1.getValue(), arg2.getValue());
+                    public R readValue() {
+                        return function.calculate(arg1.readValue(), arg2.readValue());
                     }
                 }, name);
     }
@@ -475,15 +479,15 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>> filterBy(final Filter<?> filter,
             DesiredRateExpression<List<T>> expression) {
         String name = expression.getName();
-        final Function<List<T>> arg = expression.getFunction();
+        final ReadFunction<List<T>> arg = expression.getFunction();
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new Function<List<T>>() {
+                new ReadFunction<List<T>>() {
 
                     private T previousValue;
 
                     @Override
-                    public List<T> getValue() {
-                        List<T> list = arg.getValue();
+                    public List<T> readValue() {
+                        List<T> list = arg.readValue();
                         List<T> newList = new ArrayList<T>();
                         for (T element : list) {
                             if (!filter.innerFilter(previousValue, element)) {
@@ -507,14 +511,14 @@ public class ExpressionLanguage {
      */
     public static <T> DesiredRateExpression<List<T>> listOf(DesiredRateExpressionList<T> expressions) {
         // Calculate all the needed functions to combine
-        List<Function> functions = new ArrayList<Function>();
+        List<ReadFunction> functions = new ArrayList<ReadFunction>();
         for (DesiredRateExpression<T> expression : expressions.getDesiredRateExpressions()) {
             functions.add(expression.getFunction());
         }
 
         @SuppressWarnings("unchecked")
         DesiredRateExpression<List<T>> expression = new DesiredRateExpressionImpl<List<T>>(expressions,
-                (Function<List<T>>) (Function) new ListOfFunction(functions), null);
+                (ReadFunction<List<T>>) (ReadFunction) new ListOfFunction(functions), null);
         return expression;
     }
     
@@ -529,7 +533,7 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<Map<String, T>> mapOf(DesiredRateExpressionList<T> expressions) {
         // Calculate all the needed functions to combine
         List<String> names = new ArrayList<String>();
-        List<Function<T>> functions = new ArrayList<Function<T>>();
+        List<ReadFunction<T>> functions = new ArrayList<ReadFunction<T>>();
         for (DesiredRateExpression<T> expression : expressions.getDesiredRateExpressions()) {
             names.add(expression.getName());
             functions.add(expression.getFunction());
@@ -576,7 +580,7 @@ public class ExpressionLanguage {
     public static <R, W> DesiredRateReadWriteExpression<Map<String, R>, Map<String, W>> mapOf(DesiredRateReadWriteExpressionList<R, W> expressions) {
         // Calculate all the needed functions to combine
         List<String> names = new ArrayList<String>();
-        List<Function<R>> functions = new ArrayList<Function<R>>();
+        List<ReadFunction<R>> functions = new ArrayList<ReadFunction<R>>();
         List<WriteFunction<W>> writefunctions = new ArrayList<WriteFunction<W>>();
         for (DesiredRateReadWriteExpression<R, W> expression : expressions.getDesiredRateReadWriteExpressions()) {
             names.add(expression.getName());
@@ -592,4 +596,35 @@ public class ExpressionLanguage {
         return new DesiredRateReadWriteExpressionImpl<Map<String, R>, Map<String, W>>(readExpression, writeExpression);
     }
     
+    public static <R> ReadMap<R> newReadMapOf(Class<R> clazz){
+        return new ReadMap<>();
+    }
+    
+    public static <W> WriteMap<W> newWriteMapOf(Class<W> clazz){
+        return new WriteMap<>();
+    }
+    
+    public static <R, W> ReadWriteMap<R, W> newMapOf(Class<R> readClass, Class<W> writeClass){
+        return new ReadWriteMap<>();
+    }
+    
+    public static <R> ReadMap<R> newMapOf(DesiredRateExpressionList<R> expressions){
+        return new ReadMap<R>().add(expressions);
+    }
+    
+    public static <R> WriteMap<R> newMapOf(WriteExpressionList<R> expressions){
+        return new WriteMap<R>().add(expressions);
+    }
+    
+    public static <R, W> ReadWriteMap<R, W> newMapOf(DesiredRateReadWriteExpressionList<R, W> expressions){
+        return new ReadWriteMap<R, W>().add(expressions);
+    }
+    
+    public static <T> Queue<T> queueOf(Class<T> clazz) {
+        return new Queue<>(10);
+    }
+    
+    public static <T> Cache<T> cacheOf(Class<T> clazz) {
+        return new Cache<>(10);
+    }
 }

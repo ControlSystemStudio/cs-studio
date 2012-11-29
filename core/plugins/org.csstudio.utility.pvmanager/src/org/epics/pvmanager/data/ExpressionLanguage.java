@@ -11,13 +11,11 @@ import java.util.List;
 import org.epics.pvmanager.expression.ChannelExpression;
 import org.epics.pvmanager.expression.ChannelExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.Expressions;
-import org.epics.pvmanager.expression.SourceRateExpressionImpl;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
@@ -122,7 +120,7 @@ public class ExpressionLanguage {
     public static DesiredRateExpression<VNumberArray>
             vNumberArrayOf(DesiredRateExpressionList<? extends VNumber> expressions) {
         // TODO - there should be a common function to extract the list of functions
-        List<Function<? extends VNumber>> functions = new ArrayList<Function<? extends VNumber>>();
+        List<ReadFunction<? extends VNumber>> functions = new ArrayList<ReadFunction<? extends VNumber>>();
         for (DesiredRateExpression<? extends VNumber> expression : expressions.getDesiredRateExpressions()) {
             functions.add(expression.getFunction());
         }
@@ -341,9 +339,8 @@ public class ExpressionLanguage {
      */
     public static DesiredRateExpression<VDouble> averageOf(SourceRateExpression<VDouble> doublePv) {
         DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
-        Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
         return new DesiredRateExpressionImpl<VDouble>(queue,
-                new AverageAggregator(collector), "avg(" + doublePv.getName() + ")");
+                new AverageAggregator(queue.getFunction()), "avg(" + doublePv.getName() + ")");
     }
 
     /**
@@ -354,9 +351,8 @@ public class ExpressionLanguage {
      */
     public static DesiredRateExpression<VStatistics> statisticsOf(SourceRateExpression<VDouble> doublePv) {
         DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
-        Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
         return new DesiredRateExpressionImpl<VStatistics>(queue,
-                new StatisticsDoubleAggregator(collector), "stats(" + doublePv.getName() + ")");
+                new StatisticsDoubleAggregator(queue.getFunction()), "stats(" + doublePv.getName() + ")");
     }
 
     /**
@@ -401,7 +397,7 @@ public class ExpressionLanguage {
         if (cacheDepth.equals(TimeDuration.ofMillis(0)) && cacheDepth.getSec() > 0)
             throw new IllegalArgumentException("Distance between samples must be non-zero and positive");
         List<String> names = new ArrayList<String>();
-        List<Function<List<VDouble>>> collectors = new ArrayList<Function<List<VDouble>>>();
+        List<ReadFunction<List<VDouble>>> collectors = new ArrayList<ReadFunction<List<VDouble>>>();
         DesiredRateExpressionList<List<VDouble>> desiredRateExpressions = new DesiredRateExpressionListImpl<List<VDouble>>();
         for (SourceRateExpression<VDouble> expression : expressions.getSourceRateExpressions()) {
             DesiredRateExpression<List<VDouble>> collectorExp = timedCacheOf(expression, cacheDepth);
@@ -412,7 +408,7 @@ public class ExpressionLanguage {
         SynchronizedVDoubleAggregator aggregator =
                 new SynchronizedVDoubleAggregator(names, collectors, tolerance);
         return new DesiredRateExpressionImpl<VMultiDouble>(desiredRateExpressions,
-                (Function<VMultiDouble>) aggregator, "syncArray");
+                (ReadFunction<VMultiDouble>) aggregator, "syncArray");
     }
 
     /**
@@ -450,7 +446,7 @@ public class ExpressionLanguage {
      */
     public static DesiredRateExpression<VTable> vTable(VTableColumn... columns) {
         DesiredRateExpressionListImpl<Object> list = new DesiredRateExpressionListImpl<Object>();
-        List<List<Function<?>>> functions = new ArrayList<List<Function<?>>>();
+        List<List<ReadFunction<?>>> functions = new ArrayList<List<ReadFunction<?>>>();
         List<String> names = new ArrayList<String>();
         for (VTableColumn column : columns) {
             functions.add(Expressions.functionsOf(column.getValueExpressions()));

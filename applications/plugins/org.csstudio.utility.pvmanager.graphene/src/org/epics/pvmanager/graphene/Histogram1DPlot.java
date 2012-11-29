@@ -6,7 +6,7 @@ package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.Histogram1DRendererUpdate;
 import org.epics.graphene.Histogram1DUpdate;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
