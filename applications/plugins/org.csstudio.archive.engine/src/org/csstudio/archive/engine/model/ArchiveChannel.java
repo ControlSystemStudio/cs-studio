@@ -343,9 +343,9 @@ abstract public class ArchiveChannel
         if (!need_first_sample)
             return false;
         need_first_sample = false;
-        final VType updated = ValueButcher.transformTimestampToNow(value);
-        Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), updated });
-        addInfoToBuffer(updated);
+        // Try to add as-is, but time stamp will be corrected to fit in
+        final VType added = addInfoToBuffer(value);
+        Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), added });
         return true;
     }
 
@@ -368,8 +368,9 @@ abstract public class ArchiveChannel
 
     /** Add given info value to buffer, tweaking its time stamp if necessary
      *  @param value Value to archive
+     *  @return Value that was actually added, which may have adjusted time stamp
      */
-    final protected void addInfoToBuffer(VType value)
+    final protected VType addInfoToBuffer(VType value)
     {
         synchronized (this)
         {
@@ -385,6 +386,7 @@ abstract public class ArchiveChannel
             }
         }
         addValueToBuffer(value);
+        return value;
     }
 
     /** @param time Timestamp to check
