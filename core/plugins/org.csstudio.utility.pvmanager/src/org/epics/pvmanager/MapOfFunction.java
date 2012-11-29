@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author carcassi
  */
-class MapOfFunction<T> extends Function<Map<String, T>> {
+class MapOfFunction<T> implements Function<Map<String, T>> {
 
     private List<Function<T>> functions;
     private List<String> names;

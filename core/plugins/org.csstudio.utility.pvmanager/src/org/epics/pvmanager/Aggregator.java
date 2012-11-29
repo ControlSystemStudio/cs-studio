@@ -21,7 +21,7 @@ import java.util.List;
  * @param <A> argument type being aggregated
  * @author carcassi
  */
-public abstract class Aggregator<R, A> extends Function<R> {
+public abstract class Aggregator<R, A> implements Function<R> {
 
     private final Function<List<A>> collector;
     private R lastCalculatedValue;

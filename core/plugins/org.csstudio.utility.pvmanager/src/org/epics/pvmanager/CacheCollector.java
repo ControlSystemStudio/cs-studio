@@ -5,25 +5,24 @@
 package org.epics.pvmanager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ * A collector the keeps the last n elements.
  *
  * @author carcassi
  */
-public class QueueCollector<T> implements Collector<T, List<T>> {
+public class CacheCollector<T> implements Collector<T, List<T>> {
     
     private final Object lock = new Object();
-    private List<T> readBuffer;
-    private List<T> writeBuffer;
+    private final List<T> readBuffer = new ArrayList<>();
+    private final List<T> writeBuffer = new LinkedList<>();
     private int maxSize;
 
-    public QueueCollector(int maxSize) {
+    public CacheCollector(int maxSize) {
         synchronized(lock) {
             this.maxSize = maxSize;
-            readBuffer = new ArrayList<>();
-            writeBuffer = new ArrayList<>();
         }
     }
 
@@ -39,17 +38,15 @@ public class QueueCollector<T> implements Collector<T, List<T>> {
 
     @Override
     public List<T> getValue() {
+        readBuffer.clear();
         synchronized(lock) {
-            List<T> data = writeBuffer;
-            writeBuffer = readBuffer;
-            writeBuffer.clear();
-            readBuffer = data;
+            readBuffer.addAll(writeBuffer);
         }
         return readBuffer;
     }
 
     public void setMaxSize(int maxSize) {
-        synchronized(lock) {
+        synchronized(lock){
             this.maxSize = maxSize;
             while (writeBuffer.size() > maxSize) {
                 writeBuffer.remove(0);

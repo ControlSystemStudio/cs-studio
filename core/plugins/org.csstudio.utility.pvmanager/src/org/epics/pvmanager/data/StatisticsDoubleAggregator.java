@@ -4,11 +4,10 @@
  */
 package org.epics.pvmanager.data;
 
-import java.util.Collections;
 import org.epics.pvmanager.Aggregator;
-import org.epics.pvmanager.Collector;
 import java.util.List;
 import static java.lang.Math.*;
+import org.epics.pvmanager.Function;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
 
@@ -30,7 +29,7 @@ import static org.epics.pvmanager.data.ValueFactory.*;
  */
 class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
 
-    StatisticsDoubleAggregator(Collector<VDouble> collector) {
+    StatisticsDoubleAggregator(Function<List<VDouble>> collector) {
         super(collector);
     }
 

@@ -19,7 +19,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
+class SynchronizedVDoubleAggregator implements Function<VMultiDouble> {
 
     private static final Logger log = Logger.getLogger(SynchronizedVDoubleAggregator.class.getName());
     private final TimeDuration tolerance;

@@ -18,7 +18,7 @@ import org.epics.pvmanager.data.ValueUtil;
  *
  * @author carcassi
  */
-class Histogram1DFunction extends Function<VImage> {
+class Histogram1DFunction implements Function<VImage> {
     
     private Function<? extends List<? extends VNumber>> argument;
     private Point1DDataset dataset = new Point1DCircularBuffer(1000000);

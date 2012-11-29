@@ -13,7 +13,7 @@ import org.epics.pvmanager.Function;
  *
  * @author carcassi
  */
-class DynamicGroupFunction extends Function<List<Object>> {
+class DynamicGroupFunction implements Function<List<Object>> {
     
     // Guarded by this
     private final List<Function<?>> arguments = new ArrayList<Function<?>>();

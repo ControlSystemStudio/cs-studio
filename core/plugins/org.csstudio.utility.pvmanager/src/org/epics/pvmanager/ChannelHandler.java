@@ -76,14 +76,14 @@ public abstract class ChannelHandler {
      * 
      * @param subscription the data required for a subscription
      */
-    protected abstract void addMonitor(ChannelHandlerReadSubscription subscription);
+    protected abstract void addReader(ChannelHandlerReadSubscription subscription);
 
     /**
      * Used by the data source to remove a read request.
      * 
      * @param collector the collector that does not need to be notified anymore
      */
-    protected abstract void removeMonitor(Collector<?> collector);
+    protected abstract void removeReader(ChannelHandlerReadSubscription subscription);
 
     /**
      * Used by the data source to prepare the channel managed by this handler

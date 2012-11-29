@@ -6,7 +6,7 @@ package org.epics.pvmanager.data;
 
 import java.util.List;
 import org.epics.pvmanager.Aggregator;
-import org.epics.pvmanager.Collector;
+import org.epics.pvmanager.Function;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
 
@@ -17,7 +17,7 @@ import static org.epics.pvmanager.data.ValueFactory.*;
  */
 class AverageAggregator extends Aggregator<VDouble, VDouble> {
 
-    AverageAggregator(Collector<VDouble> collector) {
+    AverageAggregator(Function<List<VDouble>> collector) {
         super(collector);
     }
 
