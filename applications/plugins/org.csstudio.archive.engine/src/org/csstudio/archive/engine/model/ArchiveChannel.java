@@ -7,18 +7,24 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /** Base for archived channels.
  *
@@ -46,7 +52,7 @@ abstract public class ArchiveChannel
     final private String name;
 
     /** Control system PV */
-    final private PV pv;
+    private PVReader<List<VType>> pv = null;
 
     /** Is this channel currently running?
      *  <p>
@@ -91,7 +97,7 @@ abstract public class ArchiveChannel
      *  <p>
      *  SYNC:Lock on <code>this</code> for access.
      */
-    protected IValue most_recent_value = null;
+    protected VType most_recent_value = null;
 
     /** Counter for received values (monitor updates) */
     private long received_value_count = 0;
@@ -100,7 +106,7 @@ abstract public class ArchiveChannel
      *  <p>
      *  SYNC: Lock on <code>this</code> for access.
      */
-    protected IValue last_archived_value = null;
+    protected VType last_archived_value = null;
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer buffer;
@@ -115,7 +121,7 @@ abstract public class ArchiveChannel
     public ArchiveChannel(final String name,
                           final Enablement enablement,
                           final int buffer_capacity,
-                          final IValue last_archived_value) throws Exception
+                          final VType last_archived_value) throws Exception
     {
         this.name = name;
         this.enablement = enablement;
@@ -123,30 +129,6 @@ abstract public class ArchiveChannel
         this.buffer = new SampleBuffer(name, buffer_capacity);
         if (last_archived_value == null)
             Activator.getLogger().log(Level.INFO, "No known last value for {0}", name);
-
-        pv = PVFactory.createPV(name);
-        pv.addListener(new PVListener()
-        {
-            @Override
-            public void pvValueUpdate(final PV pv)
-            {
-                // PV already suppresses updates after 'stop', but check anyway
-                if (is_running)
-                {
-                    final IValue value = pv.getValue();
-                    if (enablement != Enablement.Passive)
-                        handleEnablement(value);
-                    handleNewValue(value);
-                }
-            }
-
-            @Override
-            public void pvDisconnected(final PV pv)
-            {
-                if (is_running)
-                    handleDisconnected();
-            }
-        });
     }
 
     /** @return Name of channel */
@@ -205,7 +187,9 @@ abstract public class ArchiveChannel
     /** @return Human-readable info on internal state of PV */
     public String getInternalState()
     {
-        return pv.getStateInfo();
+    	if (pv == null)
+    		return "Not initialized";
+    	return pv.isConnected() ? "Connected" : "Disconnected";
     }
 
     /** Start archiving this channel. */
@@ -213,7 +197,35 @@ abstract public class ArchiveChannel
     {
         is_running = true;
         need_first_sample = true;
-        pv.start();
+        
+		PVReaderListener<List<VType>> listener = new PVReaderListener<List<VType>>()
+		{
+			@Override
+			public void pvChanged(final PVReaderEvent<List<VType>> event)
+			{
+				if (event.getPvReader() != pv)
+					throw new Error("Invalid PV");
+				if (!is_running)
+					return;
+				
+				final Exception error = pv.lastException();
+				if (error != null)
+				{
+                    handleDisconnected();
+                    Activator.getLogger().log(Level.WARNING, "Channel '" + name + "'", error);
+				}
+				final List<VType> values = pv.getValue();
+				if (values == null)
+					return;
+				for (VType value : values)
+				{
+					if (enablement != Enablement.Passive)
+						handleEnablement(value);
+					handleNewValue(value);
+				}
+			}
+		};
+		pv = PVManager.read(newValuesOf(vType(name))).timeout(ofSeconds(30)).readListener(listener).maxRate(ofSeconds(1));
     }
 
     /** Stop archiving this channel */
@@ -222,7 +234,8 @@ abstract public class ArchiveChannel
     	if (!is_running)
     		return;
         is_running = false;
-        pv.stop();
+        pv.close();
+        pv = null;
         addInfoToBuffer(ValueButcher.createOff());
     }
 
@@ -271,12 +284,12 @@ abstract public class ArchiveChannel
     }
 
     /** Enable or disable groups based on received value */
-    final private void handleEnablement(final IValue value)
+    final private void handleEnablement(final VType value)
     {
         if (enablement == Enablement.Passive)
             throw new Error("Not to be called when passive"); //$NON-NLS-1$
         // Get boolean value (true <==> >0.0)
-        final double number = ValueUtil.getDouble(value);
+        final double number = VTypeHelper.toDouble(value);
         final boolean yes = number > 0.0;
         // Do we enable or disable based on that value?
         final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
@@ -300,7 +313,7 @@ abstract public class ArchiveChannel
      *               it's the first value after startup or error,
      *               so there's no need to write that sample again.
      */
-    protected boolean handleNewValue(final IValue value)
+    protected boolean handleNewValue(final VType value)
     {
         synchronized (this)
         {
@@ -308,13 +321,11 @@ abstract public class ArchiveChannel
             most_recent_value = value;
         }
         // NaN test
-        if (value instanceof IDoubleValue)
+        if (value instanceof VNumber)
         {
-            final IDoubleValue dbl = (IDoubleValue) value;
-            if (Double.isNaN(dbl.getValue()))
+            if (Double.isNaN(VTypeHelper.toDouble(value)))
                 trouble_sample_log.log("'" + getName() + "': NaN "
-                        + value.format());
-
+                        + VTypeHelper.toString(value));
         }
         if (!enabled)
             return false;
@@ -332,7 +343,7 @@ abstract public class ArchiveChannel
         if (!need_first_sample)
             return false;
         need_first_sample = false;
-        final IValue updated = ValueButcher.transformTimestampToNow(value);
+        final VType updated = ValueButcher.transformTimestampToNow(value);
         Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), updated });
         addInfoToBuffer(updated);
         return true;
@@ -358,17 +369,16 @@ abstract public class ArchiveChannel
     /** Add given info value to buffer, tweaking its time stamp if necessary
      *  @param value Value to archive
      */
-    final protected void addInfoToBuffer(IValue value)
+    final protected void addInfoToBuffer(VType value)
     {
         synchronized (this)
         {
             if (last_archived_value != null)
             {
-                final ITimestamp last = last_archived_value.getTime();
-                if (last.isGreaterOrEqual(value.getTime()))
+                final Timestamp last = VTypeHelper.getTimestamp(last_archived_value);
+                if (last.compareTo(VTypeHelper.getTimestamp(value)) >= 0)
                 {   // Patch the time stamp
-                    final ITimestamp next =
-                        TimestampFactory.createTimestamp(last.seconds()+1, 0);
+                    final Timestamp next = last.plus(TimeDuration.ofMillis(100));
                     value = ValueButcher.transformTimestamp(value, next);
                 }
                 // else: value is OK as is
@@ -380,10 +390,10 @@ abstract public class ArchiveChannel
     /** @param time Timestamp to check
      *  @return <code>true</code> if time is too far into the future; better ignore.
      */
-    private boolean isFuturistic(final ITimestamp time)
+    private boolean isFuturistic(final Timestamp time)
     {
         final long threshold = System.currentTimeMillis()/1000 + EngineModel.getIgnoredFutureSeconds();
-        return time.seconds() >= threshold;
+        return time.getSec() >= threshold;
     }
 
     /** Add given sample to buffer, performing a back-in-time check,
@@ -392,10 +402,10 @@ abstract public class ArchiveChannel
      *  @return <code>false</code> if value failed back-in-time or future check,
      *          <code>true</code> if value was added.
      */
-    final protected boolean addValueToBuffer(final IValue value)
+    final protected boolean addValueToBuffer(final VType value)
     {
         // Suppress samples that are too far in the future
-        final ITimestamp time = value.getTime();
+        final Timestamp time = VTypeHelper.getTimestamp(value);
 
         if (isFuturistic(time))
         {
@@ -406,7 +416,7 @@ abstract public class ArchiveChannel
         synchronized (this)
         {
             if (last_archived_value != null &&
-                last_archived_value.getTime().isGreaterOrEqual(time))
+                VTypeHelper.getTimestamp(last_archived_value).compareTo(time) >= 0)
             {   // Cannot use this sample because of back-in-time problem.
                 // Usually this is NOT an error:
                 // We logged an initial sample, disconnected, disabled, ...,
@@ -414,8 +424,8 @@ abstract public class ArchiveChannel
                 // carries the old, original time stamp of the PV,
                 // and that's back in time...
                 trouble_sample_log.log(getName() + " skips back-in-time:\n" +
-                        "last: " + last_archived_value.toString() + "\n" +
-                        "new : " + value.toString());
+                        "last: " + VTypeHelper.toString(last_archived_value) + "\n" +
+                        "new : " + VTypeHelper.toString(value));
                 return false;
             }
             // else ...
@@ -461,7 +471,7 @@ abstract public class ArchiveChannel
             return;
         if (enabled)
         {   // If we have the 'current' value of the PV...
-            IValue value;
+            VType value;
             synchronized (this)
             {
                 value = most_recent_value;

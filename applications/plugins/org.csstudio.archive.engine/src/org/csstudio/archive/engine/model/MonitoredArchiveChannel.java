@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.data.values.IValue;
+import org.epics.pvmanager.data.VType;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir
@@ -26,7 +26,7 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     public MonitoredArchiveChannel(final String name,
                                    final Enablement enablement,
                                    final int buffer_capacity,
-                                   final IValue last_archived_value,
+                                   final VType last_archived_value,
                                    final double period_estimate) throws Exception
     {
         super(name, enablement, buffer_capacity, last_archived_value);
@@ -41,7 +41,7 @@ public class MonitoredArchiveChannel extends ArchiveChannel
 
     /** Attempt to add each new value to the buffer. */
     @Override
-    protected boolean handleNewValue(final IValue value)
+    protected boolean handleNewValue(final VType value)
     {
         if (super.handleNewValue(value))
         {

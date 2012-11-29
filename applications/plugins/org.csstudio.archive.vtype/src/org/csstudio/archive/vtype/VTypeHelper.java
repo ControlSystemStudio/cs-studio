@@ -139,7 +139,7 @@ public class VTypeHelper
 		else if (value instanceof VNumber)
 		{
 			final VNumber number = (VNumber) value;
-			final Display display = ValueUtil.displayOf(number);
+			final Display display = (Display) number;
 			addNumber(buf, display, number.getValue().doubleValue());
 			if (display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
@@ -147,7 +147,7 @@ public class VTypeHelper
 		else if (value instanceof VNumberArray)
 		{
 			final VNumberArray array = (VNumberArray) value;
-			final Display display = ValueUtil.displayOf(array);
+			final Display display = (Display) array;
 			final ListNumber list = array.getData();
 			final int N = list.size();
 			if (N <= MAX_ARRAY_ELEMENTS)

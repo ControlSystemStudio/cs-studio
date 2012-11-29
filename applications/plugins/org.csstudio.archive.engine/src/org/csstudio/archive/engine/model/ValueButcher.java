@@ -7,19 +7,19 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVDoubleArray;
+import org.csstudio.archive.vtype.ArchiveVEnum;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVString;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VDoubleArray;
+import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.data.VString;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.array.ListNumber;
+import org.epics.util.time.Timestamp;
 
 /** Helper that does various unspeakable things to values.
  *  @author Kay Kasemir
@@ -45,71 +45,76 @@ public class ValueButcher
     /** @return Copy of given value with timestamp set to 'now',
      *          or <code>null</code> if value is not handled
      */
-    public static IValue transformTimestampToNow(final IValue value)
+    public static VType transformTimestampToNow(final VType value)
     {
-        return transformTimestamp(value, TimestampFactory.now());
+        return transformTimestamp(value, Timestamp.now());
     }
 
     /** @return Copy of given value with updated timestamp,
      *          or <code>null</code> if value is not handled
      */
-    public static IValue transformTimestamp(final IValue value,
-                                            final ITimestamp time)
+    public static VType transformTimestamp(final VType value,
+                                           final Timestamp time)
     {
-        final ISeverity severity = value.getSeverity();
-        final String status = value.getStatus();
-        final Quality quality = value.getQuality();
-        final IMetaData meta = value.getMetaData();
-        if (value instanceof IDoubleValue)
-            return ValueFactory.createDoubleValue(time, severity, status,
-                            (INumericMetaData)meta, quality,
-                            ((IDoubleValue)value).getValues());
-        if (value instanceof IStringValue)
-            return ValueFactory.createStringValue(time, severity, status,
-                            quality, ((IStringValue)value).getValues());
-        if (value instanceof ILongValue)
-            return ValueFactory.createLongValue(time, severity, status,
-                            (INumericMetaData)meta, quality,
-                            ((ILongValue)value).getValues());
-        if (value instanceof IEnumeratedValue)
-            return ValueFactory.createEnumeratedValue(time, severity, status,
-                            (IEnumeratedMetaData)meta, quality,
-                            ((IEnumeratedValue)value).getValues());
+        if (value instanceof VNumber)
+        {
+        	final VNumber number = (VNumber) value;
+            return new ArchiveVNumber(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getValue());
+        }
+        if (value instanceof VString)
+        {
+        	final VString string = (VString) value;
+            return new ArchiveVString(time, string.getAlarmSeverity(), string.getAlarmName(), string.getValue());
+        }
+        if (value instanceof VDoubleArray)
+        {
+        	final VDoubleArray number = (VDoubleArray) value;
+            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getArray());
+        }
+        if (value instanceof VNumberArray)
+        {
+        	final VNumberArray number = (VNumberArray) value;
+        	final ListNumber data = number.getData();
+        	final double[] dbl = new double[data.size()];
+        	for (int i=0; i<dbl.length; ++i)
+        		dbl[i] = data.getDouble(i);
+            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, dbl);
+        }
+        if (value instanceof VEnum)
+        {
+        	final VEnum labelled = (VEnum) value;
+            return new ArchiveVEnum(time, labelled.getAlarmSeverity(), labelled.getAlarmName(), labelled.getLabels(), labelled.getIndex());
+        }
         return null;
     }
 
     /** @return Info value to indicate disabled state */
-    public static IValue createDisabled()
+    public static VType createDisabled()
     {
         return createInfoSample(DISABLED);
     }
 
     /** @return Info value to indicate disconnected state */
-    public static IValue createDisconnected()
+    public static VType createDisconnected()
     {
         return createInfoSample(DISCONNECTED);
     }
 
     /** @return Info value to indicate that archive was turned off */
-    public static IValue createOff()
+    public static VType createOff()
     {
         return createInfoSample(OFF);
     }
 
     /** @return Info value to indicate write error */
-    public static IValue createWriteError()
+    public static VType createWriteError()
     {
         return createInfoSample(WRITE_ERROR);
     }
 
     /** Create sample with status set to some info */
-    private static IValue createInfoSample(final String info)
+    private static VType createInfoSample(final String info)
     {
-        return ValueFactory.createStringValue(
-                        TimestampFactory.now(),
-                        ValueFactory.createInvalidSeverity(),
-                        info,
-                        Quality.Original,
-                        new String[] { info });
+        return new ArchiveVString(Timestamp.now(), AlarmSeverity.INVALID, info, info);
     }
 }

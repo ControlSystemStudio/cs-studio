@@ -21,10 +21,11 @@ import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.Preferences;
 import org.csstudio.archive.engine.scanner.ScanThread;
 import org.csstudio.archive.engine.scanner.Scanner;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVString;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 
 /** Data model of the archive engine.
  *  @author Kay Kasemir
@@ -85,7 +86,7 @@ public class EngineModel
     private volatile State state = State.IDLE;
 
     /** Start time of the model */
-    private ITimestamp start_time = null;
+    private Timestamp start_time = null;
 
     /** Write period in seconds */
     final private static int write_period = Preferences.getWritePeriodSecs();
@@ -139,7 +140,7 @@ public class EngineModel
     }
 
     /** @return Start time of the engine or <code>null</code> if not running */
-    public ITimestamp getStartTime()
+    public Timestamp getStartTime()
     {
         return start_time;
     }
@@ -223,7 +224,7 @@ public class EngineModel
                          final ArchiveGroup group,
                          final Enablement enablement,
                          final SampleMode sample_mode,
-                         final ITimestamp last_sample_time) throws Exception
+                         final Timestamp last_sample_time) throws Exception
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
@@ -238,15 +239,13 @@ public class EngineModel
         // Channel is new to this engine.
         // See if there's already a sample in the archive,
         // because we won't be able to go back-in-time before that sample.
-    	final IValue last_sample;
+    	final VType last_sample;
 
     	if (last_sample_time == null)
     		last_sample = null;
     	else // Create fake string sample with that time
-        	last_sample = ValueFactory.createStringValue(last_sample_time,
-                             ValueFactory.createOKSeverity(),
-                             "", IValue.Quality.Original,
-                             new String [] { "Last timestamp in archive" });
+        	last_sample = new ArchiveVString(last_sample_time,
+                             AlarmSeverity.NONE, "", "Last timestamp in archive");
 
     	// Determine buffer capacity
         int buffer_capacity = (int) (write_period / sample_mode.getPeriod() * buffer_reserve);
@@ -258,19 +257,21 @@ public class EngineModel
         // Create new channel
         if (sample_mode.isMonitor())
         {
-            if (sample_mode.getDelta() > 0)
-                channel = new DeltaArchiveChannel(name, enablement,
-                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
-            else
+        	// TODO
+//            if (sample_mode.getDelta() > 0)
+//                channel = new DeltaArchiveChannel(name, enablement,
+//                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
+//            else
                 channel = new MonitoredArchiveChannel(name, enablement,
                                              buffer_capacity, last_sample,
                                              sample_mode.getPeriod());
         }
         else
         {
-            channel = new ScannedArchiveChannel(name, enablement,
-                                    buffer_capacity, last_sample, sample_mode.getPeriod(),
-                                    max_repeats);
+        	// TODO
+//            channel = new ScannedArchiveChannel(name, enablement,
+//                                    buffer_capacity, last_sample, sample_mode.getPeriod(),
+//                                    max_repeats);
             scanner.add((ScannedArchiveChannel)channel, sample_mode.getPeriod());
         }
         synchronized (this)
@@ -290,7 +291,7 @@ public class EngineModel
     /** Start processing all channels and writing to archive. */
     public void start() throws Exception
     {
-        start_time = TimestampFactory.now();
+        start_time = Timestamp.now();
         state = State.RUNNING;
         writer.start(write_period, batch_size);
         for (ArchiveGroup group : groups)
@@ -306,7 +307,7 @@ public class EngineModel
     }
 
     /** @return Timestamp of end of last write run */
-    public ITimestamp getLastWriteTime()
+    public Timestamp getLastWriteTime()
     {
         return writer.getLastWriteTime();
     }
@@ -441,7 +442,7 @@ public class EngineModel
     @SuppressWarnings("nls")
     public void dumpDebugInfo()
     {
-        System.out.println(TimestampFactory.now().toString() + ": Debug info");
+        System.out.println(TimestampHelper.format(Timestamp.now()) + ": Debug info");
         for (int c=0; c<getChannelCount(); ++c)
         {
             final ArchiveChannel channel = getChannel(c);
