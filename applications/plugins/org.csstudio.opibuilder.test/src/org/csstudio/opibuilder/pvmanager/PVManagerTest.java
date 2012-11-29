@@ -17,6 +17,7 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.ValueUtil;
@@ -62,7 +63,7 @@ public class PVManagerTest {
 				ofMillis(1000));
 
 		reader.addPVReaderListener(new PVReaderListener() {
-			public void pvChanged() {
+            public void pvChanged(PVReaderEvent event) {
 				// Do something with each value
 				Object newValue = reader.getValue();
 				System.out.println(newValue);
@@ -107,7 +108,7 @@ public class PVManagerTest {
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
-			public void pvChanged() {
+            public void pvChanged(PVReaderEvent event) {
 				System.out.println("First Listener: " + ValueUtil.numericValueOf(pv.getValue()));
 				System.out.println(Thread.currentThread().getName());
 
@@ -140,7 +141,7 @@ public class PVManagerTest {
 		pv.addPVReaderListener(new PVReaderListener() {
 			
 			@Override
-			public void pvChanged() {
+            public void pvChanged(PVReaderEvent event) {
 					System.out.println("Second Listener: " + ValueUtil.numericValueOf(pv.getValue()));
 			}
 		});
@@ -161,7 +162,7 @@ public class PVManagerTest {
 		 final PVReader<List<Object>> pvReader = PVManager.read(newValuesOf(
 				 channel(pvName))).maxRate(ofMillis(1000));
 		 pvReader.addPVReaderListener(new PVReaderListener() {
-		     public void pvChanged() {
+             public void pvChanged(PVReaderEvent event) {
 		         // Do something with each value
 		         for (Object newValue : pvReader.getValue()) {
 		        	 System.out.println(ValueUtil.timeOf(newValue).getTimestamp() + " " + 

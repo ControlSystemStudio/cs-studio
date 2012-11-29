@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.loc.LocalDataSource;
@@ -54,10 +55,11 @@ public class MultipleListenersWithNoGUI {
 						 pv.addPVReaderListener(new PVReaderListener() {
 
 		                        @Override
-		                        public void pvChanged() {
+		                        public void pvChanged(PVReaderEvent event) {
 		                                if (pv.getValue() != null)
 		                                	System.out.println("First: " + pv.getValue().getValue().toString() + " " + Thread.currentThread().getName());
 		                        }
+		                        
 		                });
 						
 					}
@@ -72,7 +74,7 @@ public class MultipleListenersWithNoGUI {
 						pv.addPVReaderListener(new PVReaderListener() {
 
 	                        @Override
-	                        public void pvChanged() {
+	                        public void pvChanged(PVReaderEvent event) {
 	                                if (pv.getValue() != null)
 	                                	System.out.println("Second: " + pv.getValue().getValue().toString() + " " + Thread.currentThread().getName());
 
