@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.pvmanager;
 
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
 import static org.epics.util.time.TimeDuration.ofMillis;
@@ -11,13 +12,13 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.swt.widgets.Display;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.WriteFailException;
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 
 /**A utility PV which uses PVManager as the connection layer. 
  * Type of the value returned by {@link #getValue()} is always {@link PMObjectValue}.
@@ -28,21 +29,18 @@ public class PVManagerPV implements PV {
 
 	final private String name;
 	final private boolean valueBuffered;
-	private Map<PVListener, PVReaderListener> listenerMap;
-	private boolean readOnly = false;
+	private Map<PVListener, PVReaderListener<Object>> listenerMap;
 	private ExceptionHandler exceptionHandler = new ExceptionHandler() {
 		@Override
 		public void handleException(Exception ex) {
-			if(ex instanceof WriteFailException)
-				readOnly = true;
-			else
-				ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
+			ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
 		}
 	};
 	private PVReader<?> pvReader;
 	private PVWriter<Object> pvWriter;
+	private int updateDuration;
 
-	/**Construct a PVManger PV. This method must be called in UI Thread.
+	/**Construct a PVManger PV.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
 	 * @param updateDuration the least update duration.
@@ -50,19 +48,8 @@ public class PVManagerPV implements PV {
 	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration) {
 		this.name = name;
 		this.valueBuffered = bufferAllValues;
-		if (bufferAllValues) {
-			pvReader = PVManager.read(newValuesOf(channel(name))).notifyOn(swtThread())
-					.routeExceptionsTo(exceptionHandler).maxRate(ofMillis(updateDuration));
-		} else {
-			pvReader = PVManager.read(channel(name)).notifyOn(swtThread())
-					.routeExceptionsTo(exceptionHandler).maxRate(ofMillis(updateDuration));
-		}
-		pvWriter = PVManager.write(channel(name))
-				.routeExceptionsTo(exceptionHandler).async();
-		// pmPV = PVManager.readAndWrite(channel(name))
-		// .routeExceptionsTo(exceptionHandler)
-		// .asynchWriteAndMaxReadRate(ofMillis(50));
-		listenerMap = new HashMap<PVListener, PVReaderListener>();
+		this.updateDuration = updateDuration;
+		listenerMap = new HashMap<PVListener, PVReaderListener<Object>>();
 	}
 
 	@Override
@@ -72,17 +59,21 @@ public class PVManagerPV implements PV {
 
 	@Override
 	public IValue getValue(double timeout_seconds) throws Exception {
+		checkIfPVStarted();
 		return new PMObjectValue(pvReader.getValue(), valueBuffered);
 	}
 
-	/** This method should be called in UI thread.
+	/** Listener should not be added after pv started. It will miss the previous value.
 	 */
 	@Override
-	public void addListener(final PVListener listener) {
-		PVReaderListener pvReaderListener = new PVReaderListener() {
-
+	public synchronized void addListener(final PVListener listener) {
+		if(pvReader !=null)
+			throw new IllegalStateException("The PVManagerPV is alread started. " +
+					"Listener must be added before it is stared.");
+		PVReaderListener<Object> pvReaderListener = new PVReaderListener<Object>() {
+	
 			@Override
-			public void pvChanged() {
+			public void pvChanged(PVReaderEvent<Object> event) {
 				if (!pvReader.isConnected()) {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
@@ -95,20 +86,43 @@ public class PVManagerPV implements PV {
 			}
 		};
 		listenerMap.put(listener, pvReaderListener);
-		pvReader.addPVReaderListener(pvReaderListener);
 	}
 
 	@Override
-	public void removeListener(PVListener listener) {
+	public synchronized void removeListener(PVListener listener) {
 		if (!listenerMap.containsKey(listener))
 			return;
-		pvReader.removePVReaderListener(listenerMap.get(listener));
+		if(pvReader != null)
+			pvReader.removePVReaderListener(listenerMap.get(listener));
 		listenerMap.remove(listener);
 	}
 
+	/*This method must be called in swt thread.
+	 * (non-Javadoc)
+	 * @see org.csstudio.utility.pv.PV#start()
+	 */
 	@Override
-	public void start() throws Exception {
-		pvReader.setPaused(false);
+	public synchronized void start() throws Exception {
+		if(Display.getCurrent() == null)
+			throw new IllegalThreadStateException(
+					"PVManagerPV.start() must be called in swt thread");
+		if(pvReader == null){
+			if (valueBuffered) {
+				pvReader = PVManager.read(newValuesOf(channel(name)))
+						.notifyOn(swtThread())
+						.routeExceptionsTo(exceptionHandler)
+						.maxRate(ofMillis(updateDuration));
+			} else {
+				pvReader = PVManager.read(channel(name)).notifyOn(swtThread())
+						.routeExceptionsTo(exceptionHandler)
+						.maxRate(ofMillis(updateDuration));
+			}
+			for(PVReaderListener<Object> pvReaderListener : listenerMap.values())
+				pvReader.addPVReaderListener(pvReaderListener);
+			pvWriter = PVManager.write(channel(name))
+					.routeExceptionsTo(exceptionHandler).async();
+		}else		
+			pvReader.setPaused(false);
 	}
 
 	public boolean isValueBuffered() {
@@ -116,24 +130,30 @@ public class PVManagerPV implements PV {
 	}
 	
 	@Override
-	public boolean isRunning() {
+	public synchronized boolean isRunning() {
+		if(pvReader == null) 
+			return false;
 		return !pvReader.isClosed() && !pvReader.isPaused();
 	}
 
 	@Override
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
+		if(pvReader == null) 
+			return false;
 		return pvReader.isConnected() && pvReader.getValue() != null;
 	}
 
 	@Override
-	public boolean isWriteAllowed() {
-		// TODO implement this function after PVManager support this.
-		return !readOnly;
+	public synchronized boolean isWriteAllowed() {
+		if(pvWriter == null) 
+			return false;
+		return pvWriter.isWriteConnected();
 	}
 
 	
 	@Override
-	public String getStateInfo() {
+	public synchronized String getStateInfo() {
+		checkIfPVStarted();
 		StringBuilder stateInfo = new StringBuilder();
 		if (pvReader.isConnected()) {
 			stateInfo.append("Connected");
@@ -157,19 +177,28 @@ public class PVManagerPV implements PV {
 	 * @see org.csstudio.utility.pv.PV#stop()
 	 */
 	@Override
-	public void stop() {
-		pvReader.close();
-		pvWriter.close();
+	public synchronized void stop() {
+		if(pvReader != null)
+			pvReader.close();
+		if(pvWriter != null)
+			pvWriter.close();
 	}
 
 	@Override
-	public IValue getValue() {
+	public synchronized IValue getValue() {
+		checkIfPVStarted();
 		return new PMObjectValue(pvReader.getValue(), valueBuffered);
 	}
 
 	@Override
 	public void setValue(Object new_value) throws Exception {
+		checkIfPVStarted();
 		pvWriter.write(new_value);
+	}
+	
+	private void checkIfPVStarted(){
+		if(pvReader == null || pvWriter == null)
+			throw new IllegalStateException("PVManagerPV is not started yet.");
 	}
 
 }
