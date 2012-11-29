@@ -26,6 +26,12 @@ public class MetaDataHelper
 	 */
 	final public static boolean equals(final Display display, final Object obj)
 	{
+		// This almost never catches:
+		// What we get is two different(!) VDoubleFromDbr instances,
+		// representing the same DBR_CTRL_Double as Display.
+		// We don't see the same internal DBR_CTRL_Double, and
+		// it wouldn't be of type Display anyway.
+		// Still handles null == null, which is also useful.
 		if (display == obj)
 			return true;
 		if (! (obj instanceof Display))
@@ -62,7 +68,7 @@ public class MetaDataHelper
 	 */
 	final private static boolean equals(final Double a, final Double b)
 	{
-		return (a == null)  ?  (b == null)  :  (a.doubleValue() == b.doubleValue());
+		return (a == null)  ?  (b == null)  :  a.equals(b);
 	}
 	
 	/** @param labels {@link Enum} labels to compare

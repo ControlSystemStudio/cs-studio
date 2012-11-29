@@ -27,7 +27,7 @@ import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+//import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of the archive writer
