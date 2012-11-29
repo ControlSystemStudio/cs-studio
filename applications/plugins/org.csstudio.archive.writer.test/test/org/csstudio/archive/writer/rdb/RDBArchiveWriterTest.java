@@ -12,9 +12,13 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.vtype.ArchiveVDoubleArray;
+import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.writer.WriteChannel;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
@@ -23,14 +27,21 @@ import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of the archive writer
+ * 
+ *  <p>Main purpose of these tests is to run in debugger, step-by-step,
+ *  so verify if correct RDB entries are made.
+ *  The sources don't include anything to check the raw RDB data.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class RDBArchiveWriterTest
 {
+	final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 	private RDBArchiveWriter writer = null;
 	private String name, array_name;
 
@@ -89,15 +100,11 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double sample for channel " + name);
 		final WriteChannel channel = writer.getChannel(name);
-		final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 		// Write double
 		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
 		// .. double that could be int
 		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.00));
-		// write int
-		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3));
 		writer.flush();
-		// No good way to check in unit test, need to read raw SQL table to verify.
 	}
 
 	@Test
@@ -107,105 +114,81 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double array sample for channel " + array_name);
 		final WriteChannel channel = writer.getChannel(array_name);
-		final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 		writer.addSample(channel, new ArchiveVDoubleArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
 				3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 		writer.flush();
 	}
 
-//	@Test
-//	public void testWriteLongEnumText() throws Exception
-//	{
-//		if (writer == null)
-//			return;
-//		final WriteChannel channel = writer.getChannel(name);
-//		IValue sample;
-//
-//		// This sets enumerated meta data
-//		sample = ValueFactory.createEnumeratedValue(TimestampFactory.now(),
-//			ValueFactory.createOKSeverity(), "OK",
-//			ValueFactory.createEnumeratedMetaData(new String[] { "Hello", "Goodbye" }),
-//			IValue.Quality.Original,
-//			new int[] { 1 });
-//		writer.addSample(channel, sample);
-//
-//		// This leaves the (enumerated) meta data untouched
-//		sample = ValueFactory.createStringValue(TimestampFactory.now(),
-//				ValueFactory.createOKSeverity(), "OK",
-//				IValue.Quality.Original,
-//				new String[] { "Hello" });
-//		writer.addSample(channel, sample);
-//
-//		// Sets numeric meta data
-//		sample = ValueFactory.createLongValue(TimestampFactory.now(),
-//				ValueFactory.createOKSeverity(), "OK",
-//				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
-//				IValue.Quality.Original,
-//				new long[] { 42 });
-//		writer.addSample(channel, sample);
-//
-//		writer.flush();
-//	}
-//
-//	final private static int TEST_DURATION_SECS = 60;
-//	final private static long FLUSH_COUNT = 500;
-//
-//	/* PostgreSQL 9 Test Results:
-//	 *
-//	 * HP Compact 8000 Elite Small Form Factor,
-//	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
-//	 * Hitachi Hds721025cla382 250gb Sata 7200rpm
-//	 *
-//	 * Flush Count  100, 500, 1000: ~7000 samples/sec, no big difference
-//	 *
-//	 * After deleting the constraints of sample.channel_id to channel,
-//	 * severity_id and status_id to sev. and status tables: ~12000 samples/sec,
-//	 * i.e. almost twice as much.
-//	 *
-//	 * JProfiler shows most time spent in 'flush', some in addSample()'s call to setTimestamp(),
-//	 * but overall time is in RDB, not Java.
-//	 *
-//	 *
-//	 * MySQL Test Results:
-//	 *
-//	 * iMac8,1    2.8GHz Intel Core 2 Duo, 4GB RAM
-//	 *
-//	 * Without rewriteBatchedStatements=true:  ~7000 samples/sec
-//	 * With rewriteBatchedStatements=true   : ~21000 samples/sec
-//	 */
-// 	@Ignore
-//	@Test
-//	public void testWriteSpeedDouble() throws Exception
-//	{
-//		if (writer == null)
-//			return;
-//
-//		System.out.println("Write test: Adding samples to " + name + " for " + TEST_DURATION_SECS + " secs");
-//		final WriteChannel channel = writer.getChannel(name);
-//		final INumericMetaData meta =
-//			ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u.");
-//
-//		long count = 0;
-//		final BenchmarkTimer timer = new BenchmarkTimer();
-//		final long start = System.currentTimeMillis();
-//		final long end = start + TEST_DURATION_SECS*1000L;
-//		do
-//		{
-//			++count;
-//			final IValue sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
-//				ValueFactory.createOKSeverity(), "OK",
-//				meta,
-//				IValue.Quality.Original,
-//				new double[] { count });
-//			writer.addSample(channel, sample);
-//			if (count % FLUSH_COUNT == 0)
-//				writer.flush();
-//		}
-//		while (System.currentTimeMillis() < end);
-//		writer.flush();
-//		timer.stop();
-//
-//		System.out.println("Wrote " + count + " samples in " + timer);
-//		System.out.println(count / timer.getSeconds() + " samples/sec");
-//	}
+	@Test
+	public void testWriteLongEnumText() throws Exception
+	{
+		if (writer == null)
+			return;
+		final WriteChannel channel = writer.getChannel(name);
+
+		// Enum, sets enumerated meta data
+		writer.addSample(channel, new ArchiveVEnum(Timestamp.now(), AlarmSeverity.MINOR, "OK", Arrays.asList("Zero", "One"), 1));
+		writer.flush();
+		
+		// Writing string leaves the enumerated meta data untouched
+		writer.addSample(channel, new ArchiveVString(Timestamp.now(), AlarmSeverity.MAJOR, "OK", "Hello"));
+		writer.flush();
+		
+		// Integer, sets numeric meta data
+		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.MINOR, "OK", display, 42));
+		writer.flush();
+	}
+
+	final private static int TEST_DURATION_SECS = 60;
+	final private static long FLUSH_COUNT = 500;
+
+	/* PostgreSQL 9 Test Results:
+	 *
+	 * HP Compact 8000 Elite Small Form Factor,
+	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
+	 * Hitachi Hds721025cla382 250gb Sata 7200rpm
+	 *
+	 * Flush Count  100, 500, 1000: ~7000 samples/sec, no big difference
+	 *
+	 * After deleting the constraints of sample.channel_id to channel,
+	 * severity_id and status_id to sev. and status tables: ~12000 samples/sec,
+	 * i.e. almost twice as much.
+	 *
+	 * JProfiler shows most time spent in 'flush', some in addSample()'s call to setTimestamp(),
+	 * but overall time is in RDB, not Java.
+	 *
+	 *
+	 * MySQL Test Results (same w/ original IValue and update to VType):
+	 *
+	 * iMac8,1    2.8GHz Intel Core 2 Duo, 4GB RAM
+	 *
+	 * Without rewriteBatchedStatements=true:  ~7000 samples/sec
+	 * With rewriteBatchedStatements=true   : ~21000 samples/sec
+	 */
+ 	// @Ignore
+	@Test
+	public void testWriteSpeedDouble() throws Exception
+	{
+		if (writer == null)
+			return;
+
+		System.out.println("Write test: Adding samples to " + name + " for " + TEST_DURATION_SECS + " secs");
+		final WriteChannel channel = writer.getChannel(name);
+
+		long count = 0;
+		final long start = System.currentTimeMillis();
+		final long end = start + TEST_DURATION_SECS*1000L;
+		do
+		{
+			++count;
+			writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
+			if (count % FLUSH_COUNT == 0)
+				writer.flush();
+		}
+		while (System.currentTimeMillis() < end);
+		writer.flush();
+
+		System.out.println("Wrote " + count + " samples, i.e. "
+				         + ((double)count / TEST_DURATION_SECS) + " samples/sec.");
+	}
 }

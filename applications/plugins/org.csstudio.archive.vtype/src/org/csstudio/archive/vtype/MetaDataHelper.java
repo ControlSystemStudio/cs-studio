@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import org.epics.pvmanager.data.Display;
@@ -23,7 +24,7 @@ public class MetaDataHelper
 	 *  @param obj Other {@link Display}
 	 *  @return <code>true</code> if both are numerically the same
 	 */
-	public static boolean equals(final Display display, final Object obj)
+	final public static boolean equals(final Display display, final Object obj)
 	{
 		if (display == obj)
 			return true;
@@ -42,28 +43,33 @@ public class MetaDataHelper
             return false;
 		
         // Compare formats by result on some test value. Not perfect.
-		if (display.getFormat() == null)
-			return other.getFormat() == null;
-		return display.getFormat().format(TEST_VALUE)
-			  .equals(other.getFormat().format(TEST_VALUE));
+		final NumberFormat format = display.getFormat();
+		final NumberFormat format2 = other.getFormat();
+		// Formatting is expensive, so hopefully we catch the same format via equality
+		if (format == format2)
+			return true;
+		// Both null is OK
+		if (format == null)
+			return format2 == null;
+		// Else result of formatting a test value must match.
+		return format.format(TEST_VALUE)
+			  .equals(format2.format(TEST_VALUE));
 	}
 
 	/** @param a Double to compare
 	 *  @param b Double to compare
 	 *  @return true if both are <code>null</code>, or both are numerically equal
 	 */
-	private static boolean equals(final Double a, final Double b)
+	final private static boolean equals(final Double a, final Double b)
 	{
-		if (a == null)
-			return b == null;
-		return a.doubleValue() == b.doubleValue();
+		return (a == null)  ?  (b == null)  :  (a.doubleValue() == b.doubleValue());
 	}
 	
 	/** @param labels {@link Enum} labels to compare
 	 *  @param other {@link Enum} labels to compare
 	 *  @return <code>true</code> if labels are equal
 	 */
-	public static boolean equals(final List<String> labels, final Object obj)
+	final public static boolean equals(final List<String> labels, final Object obj)
 	{
 		if (labels == obj)
 			return true;
