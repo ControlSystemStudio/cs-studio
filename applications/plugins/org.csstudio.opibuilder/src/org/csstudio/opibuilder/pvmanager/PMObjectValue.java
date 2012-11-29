@@ -17,14 +17,18 @@ import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.ValueUtil;
 
-/**A {@link IValue} that represents PVManager object value.
+/**A {@link IValue} that represents PVManager object value. The value is immutable.
  * @author Xihui Chen
  *
  */
 public class PMObjectValue implements IValue {
 	
 
+	private static final String SPACE = " "; //$NON-NLS-1$
+
 	private static final long serialVersionUID = -2371110066966439376L;
+	
+	private String cachedString = null;
 	
 	/**
 	 * Value from PVManager PV
@@ -125,17 +129,31 @@ public class PMObjectValue implements IValue {
 	public String format() {
 		return PVManagerHelper.getInstance().
 				formatValue(FormatEnum.DEFAULT, latestValue, -1);
-//		Display display = ValueUtil.displayOf(latestValue);
-//		if (display != null) {
-//			return display.getFormat().format(ValueUtil.numericValueOf(latestValue));
-//		}
-//		if(latestValue instanceof Scalar)
-//			return ((Scalar)latestValue).getValue().toString();		
 	}
 	
 	@Override
 	public String toString() {
-		return format();
+		if(cachedString == null){
+			StringBuilder sb = new StringBuilder();
+			ITimestamp time = getTime();
+			if (time != null) {
+				sb.append(time.toString());
+				sb.append(SPACE); //$NON-NLS-1$
+			}
+			sb.append(format());
+			sb.append(SPACE);
+			ISeverity severity = getSeverity();
+			if (severity != null) {
+				sb.append(severity);
+				sb.append(SPACE);
+			}
+			String status = getStatus();
+			if (status != null)
+				sb.append(status);
+			System.out.println("tostring:" + sb);
+			cachedString = sb.toString();
+		}
+		return cachedString;
 	}
 
 }
