@@ -37,6 +37,10 @@ public class ExpressionLanguage {
         return new Histogram1DPlot(queue, new Histogram1DFunction(queue.getFunction()), "histogram");
     }
 
+    public static Histogram1DPlot histogramOf(DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
+        return new Histogram1DPlot(vDoubles, new Histogram1DFunction(vDoubles.getFunction()), "histogram");
+    }
+
     public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
         return new LineGraphPlot(vDoubleArray, new LineGraphFunction(vDoubleArray.getFunction()), "lineGraph");
     }
