@@ -8,12 +8,9 @@
 package org.csstudio.archive.engine.model;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** [Headless] JUnit write thread tests, writing from a queue with fake samples.
@@ -30,7 +27,7 @@ public class WriteThreadHeadlessTest
     	final String channel = settings.getString("archive_write_channel");
     	if (channel == null)
     	{
-    		System.out.println("Skipping, no name for write_channel");
+    		System.out.println("Skipping, no name for archive_write_channel");
     		return;
     	}
 		System.out.println("Writing samples for channel " + channel);
@@ -46,18 +43,13 @@ public class WriteThreadHeadlessTest
         writer.start(5.0, 500);
 
         // Add some samples
-        final long seconds = TimestampFactory.now().seconds();
-        final ISeverity severity = ValueFactory.createOKSeverity();
+        final long seconds = Timestamp.now().getSec();
+        final AlarmSeverity severity = AlarmSeverity.NONE;
         final String status = "Test";
-        final INumericMetaData meta_data =
-            ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 9, 2, "Eggs");
         for (int i=0; i<10; ++i)
         {
-            final ITimestamp time = TimestampFactory.createTimestamp(seconds, i);
-            buffer.add(ValueFactory.createDoubleValue(time,
-                            severity, status, meta_data,
-                            IValue.Quality.Original,
-                            new double[] { i } ));
+            final Timestamp time = Timestamp.of(seconds, i);
+            buffer.add(new ArchiveVNumber(time, severity, status, TestValueFactory.display, Double.valueOf(i)));
             Thread.sleep(1);
         }
 

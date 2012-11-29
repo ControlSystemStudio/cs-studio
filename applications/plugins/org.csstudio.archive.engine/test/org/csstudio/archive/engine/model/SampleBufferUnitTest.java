@@ -9,8 +9,8 @@ package org.csstudio.archive.engine.model;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.VType;
 import org.junit.Test;
 
 /** JUnit test of the {@link SampleBuffer}
@@ -28,7 +28,7 @@ public class SampleBufferUnitTest
 		assertEquals(0, buffer.getQueueSize());
 		buffer.add(TestValueFactory.getDouble(1));
 		assertEquals(1, buffer.getQueueSize());
-		assertEquals(1.0, ValueUtil.getDouble(buffer.remove()), 0.01);
+		assertEquals(1.0, VTypeHelper.toDouble(buffer.remove()), 0.01);
 		assertEquals(0, buffer.getQueueSize());
 	}
 
@@ -49,11 +49,11 @@ public class SampleBufferUnitTest
 		assertEquals(1, buffer.getBufferStats().getOverruns());
 
 		// Value 0 was dropped by overrun, oldest sample now 1
-		final IValue value = buffer.remove();
-		assertEquals(1.0, ValueUtil.getDouble(value), 0.01);
+		final VType value = buffer.remove();
+		assertEquals(1.0, VTypeHelper.toDouble(value), 0.01);
 	}
 
-	final private static long TEST_RUNS = 10000;
+	final private static long TEST_RUNS = 10000L;
 
 	class FillThread extends Thread
 	{
@@ -78,7 +78,7 @@ public class SampleBufferUnitTest
 	/** Check tread access
 	 * @throws Exception on thread error
 	 */
-	@Test
+	@Test // (timeout=200000L)
 	public void testThreads() throws Exception
 	{
 		// Fill buffer in background thread
@@ -91,11 +91,13 @@ public class SampleBufferUnitTest
 		{
 			while (buffer.getQueueSize() > 0)
 			{
-				final double value = ValueUtil.getDouble(buffer.remove());
-				// System.out.println(value);
+				final double value = VTypeHelper.toDouble(buffer.remove());
+				//System.out.println(value);
 				assertEquals((double)expected, value, 0.1);
 				++expected;
 			}
+			// FillThread adds about 5 samples in this time.
+			// Buffer holds 10 samples, so there should be no overruns.
 			Thread.sleep(50);
 		}
 	}
