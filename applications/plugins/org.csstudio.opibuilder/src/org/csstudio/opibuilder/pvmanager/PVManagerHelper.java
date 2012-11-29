@@ -20,11 +20,13 @@ import org.epics.pvmanager.data.VFloat;
 import org.epics.pvmanager.data.VFloatArray;
 import org.epics.pvmanager.data.VInt;
 import org.epics.pvmanager.data.VIntArray;
+import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.data.VShort;
 import org.epics.pvmanager.data.VShortArray;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VStringArray;
 import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.array.ListNumber;
 
 /**
  * A helper for PVManager related operations which are not 
@@ -118,65 +120,29 @@ public class PVManagerHelper{
                 return new double[]{((Number) v).doubleValue()};
         }
 
-        if (obj instanceof Array) {
-            Object array = ((Array<?>) obj).getArray();
-            if (array instanceof byte[]) {
-                byte[] tArray = (byte[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-            if (array instanceof short[]) {
-                short[] tArray = (short[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-            if (array instanceof char[]) {
-            	char[] tArray = (char[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-            if (array instanceof int[]) {
-                int[] tArray = (int[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-            if (array instanceof long[]) {
-            	long[] tArray = (long[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }            
-            if (array instanceof float[]) {
-                float[] tArray = (float[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-            if (array instanceof double[]) {
-                double[] tArray = (double[]) array;
-                final double[] result = new double[tArray.length];
-                for(int i=0; i<tArray.length; i++){
-                	result[i] = tArray[i];
-                }
-                return result;
-            }
-        }
+		if(obj instanceof Array){
+			Object array = ((Array<?>) obj).getArray();
+			if(array instanceof double[])
+				return (double[]) array;
+			if(obj instanceof VEnumArray){
+				int[] tArray = ((VEnumArray) obj).getIndexes();
+				final double[] result = new double[tArray.length];
+				for (int i = 0; i < tArray.length; i++) {
+					result[i] = tArray[i];
+				}
+				return result;	            
+			}				
+		}
+		
+		if (obj instanceof VNumberArray){
+			ListNumber data = ((VNumberArray)(obj)).getData();
+			final double[] result = new double[data.size()];
+			 for(int i=0; i<result.length; i++){
+             	result[i] = data.getDouble(i);
+             }
+             return result;			
+		}
+		
         return new double[0];
 	}
 	
@@ -199,14 +165,19 @@ public class PVManagerHelper{
 				return (String) value;
 			}			
 		}else if(pmValue instanceof Array){
-			Object array = ((Array<?>) pmValue).getArray();
-			if(isPrimaryNumberArray(array))
-				return formatNumberArray(formatEnum, (Array<?>)pmValue, precision);
-			else if (array instanceof Object[]){
-				return formatObjectArray((Object[]) array);
+			
+			if(pmValue instanceof VNumberArray)
+				return formatNumberArray(formatEnum, (VNumberArray)pmValue, precision);
+			else {
+				Object array = ((Array<?>) pmValue).getArray();
+				if (array instanceof Object[]){
+					return formatObjectArray((Object[]) array);
+				}				
 			}
 		}
-		return pmValue.toString();
+		if(pmValue != null)
+			return pmValue.toString();
+		return "no value"; //$NON-NLS-1$
 	}
 
 	public static boolean isPrimaryNumberArray(Object array) {
@@ -240,31 +211,31 @@ public class PVManagerHelper{
 	
 	
 	
-	private String formatNumberArray(FormatEnum formatEnum, Array<?> pmArray, int precision){
-		double[] doubleArray = getDoubleArray(pmArray);
-		StringBuilder sb = new StringBuilder(doubleArray.length);
+	private String formatNumberArray(FormatEnum formatEnum, VNumberArray pmArray, int precision){
+		ListNumber data = ((VNumberArray)pmArray).getData();
+		StringBuilder sb = new StringBuilder(data.size());
 		if(formatEnum == FormatEnum.STRING){			
-			for(int i=0; i<doubleArray.length; i++){
-				final char c = getDisplayChar((char) doubleArray[i]);
+			for(int i=0; i<data.size(); i++){
+				final char c = getDisplayChar((char) data.getInt(i));
 				if (c == 0)
 					break;
 				sb.append(c);
 			}
 			return sb.toString();			
 		}else{		
-		   sb.append(formatScalarNumber(formatEnum, doubleArray[0], precision));
-           for(int i=0; i<doubleArray.length; i++){        	   	
+		   sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
+           for(int i=0; i<data.size(); i++){        	   	
         	   	sb.append(ARRAY_ELEMENT_SEPARATOR);
-        	   	sb.append(formatScalarNumber(formatEnum, doubleArray[i], precision));
+        	   	sb.append(formatScalarNumber(formatEnum, data.getDouble(i), precision));
 				if (i >= MAX_FORMAT_VALUE_COUNT)
 				{
 					sb.append(ARRAY_ELEMENT_SEPARATOR);
 					sb.append("..."); //$NON-NLS-1$
 					sb.append(formatScalarNumber(formatEnum, 
-							doubleArray[doubleArray.length-1], precision));
+							data.getDouble(data.size()-1), precision));
 					sb.append(" "); //$NON-NLS-1$
 					sb.append("["); //$NON-NLS-1$
-					sb.append(doubleArray.length);
+					sb.append(data.size());
 					sb.append("]"); //$NON-NLS-1$
 					break;
 				}
@@ -316,7 +287,7 @@ public class PVManagerHelper{
 						((Number) numValue).doubleValue());
 			} else {
 				if(precision == -1)
-					return Double.toString(numValue.doubleValue());
+					return formatScalarNumber(FormatEnum.COMPACT, numValue, precision);
 				else{
 					NumberFormat numberFormat = formatCacheMap.get(precision);
 					if(numberFormat == null){
@@ -328,14 +299,15 @@ public class PVManagerHelper{
 					return numberFormat.format(numValue.doubleValue());
 				}
 			}			
+
 		case COMPACT:
 			double dValue = numValue.doubleValue();
 			if ( ((dValue > 0.0001) && (dValue < 10000))||
 					((dValue < -0.0001) && (dValue > -10000)) ||
 					dValue == 0.0){
-				return formatScalarNumber(FormatEnum.DECIMAL, numValue, precision);
+				return formatScalarNumber(FormatEnum.DECIMAL, numValue, precision == -1? 4 : precision);
 			}else{
-				return formatScalarNumber(FormatEnum.EXP, numValue, precision);					
+				return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1? 4 : precision);					
 			}
 		case EXP:
 			if (precision == -1 && numValue instanceof Display) {
