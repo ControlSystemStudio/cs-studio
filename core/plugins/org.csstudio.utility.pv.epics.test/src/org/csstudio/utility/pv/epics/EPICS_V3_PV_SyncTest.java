@@ -33,7 +33,7 @@ public class EPICS_V3_PV_SyncTest
         fred.stop();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimeout() throws Exception
     {
         final PV none = TestUtil.getPV("does_not_exist");

@@ -1002,12 +1002,30 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	
 	
 	/**Set the value of the widget. This only takes effect on the visual presentation of the widget and
-	 * will not write the value to the PV attached to this widget.
+	 * will not write the value to the PV attached to this widget. Since setting value to 
+	 * a widget usually results in figure repaint, this method should be called in UI thread. To call 
+	 * it in non-UI thread, see {@link #setValueInUIThread(Object)}.
 	 * @param value the value to be set. It must be the compatible type for the widget.
 	 *  For example, a boolean widget only accept boolean or number.
 	 * @throws RuntimeException if the value is not an acceptable type.
 	 */	
 	public void setValue(Object value){
 		throw new RuntimeException("widget.setValue() does not accept " + value.getClass().getSimpleName());
+	}
+	
+	/**Call {@link #setValue(Object)} in UI Thread.
+	 *  This method can be called in non-UI thread.
+	 * @param value
+	 * @since 3.1.3
+	 */
+	public final void setValueInUIThread(final Object value){
+		UIBundlingThread.getInstance().addRunnable(
+				getViewer().getControl().getDisplay(), new Runnable() {
+					
+					@Override
+					public void run() {
+						setValue(value);
+					}
+				});
 	}
 }

@@ -3,11 +3,11 @@ package org.csstudio.swt.widgets.util;
 import java.io.InputStream;
 
 import org.csstudio.swt.widgets.figures.TextInputFigure;
+import org.csstudio.swt.widgets.figures.TextInputFigure.FileReturnPart;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
@@ -16,6 +16,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Transform;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -86,7 +87,9 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		case WORKSPACE:
 			ResourceSelectionDialog dialog = 
 				new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
-						"Select workspace file", new String[]{"*.*"}); //$NON-NLS-2$
+						"Select workspace file", 
+						textInput.getFileReturnPart() == FileReturnPart.DIRECTORY ? 
+								null : new String[]{"*.*"}); //$NON-NLS-2$
 			if(currentPath != null)
 				dialog.setSelectedResource(new Path(currentPath));					 
 			else if(startPath != null && startPath.trim().length() > 0)
@@ -105,6 +108,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 					fileString = path.lastSegment();
 					break;
 				case FULL_PATH:
+				case DIRECTORY:
 				default:
 					break;
 				}
@@ -113,27 +117,38 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 			}
 			break;
 		case LOCAL:
-			FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell());
-			if(currentPath != null)
-				fileDialog.setFileName(currentPath);
-			String fileString = fileDialog.open();
-			if(fileString != null){
+			String fileString;
+			if(textInput.getFileReturnPart() == FileReturnPart.DIRECTORY){
+				 DirectoryDialog directoryDialog = new DirectoryDialog(
+						Display.getCurrent().getActiveShell());
+				 fileString = directoryDialog.open();
+				
+			}else {
+				FileDialog fileDialog = new FileDialog(Display.getCurrent()
+						.getActiveShell());
+				if (currentPath != null)
+					((FileDialog) fileDialog).setFileName(currentPath);
+				fileString = fileDialog.open();
+			}				
+			if (fileString != null) {
 				currentPath = fileString;
 				switch (textInput.getFileReturnPart()) {
 				case NAME_ONLY:
 					IPath path = new Path(fileString).removeFileExtension();
-					fileString = path.lastSegment();	
+					fileString = path.lastSegment();
 					break;
 				case NAME_EXT:
 					fileString = new Path(fileString).lastSegment();
 					break;
-				case FULL_PATH:									
+				case FULL_PATH:
+				case DIRECTORY:
 				default:
 					break;
 				}
 				textInput.setText(fileString);
 				textInput.fireManualValueChange(textInput.getText());
 			}
+	
 			break;
 		default:
 			break;

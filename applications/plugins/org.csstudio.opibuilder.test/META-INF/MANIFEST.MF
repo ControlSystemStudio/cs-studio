@@ -6,8 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.opibuilder;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Bundle-ClassPath: lib/jython/jython.jar,
- lib/rhino/js.jar,
+Bundle-ClassPath: lib/rhino/js.jar,
  .
 Require-Bundle: org.junit4,
  org.eclipse.core.resources
