@@ -5,7 +5,7 @@
 package org.epics.pvmanager.expression;
 
 import org.epics.pvmanager.ReadRecipeBuilder;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.PVReaderDirector;
 
@@ -17,7 +17,7 @@ import org.epics.pvmanager.PVReaderDirector;
  */
 public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<R> implements DesiredRateExpression<R> {
 
-    private final Function<R> function;
+    private final ReadFunction<R> function;
     private String name;
     private final SourceRateExpression<?> sourceRateChild;
     private final DesiredRateExpressionList<?> desiredRateChildren;
@@ -57,7 +57,7 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
      * @param function the function that calculates the value of the new expression
      * @param defaultName the display name of the expression
      */
-    public DesiredRateExpressionImpl(DesiredRateExpressionList<?> childExpressions, Function<R> function, String defaultName) {
+    public DesiredRateExpressionImpl(DesiredRateExpressionList<?> childExpressions, ReadFunction<R> function, String defaultName) {
         this.sourceRateChild = null;
         this.desiredRateChildren = childExpressions;
         this.function = function;
@@ -92,7 +92,7 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
      * @return a function
      */
     @Override
-    public final Function<R> getFunction() {
+    public final ReadFunction<R> getFunction() {
         return function;
     }
 

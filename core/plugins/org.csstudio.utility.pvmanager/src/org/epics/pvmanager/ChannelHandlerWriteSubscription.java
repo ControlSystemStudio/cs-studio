@@ -6,18 +6,29 @@ package org.epics.pvmanager;
 
 /**
  * Groups all the parameters required to add a writer to a ChannelHandler.
+ * <p>
+ * All parameters where grouped in this class so that if something needs to be
+ * added or removed the impact is lessened. The class is immutable so that
+ * the ChannelHandler can cache it for reference.
  *
  * @author carcassi
  */
 public class ChannelHandlerWriteSubscription {
 
-    public ChannelHandlerWriteSubscription(WriteCache<?> cache, WriteFunction<Exception> exceptionWriteFunction, WriteFunction<Boolean> connectionWriteFunction) {
-        this.cache = cache;
+    /**
+     * Creates a new subscription.
+     * 
+     * @param writeCache the cache where to read the value from
+     * @param exceptionWriteFunction the write function to notify to process errors
+     * @param connectionWriteFunction the write function to notify for connection updates
+     */
+    public ChannelHandlerWriteSubscription(WriteCache<?> writeCache, WriteFunction<Exception> exceptionWriteFunction, WriteFunction<Boolean> connectionWriteFunction) {
+        this.writeCache = writeCache;
         this.exceptionWriteFunction = exceptionWriteFunction;
         this.connectionWriteFunction = connectionWriteFunction;
     }
     
-    private final WriteCache<?> cache;
+    private final WriteCache<?> writeCache;
     private final WriteFunction<Exception> exceptionWriteFunction;
     private final WriteFunction<Boolean> connectionWriteFunction;
 
@@ -27,7 +38,7 @@ public class ChannelHandlerWriteSubscription {
      * @return the write cache
      */
     public WriteCache<?> getWriteCache() {
-        return cache;
+        return writeCache;
     }
 
     /**
@@ -51,7 +62,7 @@ public class ChannelHandlerWriteSubscription {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 11 * hash + (this.cache != null ? this.cache.hashCode() : 0);
+        hash = 11 * hash + (this.writeCache != null ? this.writeCache.hashCode() : 0);
         hash = 11 * hash + (this.exceptionWriteFunction != null ? this.exceptionWriteFunction.hashCode() : 0);
         hash = 11 * hash + (this.connectionWriteFunction != null ? this.connectionWriteFunction.hashCode() : 0);
         return hash;
@@ -66,7 +77,7 @@ public class ChannelHandlerWriteSubscription {
             return false;
         }
         final ChannelHandlerWriteSubscription other = (ChannelHandlerWriteSubscription) obj;
-        if (this.cache != other.cache && (this.cache == null || !this.cache.equals(other.cache))) {
+        if (this.writeCache != other.writeCache && (this.writeCache == null || !this.writeCache.equals(other.writeCache))) {
             return false;
         }
         if (this.exceptionWriteFunction != other.exceptionWriteFunction && (this.exceptionWriteFunction == null || !this.exceptionWriteFunction.equals(other.exceptionWriteFunction))) {

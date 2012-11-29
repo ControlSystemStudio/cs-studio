@@ -11,12 +11,12 @@ package org.epics.pvmanager;
  * @param <R> result type
  * @author carcassi
  */
-public interface Function<R> {
+public interface ReadFunction<R> {
 
     /**
      * Calculates, if needed, and then returns the value for this function.
      *
      * @return a value
      */
-    public R getValue();
+    public R readValue();
 }

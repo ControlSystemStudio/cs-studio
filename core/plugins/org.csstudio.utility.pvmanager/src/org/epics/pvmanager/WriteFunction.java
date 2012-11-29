@@ -18,6 +18,6 @@ public interface WriteFunction<A> {
      *
      * @param newValue a value
      */
-    public void setValue(A newValue);
+    public void writeValue(A newValue);
     
 }

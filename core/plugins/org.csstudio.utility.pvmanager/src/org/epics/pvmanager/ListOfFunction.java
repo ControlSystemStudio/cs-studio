@@ -12,20 +12,20 @@ import java.util.List;
  *
  * @author carcassi
  */
-class ListOfFunction implements Function<List> {
+class ListOfFunction implements ReadFunction<List> {
 
-    List<Function> functions;
+    List<ReadFunction> functions;
 
-    public ListOfFunction(List<Function> functions) {
+    public ListOfFunction(List<ReadFunction> functions) {
         this.functions = functions;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List getValue() {
+    public List readValue() {
         List list = new ArrayList();
-        for (Function function : functions) {
-            list.add(function.getValue());
+        for (ReadFunction function : functions) {
+            list.add(function.readValue());
         }
         return list;
     }

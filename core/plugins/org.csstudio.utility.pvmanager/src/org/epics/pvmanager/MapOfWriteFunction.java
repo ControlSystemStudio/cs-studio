@@ -35,11 +35,11 @@ class MapOfWriteFunction<T> implements WriteFunction<Map<String, T>> {
 
 
     @Override
-    public void setValue(Map<String, T> newValue) {
+    public void writeValue(Map<String, T> newValue) {
         for (Map.Entry<String, T> entry : newValue.entrySet()) {
             WriteFunction<T> function = functionMap.get(entry.getKey());
             if (function != null) {
-                function.setValue(entry.getValue());
+                function.writeValue(entry.getValue());
             }
         }
     }

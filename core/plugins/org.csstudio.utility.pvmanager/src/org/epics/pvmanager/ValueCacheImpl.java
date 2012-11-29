@@ -38,7 +38,7 @@ public class ValueCacheImpl<T> implements ValueCache<T> {
      * @return value in the cache
      */
     @Override
-    public T getValue() {
+    public T readValue() {
         return value;
     }
 
@@ -48,7 +48,7 @@ public class ValueCacheImpl<T> implements ValueCache<T> {
      * @param newValue the new value
      */
     @Override
-    public void setValue(Object newValue) {
+    public void writeValue(Object newValue) {
         // TODO should add type check
         this.value = type.cast(newValue);
     }

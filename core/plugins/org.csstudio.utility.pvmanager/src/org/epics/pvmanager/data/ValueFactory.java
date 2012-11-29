@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
 import org.epics.util.time.Timestamp;
 
@@ -419,6 +420,20 @@ public class ValueFactory {
     }
     
     /**
+     * Creates a new VFloatArray.
+     * 
+     * @param data array data
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VFloatArray newVFloatArray(ListFloat data, Alarm alarm, Time time, Display display) {
+        return new IVFloatArray(data, Collections.singletonList(data.size()), alarm,
+                time, display);
+    }
+    
+    /**
      * Creates a new VDoubleArray.
      * 
      * @param values array values
@@ -428,7 +443,6 @@ public class ValueFactory {
     public static VDoubleArray newVDoubleArray(final double[] values, Display display) {
         return newVDoubleArray(values, Collections.singletonList(values.length), alarmNone(), timeNow(), display);
     }
-
 
     public static VImage newVImage(int height, int width, byte[] data) {
         return new IVImage(height, width, data);

@@ -7,7 +7,7 @@ package org.epics.pvmanager.expression;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.WriteFunction;
 
 /**
@@ -17,11 +17,11 @@ import org.epics.pvmanager.WriteFunction;
 class MapUpdate<T> {
     
     private final Collection<String> expressionsToDelete;
-    private final Map<String, Function<T>> readFunctionsToAdd;
+    private final Map<String, ReadFunction<T>> readFunctionsToAdd;
     private final Map<String, WriteFunction<T>> writeFunctionsToAdd;
     private final boolean toClear;
 
-    private MapUpdate(Collection<String> expressionsToDelete, Map<String, Function<T>> readFunctionsToAdd,
+    private MapUpdate(Collection<String> expressionsToDelete, Map<String, ReadFunction<T>> readFunctionsToAdd,
             Map<String, WriteFunction<T>> writeFunctionsToAdd, boolean toClear) {
         this.expressionsToDelete = expressionsToDelete;
         this.readFunctionsToAdd = readFunctionsToAdd;
@@ -33,7 +33,7 @@ class MapUpdate<T> {
         return expressionsToDelete;
     }
 
-    public Map<String, Function<T>> getReadFunctionsToAdd() {
+    public Map<String, ReadFunction<T>> getReadFunctionsToAdd() {
         return readFunctionsToAdd;
     }
 
@@ -46,11 +46,11 @@ class MapUpdate<T> {
     }
     
     public static <T> MapUpdate<T> clear() {
-        return new MapUpdate<>(Collections.<String>emptyList(), Collections.<String, Function<T>>emptyMap(),
+        return new MapUpdate<>(Collections.<String>emptyList(), Collections.<String, ReadFunction<T>>emptyMap(),
                 Collections.<String, WriteFunction<T>>emptyMap(), true);
     }
     
-    public static <T> MapUpdate<T> addReadFunction(String name, Function<T> function) {
+    public static <T> MapUpdate<T> addReadFunction(String name, ReadFunction<T> function) {
         return new MapUpdate<>(Collections.<String>emptyList(), Collections.singletonMap(name, function),
                 null, false);
     }
@@ -61,7 +61,7 @@ class MapUpdate<T> {
     }
     
     public static <T> MapUpdate<T> removeFunction(String name) {
-        return new MapUpdate<>(Collections.singleton(name), Collections.<String, Function<T>>emptyMap(),
+        return new MapUpdate<>(Collections.singleton(name), Collections.<String, ReadFunction<T>>emptyMap(),
                 Collections.<String, WriteFunction<T>>emptyMap(), true);
     }
     

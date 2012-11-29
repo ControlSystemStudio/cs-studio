@@ -25,8 +25,8 @@ class MapOfWriteFunction<T> implements WriteFunction<Map<String, T>> {
     }
 
     @Override
-    public void setValue(Map<String, T> newValue) {
-        for (MapUpdate<T> mapUpdate : mapUpdateCollector.getValue()) {
+    public void writeValue(Map<String, T> newValue) {
+        for (MapUpdate<T> mapUpdate : mapUpdateCollector.readValue()) {
             for (String name : mapUpdate.getExpressionsToDelete()) {
                 functions.remove(name);
             }
@@ -36,7 +36,7 @@ class MapOfWriteFunction<T> implements WriteFunction<Map<String, T>> {
         for (Map.Entry<String, T> entry : newValue.entrySet()) {
             WriteFunction<T> function = functions.get(entry.getKey());
             if (function != null) {
-                function.setValue(entry.getValue());
+                function.writeValue(entry.getValue());
             }
         }
     }

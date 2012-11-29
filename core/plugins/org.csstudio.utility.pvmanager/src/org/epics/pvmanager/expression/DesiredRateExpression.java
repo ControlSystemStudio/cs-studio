@@ -6,7 +6,7 @@ package org.epics.pvmanager.expression;
 
 import org.epics.pvmanager.ReadRecipe;
 import org.epics.pvmanager.ReadRecipeBuilder;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.PVReaderDirector;
 
 /**
@@ -46,7 +46,7 @@ public interface DesiredRateExpression<R> extends DesiredRateExpressionList<R> {
      *
      * @return the expression function
      */
-    public Function<R> getFunction();
+    public ReadFunction<R> getFunction();
     
     /**
      * The implementation of this expression.

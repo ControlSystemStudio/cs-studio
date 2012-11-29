@@ -10,7 +10,7 @@ package org.epics.pvmanager;
  * @param <T> the type of the value held by the cache
  * @author carcassi
  */
-public interface ValueCache<T> extends Function<T>, WriteFunction<T> {
+public interface ValueCache<T> extends ReadFunction<T>, WriteFunction<T> {
 
     /**
      * The type of objects that this cache can contain.

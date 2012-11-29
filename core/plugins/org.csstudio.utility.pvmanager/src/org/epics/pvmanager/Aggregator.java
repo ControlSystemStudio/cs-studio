@@ -21,9 +21,9 @@ import java.util.List;
  * @param <A> argument type being aggregated
  * @author carcassi
  */
-public abstract class Aggregator<R, A> implements Function<R> {
+public abstract class Aggregator<R, A> implements ReadFunction<R> {
 
-    private final Function<List<A>> collector;
+    private final ReadFunction<List<A>> collector;
     private R lastCalculatedValue;
     private A lastValue;
 
@@ -33,13 +33,13 @@ public abstract class Aggregator<R, A> implements Function<R> {
      *
      * @param collector a suitable collector
      */
-    protected Aggregator(Function<List<A>> collector) {
+    protected Aggregator(ReadFunction<List<A>> collector) {
         this.collector = collector;
     }
 
     @Override
-    public final R getValue() {
-        List<A> data = collector.getValue();
+    public final R readValue() {
+        List<A> data = collector.readValue();
         if (data.size() > 0) {
             lastCalculatedValue = calculate(data);
             lastValue = data.get(data.size() - 1);

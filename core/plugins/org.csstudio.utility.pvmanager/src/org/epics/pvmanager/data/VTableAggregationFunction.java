@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 
 /**
  *
  * @author carcassi
  */
-class VTableAggregationFunction implements Function<VTable> {
+class VTableAggregationFunction implements ReadFunction<VTable> {
     
-    private final List<List<Function<?>>> functions;
+    private final List<List<ReadFunction<?>>> functions;
     private final List<String> names;
     private static final Map<Class<?>, Class<?>> typeConversion;
     private static final Map<Class<?>, ArrayAdder> arrayAdders;
@@ -60,23 +60,23 @@ class VTableAggregationFunction implements Function<VTable> {
         });
     }
 
-    public VTableAggregationFunction(List<List<Function<?>>> functions, List<String> names) {
+    public VTableAggregationFunction(List<List<ReadFunction<?>>> functions, List<String> names) {
         this.functions = functions;
         this.names = names;
     }
 
     @Override
-    public VTable getValue() {
+    public VTable readValue() {
         List<Class<?>> types = new ArrayList<Class<?>>();
         List<Object> values = new ArrayList<Object>();
         
-        for (List<Function<?>> columnFunctions : functions) {
+        for (List<ReadFunction<?>> columnFunctions : functions) {
             List<Object> columnValues = new ArrayList<Object>();
             Class<?> columnType = null;
             
             // Extract all values and determine column type
-            for (Function<?> function : columnFunctions) {
-                Object value = function.getValue();
+            for (ReadFunction<?> function : columnFunctions) {
+                Object value = function.readValue();
                 columnType = validateType(value, columnType, names.get(types.size()));
                 
                 columnValues.add(value);

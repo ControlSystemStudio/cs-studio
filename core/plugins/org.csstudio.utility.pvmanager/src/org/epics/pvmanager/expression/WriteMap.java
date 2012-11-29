@@ -55,7 +55,7 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
      */
     public WriteMap<T> clear() {
         synchronized(lock) {
-            getMapOfWriteFunction().getMapUpdateCollector().setValue(MapUpdate.<T>clear());
+            getMapOfWriteFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>clear());
             if (director != null) {
                 for (WriteExpression<T> desiredRateExprewritession : expressions.values()) {
                     director.disconnectExpression(desiredRateExprewritession);
@@ -92,7 +92,7 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
                 throw new IllegalArgumentException("MapExpression already contain an expression named '" + expression.getName() + "'");
             }
             
-            getMapOfWriteFunction().getMapUpdateCollector().setValue(MapUpdate.addWriteFunction(expression.getName(), expression.getWriteFunction()));
+            getMapOfWriteFunction().getMapUpdateCollector().writeValue(MapUpdate.addWriteFunction(expression.getName(), expression.getWriteFunction()));
             expressions.put(expression.getName(), expression);
             if (director != null) {
                 director.connectExpression(expression);
@@ -122,7 +122,7 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
                 throw new IllegalArgumentException("MapExpression does not contain an expression named '" + name + "'");
             }
             
-            getMapOfWriteFunction().getMapUpdateCollector().setValue(MapUpdate.<T>removeFunction(name));
+            getMapOfWriteFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>removeFunction(name));
             WriteExpression<T> expression = expressions.remove(name);
             if (director != null) {
                 director.disconnectExpression(expression);

@@ -13,7 +13,7 @@ import java.util.List;
  */
 class LastValueAggregator<T> extends Aggregator<T, T> {
 
-    LastValueAggregator(Function<List<T>> collector) {
+    LastValueAggregator(ReadFunction<List<T>> collector) {
         super(collector);
     }
 

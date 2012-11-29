@@ -105,7 +105,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         for (PVReaderListener<T> pVReaderListener : readListeners) {
             pv.addPVReaderListener(pVReaderListener);
         }
-        Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
+        ReadFunction<T> aggregatedFunction = aggregatedPVExpression.getFunction();
         
         // TODO: we are ignoring the exception handler for now
         

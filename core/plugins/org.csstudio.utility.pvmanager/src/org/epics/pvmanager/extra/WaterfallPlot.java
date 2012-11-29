@@ -6,7 +6,7 @@ package org.epics.pvmanager.extra;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
@@ -31,8 +31,8 @@ public class WaterfallPlot extends DesiredRateExpressionImpl<VImage> {
         super(expressions, new WaterfallPlotFunction(new DoubleArrayTimeCacheFromVDoubles(getFunctions(expressions)), WaterfallPlotParameters.defaults().internalCopy()), name);
     }
     
-    private static <T extends VNumber> List<Function<List<T>>> getFunctions(DesiredRateExpressionList<List<T>> exp) {
-        List<Function<List<T>>> functions = new ArrayList<Function<List<T>>>();
+    private static <T extends VNumber> List<ReadFunction<List<T>>> getFunctions(DesiredRateExpressionList<List<T>> exp) {
+        List<ReadFunction<List<T>>> functions = new ArrayList<ReadFunction<List<T>>>();
         for (DesiredRateExpression<List<T>> desiredRateExpression : exp.getDesiredRateExpressions()) {
             functions.add(desiredRateExpression.getFunction());
         }

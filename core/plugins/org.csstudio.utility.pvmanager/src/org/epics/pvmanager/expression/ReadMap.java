@@ -54,7 +54,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
      */
     public ReadMap<T> clear() {
         synchronized(lock) {
-            getMapOfFunction().getMapUpdateCollector().setValue(MapUpdate.<T>clear());
+            getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>clear());
             if (director != null) {
                 for (DesiredRateExpression<T> desiredRateExpression : expressions.values()) {
                     director.disconnectExpression(desiredRateExpression);
@@ -91,7 +91,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
                 throw new IllegalArgumentException("MapExpression already contain an expression named '" + expression.getName() + "'");
             }
             
-            getMapOfFunction().getMapUpdateCollector().setValue(MapUpdate.addReadFunction(expression.getName(), expression.getFunction()));
+            getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.addReadFunction(expression.getName(), expression.getFunction()));
             expressions.put(expression.getName(), expression);
             if (director != null) {
                 director.connectExpression(expression);
@@ -121,7 +121,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
                 throw new IllegalArgumentException("MapExpression does not contain an expression named '" + name + "'");
             }
             
-            getMapOfFunction().getMapUpdateCollector().setValue(MapUpdate.<T>removeFunction(name));
+            getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>removeFunction(name));
             DesiredRateExpression<T> expression = expressions.remove(name);
             if (director != null) {
                 director.disconnectExpression(expression);
