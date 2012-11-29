@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.VNumber;
@@ -30,11 +30,11 @@ import org.epics.util.time.Timestamp;
 public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     
     private NavigableMap<Timestamp, ArrayDouble> cache = new TreeMap<Timestamp, ArrayDouble>();
-    private List<? extends Function<? extends List<? extends VNumber>>> functions;
+    private List<? extends ReadFunction<? extends List<? extends VNumber>>> functions;
     private Display display;
     private TimeDuration tolerance = TimeDuration.ofMillis(1);
 
-    public DoubleArrayTimeCacheFromVDoubles(List<? extends Function<? extends List<? extends VNumber>>> functions) {
+    public DoubleArrayTimeCacheFromVDoubles(List<? extends ReadFunction<? extends List<? extends VNumber>>> functions) {
         this.functions = functions;
     }
     
@@ -124,7 +124,7 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
     public DoubleArrayTimeCache.Data getData(Timestamp begin, Timestamp end) {
         // Let's do it in a crappy way first...
         for (int n = 0; n < functions.size(); n++) {
-            List<? extends VNumber> vDoubles = functions.get(n).getValue();
+            List<? extends VNumber> vDoubles = functions.get(n).readValue();
             for (VNumber vNumber : vDoubles) {
                 if (display == null)
                     display = vNumber;
@@ -158,7 +158,7 @@ public class DoubleArrayTimeCacheFromVDoubles implements DoubleArrayTimeCache {
         Timestamp firstChange = null;
         Timestamp lastChange = null;
         for (int n = 0; n < functions.size(); n++) {
-            List<? extends VNumber> vNumbers = functions.get(n).getValue();
+            List<? extends VNumber> vNumbers = functions.get(n).readValue();
             for (VNumber vNumber : vNumbers) {
                 if (display == null)
                     display = vNumber;

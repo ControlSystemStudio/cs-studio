@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author carcassi
  */
-class ConnectionCollector implements Function<Boolean> {
+class ConnectionCollector implements ReadFunction<Boolean> {
 
     private final Object lock = new Object();
     private final Map<String, Boolean> channelConnected = new HashMap<>();
@@ -31,7 +31,7 @@ class ConnectionCollector implements Function<Boolean> {
         }
 
         @Override
-        public void setValue(Boolean newValue) {
+        public void writeValue(Boolean newValue) {
             synchronized(lock) {
                 if (isClosed()) {
                     throw new IllegalStateException("ConnectionCollector for '" + name + "' was closed.");
@@ -72,7 +72,7 @@ class ConnectionCollector implements Function<Boolean> {
     }
 
     @Override
-    public Boolean getValue() {
+    public Boolean readValue() {
         synchronized (lock) {
             if (connected == null) {
                 connected = calculate(channelConnected);

@@ -6,7 +6,7 @@ package org.epics.pvmanager.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.util.array.ListDouble;
 import static org.epics.pvmanager.data.ValueFactory.*;
 import org.epics.util.time.Timestamp;
@@ -16,27 +16,27 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-class VNumbersToVNumberArrayConverter implements Function<VNumberArray> {
+class VNumbersToVNumberArrayConverter implements ReadFunction<VNumberArray> {
     
-    private final List<? extends Function<? extends VNumber>> arguments;
+    private final List<? extends ReadFunction<? extends VNumber>> arguments;
 
     /**
      * Creates a new converter from the given function.
      * 
      * @param argument the argument function
      */
-    public VNumbersToVNumberArrayConverter(List<? extends Function<? extends VNumber>> arguments) {
+    public VNumbersToVNumberArrayConverter(List<? extends ReadFunction<? extends VNumber>> arguments) {
         this.arguments = arguments;
     }
 
     @Override
-    public VNumberArray getValue() {
+    public VNumberArray readValue() {
         final List<VNumber> values = new ArrayList<VNumber>();
         
         Display meta = displayNone();
         
-        for (Function<? extends VNumber> function : arguments) {
-            VNumber number = function.getValue();
+        for (ReadFunction<? extends VNumber> function : arguments) {
+            VNumber number = function.readValue();
             values.add(number);
             if (meta == null && number != null)
                 meta = number;

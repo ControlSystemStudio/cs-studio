@@ -44,7 +44,7 @@ public class Cache<T> extends DesiredRateExpressionImpl<List<T>> {
     }
     
     public void add(T newValue) {
-        getWriteFunction().setValue(newValue);
+        getWriteFunction().writeValue(newValue);
     }
     
 }

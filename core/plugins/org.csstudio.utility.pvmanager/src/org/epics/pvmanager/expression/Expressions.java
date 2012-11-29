@@ -6,7 +6,7 @@ package org.epics.pvmanager.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 
 /**
  * Utility class for expressions.
@@ -21,8 +21,8 @@ public class Expressions {
      * @param list the expressions
      * @return the functions of the expression
      */
-    public static List<Function<?>> functionsOf(DesiredRateExpressionList<?> list) {
-        List<Function<?>> result = new ArrayList<Function<?>>();
+    public static List<ReadFunction<?>> functionsOf(DesiredRateExpressionList<?> list) {
+        List<ReadFunction<?>> result = new ArrayList<ReadFunction<?>>();
         for (DesiredRateExpression<?> desiredRateExpression : list.getDesiredRateExpressions()) {
             result.add(desiredRateExpression.getFunction());
         }

@@ -12,13 +12,36 @@ import java.util.logging.Logger;
 /**
  * Implements a {@link ChannelHandler} on top of a single subscription and
  * multiplexes all reads on top of it.
+ * <p>
+ * This abstract handler takes care of forwarding the connection and message
+ * events of a single connection to multiple readers and writers. One needs
+ * to:
+ * <ul>
+ * <li>implement the {@link #connect() } and {@link #disconnect() } function
+ * to add the protocol specific connection and disconnection logic; the resources
+ * shared across multiple channels should be left in the datasource</li>
+ * <li>every time the connection state changes, call {@link #processConnection(java.lang.Object) },
+ * which will trigger the proper connection notification mechanism;
+ * the type chosen as connection payload should be one that stores all the
+ * information about the channel of communications</li>
+ * <li>every time an event is sent, call {@link #processMessage(java.lang.Object) }, which
+ * will trigger the proper value notification mechanism</li>
+ * <li>implement {@link #isConnected(java.lang.Object) } and {@link #isWriteConnected(java.lang.Object) }
+ * with the logic to extract the connection information from the connection payload</li>
+ * <li>use {@link #reportExceptionToAllReadersAndWriters(java.lang.Exception) }
+ * to report errors</li>
+ * <li>implement a set of {@link DataSourceTypeAdapter} that can convert
+ * the payload to types for pvmanager consumption; the connection payload and
+ * message payload never leave this handler, only value types created by the
+ * type adapters</li>
+ * </ul>
  *
  * @param <ConnectionPayload> type of the payload for the connection
  * @param <MessagePayload> type of the payload for each message
  * @author carcassi
  */
 public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayload> extends ChannelHandler {
-
+    
     private static final Logger log = Logger.getLogger(MultiplexedChannelHandler.class.getName());
     private int readUsageCounter = 0;
     private int writeUsageCounter = 0;
@@ -26,7 +49,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private boolean writeConnected = false;
     private MessagePayload lastMessage;
     private ConnectionPayload connectionPayload;
-    private Map<ValueCache<?>, MonitorHandler> monitors = new ConcurrentHashMap<>();
+    private Map<ChannelHandlerReadSubscription, MonitorHandler> monitors = new ConcurrentHashMap<>();
     private Map<WriteCache<?>, ChannelHandlerWriteSubscription> writeSubscriptions = new ConcurrentHashMap<>();
 
     private class MonitorHandler {
@@ -39,7 +62,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         }
         
         public final void processConnection(boolean connection) {
-            subscription.getConnectionWriteFunction().setValue(connection);
+            subscription.getConnectionWriteFunction().writeValue(connection);
         }
 
         public final void processValue(MessagePayload payload) {
@@ -50,7 +73,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
             try {
                 typeAdapter.updateCache(subscription.getValueCache(), getConnectionPayload(), payload);
             } catch (RuntimeException e) {
-                subscription.getExceptionWriteFunction().setValue(e);
+                subscription.getExceptionWriteFunction().writeValue(e);
             }
         }
         
@@ -61,7 +84,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
                 try {
                     typeAdapter = MultiplexedChannelHandler.this.findTypeAdapter(subscription.getValueCache(), getConnectionPayload());
                 } catch(RuntimeException ex) {
-                    subscription.getExceptionWriteFunction().setValue(ex);
+                    subscription.getExceptionWriteFunction().writeValue(ex);
                 }
             }
         }
@@ -75,10 +98,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected synchronized final void reportExceptionToAllReadersAndWriters(Exception ex) {
         for (MonitorHandler monitor : monitors.values()) {
-            monitor.subscription.getExceptionWriteFunction().setValue(ex);
+            monitor.subscription.getExceptionWriteFunction().writeValue(ex);
         }
         for (ChannelHandlerWriteSubscription subscription : writeSubscriptions.values()) {
-            subscription.getExceptionWriteFunction().setValue(ex);
+            subscription.getExceptionWriteFunction().writeValue(ex);
         }
     }
     
@@ -90,7 +113,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     
     private void reportWriteConnectionStatus(boolean writeConnected) {
         for (ChannelHandlerWriteSubscription subscription : writeSubscriptions.values()) {
-            subscription.getConnectionWriteFunction().setValue(writeConnected);
+            subscription.getConnectionWriteFunction().writeValue(writeConnected);
         }
     }
 
@@ -147,8 +170,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
             @Override
             @SuppressWarnings("unchecked")
             public boolean updateCache(ValueCache cache, Object connection, Object message) {
-                Object oldValue = cache.getValue();
-                cache.setValue(message);
+                Object oldValue = cache.readValue();
+                cache.writeValue(message);
                 if ((message == oldValue) || (message != null && message.equals(oldValue)))
                     return false;
                 return true;
@@ -180,48 +203,26 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         super(channelName);
     }
 
-    /**
-     * Returns how many read or write PVs are open on
-     * this channel.
-     * 
-     * @return the number of open read/writes
-     */
     @Override
     public synchronized int getUsageCounter() {
         return readUsageCounter + writeUsageCounter;
     }
     
-    /**
-     * Returns how many read PVs are open on this channel.
-     * 
-     * @return the number of open reads
-     */
     @Override
     public synchronized int getReadUsageCounter() {
         return readUsageCounter;
     }
     
-    /**
-     * Returns how many write PVs are open on this channel.
-     * 
-     * @return the number of open writes
-     */
     @Override
     public synchronized int getWriteUsageCounter() {
         return writeUsageCounter;
     }
 
-    /**
-     * Used by the data source to add a read request on the channel managed
-     * by this handler.
-     * 
-     * @param subscription the data required for a subscription
-     */
     @Override
     protected synchronized void addReader(ChannelHandlerReadSubscription subscription) {
         readUsageCounter++;
         MonitorHandler monitor = new MonitorHandler(subscription);
-        monitors.put(subscription.getValueCache(), monitor);
+        monitors.put(subscription, monitor);
         monitor.findTypeAdapter();
         guardedConnect();
         if (readUsageCounter > 1) {
@@ -234,11 +235,6 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         } 
     }
 
-    /**
-     * Used by the data source to remove a read request.
-     * 
-     * @param subscription the collector that does not need to be notified anymore
-     */
     @Override
     protected synchronized void removeReader(ChannelHandlerReadSubscription subscription) {
         monitors.remove(subscription);
@@ -246,27 +242,16 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         guardedDisconnect();
     }
     
-    /**
-     * Used by the data source to prepare the channel managed by this handler
-     * for write.
-     * 
-     * @param handler to be notified in case of errors
-     */
     @Override
     protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
         writeUsageCounter++;
         writeSubscriptions.put(subscription.getWriteCache(), subscription);
         guardedConnect();
         if (connectionPayload != null) {
-            subscription.getConnectionWriteFunction().setValue(isWriteConnected());
+            subscription.getConnectionWriteFunction().writeValue(isWriteConnected());
         }
     }
 
-    /**
-     * Used by the data source to conclude writes to the channel managed by this handler.
-     * 
-     * @param exceptionHandler to be notified in case of errors
-     */
     @Override
     protected synchronized void removeWrite(ChannelHandlerWriteSubscription subscription) {
         writeUsageCounter--;
@@ -324,13 +309,6 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected abstract void disconnect();
 
-    /**
-     * Implements a write operation. Write the newValues to the channel
-     * and call the callback when done.
-     * 
-     * @param newValue new value to be written
-     * @param callback called when done or on error
-     */
     @Override
     protected abstract void write(Object newValue, ChannelWriteCallback callback);
 
@@ -372,11 +350,6 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         return false;
     }
     
-    /**
-     * Returns true if it is connected.
-     * 
-     * @return true if underlying channel is connected
-     */
     @Override
     public synchronized final boolean isConnected() {
         return connected;

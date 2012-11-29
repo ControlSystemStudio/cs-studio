@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 
 /**
  * An expression to read at the rate of the source.
@@ -36,7 +36,7 @@ public interface SourceRateExpression<R> extends SourceRateExpressionList<R> {
      *
      * @return the expression function
      */
-    public Function<R> getFunction();
+    public ReadFunction<R> getFunction();
     
     /**
      * The implementation of this expression.

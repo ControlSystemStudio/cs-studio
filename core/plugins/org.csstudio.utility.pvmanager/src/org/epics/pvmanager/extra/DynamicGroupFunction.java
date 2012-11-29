@@ -6,31 +6,31 @@ package org.epics.pvmanager.extra;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 
 /**
  * Function that implements the dynamic group.
  *
  * @author carcassi
  */
-class DynamicGroupFunction implements Function<List<Object>> {
+class DynamicGroupFunction implements ReadFunction<List<Object>> {
     
     // Guarded by this
-    private final List<Function<?>> arguments = new ArrayList<Function<?>>();
+    private final List<ReadFunction<?>> arguments = new ArrayList<ReadFunction<?>>();
     // Guarded by this
     private List<Exception> exceptions = new ArrayList<Exception>();
     // Gaurded by this
     private List<Object> previousValues = new ArrayList<Object>();
 
     @Override
-    public synchronized List<Object> getValue() {
+    public synchronized List<Object> readValue() {
         List<Object> result = new ArrayList<Object>();
         for (int i = 0; i < arguments.size(); i++) {
-            Function<?> function = arguments.get(i);
+            ReadFunction<?> function = arguments.get(i);
             try {
                 // Compute the new value for the ith function.
                 // If the value changed, reset the exception
-                result.add(function.getValue());
+                result.add(function.readValue());
                 if (result.get(i) != previousValues.get(i)) {
                     exceptions.set(i, null);
                 }
@@ -44,7 +44,7 @@ class DynamicGroupFunction implements Function<List<Object>> {
         return result;
     }
 
-    List<Function<?>> getArguments() {
+    List<ReadFunction<?>> getArguments() {
         return arguments;
     }
     

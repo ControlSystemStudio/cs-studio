@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.PVWriterDirector;
 import org.epics.pvmanager.WriteRecipeBuilder;
 import org.epics.pvmanager.WriteFunction;
@@ -50,7 +50,7 @@ public class SourceRateReadWriteExpressionImpl<R, W> extends SourceRateReadWrite
     }
 
     @Override
-    public final Function<R> getFunction() {
+    public final ReadFunction<R> getFunction() {
         return sourceRateExpression.getFunction();
     }
     
