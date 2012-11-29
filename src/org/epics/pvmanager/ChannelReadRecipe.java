@@ -5,6 +5,10 @@
 package org.epics.pvmanager;
 
 /**
+ * The recipe for the read connection to a single channel.
+ * <p>
+ * The recipe is made up of two parts to make it easy to forward
+ * the request to a channel with a different name.
  *
  * @author carcassi
  */
@@ -12,15 +16,31 @@ public class ChannelReadRecipe {
     private final String channelName;
     private final ChannelHandlerReadSubscription readSubscription;
 
+    /**
+     * Creates a new read recipe for the given channel.
+     *
+     * @param channelName the name of the channel to connect to
+     * @param readSubscription the subscription parameters for the read
+     */
     public ChannelReadRecipe(String channelName, ChannelHandlerReadSubscription readSubscription) {
         this.channelName = channelName;
         this.readSubscription = readSubscription;
     }
     
+    /**
+     * The name of the channel to read.
+     *
+     * @return the channel name
+     */
     public String getChannelName() {
         return channelName;
     }
 
+    /**
+     * The read subscription parameters.
+     *
+     * @return the read subscription parameters
+     */
     public ChannelHandlerReadSubscription getReadSubscription() {
         return readSubscription;
     }

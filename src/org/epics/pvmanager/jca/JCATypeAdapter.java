@@ -95,7 +95,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<JCAConnect
             return false;
         
         Object value = createValue(message.getEvent().getDBR(), message.getMetadata(), connPayload);
-        cache.setValue(value);
+        cache.writeValue(value);
         return true;
     }
 

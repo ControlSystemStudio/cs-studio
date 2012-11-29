@@ -63,7 +63,7 @@ public class WriteCache<T> implements WriteFunction<T> {
      * @param newValue the new value
      */
     @Override
-    public void setValue(T newValue) {
+    public void writeValue(T newValue) {
         this.value = newValue;
     }
 

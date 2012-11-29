@@ -36,7 +36,7 @@ public class PVReaderDirector<T> {
     /** PVReader to update during the notification */
     private final WeakReference<PVReaderImpl<T>> pvRef;
     /** Function for the new value */
-    private final Function<T> function;
+    private final ReadFunction<T> function;
     
     // Required to connect/disconnect expressions
     private final DataSource dataSource;
@@ -80,7 +80,7 @@ public class PVReaderDirector<T> {
             try {
                 dataSource.connectRead(recipe);
             } catch(Exception ex) {
-                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().setValue(ex);
+                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().writeValue(ex);
             }
         }
     }
@@ -98,7 +98,7 @@ public class PVReaderDirector<T> {
             try {
                 dataSource.disconnectRead(recipe);
             } catch(Exception ex) {
-                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().setValue(ex);
+                recipe.getChannelReadRecipes().iterator().next().getReadSubscription().getExceptionWriteFunction().writeValue(ex);
             }
         }
     }
@@ -124,7 +124,7 @@ public class PVReaderDirector<T> {
      * @param function the function used to calculate new values
      * @param notificationExecutor the thread switching mechanism
      */
-    PVReaderDirector(PVReaderImpl<T> pv, Function<T> function, ScheduledExecutorService scannerExecutor,
+    PVReaderDirector(PVReaderImpl<T> pv, ReadFunction<T> function, ScheduledExecutorService scannerExecutor,
             Executor notificationExecutor, DataSource dataSource) {
         this.pvRef = new WeakReference<>(pv);
         this.function = function;
@@ -184,16 +184,16 @@ public class PVReaderDirector<T> {
         boolean calculationSucceeded = false;
         try {
             // Tries to calculate the value
-            newValue = function.getValue();
+            newValue = function.readValue();
             calculationSucceeded = true;
         } catch(RuntimeException ex) {
             // Calculation failed
-            exceptionCollector.setValue(ex);
+            exceptionCollector.writeValue(ex);
         }
         
         // Calculate new connection
-        final boolean connected = connCollector.getValue();
-        List<Exception> exceptions = exceptionCollector.getValue();
+        final boolean connected = connCollector.readValue();
+        List<Exception> exceptions = exceptionCollector.readValue();
         final Exception lastException;
         if (exceptions.isEmpty()) {
             lastException = null;
@@ -271,7 +271,7 @@ public class PVReaderDirector<T> {
             public void run() {
                 PVReaderImpl<T> pv = pvRef.get();
                 if (pv != null && pv.getValue() == null) {
-                    exceptionCollector.setValue(new TimeoutException(timeoutMessage));
+                    exceptionCollector.writeValue(new TimeoutException(timeoutMessage));
                 }
             }
         }, timeout.toNanosLong(), TimeUnit.NANOSECONDS);

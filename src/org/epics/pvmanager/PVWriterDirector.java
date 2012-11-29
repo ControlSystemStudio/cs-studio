@@ -91,7 +91,7 @@ public class PVWriterDirector<T> {
             try {
                 dataSource.connectWrite(recipe);
             } catch(Exception ex) {
-                exceptionCollector.setValue(ex);
+                exceptionCollector.writeValue(ex);
             }
             updateWriteRecipe();
         }
@@ -110,7 +110,7 @@ public class PVWriterDirector<T> {
             try {
                 dataSource.disconnectWrite(recipe);
             } catch(Exception ex) {
-                exceptionCollector.setValue(ex);
+                exceptionCollector.writeValue(ex);
             }
             updateWriteRecipe();
         }
@@ -159,7 +159,7 @@ public class PVWriterDirector<T> {
                 @Override
                 public void run() {
                     if (!done.get()) {
-                        exceptionCollector.setValue(new TimeoutException(timeoutMessage));
+                        exceptionCollector.writeValue(new TimeoutException(timeoutMessage));
                     }
                 }
             };
@@ -168,7 +168,7 @@ public class PVWriterDirector<T> {
         @Override
         public void run() {
             synchronized(lock) {
-                writeFunction.setValue(newValue);
+                writeFunction.writeValue(newValue);
                 dataSource.write(currentWriteRecipe, new Runnable() {
 
                     @Override
@@ -216,7 +216,7 @@ public class PVWriterDirector<T> {
             public void run() {
                 try {
                     synchronized(lock) {
-                        writeFunction.setValue(newValue);
+                        writeFunction.writeValue(newValue);
                         dataSource.write(currentWriteRecipe, new Runnable() {
 
                             @Override
@@ -251,7 +251,7 @@ public class PVWriterDirector<T> {
                 } catch (RuntimeException ex) {
                     exception.set(ex);
                     latch.countDown();
-                    exceptionCollector.setValue(ex);
+                    exceptionCollector.writeValue(ex);
                 }
             }
         });
@@ -299,8 +299,8 @@ public class PVWriterDirector<T> {
             return;
         
         // Calculate new connection
-        final boolean connected = connCollector.getValue();
-        List<Exception> exceptions = exceptionCollector.getValue();
+        final boolean connected = connCollector.readValue();
+        List<Exception> exceptions = exceptionCollector.readValue();
         final Exception lastException;
         if (exceptions.isEmpty()) {
             lastException = null;

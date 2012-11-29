@@ -6,6 +6,10 @@ package org.epics.pvmanager;
 
 /**
  * Groups all the parameters required to add a reader to a ChannelHandler.
+ * <p>
+ * All parameters where grouped in this class so that if something needs to be
+ * added or removed the impact is lessened. The class is immutable so that
+ * the ChannelHandler can cache it for reference.
  *
  * @author carcassi
  */

@@ -8,6 +8,11 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import org.epics.pvmanager.util.NumberFormats;
+import org.epics.util.array.ListByte;
+import org.epics.util.array.ListInt;
+import org.epics.util.array.ListLong;
+import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListShort;
 
 /**
  * Default implementation for formatting.
@@ -61,8 +66,43 @@ public class SimpleValueFormat extends ValueFormat {
         return null;
     }
 
+    protected StringBuffer format(VNumberArray array, StringBuffer toAppendTo, FieldPosition pos) {
+        NumberFormat f = nf(array);
+        
+        toAppendTo.append("[");
+        boolean hasMore = false;
+        
+        ListNumber data = array.getData();
+        if (data.size() > maxElements) {
+            hasMore = true;
+        }
+        
+        for (int i = 0; i < Math.min(data.size(), maxElements); i++) {
+            if (i != 0) {
+                toAppendTo.append(", ");
+            }
+            if (data instanceof ListByte || data instanceof ListShort || data instanceof ListInt || data instanceof ListLong) {
+                toAppendTo.append(f.format(data.getLong(i)));
+            } else {
+                toAppendTo.append(f.format(data.getDouble(i)));
+            }
+        }
+        
+        if (hasMore) {
+            toAppendTo.append(", ...");
+        }
+        toAppendTo.append("]");
+        return toAppendTo;
+    }
+
     @Override
     protected StringBuffer format(Array<?> array, StringBuffer toAppendTo, FieldPosition pos) {
+        if (array instanceof VNumberArray) {
+            return format((VNumberArray) array, toAppendTo, pos);
+        }
+        
+        // TODO: probably the rest is junk
+        
         if (array == null || array.getArray() == null) {
             return toAppendTo;
         }

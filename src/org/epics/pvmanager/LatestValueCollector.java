@@ -11,6 +11,7 @@ package org.epics.pvmanager;
 /**
  * A collector that keeps only the latest value.
  *
+ * @param <T> the type stored in the collector
  * @author carcassi
  */
 public class LatestValueCollector<T> implements Collector<T, T> {
@@ -18,12 +19,12 @@ public class LatestValueCollector<T> implements Collector<T, T> {
     private T value;
 
     @Override
-    public void setValue(T newValue) {
+    public void writeValue(T newValue) {
         value = newValue;
     }
 
     @Override
-    public T getValue() {
+    public T readValue() {
         return value;
     }
     

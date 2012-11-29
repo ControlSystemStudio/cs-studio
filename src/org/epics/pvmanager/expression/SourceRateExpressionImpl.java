@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.ForwardCache;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.PVReaderDirector;
 import org.epics.pvmanager.ValueCache;
@@ -23,7 +23,7 @@ import org.epics.pvmanager.ValueCacheImpl;
 public class SourceRateExpressionImpl<R> extends SourceRateExpressionListImpl<R> implements SourceRateExpression<R> {
 
     private Map<String, ValueCache<?>> caches;
-    private Function<R> function;
+    private ReadFunction<R> function;
     private String name;
     
     {
@@ -64,7 +64,7 @@ public class SourceRateExpressionImpl<R> extends SourceRateExpressionListImpl<R>
      * @param function the function that will calculate the value for this expression
      * @param defaultName the name for this expression
      */
-    public SourceRateExpressionImpl(SourceRateExpressionList<?> childExpressions, Function<R> function, String defaultName) {
+    public SourceRateExpressionImpl(SourceRateExpressionList<?> childExpressions, ReadFunction<R> function, String defaultName) {
         caches = new HashMap<String, ValueCache<?>>();
         for (SourceRateExpression<?> childExpression : childExpressions.getSourceRateExpressions()) {
             for (Map.Entry<String, ValueCache<?>> entry : childExpression.getSourceRateExpressionImpl().getCaches().entrySet()) {
@@ -94,7 +94,7 @@ public class SourceRateExpressionImpl<R> extends SourceRateExpressionListImpl<R>
     }
 
     @Override
-    public final Function<R> getFunction() {
+    public final ReadFunction<R> getFunction() {
         return function;
     }
 

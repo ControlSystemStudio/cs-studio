@@ -7,7 +7,7 @@ package org.epics.pvmanager.data;
 import org.epics.pvmanager.Aggregator;
 import java.util.List;
 import static java.lang.Math.*;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.ReadFunction;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
 
@@ -29,7 +29,7 @@ import static org.epics.pvmanager.data.ValueFactory.*;
  */
 class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
 
-    StatisticsDoubleAggregator(Function<List<VDouble>> collector) {
+    StatisticsDoubleAggregator(ReadFunction<List<VDouble>> collector) {
         super(collector);
     }
 
@@ -37,7 +37,7 @@ class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
         double totalSum = 0;
         double totalSquareSum = 0;
         double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
+        double max = - Double.MAX_VALUE;
         int nElements = 0;
 
         void includeValue(double value) {

@@ -17,9 +17,9 @@ import java.util.Objects;
  *
  * @author carcassi
  */
-class MapOfReadFunction<T> implements Function<Map<String, T>> {
+class MapOfReadFunction<T> implements ReadFunction<Map<String, T>> {
 
-    private final Map<String, Function<T>> functions = new HashMap<>();
+    private final Map<String, ReadFunction<T>> functions = new HashMap<>();
     private final QueueCollector<MapUpdate<T>> mapUpdateCollector;
     private Map<String, T> previousValue;
 
@@ -28,8 +28,8 @@ class MapOfReadFunction<T> implements Function<Map<String, T>> {
     }
 
     @Override
-    public Map<String, T> getValue() {
-        for (MapUpdate<T> mapUpdate : mapUpdateCollector.getValue()) {
+    public Map<String, T> readValue() {
+        for (MapUpdate<T> mapUpdate : mapUpdateCollector.readValue()) {
             for (String name : mapUpdate.getExpressionsToDelete()) {
                 functions.remove(name);
             }
@@ -38,9 +38,9 @@ class MapOfReadFunction<T> implements Function<Map<String, T>> {
         }
         
         Map<String, T> map = new HashMap<String, T>();
-        for (Map.Entry<String, Function<T>> entry : functions.entrySet()) {
+        for (Map.Entry<String, ReadFunction<T>> entry : functions.entrySet()) {
             String name = entry.getKey();
-            T value = entry.getValue().getValue();
+            T value = entry.getValue().readValue();
             if (value != null) {
                 map.put(name, value);
             }
