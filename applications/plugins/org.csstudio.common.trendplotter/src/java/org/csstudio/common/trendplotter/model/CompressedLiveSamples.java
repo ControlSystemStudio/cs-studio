@@ -83,9 +83,9 @@ public class CompressedLiveSamples extends LiveSamples {
             final Interval interval = _intervalPovider.getTimeInterval();
             if (interval != null) {
                    _samples = compress(_samples, interval);
-              
-              }
-         
+                }
+             LOG.info("Samples Compressed:  new samples  {},  capacity ",_samples.size() ,getCapacity());
+             LOG.info("Samples Compressed: live sample {}, SecuritySmples {} ",_compressor.getNoUncompressed(),_securityCap);
         }
     }
 
