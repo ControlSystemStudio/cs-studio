@@ -17,7 +17,7 @@ import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.loc.LocalDataSource;
 import org.junit.Test;
 
-/** [Headless] JUnit plug-in test of the DeltaArchiveChannel
+/** JUnit test of the DeltaArchiveChannel
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

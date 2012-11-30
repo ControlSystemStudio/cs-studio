@@ -7,16 +7,19 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.Alarm;
+import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.data.VString;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.array.ListNumber;
 
 /** An ArchiveChannel that stores value in a periodic scan.
  *  @author Kay Kasemir
@@ -31,8 +34,9 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
 
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public ScannedArchiveChannel(final String name,
-                                 Enablement enablement, final int buffer_capacity,
-                                 final IValue last_archived_value,
+                                 final Enablement enablement,
+                                 final int buffer_capacity,
+                                 final VType last_archived_value,
                                  final double scan_period,
                                  final int max_repeats) throws Exception
     {
@@ -56,7 +60,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
 
     // Just for debugging...
     @Override
-    protected boolean handleNewValue(final IValue value)
+    protected boolean handleNewValue(final VType value)
     {
         final boolean written = super.handleNewValue(value);
         if (! written)
@@ -73,7 +77,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     {
         if (! isEnabled())
             return;
-        final IValue value;
+        final VType value;
         synchronized (this)
         {   // Have anything?
             if (most_recent_value == null)
@@ -87,7 +91,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                 ++repeats ;
                 if (repeats < max_repeats)
                 {
-                    Activator.getLogger().log(Level.FINE, "{0} skips {1}: repeat {2}", new Object[] { getName(), most_recent_value, repeats });
+                    Activator.getLogger().log(Level.FINE, "{0} skips {1}: repeat {2}", new Object[] { getName(), VTypeHelper.toString(most_recent_value), repeats });
                     return;
                 }
                 // No new value, but we'd like to write a sample every once in a while
@@ -98,7 +102,8 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                             new Object[] { getName(), most_recent_value.getClass().getName() });
                     return;
                 }
-                Activator.getLogger().log(Level.FINE, "{0} writes {1} as {2}", new Object[] { getName(), most_recent_value, value.getTime() });
+                Activator.getLogger().log(Level.FINE, "{0} writes {1} as {2}",
+            		new Object[] { getName(), VTypeHelper.toString(most_recent_value), TimestampHelper.format(VTypeHelper.getTimestamp(value)) });
             }
             else
             {   // It's a new value, so we should be able to write it
@@ -118,52 +123,62 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
      *  @param val2 Other value
      *  @return <code>true</code> if they match
      */
-    private boolean isMatchingValue(final IValue val1, final IValue val2)
+    private boolean isMatchingValue(final VType val1, final VType val2)
     {
         // Compare data type and value
-        if (val1 instanceof IDoubleValue)
+        if (val1 instanceof VNumber)
         {
-            if (! (val2 instanceof IDoubleValue))
+            if (! (val2 instanceof VNumber))
                 return false;
-            final double v1[] = ((IDoubleValue) val1).getValues();
-            final double v2[] = ((IDoubleValue) val2).getValues();
-            if (!Arrays.equals(v1, v2))
+            final double v1 = ((VNumber) val1).getValue().doubleValue();
+            final double v2 = ((VNumber) val2).getValue().doubleValue();
+        	if (Double.doubleToLongBits(v1) != Double.doubleToLongBits(v2))
                 return false;
         }
-        else if (val1 instanceof IEnumeratedValue)
+        else if (val1 instanceof VNumberArray)
         {
-            if (! (val2 instanceof IEnumeratedValue))
+            if (! (val2 instanceof VNumberArray))
                 return false;
-            final int[] v1 = ((IEnumeratedValue) val1).getValues();
-            final int[] v2 = ((IEnumeratedValue) val2).getValues();
-            if (!Arrays.equals(v1, v2))
+            final ListNumber n1 = ((VNumberArray) val1).getData();
+            final ListNumber n2 = ((VNumberArray) val1).getData();
+            final int N = n1.size();
+            if (n2.size() != N)
+            	return false;
+            for (int i=0; i<N; ++i)
+            	if (Double.doubleToLongBits(n1.getDouble(i)) != Double.doubleToLongBits(n2.getDouble(i)))
+            		return false;
+        }
+        else if (val1 instanceof VEnum)
+        {
+            if (! (val2 instanceof VEnum))
+                return false;
+            final int v1 = ((VEnum) val1).getIndex();
+            final int v2 = ((VEnum) val2).getIndex();
+            if (v1 != v2)
                 return false;
         }
-        else if (val1 instanceof ILongValue)
+        else if (val1 instanceof VString)
         {
-            if (! (val2 instanceof ILongValue))
+            if (! (val2 instanceof VString))
                 return false;
-            final long[] v1 = ((ILongValue) val1).getValues();
-            final long[] v2 = ((ILongValue) val2).getValues();
-            if (!Arrays.equals(v1, v2))
-                return false;
-        }
-        else if (val1 instanceof IStringValue)
-        {
-            if (! (val2 instanceof IStringValue))
-                return false;
-            final String[] v1 = ((IStringValue) val1).getValues();
-            final String[] v2 = ((IStringValue) val2).getValues();
-            if (!Arrays.equals(v1, v2))
+            final String v1 = ((VString) val1).getValue();
+            final String v2 = ((VString) val2).getValue();
+            if (v1 == null)
+            {
+            	if (v2 != null)
+            		return false;
+            }
+            else if (! v1.equals(v2))
                 return false;
         }
         else
             return false; // Assume that unknown type differs in value
         // Compare severity, status
-        if (!val1.getSeverity().toString().equals(val2.getSeverity().toString()))
-            return false;
-        if (!val1.getStatus().equals(val2.getStatus()))
-            return false;
-        return true;
+        if (! ((val1 instanceof Alarm)  &&  (val2 instanceof Alarm)))
+        	return false;
+        final Alarm a1 = (Alarm)val1;
+        final Alarm a2 = (Alarm)val2;
+        return a1.getAlarmSeverity() == a2.getAlarmSeverity()
+            && a1.getAlarmName().equals(a2.getAlarmName());
     }
 }
