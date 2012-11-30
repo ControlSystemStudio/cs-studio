@@ -240,31 +240,21 @@ abstract public class ArchiveChannel
     }
 
     /** @return Most recent value of the channel's PV */
-    final public String getCurrentValue()
+    final public synchronized String getCurrentValue()
     {
-        synchronized (this)
-        {
-            if (most_recent_value == null)
-                return "null"; //$NON-NLS-1$
-            return most_recent_value.toString();
-        }
+    	return VTypeHelper.toString(most_recent_value);
     }
 
     /** @return Count of received values */
-    synchronized public long getReceivedValues()
+    final public synchronized long getReceivedValues()
     {
         return received_value_count;
     }
 
     /** @return Last value written to archive */
-    final public String getLastArchivedValue()
+    final public synchronized String getLastArchivedValue()
     {
-        synchronized (this)
-        {
-            if (last_archived_value == null)
-                return "null"; //$NON-NLS-1$
-            return last_archived_value.toString();
-        }
+    	return VTypeHelper.toString(last_archived_value);
     }
 
     /** @return Sample buffer */
