@@ -150,7 +150,6 @@ public class PMObjectValue implements IValue {
 			String status = getStatus();
 			if (status != null)
 				sb.append(status);
-			System.out.println("tostring:" + sb);
 			cachedString = sb.toString();
 		}
 		return cachedString;
