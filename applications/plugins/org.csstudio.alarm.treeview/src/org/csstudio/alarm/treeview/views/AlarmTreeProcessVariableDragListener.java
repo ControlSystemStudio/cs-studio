@@ -28,6 +28,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -52,9 +54,7 @@ public final class AlarmTreeProcessVariableDragListener implements TransferDragS
     @Override
     @Nonnull
     public Transfer getTransfer() {
-    	// TODO jhatje: implement new datatype
-//        return ProcessVariableNameTransfer.getInstance();
-    	return null;
+        return SerializableItemTransfer.getTransfer(ProcessVariable[].class);
     }
 
     @Override
@@ -74,9 +74,12 @@ public final class AlarmTreeProcessVariableDragListener implements TransferDragS
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
             final List<IAlarmTreeNode> selectedNodes = AlarmTreeView.selectionToNodeList(viewer.getSelection());
-         // TODO jhatje: implement new datatype
-//            event.data = selectedNodes.toArray(new IProcessVariable[selectedNodes.size()]);
-        } else {
+			ProcessVariable[] pvs = new ProcessVariable[selectedNodes.size()];
+			for(int i=0; i<selectedNodes.size(); i++) {
+				pvs[i] = new ProcessVariable(selectedNodes.get(i).getName());
+			}
+			event.data = pvs;
+		} else {
             throw new IllegalStateException("Viewer of " + AlarmTreeView.class.getName() +
             " mustn't be null at this point.");
         }
