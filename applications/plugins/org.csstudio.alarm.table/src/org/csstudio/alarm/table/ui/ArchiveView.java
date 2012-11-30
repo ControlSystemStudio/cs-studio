@@ -23,7 +23,6 @@
 package org.csstudio.alarm.table.ui;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -42,10 +41,13 @@ import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.servicelocator.ServiceLocator;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -218,6 +220,20 @@ public class ArchiveView extends ViewPart {
         addControlListenerToColumns(ArchiveViewPreferenceConstants.P_STRINGArch);
         getSite().setSelectionProvider(_tableViewer);
 
+        new ControlSystemDragSource(_tableViewer.getTable()) {
+            
+        	@Override
+            public Object getSelection() {
+                final Object[] o = ((IStructuredSelection) _tableViewer.getSelection()).toArray();
+                final ProcessVariable[] pv = new ProcessVariable[o.length];
+                for (int i=0; i<pv.length; ++i) {
+                    pv[i] = new ProcessVariable(((BasicMessage) o[i]).getName());
+                }
+                return pv;
+            }
+        };
+
+        
         makeActions();
         parent.pack();
     }
@@ -541,16 +557,15 @@ public class ArchiveView extends ViewPart {
         bars.getToolBarManager().add(showPropertyViewAction);
     }
 
-//    TODO jhatje: implement new datatype
-//    public void readDBFromExternalCall(final IProcessVariable pv) {
-//        // GregorianCalendar _from = new GregorianCalendar();
-//        // GregorianCalendar _to = new GregorianCalendar();
-//        // _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
-//        _filter.clearFilter();
-//        _filter.addFilterItem("NAME", pv.getName(), "END");
-//        _filterSettingHistory.add(0, pv.getName());
-//        readDatabase();
-//    }
+    public void readDBFromExternalCall(final ProcessVariable pv) {
+        // GregorianCalendar _from = new GregorianCalendar();
+        // GregorianCalendar _to = new GregorianCalendar();
+        // _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
+        _filter.clearFilter();
+        _filter.addFilterItem("NAME", pv.getName(), "END");
+        _filterSettingHistory.add(0, pv.getName());
+        readDatabase();
+    }
 
     private void exportMessagesFromDatabase(final File path) {
         final String maxAnswerSize = JmsLogsPlugin.getDefault()
