@@ -1,6 +1,10 @@
-/**
- *
- */
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
@@ -57,41 +61,9 @@ class PVTreeItem
     /** Most recent severity. */
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
-    private PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
-    {
-        @Override
-        public void pvChanged(PVReaderEvent<VType> event)
-        {
-            final Exception error = pv.lastException();
-            if (error != null)
-                Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , error);
-            final VType pv_value = pv.getValue();
-            value = VTypeHelper.format(pv_value);
-            severity = VTypeHelper.getSeverity(pv_value);
-            model.itemUpdated(PVTreeItem.this);
-        }
-    };
-
     /** The PV used for getting the record type. */
     private PVReader<VType> type_pv;
     private String type;
-    private PVReaderListener<VType> type_pv_listener = new PVReaderListener<VType>()
-    {
-        @Override
-        public void pvChanged(PVReaderEvent<VType> event)
-        {
-            final String type_txt = VTypeHelper.formatValue(type_pv.getValue());
-            // type should be a text.
-            // If it starts with a number, it's probably not an
-            // EPICS record type but a simulated PV
-            final char first_char = type_txt.charAt(0);
-            if (first_char >= 'a' && first_char <= 'z')
-                type = type_txt;
-            else
-                type = Messages.UnkownPVType;
-            updateType();
-        }
-    };
 
     /** Array of fields to read for this record type.
      *  Fields are removed as they are read, so in the end this
@@ -102,33 +74,6 @@ class PVTreeItem
     /** Used to read the links of this pv. */
     private PVReader<VType> link_pv = null;
     private String link_value;
-    private PVReaderListener<VType> link_pv_listener = new PVReaderListener<VType>()
-    {
-        @Override
-        public void pvChanged(PVReaderEvent<VType> event)
-        {
-            try
-            {
-                link_value = VTypeHelper.format(link_pv.getValue());
-                // The value could be
-                // a) a record name followed by "... NPP NMS". Remove that.
-                // b) a hardware input/output "@... " or "#...". Keep that.
-                if (link_value.length() > 1 &&
-                    link_value.charAt(0) != '@' &&
-                    link_value.charAt(0) != '#')
-                {
-                    int i = link_value.indexOf(' ');
-                    if (i > 0)
-                        link_value = link_value.substring(0, i);
-                }
-                updateLink();
-            }
-            catch (Exception e)
-            {
-                Plugin.getLogger().log(Level.SEVERE, "PV Link Listener error" , e); //$NON-NLS-1$
-            }
-        }
-    };
 
     /** Tree item children, populated with info from the input links. */
     private ArrayList<PVTreeItem> links = new ArrayList<PVTreeItem>();
@@ -139,10 +84,10 @@ class PVTreeItem
      *  @param info The info provided by the parent or creator ("PV", "INPA", ...)
      *  @param pv_name The name of this PV entry.
      */
-    public PVTreeItem(PVTreeModel model,
-            PVTreeItem parent,
-            String info,
-            String pv_name)
+    public PVTreeItem(final PVTreeModel model,
+    		final PVTreeItem parent,
+    		final String info,
+    		final String pv_name)
     {
         this.model = model;
         this.parent = parent;
@@ -161,11 +106,6 @@ class PVTreeItem
                 "New Tree item {0}, record name {1}", //$NON-NLS-1$
                 new Object[] { pv_name, record_name});
 
-        // Avoid loops.
-        // If the model already contains an entry with this name,
-        // we simply display this new item, but we won't
-        // follow its input links.
-        final PVTreeItem other = model.findPV(pv_name);
 
         // Now add this one, otherwise the previous call would have found 'this'.
         if (parent != null)
@@ -183,30 +123,66 @@ class PVTreeItem
         // Try to read the pv
         try
         {
-            pv = PVManager.read(vType(pv_name)).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
-            pv.addPVReaderListener(pv_listener);
+        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+    	    {
+    	        @Override
+    	        public void pvChanged(final PVReaderEvent<VType> event)
+    	        {
+    	        	final PVReader<VType> pv = event.getPvReader();
+    	            final Exception error = pv.lastException();
+    	            if (error != null)
+    	                Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , error);
+    	            final VType pv_value = pv.getValue();
+    	            value = VTypeHelper.format(pv_value);
+    	            severity = VTypeHelper.getSeverity(pv_value);
+    	            model.itemUpdated(PVTreeItem.this);
+    	        }
+    	    };
+        	pv = PVManager.read(vType(pv_name)).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
         }
         catch (Exception e)
         {
             Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e); //$NON-NLS-1$
         }
-        // Get type from 'other', previously used PV or via CA
-        if (other != null)
+        
+        // Avoid loops.
+        // If the model already contains an entry with this name,
+        // we simply display this new item, but we won't
+        // follow its input links.
+        // Behavior is not fully predictable:
+        // When PV is in tree multiple times, instances receive their RTYP
+        // into at various times. Once they have it, there are no more loops.
+        // Until they have it, they'll look for it in parallel.
+        final PVTreeItem other = model.findPV(pv_name);
+        if (other != null  &&  other.type != null)
         {
             type = other.type;
             Plugin.getLogger().fine("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            return;
         }
-        else
+    	try
+    	{
+            final PVReaderListener<VType> listener = new StringListener()
+    	    {
+				@Override
+				public void handleText(final String text)
+				{
+    	            // type should be a text.
+    	            // If it starts with a number, it's probably not an
+    	            // EPICS record type but a simulated PV
+    	            final char first_char = text.charAt(0);
+    	            if (first_char >= 'a' && first_char <= 'z')
+    	                type = text;
+    	            else
+    	                type = Messages.UnkownPVType;
+    	            updateType();
+				}
+    	    };
+            type_pv = PVManager.read(vType(record_name + ".RTYP")).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
+        }
+        catch (Exception e)
         {
-            try
-            {
-                type_pv = PVManager.read(vType(record_name + ".RTYP")).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
-                type_pv.addPVReaderListener(type_pv_listener);
-            }
-            catch (Exception e)
-            {
-                Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e); //$NON-NLS-1$
-            }
+            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e); //$NON-NLS-1$
         }
     }
 
@@ -227,7 +203,27 @@ class PVTreeItem
     /** @return PV for the given name */
     private PVReader<VType> createLinkPV(final String name)
     {
-        return PVManager.read(vType(name)).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
+    	final PVReaderListener<VType> listener = new StringListener()
+	    {
+			@Override
+			public void handleText(final String text)
+			{
+				link_value = text;
+                // The value could be
+                // a) a record name followed by "... NPP NMS". Remove that.
+                // b) a hardware input/output "@... " or "#...". Keep that.
+                if (link_value.length() > 1 &&
+                    link_value.charAt(0) != '@' &&
+                    link_value.charAt(0) != '#')
+                {
+                    int i = link_value.indexOf(' ');
+                    if (i > 0)
+                        link_value = link_value.substring(0, i);
+                }
+                updateLink();
+			}
+	    };
+	    return PVManager.read(vType(name)).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
     }
 
     /** Delete the type_pv */
@@ -351,7 +347,6 @@ class PVTreeItem
         try
         {
             link_pv = createLinkPV(link_name);
-            link_pv.addPVReaderListener(link_pv_listener);
         }
         catch (Exception e)
         {
@@ -364,7 +359,7 @@ class PVTreeItem
     private void updateLink()
     {
         Plugin.getLogger().log(Level.FINE,
-                "{0} received {1}", new Object[] { link_pv.getName(), link_value });
+                "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         if (link_pv == null)
         {
             Plugin.getLogger().log(Level.FINE,
