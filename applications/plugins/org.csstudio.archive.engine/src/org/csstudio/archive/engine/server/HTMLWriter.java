@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.epics.util.time.Timestamp;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
@@ -63,7 +63,7 @@ public class HTMLWriter
         text("<a href=\"/version.html\">-Version-</a> ");
 
         text("<address>");
-        text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));
+        text(TimestampHelper.format(Timestamp.now()));
         text("   <i>(Use web browser's Reload to refresh this page)</i>");
         text("</address>");
 

@@ -17,9 +17,9 @@ import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.eclipse.core.runtime.Platform;
+import org.epics.util.time.Timestamp;
 
 /** Provide web page with engine overview.
  *  @author Kay Kasemir
@@ -67,17 +67,17 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
 
         html.tableLine(new String[] { Messages.HTTP_State, model.getState().name() });
-        final ITimestamp start = model.getStartTime();
+        final Timestamp start = model.getStartTime();
         if (start != null)
         {
             html.tableLine(new String[]
             {
                 Messages.HTTP_StartTime,
-                start.format(ITimestamp.Format.DateTimeSeconds)
+                TimestampHelper.format(start)
             });
 
             final double up_secs =
-                TimestampFactory.now().toDouble() - start.toDouble();
+                Timestamp.now().durationFrom(start).toSeconds();
             html.tableLine(new String[]
             {
                 Messages.HTTP_Uptime,
@@ -138,13 +138,13 @@ class MainResponse extends AbstractResponse
              : "OK")
         });
 
-        final ITimestamp last_write_time = model.getLastWriteTime();
+        final Timestamp last_write_time = model.getLastWriteTime();
         html.tableLine(new String[]
         {
           Messages.HTTP_LastWriteTime,
           (last_write_time == null
           ? Messages.HTTP_Never
-          : last_write_time.format(ITimestamp.Format.DateTimeSeconds))
+          : TimestampHelper.format(last_write_time))
         });
         html.tableLine(new String[]
         {

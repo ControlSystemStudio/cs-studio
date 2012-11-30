@@ -257,21 +257,19 @@ public class EngineModel
         // Create new channel
         if (sample_mode.isMonitor())
         {
-        	// TODO
-//            if (sample_mode.getDelta() > 0)
-//                channel = new DeltaArchiveChannel(name, enablement,
-//                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
-//            else
+            if (sample_mode.getDelta() > 0)
+                channel = new DeltaArchiveChannel(name, enablement,
+                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
+            else
                 channel = new MonitoredArchiveChannel(name, enablement,
                                              buffer_capacity, last_sample,
                                              sample_mode.getPeriod());
         }
         else
         {
-        	// TODO
-//            channel = new ScannedArchiveChannel(name, enablement,
-//                                    buffer_capacity, last_sample, sample_mode.getPeriod(),
-//                                    max_repeats);
+            channel = new ScannedArchiveChannel(name, enablement,
+                                    buffer_capacity, last_sample, sample_mode.getPeriod(),
+                                    max_repeats);
             scanner.add((ScannedArchiveChannel)channel, sample_mode.getPeriod());
         }
         synchronized (this)
