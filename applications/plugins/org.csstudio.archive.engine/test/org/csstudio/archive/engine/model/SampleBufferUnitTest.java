@@ -26,7 +26,7 @@ public class SampleBufferUnitTest
 	public void testAddRemove()
 	{
 		assertEquals(0, buffer.getQueueSize());
-		buffer.add(TestValueFactory.getDouble(1));
+		buffer.add(TestHelper.newValue(1));
 		assertEquals(1, buffer.getQueueSize());
 		assertEquals(1.0, VTypeHelper.toDouble(buffer.remove()), 0.01);
 		assertEquals(0, buffer.getQueueSize());
@@ -39,12 +39,12 @@ public class SampleBufferUnitTest
 		// Fill buffer
 		assertEquals(0, buffer.getQueueSize());
 		for (int i=0; i<buffer.getCapacity(); ++i)
-			buffer.add(TestValueFactory.getDouble(i));
+			buffer.add(TestHelper.newValue(i));
 		assertEquals(buffer.getQueueSize(), buffer.getQueueSize());
 		assertEquals(0, buffer.getBufferStats().getOverruns());
 
 		// Cause overrun
-		buffer.add(TestValueFactory.getDouble(-1.0));
+		buffer.add(TestHelper.newValue(-1.0));
 		assertEquals(buffer.getQueueSize(), buffer.getQueueSize());
 		assertEquals(1, buffer.getBufferStats().getOverruns());
 
@@ -53,7 +53,7 @@ public class SampleBufferUnitTest
 		assertEquals(1.0, VTypeHelper.toDouble(value), 0.01);
 	}
 
-	final private static long TEST_RUNS = 10000L;
+	final private static long TEST_RUNS = 1000L;
 
 	class FillThread extends Thread
 	{
@@ -62,7 +62,7 @@ public class SampleBufferUnitTest
         {
 			for (long i=1; i<=TEST_RUNS; ++i)
 			{
-				buffer.add(TestValueFactory.getDouble(i));
+				buffer.add(TestHelper.newValue(i));
 				try
                 {
 	                sleep(10);
@@ -78,7 +78,7 @@ public class SampleBufferUnitTest
 	/** Check tread access
 	 * @throws Exception on thread error
 	 */
-	@Test // (timeout=200000L)
+	@Test(timeout=15000)
 	public void testThreads() throws Exception
 	{
 		// Fill buffer in background thread

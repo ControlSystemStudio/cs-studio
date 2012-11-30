@@ -7,23 +7,20 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import org.csstudio.archive.vtype.VTypeHelper;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.loc.LocalDataSource;
 import org.junit.Test;
 
-/** [Headless] JUnit plug-in test of the {@link MonitoredArchiveChannel}
+/** JUnit plug-in test of the {@link MonitoredArchiveChannel}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MonitoredArchiveChannelHeadlessTest
+public class MonitoredArchiveChannelUnitTest
 {
     private static final String PV_NAME = "loc://demo";
 
@@ -45,18 +42,9 @@ public class MonitoredArchiveChannelHeadlessTest
         // Allow monitors to arrive..
         Thread.sleep(2000);
         
-        assertThat(dump(samples), equalTo(4));
+        assertThat(TestHelper.dump(samples), equalTo(4));
 
         channel.stop();
         pv.close();
-    }
-
-    private int dump(final SampleBuffer samples)
-    {
-        final int count = samples.getQueueSize();
-        VType sample;
-        while ((sample = samples.remove()) != null)
-            System.out.println(VTypeHelper.toString(sample));
-        return count;
     }
 }

@@ -7,65 +7,59 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.junit.Assert.*;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.junit.Assert.assertEquals;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.loc.LocalDataSource;
 import org.junit.Test;
 
 /** [Headless] JUnit plug-in test of the DeltaArchiveChannel
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DeltaArchiveChannelHeadlessTest
+public class DeltaArchiveChannelUnitTest
 {
-    @Test
+    private static final String PV_NAME = "loc://demo";
+
+    @Test(timeout=10000)
     public void testHandleNewValue() throws Exception
     {
-        final PV pv = PVFactory.createPV("loc://demo");
-        pv.start();
-        pv.setValue(1.0);
+    	PVManager.setDefaultDataSource(new LocalDataSource());
+    	
+    	final PVWriter<Object> pv = PVManager.write(channel(PV_NAME)).sync();
 
         final DeltaArchiveChannel channel = new DeltaArchiveChannel("loc://demo", Enablement.Passive, 100, null, 1.01, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();
         channel.start();
 
+        pv.write(1.0);
+        SECONDS.sleep(2);
         System.out.println("Initial sample:");
-        assertEquals(1, dump(samples));
-
-        // Need small delays to assert a new time stamp
-        Thread.sleep(10);
+        assertEquals(1, TestHelper.dump(samples));
 
         // Big Change
-        pv.setValue(2.0);
+        pv.write(2.0);
+        SECONDS.sleep(2);
         System.out.println("Big change:");
-        assertEquals(1, dump(samples));
-
-        Thread.sleep(10);
+        assertEquals(1, TestHelper.dump(samples));
 
         // Small Change
-        pv.setValue(2.05);
+        pv.write(2.05);
+        SECONDS.sleep(2);
         System.out.println("Small change:");
-        assertEquals(0, dump(samples));
-
-        Thread.sleep(10);
+        assertEquals(0, TestHelper.dump(samples));
 
         // Big Change
-        pv.setValue(2.5);
+        pv.write(2.5);
+        SECONDS.sleep(2);
         System.out.println("Big change:");
-        assertEquals(1, dump(samples));
+        assertEquals(1, TestHelper.dump(samples));
 
         channel.stop();
-        pv.stop();
-    }
-
-    private int dump(final SampleBuffer samples)
-    {
-        final int count = samples.getQueueSize();
-        IValue sample;
-        while ((sample = samples.remove()) != null)
-            System.out.println(sample);
-        return count;
+        pv.close();
     }
 }

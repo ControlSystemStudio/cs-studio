@@ -49,7 +49,7 @@ public class WriteThreadHeadlessTest
         for (int i=0; i<10; ++i)
         {
             final Timestamp time = Timestamp.of(seconds, i);
-            buffer.add(new ArchiveVNumber(time, severity, status, TestValueFactory.display, Double.valueOf(i)));
+            buffer.add(new ArchiveVNumber(time, severity, status, TestHelper.display, Double.valueOf(i)));
             Thread.sleep(1);
         }
 

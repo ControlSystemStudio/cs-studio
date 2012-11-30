@@ -8,6 +8,7 @@
 package org.csstudio.archive.engine.model;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VType;
@@ -19,12 +20,27 @@ import org.epics.util.time.Timestamp;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TestValueFactory
+public class TestHelper
 {
 	final public static Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "Eggs", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 
-    public static VType getDouble(double value)
+	/** @param value Value
+	 *  @return VType for that value
+	 */
+    public static VType newValue(final double value)
     {
     	return new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, value);
+    }
+    
+    /** @param samples {@link SampleBuffer} to dump
+     *  @return Sample count
+     */
+    public static int dump(final SampleBuffer samples)
+    {
+        final int count = samples.getQueueSize();
+        VType sample;
+        while ((sample = samples.remove()) != null)
+            System.out.println(VTypeHelper.toString(sample));
+        return count;
     }
 }

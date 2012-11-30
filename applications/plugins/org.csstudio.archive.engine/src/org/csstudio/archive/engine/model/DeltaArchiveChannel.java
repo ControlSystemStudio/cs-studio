@@ -11,8 +11,8 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.VType;
 
 /** An ArchiveChannel that stores each incoming value that differs from
  *  the previous sample by some 'delta'.
@@ -38,7 +38,7 @@ public class DeltaArchiveChannel extends ArchiveChannel
     public DeltaArchiveChannel(final String name,
                                final Enablement enablement,
                                final int buffer_capacity,
-                               final IValue last_archived_value,
+                               final VType last_archived_value,
                                final double period_estimate,
                                final double delta) throws Exception
     {
@@ -56,7 +56,7 @@ public class DeltaArchiveChannel extends ArchiveChannel
 
     /** Attempt to add each new value to the buffer. */
     @Override
-    protected boolean handleNewValue(final IValue value)
+    protected boolean handleNewValue(final VType value)
     {
         if (super.handleNewValue(value))
         {
@@ -75,9 +75,9 @@ public class DeltaArchiveChannel extends ArchiveChannel
     /** @param value Value to test
      *  @return <code>true</code> if this value is beyond 'delta' from the last value
      */
-    private boolean isBeyondDelta(final IValue value)
+    private boolean isBeyondDelta(final VType value)
     {
-        final double number = ValueUtil.getDouble(value);
+        final double number = VTypeHelper.toDouble(value);
         // Archive NaN, Inf'ty
         if (Double.isNaN(number)  ||  Double.isInfinite(number))
             return true;
@@ -87,7 +87,7 @@ public class DeltaArchiveChannel extends ArchiveChannel
             // Anything to compare against?
             if (last_archived_value == null)
                 return true;
-            previous = ValueUtil.getDouble(last_archived_value);
+            previous = VTypeHelper.toDouble(last_archived_value);
         }
         return Math.abs(previous - number) >= delta;
     }
