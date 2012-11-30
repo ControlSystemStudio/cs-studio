@@ -583,7 +583,7 @@ public class CSSView extends Composite implements Observer {
 
     private void workItemList() {
         // fill the List
-        if ((_itemList != null) && (_itemList.size() > 1)) {
+        if ((_itemList != null) && (_itemList.size() > 0)) {
             _tableViewer.setInput(new ArrayList<ControlSystemItem>(_itemList.values()));
         }
 
