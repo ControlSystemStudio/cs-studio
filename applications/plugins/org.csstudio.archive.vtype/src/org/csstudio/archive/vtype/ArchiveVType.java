@@ -9,7 +9,6 @@ package org.csstudio.archive.vtype;
 
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
@@ -17,7 +16,6 @@ import org.epics.util.time.Timestamp;
 /** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir
  */
-@SuppressWarnings("deprecation") // Must at this time support AlarmStatus
 public class ArchiveVType implements Alarm, Time, VType
 {
 	final private Timestamp timestamp;
@@ -42,13 +40,6 @@ public class ArchiveVType implements Alarm, Time, VType
 	public String getAlarmName()
 	{
 		return status;
-	}
-
-	@Override
-	@Deprecated
-	public AlarmStatus getAlarmStatus()
-	{
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -32,7 +32,6 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VNumberArray;
@@ -238,26 +237,19 @@ public class RDBArchiveWriter implements ArchiveWriter
         // Start with most likely cases and highest precision: Double, ...
         // Then going down in precision to integers, finally strings...
         if (sample instanceof VDouble)
-            batchDoubleSamples(channel, stamp, severity, status, ((VDouble)sample).getValue());
+            batchDoubleSamples(channel, stamp, severity, status, ((VDouble)sample).getValue(), null);
         else if (sample instanceof VNumber)
         {	// Write as double or integer?
         	final Number number = ((VNumber)sample).getValue();
         	if (number instanceof Double)
-        		batchDoubleSamples(channel, stamp, severity, status, number.doubleValue());
+        		batchDoubleSamples(channel, stamp, severity, status, number.doubleValue(), null);
         	else
         		batchLongSample(channel, stamp, severity, status, number.longValue());
         }
-        else if (sample instanceof VDoubleArray)
-            batchDoubleSamples(channel, stamp, severity, status, ((VDoubleArray)sample).getArray());
         else if (sample instanceof VNumberArray)
         {
-        	// Handle arrays as double
-        	// TODO Support Long arrays 'l' and Integer 'i'
         	final ListNumber data = ((VNumberArray)sample).getData();
-            final double[] dbl = new double[data.size()];
-            for (int i=0; i<dbl.length; ++i)
-                dbl[i] =data.getDouble(i);
-            batchDoubleSamples(channel, stamp, severity, status, dbl);
+            batchDoubleSamples(channel, stamp, severity, status, data.getDouble(0), data);
         }
         else if (sample instanceof VEnum)
             batchLongSample(channel, stamp, severity, status, ((VEnum)sample).getIndex());
@@ -270,12 +262,12 @@ public class RDBArchiveWriter implements ArchiveWriter
     /** Helper for batchSample: Add double sample(s) to batch. */
     private void batchDoubleSamples(final RDBWriteChannel channel,
             final Timestamp stamp, final int severity,
-            final Status status, final double... dbl) throws Exception
+            final Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (use_array_blob)
-            batchBlobbedDoubleSample(channel, stamp, severity, status, dbl);
+            batchBlobbedDoubleSample(channel, stamp, severity, status, dbl, additional);
         else
-            oldBatchDoubleSamples(channel, stamp, severity, status, dbl);
+            oldBatchDoubleSamples(channel, stamp, severity, status, dbl, additional);
     }
 
     /** Helper for batchSample: Add double sample(s) to batch, using
@@ -283,7 +275,7 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     private void batchBlobbedDoubleSample(final RDBWriteChannel channel,
             final Timestamp stamp, int severity,
-            Status status, final double[] dbl) throws Exception
+            Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (insert_double_sample == null)
         {
@@ -294,16 +286,16 @@ public class RDBArchiveWriter implements ArchiveWriter
         }
         // Set scalar or 1st element of a waveform.
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
-        if (Double.isNaN(dbl[0]))
+        if (Double.isNaN(dbl))
         {
             insert_double_sample.setDouble(5, 0.0);
             severity = severities.findOrCreate(AlarmSeverity.UNDEFINED);
             status = stati.findOrCreate(NOT_A_NUMBER_STATUS);
         }
         else
-            insert_double_sample.setDouble(5, dbl[0]);
+            insert_double_sample.setDouble(5, dbl);
 
-        if (dbl.length <= 1)
+        if (additional == null)
         {    // No more array elements, only scalar
             switch (rdb.getDialect())
             {
@@ -327,10 +319,11 @@ public class RDBArchiveWriter implements ArchiveWriter
             final ByteArrayOutputStream bout = new ByteArrayOutputStream();
             final DataOutputStream dout = new DataOutputStream(bout);
             // Indicate 'Double' as data type
-            dout.writeInt(dbl.length);
+            final int N = additional.size();
+            dout.writeInt(N);
             // Write binary data for array elements
-            for (double d : dbl)
-                dout.writeDouble(d);
+            for (int i=0; i<N; ++i)
+                dout.writeDouble(additional.getDouble(i));
             dout.close();
             final byte[] asBytes = bout.toByteArray();
             if (rdb.getDialect() == Dialect.Oracle)
@@ -354,7 +347,7 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     private void oldBatchDoubleSamples(final RDBWriteChannel channel,
             final Timestamp stamp, final int severity,
-            final Status status, final double[] dbl) throws Exception
+            final Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (insert_double_sample == null)
         {
@@ -364,7 +357,7 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
-        if (Double.isNaN(dbl[0]))
+        if (Double.isNaN(dbl))
         {
             insert_double_sample.setDouble(5, 0.0);
             completeAndBatchInsert(insert_double_sample,
@@ -374,18 +367,19 @@ public class RDBArchiveWriter implements ArchiveWriter
         }
         else
         {
-            insert_double_sample.setDouble(5, dbl[0]);
+            insert_double_sample.setDouble(5, dbl);
             completeAndBatchInsert(insert_double_sample, channel, stamp, severity, status);
         }
         ++batched_double_inserts;
         // More array elements?
-        if (dbl.length > 1)
+        if (additional != null)
         {
             if (insert_array_sample == null)
                 insert_array_sample =
                     rdb.getConnection().prepareStatement(
                         sql.sample_insert_double_array_element);
-            for (int i = 1; i < dbl.length; i++)
+            final int N = additional.size();
+            for (int i = 1; i < N; i++)
             {
                 insert_array_sample.setInt(1, channel.getId());
                 insert_array_sample.setTimestamp(2, stamp);
@@ -397,10 +391,10 @@ public class RDBArchiveWriter implements ArchiveWriter
                 // But we have to write it first to avoid index (key) errors
                 // with the array sample time stamp....
                 // Go back and update the main sample after the fact??
-                if (Double.isNaN(dbl[i]))
+                if (Double.isNaN(additional.getDouble(i)))
                     insert_array_sample.setDouble(4, 0.0);
                 else
-                    insert_array_sample.setDouble(4, dbl[i]);
+                    insert_array_sample.setDouble(4, additional.getDouble(i));
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_array_sample.setInt(5, stamp.getNanos());

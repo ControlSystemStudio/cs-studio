@@ -69,7 +69,7 @@ public class ValueButcher
         if (value instanceof VDoubleArray)
         {
         	final VDoubleArray number = (VDoubleArray) value;
-            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getArray());
+            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getData());
         }
         if (value instanceof VNumberArray)
         {
