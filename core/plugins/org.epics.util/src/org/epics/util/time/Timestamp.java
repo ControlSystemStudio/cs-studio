@@ -4,6 +4,7 @@
  */
 package org.epics.util.time;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -195,9 +196,11 @@ public class Timestamp implements Comparable<Timestamp> {
         return createWithCarry(unixSec - duration.getSec(), nanoSec - duration.getNanoSec());
     }
 
+    private static final DecimalFormat format = new DecimalFormat("000000000");
+
     @Override
     public String toString() {
-        return unixSec + "." + nanoSec;
+        return unixSec + "." + format.format(nanoSec);
     }
 
     /**
