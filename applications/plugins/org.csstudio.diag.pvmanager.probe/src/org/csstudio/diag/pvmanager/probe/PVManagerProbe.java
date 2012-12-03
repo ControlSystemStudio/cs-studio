@@ -633,7 +633,7 @@ public class PVManagerProbe extends ViewPart {
 			return ""; //$NON-NLS-1$
 		} else {
 			return "[" + alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
-					+ alarm.getAlarmStatus() + "]";
+					+ alarm.getAlarmName() + "]";
 		}
 	}
 
