@@ -4,7 +4,7 @@
 
 # Version to build
 
-export VERSION=3.2.0I
+export VERSION=3.1.3
 
 # Top of repository tree
 export TOP=/Users/ky9/git/cs-studio
