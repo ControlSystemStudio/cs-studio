@@ -8,8 +8,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import org.epics.util.array.ListNumber;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -150,38 +151,28 @@ public class ValueUtil {
      * @return the numeric value
      */
     public static Double numericValueOf(Object obj) {
-        if (obj instanceof Scalar) {
-            Object value = ((Scalar) obj).getValue();
-            if (value instanceof Number)
-                return ((Number) value).doubleValue();
+        if (obj instanceof VNumber) {
+            Number value = ((VNumber) obj).getValue();
+            if (value != null) {
+                return value.doubleValue();
+            }
+        }
+        
+        if (obj instanceof VEnum) {
+            return (double) ((VEnum) obj).getIndex();
         }
 
-        if (obj instanceof Array) {
-            Object array = ((Array) obj).getArray();
-            if (array instanceof byte[]) {
-                byte[] tArray = (byte[]) array;
-                if (tArray.length != 0)
-                    return (double) tArray[0];
+        if (obj instanceof VNumberArray) {
+            ListNumber data = ((VNumberArray) obj).getData();
+            if (data != null && data.size() != 0) {
+                return data.getDouble(0);
             }
-            if (array instanceof short[]) {
-                short[] tArray = (short[]) array;
-                if (tArray.length != 0)
-                    return (double) tArray[0];
-            }
-            if (array instanceof int[]) {
-                int[] tArray = (int[]) array;
-                if (tArray.length != 0)
-                    return (double) tArray[0];
-            }
-            if (array instanceof float[]) {
-                float[] tArray = (float[]) array;
-                if (tArray.length != 0)
-                    return (double) tArray[0];
-            }
-            if (array instanceof double[]) {
-                double[] tArray = (double[]) array;
-                if (tArray.length != 0)
-                    return (double) tArray[0];
+        }
+        
+        if (obj instanceof VEnumArray) {
+            ListNumber data = ((VEnumArray) obj).getIndexes();
+            if (data != null && data.size() != 0) {
+                return data.getDouble(0);
             }
         }
 
@@ -224,6 +215,27 @@ public class ValueUtil {
 
         byte[] buffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         return ValueFactory.newVImage(image.getHeight(), image.getWidth(), buffer);
+    }
+    
+    public static boolean displayEquals(Display d1, Display d2) {
+        if (d1 == d2) {
+            return true;
+        }
+        
+        if (Objects.equals(d1.getFormat(), d2.getFormat()) &&
+                Objects.equals(d1.getUnits(), d2.getUnits()) &&
+                Objects.equals(d1.getLowerDisplayLimit(), d2.getLowerDisplayLimit()) &&
+                Objects.equals(d1.getLowerAlarmLimit(), d2.getLowerAlarmLimit()) &&
+                Objects.equals(d1.getLowerWarningLimit(), d2.getLowerWarningLimit()) &&
+                Objects.equals(d1.getUpperWarningLimit(), d2.getUpperWarningLimit()) &&
+                Objects.equals(d1.getUpperAlarmLimit(), d2.getUpperAlarmLimit()) &&
+                Objects.equals(d1.getUpperDisplayLimit(), d2.getUpperDisplayLimit()) &&
+                Objects.equals(d1.getLowerCtrlLimit(), d2.getLowerCtrlLimit()) &&
+                Objects.equals(d1.getUpperCtrlLimit(), d2.getUpperCtrlLimit())) {
+            return true;
+        }
+        
+        return false;
     }
     
 }

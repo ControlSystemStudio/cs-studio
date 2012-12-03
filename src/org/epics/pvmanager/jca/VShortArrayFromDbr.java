@@ -6,10 +6,10 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Short;
-import java.util.Collections;
-import java.util.List;
 import org.epics.pvmanager.data.VShortArray;
+import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayShort;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListShort;
 
 /**
@@ -21,15 +21,10 @@ class VShortArrayFromDbr extends VNumberMetadata<DBR_TIME_Short, DBR_CTRL_Double
     public VShortArrayFromDbr(DBR_TIME_Short dbrValue, DBR_CTRL_Double metadata, JCAConnectionPayload connPayload) {
         super(dbrValue, metadata, connPayload);
     }
-    
-    @Override
-    public short[] getArray() {
-        return dbrValue.getShortValue();
-    }
 
     @Override
-    public List<Integer> getSizes() {
-        return Collections.singletonList(dbrValue.getShortValue().length);
+    public ListInt getSizes() {
+        return new ArrayInt(dbrValue.getShortValue().length);
     }
 
     @Override

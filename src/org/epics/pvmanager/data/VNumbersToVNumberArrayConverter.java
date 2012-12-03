@@ -7,8 +7,8 @@ package org.epics.pvmanager.data;
 import java.util.ArrayList;
 import java.util.List;
 import org.epics.pvmanager.ReadFunction;
-import org.epics.util.array.ListDouble;
 import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.array.ListDouble;
 import org.epics.util.time.Timestamp;
 
 /**

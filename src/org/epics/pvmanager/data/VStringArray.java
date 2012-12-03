@@ -4,11 +4,13 @@
  */
 package org.epics.pvmanager.data;
 
+import java.util.List;
+
 /**
  *
  * @author carcassi
  */
-public interface VStringArray extends Array<String>, Alarm, Time, VType {
+public interface VStringArray extends Array, Alarm, Time, VType {
     @Override
-    String[] getArray();
+    List<String> getData();
 }

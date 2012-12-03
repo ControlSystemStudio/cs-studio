@@ -18,8 +18,20 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.util.time.TimeDuration;
 
 /**
- * Object responsible to notify the PVReader of changes on the appropriate thread.
+ * Orchestrates the different elements of pvmanager to make a reader functional.
+ * <p>
+ * This class is responsible for the correct read operation, including:
+ * <ul>
+ * <li>Setting up the collector for notifications</li>
+ * <li>Setting up the collector for connection notification</li>
+ * <li>Building connection recipes and forwarding them to the datasource<li>
+ * <li>Managing the scanning task and notification for new values, connection status
+ * or errors</li>
+ * <li>Disconnecting the expressions from the datasources if the reader is closed
+ * or if it's garbage collected</li>
+ * </ul>
  *
+ * @param <T> value type for the reader managed by this director
  * @author carcassi
  */
 public class PVReaderDirector<T> {
@@ -65,9 +77,13 @@ public class PVReaderDirector<T> {
     }
     
     /**
-     * Calculate the recipes and connects the channel to the datasource.
+     * Connects the given expression.
+     * <p>
+     * This can be used for dynamic expression to add and connect child expressions.
+     * The added expression will be automatically closed when the associated
+     * reader is closed, if it's not disconnected first.
      * 
-     * @param expression 
+     * @param expression the expression to connect
      */
     public void connectExpression(DesiredRateExpression<?> expression) {
         ReadRecipeBuilder builder = new ReadRecipeBuilder();
@@ -85,6 +101,14 @@ public class PVReaderDirector<T> {
         }
     }
     
+    /**
+     * Disconnects the given expression.
+     * <p>
+     * This can be used for dynamic expression, to remove and disconnects child
+     * expressions.
+     *
+     * @param expression the expression to disconnect
+     */
     public void disconnectExpression(DesiredRateExpression<?> expression) {
         ReadRecipe recipe;
         synchronized(lock) {
@@ -102,8 +126,11 @@ public class PVReaderDirector<T> {
             }
         }
     }
-    
-    public void close() {
+
+    /**
+     * Closed and disconnects all the child expressions.
+     */
+    private void close() {
         synchronized(lock) {
             while (!recipes.isEmpty()) {
                 DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
@@ -148,6 +175,9 @@ public class PVReaderDirector<T> {
         final PVReader<T> pv = pvRef.get();
         if (pv != null && !pv.isClosed()) {
             return true;
+        } else if (pv == null) {
+            log.warning("PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...");
+            return false;
         } else {
             return false;
         }

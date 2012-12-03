@@ -58,7 +58,7 @@ public abstract class ValueFormat extends Format {
      * @param array data object to format
      * @return a String representation
      */
-    public String format(Array<?> array) {
+    public String format(Array array) {
         return format((Object) array);
     }
 
@@ -80,7 +80,7 @@ public abstract class ValueFormat extends Format {
      * @param pos the field position
      * @return the output buffer
      */
-    protected abstract StringBuffer format(Array<?> array, StringBuffer toAppendTo, FieldPosition pos);
+    protected abstract StringBuffer format(Array array, StringBuffer toAppendTo, FieldPosition pos);
 
     /**
      * Returns the NumberFormat used to format the numeric values.

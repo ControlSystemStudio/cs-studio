@@ -5,11 +5,8 @@
 package org.epics.pvmanager.loc;
 
 import org.epics.pvmanager.*;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import static org.epics.pvmanager.data.ValueFactory.*;
 import org.epics.util.array.ArrayDouble;
-import org.epics.util.time.Timestamp;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.

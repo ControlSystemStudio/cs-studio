@@ -4,9 +4,9 @@
  */
 package org.epics.pvmanager.data;
 
-import org.epics.pvmanager.Aggregator;
-import java.util.List;
 import static java.lang.Math.*;
+import java.util.List;
+import org.epics.pvmanager.Aggregator;
 import org.epics.pvmanager.ReadFunction;
 import static org.epics.pvmanager.data.AlarmSeverity.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
@@ -92,7 +92,7 @@ class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
         return newVStatistics(stats.totalSum / stats.nElements,
                 sqrt(stats.totalSquareSum / stats.nElements - (stats.totalSum * stats.totalSum) / (stats.nElements * stats.nElements)),
                 stats.min, stats.max, stats.nElements,
-                newAlarm(statSeverity, AlarmStatus.NONE), newTime(data.get(data.size() / 2).getTimestamp()), data.get(0));
+                newAlarm(statSeverity, "NONE"), newTime(data.get(data.size() / 2).getTimestamp()), data.get(0));
     }
 
 }
