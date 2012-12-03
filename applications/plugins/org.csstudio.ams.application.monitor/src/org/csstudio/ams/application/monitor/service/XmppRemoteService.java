@@ -158,6 +158,7 @@ public class XmppRemoteService implements IRemoteService {
        
        for (String s : applicationName) {
            if (s != null) {
+               LOG.info("Application: {}, Method: {}", s, method);
                if (s.trim().length() > 0) {
                    IRosterEntry currentApplic = this.getRosterApplication(jmsApplics, s.trim(), host, user);
                    if(currentApplic != null) {
