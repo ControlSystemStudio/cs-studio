@@ -4,13 +4,10 @@
  */
 package org.epics.pvmanager.expression;
 
-import java.util.Collections;
-import org.epics.pvmanager.*;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.epics.pvmanager.*;
 
 /**
  * A function that takes a set of inputs and transforms them in a new map.

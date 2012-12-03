@@ -39,6 +39,12 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout for both reader and writer.
+     *
+     * @param timeout duration of the timeout
+     * @return this expression
+     */
     @Override
     public PVConfiguration<R, W> timeout(TimeDuration timeout) {
         pvReaderConfiguration.timeout(timeout);
@@ -46,6 +52,13 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout with the given message for both read and writer.
+     *
+     * @param timeout duration of the timeout
+     * @param timeoutMessage message for the timeout
+     * @return this expression
+     */
     @Override
     public PVConfiguration<R, W>  timeout(TimeDuration timeout, String timeoutMessage) {
         pvReaderConfiguration.timeout(timeout, timeoutMessage);
@@ -67,11 +80,23 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
     
+    /**
+     * Adds a listener for the read events.
+     *
+     * @param listener the new listener
+     * @return this expression
+     */
     public PVConfiguration<R, W>  readListener(PVReaderListener<? super R> listener) {
         pvReaderConfiguration.readListener(listener);
         return this;
     }
     
+    /**
+     * Adds a listener for the write events.
+     *
+     * @param listener the new listener
+     * @return this expression
+     */
     public PVConfiguration<R, W>  writeListener(PVWriterListener<? extends W> listener) {
         pvWriterConfiguration.writeListener(listener);
         return this;

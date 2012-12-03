@@ -14,6 +14,7 @@ import java.util.List;
  * The values are returned oldest value first. When maxSize is reached,
  * the oldest values are discarded.
  *
+ * @param <T> the type contained in the queue
  * @author carcassi
  */
 public class QueueCollector<T> implements Collector<T, List<T>> {

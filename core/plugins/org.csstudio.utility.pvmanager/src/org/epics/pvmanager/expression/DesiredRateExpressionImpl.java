@@ -4,10 +4,10 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.ReadRecipeBuilder;
-import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.ReadRecipeBuilder;
 
 /**
  * Implementation class for {@link DesiredRateExpression}.

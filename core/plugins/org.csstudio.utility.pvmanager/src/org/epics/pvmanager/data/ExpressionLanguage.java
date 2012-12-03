@@ -4,21 +4,22 @@
  */
 package org.epics.pvmanager.data;
 
-import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.ReadFunction;
+import static org.epics.pvmanager.data.ValueFactory.*;
 import org.epics.pvmanager.expression.ChannelExpression;
 import org.epics.pvmanager.expression.ChannelExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.Expressions;
+import org.epics.pvmanager.expression.SourceRateExpression;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
@@ -275,7 +276,7 @@ public class ExpressionLanguage {
      * @return an int array expression
      */
     public static DesiredRateExpression<VIntArray> vConst(int... values) {
-        return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVIntArray(new ArrayInt(values), alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
     
     /**

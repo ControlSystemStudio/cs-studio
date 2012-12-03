@@ -4,8 +4,6 @@
  */
 package org.epics.pvmanager.data;
 
-import org.epics.util.time.Timestamp;
-
 /**
  *
  * @author carcassi
@@ -14,10 +12,8 @@ class IVString extends IVMetadata implements VString {
 
     private final String value;
 
-    public IVString(String value,
-            AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
-        super(alarmSeverity, alarmStatus, timestamp, timeUserTag, timeValid);
+    public IVString(String value, Alarm alarm, Time time) {
+        super(alarm, time);
         this.value = value;
     }
 

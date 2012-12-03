@@ -14,6 +14,7 @@ import org.epics.util.array.ListNumber;
  *
  * @author carcassi
  */
-public interface VNumberArray extends Alarm, Time, Display, VType {
+public interface VNumberArray extends Array, Alarm, Time, Display, VType {
+    @Override
     ListNumber getData();
 }

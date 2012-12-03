@@ -6,11 +6,11 @@ package org.epics.pvmanager.expression;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.epics.pvmanager.ReadRecipeBuilder;
-import org.epics.pvmanager.ForwardCache;
-import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
+import org.epics.pvmanager.ForwardCache;
 import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.ValueCacheImpl;
 

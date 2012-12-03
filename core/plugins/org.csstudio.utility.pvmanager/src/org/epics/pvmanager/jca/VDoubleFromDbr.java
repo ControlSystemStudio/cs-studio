@@ -9,6 +9,7 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.data.VTypeToString;
 
 /**
  *
@@ -35,6 +36,11 @@ class VDoubleFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Double> i
     @Override
     public Double getValue() {
         return dbrValue.getDoubleValue()[0];
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }
