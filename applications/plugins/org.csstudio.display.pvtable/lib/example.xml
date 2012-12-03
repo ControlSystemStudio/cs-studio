@@ -1,0 +1,7 @@
+<pvtable version="1.0">
+    <tolerance>0.001</tolerance>
+    <pvlist>
+        <pv> <selected>true</selected> <name>loc://x</name> <saved_value></saved_value> </pv>
+        <pv> <selected>true</selected> <name>loc://y</name> <saved_value></saved_value> </pv>
+    </pvlist>
+</pvtable>
