@@ -5,7 +5,6 @@
 package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
-import org.epics.util.time.Timestamp;
 
 /**
  * Partial implementation for numeric types.
@@ -14,83 +13,61 @@ import org.epics.util.time.Timestamp;
  */
 class IVNumeric extends IVMetadata implements Display {
     
-    private final Double lowerDisplayLimit;
-    private final Double lowerCtrlLimit;
-    private final Double lowerAlarmLimit;
-    private final Double lowerWarningLimit;
-    private final String units;
-    private final NumberFormat format;
-    private final Double upperWarningLimit;
-    private final Double upperAlarmLimit;
-    private final Double upperCtrlLimit;
-    private final Double upperDisplayLimit;
+    private final Display display;
 
-    IVNumeric(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            Timestamp timestamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
-            Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
-            String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
-            Double upperCtrlLimit, Double upperDisplayLimit) {
-        super(alarmSeverity, alarmStatus, timestamp, timeUserTag, timeValid);
-        this.lowerDisplayLimit = lowerDisplayLimit;
-        this.lowerCtrlLimit = lowerCtrlLimit;
-        this.lowerAlarmLimit = lowerAlarmLimit;
-        this.lowerWarningLimit = lowerWarningLimit;
-        this.units = units;
-        this.format = format;
-        this.upperWarningLimit = upperWarningLimit;
-        this.upperAlarmLimit = upperAlarmLimit;
-        this.upperCtrlLimit = upperCtrlLimit;
-        this.upperDisplayLimit = upperDisplayLimit;
+    IVNumeric(Alarm alarm, Time time, Display display) {
+        super(alarm, time);
+        this.display = display;
     }
 
     @Override
     public Double getLowerDisplayLimit() {
-        return lowerDisplayLimit;
+        return display.getLowerDisplayLimit();
     }
 
     @Override
     public Double getLowerCtrlLimit() {
-        return lowerCtrlLimit;
+        return display.getLowerCtrlLimit();
     }
 
     @Override
     public Double getLowerAlarmLimit() {
-        return lowerAlarmLimit;
+        return display.getLowerAlarmLimit();
     }
 
     @Override
     public Double getLowerWarningLimit() {
-        return lowerWarningLimit;
+        return display.getLowerWarningLimit();
     }
 
     @Override
     public String getUnits() {
-        return units;
+        return display.getUnits();
     }
 
     @Override
     public NumberFormat getFormat() {
-        return format;
+        return display.getFormat();
     }
 
     @Override
     public Double getUpperWarningLimit() {
-        return upperWarningLimit;
+        return display.getUpperWarningLimit();
     }
 
     @Override
     public Double getUpperAlarmLimit() {
-        return upperAlarmLimit;
+        return display.getUpperAlarmLimit();
     }
 
     @Override
     public Double getUpperCtrlLimit() {
-        return upperCtrlLimit;
+        return display.getUpperCtrlLimit();
     }
 
     @Override
     public Double getUpperDisplayLimit() {
-        return upperDisplayLimit;
+        return display.getUpperDisplayLimit();
     }
 
 }

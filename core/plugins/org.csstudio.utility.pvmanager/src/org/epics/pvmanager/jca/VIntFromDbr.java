@@ -9,6 +9,7 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import org.epics.pvmanager.data.VInt;
+import org.epics.pvmanager.data.VTypeToString;
 
 /**
  *
@@ -36,4 +37,10 @@ class VIntFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> impleme
     public Integer getValue() {
         return dbrValue.getIntValue()[0];
     }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
+
 }

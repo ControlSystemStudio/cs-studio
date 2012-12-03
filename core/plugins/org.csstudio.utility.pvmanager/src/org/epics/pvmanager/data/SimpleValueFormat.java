@@ -6,8 +6,7 @@ package org.epics.pvmanager.data;
 
 import java.text.FieldPosition;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
-import org.epics.pvmanager.util.NumberFormats;
+import java.util.List;
 import org.epics.util.array.ListByte;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListLong;
@@ -95,62 +94,42 @@ public class SimpleValueFormat extends ValueFormat {
         return toAppendTo;
     }
 
-    @Override
-    protected StringBuffer format(Array<?> array, StringBuffer toAppendTo, FieldPosition pos) {
-        if (array instanceof VNumberArray) {
-            return format((VNumberArray) array, toAppendTo, pos);
-        }
-        
-        // TODO: probably the rest is junk
-        
-        if (array == null || array.getArray() == null) {
-            return toAppendTo;
-        }
-
-        NumberFormat f = null;
-        if (array instanceof Display) {
-            f = nf(array);
-        }
-
+    protected StringBuffer format(List<String> data, StringBuffer toAppendTo, FieldPosition pos) {
         toAppendTo.append("[");
         boolean hasMore = false;
-
-        // To support all array types, there is no other way than
-        // implementing them one by one... curse non-reified generics!
-
-        // int array support
-        if (array.getArray() instanceof int[]) {
-            int[] data = (int[]) array.getArray();
-            if (data.length > maxElements) {
-                hasMore = true;
-            }
-            for (int i = 0; i < Math.min(data.length, maxElements); i++) {
-                if (i != 0) {
-                    toAppendTo.append(", ");
-                }
-                toAppendTo.append(f.format(data[i]));
-            }
-
-        // double array support
-        } else if (array.getArray() instanceof double[]) {
-            double[] data = (double[]) array.getArray();
-            if (data.length > maxElements) {
-                hasMore = true;
-            }
-            for (int i = 0; i < Math.min(data.length, maxElements); i++) {
-                if (i != 0) {
-                    toAppendTo.append(", ");
-                }
-                toAppendTo.append(f.format(data[i]));
-            }
-        } else {
-            throw new UnsupportedOperationException("Type " + array.getClass().getName() + " not yet supported.");
+        
+        if (data.size() > maxElements) {
+            hasMore = true;
         }
-
+        
+        for (int i = 0; i < Math.min(data.size(), maxElements); i++) {
+            if (i != 0) {
+                toAppendTo.append(", ");
+            }
+            toAppendTo.append(data.get(i));
+        }
+        
         if (hasMore) {
             toAppendTo.append(", ...");
         }
         toAppendTo.append("]");
         return toAppendTo;
+    }
+
+    @Override
+    protected StringBuffer format(Array array, StringBuffer toAppendTo, FieldPosition pos) {
+        if (array instanceof VNumberArray) {
+            return format((VNumberArray) array, toAppendTo, pos);
+        }
+        
+        if (array instanceof VStringArray) {
+            return format(((VStringArray) array).getData(), toAppendTo, pos);
+        }
+        
+        if (array instanceof VEnumArray) {
+            return format(((VEnumArray) array).getData(), toAppendTo, pos);
+        }
+        
+        throw new UnsupportedOperationException("Type " + array.getClass().getName() + " not yet supported.");
     }
 }

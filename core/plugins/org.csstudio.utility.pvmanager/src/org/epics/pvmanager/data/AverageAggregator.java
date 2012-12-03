@@ -62,7 +62,7 @@ class AverageAggregator extends Aggregator<VDouble, VDouble> {
                 default:
             }
         }
-        return newVDouble(totalSum / data.size(), newAlarm(statSeverity, AlarmStatus.NONE),
+        return newVDouble(totalSum / data.size(), newAlarm(statSeverity, "NONE"),
                 newTime(data.get(data.size() / 2).getTimestamp()), data.get(0));
     }
 

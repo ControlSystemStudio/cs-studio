@@ -14,64 +14,37 @@ import org.epics.util.time.Timestamp;
  */
 class IVMetadata implements Alarm, Time {
     
-    private final AlarmSeverity alarmSeverity;
-    private final String alarmName;
-    private final AlarmStatus alarmStatus;
-    private final Timestamp timestamp;
-    private final Integer timeUserTag;
-    private final boolean timeValid;
+    private final Alarm alarm;
+    private final Time time;
 
-    @Deprecated
-    IVMetadata(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
-        this.alarmSeverity = alarmSeverity;
-        this.alarmStatus = alarmStatus;
-        this.timestamp = timestamp;
-        this.timeUserTag = timeUserTag;
-        this.timeValid = timeValid;
-        this.alarmName = alarmStatus.toString();
+    public IVMetadata(Alarm alarm, Time time) {
+        this.alarm = alarm;
+        this.time = time;
     }
-
-    public IVMetadata(AlarmSeverity alarmSeverity, String alarmName, 
-            Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
-        this.alarmSeverity = alarmSeverity;
-        this.alarmName = alarmName;
-        this.alarmStatus = null;
-        this.timestamp = timestamp;
-        this.timeUserTag = timeUserTag;
-        this.timeValid = timeValid;
-    }
-    
-    
 
     @Override
     public AlarmSeverity getAlarmSeverity() {
-        return alarmSeverity;
+        return alarm.getAlarmSeverity();
     }
 
     @Override
     public String getAlarmName() {
-        return alarmName;
-    }
-
-    @Override
-    public AlarmStatus getAlarmStatus() {
-        return alarmStatus;
+        return alarm.getAlarmName();
     }
 
     @Override
     public Timestamp getTimestamp() {
-        return timestamp;
+        return time.getTimestamp();
     }
 
     @Override
     public Integer getTimeUserTag() {
-        return timeUserTag;
+        return time.getTimeUserTag();
     }
 
     @Override
     public boolean isTimeValid() {
-        return timeValid;
+        return time.isTimeValid();
     }
 
 }

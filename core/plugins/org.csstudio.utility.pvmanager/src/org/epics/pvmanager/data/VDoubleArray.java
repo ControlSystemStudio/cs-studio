@@ -11,13 +11,7 @@ import org.epics.util.array.ListDouble;
  *
  * @author carcassi
  */
-public interface VDoubleArray extends Array<Double>, VNumberArray, VType {
-    /**
-     * {@inheritDoc }
-     * @return the double array
-     */
-    @Override
-    double[] getArray();
+public interface VDoubleArray extends VNumberArray, VType {
     
     /**
      * {@inheritDoc }

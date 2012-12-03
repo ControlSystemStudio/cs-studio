@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Builder class for {@link DataRecipe}.
+ * Builder class for {@link ReadRecipe}.
  *
  * @author carcassi
  */
@@ -20,18 +20,25 @@ public class ReadRecipeBuilder {
             = new HashMap<>();
 
     /**
-     * Add a collector and the channel/caches this collector will get values from.
+     * Adds a channel and its read cache to the recipe.
      * 
-     * @param collector a collector
-     * @param caches the channel/caches
+     * @param channelName the name of the channel
+     * @param caches the cache that contains the value
+     * @return this builder
      */
-    public void addChannel(String channelName, ValueCache<?> caches) {
+    public ReadRecipeBuilder addChannel(String channelName, ValueCache<?> caches) {
         channelCaches.put(channelName, caches);
+        return this;
     }
 
     /**
      * Builds the recipe.
+     * <p>
+     * To finish building the recipe, one needs to specify where to send errors
+     * and where to send the connection status changes.
      * 
+     * @param exceptionWriteFunction where exception should be routed
+     * @param connectionCollector where connection status should be routed
      * @return a new recipe
      */
     public ReadRecipe build(WriteFunction<Exception> exceptionWriteFunction, ConnectionCollector connectionCollector) {

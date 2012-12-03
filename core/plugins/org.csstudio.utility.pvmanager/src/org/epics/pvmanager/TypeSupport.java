@@ -153,6 +153,13 @@ public abstract class TypeSupport<T> {
         return support;
     }
     
+    /**
+     * Returns all the type supports available for the given class.
+     *
+     * @param <T> the kind of type support
+     * @param supportFamily the supported type
+     * @return the list of type supports for the given type
+     */
     protected static <T extends TypeSupport<?>> Collection<T> typeSupportsFor(final Class<T> supportFamily) {
         TypeSupportMap map = allTypeSupports.get(supportFamily);
         if (map == null)
@@ -234,6 +241,8 @@ public abstract class TypeSupport<T> {
 
     /**
      * Defines on which class the support is defined.
+     * 
+     * @return the type of the class
      */
     protected Class<T> getType() {
         return type;

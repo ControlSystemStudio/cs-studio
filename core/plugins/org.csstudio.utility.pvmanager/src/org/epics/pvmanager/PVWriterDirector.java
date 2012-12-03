@@ -19,13 +19,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.WriteExpression;
 import org.epics.util.time.TimeDuration;
 
 /**
- * Orchestrates the different classes to perform writes.
+ * Orchestrates the different elements of pvmanager to make a writer functional.
+ * <p>
+ * This class is responsible for the correct writer operation, including:
+ * <ul>
+ * <li>Setting up the collector for notifications</li>
+ * <li>Setting up the collector for connection notification</li>
+ * <li>Building connection recipes and forwarding them to the datasource<li>
+ * <li>Managing the scanning task and notification for connection status
+ * or errors</li>
+ * <li>Managing the write process, both synchronous and asynchronous</li>
+ * <li>Disconnecting the expressions from the datasources if the reader is closed
+ * or if it's garbage collected</li>
+ * </ul>
  *
+ * @param <T> value type for the writer managed by this director
  * @author carcassi
  */
 public class PVWriterDirector<T> {
@@ -80,6 +92,15 @@ public class PVWriterDirector<T> {
         this.timeoutMessage = timeoutMessage;
     }
     
+    /**
+     * Connects the given expression.
+     * <p>
+     * This can be used for dynamic expression to add and connect child expressions.
+     * The added expression will be automatically closed when the associated
+     * reader is closed, if it's not disconnected first.
+     * 
+     * @param expression the expression to connect
+     */
     public void connectExpression(WriteExpression<?> expression) {
         WriteRecipeBuilder builder = new WriteRecipeBuilder();
         expression.fillWriteRecipe(this, builder);
@@ -97,6 +118,14 @@ public class PVWriterDirector<T> {
         }
     }
     
+    /**
+     * Disconnects the given expression.
+     * <p>
+     * This can be used for dynamic expression, to remove and disconnects child
+     * expressions.
+     *
+     * @param expression the expression to disconnect
+     */
     public void disconnectExpression(WriteExpression<?> expression) {
         WriteRecipe recipe;
         synchronized(lock) {
@@ -126,6 +155,9 @@ public class PVWriterDirector<T> {
         }
     }
     
+    /**
+     *
+     */
     public void close() {
         synchronized(lock) {
             while (!recipes.isEmpty()) {
@@ -257,13 +289,24 @@ public class PVWriterDirector<T> {
         });
         log.finest("Write request submitted. Waiting.");
         
+        boolean done;
         try {
-            latch.await();
+            if (timeout != null) {
+                done = latch.await(timeout.toNanosLong(), TimeUnit.NANOSECONDS);
+            } else {
+                latch.await();
+                done = true;
+            }
         } catch(InterruptedException ex) {
             throw new RuntimeException("Interrupted", ex);
         }
         if (exception.get() != null) {
             throw new RuntimeException("Write failed", exception.get());
+        }
+        if (done == false) {
+            TimeoutException ex = new TimeoutException(timeoutMessage);
+            exceptionCollector.writeValue(ex);
+            throw ex;
         }
         log.finest("Waiting done. No exceptions.");
     }
@@ -355,7 +398,7 @@ public class PVWriterDirector<T> {
         }
     }
 
-    public WriteRecipe getCurrentWriteRecipe() {
+    WriteRecipe getCurrentWriteRecipe() {
         return currentWriteRecipe;
     }
     

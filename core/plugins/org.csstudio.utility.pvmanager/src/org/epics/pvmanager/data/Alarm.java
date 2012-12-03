@@ -27,14 +27,4 @@ public interface Alarm {
      * @return the alarm status
      */
     String getAlarmName();
-    
-    /**
-     * Returns the alarm status of the highest currently active alarm.
-     * Never null.
-     *
-     * @deprecated use of AlarmStatus is being deprecated in favor of a simple String
-     * @return the alarm status
-     */
-    @Deprecated
-    AlarmStatus getAlarmStatus();
 }

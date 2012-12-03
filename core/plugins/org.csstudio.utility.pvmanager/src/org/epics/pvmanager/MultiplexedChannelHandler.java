@@ -225,9 +225,9 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         monitors.put(subscription, monitor);
         monitor.findTypeAdapter();
         guardedConnect();
-        if (readUsageCounter > 1) {
+        if (getUsageCounter() > 1) {
             if (connectionPayload != null) {
-            monitor.processConnection(isConnected());
+                monitor.processConnection(isConnected());
             }
             if (lastMessage != null) {
                 monitor.processValue(lastMessage);
@@ -344,7 +344,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * if it's implementing a write-able data source.
      * 
      * @param payload
-     * @return 
+     * @return true if ready for writes
      */
     protected boolean isWriteConnected(ConnectionPayload payload) {
         return false;

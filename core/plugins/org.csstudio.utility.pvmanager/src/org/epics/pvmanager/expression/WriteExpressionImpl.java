@@ -4,15 +4,12 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.WriteRecipeBuilder;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.epics.pvmanager.PVWriterDirector;
-import org.epics.pvmanager.WriteRecipe;
 import org.epics.pvmanager.WriteCache;
 import org.epics.pvmanager.WriteFunction;
+import org.epics.pvmanager.WriteRecipeBuilder;
 
 /**
  * Implementation class for {@link WriteExpression}.

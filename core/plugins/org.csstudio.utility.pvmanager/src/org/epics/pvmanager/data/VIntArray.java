@@ -11,9 +11,7 @@ import org.epics.util.array.ListInt;
  *
  * @author carcassi
  */
-public interface VIntArray extends Array<Integer>, VNumberArray, VType {
-    @Override
-    int[] getArray();
+public interface VIntArray extends VNumberArray, VType {
     
     @Override
     ListInt getData();

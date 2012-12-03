@@ -20,6 +20,11 @@ public class WriteRecipe {
         this.channelWriteRecipes = channelWriteRecipes;
     }
 
+    /**
+     * The channel recipes for this recipe.
+     * 
+     * @return the set of channel recipe
+     */
     public Collection<ChannelWriteRecipe> getChannelWriteRecipes() {
         return channelWriteRecipes;
     }
