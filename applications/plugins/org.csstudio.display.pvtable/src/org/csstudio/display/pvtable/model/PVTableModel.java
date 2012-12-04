@@ -51,6 +51,15 @@ public class PVTableModel implements PVTableItemListener
 
 	/** Add table item
 	 *  @param pv_name PV Name
+	 *  @return Added item
+	 */
+	public PVTableItem addItem(final String pv_name)
+	{
+		return addItem(pv_name, PVTableItem.DEFAULT_TOLERANCE, null);
+	}
+
+	/** Add table item
+	 *  @param pv_name PV Name
 	 *  @param tolerance Tolerance
 	 *  @return Added item
 	 */
@@ -70,6 +79,15 @@ public class PVTableModel implements PVTableItemListener
 		final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
 		items.add(item);
 		return item;
+	}
+	
+	/** Remove table item (also disposes it)
+	 *  @param item Item to remove from model
+	 */
+	public void removeItem(final PVTableItem item)
+	{
+	    item.dispose();
+	    items.remove(item);
 	}
 
 	/** {@inheritDoc} */

@@ -28,162 +28,196 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
  */
 public class PVTableItem implements PVReaderListener<VType>
 {
-	final public static double DEFAULT_TOLERANCE = 0.001;
+    final public static double DEFAULT_TOLERANCE = 0.001;
 
-	final private String name;
-	
-	final private PVTableItemListener listener;
-	
-	private boolean selected = true;
-	
-	private volatile VType value = null;
+    private String name;
+    
+    final private PVTableItemListener listener;
+    
+    private boolean selected = true;
+    
+    private volatile VType value = null;
 
-	private volatile VType saved = null;
-	
-	private volatile boolean has_changed;
-	
-	private double tolerance;
-	
-	final private PV<VType, Object> pv;
+    private volatile VType saved = null;
+    
+    private volatile boolean has_changed;
+    
+    private double tolerance;
+    
+    private PV<VType, Object> pv;
 
-	public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
-	{
-		this.name = name;
-		this.listener = listener;
-		this.tolerance = tolerance;
-		this.saved = saved;
-		determineIfChanged();
-		
-		if (name.isEmpty())
-			pv = null;
-		else
-			pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
-	}
-
-	public boolean isSelected()
-	{
-		return selected;
-	}
-	
-	public void setSelected(final boolean selected)
-	{
-		this.selected = selected;
-	}
-
-	/** @return Returns the name of the 'main' PV. */
-    public String getName()
+    /** Initialize
+     * 
+     *  @param name
+     *  @param tolerance
+     *  @param saved
+     *  @param listener
+     */
+    public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
     {
-    	return name;
+        this.listener = listener;
+        this.tolerance = tolerance;
+        this.saved = saved;
+        determineIfChanged();
+        createPV(name);
+    }
+
+    /** Set PV name and create reader/writer
+     *  @param name PV name
+     */
+    private void createPV(final String name)
+    {
+        this.name = name;
+        if (name.isEmpty())
+            pv = null;
+        else
+            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
+    }
+
+    /** @return <code>true</code> if item is selected to be restored */
+    public boolean isSelected()
+    {
+        return selected;
     }
     
+    /** @param selected Should item be selected to be restored? */
+    public void setSelected(final boolean selected)
+    {
+        this.selected = selected;
+    }
+
+    /** @return Returns the name of the 'main' PV. */
+    public String getName()
+    {
+        return name;
+    }
+
+    /** Update PV name 
+     * 
+     *  <p>Also resets saved and current value,
+     *  since it no longer applies to the new name.
+     *  @param new_name PV Name
+     */
+    public void updateName(final String new_name)
+    {
+        if (name.equals(new_name))
+            return;
+        if (pv != null)
+            pv.close();
+        saved = null;
+        value = null;
+        has_changed = false;
+        createPV(new_name);
+    }
+
     /** PVReaderListener
      *  {@inheritDoc}
      */
-	@Override
-	public void pvChanged(final PVReaderEvent<VType> event)
-	{
-		final PVReader<VType> pv = event.getPvReader();
-		
-		final Exception error = pv.lastException();
-		if (error != null)
-		{
-			Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
-			updateValue(null);
-			return;
-		}
-		updateValue(pv.getValue());
-	}
+    @Override
+    public void pvChanged(final PVReaderEvent<VType> event)
+    {
+        final PVReader<VType> pv = event.getPvReader();
+        
+        final Exception error = pv.lastException();
+        if (error != null)
+        {
+            Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
+            updateValue(null);
+            return;
+        }
+        updateValue(pv.getValue());
+    }
 
     /** @param new_value New value of item */
     protected void updateValue(final VType new_value)
     {
-    	value = new_value;
-		determineIfChanged();
-    	listener.tableItemChanged(this);
+        value = new_value;
+        determineIfChanged();
+        listener.tableItemChanged(this);
     }
     
     /** @return Value */
     public VType getValue()
     {
-    	return value;
+        return value;
     }
         
     /** Save current value as saved value */
     public void save()
     {
-    	saved = value;
-		determineIfChanged();
+        saved = value;
+        determineIfChanged();
     }
 
     /** Write saved value back to PV (if item is selected) */
     public void restore()
     {
-    	if (! isSelected())
-    		return;
-		final Object basic_value = VTypeHelper.getValue(saved);
-		if (basic_value == null)
-			return;
-		pv.write(basic_value);
-	}
+        if (! isSelected())
+            return;
+        final Object basic_value = VTypeHelper.getValue(saved);
+        if (basic_value == null)
+            return;
+        pv.write(basic_value);
+    }
 
-	/** @return Returns the saved_value. */
+    /** @return Returns the saved_value. */
     public VType getSavedValue()
     {
-    	return saved;
+        return saved;
     }
 
     /** @return Tolerance for comparing saved and current value */
     public double getTolerance()
     {
-		return tolerance;
-	}
+        return tolerance;
+    }
 
     /** @param tolerance Tolerance for comparing saved and current value */
-	public void setTolerance(final double tolerance)
-	{
-		this.tolerance = tolerance;
-		determineIfChanged();
-		listener.tableItemChanged(this);
-	}
+    public void setTolerance(final double tolerance)
+    {
+        this.tolerance = tolerance;
+        determineIfChanged();
+        listener.tableItemChanged(this);
+    }
 
-	/** @return <code>true</code> if value has changed from saved value */
+    /** @return <code>true</code> if value has changed from saved value */
     public boolean isChanged()
     {
-    	return has_changed;
+        return has_changed;
     }
     
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
-    	final VType saved_value = saved;
-    	if (saved_value == null)
-    	{
-    		has_changed = false;
-    		return;
-    	}
-    	has_changed = ! VTypeHelper.equalValue(value, saved_value, tolerance);
+        final VType saved_value = saved;
+        if (saved_value == null)
+        {
+            has_changed = false;
+            return;
+        }
+        has_changed = ! VTypeHelper.equalValue(value, saved_value, tolerance);
     }
     
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
-    	if (pv != null)
-    		pv.close();
+        if (pv != null)
+            pv.close();
     }
     
     @Override
     public String toString()
     {
-    	final StringBuilder buf = new StringBuilder();
-    	buf.append(name).append(" = ").append(VTypeHelper.toString(value));
-    	if (saved != null)
-    	{
-    		if (has_changed)
-    			buf.append(" ( != ");
-    		else
-    			buf.append(" ( == ");
-    		buf.append(VTypeHelper.toString(saved)).append(" +- ").append(tolerance).append(")");
-    	}
-    	return buf.toString();
+        final StringBuilder buf = new StringBuilder();
+        buf.append(name).append(" = ").append(VTypeHelper.toString(value));
+        if (saved != null)
+        {
+            if (has_changed)
+                buf.append(" ( != ");
+            else
+                buf.append(" ( == ");
+            buf.append(VTypeHelper.toString(saved)).append(" +- ").append(tolerance).append(")");
+        }
+        return buf.toString();
     }
 }
