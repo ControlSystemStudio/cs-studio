@@ -21,7 +21,7 @@ public class SnapshotAction extends Action
 	
 	public SnapshotAction(final TableViewer viewer)
 	{
-		super("Snapshot", Plugin.getImageDescriptor("icons/snapshot.gif"));
+		super("Snapshot", Plugin.getImageDescriptor("icons/snapshot.png"));
 		this.viewer = viewer;
 	}
 	

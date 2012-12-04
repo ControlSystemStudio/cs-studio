@@ -21,7 +21,7 @@ public class RestoreAction extends Action
 	
 	public RestoreAction(final TableViewer viewer)
 	{
-		super("Restore", Plugin.getImageDescriptor("icons/restore.gif"));
+		super("Restore", Plugin.getImageDescriptor("icons/restore.png"));
 		this.viewer = viewer;
 	}
 	

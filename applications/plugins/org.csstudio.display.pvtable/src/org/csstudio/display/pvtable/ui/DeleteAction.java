@@ -35,6 +35,9 @@ public class DeleteAction extends Action
 		if (model == null)
 			return;
 		final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+		if (sel == null)
+		    return;
+		
 		final Iterator<?> iterator = sel.iterator();
 		while (iterator.hasNext())
 		{
