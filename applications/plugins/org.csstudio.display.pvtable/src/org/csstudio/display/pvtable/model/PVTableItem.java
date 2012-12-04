@@ -28,6 +28,9 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
  */
 public class PVTableItem implements PVReaderListener<VType>
 {
+    /** Period for throttling updates from individual PV, i.e. PV attached to this item */
+    private static final double READ_PERIOD_SECS = 0.2;
+
     final public static double DEFAULT_TOLERANCE = 0.001;
 
     private String name;
@@ -71,7 +74,7 @@ public class PVTableItem implements PVReaderListener<VType>
         if (name.isEmpty())
             pv = null;
         else
-            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
+            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(READ_PERIOD_SECS));
     }
 
     /** @return <code>true</code> if item is selected to be restored */

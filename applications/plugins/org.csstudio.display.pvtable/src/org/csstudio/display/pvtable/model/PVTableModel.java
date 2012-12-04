@@ -8,8 +8,13 @@
 package org.csstudio.display.pvtable.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import org.csstudio.display.pvtable.Preferences;
 import org.epics.pvmanager.data.VType;
 
 /** A PV table model, i.e. list of {@link PVTableItem}s
@@ -18,11 +23,36 @@ import org.epics.pvmanager.data.VType;
  */
 public class PVTableModel implements PVTableItemListener
 {
+    /** Period for update checks
+     *  @see #performUpdates()
+     */
+    private static final long UPDATE_PERIOD_MS = 200;
+
+    final private int updateItemThreshold = Preferences.getUpdateItemThreshold();
+    
     /** The list of items in this table. */
     private List<PVTableItem> items = new ArrayList<PVTableItem>();
     
     final private List<PVTableModelListener> listeners = new ArrayList<PVTableModelListener>();
 
+    final private Timer update_timer = new Timer("PVTableUpdate", true);
+    
+    /** @see #performUpdates() */
+    private Set<PVTableItem> changed_items = new HashSet<PVTableItem>();
+    
+    /** Initialize */
+    public PVTableModel()
+    {
+        update_timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                performUpdates();
+            }
+        }, UPDATE_PERIOD_MS, UPDATE_PERIOD_MS);
+    }
+    
     /** @param listener Listener to add */
     public void addListener(final PVTableModelListener listener)
     {
@@ -90,15 +120,38 @@ public class PVTableModel implements PVTableItemListener
 	    items.remove(item);
 	}
 
+	/** Invoked by timer to perform accumulated updates.
+	 * 
+	 *  <p>If only one item changed, update that item.
+	 *  If multiple items changed, refresh the whole table.
+	 */
+    private void performUpdates()
+    {
+        synchronized (changed_items)
+        {
+            if (changed_items.size() < updateItemThreshold)
+            {   // Update exactly the changed items
+                for (PVTableItem item : changed_items)
+                    for (PVTableModelListener listener : listeners)
+                        listener.tableItemChanged(item);
+                changed_items.clear();
+                return;
+            }
+            changed_items.clear();
+        }
+        // Too many items changed, update the whole table
+        for (PVTableModelListener listener : listeners)
+            listener.tableItemsChanged();
+    }
+	
 	/** {@inheritDoc} */
 	@Override
 	public void tableItemChanged(final PVTableItem item)
 	{
-		// TODO Pass 1st update on
-		// Then turn following updates into overall model refresh:
-		// Start timer, if more updates arrive signal overall model refresh in timer
-		for (PVTableModelListener listener : listeners)
-			listener.tableItemChanged(item);
+	    synchronized (changed_items)
+	    {
+	        changed_items.add(item);
+	    }
 	}
 	
 	/** Save snapshot value of each item */
