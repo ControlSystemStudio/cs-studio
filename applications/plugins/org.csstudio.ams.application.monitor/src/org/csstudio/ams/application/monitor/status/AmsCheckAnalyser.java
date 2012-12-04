@@ -100,12 +100,19 @@ public class AmsCheckAnalyser implements ICheckAnalyser {
                 checkProcessor.getCurrentCheckStatusInfo().setErrorReason(ErrorReason.AMS);
             } else {
                 logger.error("AMS could NOT be restarted.");
+                checkProcessor.getCurrentCheckStatusInfo().setCheckStatus(CheckStatus.RESTART_FAILD);
+                checkProcessor.getCurrentCheckStatusInfo().setErrorReason(ErrorReason.AMS);
             }
             
             if (!checkProcessor.wasErrorSent()) {
                 if (!checkProcessor.currentCheckIsRestarted()) {
                     CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
-                    MonitorMessageSender.sendErrorSms(csi.getErrorReason().getAlarmMessage());
+                    String message = csi.getErrorReason().getAlarmMessage();
+                    if (checkProcessor.getCurrentCheckStatusInfo().getCheckStatus()
+                            == CheckStatus.RESTART_FAILD) {
+                        message += " Restart FAILED. Re-start AMS manually!";
+                    }
+                    MonitorMessageSender.sendErrorSms(message);
                     checkProcessor.setErrorSent(true);
                 } else {
                     logger.info("SMS will not be sent yet.");
