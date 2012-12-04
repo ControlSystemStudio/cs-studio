@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -30,6 +33,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -38,6 +42,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VType;
 
 /** PV Table GUI
@@ -49,6 +54,7 @@ public class PVTable implements PVTableModelListener
     private PVTableModel model = null;
     private TableViewer viewer;
     private Color changed_background;
+    private Map<AlarmSeverity, Color> alarm_colors = new HashMap<AlarmSeverity, Color>();
 
     /** Initialize
      *  @param parent Parent widget
@@ -56,6 +62,13 @@ public class PVTable implements PVTableModelListener
      */
     public PVTable(final Composite parent, final IWorkbenchPartSite site)
     {
+        final Display display = parent.getDisplay();
+        changed_background = display.getSystemColor(SWT.COLOR_CYAN);
+        alarm_colors.put(AlarmSeverity.MINOR, display.getSystemColor(SWT.COLOR_DARK_YELLOW));
+        alarm_colors.put(AlarmSeverity.MAJOR, display.getSystemColor(SWT.COLOR_RED));
+        alarm_colors.put(AlarmSeverity.INVALID, display.getSystemColor(SWT.COLOR_MAGENTA));
+        alarm_colors.put(AlarmSeverity.UNDEFINED, display.getSystemColor(SWT.COLOR_DARK_RED));
+        
         createComponents(parent);
         createContextMenu(viewer, site);
         
@@ -115,8 +128,6 @@ public class PVTable implements PVTableModelListener
         final Table table = viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
-        changed_background = table.getDisplay().getSystemColor(SWT.COLOR_CYAN);
         
         final TableViewerColumn pv_column = createColumn(viewer, layout, "PV", 75, 100,
             new CellLabelProvider()
@@ -216,6 +227,7 @@ public class PVTable implements PVTableModelListener
                         cell.setText("");
                     else
                         cell.setText(VTypeHelper.formatAlarm(value));
+                    cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
                     updateCommonCellSettings(cell, item);
                 }
             });

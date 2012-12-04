@@ -18,7 +18,10 @@ import org.epics.pvmanager.PVReaderListener;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
+
+import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
 
 import static org.epics.util.time.TimeDuration.ofSeconds;
 
@@ -123,7 +126,7 @@ public class PVTableItem implements PVReaderListener<VType>
         if (error != null)
         {
             Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
-            updateValue(null);
+            updateValue(ValueFactory.newVString(error.getMessage(), ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "PV Error"), ValueFactory.timeNow()));
             return;
         }
         updateValue(pv.getValue());
