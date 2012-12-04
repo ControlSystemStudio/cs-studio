@@ -33,7 +33,7 @@ public class PVTableItem
 	
 	final private PVTableItemListener listener;
 	
-	// TODO boolean selected;
+	private boolean selected = true;
 	
 	private volatile VType value = null;
 
@@ -68,6 +68,16 @@ public class PVTableItem
 			}
 		};
 		pv = PVManager.read(latestValueOf(vType(name))).readListener(pv_listener).timeout(ofSeconds(30.0)).maxRate(ofSeconds(1.0));
+	}
+
+	public boolean isSelected()
+	{
+		return selected;
+	}
+	
+	public void setSelected(final boolean selected)
+	{
+		this.selected = selected;
 	}
 
 	/** @return Returns the name of the 'main' PV. */
@@ -118,7 +128,7 @@ public class PVTableItem
 	}
 
 	/** @return <code>true</code> if value has changed from saved value */
-    public boolean hasChanged()
+    public boolean isChanged()
     {
     	return has_changed;
     }

@@ -51,11 +51,11 @@ public class PVTableItemTest implements PVTableItemListener
 		assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(3.14));
 
 		// There is no saved value, so also no change
-		assertThat(item.hasChanged(), equalTo(false));
+		assertThat(item.isChanged(), equalTo(false));
 
 		// Current matches saved value
 		item.save();
-		assertThat(item.hasChanged(), equalTo(false));
+		assertThat(item.isChanged(), equalTo(false));
 		
 		// Receive update, but within tolerance
 		pv.write(3.15);
@@ -65,7 +65,7 @@ public class PVTableItemTest implements PVTableItemListener
 				item.wait(100);
 		}
 		assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(3.15));
-		assertThat(item.hasChanged(), equalTo(false));
+		assertThat(item.isChanged(), equalTo(false));
 		
 		// Receive update beyond tolerance
 		pv.write(6.28);
@@ -78,7 +78,7 @@ public class PVTableItemTest implements PVTableItemListener
 		
 		// Current no longer matches saved value
 		System.out.println("Saved: " + VTypeHelper.toString(item.getSavedValue()));
-		assertThat(item.hasChanged(), equalTo(true));
+		assertThat(item.isChanged(), equalTo(true));
 		
 		// Value changes back on its own
 		pv.write(3.14);
@@ -88,7 +88,7 @@ public class PVTableItemTest implements PVTableItemListener
 				item.wait(100);
 		}
 		assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(3.14));
-		assertThat(item.hasChanged(), equalTo(false));
+		assertThat(item.isChanged(), equalTo(false));
 
 		item.dispose();
 	}

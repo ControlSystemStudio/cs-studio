@@ -24,9 +24,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.epics.pvmanager.data.VType;
 
 /** PV Table GUI
@@ -35,12 +38,28 @@ import org.epics.pvmanager.data.VType;
 public class PVTable implements PVTableModelListener
 {
 	private TableViewer viewer;
-	private Color change_background;
+	private Color changed_background;
 
+	/** Initialize
+	 *  @param parent Parent widget
+	 */
 	public PVTable(final Composite parent)
 	{
 		createComponents(parent);
 		createContextMenu(viewer);
+		
+		viewer.getTable().addListener(SWT.Selection, new Listener()
+		{
+			@Override
+			public void handleEvent(final Event event)
+			{
+				if (event.detail != SWT.CHECK)
+					return;
+				final TableItem tab_item = (TableItem) event.item;
+				final PVTableItem item = (PVTableItem) tab_item.getData();
+				item.setSelected(tab_item.getChecked());
+			}
+		});
 	}
 
 	/** Create GUI components
@@ -54,13 +73,16 @@ public class PVTable implements PVTableModelListener
 		parent.setLayout(new FillLayout());
 		final TableColumnLayout layout = new TableColumnLayout();
 		table_box.setLayout(layout);
-		viewer = new TableViewer(table_box, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		
+		// Tried CheckboxTableViewer, but it lead to inconsistent refreshes:
+		// Rows would appear blank. Didn't investigate further, stuck with TableViewer.
+		viewer = new TableViewer(table_box, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		change_background = table.getDisplay().getSystemColor(SWT.COLOR_CYAN);
+		changed_background = table.getDisplay().getSystemColor(SWT.COLOR_CYAN);
 		
 		createColumn(viewer, layout, "PV", 75, 100,
 			new CellLabelProvider()
@@ -68,7 +90,9 @@ public class PVTable implements PVTableModelListener
 				@Override
 				public void update(final ViewerCell cell)
 				{
+					final TableItem tab_item = (TableItem) cell.getItem();
 					final PVTableItem item = (PVTableItem) cell.getElement();
+					tab_item.setChecked(item.isSelected());
 					cell.setText(item.getName());
 					updateCommonCellSettings(cell, item);
 				}
@@ -143,8 +167,8 @@ public class PVTable implements PVTableModelListener
 	 */
 	final protected void updateCommonCellSettings(final ViewerCell cell, final PVTableItem item)
 	{
-		if (item.hasChanged())
-			cell.setBackground(change_background);
+		if (item.isChanged())
+			cell.setBackground(changed_background);
 		else
 			cell.setBackground(null);
 	}

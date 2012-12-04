@@ -47,11 +47,19 @@ public class PVTableModel implements PVTableItemListener
         return null;
 	}
 
-	public void addItem(final String pv_name, final double tolerance)
+	/** Add table item
+	 *  @param pv_name PV Name
+	 *  @param tolerance Tolerance
+	 *  @return Added item
+	 */
+	public PVTableItem addItem(final String pv_name, final double tolerance)
 	{
-		items.add(new PVTableItem(pv_name, tolerance, this));
+		final PVTableItem item = new PVTableItem(pv_name, tolerance, this);
+		items.add(item);
+		return item;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void tableItemChanged(final PVTableItem item)
 	{

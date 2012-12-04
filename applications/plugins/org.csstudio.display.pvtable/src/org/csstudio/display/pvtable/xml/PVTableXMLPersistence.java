@@ -83,11 +83,12 @@ public class PVTableXMLPersistence
             while (pv != null)
             {
             	final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
-            	// TODO final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
+            	final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
                 final String pv_name = DOMHelper.getSubelementString(pv, NAME);
                 // TODO SavedValue saved = SavedValue.fromString(
                 //         DOMHelper.getSubelementString(pv, saved_value));
-                model.addItem(pv_name, tolerance);
+                final PVTableItem item = model.addItem(pv_name, tolerance);
+                item.setSelected(selected);
                 pv = DOMHelper.findNextElementNode(pv, PV);
             }
         }
