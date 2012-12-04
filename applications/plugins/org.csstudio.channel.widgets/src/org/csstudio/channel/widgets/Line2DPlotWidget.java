@@ -202,7 +202,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 		setLastError(result.exception);
 		this.result = result;
-		List<String> channelNames = null;
+		List<String> channelNames = Collections.emptyList();
 		Exception ex = result.exception;
 		if (ex == null) {
 			Collection<Channel> channels = result.channels;
