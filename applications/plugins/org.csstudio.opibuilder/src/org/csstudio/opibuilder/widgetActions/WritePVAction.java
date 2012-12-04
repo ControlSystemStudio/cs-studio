@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
@@ -64,7 +65,7 @@ public class WritePVAction extends AbstractWidgetAction {
 	@Override
 	public void run() {
 		
-		//If it has the same nave as widget PV name, use it.
+		//If it has the same name as widget PV name, use it.
 		if(getWidgetModel() instanceof IPVWidgetModel){
 			String mainPVName=((IPVWidgetModel)getWidgetModel()).getPVName();
 			if(getPVName().equals(mainPVName)){
@@ -83,7 +84,9 @@ public class WritePVAction extends AbstractWidgetAction {
 				String text = getValue().trim();
 				PV pv = null;	
 				try {
-					pv = BOYPVFactory.createPV(getPVName());
+					pv = BOYPVFactory.createPV(getPVName(), false,
+							getWidgetModel().getRootDisplayModel().getViewer()
+									.getControl().getDisplay());
 					pv.start();
 					long startTime = System.currentTimeMillis();
 					int timeout = getTimeout()*1000;
@@ -141,13 +144,16 @@ public class WritePVAction extends AbstractWidgetAction {
 	 * @param e
 	 */
 	private void popErrorDialog(final Exception e) {
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				String message = 
-					"Failed to write PV:" + getPVName() + "\n" + e.getMessage();
-				ConsoleService.getInstance().writeError(message);
-			}
-		});
+		UIBundlingThread.getInstance().addRunnable(
+				getWidgetModel().getRootDisplayModel().getViewer().getControl()
+						.getDisplay(), new Runnable() {
+					public void run() {
+						String message = "Failed to write PV:" + getPVName()
+								+ "\n" + e.getMessage();
+						ErrorHandlerUtil.handleError(message, e, true, true);
+//						ConsoleService.getInstance().writeError(message);
+					}
+				});
 	}
 
 	

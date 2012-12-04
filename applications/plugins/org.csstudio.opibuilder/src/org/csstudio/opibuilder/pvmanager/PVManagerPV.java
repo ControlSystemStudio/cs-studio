@@ -1,14 +1,15 @@
 package org.csstudio.opibuilder.pvmanager;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import org.csstudio.data.values.IValue;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.DisplayUtils;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.utility.pv.PV;
@@ -27,7 +28,9 @@ import org.epics.pvmanager.PVWriter;
  *
  */
 public class PVManagerPV implements PV {
-
+	
+	final private static String KEY_SWT_THREAD = "org.csstudio.opibuilder.swt_thread"; //$NON-NLS-1$
+	private static Executor SWT_THREAD;    
 	final private String name;
 	final private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener<Object>> listenerMap;
@@ -40,17 +43,21 @@ public class PVManagerPV implements PV {
 	private PVReader<?> pvReader;
 	private PVWriter<Object> pvWriter;
 	private int updateDuration;
-
+	private Display display;
 	/**Construct a PVManger PV.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
 	 * @param updateDuration the least update duration.
+	 * @param display display of the SWT thread. Can be null for non-rap application.
 	 */
-	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration) {
+	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration, Display display) {
 		this.name = name;
 		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
+		this.display = display;
+		if(display ==null)
+			this.display = DisplayUtils.getDisplay();
 	}
 
 	@Override
@@ -114,19 +121,25 @@ public class PVManagerPV implements PV {
 
 	@Override
 	public synchronized void start() throws Exception {		
-		if(pvReader == null){
-			if(Display.getCurrent() == null)
-				DisplayUtils.getDisplay().asyncExec(new Runnable() {
-					
-					@Override
-					public void run() {
-						internalStart();
-					}
-				});
-			else
+		if (pvReader == null) {
+			if (Display.getCurrent() != null)
 				internalStart();
-		}else		
-			pvReader.setPaused(false);
+			else {
+				if (display != null)
+					display.asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							internalStart();
+						}
+					});
+				else
+					throw new RuntimeException("display is null. The PV must be " +
+							"started in SWT thread. Please specify the display when create the PV.");
+
+			}
+
+		} else
+	pvReader.setPaused(false);
 	}
 
 	/**
@@ -135,13 +148,25 @@ public class PVManagerPV implements PV {
 	 * thread and must be in the same runnable to make sure no updates are missed. 
 	 */
 	private void internalStart() {
+		Executor swtThread = null;
+		if(OPIBuilderPlugin.isRAP()){
+			swtThread = (Executor) display.getData(KEY_SWT_THREAD);
+			if(swtThread == null){
+				swtThread = createSWTThread(display);
+				display.setData(KEY_SWT_THREAD, swtThread);
+			}
+		}else {
+			if(SWT_THREAD == null)
+				SWT_THREAD = createSWTThread(DisplayUtils.getDisplay());
+			swtThread = SWT_THREAD;
+		}
 		if (valueBuffered) {
 			pvReader = PVManager.read(newValuesOf(channel(name)))
-					.notifyOn(swtThread())
+					.notifyOn(swtThread)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		} else {
-			pvReader = PVManager.read(channel(name)).notifyOn(swtThread())
+			pvReader = PVManager.read(channel(name)).notifyOn(swtThread)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		}
@@ -227,6 +252,23 @@ public class PVManagerPV implements PV {
 	private void checkIfPVStarted(){
 		if(pvReader == null || pvWriter == null)
 			throw new IllegalStateException("PVManagerPV is not started yet.");
+	}
+	
+
+	private static Executor createSWTThread(final org.eclipse.swt.widgets.Display display) {
+		return new Executor() {
+
+	        @Override
+	        public void execute(Runnable task) {
+	            try {
+	            	if (!display.isDisposed()) {
+	            	    display.asyncExec(task);
+	            	}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        }
+	    };
 	}
 
 }
