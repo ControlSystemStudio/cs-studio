@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,7 +35,7 @@ import org.epics.pvmanager.data.VType;
 public class PVTable implements PVTableModelListener
 {
 	private TableViewer viewer;
-
+	private Color change_background;
 
 	public PVTable(final Composite parent)
 	{
@@ -42,7 +43,9 @@ public class PVTable implements PVTableModelListener
 		createContextMenu(viewer);
 	}
 
-
+	/** Create GUI components
+	 *  @param parent
+	 */
 	private void createComponents(final Composite parent)
 	{
 		// TableColumnLayout requires table to be only child of parent. 
@@ -57,6 +60,8 @@ public class PVTable implements PVTableModelListener
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
+		change_background = table.getDisplay().getSystemColor(SWT.COLOR_CYAN);
+		
 		createColumn(viewer, layout, "PV", 75, 100,
 			new CellLabelProvider()
 			{
@@ -65,6 +70,7 @@ public class PVTable implements PVTableModelListener
 				{
 					final PVTableItem item = (PVTableItem) cell.getElement();
 					cell.setText(item.getName());
+					updateCommonCellSettings(cell, item);
 				}
 			});
 		createColumn(viewer, layout, "Timestamp", 50, 100,
@@ -79,6 +85,7 @@ public class PVTable implements PVTableModelListener
 						cell.setText("");
 					else
 						cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
+					updateCommonCellSettings(cell, item);
 				}
 			});
 		createColumn(viewer, layout, "Value", 100, 50,
@@ -93,6 +100,7 @@ public class PVTable implements PVTableModelListener
 						cell.setText("");
 					else
 						cell.setText(VTypeHelper.toString(value));
+					updateCommonCellSettings(cell, item);
 				}
 			});
 		createColumn(viewer, layout, "Alarm", 100, 50,
@@ -107,6 +115,7 @@ public class PVTable implements PVTableModelListener
 						cell.setText("");
 					else
 						cell.setText(VTypeHelper.formatAlarm(value));
+					updateCommonCellSettings(cell, item);
 				}
 			});
 		createColumn(viewer, layout, "Saved Value", 100, 50,
@@ -121,13 +130,33 @@ public class PVTable implements PVTableModelListener
 						cell.setText("");
 					else
 						cell.setText(VTypeHelper.toString(value));
+					updateCommonCellSettings(cell, item);
 				}
 			});
 
 		viewer.setContentProvider(new PVTableModelContentProvider());
 	}
 	
+	/** Update common cell features (background, ...)
+	 *  @param cell Cell to update
+	 *  @param item Item to display in cell
+	 */
+	final protected void updateCommonCellSettings(final ViewerCell cell, final PVTableItem item)
+	{
+		if (item.hasChanged())
+			cell.setBackground(change_background);
+		else
+			cell.setBackground(null);
+	}
 
+	/** Helper for creating table column
+	 *  @param viewer
+	 *  @param layout
+	 *  @param header
+	 *  @param weight
+	 *  @param min_width
+	 *  @param label_provider
+	 */
 	private void createColumn(final TableViewer viewer,
 			final TableColumnLayout layout,
 			final String header,
@@ -142,8 +171,10 @@ public class PVTable implements PVTableModelListener
 		layout.setColumnData(col, new ColumnWeightData(weight, min_width));
 		view_col.setLabelProvider(label_provider);		
 	}
-
 	
+	/** Helper for creating context menu
+	 *  @param viewer
+	 */
 	private void createContextMenu(final TableViewer viewer)
 	{
 		final MenuManager manager = new MenuManager();
@@ -153,15 +184,18 @@ public class PVTable implements PVTableModelListener
 		control.setMenu(menu);
 	}
 	
-	
+	/** @param model Model to display in table */
 	public void setModel(final PVTableModel model)
 	{
-		// TODO remove this as listener from previous model?!
+		// Remove this as listener from previous model
+		final PVTableModel previous = (PVTableModel) viewer.getInput();
+		if (previous != null)
+			previous.removeListener(this);
 		viewer.setInput(model);
 		model.addListener(this);
 	}
 
-
+	/** {@inheritDoc} */
 	@Override
 	public void tableItemChanged(final PVTableItem item)
 	{
@@ -178,7 +212,7 @@ public class PVTable implements PVTableModelListener
 		});
 	}
 
-
+	/** {@inheritDoc} */
 	@Override
 	public void tableItemsChanged()
 	{

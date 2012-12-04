@@ -21,9 +21,16 @@ public class PVTableModel implements PVTableItemListener
     
     final private List<PVTableModelListener> listeners = new ArrayList<PVTableModelListener>();
 
+    /** @param listener Listener to add */
     public void addListener(final PVTableModelListener listener)
     {
     	listeners.add(listener);
+    }
+
+    /** @param listener Listener to remove */
+    public void removeListener(final PVTableModelListener listener)
+    {
+    	listeners.remove(listener);
     }
     
     /** @return Returns number of items (rows) in model. */

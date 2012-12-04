@@ -39,6 +39,8 @@ public class PVTableItem
 
 	private volatile VType saved = null;
 	
+	private volatile boolean has_changed = false;
+	
 	private double tolerance;
 	
 	final private PVReader<VType> pv;
@@ -78,6 +80,7 @@ public class PVTableItem
     protected void updateValue(final VType new_value)
     {
     	value = new_value;
+		determineIfChanged();
     	listener.tableItemChanged(this);
     }
     
@@ -91,6 +94,7 @@ public class PVTableItem
     public void save()
     {
     	saved = value;
+		determineIfChanged();
     }
 
     /** @return Returns the saved_value. */
@@ -109,16 +113,26 @@ public class PVTableItem
 	public void setTolerance(final double tolerance)
 	{
 		this.tolerance = tolerance;
+		determineIfChanged();
 		listener.tableItemChanged(this);
 	}
 
 	/** @return <code>true</code> if value has changed from saved value */
     public boolean hasChanged()
     {
+    	return has_changed;
+    }
+    
+    /** Update <code>has_changed</code> based on current and saved value */
+    private void determineIfChanged()
+    {
     	final VType saved_value = saved;
     	if (saved_value == null)
-    		return false;
-    	return ! VTypeHelper.equalValue(value, saved_value, tolerance);
+    	{
+    		has_changed = false;
+    		return;
+    	}
+    	has_changed = ! VTypeHelper.equalValue(value, saved_value, tolerance);
     }
     
     /** Must be called to release resources when item no longer in use */
@@ -134,7 +148,7 @@ public class PVTableItem
     	buf.append(name).append(" = ").append(VTypeHelper.toString(value));
     	if (saved != null)
     	{
-    		if (hasChanged())
+    		if (has_changed)
     			buf.append(" ( != ");
     		else
     			buf.append(" ( == ");
