@@ -92,6 +92,13 @@ public class PVTableModel implements PVTableItemListener
 			listener.tableItemsChanged();
 	}
 
+	/** Restore saved values */
+	public void restore()
+	{
+		for (PVTableItem item : items)
+			item.restore();
+	}
+	
 	/** Must be invoked when 'done' by the creator of the model. */
 	public void dispose()
 	{

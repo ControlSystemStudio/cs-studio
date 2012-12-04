@@ -126,4 +126,19 @@ public class VTypeHelper
 		final double v2 = toDouble(other);
 		return Math.abs(v2 - v1) <= tolerance;
 	}
+
+	/** Extract basic value
+	 *  @param value {@link VType}
+	 *  @return {@link Number} or {@link String} of the {@link VType}'s value
+	 */
+	public static Object getValue(final VType value)
+	{
+		if (value instanceof VNumber)
+			return ((VNumber)value).getValue();
+		if (value instanceof VEnum)
+			return ((VEnum)value).getIndex();
+		if (value instanceof VString)
+			return ((VString)value).getValue();
+		return null;
+	}
 }

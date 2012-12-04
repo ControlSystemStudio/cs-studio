@@ -203,6 +203,7 @@ public class PVTable implements PVTableModelListener
 	{
 		final MenuManager manager = new MenuManager();
 		manager.add(new SnapshotAction(viewer));
+		manager.add(new RestoreAction(viewer));
 		final Control control = viewer.getControl();
 		final Menu menu = manager.createContextMenu(control);
 		control.setMenu(menu);

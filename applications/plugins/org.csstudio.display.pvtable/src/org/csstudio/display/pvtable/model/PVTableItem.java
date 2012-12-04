@@ -10,6 +10,7 @@ package org.csstudio.display.pvtable.model;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -43,7 +44,7 @@ public class PVTableItem
 	
 	private double tolerance;
 	
-	final private PVReader<VType> pv;
+	final private PV<VType, Object> pv;
 
 	public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
 	{
@@ -69,7 +70,7 @@ public class PVTableItem
 				updateValue(pv.getValue());
 			}
 		};
-		pv = PVManager.read(latestValueOf(vType(name))).readListener(pv_listener).timeout(ofSeconds(30.0)).maxRate(ofSeconds(1.0));
+		pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(pv_listener).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
 	}
 
 	public boolean isSelected()
@@ -109,7 +110,18 @@ public class PVTableItem
 		determineIfChanged();
     }
 
-    /** @return Returns the saved_value. */
+    /** Write saved value back to PV (if item is selected) */
+    public void restore()
+    {
+    	if (! isSelected())
+    		return;
+		final Object basic_value = VTypeHelper.getValue(saved);
+		if (basic_value == null)
+			return;
+		pv.write(basic_value);
+	}
+
+	/** @return Returns the saved_value. */
     public VType getSavedValue()
     {
     	return saved;

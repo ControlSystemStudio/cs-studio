@@ -90,6 +90,29 @@ public class PVTableItemTest implements PVTableItemListener
 		assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(3.14));
 		assertThat(item.isChanged(), equalTo(false));
 
+		// PV changes to a new value
+		pv.write(42.0);
+		synchronized (item)
+		{
+			while (VTypeHelper.toDouble(item.getValue()) != 42.0)
+				item.wait(100);
+		}
+		assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(42.0));		
+		assertThat(item.isChanged(), equalTo(true));
+
+		// Restore the saved value
+		assertThat(VTypeHelper.toDouble(item.getSavedValue()), equalTo(3.14));		
+		item.restore();
+System.out.println("Waiting for restore...");
+		synchronized (item)
+		{
+			while (VTypeHelper.toDouble(item.getValue()) != 3.14)
+				item.wait(100);
+		}
+		
+		assertThat(item.isChanged(), equalTo(false));
+		
+		
 		item.dispose();
 	}
 }
