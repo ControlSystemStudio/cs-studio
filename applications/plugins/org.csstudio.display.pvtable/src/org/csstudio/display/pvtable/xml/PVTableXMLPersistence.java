@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
@@ -66,14 +67,14 @@ public class PVTableXMLPersistence
             throw new Exception("Expected <" + ROOT + ">, found <" + root_name
                     + ">");
         // Get the default <tolerance> entry
-        double default_tolerance = PVTableItem.DEFAULT_TOLERANCE;
+        double default_tolerance = Preferences.getTolerance();
         try
         {
         	default_tolerance = DOMHelper.getSubelementDouble(root_node, TOLERANCE);
         }
         catch (Exception ex)
         {
-        	default_tolerance = PVTableItem.DEFAULT_TOLERANCE;
+        	default_tolerance = Preferences.getTolerance();
         }
 
         // Get the <pvlist> entry

@@ -7,21 +7,23 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.logging.Level;
 
-import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
-import org.csstudio.display.pvtable.model.AbstractPVListModelListener;
-import org.csstudio.display.pvtable.model.PVListEntry;
-import org.csstudio.display.pvtable.model.PVListModel;
-import org.csstudio.display.pvtable.model.PVListModelListener;
-import org.csstudio.display.pvtable.ui.PVTableViewerHelper;
-import org.csstudio.util.editor.EmptyEditorInput;
-import org.csstudio.util.editor.PromptForNewXMLFileDialog;
+import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.ui.PVTable;
+import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -31,6 +33,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -41,10 +44,10 @@ public class PVTableEditor extends EditorPart
 {
     public static final String ID = PVTableEditor.class.getName();
 
-    // The model, data, PV list.
-    private PVListModel model;
-    private PVListModelListener listener;
-    private PVTableViewerHelper helper;
+    private static final String FILE_EXTENSION = "pvs";
+
+    private PVTableModel model;
+    private PVTable gui;
     private boolean is_dirty;
 
     /** Create a new, empty editor, not attached to a file.
@@ -52,18 +55,17 @@ public class PVTableEditor extends EditorPart
      */
     public static PVTableEditor createPVTableEditor()
     {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
 	    try
 	    {
-	        IWorkbench workbench = PlatformUI.getWorkbench();
-	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage page = window.getActivePage();
-
-	        EmptyEditorInput input = new EmptyEditorInput();
+	        final EmptyEditorInput input = new EmptyEditorInput();
 	        return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
 	    }
-	    catch (Exception e)
+	    catch (Exception ex)
 	    {
-	        e.printStackTrace();
+	        ExceptionDetailsErrorDialog.openError(page.getActivePart().getSite().getShell(), "Cannot create PV Table", ex);
 	    }
 	    return null;
     }
@@ -74,58 +76,78 @@ public class PVTableEditor extends EditorPart
         is_dirty = false;
     }
 
-    /** @return Returns the model edited by this editor. */
-    public PVListModel getModel()
-    {
-        return model;
-    }
-
     @Override
-    public void init(IEditorSite site, IEditorInput input)
+    public void init(final IEditorSite site, final IEditorInput input)
             throws PartInitException
     {
         // "Site is incorrect" error results if the site is not set:
         setSite(site);
         setInput(input);
-        model = new PVListModel();
-        IFile file = getEditorInputFile();
+        final IFile file = getEditorInputFile();
         if (file != null)
         {
             try
             {
-                InputStream stream = file.getContents();
-                model.load(stream);
-                stream.close();
+                final InputStream stream = file.getContents();
+                model = PVTableXMLPersistence.read(stream);
             }
             catch (Exception e)
             {
                 throw new PartInitException("Load error", e); //$NON-NLS-1$
             }
         }
+        else // Empty model
+            model = new PVTableModel();
 
-        // React to model changes via 'dirty' flag
-        listener = new AbstractPVListModelListener()
-        {
-            @Override
-            public void entriesChanged()
-            {
-                if (!is_dirty)
-                {
-                    is_dirty = true;
-                    firePropertyChange(IEditorPart.PROP_DIRTY);
-                }
-                updateTitle();
-            }
+        // TODO React to model changes via 'dirty' flag
+//        listener = new AbstractPVListModelListener()
+//        {
+//            @Override
+//            public void entriesChanged()
+//            {
+//                if (!is_dirty)
+//                {
+//                    is_dirty = true;
+//                    firePropertyChange(IEditorPart.PROP_DIRTY);
+//                }
+//                updateTitle();
+//            }
+//
+//            @Override
+//            public void entryAdded(PVListEntry entry)
+//            {   entriesChanged(); }
+//
+//            @Override
+//            public void entryRemoved(PVListEntry entry)
+//            {   entriesChanged(); }
+//        };
+//        model.addModelListener(listener);
+    }
 
-            @Override
-            public void entryAdded(PVListEntry entry)
-            {   entriesChanged(); }
+    @Override
+    public void createPartControl(final Composite parent)
+    {
+        gui = new PVTable(parent, getSite());
+        gui.setModel(model);
+        updateTitle();
+    }
 
-            @Override
-            public void entryRemoved(PVListEntry entry)
-            {   entriesChanged(); }
-        };
-        model.addModelListener(listener);
+    @Override
+    public void setFocus()
+    {
+        gui.getTableViewer().getTable().setFocus();
+    }
+
+    /** @return Table model */
+    public PVTableModel getModel()
+    {
+        return model;
+    }
+    
+    /** @return Table viewer */
+    public TableViewer getTableViewer()
+    {
+        return gui.getTableViewer();
     }
 
     /** @return Returns the <code>IFile</code> for the current editor input.
@@ -145,12 +167,7 @@ public class PVTableEditor extends EditorPart
         // resource API, since otherwise one keeps converting between those
         // two APIs anyway, plus runs into errors with 'resources' being
         // out of sync....
-        IFile file = (IFile) input.getAdapter(IFile.class);
-        if (file != null)
-            return file;
-        Plugin.getLogger().log(Level.SEVERE, "getEditorInputFile got {0}",  //$NON-NLS-1$
-                        input.getClass().getName());
-        return null;
+        return (IFile) input.getAdapter(IFile.class);
     }
 
     @Override
@@ -173,15 +190,25 @@ public class PVTableEditor extends EditorPart
     {
         boolean ok = true;
         if (monitor != null)
-            monitor.beginTask(Messages.Editor_SaveTask, IProgressMonitor.UNKNOWN);
-        InputStream stream =
-            new ByteArrayInputStream(model.getXMLContent().getBytes());
+            monitor.beginTask("Save", IProgressMonitor.UNKNOWN);
+        
+        // Write model to pipe, then create file from that pipe
+        final PVTableModel model = gui.getModel();
         try
         {
+            final PipedOutputStream out = new PipedOutputStream();
+            final PipedInputStream in = new PipedInputStream(out);
+            new Thread()
+            {
+                public void run()
+                {
+                    PVTableXMLPersistence.write(model, out);
+                }
+            }.start();
             if (file.exists())
-                file.setContents(stream, true, false, monitor);
+                file.setContents(in, true, false, monitor);
             else
-                file.create(stream, true, monitor);
+                file.create(in, true, monitor);
             if (monitor != null)
                 monitor.done();
             // Mark as clean
@@ -195,22 +222,31 @@ public class PVTableEditor extends EditorPart
                 monitor.setCanceled(true);
             Plugin.getLogger().log(Level.SEVERE, "Save error", e); //$NON-NLS-1$
         }
-        finally
-        {
-            try
-            {   stream.close(); }
-            catch (Exception e)
-            { /* NOP */ }
-        }
         return ok;
     }
 
     @Override
     public void doSaveAs()
     {
-        IFile file = PromptForNewXMLFileDialog.run(
-                getSite().getShell(), getEditorInputFile());
-        if (file == null  ||  !saveToFile(null, file))
+        // Prompt for file name
+        final SaveAsDialog dlg = new SaveAsDialog(getEditorSite().getShell());
+        dlg.setBlockOnOpen(true);
+        dlg.setOriginalFile(getEditorInputFile());
+        if (dlg.open() != Window.OK)
+            return;
+        IPath path = dlg.getResult();
+        if (path == null)
+            return;
+        
+        // Assert file extension
+        if (! FILE_EXTENSION.equals(path.getFileExtension()))
+            path = path.removeFileExtension().addFileExtension(FILE_EXTENSION);
+        
+        // Get file for the new resource's path.
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IFile file = root.getFile(path);
+
+        if (!saveToFile(null, file))
             return;
         // Update input and title
         setInput(new FileEditorInput(file));
@@ -219,43 +255,22 @@ public class PVTableEditor extends EditorPart
 
     @Override
     public boolean isDirty()
-    {   return is_dirty;  }
+    {   
+        return is_dirty;  
+    }
 
     @Override
     public boolean isSaveAsAllowed()
-    {   return true;  }
-
-    @Override
-    public void createPartControl(Composite parent)
-    {
-        helper = new PVTableViewerHelper(getSite(),parent, model);
-        updateTitle();
+    {  
+        return true; 
     }
 
-    /** @see org.eclipse.ui.part.WorkbenchPart#dispose() */
-    @Override
-    public void dispose()
-    {
-        helper.dispose();
-        model.removeModelListener(listener);
-        model.dispose();
-        super.dispose();
-    }
 
     /** Set the editor part's title and tool-tip. */
     private void updateTitle()
-    {   // See plugin book p.332.
-        IEditorInput input = getEditorInput();
-        String title = getEditorInput().getName();
-        if (model.getDescription().length() > 0)
-            title = title + " - " + model.getDescription(); //$NON-NLS-1$
-        setPartName(title);
-        setTitleToolTip(input.getToolTipText());
-    }
-
-    @Override
-    public void setFocus()
     {
-        helper.getTableViewer().getTable().setFocus();
+        final IEditorInput input = getEditorInput();
+        setPartName(input.getName());
+        setTitleToolTip(input.getToolTipText());
     }
 }

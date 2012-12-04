@@ -3,32 +3,15 @@
 <plugin>
 
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            file-extensions="css-pvtable,xml"
-            id="PVTable"
-            name="%PVTable"
-            priority="normal">
-         <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-            <parameter
-                  name="element"
-                  value="pvtable"/>
-         </describer>
-      </content-type>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             contributorClass="org.csstudio.display.pvtable.ui.editor.PVTableEditorActionBarContributor"
             default="false"
-            extensions="css-pvtable"
-            filenames="css-pvtable"
-            icon="icons/table.gif"
+            extensions="pvs,css-pvtable"
+            icon="icons/pvtable.png"
             id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             name="%PVTable">
-         <contentTypeBinding contentTypeId="org.csstudio.display.pvtable.PVTable"/>
       </editor>
    </extension>
    <extension
@@ -76,7 +59,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.display.pvtable.PVpopup"
-               icon="icons/table.gif"
+               icon="icons/pvtable.png"
                label="%PVTable"
                style="push"
                tooltip="%PVTableObject_TT">
@@ -87,7 +70,7 @@
             locationURI="menu:display">
          <command
                commandId="org.csstudio.display.pvtable.new_pv_table"
-               icon="icons/table.gif"
+               icon="icons/pvtable.png"
                label="%PVTable"
                style="push"
                tooltip="%PVTableMenu_TT">
@@ -110,7 +93,7 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.csstudio.display.pvtable.model.PVListEntry"
+            adaptableType="org.csstudio.display.pvtable.model.PVTableItem"
             class="org.csstudio.display.pvtable.AdapterFactory">
          <adapter
                type="org.csstudio.csdata.ProcessVariable">

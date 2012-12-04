@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import static org.csstudio.display.pvtable.StringMatcher.contains;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
-import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
@@ -48,7 +47,7 @@ public class PVTableXMLPersistenceTest
 	public void testWriteXML() throws Exception
 	{
 		final PVTableModel model = new PVTableModel();
-		model.addItem(TestSettings.NAME, PVTableItem.DEFAULT_TOLERANCE);
+		model.addItem(TestSettings.NAME);
 		
 		final ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		PVTableXMLPersistence.write(model, buf);

@@ -38,7 +38,7 @@ public class GUIDemo
 		shell.setLayout(new GridLayout(1, false));
 
 		final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
-		final PVTable table = new PVTable(shell);
+		final PVTable table = new PVTable(shell, null);
 		table.setModel(model);
 
 		shell.setSize(800, 600);

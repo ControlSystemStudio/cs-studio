@@ -7,27 +7,26 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
-import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to save value snapshots
+/** Base for {@link Action} on PVTableModel
  *  @author Kay Kasemir
  */
-public class SnapshotAction extends PVTableAction
+public class PVTableAction extends Action
 {
-	public SnapshotAction(final TableViewer viewer)
+	protected TableViewer viewer;
+	
+	public PVTableAction(final String title, final String icon_path, final TableViewer viewer)
 	{
-	    super("Snapshot", "icons/snapshot.png", viewer);
-	    setToolTipText("Take snapshot of current values");
+		super(title, Plugin.getImageDescriptor(icon_path));
+		setViewer(viewer);
 	}
 	
-	public void run()
+	public void setViewer(final TableViewer viewer)
 	{
-		final PVTableModel model = (PVTableModel) viewer.getInput();
-		if (model == null)
-			return;
-		model.save();
-		viewer.setSelection(null);
+	    this.viewer = viewer;
+	    setEnabled(viewer != null);
 	}
 }

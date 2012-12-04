@@ -5,8 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.util.editor;
+package org.csstudio.display.pvtable.ui.editor;
 
+import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -48,7 +50,7 @@ public class EmptyEditorInput implements IEditorInput
     @Override
     public ImageDescriptor getImageDescriptor()
     {
-        return null;
+        return Plugin.getImageDescriptor("icons/pvtable.png");
     }
 
     /** Can't persist. */

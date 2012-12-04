@@ -85,7 +85,7 @@ public class PVTableModel implements PVTableItemListener
 	 */
 	public PVTableItem addItem(final String pv_name)
 	{
-		return addItem(pv_name, PVTableItem.DEFAULT_TOLERANCE, null);
+		return addItem(pv_name, Preferences.getTolerance(), null);
 	}
 
 	/** Add table item

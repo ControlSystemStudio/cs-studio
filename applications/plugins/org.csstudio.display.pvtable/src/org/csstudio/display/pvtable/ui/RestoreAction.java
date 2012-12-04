@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
-import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
@@ -15,14 +14,12 @@ import org.eclipse.jface.viewers.TableViewer;
 /** {@link Action} to save value snapshots
  *  @author Kay Kasemir
  */
-public class RestoreAction extends Action
+public class RestoreAction extends PVTableAction
 {
-	final private TableViewer viewer;
-	
 	public RestoreAction(final TableViewer viewer)
 	{
-		super("Restore", Plugin.getImageDescriptor("icons/restore.png"));
-		this.viewer = viewer;
+		super("Restore", "icons/restore.png", viewer);
+		setToolTipText("Write snapshot values back to PVs");
 	}
 	
 	public void run()

@@ -24,6 +24,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +36,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.epics.pvmanager.data.VType;
 
 /** PV Table GUI
@@ -48,11 +52,12 @@ public class PVTable implements PVTableModelListener
 
     /** Initialize
      *  @param parent Parent widget
+     *  @param site Workbench site or <code>null</code>
      */
-    public PVTable(final Composite parent)
+    public PVTable(final Composite parent, final IWorkbenchPartSite site)
     {
         createComponents(parent);
-        createContextMenu(viewer);
+        createContextMenu(viewer, site);
         
         viewer.getTable().addListener(SWT.Selection, new Listener()
         {
@@ -74,6 +79,19 @@ public class PVTable implements PVTableModelListener
                 else
                     item.setSelected(! item.isSelected());
                 tab_item.setChecked(item.isSelected());
+            }
+        });
+        
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                if (model != null)
+                {
+                    model.removeListener(PVTable.this);
+                    model.dispose();
+                }
             }
         });
     }
@@ -258,18 +276,35 @@ public class PVTable implements PVTableModelListener
     
     /** Helper for creating context menu
      *  @param viewer
+     *  @param site
      */
-    private void createContextMenu(final TableViewer viewer)
+    private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
         manager.add(new SnapshotAction(viewer));
         manager.add(new RestoreAction(viewer));
         manager.add(new Separator());
         manager.add(new DeleteAction(viewer));
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         
         final Control control = viewer.getControl();
         final Menu menu = manager.createContextMenu(control);
         control.setMenu(menu);
+        
+        if (site != null)
+            site.registerContextMenu(manager, viewer);
+    }
+    
+    /** @return Table viewer */
+    public TableViewer getTableViewer()
+    {
+        return viewer;
+    }
+
+    /** @return PV table model */
+    public PVTableModel getModel()
+    {
+        return  model;
     }
     
     /** @param model Model to display in table */

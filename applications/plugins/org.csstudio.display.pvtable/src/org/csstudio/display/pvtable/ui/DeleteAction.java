@@ -9,7 +9,6 @@ package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
 
-import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
@@ -19,14 +18,11 @@ import org.eclipse.jface.viewers.TableViewer;
 /** {@link Action} to save value snapshots
  *  @author Kay Kasemir
  */
-public class DeleteAction extends Action
+public class DeleteAction extends PVTableAction
 {
-	final private TableViewer viewer;
-	
 	public DeleteAction(final TableViewer viewer)
 	{
-		super("Delete", Plugin.getImageDescriptor("icons/delete.gif"));
-		this.viewer = viewer;
+		super("Delete", "icons/delete.gif", viewer);
 	}
 	
 	public void run()
