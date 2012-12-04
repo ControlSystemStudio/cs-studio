@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -128,6 +129,15 @@ public class DeliverySystemApplication implements IApplication,
                 } catch (InterruptedException ie) {
                     LOG.warn("Application was interrupted.");
                 }
+            }
+            
+            // Check XMPP connection
+            ID connectedId = xmppService.getConnectedID();
+            if (connectedId != null) {
+                LOG.debug("XMPP connection is working.");
+            } else {
+                LOG.warn("XMPP connection is broken! Try to re-connect.");
+                Activator.getPlugin().addSessionServiceListener(this);
             }
             
             boolean restartWorker = false;
