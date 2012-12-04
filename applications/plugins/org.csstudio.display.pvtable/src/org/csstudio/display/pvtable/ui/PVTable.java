@@ -153,14 +153,15 @@ public class PVTable implements PVTableModelListener
                 
                 if (item == PVTableModelContentProvider.NEW_ITEM)
                 {   // Set name of magic NEW_ITEM: Add new item
+                    if (new_name.isEmpty())
+                        return;
                     model.addItem(new_name);
-                    viewer.setItemCount(model.getItemCount() + 1);
+                    viewer.setInput(model);
                 }
                 else if (new_name.isEmpty())
                 {   // Setting name to nothing: Remove item
                     model.removeItem(item);
                     viewer.remove(item);
-//                    viewer.setItemCount(model.getItemCount() + 1);
                 }
                 else // Change name of existing item
                     item.updateName(new_name);
