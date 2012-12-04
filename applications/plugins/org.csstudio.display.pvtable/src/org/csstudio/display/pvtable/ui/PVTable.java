@@ -14,10 +14,13 @@ import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -34,6 +37,7 @@ import org.epics.pvmanager.data.VType;
 
 /** PV Table GUI
  *  @author Kay Kasemir
+ *  @author Kunal Shroff - Original PVManager version of PVTable that used similar editing behavior
  */
 public class PVTable implements PVTableModelListener
 {
@@ -55,9 +59,19 @@ public class PVTable implements PVTableModelListener
 			{
 				if (event.detail != SWT.CHECK)
 					return;
+				// Toggle selection of PVTableItem, then update
+				// the TableItem to reflect current state.
+				// When instead updating the PVTableItem from the
+				// TableItem's check mark, the result was inconsistent
+				// behavior for selected rows: Could not un-check the
+				// checkbox for a selected row...
 				final TableItem tab_item = (TableItem) event.item;
 				final PVTableItem item = (PVTableItem) tab_item.getData();
-				item.setSelected(tab_item.getChecked());
+				if (item == PVTableModelContentProvider.NEW_ITEM)
+					item.setSelected(false);
+				else
+					item.setSelected(! item.isSelected());
+				tab_item.setChecked(item.isSelected());
 			}
 		});
 	}
@@ -84,7 +98,7 @@ public class PVTable implements PVTableModelListener
 		
 		changed_background = table.getDisplay().getSystemColor(SWT.COLOR_CYAN);
 		
-		createColumn(viewer, layout, "PV", 75, 100,
+		final TableViewerColumn pv_column = createColumn(viewer, layout, "PV", 75, 100,
 			new CellLabelProvider()
 			{
 				@Override
@@ -97,6 +111,43 @@ public class PVTable implements PVTableModelListener
 					updateCommonCellSettings(cell, item);
 				}
 			});
+		pv_column.setEditingSupport(new EditingSupport(viewer)
+		{
+			@Override
+			protected boolean canEdit(final Object element)
+			{
+				return true;
+			}
+			
+			@Override
+			protected CellEditor getCellEditor(final Object element)
+			{
+				return new TextCellEditor(table);
+			}
+
+			@Override
+			protected void setValue(final Object element, final Object value)
+			{
+				final String new_name = (String) value;
+				final PVTableItem item = (PVTableItem) element;
+				
+				// TODO Auto-generated method stub
+				if (item == PVTableModelContentProvider.NEW_ITEM)
+				{
+					System.out.println("Add new  item for PV " + new_name);
+					
+				}
+				else
+					System.out.println("Set " + item + " to " + new_name);
+			}
+			
+			@Override
+			protected Object getValue(final Object element)
+			{
+				final PVTableItem item = (PVTableItem) element;
+				return item.getName();
+			}
+		});
 		createColumn(viewer, layout, "Timestamp", 50, 100,
 			new CellLabelProvider()
 			{
@@ -180,8 +231,9 @@ public class PVTable implements PVTableModelListener
 	 *  @param weight
 	 *  @param min_width
 	 *  @param label_provider
+	 *  @return Created viewer column
 	 */
-	private void createColumn(final TableViewer viewer,
+	private TableViewerColumn createColumn(final TableViewer viewer,
 			final TableColumnLayout layout,
 			final String header,
 			final int weight,
@@ -193,7 +245,8 @@ public class PVTable implements PVTableModelListener
 		col.setText(header);
 		col.setResizable(true);
 		layout.setColumnData(col, new ColumnWeightData(weight, min_width));
-		view_col.setLabelProvider(label_provider);		
+		view_col.setLabelProvider(label_provider);
+		return view_col;
 	}
 	
 	/** Helper for creating context menu
@@ -231,7 +284,7 @@ public class PVTable implements PVTableModelListener
 		{
 			public void run()
 			{
-				if (!table.isDisposed())
+				if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
 					viewer.refresh(item);
 			}
 		});
@@ -241,6 +294,16 @@ public class PVTable implements PVTableModelListener
 	@Override
 	public void tableItemsChanged()
 	{
-		viewer.refresh();
+		final Table table = viewer.getTable();
+		if (table.isDisposed())
+			return;
+		table.getDisplay().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+					viewer.refresh();
+			}
+		});
 	}
 }

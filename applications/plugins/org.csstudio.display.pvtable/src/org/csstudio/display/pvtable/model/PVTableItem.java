@@ -26,7 +26,7 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
  *
  *  @author Kay Kasemir
  */
-public class PVTableItem
+public class PVTableItem implements PVReaderListener<VType>
 {
 	final public static double DEFAULT_TOLERANCE = 0.001;
 
@@ -53,24 +53,11 @@ public class PVTableItem
 		this.tolerance = tolerance;
 		this.saved = saved;
 		determineIfChanged();
-		PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
-		{
-			@Override
-			public void pvChanged(final PVReaderEvent<VType> event)
-			{
-				final PVReader<VType> pv = event.getPvReader();
-				
-				final Exception error = pv.lastException();
-				if (error != null)
-				{
-					Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
-					updateValue(null);
-					return;
-				}
-				updateValue(pv.getValue());
-			}
-		};
-		pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(pv_listener).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
+		
+		if (name.isEmpty())
+			pv = null;
+		else
+			pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(1.0));
 	}
 
 	public boolean isSelected()
@@ -88,6 +75,24 @@ public class PVTableItem
     {
     	return name;
     }
+    
+    /** PVReaderListener
+     *  {@inheritDoc}
+     */
+	@Override
+	public void pvChanged(final PVReaderEvent<VType> event)
+	{
+		final PVReader<VType> pv = event.getPvReader();
+		
+		final Exception error = pv.lastException();
+		if (error != null)
+		{
+			Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
+			updateValue(null);
+			return;
+		}
+		updateValue(pv.getValue());
+	}
 
     /** @param new_value New value of item */
     protected void updateValue(final VType new_value)
@@ -162,7 +167,8 @@ public class PVTableItem
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
-    	pv.close();
+    	if (pv != null)
+    		pv.close();
     }
     
     @Override
