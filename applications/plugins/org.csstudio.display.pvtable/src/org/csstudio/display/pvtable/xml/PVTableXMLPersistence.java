@@ -39,6 +39,8 @@ public class PVTableXMLPersistence
 	final private static String SELECTED = "selected";
 	final private static String NAME = "name";
 	final private static String SAVED = "saved_value";
+    final private static String READBACK_NAME = "readback";
+    final private static String READBACK_SAVED = "readback_value";
 	
 	/** @param stream XML stream
 	 *  @return PV table model
@@ -86,12 +88,24 @@ public class PVTableXMLPersistence
                     PV);
             while (pv != null)
             {
-            	final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
-            	final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
-                final String pv_name = DOMHelper.getSubelementString(pv, NAME);
-                final VType saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
-                final PVTableItem item = model.addItem(pv_name, tolerance, saved);
-                item.setSelected(selected);
+                String pv_name = DOMHelper.getSubelementString(pv, NAME);
+                if (! pv_name.isEmpty())
+                {
+                	final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
+                	final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
+                    VType saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
+                    PVTableItem item = model.addItem(pv_name, tolerance, saved);
+                    item.setSelected(selected);
+                    
+                    // Legacy files may contain a separate readback PV and value for this entry
+                    pv_name = DOMHelper.getSubelementString(pv, READBACK_NAME);
+                    saved = createValue(DOMHelper.getSubelementString(pv, READBACK_SAVED));
+                    if (! pv_name.isEmpty())
+                    {   // If found, add as separate PV, not selected to be restored
+                        item = model.addItem(pv_name, tolerance, saved);
+                        item.setSelected(false);
+                    }
+                }
                 pv = DOMHelper.findNextElementNode(pv, PV);
             }
         }
