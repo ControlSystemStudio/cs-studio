@@ -75,7 +75,7 @@ public class PVTableItem implements PVReaderListener<VType>
         if (name.isEmpty())
             pv = null;
         else
-            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).asynchWriteAndMaxReadRate(ofSeconds(READ_PERIOD_SECS));
+            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).synchWriteAndMaxReadRate(ofSeconds(READ_PERIOD_SECS));
     }
 
     /** @return <code>true</code> if item is selected to be restored */

@@ -8,13 +8,17 @@
 package org.csstudio.display.pvtable.ui;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -22,6 +26,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -62,39 +67,14 @@ public class PVTable implements PVTableModelListener
      */
     public PVTable(final Composite parent, final IWorkbenchPartSite site)
     {
-        final Display display = parent.getDisplay();
-        changed_background = display.getSystemColor(SWT.COLOR_CYAN);
-        alarm_colors.put(AlarmSeverity.MINOR, display.getSystemColor(SWT.COLOR_DARK_YELLOW));
-        alarm_colors.put(AlarmSeverity.MAJOR, display.getSystemColor(SWT.COLOR_RED));
-        alarm_colors.put(AlarmSeverity.INVALID, display.getSystemColor(SWT.COLOR_MAGENTA));
-        alarm_colors.put(AlarmSeverity.UNDEFINED, display.getSystemColor(SWT.COLOR_DARK_RED));
-        
+        initColors(parent.getDisplay());
         createComponents(parent);
         createContextMenu(viewer, site);
         
-        viewer.getTable().addListener(SWT.Selection, new Listener()
-        {
-            @Override
-            public void handleEvent(final Event event)
-            {
-                if (event.detail != SWT.CHECK)
-                    return;
-                // Toggle selection of PVTableItem, then update
-                // the TableItem to reflect current state.
-                // When instead updating the PVTableItem from the
-                // TableItem's check mark, the result was inconsistent
-                // behavior for selected rows: Could not un-check the
-                // checkbox for a selected row...
-                final TableItem tab_item = (TableItem) event.item;
-                final PVTableItem item = (PVTableItem) tab_item.getData();
-                if (item == PVTableModelContentProvider.NEW_ITEM)
-                    item.setSelected(false);
-                else
-                    item.setSelected(! item.isSelected());
-                tab_item.setChecked(item.isSelected());
-            }
-        });
+        hookDragDrop();
+
         
+        // Disconnect from model when disposed
         parent.addDisposeListener(new DisposeListener()
         {
             @Override
@@ -107,6 +87,18 @@ public class PVTable implements PVTableModelListener
                 }
             }
         });
+    }
+
+    /** Initialize colors
+     *  @param display Display
+     */
+    private void initColors(final Display display)
+    {
+        changed_background = display.getSystemColor(SWT.COLOR_CYAN);
+        alarm_colors.put(AlarmSeverity.MINOR, display.getSystemColor(SWT.COLOR_DARK_YELLOW));
+        alarm_colors.put(AlarmSeverity.MAJOR, display.getSystemColor(SWT.COLOR_RED));
+        alarm_colors.put(AlarmSeverity.INVALID, display.getSystemColor(SWT.COLOR_MAGENTA));
+        alarm_colors.put(AlarmSeverity.UNDEFINED, display.getSystemColor(SWT.COLOR_DARK_RED));
     }
 
     /** Create GUI components
@@ -129,6 +121,7 @@ public class PVTable implements PVTableModelListener
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         
+        // PV Name column: Has the 'check box' to select, allows editing
         final TableViewerColumn pv_column = createColumn(viewer, layout, "PV", 75, 100,
             new CellLabelProvider()
             {
@@ -185,6 +178,31 @@ public class PVTable implements PVTableModelListener
                 return item.getName();
             }
         });
+        // Allow check/uncheck to select items for restore
+        viewer.getTable().addListener(SWT.Selection, new Listener()
+        {
+            @Override
+            public void handleEvent(final Event event)
+            {
+                if (event.detail != SWT.CHECK)
+                    return;
+                // Toggle selection of PVTableItem, then update
+                // the TableItem to reflect current state.
+                // When instead updating the PVTableItem from the
+                // TableItem's check mark, the result was inconsistent
+                // behavior for selected rows: Could not un-check the
+                // checkbox for a selected row...
+                final TableItem tab_item = (TableItem) event.item;
+                final PVTableItem item = (PVTableItem) tab_item.getData();
+                if (item == PVTableModelContentProvider.NEW_ITEM)
+                    item.setSelected(false);
+                else
+                    item.setSelected(! item.isSelected());
+                tab_item.setChecked(item.isSelected());
+            }
+        });
+        
+        // Remaining columns are read-only
         createColumn(viewer, layout, "Timestamp", 50, 100,
             new CellLabelProvider()
             {
@@ -308,6 +326,46 @@ public class PVTable implements PVTableModelListener
             site.registerContextMenu(manager, viewer);
     }
     
+    private void hookDragDrop()
+    {
+        // Support 'dragging' PV names out
+        new ControlSystemDragSource(viewer.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+                if (sel == null)
+                    return new Object[0];
+                final Iterator<?> iterator = sel.iterator();
+                final ProcessVariable[] pvs = new ProcessVariable[sel.size()];
+                int i = 0;
+                while (iterator.hasNext())
+                    pvs[i++] = new ProcessVariable(((PVTableItem)iterator.next()).getName());
+                return pvs;
+            }
+        };
+    
+        // Allow 'dropping' PV names
+        new ControlSystemDropTarget(viewer.getTable(), ProcessVariable.class, String.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                final String name;
+                if (item instanceof ProcessVariable)
+                    name = ((ProcessVariable)item).getName();
+                else if (item instanceof String)
+                    name = (String) item;
+                else
+                    return;
+                
+                model.addItem(name);
+                viewer.setInput(model);
+            }
+        };
+    }
+
     /** @return Table viewer */
     public TableViewer getTableViewer()
     {
