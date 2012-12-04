@@ -7,16 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.csstudio.display.pvtable.StringMatcher.contains;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
-import org.csstudio.display.pvtable.ui.PVTable;
-import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
@@ -47,7 +41,7 @@ public class GUIDemo
 		final PVTable table = new PVTable(shell);
 		table.setModel(model);
 
-		shell.pack();
+		shell.setSize(800, 600);
 		shell.open();
 		while (!shell.isDisposed())
 		{

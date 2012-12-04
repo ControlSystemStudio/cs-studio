@@ -54,6 +54,15 @@ public class PVTableModel implements PVTableItemListener
 		for (PVTableModelListener listener : listeners)
 			listener.tableItemChanged(item);
 	}
+	
+	/** Save snapshot value of each item */
+	public void save()
+	{
+		for (PVTableItem item : items)
+			item.save();
+		for (PVTableModelListener listener : listeners)
+			listener.tableItemsChanged();
+	}
 
 	/** Must be invoked when 'done' by the creator of the model. */
 	public void dispose()

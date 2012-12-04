@@ -7,16 +7,70 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import org.epics.pvmanager.data.Alarm;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.time.Timestamp;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir
  */
 public class VTypeHelper
 {
+    /** Decode a {@link VType}'s time stamp
+	 *  @param value Value to decode
+	 *  @return {@link Timestamp}
+	 */
+	final public static Timestamp getTimestamp(final VType value)
+	{
+		if (value instanceof Time)
+		{
+			final Time time = (Time) value;
+		    if (time.isTimeValid())
+		        return time.getTimestamp();
+		}
+	    return Timestamp.now();
+	}
+
+	/** @param value {@link VType} value
+	 *  @return {@link AlarmSeverity}
+	 */
+	final public static AlarmSeverity getSeverity(final VType value)
+	{
+		final Alarm alarm = ValueUtil.alarmOf(value);
+		if (alarm == null)
+			return AlarmSeverity.NONE;
+		return alarm.getAlarmSeverity();
+	}
+
+	/** @param value {@link VType} value
+	 *  @return Alarm message
+	 */
+	final public static String getMessage(final VType value)
+	{
+		final Alarm alarm = ValueUtil.alarmOf(value);
+		if (alarm == null)
+			return "";
+		return alarm.getAlarmName();
+	}
+	
+	/** @param value {@link VType}
+	 *  @return Alarm text or ""
+	 */
+	final public static String formatAlarm(final VType value)
+	{
+		final Alarm alarm = ValueUtil.alarmOf(value);
+		if (alarm == null  ||  alarm.getAlarmSeverity() == AlarmSeverity.NONE)
+			return "";
+		return alarm.getAlarmSeverity().toString()
+				+ "/" + alarm.getAlarmName();
+	}
+	
 	/** Format value as string
 	 *  @param value {@link VType}
 	 *  @return String representation

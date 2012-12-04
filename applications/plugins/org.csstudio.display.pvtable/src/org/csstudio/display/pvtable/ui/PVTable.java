@@ -10,7 +10,9 @@ package org.csstudio.display.pvtable.ui;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
+import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -18,9 +20,13 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.epics.pvmanager.data.VType;
 
 /** PV Table GUI
  *  @author Kay Kasemir
@@ -32,45 +38,89 @@ public class PVTable implements PVTableModelListener
 
 	public PVTable(final Composite parent)
 	{
+		createComponents(parent);
+		createContextMenu(viewer);
+	}
+
+
+	private void createComponents(final Composite parent)
+	{
+		// TableColumnLayout requires table to be only child of parent. 
+		// To assert that'll always be the case, create box.
+		final Composite table_box = new Composite(parent, 0);
+		parent.setLayout(new FillLayout());
 		final TableColumnLayout layout = new TableColumnLayout();
-		parent.setLayout(layout);
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		table_box.setLayout(layout);
+		viewer = new TableViewer(table_box, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		createColumn(viewer, layout, "PV", 100, 100,
+		createColumn(viewer, layout, "PV", 75, 100,
 			new CellLabelProvider()
-		{
-			@Override
-			public void update(final ViewerCell cell)
-			{
-				final PVTableItem item = (PVTableItem) cell.getElement();
-				cell.setText(item.getName());
-			}
-		});
-
-	
-		createColumn(viewer, layout, "Timestamp", 100, 100,
-				new CellLabelProvider()
 			{
 				@Override
 				public void update(final ViewerCell cell)
 				{
 					final PVTableItem item = (PVTableItem) cell.getElement();
-					cell.setText("TODO Timestamp");
+					cell.setText(item.getName());
 				}
 			});
-		
-		createColumn(viewer, layout, "Value", 100, 100,
-				new CellLabelProvider()
+		createColumn(viewer, layout, "Timestamp", 50, 100,
+			new CellLabelProvider()
 			{
 				@Override
 				public void update(final ViewerCell cell)
 				{
 					final PVTableItem item = (PVTableItem) cell.getElement();
-					cell.setText(VTypeHelper.toString(item.getValue()));
+					final VType value = item.getValue();
+					if (value == null)
+						cell.setText("");
+					else
+						cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
+				}
+			});
+		createColumn(viewer, layout, "Value", 100, 50,
+			new CellLabelProvider()
+			{
+				@Override
+				public void update(final ViewerCell cell)
+				{
+					final PVTableItem item = (PVTableItem) cell.getElement();
+					final VType value = item.getValue();
+					if (value == null)
+						cell.setText("");
+					else
+						cell.setText(VTypeHelper.toString(value));
+				}
+			});
+		createColumn(viewer, layout, "Alarm", 100, 50,
+			new CellLabelProvider()
+			{
+				@Override
+				public void update(final ViewerCell cell)
+				{
+					final PVTableItem item = (PVTableItem) cell.getElement();
+					final VType value = item.getValue();
+					if (value == null)
+						cell.setText("");
+					else
+						cell.setText(VTypeHelper.formatAlarm(value));
+				}
+			});
+		createColumn(viewer, layout, "Saved Value", 100, 50,
+			new CellLabelProvider()
+			{
+				@Override
+				public void update(final ViewerCell cell)
+				{
+					final PVTableItem item = (PVTableItem) cell.getElement();
+					final VType value = item.getSavedValue();
+					if (value == null)
+						cell.setText("");
+					else
+						cell.setText(VTypeHelper.toString(value));
 				}
 			});
 
@@ -93,6 +143,16 @@ public class PVTable implements PVTableModelListener
 		view_col.setLabelProvider(label_provider);		
 	}
 
+	
+	private void createContextMenu(final TableViewer viewer)
+	{
+		final MenuManager manager = new MenuManager();
+		manager.add(new SnapshotAction(viewer));
+		final Control control = viewer.getControl();
+		final Menu menu = manager.createContextMenu(control);
+		control.setMenu(menu);
+	}
+	
 	
 	public void setModel(final PVTableModel model)
 	{
@@ -122,7 +182,6 @@ public class PVTable implements PVTableModelListener
 	@Override
 	public void tableItemsChanged()
 	{
-		// TODO Auto-generated method stub
-		
+		viewer.refresh();
 	}
 }
