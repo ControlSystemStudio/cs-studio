@@ -38,7 +38,7 @@ public class PVTableItemTest implements PVTableItemListener
 		final PVWriter<Object> pv = PVManager.write(channel(TestSettings.NAME)).async();
 		pv.write(3.14);
 		
-		final PVTableItem item = new PVTableItem(TestSettings.NAME, PVTableItem.DEFAULT_TOLERANCE, this);
+		final PVTableItem item = new PVTableItem(TestSettings.NAME, PVTableItem.DEFAULT_TOLERANCE, null, this);
 		item.setTolerance(0.1);
 		
 

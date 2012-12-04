@@ -18,6 +18,9 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.VTypeHelper;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -85,14 +88,33 @@ public class PVTableXMLPersistence
             	final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
             	final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
                 final String pv_name = DOMHelper.getSubelementString(pv, NAME);
-                // TODO SavedValue saved = SavedValue.fromString(
-                //         DOMHelper.getSubelementString(pv, saved_value));
-                final PVTableItem item = model.addItem(pv_name, tolerance);
+                final VType saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
+                final PVTableItem item = model.addItem(pv_name, tolerance, saved);
                 item.setSelected(selected);
                 pv = DOMHelper.findNextElementNode(pv, PV);
             }
         }
         return model;
+	}
+
+	/** @param value_text Text of a value
+	 *  @return VType for that text, either VNumber(VDouble) or VString, or <code>null</code>
+	 */
+	private static VType createValue(final String value_text)
+	{
+		if (value_text.isEmpty())
+			return null;
+		// Try to parse as number
+		try
+		{
+			final double value = Double.parseDouble(value_text);
+			return ValueFactory.newVDouble(value);
+		}
+		catch (NumberFormatException ex)
+		{
+			// Not a number, fall through to return VString
+		}
+		return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
 	}
 
 	/** @param model PV table model
@@ -116,7 +138,9 @@ public class PVTableXMLPersistence
 			XMLWriter.XML(out, 3, SELECTED, true);
 			XMLWriter.XML(out, 3, NAME, item.getName());
 			XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
-			// TODO XMLWriter.XML(out, 3, SAVED, item.getName());
+			final VType saved = item.getSavedValue();
+			if (saved != null)
+				XMLWriter.XML(out, 3, SAVED, VTypeHelper.toString(saved));
 			XMLWriter.end(out, 2, PV);
 			out.println();
 		}

@@ -39,17 +39,19 @@ public class PVTableItem
 
 	private volatile VType saved = null;
 	
-	private volatile boolean has_changed = false;
+	private volatile boolean has_changed;
 	
 	private double tolerance;
 	
 	final private PVReader<VType> pv;
 
-	public PVTableItem(final String name, final double tolerance, final PVTableItemListener listener)
+	public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
 	{
 		this.name = name;
 		this.listener = listener;
 		this.tolerance = tolerance;
+		this.saved = saved;
+		determineIfChanged();
 		PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
 		{
 			@Override

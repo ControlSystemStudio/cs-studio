@@ -76,7 +76,7 @@ public class PVTable implements PVTableModelListener
 		
 		// Tried CheckboxTableViewer, but it lead to inconsistent refreshes:
 		// Rows would appear blank. Didn't investigate further, stuck with TableViewer.
-		viewer = new TableViewer(table_box, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		viewer = new TableViewer(table_box, SWT.CHECK | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);

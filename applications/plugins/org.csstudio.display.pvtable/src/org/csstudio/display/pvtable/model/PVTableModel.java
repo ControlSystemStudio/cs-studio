@@ -10,6 +10,8 @@ package org.csstudio.display.pvtable.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.epics.pvmanager.data.VType;
+
 /** A PV table model, i.e. list of {@link PVTableItem}s
  *
  *  @author Kay Kasemir
@@ -54,7 +56,18 @@ public class PVTableModel implements PVTableItemListener
 	 */
 	public PVTableItem addItem(final String pv_name, final double tolerance)
 	{
-		final PVTableItem item = new PVTableItem(pv_name, tolerance, this);
+		return addItem(pv_name, tolerance, null);
+	}
+
+	/** Add table item
+	 *  @param pv_name PV Name
+	 *  @param tolerance Tolerance
+	 *  @param saved Saved value, may be <code>null</code>
+	 *  @return Added item
+	 */
+	public PVTableItem addItem(final String pv_name, final double tolerance, final VType saved)
+	{
+		final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
 		items.add(item);
 		return item;
 	}
