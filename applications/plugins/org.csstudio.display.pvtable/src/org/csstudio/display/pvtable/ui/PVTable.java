@@ -13,6 +13,7 @@ import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -91,7 +92,7 @@ public class PVTable implements PVTableModelListener
         
         // Tried CheckboxTableViewer, but it lead to inconsistent refreshes:
         // Rows would appear blank. Didn't investigate further, stuck with TableViewer.
-        viewer = new TableViewer(table_box, SWT.CHECK | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+        viewer = new TableViewer(table_box, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
         
         final Table table = viewer.getTable();
         table.setHeaderVisible(true);
@@ -263,6 +264,9 @@ public class PVTable implements PVTableModelListener
         final MenuManager manager = new MenuManager();
         manager.add(new SnapshotAction(viewer));
         manager.add(new RestoreAction(viewer));
+        manager.add(new Separator());
+        manager.add(new DeleteAction(viewer));
+        
         final Control control = viewer.getControl();
         final Menu menu = manager.createContextMenu(control);
         control.setMenu(menu);
