@@ -364,4 +364,12 @@ public class PVTable implements PVTableModelListener
             }
         });
     }
+
+    /** {@inheritDoc} */
+
+    @Override
+    public void modelChanged()
+    {
+        // Ignore
+    }
 }

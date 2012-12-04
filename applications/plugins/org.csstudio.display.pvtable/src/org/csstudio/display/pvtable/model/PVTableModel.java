@@ -108,6 +108,8 @@ public class PVTableModel implements PVTableItemListener
 	{
 		final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
 		items.add(item);
+        for (PVTableModelListener listener : listeners)
+            listener.modelChanged();
 		return item;
 	}
 	
@@ -118,6 +120,8 @@ public class PVTableModel implements PVTableItemListener
 	{
 	    item.dispose();
 	    items.remove(item);
+        for (PVTableModelListener listener : listeners)
+            listener.modelChanged();
 	}
 
 	/** Invoked by timer to perform accumulated updates.
@@ -160,7 +164,10 @@ public class PVTableModel implements PVTableItemListener
 		for (PVTableItem item : items)
 			item.save();
 		for (PVTableModelListener listener : listeners)
+		{
 			listener.tableItemsChanged();
+            listener.modelChanged();
+		}
 	}
 
 	/** Restore saved values */

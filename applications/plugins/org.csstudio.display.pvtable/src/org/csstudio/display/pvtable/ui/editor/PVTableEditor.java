@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.logging.Level;
 
 import org.csstudio.display.pvtable.Plugin;
+import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -99,29 +101,31 @@ public class PVTableEditor extends EditorPart
         else // Empty model
             model = new PVTableModel();
 
-        // TODO React to model changes via 'dirty' flag
-//        listener = new AbstractPVListModelListener()
-//        {
-//            @Override
-//            public void entriesChanged()
-//            {
-//                if (!is_dirty)
-//                {
-//                    is_dirty = true;
-//                    firePropertyChange(IEditorPart.PROP_DIRTY);
-//                }
-//                updateTitle();
-//            }
-//
-//            @Override
-//            public void entryAdded(PVListEntry entry)
-//            {   entriesChanged(); }
-//
-//            @Override
-//            public void entryRemoved(PVListEntry entry)
-//            {   entriesChanged(); }
-//        };
-//        model.addModelListener(listener);
+        model.addListener(new PVTableModelListener()
+        {
+            @Override
+            public void tableItemChanged(final PVTableItem item)
+            {
+                // Ignore
+            }
+            
+            @Override
+            public void tableItemsChanged()
+            {
+                // Ignore
+            }
+            
+            @Override
+            public void modelChanged()
+            {
+                if (!is_dirty)
+                {
+                    is_dirty = true;
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
+                updateTitle();
+            }
+        });
     }
 
     @Override
@@ -192,23 +196,21 @@ public class PVTableEditor extends EditorPart
         if (monitor != null)
             monitor.beginTask("Save", IProgressMonitor.UNKNOWN);
         
-        // Write model to pipe, then create file from that pipe
+        // Write model buffer, then stream from there into file...
         final PVTableModel model = gui.getModel();
+        final String xml;
+        {
+            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            PVTableXMLPersistence.write(model, buf);
+            xml = buf.toString();
+        }
         try
         {
-            final PipedOutputStream out = new PipedOutputStream();
-            final PipedInputStream in = new PipedInputStream(out);
-            new Thread()
-            {
-                public void run()
-                {
-                    PVTableXMLPersistence.write(model, out);
-                }
-            }.start();
+            final ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
             if (file.exists())
-                file.setContents(in, true, false, monitor);
+                file.setContents(stream, true, false, monitor);
             else
-                file.create(in, true, monitor);
+                file.create(stream, true, monitor);
             if (monitor != null)
                 monitor.done();
             // Mark as clean
