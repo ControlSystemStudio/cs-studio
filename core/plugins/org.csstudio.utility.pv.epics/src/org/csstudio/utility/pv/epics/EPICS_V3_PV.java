@@ -12,6 +12,8 @@ import gov.aps.jca.Channel.ConnectionState;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.event.AccessRightsEvent;
+import gov.aps.jca.event.AccessRightsListener;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.GetEvent;
@@ -50,7 +52,7 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV extends PlatformObject
-            implements PV, ConnectionListener, MonitorListener
+            implements PV, ConnectionListener, MonitorListener, AccessRightsListener
 {
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
@@ -451,6 +453,7 @@ public class EPICS_V3_PV extends PlatformObject
                 subscription = channel.addMonitor(type,
                        channel.getElementCount(),
                        mask.getMask(), this);
+                channel.addAccessRightsListener(this);
             }
             catch (final Exception ex)
             {
@@ -493,7 +496,10 @@ public class EPICS_V3_PV extends PlatformObject
     	try
     	{
     		if (sub_copy != null)
+    		{
     			sub_copy.clear();
+    			channel_ref.getChannel().removeAccessRightsListener(this);
+    		}
     		if (meta_copy != null)
     		    meta_copy.clear();
     	}
@@ -762,7 +768,25 @@ public class EPICS_V3_PV extends PlatformObject
         }
     }
 
-    /** Notify all listeners. */
+    @Override
+	public void accessRightsChanged(final AccessRightsEvent ev)
+    {
+    	if (! running)
+    		return;
+    	// Access permission changes are treated like value updates:
+    	// Fire a value update.
+    	// The permission change actually already creates a value update,
+    	// so this separate AccessRightsListener simply doubles the value
+    	// updates, BUT:
+    	// In the plain value update, the write access sometimes still shows
+    	// the old state.
+    	// In this AccessRightsListener, the write access will always be correct.
+        Activator.getLogger().log(Level.FINEST, "{0} write access: {1}",
+                new Object[] { name, ev.getWriteAccess() });
+    	fireValueUpdate();
+    }
+
+	/** Notify all listeners. */
     private void fireValueUpdate()
     {
         for (final PVListener listener : listeners) {

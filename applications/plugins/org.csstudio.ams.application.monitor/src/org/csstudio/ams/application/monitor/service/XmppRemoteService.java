@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -156,8 +157,16 @@ public class XmppRemoteService implements IRemoteService {
 
        IRosterGroup jmsApplics = this.getRosterGroup(rosterItems, xmppGroupName);
        
+       Collection<?> groupApplics = jmsApplics.getEntries();
+       Iterator<?> iter = groupApplics.iterator();
+       while (iter.hasNext()) {
+           IRosterEntry o = (IRosterEntry) iter.next();
+           LOG.info("Found: {} {}", o.getName(), o.getUser().getID().getName());
+       }
+       
        for (String s : applicationName) {
            if (s != null) {
+               LOG.info("Application: {}, Method: {}", s, method);
                if (s.trim().length() > 0) {
                    IRosterEntry currentApplic = this.getRosterApplication(jmsApplics, s.trim(), host, user);
                    if(currentApplic != null) {
@@ -166,6 +175,10 @@ public class XmppRemoteService implements IRemoteService {
                            LOG.error("Breaking!");
                            break;
                        }
+                   } else {
+                       LOG.error("Cannot find application {}", s);
+                       success = false;
+                       break;
                    }
                    synchronized (this) {
                        try {

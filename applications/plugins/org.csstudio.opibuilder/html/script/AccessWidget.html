@@ -69,7 +69,8 @@
     <li><a href = "#getPV()">getPV()</a></li>
     <li><a href = "#getPV(java.lang.String)">getPV(pvPropId)</a></li>     
     <li><a href = "#pgetValue()">getValue()</a></li>
-    <li><a href = "#psetValue(java.lang.Object)">setValue(value)</a></li>    
+    <li><a href = "#psetValue(java.lang.Object)">setValue(value)</a></li>   
+    <li><a href = "#psetValueInUIThread(java.lang.Object)">setValueInUIThread(value)</a></li>    
    </ul>
    
    <h3>Special methods to each widget</h3>
@@ -579,9 +580,31 @@ setValue</H3>
 <PRE>
 public void <B>setValue</B>(Object&nbsp;value)</PRE>
 <DL>
-<DD>Set the value of the widget. 
-This only takes effect on the visual presentation of the widget and
-will not write the value to the PV attached to the widget.
+<DD>Set the value of the widget. This only takes effect on the visual presentation of the widget and
+	 will not write the value to the PV attached to this widget. Since setting value to 
+	 a widget usually results in figure repaint, this method should be called in UI thread. To call 
+	 it in non-UI thread, see <a href = "#psetValueInUIThread(java.lang.Object)">setValueInUIThread(value)</a>.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>value</CODE> - the value to be set. 
+It must be compatible with the widget.
+  For example, a boolean widget only accept boolean or number.
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.RuntimeException</CODE> - if the type of the value is not an acceptable type.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="psetValueInUIThread(java.lang.Object)"><!-- --></A><H3>
+setValueInUIThread</H3>
+<PRE>
+public void <B>setValueInUIThread</B>(Object&nbsp;value)</PRE>
+<DL>
+<DD>Call <a href = "#psetValue(java.lang.Object)">setValue(value)</a> in UI Thread.
+	This method can be called in non-UI thread.
 <P>
 <DD><DL>
 </DL>

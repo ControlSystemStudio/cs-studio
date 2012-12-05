@@ -87,7 +87,7 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
      *  tries to update the ONST of a record, expecting to get
      *  a new _value_. Before R3.14.11, this will fail.
      */
-    @Test // (timeout=10000)
+    @Test(timeout=10000)
     public void testMetaDataUpdate() throws Exception
     {
         synchronized (this)

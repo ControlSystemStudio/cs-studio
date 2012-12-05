@@ -35,6 +35,8 @@ import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.swt.widgets.util.ImageUtils;
+import org.csstudio.swt.widgets.util.PermutationMatrix;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.util.TextPainter;
@@ -50,7 +52,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -133,6 +134,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	// private boolean useGIFBackground = false;
 
+	private ImageData staticImageData = null;
 	private ImageData originalStaticImageData = null;
 
 	private int repeatCount;
@@ -145,6 +147,10 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private boolean startAnimationRequested = false;
 	
 	private volatile boolean loadingImage;
+	
+	private PermutationMatrix oldPermutationMatrix = null;
+	private PermutationMatrix permutationMatrix = PermutationMatrix
+			.generateIdentityMatrix();
 
 	/**
 	 * dispose the resources used by this figure
@@ -171,13 +177,13 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @return the auto sized widget dimension according to the static imageSize
 	 */
 	public synchronized Dimension getAutoSizedDimension() {
-		if (originalStaticImageData != null)
-			return new Dimension(originalStaticImageData.width
-					+ getInsets().getWidth() - leftCrop - rightCrop,
-					originalStaticImageData.height + getInsets().getHeight()
-							- topCrop - bottomCrop);
-		else
-			return null;
+		if (originalStaticImageData != null) {
+			ImageData imageData = (staticImageData == null) ? originalStaticImageData : staticImageData;
+			return new Dimension(imageData.width + getInsets().getWidth()
+					- leftCrop - rightCrop, imageData.height
+					+ getInsets().getHeight() - topCrop - bottomCrop);
+		}
+		else return null;
 	}
 
 	/**
@@ -358,11 +364,19 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 		// create static image
 		if (staticImage == null && originalStaticImageData != null) {
+			ImageData imageData = (staticImageData == null) ? originalStaticImageData : staticImageData;
+			// Apply rotation / flip
+			if (permutationMatrix != null
+					&& !permutationMatrix.equals(oldPermutationMatrix)
+					&& !permutationMatrix.equals(PermutationMatrix.generateIdentityMatrix()) 
+					&& !animated) {
+				staticImageData = ImageUtils.applyMatrix(originalStaticImageData, permutationMatrix);
+				imageData = staticImageData;
+			}
 			if (stretch) {
 				staticImage = new Image(Display.getDefault(),
-						originalStaticImageData.scaledTo(bound.width + leftCrop
-								+ rightCrop, bound.height + topCrop
-								+ bottomCrop));
+						imageData.scaledTo(bound.width + leftCrop + rightCrop,
+								bound.height + topCrop + bottomCrop));
 				if (animated) {
 					imageDataArray = new ImageData[originalImageDataArray.length];
 					double widthScaleRatio = (double) (bound.width + leftCrop + rightCrop)
@@ -383,8 +397,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 				}
 			} else {
-				staticImage = new Image(Display.getDefault(),
-						originalStaticImageData);
+				staticImage = new Image(Display.getDefault(), imageData);
 				if (animated)
 					imageDataArray = originalImageDataArray;
 			}
@@ -736,6 +749,21 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+	
+	public void setPermutationMatrix(final PermutationMatrix permutationMatrix) {
+		this.oldPermutationMatrix = this.permutationMatrix;
+		this.permutationMatrix = permutationMatrix;
+		staticImageData = null; // Reset data
+		if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix)) 
+				|| permutationMatrix == null || animated)
+			return;
+		dispose();
+		repaint();
+	}
+	
+	public PermutationMatrix getPermutationMatrix() {
+		return permutationMatrix;
 	}
 
 }
