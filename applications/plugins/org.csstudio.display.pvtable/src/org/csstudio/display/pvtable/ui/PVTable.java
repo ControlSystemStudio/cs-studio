@@ -25,6 +25,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -124,7 +125,7 @@ public class PVTable implements PVTableModelListener
         
         // PV Name column: Has the 'check box' to select, allows editing
         final TableViewerColumn pv_column = createColumn(viewer, layout, Messages.PV, 75, 100,
-            new CellLabelProvider()
+            new PVTableCellLabelProvider()
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -205,7 +206,7 @@ public class PVTable implements PVTableModelListener
         
         // Remaining columns are read-only
         createColumn(viewer, layout, Messages.Time, 50, 100,
-            new CellLabelProvider()
+            new PVTableCellLabelProvider()
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -220,7 +221,7 @@ public class PVTable implements PVTableModelListener
                 }
             });
         createColumn(viewer, layout, Messages.Value, 100, 50,
-            new CellLabelProvider()
+            new PVTableCellLabelProvider()
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -235,7 +236,7 @@ public class PVTable implements PVTableModelListener
                 }
             });
         createColumn(viewer, layout, Messages.Alarm, 100, 50,
-            new CellLabelProvider()
+            new PVTableCellLabelProvider()
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -251,7 +252,7 @@ public class PVTable implements PVTableModelListener
                 }
             });
         createColumn(viewer, layout, Messages.Saved, 100, 50,
-            new CellLabelProvider()
+            new PVTableCellLabelProvider()
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -265,6 +266,8 @@ public class PVTable implements PVTableModelListener
                     updateCommonCellSettings(cell, item);
                 }
             });
+        
+        ColumnViewerToolTipSupport.enableFor(viewer);
 
         viewer.setContentProvider(new PVTableModelContentProvider());
     }
