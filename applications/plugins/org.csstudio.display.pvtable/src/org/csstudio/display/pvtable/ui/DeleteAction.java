@@ -16,34 +16,34 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to save value snapshots
+/** {@link Action} to delete entries from table
  *  @author Kay Kasemir
  */
 public class DeleteAction extends PVTableAction
 {
-	public DeleteAction(final TableViewer viewer)
-	{
-		super(Messages.Delete, "icons/delete.gif", viewer); //$NON-NLS-1$
-		setToolTipText(Messages.Delete_TT);
-	}
-	
-	public void run()
-	{
-		final PVTableModel model = (PVTableModel) viewer.getInput();
-		if (model == null)
-			return;
-		final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-		if (sel == null)
-		    return;
-		
-		final Iterator<?> iterator = sel.iterator();
-		while (iterator.hasNext())
-		{
-		    final PVTableItem item = (PVTableItem) iterator.next();
-		    model.removeItem(item);
-		}
-		viewer.setSelection(null);
-		viewer.setItemCount(model.getItemCount() + 1);
-		viewer.refresh();
-	}
+    public DeleteAction(final TableViewer viewer)
+    {
+        super(Messages.Delete, "icons/delete.gif", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.Delete_TT);
+    }
+    
+    public void run()
+    {
+        final PVTableModel model = (PVTableModel) viewer.getInput();
+        if (model == null)
+            return;
+        final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+        if (sel == null)
+            return;
+        
+        final Iterator<?> iterator = sel.iterator();
+        while (iterator.hasNext())
+        {
+            final PVTableItem item = (PVTableItem) iterator.next();
+            model.removeItem(item);
+        }
+        viewer.setSelection(null);
+        viewer.setItemCount(model.getItemCount() + 1);
+        viewer.refresh();
+    }
 }

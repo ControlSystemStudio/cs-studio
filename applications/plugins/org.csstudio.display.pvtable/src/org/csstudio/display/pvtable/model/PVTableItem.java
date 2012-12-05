@@ -34,11 +34,11 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Period for throttling updates from individual PV, i.e. PV attached to this item */
     private static final double READ_PERIOD_SECS = 0.2;
 
-    private String name;
-    
     final private PVTableItemListener listener;
-    
+
     private boolean selected = true;
+
+    private String name;
     
     private volatile VType value = null;
 

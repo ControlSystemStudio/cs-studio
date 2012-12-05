@@ -17,18 +17,18 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class SnapshotAction extends PVTableAction
 {
-	public SnapshotAction(final TableViewer viewer)
-	{
-	    super(Messages.Snapshot, "icons/snapshot.png", viewer); //$NON-NLS-1$
-	    setToolTipText(Messages.Snapshot_TT);
-	}
-	
-	public void run()
-	{
-		final PVTableModel model = (PVTableModel) viewer.getInput();
-		if (model == null)
-			return;
-		model.save();
-		viewer.setSelection(null);
-	}
+    public SnapshotAction(final TableViewer viewer)
+    {
+        super(Messages.Snapshot, "icons/snapshot.png", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.Snapshot_TT);
+    }
+    
+    public void run()
+    {
+        final PVTableModel model = (PVTableModel) viewer.getInput();
+        if (model == null)
+            return;
+        model.save();
+        viewer.setSelection(null);
+    }
 }

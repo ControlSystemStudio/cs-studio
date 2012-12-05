@@ -116,7 +116,7 @@ public class VTypeHelper
     /** Compare the values of to {@link VType}s
      *  @param value {@link VType}
      *  @param other {@link VType}
-     *  @param tolerance Numeric tolarance
+     *  @param tolerance Numeric tolerance. Values must be within that tolerance. 0 for 'exactly equal'.
      *  @return <code>true</code> if their value (not timestamp, not alarm state) are equal
      */
     final public static boolean equalValue(final VType value, final VType other, final double tolerance)

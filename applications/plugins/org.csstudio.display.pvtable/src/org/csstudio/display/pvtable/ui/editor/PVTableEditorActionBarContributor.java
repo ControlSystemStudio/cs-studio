@@ -10,6 +10,7 @@ package org.csstudio.display.pvtable.ui.editor;
 import org.csstudio.display.pvtable.ui.PVTableAction;
 import org.csstudio.display.pvtable.ui.RestoreAction;
 import org.csstudio.display.pvtable.ui.SnapshotAction;
+import org.csstudio.display.pvtable.ui.ToleranceAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
@@ -22,6 +23,7 @@ public class PVTableEditorActionBarContributor extends
 {
     final private PVTableAction snap = new SnapshotAction(null);
     final private PVTableAction restore = new RestoreAction(null);
+    final private PVTableAction tolerance = new ToleranceAction(null);
 
     /** Invoked once when the first PVTableEditor gets opened.
      *  Items stay in toolbar until the last PVTableEditor exits.
@@ -31,6 +33,7 @@ public class PVTableEditorActionBarContributor extends
     {
         mgr.add(snap);
         mgr.add(restore);
+        mgr.add(tolerance);
     }
 
     /** @see org.eclipse.ui.part.EditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart) */
@@ -40,6 +43,7 @@ public class PVTableEditorActionBarContributor extends
         final PVTableEditor editor = (PVTableEditor) target;
         snap.setViewer(editor.getTableViewer());
         restore.setViewer(editor.getTableViewer());
+        tolerance.setViewer(editor.getTableViewer());
     }
 
     /** @see org.eclipse.ui.part.EditorActionBarContributor#dispose() */
@@ -48,6 +52,7 @@ public class PVTableEditorActionBarContributor extends
     {
         snap.setViewer(null);
         restore.setViewer(null);
+        tolerance.setViewer(null);
         super.dispose();
     }
 }

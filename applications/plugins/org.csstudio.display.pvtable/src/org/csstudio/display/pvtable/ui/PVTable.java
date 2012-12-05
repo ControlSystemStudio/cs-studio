@@ -315,6 +315,7 @@ public class PVTable implements PVTableModelListener
         final MenuManager manager = new MenuManager();
         manager.add(new SnapshotAction(viewer));
         manager.add(new RestoreAction(viewer));
+        manager.add(new ToleranceAction(viewer));
         manager.add(new Separator());
         manager.add(new DeleteAction(viewer));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
