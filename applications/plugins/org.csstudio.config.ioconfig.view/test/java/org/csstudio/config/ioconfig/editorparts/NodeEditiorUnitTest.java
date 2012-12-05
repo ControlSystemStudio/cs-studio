@@ -70,4 +70,34 @@ public class NodeEditiorUnitTest {
         assertEquals(resultShort, desc);
     }
 
+    @Test
+    public void testGetShortDescFromNull() {
+        final FacilityEditor facilityEditor = new FacilityEditor();
+
+        String desc = facilityEditor.getShortDesc(null);
+        assertEquals("", desc);
+    }
+
+    @Test
+    public void testGetShortDescFromEmpty() {
+    	final FacilityEditor facilityEditor = new FacilityEditor();
+    	
+    	String desc = facilityEditor.getShortDesc("");
+    	assertEquals("", desc);
+    }
+    
+    @Test
+    public void testGetShortDescFromEndOfLine() {
+    	final FacilityEditor facilityEditor = new FacilityEditor();
+    	
+    	String desc = facilityEditor.getShortDesc("\r");
+    	assertEquals("", desc);
+    	
+    	desc = facilityEditor.getShortDesc("\n");
+    	assertEquals("", desc);
+    	
+    	desc = facilityEditor.getShortDesc("\n\r");
+    	assertEquals("", desc);
+    }
+    
 }
