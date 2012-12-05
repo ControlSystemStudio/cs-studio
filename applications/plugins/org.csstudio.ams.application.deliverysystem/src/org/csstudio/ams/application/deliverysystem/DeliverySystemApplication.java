@@ -61,7 +61,7 @@ public class DeliverySystemApplication implements IApplication,
     private static Logger LOG = LoggerFactory.getLogger(DeliverySystemApplication.class);
 	
     // 6 minutes
-    private final static long WORKER_WATCH_INTERVAL = 20000L;
+    private final static long WORKER_WATCH_INTERVAL = 360000L;
 
     private XmppSessionHandler xmppSessionHandler;
     
