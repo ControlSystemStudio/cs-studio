@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
@@ -18,8 +19,8 @@ public class SnapshotAction extends PVTableAction
 {
 	public SnapshotAction(final TableViewer viewer)
 	{
-	    super("Snapshot", "icons/snapshot.png", viewer);
-	    setToolTipText("Take snapshot of current values");
+	    super(Messages.Snapshot, "icons/snapshot.png", viewer); //$NON-NLS-1$
+	    setToolTipText(Messages.Snapshot_TT);
 	}
 	
 	public void run()

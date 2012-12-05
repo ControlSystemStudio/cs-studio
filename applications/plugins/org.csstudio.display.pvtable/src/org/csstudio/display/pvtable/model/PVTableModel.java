@@ -35,7 +35,7 @@ public class PVTableModel implements PVTableItemListener
     
     final private List<PVTableModelListener> listeners = new ArrayList<PVTableModelListener>();
 
-    final private Timer update_timer = new Timer("PVTableUpdate", true);
+    final private Timer update_timer = new Timer("PVTableUpdate", true); //$NON-NLS-1$
     
     /** @see #performUpdates() */
     private Set<PVTableItem> changed_items = new HashSet<PVTableItem>();

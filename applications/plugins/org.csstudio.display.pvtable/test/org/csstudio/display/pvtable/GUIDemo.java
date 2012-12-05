@@ -21,32 +21,33 @@ import org.junit.Test;
 /** JUnit test of {@link PVTableXMLPersistence}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class GUIDemo
 {
-	@Before
-	public void setup()
-	{
-		TestSettings.setup();
-	}
+    @Before
+    public void setup()
+    {
+        TestSettings.setup();
+    }
 
-	
-	@Test
-	public void demoGUI() throws Exception
-	{
-		final Display display = Display.getDefault();
-		final Shell shell = new Shell(display);
-		shell.setLayout(new GridLayout(1, false));
+    
+    @Test
+    public void demoGUI() throws Exception
+    {
+        final Display display = Display.getDefault();
+        final Shell shell = new Shell(display);
+        shell.setLayout(new GridLayout(1, false));
 
-		final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
-		final PVTable table = new PVTable(shell, null);
-		table.setModel(model);
+        final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
+        final PVTable table = new PVTable(shell, null);
+        table.setModel(model);
 
-		shell.setSize(800, 600);
-		shell.open();
-		while (!shell.isDisposed())
-		{
-			if (!display.readAndDispatch())
-				display.sleep();
-		}
-	}
+        shell.setSize(800, 600);
+        shell.open();
+        while (!shell.isDisposed())
+        {
+            if (!display.readAndDispatch())
+                display.sleep();
+        }
+    }
 }

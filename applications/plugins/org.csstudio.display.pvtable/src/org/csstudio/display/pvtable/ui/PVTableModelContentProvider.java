@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 /** 'Virtual' content provider, input is {@link PVTableModel}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableModelContentProvider implements ILazyContentProvider
 {
 	/** 'Magic' table item added to the end of the actual model
@@ -24,7 +25,7 @@ public class PVTableModelContentProvider implements ILazyContentProvider
 	 *  Setting the name of this item is handled as adding a new
 	 *  item for that name.
 	 */
-	final public static PVTableItem NEW_ITEM =
+    final public static PVTableItem NEW_ITEM =
 			new PVTableItem("", 0.0, null, new PVTableItemListener()
 	{
 		@Override

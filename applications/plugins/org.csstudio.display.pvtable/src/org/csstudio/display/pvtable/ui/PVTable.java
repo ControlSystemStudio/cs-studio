@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -122,7 +123,7 @@ public class PVTable implements PVTableModelListener
         table.setLinesVisible(true);
         
         // PV Name column: Has the 'check box' to select, allows editing
-        final TableViewerColumn pv_column = createColumn(viewer, layout, "PV", 75, 100,
+        final TableViewerColumn pv_column = createColumn(viewer, layout, Messages.PV, 75, 100,
             new CellLabelProvider()
             {
                 @Override
@@ -203,7 +204,7 @@ public class PVTable implements PVTableModelListener
         });
         
         // Remaining columns are read-only
-        createColumn(viewer, layout, "Timestamp", 50, 100,
+        createColumn(viewer, layout, Messages.Time, 50, 100,
             new CellLabelProvider()
             {
                 @Override
@@ -212,13 +213,13 @@ public class PVTable implements PVTableModelListener
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getValue();
                     if (value == null)
-                        cell.setText("");
+                        cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
                     updateCommonCellSettings(cell, item);
                 }
             });
-        createColumn(viewer, layout, "Value", 100, 50,
+        createColumn(viewer, layout, Messages.Value, 100, 50,
             new CellLabelProvider()
             {
                 @Override
@@ -227,13 +228,13 @@ public class PVTable implements PVTableModelListener
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getValue();
                     if (value == null)
-                        cell.setText("");
+                        cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(VTypeHelper.toString(value));
                     updateCommonCellSettings(cell, item);
                 }
             });
-        createColumn(viewer, layout, "Alarm", 100, 50,
+        createColumn(viewer, layout, Messages.Alarm, 100, 50,
             new CellLabelProvider()
             {
                 @Override
@@ -242,14 +243,14 @@ public class PVTable implements PVTableModelListener
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getValue();
                     if (value == null)
-                        cell.setText("");
+                        cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(VTypeHelper.formatAlarm(value));
                     cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
                     updateCommonCellSettings(cell, item);
                 }
             });
-        createColumn(viewer, layout, "Saved Value", 100, 50,
+        createColumn(viewer, layout, Messages.Saved, 100, 50,
             new CellLabelProvider()
             {
                 @Override
@@ -258,7 +259,7 @@ public class PVTable implements PVTableModelListener
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getSavedValue();
                     if (value == null)
-                        cell.setText("");
+                        cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(VTypeHelper.toString(value));
                     updateCommonCellSettings(cell, item);
@@ -424,7 +425,6 @@ public class PVTable implements PVTableModelListener
     }
 
     /** {@inheritDoc} */
-
     @Override
     public void modelChanged()
     {

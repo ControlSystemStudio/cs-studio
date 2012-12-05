@@ -50,7 +50,7 @@ public class EmptyEditorInput implements IEditorInput
     @Override
     public ImageDescriptor getImageDescriptor()
     {
-        return Plugin.getImageDescriptor("icons/pvtable.png");
+        return Plugin.getImageDescriptor("icons/pvtable.png"); //$NON-NLS-1$
     }
 
     /** Can't persist. */

@@ -28,39 +28,40 @@ import org.w3c.dom.Element;
 /** Persist PVTableModel as XML file
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableXMLPersistence
 {
-    final private static String XML_HEADER = "<?xml version=\"1.0\"?>\n<pvtable version=\"2.0\">"; //$NON-NLS-1$
-    final private static String XML_TAIL = "</pvtable>\n"; //$NON-NLS-1$
-	final private static String ROOT = "pvtable";
-	final private static String TOLERANCE = "tolerance";
-	final private static String PVLIST = "pvlist";
-	final private static String PV = "pv";
-	final private static String SELECTED = "selected";
-	final private static String NAME = "name";
-	final private static String SAVED = "saved_value";
+    final private static String XML_HEADER = "<?xml version=\"1.0\"?>\n<pvtable version=\"2.0\">";
+    final private static String XML_TAIL = "</pvtable>\n";
+    final private static String ROOT = "pvtable";
+    final private static String TOLERANCE = "tolerance";
+    final private static String PVLIST = "pvlist";
+    final private static String PV = "pv";
+    final private static String SELECTED = "selected";
+    final private static String NAME = "name";
+    final private static String SAVED = "saved_value";
     final private static String READBACK_NAME = "readback";
     final private static String READBACK_SAVED = "readback_value";
-	
-	/** @param stream XML stream
-	 *  @return PV table model
-	 *  @throws Exception on error
-	 */
-	public static PVTableModel read(final InputStream stream) throws Exception
-	{
-		final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
+    
+    /** @param stream XML stream
+     *  @return PV table model
+     *  @throws Exception on error
+     */
+    public static PVTableModel read(final InputStream stream) throws Exception
+    {
+        final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
         Document doc = docBuilder.parse(stream);
         return read(doc);
-	}
+    }
 
-	/** @param doc XML document
-	 *  @return PV table model
-	 *  @throws Exception on error
-	 */
-	private static PVTableModel read(final Document doc) throws Exception
-	{
-		final PVTableModel model = new PVTableModel();
+    /** @param doc XML document
+     *  @return PV table model
+     *  @throws Exception on error
+     */
+    private static PVTableModel read(final Document doc) throws Exception
+    {
+        final PVTableModel model = new PVTableModel();
         // Check if it's a <pvtable/>.
         doc.getDocumentElement().normalize();
         Element root_node = doc.getDocumentElement();
@@ -72,11 +73,11 @@ public class PVTableXMLPersistence
         double default_tolerance = Preferences.getTolerance();
         try
         {
-        	default_tolerance = DOMHelper.getSubelementDouble(root_node, TOLERANCE);
+            default_tolerance = DOMHelper.getSubelementDouble(root_node, TOLERANCE);
         }
         catch (Exception ex)
         {
-        	default_tolerance = Preferences.getTolerance();
+            default_tolerance = Preferences.getTolerance();
         }
 
         // Get the <pvlist> entry
@@ -91,8 +92,8 @@ public class PVTableXMLPersistence
                 String pv_name = DOMHelper.getSubelementString(pv, NAME);
                 if (! pv_name.isEmpty())
                 {
-                	final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
-                	final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
+                    final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
+                    final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
                     VType saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
                     PVTableItem item = model.addItem(pv_name, tolerance, saved);
                     item.setSelected(selected);
@@ -110,59 +111,59 @@ public class PVTableXMLPersistence
             }
         }
         return model;
-	}
+    }
 
-	/** @param value_text Text of a value
-	 *  @return VType for that text, either VNumber(VDouble) or VString, or <code>null</code>
-	 */
-	private static VType createValue(final String value_text)
-	{
-		if (value_text.isEmpty())
-			return null;
-		// Try to parse as number
-		try
-		{
-			final double value = Double.parseDouble(value_text);
-			return ValueFactory.newVDouble(value);
-		}
-		catch (NumberFormatException ex)
-		{
-			// Not a number, fall through to return VString
-		}
-		return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
-	}
+    /** @param value_text Text of a value
+     *  @return VType for that text, either VNumber(VDouble) or VString, or <code>null</code>
+     */
+    private static VType createValue(final String value_text)
+    {
+        if (value_text.isEmpty())
+            return null;
+        // Try to parse as number
+        try
+        {
+            final double value = Double.parseDouble(value_text);
+            return ValueFactory.newVDouble(value);
+        }
+        catch (NumberFormatException ex)
+        {
+            // Not a number, fall through to return VString
+        }
+        return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
+    }
 
-	/** @param model PV table model
-	 *  @param stream Stream to which model is written as XML
-	 */
-	public static void write(final PVTableModel model, final OutputStream stream)
-	{
-		final PrintWriter out = new PrintWriter(stream);
+    /** @param model PV table model
+     *  @param stream Stream to which model is written as XML
+     */
+    public static void write(final PVTableModel model, final OutputStream stream)
+    {
+        final PrintWriter out = new PrintWriter(stream);
 
-		out.println(XML_HEADER);
-		
-		XMLWriter.start(out, 1, PVLIST);
-		out.println();
-		
-		final int N = model.getItemCount();
-		for (int i=0; i<N; ++i)
-		{
-			final PVTableItem item = model.getItem(i);
-			XMLWriter.start(out, 2, PV);
-			out.println();
-			XMLWriter.XML(out, 3, SELECTED, true);
-			XMLWriter.XML(out, 3, NAME, item.getName());
-			XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
-			final VType saved = item.getSavedValue();
-			if (saved != null)
-				XMLWriter.XML(out, 3, SAVED, VTypeHelper.toString(saved));
-			XMLWriter.end(out, 2, PV);
-			out.println();
-		}
-		XMLWriter.end(out, 1, PVLIST);
-		out.println();
-		out.println(XML_TAIL);
-		
-		out.flush();
-	}
+        out.println(XML_HEADER);
+        
+        XMLWriter.start(out, 1, PVLIST);
+        out.println();
+        
+        final int N = model.getItemCount();
+        for (int i=0; i<N; ++i)
+        {
+            final PVTableItem item = model.getItem(i);
+            XMLWriter.start(out, 2, PV);
+            out.println();
+            XMLWriter.XML(out, 3, SELECTED, true);
+            XMLWriter.XML(out, 3, NAME, item.getName());
+            XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
+            final VType saved = item.getSavedValue();
+            if (saved != null)
+                XMLWriter.XML(out, 3, SAVED, VTypeHelper.toString(saved));
+            XMLWriter.end(out, 2, PV);
+            out.println();
+        }
+        XMLWriter.end(out, 1, PVLIST);
+        out.println();
+        out.println(XML_TAIL);
+        
+        out.flush();
+    }
 }

@@ -9,6 +9,7 @@ package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
@@ -22,7 +23,8 @@ public class DeleteAction extends PVTableAction
 {
 	public DeleteAction(final TableViewer viewer)
 	{
-		super("Delete", "icons/delete.gif", viewer);
+		super(Messages.Delete, "icons/delete.gif", viewer); //$NON-NLS-1$
+		setToolTipText(Messages.Delete_TT);
 	}
 	
 	public void run()

@@ -15,16 +15,17 @@ import org.epics.pvmanager.sim.SimulationDataSource;
 /** Test settings
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class TestSettings
 {
-	final public static String NAME = "loc://x";
+    final public static String NAME = "loc://x";
 
-	public static void setup()
-	{
-		final CompositeDataSource sources = new CompositeDataSource();
-		sources.putDataSource("loc", new LocalDataSource());
-		sources.putDataSource("sim", new SimulationDataSource());
-		sources.setDefaultDataSource("loc");
-		PVManager.setDefaultDataSource(sources);
-	}
+    public static void setup()
+    {
+        final CompositeDataSource sources = new CompositeDataSource();
+        sources.putDataSource("loc", new LocalDataSource());
+        sources.putDataSource("sim", new SimulationDataSource());
+        sources.setDefaultDataSource("loc");
+        PVManager.setDefaultDataSource(sources);
+    }
 }

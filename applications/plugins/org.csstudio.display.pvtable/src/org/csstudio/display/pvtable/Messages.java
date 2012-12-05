@@ -13,9 +13,20 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.display.pvtable.messages"; //$NON-NLS-1$
 
+    public static String Alarm;
+    public static String Delete;
+    public static String Delete_TT;
     public static String NotSaved;
     public static String NotSaved_TT;
-    
+    public static String PV;
+    public static String Restore;
+    public static String Restore_TT;
+    public static String Saved;
+    public static String Snapshot;
+    public static String Snapshot_TT;
+    public static String Time;
+    public static String Value;
+
     static
     {
         // initialize resource bundle

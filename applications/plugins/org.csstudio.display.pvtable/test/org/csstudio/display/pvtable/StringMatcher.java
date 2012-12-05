@@ -14,27 +14,28 @@ import org.hamcrest.Matcher;
 /** Hamcrest {@link Matcher} for strings
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class StringMatcher
 {
-	/** @param segment Segment to find within {@link String}
-	 *  @return {@link Matcher}
-	 */
-	public static Matcher<String> contains(final String segment)
-	{
-		return new BaseMatcher<String>()
-		{
-			@Override
-			public void describeTo(final Description descr)
-			{
-				descr.appendText("text that contains \"").appendText(segment).appendText("\"");
-			}
+    /** @param segment Segment to find within {@link String}
+     *  @return {@link Matcher}
+     */
+    public static Matcher<String> contains(final String segment)
+    {
+        return new BaseMatcher<String>()
+        {
+            @Override
+            public void describeTo(final Description descr)
+            {
+                descr.appendText("text that contains \"").appendText(segment).appendText("\"");
+            }
 
-			@Override
-			public boolean matches(final Object obj)
-			{
-				return obj instanceof String
-					&& ((String) obj).contains(segment);
-			}
-		};
-	}
+            @Override
+            public boolean matches(final Object obj)
+            {
+                return obj instanceof String
+                    && ((String) obj).contains(segment);
+            }
+        };
+    }
 }

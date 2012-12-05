@@ -23,40 +23,41 @@ import org.junit.Test;
 /** JUnit test of {@link PVTableXMLPersistence}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableXMLPersistenceTest
 {
-	@Before
-	public void setup()
-	{
-		TestSettings.setup();
-	}
+    @Before
+    public void setup()
+    {
+        TestSettings.setup();
+    }
 
-	
-	@Test
-	public void testReadXML() throws Exception
-	{
-		final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
-		assertThat(model.getItemCount(), equalTo(52));
-		assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
-		assertThat(VTypeHelper.toString(model.getItem(0).getSavedValue()), equalTo("3.14"));
-		model.dispose();
-	}
+    
+    @Test
+    public void testReadXML() throws Exception
+    {
+        final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
+        assertThat(model.getItemCount(), equalTo(52));
+        assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
+        assertThat(VTypeHelper.toString(model.getItem(0).getSavedValue()), equalTo("3.14"));
+        model.dispose();
+    }
 
 
-	@Test
-	public void testWriteXML() throws Exception
-	{
-		final PVTableModel model = new PVTableModel();
-		model.addItem(TestSettings.NAME);
-		
-		final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		PVTableXMLPersistence.write(model, buf);
-		final String xml = buf.toString();
-		System.out.println(xml);
-		model.dispose();
-		
-		assertThat(xml, contains("<pvtable"));
-		assertThat(xml, contains("<pv>"));
-		assertThat(xml, contains("<name>"+TestSettings.NAME+"</name>"));
-	}
+    @Test
+    public void testWriteXML() throws Exception
+    {
+        final PVTableModel model = new PVTableModel();
+        model.addItem(TestSettings.NAME);
+        
+        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        PVTableXMLPersistence.write(model, buf);
+        final String xml = buf.toString();
+        System.out.println(xml);
+        model.dispose();
+        
+        assertThat(xml, contains("<pvtable"));
+        assertThat(xml, contains("<pv>"));
+        assertThat(xml, contains("<name>"+TestSettings.NAME+"</name>"));
+    }
 }

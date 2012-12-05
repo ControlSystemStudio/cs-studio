@@ -125,8 +125,8 @@ public class PVTableItem implements PVReaderListener<VType>
         final Exception error = pv.lastException();
         if (error != null)
         {
-            Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error);
-            updateValue(ValueFactory.newVString(error.getMessage(), ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "PV Error"), ValueFactory.timeNow()));
+            Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error); //$NON-NLS-1$
+            updateValue(ValueFactory.newVString(error.getMessage(), ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "PV Error"), ValueFactory.timeNow())); //$NON-NLS-1$
             return;
         }
         updateValue(pv.getValue());
@@ -209,6 +209,7 @@ public class PVTableItem implements PVReaderListener<VType>
             pv.close();
     }
     
+    @SuppressWarnings("nls")
     @Override
     public String toString()
     {

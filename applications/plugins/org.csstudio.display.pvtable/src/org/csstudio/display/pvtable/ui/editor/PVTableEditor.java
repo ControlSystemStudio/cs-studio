@@ -46,7 +46,7 @@ public class PVTableEditor extends EditorPart
 {
     public static final String ID = PVTableEditor.class.getName();
 
-    private static final String FILE_EXTENSION = "pvs";
+    private static final String FILE_EXTENSION = "pvs"; //$NON-NLS-1$
 
     private PVTableModel model;
     private PVTable gui;
@@ -60,16 +60,16 @@ public class PVTableEditor extends EditorPart
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         final IWorkbenchPage page = window.getActivePage();
-	    try
-	    {
-	        final EmptyEditorInput input = new EmptyEditorInput();
-	        return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
-	    }
-	    catch (Exception ex)
-	    {
-	        ExceptionDetailsErrorDialog.openError(page.getActivePart().getSite().getShell(), "Cannot create PV Table", ex);
-	    }
-	    return null;
+        try
+        {
+            final EmptyEditorInput input = new EmptyEditorInput();
+            return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(page.getActivePart().getSite().getShell(), "Cannot create PV Table", ex); //$NON-NLS-1$
+        }
+        return null;
     }
 
     public PVTableEditor()
@@ -190,11 +190,11 @@ public class PVTableEditor extends EditorPart
      *  @param file The file to use. May not exist, but I think its container has to.
      *  @return Returns <code>true</code> when successful.
      */
-    private boolean saveToFile(IProgressMonitor monitor, IFile file)
+    private boolean saveToFile(final IProgressMonitor monitor, final IFile file)
     {
         boolean ok = true;
         if (monitor != null)
-            monitor.beginTask("Save", IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Save", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         
         // Write model buffer, then stream from there into file...
         final PVTableModel model = gui.getModel();

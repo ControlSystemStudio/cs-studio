@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
@@ -18,8 +19,8 @@ public class RestoreAction extends PVTableAction
 {
 	public RestoreAction(final TableViewer viewer)
 	{
-		super("Restore", "icons/restore.png", viewer);
-		setToolTipText("Write snapshot values back to PVs");
+		super(Messages.Restore, "icons/restore.png", viewer); //$NON-NLS-1$
+		setToolTipText(Messages.Restore_TT);
 	}
 	
 	public void run()

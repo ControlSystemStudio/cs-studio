@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Preference settings
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Preferences
 {
     public static double getTolerance()
