@@ -126,7 +126,7 @@ public interface PVReader<T> {
      * since, in an aggregate, it can't tell you which channel of the set
      * is connected or not.
      * 
-     * @return 
+     * @return true if reader is connected
      */
     public boolean isConnected();
 }

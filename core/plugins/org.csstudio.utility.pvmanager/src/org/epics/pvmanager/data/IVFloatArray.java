@@ -4,13 +4,8 @@
  */
 package org.epics.pvmanager.data;
 
-import java.text.NumberFormat;
-import java.util.List;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
+import org.epics.util.array.ListInt;
 
 /**
  *
@@ -20,34 +15,18 @@ class IVFloatArray extends IVNumeric implements VFloatArray {
 
     private final float[] array;
     private final ListFloat data;
-    private final List<Integer> sizes;
+    private final ListInt sizes;
 
-    public IVFloatArray(ListFloat data, List<Integer> sizes,
+    public IVFloatArray(ListFloat data, ListInt sizes,
             Alarm alarm, Time time, Display display) {
-        super(alarm.getAlarmSeverity(), alarm.getAlarmStatus(), time.getTimestamp(), time.getTimeUserTag(), time.isTimeValid(),
-                display.getLowerDisplayLimit(), display.getLowerCtrlLimit(), display.getLowerAlarmLimit(), display.getLowerWarningLimit(),
-                display.getUnits(), display.getFormat(),
-                display.getUpperWarningLimit(), display.getUpperAlarmLimit(), display.getUpperCtrlLimit(), display.getUpperDisplayLimit());
+        super(alarm, time, display);
         this.array = null;
         this.sizes = sizes;
         this.data = data;
     }
 
     @Override
-    public float[] getArray() {
-        if (array == null) {
-            float[] temp = new float[data.size()];
-            for (int i = 0; i < data.size(); i++) {
-                temp[i] = data.getFloat(i);
-            }
-            return temp;
-        }
-        
-        return array;
-    }
-
-    @Override
-    public List<Integer> getSizes() {
+    public ListInt getSizes() {
         return sizes;
     }
 

@@ -4,18 +4,22 @@
  */
 package org.epics.pvmanager.data;
 
+import java.util.List;
+import org.epics.pvmanager.data.Enum;
+import org.epics.util.array.ListInt;
+
 /**
  *
  * @author carcassi
  */
-public interface VEnumArray extends Array<String>, Enum, Alarm, Time, VType {
+public interface VEnumArray extends Array, Enum, Alarm, Time, VType {
     @Override
-    String[] getArray();
+    List<String> getData();
     
     /**
      * Returns the indexes instead of the labels.
      * 
      * @return an array of indexes
      */
-    int[] getIndexes();
+    ListInt getIndexes();
 }

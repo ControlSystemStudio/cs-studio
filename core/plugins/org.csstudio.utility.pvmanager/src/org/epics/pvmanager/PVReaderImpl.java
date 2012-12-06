@@ -6,7 +6,6 @@ package org.epics.pvmanager;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * An object representing the PVReader. It contains all elements that are common

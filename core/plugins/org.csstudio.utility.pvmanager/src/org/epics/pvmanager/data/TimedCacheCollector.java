@@ -5,8 +5,8 @@
 package org.epics.pvmanager.data;
 
 import java.util.*;
-import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.Collector;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.TimeInterval;
 

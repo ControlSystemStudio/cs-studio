@@ -4,31 +4,25 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.extra.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import org.epics.pvmanager.ReadRecipe;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReaderDirector;
 import org.epics.pvmanager.PVWriterDirector;
 import org.epics.pvmanager.QueueCollector;
-import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.WriteRecipeBuilder;
-import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 
 /**
- * A write expression a dynamically managed group.
- * Once the group is created, any {@link WriteExpression} can be
- * added dynamically.
+ * A write expression for a key/value map.
+ * <p>
+ * This expression will take the values from the map and will write them
+ * to each child expression matching the key to the name of the child expression.
+ * The map is dynamic: the child expressions can be added and removed
+ * while the reader is active.
+ * <p>
+ * There is currently no way to retrieve the individual errors for each
+ * element of the map.
  *
+ * @param <T> the type for the values in the map
  * @author carcassi
  */
 public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
@@ -49,9 +43,9 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
     }
 
     /**
-     * Removes all the expressions currently in the group.
+     * Removes all the expressions currently in the map.
      * 
-     * @return this
+     * @return this expression
      */
     public WriteMap<T> clear() {
         synchronized(lock) {
@@ -78,10 +72,10 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
     }
 
     /**
-     * Adds the expression at the end.
+     * Adds the expression to the map.
      * 
      * @param expression the expression to be added
-     * @return this
+     * @return this expression
      */
     public WriteMap<T> add(WriteExpression<T> expression) {
         synchronized(lock) {
@@ -101,6 +95,12 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
         }
     }
     
+    /**
+     * Adds the expressions to the map.
+     *
+     * @param expressions the new list of expressions
+     * @return this expression
+     */
     public WriteMap<T> add(WriteExpressionList<T> expressions) {
         synchronized(lock) {
             for (WriteExpression<T> writeExpression : expressions.getWriteExpressions()) {
@@ -111,10 +111,10 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
     }
 
     /**
-     * Removes the expression at the given location.
+     * Removes the expression with the given name.
      * 
-     * @param index the position to remove
-     * @return this
+     * @param name the name of the expression to remove
+     * @return this expression
      */
     public WriteMap<T> remove(String name) {
         synchronized(lock) {
@@ -131,7 +131,13 @@ public class WriteMap<T> extends WriteExpressionImpl<Map<String, T>> {
         }
     }
     
-    public WriteMap<T> remove(List<String> names) {
+    /**
+     * Removes the expressions from the map.
+     *
+     * @param names the names of the expressions to remove
+     * @return this expression
+     */
+    public WriteMap<T> remove(Collection<String> names) {
         synchronized(lock) {
             for (String name : names) {
                 remove(name);

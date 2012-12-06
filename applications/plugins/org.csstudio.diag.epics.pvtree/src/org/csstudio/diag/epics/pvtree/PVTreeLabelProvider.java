@@ -40,8 +40,6 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
 				createImage(display, display.getSystemColor(SWT.COLOR_RED)));
 		images.put(AlarmSeverity.INVALID,
 				createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
-		images.put(AlarmSeverity.UNDEFINED,
-				createImage(display, display.getSystemColor(SWT.COLOR_GRAY)));
 		
 		// Arrange for image disposal
 		widget.addDisposeListener(this);

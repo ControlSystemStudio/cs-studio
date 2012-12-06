@@ -6,14 +6,14 @@ package org.epics.pvmanager;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.expression.DesiredRateExpression;
 import java.util.concurrent.Executor;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.util.Executors;
 import org.epics.util.time.TimeDuration;
 
 /**
  * An expression used to set the final parameters on how the pv expression
- * should be monitored.
+ * should be read.
  * 
  * @param <T> the type of the expression
  * @author carcassi
@@ -32,12 +32,35 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout for no values received.
+     * <p>
+     * For more details, consult {@link #timeout(org.epics.util.time.TimeDuration, java.lang.String) }.
+     *
+     * @param timeout the duration of the timeout; can't be null
+     * @return this expression
+     */
     @Override
     public PVReaderConfiguration<T> timeout(TimeDuration timeout) {
         super.timeout(timeout);
         return this;
     }
 
+    /**
+     * Sets a timeout for no values received with the given message.
+     * <p>
+     * If no value is received before the given time, a {@link TimeoutException}
+     * is notified through the listener. Note the difference: the timeout is
+     * not on the connection but on the value itself. This allows to use timeouts
+     * when creating combined expressions that can produce data even if not
+     * all elements have values. For single channels, this means that if the
+     * channel is connected, but no value has been processed, a timeout
+     * exception is still sent.
+     *
+     * @param timeout the duration of the timeout; can't be null
+     * @param timeoutMessage the message for the reported timeout
+     * @return this expression
+     */
     @Override
     public PVReaderConfiguration<T> timeout(TimeDuration timeout, String timeoutMessage) {
         super.timeout(timeout, timeoutMessage);
@@ -53,9 +76,12 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
     }
     
     /**
+     * Adds a listener notified for any reader event (values, connection and errors).
+     * <p>
+     * Registering a listener here guarantees that no event is ever missed.
      * 
-     * @param listeners
-     * @return 
+     * @param listener the listener to register
+     * @return this expression
      */
     public PVReaderConfiguration<T> readListener(PVReaderListener<? super T> listener) {
         @SuppressWarnings("unchecked")

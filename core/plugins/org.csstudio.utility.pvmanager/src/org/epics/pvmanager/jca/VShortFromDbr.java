@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import org.epics.pvmanager.data.VShort;
+import org.epics.pvmanager.data.VTypeToString;
 
 /**
  *
@@ -21,6 +22,11 @@ class VShortFromDbr extends VNumberMetadata<DBR_TIME_Short, DBR_CTRL_Double> imp
     @Override
     public Short getValue() {
         return dbrValue.getShortValue()[0];
+    }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

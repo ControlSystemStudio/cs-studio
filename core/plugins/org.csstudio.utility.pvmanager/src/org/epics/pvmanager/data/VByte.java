@@ -11,7 +11,7 @@ package org.epics.pvmanager.data;
  * 
  * @author carcassi
  */
-public interface VByte extends Scalar, VNumber, VType {
+public interface VByte extends VNumber, VType {
     /**
      * {@inheritDoc }
      */

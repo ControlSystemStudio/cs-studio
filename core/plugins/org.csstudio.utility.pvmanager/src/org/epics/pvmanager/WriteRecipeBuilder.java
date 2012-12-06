@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A builder for {@link WriteBuffer }.
+ * A builder for {@link WriteRecipe }.
  *
  * @author carcassi
  */
@@ -25,14 +25,26 @@ public class WriteRecipeBuilder {
         caches = new HashMap<>();
     }
     
+    /**
+     * Adds a channel and its write cache to the recipe.
+     *
+     * @param channelName the name of the channel
+     * @param writeCache the cache that will store the value to write
+     * @return this builder
+     */
     public WriteRecipeBuilder addChannel(String channelName, WriteCache<?> writeCache) {
         caches.put(channelName, writeCache);
         return this;
     }
 
     /**
-     * Creates a new WriteRecipe.
+     * Builds the recipe.
+     * <p>
+     * To finish building the recipe, one needs to specify where to send errors
+     * and where to send the connection status changes.
      * 
+     * @param exceptionWriteFunction where exception should be routed
+     * @param connectionCollector where connection status should be routed
      * @return a new WriteRecipe
      */
     public WriteRecipe build(WriteFunction<Exception> exceptionWriteFunction, ConnectionCollector connectionCollector) {

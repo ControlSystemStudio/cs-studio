@@ -7,7 +7,6 @@ package org.epics.pvmanager.sim;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.Time;
 
 /**
@@ -21,7 +20,7 @@ class XmlVMetaData extends ReplayValue implements Time, Alarm {
     @XmlAttribute
     AlarmSeverity alarmSeverity;
     @XmlAttribute
-    AlarmStatus alarmStatus;
+    String alarmName;
 
     @Override
     public Integer getTimeUserTag() {
@@ -34,13 +33,8 @@ class XmlVMetaData extends ReplayValue implements Time, Alarm {
     }
 
     @Override
-    public AlarmStatus getAlarmStatus() {
-        return alarmStatus;
-    }
-
-    @Override
     public String getAlarmName() {
-        return alarmStatus.name();
+        return alarmName;
     }
 
     @Override

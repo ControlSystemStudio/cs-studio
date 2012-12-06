@@ -4,11 +4,9 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.*;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import org.epics.pvmanager.*;
 
 /**
  * A function that takes a map and writes the value to a different expression

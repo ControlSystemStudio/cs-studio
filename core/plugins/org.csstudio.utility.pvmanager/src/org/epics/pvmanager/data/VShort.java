@@ -11,7 +11,7 @@ package org.epics.pvmanager.data;
  * 
  * @author carcassi
  */
-public interface VShort extends Scalar, VNumber, VType {
+public interface VShort extends VNumber, VType {
     /**
      * {@inheritDoc }
      */

@@ -7,7 +7,6 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.TIME;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.Time;
 import org.epics.util.time.Timestamp;
 
@@ -30,13 +29,6 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
         if (disconnected)
             return AlarmSeverity.UNDEFINED;
         return DataUtils.fromEpics(dbrValue.getSeverity());
-    }
-
-    @Override
-    public AlarmStatus getAlarmStatus() {
-        if (disconnected)
-            return AlarmStatus.CLIENT;
-        return DataUtils.fromEpics(dbrValue.getStatus());
     }
 
     @Override

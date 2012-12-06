@@ -5,7 +5,6 @@
 package org.epics.pvmanager.expression;
 
 import java.util.Arrays;
-import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.ValueCacheImpl;
 import org.epics.pvmanager.WriteCache;
 
