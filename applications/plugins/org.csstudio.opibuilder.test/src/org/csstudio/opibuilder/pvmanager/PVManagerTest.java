@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 
 public class PVManagerTest {
 
