@@ -10,11 +10,10 @@ import javax.xml.bind.annotation.XmlElement;
  * Attachments (collection) object that can be represented as XML/JSON in payload data.
  *
  * @author Eric Berryman
- * @deprecated
  */
 
 @XmlRootElement(name = "attachments")
-@Deprecated public class XmlAttachments {
+public class XmlAttachments {
     private Collection<XmlAttachment> attachments = new ArrayList<XmlAttachment>();
 
     /** Creates a new instance of XmlAttachments. */

@@ -53,12 +53,7 @@ public class Activator extends AbstractUIPlugin {
 						org.csstudio.utility.olog.Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_URL,
 						"http://localhost:8080/Olog/resources", null);
-				String jcr_url = prefs.getString(
-						org.csstudio.utility.olog.Activator.PLUGIN_ID,
-						PreferenceConstants.Olog_jcr_URL,
-						"http://localhost:8080/Olog/repository/olog", null);
-				ologClientBuilder = OlogClientBuilder.serviceURL(url).jcrURI(
-						jcr_url);
+				ologClientBuilder = OlogClientBuilder.serviceURL(url);
 				if (prefs.getBoolean(
 						org.csstudio.utility.olog.Activator.PLUGIN_ID,
 						PreferenceConstants.Use_authentication, false, null)) {
