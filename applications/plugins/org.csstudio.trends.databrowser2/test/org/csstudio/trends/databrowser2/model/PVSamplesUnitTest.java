@@ -7,17 +7,20 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test for PVSamples
@@ -37,7 +40,7 @@ public class PVSamplesUnitTest
         assertNull(samples.getYDataMinMax());
 
         // Add 'historic' samples
-        final ArrayList<IValue> history = new ArrayList<IValue>();
+        final List<VType> history = new ArrayList<VType>();
         for (int i=0; i<10; ++i)
             history.add(TestSampleBuilder.makeValue(i));
         samples.mergeArchivedData("Test", history);
@@ -83,11 +86,10 @@ public class PVSamplesUnitTest
         assertEquals(0, samples.getSize());
 
         // Add sample w/ null time stamp, INVALID/UDF
-        final ITimestamp null_time = TimestampFactory.createTimestamp(0, 0);
-        IValue value = ValueFactory.createDoubleValue(null_time,
-                    ValueFactory.createInvalidSeverity(),
-                    "UDF",
-                    null, IValue.Quality.Original, new double[] { 0 });
+        final Timestamp null_time = Timestamp.of(0, 0);
+        VType value = new ArchiveVNumber(null_time, AlarmSeverity.NONE, "", null, 0.0);
+        assertThat(ValueUtil.timeOf(value).isTimeValid(), equalTo(false));
+        
         samples.addLiveSample(value);
         System.out.println("Original: " + value);
 
@@ -96,8 +98,7 @@ public class PVSamplesUnitTest
 
         value = samples.getSample(0).getValue();
         System.out.println("Sampled : " + value);
-        final ITimestamp patched_time = value.getTime();
-        assertTrue(patched_time.isValid());
+        assertThat(ValueUtil.timeOf(value).isTimeValid(), equalTo(true));
     }
     
     @Test
@@ -110,7 +111,7 @@ public class PVSamplesUnitTest
         assertNull(samples.getYDataMinMax());
 
         // Add 'historic' samples
-        final ArrayList<IValue> history = new ArrayList<IValue>();
+        final List<VType> history = new ArrayList<VType>();
         history.add(TestSampleBuilder.makeWaveform(0, new double[] {0.0, 0.1, 0.2}));
         history.add(TestSampleBuilder.makeWaveform(1, new double[] {1.0, 1.1, 1.2, 1.3}));
         samples.mergeArchivedData("Test", history);
@@ -135,7 +136,7 @@ public class PVSamplesUnitTest
         assertEquals(new Range(0.2, 1.2), samples.getYDataMinMax());
 
         // Add more 'historic' samples with non-zero waveform index
-        final ArrayList<IValue> history2 = new ArrayList<IValue>();
+        final List<VType> history2 = new ArrayList<VType>();
         history2.add(TestSampleBuilder.makeWaveform(2, new double[] {2.0, 2.1, 2.2}));
         history2.add(TestSampleBuilder.makeWaveform(3, new double[] {3.0, 3.1, 3.2, 3.3}));
         samples.mergeArchivedData("Test2", history2);

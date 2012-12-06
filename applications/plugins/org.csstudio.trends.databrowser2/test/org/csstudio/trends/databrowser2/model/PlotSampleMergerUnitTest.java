@@ -26,9 +26,8 @@ public class PlotSampleMergerUnitTest
         {
             System.out.println(String.format("%3d: ", i) + samples[i]);
             if ((i > 0)  &&
-                samples[i].getTime().isLessThan(samples[i-1].getTime())) {
+                samples[i].getTime().compareTo(samples[i-1].getTime()) < 0)
                 return false;
-            }
         }
         return true;
     }

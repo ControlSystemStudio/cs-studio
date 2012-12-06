@@ -9,9 +9,8 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.util.List;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 
 /** Holder for 'historic' samples.
  *  <p>
@@ -36,7 +35,7 @@ public class HistoricSamples extends PlotSamples
     private PlotSample samples[] = new PlotSample[0];
 
     /** If non-null, samples beyond this time are hidden from access */
-    private ITimestamp border_time = null;
+    private Timestamp border_time = null;
 
     /** Subset of samples.length that's below border_time
      *  @see #computeVisibleSize()
@@ -59,7 +58,7 @@ public class HistoricSamples extends PlotSamples
      *  are returned from the history
      *  @param border_time New time or <code>null</code> to access all samples
      */
-    public void setBorderTime(final ITimestamp border_time)
+    public void setBorderTime(final Timestamp border_time)
     {   // Anything new?
         if (border_time == null)
         {
@@ -111,7 +110,7 @@ public class HistoricSamples extends PlotSamples
      *  @param source Info about data source
      *  @param result Samples to add/merge
      */
-    synchronized public void mergeArchivedData(final String source, final List<IValue> result)
+    synchronized public void mergeArchivedData(final String source, final List<VType> result)
     {
         // Anything new at all?
         if (result.size() <= 0)

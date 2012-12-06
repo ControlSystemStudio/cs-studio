@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.data.values.IValue;
+import org.epics.pvmanager.data.VType;
 
 /** Plain array implementation of PlotSamples
  *  @author Kay Kasemir
@@ -35,7 +35,7 @@ public class PlotSampleArray extends PlotSamples
     /** @param source Source of the values
      *  @param values Values from which to set the sample array
      */
-    synchronized public void set(final String source, final ArrayList<IValue> values)
+    synchronized public void set(final String source, final List<VType> values)
     {
         samples = new PlotSample[values.size()];
         for (int i = 0; i < samples.length; ++i)

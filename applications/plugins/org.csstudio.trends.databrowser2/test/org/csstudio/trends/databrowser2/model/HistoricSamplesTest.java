@@ -10,10 +10,11 @@ package org.csstudio.trends.databrowser2.model;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of HistoricSamples
@@ -30,7 +31,7 @@ public class HistoricSamplesTest
         final HistoricSamples history = new HistoricSamples();
         final int N = 10;
         // Initial data, time 10..19
-        final ArrayList<IValue> samples = new ArrayList<IValue>();
+        final List<VType> samples = new ArrayList<VType>();
         for (int i=0; i<N; ++i) {
             samples.add(TestSampleBuilder.makeValue(N+i));
         }
@@ -48,7 +49,7 @@ public class HistoricSamplesTest
         assertEquals(new Range(10, 19), range);
 
         // Check subset
-        history.setBorderTime(TimestampFactory.fromDouble(12));
+        history.setBorderTime(Timestamp.of(12, 0));
         assertEquals(2, history.getSize());
         assertEquals(new Range(10, 11), history.getYDataMinMax());
 
@@ -67,13 +68,13 @@ public class HistoricSamplesTest
         //System.out.println(range);
         assertEquals(new Range(0, 19), range);
 
-        history.setBorderTime(TimestampFactory.fromDouble(12));
+        history.setBorderTime(Timestamp.of(12, 0));
         assertEquals(12, history.getSize());
 
-        history.setBorderTime(TimestampFactory.fromDouble(100));
+        history.setBorderTime(Timestamp.of(100, 0));
         assertEquals(20, history.getSize());
 
-        history.setBorderTime(TimestampFactory.fromDouble(0));
+        history.setBorderTime(Timestamp.of(0, 0));
         assertEquals(0, history.getSize());
 
         history.setBorderTime(null);

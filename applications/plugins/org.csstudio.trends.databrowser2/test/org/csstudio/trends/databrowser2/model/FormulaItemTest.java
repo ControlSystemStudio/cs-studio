@@ -26,7 +26,6 @@ import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the FormulaItem
  *  @author Kay Kasemir
- *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
 public class FormulaItemTest

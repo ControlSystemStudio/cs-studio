@@ -7,30 +7,25 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import org.csstudio.data.values.IMinMaxDoubleValue;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.osgi.util.NLS;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VStatistics;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
+import org.epics.util.time.Timestamp;
 
-/** Data Sample from control system (IValue)
- *  with interface for XYGraph (ISample)
+/** Data Sample from control system ({@link VType})
+ *  with interface for XYGraph ({@link ISample})
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
  */
 public class PlotSample implements ISample
 {
-    final public static INumericMetaData dummy_meta = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 1, "a.u."); //$NON-NLS-1$
-    final public static ISeverity ok_severity = ValueFactory.createOKSeverity();
-
     /** Value contained in this sample */
-    final private IValue value;
+    final private VType value;
 
     /** Source of the data */
     final private String source;
@@ -47,7 +42,7 @@ public class PlotSample implements ISample
      *  @param source Info about the source of this sample
      *  @param value
      */
-    public PlotSample(final String source, final IValue value)
+    public PlotSample(final String source, final VType value)
     {
         this.value = value;
         this.source = source;
@@ -59,9 +54,7 @@ public class PlotSample implements ISample
      */
     public PlotSample(final String source, final String info)
     {
-        this(source, ValueFactory.createDoubleValue(TimestampFactory.now(),
-                ValueFactory.createInvalidSeverity(), info, dummy_meta,
-                IValue.Quality.Original, new double[] { Double.NaN }));
+        this(source, ValueFactory.newVString(info, ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, info), ValueFactory.timeNow()));
         this.info = info;
     }
 
@@ -70,9 +63,7 @@ public class PlotSample implements ISample
     PlotSample(final double x, final double y)
     {
         this("Test",
-             ValueFactory.createDoubleValue(TimestampFactory.fromDouble(x),
-               ok_severity, ok_severity.toString(), dummy_meta,
-               IValue.Quality.Original, new double[] { y }));
+             ValueFactory.newVDouble(y, ValueFactory.newTime(Timestamp.of((long) x, 0))));
     }
     
     /** @return Waveform index */
@@ -94,15 +85,15 @@ public class PlotSample implements ISample
     }
 
     /** @return Control system value */
-    public IValue getValue()
+    public VType getValue()
     {
         return value;
     }
 
     /** @return Control system time stamp */
-    public ITimestamp getTime()
+    public Timestamp getTime()
     {
-        return value.getTime();
+        return VTypeHelper.getTimestamp(value);
     }
 
     /** Since the 'X' axis is used as a 'Time' axis, this
@@ -113,19 +104,15 @@ public class PlotSample implements ISample
     @Override
     public double getXValue()
     {
-        return value.getTime().toDouble()*1000.0;
+        final Timestamp time = getTime();
+        return time.getSec() * 1000.0 + time.getNanoSec() / 1e6;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
-            return ValueUtil.getDouble(value, waveform_index);
-        }
-        
-        // No numeric value or out of range. Plot shows NaN as marker.
-        return Double.NaN;
+        return VTypeHelper.toDouble(value, waveform_index);
     }
 
     /** Get sample's info text.
@@ -157,7 +144,7 @@ public class PlotSample implements ISample
     @Override
     public double getYMinusError()
     {
-        if (!(value instanceof IMinMaxDoubleValue))
+        if (!(value instanceof VStatistics))
             return 0;
         
         // Although the behavior of getMinimum() method depends on archive
@@ -169,15 +156,15 @@ public class PlotSample implements ISample
         if (waveform_index != 0)
         	return 0;
 
-        final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
-        return minmax.getValue() - minmax.getMinimum();
+        final VStatistics minmax = (VStatistics)value;
+        return minmax.getAverage() - minmax.getMin();
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYPlusError()
     {
-        if (!(value instanceof IMinMaxDoubleValue))
+        if (!(value instanceof VStatistics))
             return 0;
  
         // Although the behavior of getMaximum() method depends on archive
@@ -189,13 +176,13 @@ public class PlotSample implements ISample
         if (waveform_index != 0)
         	return 0;
         
-        final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
-        return minmax.getMaximum() - minmax.getValue();
+        final VStatistics minmax = (VStatistics)value;
+        return minmax.getMax() - minmax.getAverage();
     }
 
     @Override
     public String toString()
     {
-        return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source, value.getQuality().toString() });
+        return NLS.bind(Messages.PlotSampleFmt, new Object[] { VTypeHelper.toString(value), source });
     }
 }

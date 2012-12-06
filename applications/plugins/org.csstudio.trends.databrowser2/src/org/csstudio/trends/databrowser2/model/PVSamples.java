@@ -10,10 +10,13 @@ package org.csstudio.trends.databrowser2.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueUtil;
 
 /** Samples of a {@link PVItem}.
  *  <p>
@@ -101,7 +104,7 @@ public class PVSamples extends PlotSamples
         if (raw <= 0)
             return raw;
         final PlotSample last = getSample(raw-1);
-        if (! last.getValue().getSeverity().hasValue())
+        if (VTypeHelper.getSeverity(last.getValue()) == AlarmSeverity.UNDEFINED)
             return raw;
         // Last sample is valid, so it should still apply 'now'
         return raw+1;
@@ -126,7 +129,7 @@ public class PVSamples extends PlotSamples
             return getRawSample(index);
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
-        return ValueButcher.changeTimestampToNow(sample);
+        return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getValue()));
     }
 
     /** Get 'raw' sample, no continuation until 'now'
@@ -200,7 +203,7 @@ public class PVSamples extends PlotSamples
      *  @param result Historic data
      */
     synchronized public void mergeArchivedData(final String source,
-            final List<IValue> result)
+            final List<VType> result)
     {
         history.mergeArchivedData(source, result);
     }
@@ -208,10 +211,10 @@ public class PVSamples extends PlotSamples
     /** Add another 'live' sample
      *  @param value 'Live' sample
      */
-    synchronized public void addLiveSample(IValue value)
+    synchronized public void addLiveSample(VType value)
     {
-        if (! value.getTime().isValid())
-            value = ValueButcher.changeTimestampToNow(value);
+        if (! ValueUtil.timeOf(value).isTimeValid())
+            value = VTypeHelper.transformTimestampToNow(value);
         addLiveSample(new PlotSample(Messages.LiveData, value));
     }
 
