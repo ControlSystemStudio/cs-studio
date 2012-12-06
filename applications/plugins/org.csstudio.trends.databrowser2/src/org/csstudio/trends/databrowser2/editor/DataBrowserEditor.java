@@ -21,6 +21,8 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.DataBrowserInput;
+import org.csstudio.trends.databrowser2.IDataBrowserInput;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
 import org.csstudio.trends.databrowser2.exportview.ExportView;
@@ -75,7 +77,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 
 /** Eclipse 'editor' for the Data Browser
@@ -161,30 +162,31 @@ public class DataBrowserEditor extends EditorPart
 	        model = new Model();
 	        setInput(new DataBrowserModelEditorInput(input, model));
 
-	        if (! (input instanceof EmptyEditorInput))
-	        {
-	            // Load model content from file
-    	        InputStream stream = null;
-    	        try
-    	        {
-    	            final IFile workspace_file = getWorkspaceFile();
-        	        if (workspace_file != null)
-        	            stream = workspace_file.getContents(true);
-        	        else
-        	        {
-        	            final File file = getInputFile();
-        	            if (file != null)
-        	                stream = new FileInputStream(file);
-        	        }
-        	        if (stream == null)
-        	            throw new PartInitException("Cannot handle " + input.getName()); //$NON-NLS-1$
-                    model.read(stream);
-	            }
-	            catch (Exception ex)
-	            {
-	                throw new PartInitException(NLS.bind(Messages.ConfigFileErrorFmt, input.getName()), ex);
-	            }
-	        }
+			if (!(input instanceof EmptyEditorInput)) {
+				// Load model content from file
+				InputStream stream = null;
+				try {
+					if (input instanceof IDataBrowserInput) {
+						stream = ((IDataBrowserInput) input).getInputStream();
+					} else {
+						final IFile workspace_file = getWorkspaceFile();
+						if (workspace_file != null)
+							stream = workspace_file.getContents(true);
+						else {
+							final File file = getInputFile();
+							if (file != null)
+								stream = new FileInputStream(file);
+						}
+					}
+					if (stream == null)
+						throw new PartInitException(
+								"Cannot handle " + input.getName()); //$NON-NLS-1$
+					model.read(stream);
+				} catch (Exception ex) {
+					throw new PartInitException(NLS.bind(
+							Messages.ConfigFileErrorFmt, input.getName()), ex);
+				}
+			}
         }
 
         model_listener = new ModelListener()
@@ -352,27 +354,34 @@ public class DataBrowserEditor extends EditorPart
             ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
-        mm.add(new Separator());
-        mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,
-                activator.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
-        mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-                activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
-        mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
-                activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
-        mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
-                activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
-        mm.add(new OpenViewAction(WaveformView.ID, Messages.OpenWaveformView,
-                activator.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
-        mm.add(new OpenPerspectiveAction(
-                activator.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
-                Messages.OpenDataBrowserPerspective,
-                Perspective.ID));
-        mm.add(new Separator());
-        if (SendToElogActionHelper.isElogAvailable())
-            mm.add(new SendToElogAction(shell, plot.getXYGraph()));
-        if (EMailSender.isEmailSupported())
-            mm.add(new SendEMailAction(shell, plot.getXYGraph()));
-        mm.add(new PrintAction(shell, plot.getXYGraph()));
+		if (!Activator.isRAP()) {
+			mm.add(new Separator());
+			mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET,
+					Messages.OpenPropertiesView, activator
+							.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
+			mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+					activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
+			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
+					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
+		}
+		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
+				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
+		if (!Activator.isRAP()) {
+			mm.add(new OpenViewAction(WaveformView.ID,
+					Messages.OpenWaveformView, activator
+							.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
+			mm.add(new OpenPerspectiveAction(activator
+					.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
+					Messages.OpenDataBrowserPerspective, Perspective.ID));
+			mm.add(new Separator());
+			if (SendToElogActionHelper.isElogAvailable()) {
+				mm.add(new SendToElogAction(shell, plot.getXYGraph()));
+			}
+			if (EMailSender.isEmailSupported()) {
+				mm.add(new SendEMailAction(shell, plot.getXYGraph()));
+			}
+		}
+		mm.add(new PrintAction(shell, plot.getXYGraph()));
 
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
@@ -474,7 +483,7 @@ public class DataBrowserEditor extends EditorPart
             return;
         // Set that file as editor's input, so that just 'save' instead of
         // 'save as' is possible from now on
-        setInput(new DataBrowserModelEditorInput(new FileEditorInput(file), model));
+        setInput(new DataBrowserModelEditorInput(new DataBrowserInput(file.getFullPath()), model));
         setPartName(file.getName());
     }
 
@@ -484,6 +493,10 @@ public class DataBrowserEditor extends EditorPart
      */
     private IFile promptForFile(final IFile old_file)
     {
+    	// TODO RAP and RCP
+		if (Activator.isRAP()) {
+                throw new RuntimeException("Not yet implemented for web version.");
+		}
         final SaveAsDialog dlg = new SaveAsDialog(getSite().getShell());
         dlg.setBlockOnOpen(true);
         if (old_file != null)
