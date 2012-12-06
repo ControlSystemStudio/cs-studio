@@ -6,21 +6,21 @@ import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.util.DisplayUtils;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.swt.widgets.Display;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 
 /**A utility PV which uses PVManager as the connection layer. 
  * Type of the value returned by {@link #getValue()} is always {@link PMObjectValue}.
@@ -29,8 +29,7 @@ import org.epics.pvmanager.PVWriter;
  */
 public class PVManagerPV implements PV {
 	
-	final private static String KEY_SWT_THREAD = "org.csstudio.opibuilder.swt_thread"; //$NON-NLS-1$
-	private static Executor SWT_THREAD;    
+	private final static ExecutorService PMPV_THREAD = Executors.newSingleThreadExecutor();
 	final private String name;
 	final private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener<Object>> listenerMap;
@@ -43,21 +42,16 @@ public class PVManagerPV implements PV {
 	private PVReader<?> pvReader;
 	private PVWriter<Object> pvWriter;
 	private int updateDuration;
-	private Display display;
 	/**Construct a PVManger PV.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
 	 * @param updateDuration the least update duration.
-	 * @param display display of the SWT thread. Can be null for non-rap application.
 	 */
-	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration, Display display) {
+	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration) {
 		this.name = name;
 		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
-		this.display = display;
-		if(display ==null)
-			this.display = DisplayUtils.getDisplay();
 	}
 
 	@Override
@@ -79,30 +73,27 @@ public class PVManagerPV implements PV {
 	
 			@Override
 			public void pvChanged(PVReaderEvent<Object> event) {
-				if (!pvReader.isConnected()) {
+				if (event.isConnectionChanged() && !pvReader.isConnected()) {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
 				}
-				Object newValue = pvReader.getValue();
-				if (newValue == null) {
-					return;
-				}
+//				Object newValue = pvReader.getValue();
+//				if (newValue == null) {
+//					return;
+//				}
 				listener.pvValueUpdate(PVManagerPV.this);
 			}
 		};
 		listenerMap.put(listener, pvReaderListener);
 		if(pvReader !=null){
-			//give an update on current value in SWT thread.
+			//give an update on current value in PMPV thread.
 			if(!pvReader.isClosed() && pvReader.isConnected() && !pvReader.isPaused()){
-				if(Display.getCurrent() == null)
-					DisplayUtils.getDisplay().asyncExec(new Runnable() {						
+				PMPV_THREAD.execute(new Runnable() {						
 						@Override
 						public void run() {
 							pvReaderListener.pvChanged(null);
 						}
 					});
-				else
-					pvReaderListener.pvChanged(null);
 			}
 			
 			pvReader.addPVReaderListener(pvReaderListener);			
@@ -122,58 +113,52 @@ public class PVManagerPV implements PV {
 	@Override
 	public synchronized void start() throws Exception {		
 		if (pvReader == null) {
-			if (Display.getCurrent() != null)
-				internalStart();
-			else {
-				if (display != null)
-					display.asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							internalStart();
-						}
-					});
-				else
-					throw new RuntimeException("display is null. The PV must be " +
-							"started in SWT thread. Please specify the display when create the PV.");
-
-			}
-
+			PMPV_THREAD.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					internalStart();
+				}
+			});
 		} else
-	pvReader.setPaused(false);
+			pvReader.setPaused(false);
 	}
 
 	/**
-	 * This method must be called in swt thread, because PVManager requires
+	 * This method must be called in PMPV thread, because PVManager requires
 	 * that creating PVReader, adding listeners must be done in the notification
 	 * thread and must be in the same runnable to make sure no updates are missed. 
 	 */
 	private void internalStart() {
-		Executor swtThread = null;
-		if(OPIBuilderPlugin.isRAP()){
-			swtThread = (Executor) display.getData(KEY_SWT_THREAD);
-			if(swtThread == null){
-				swtThread = createSWTThread(display);
-				display.setData(KEY_SWT_THREAD, swtThread);
-			}
-		}else {
-			if(SWT_THREAD == null)
-				SWT_THREAD = createSWTThread(DisplayUtils.getDisplay());
-			swtThread = SWT_THREAD;
-		}
+		
 		if (valueBuffered) {
 			pvReader = PVManager.read(newValuesOf(channel(name)))
-					.notifyOn(swtThread)
+					.notifyOn(PMPV_THREAD)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		} else {
-			pvReader = PVManager.read(channel(name)).notifyOn(swtThread)
+			pvReader = PVManager.read(channel(name)).notifyOn(PMPV_THREAD)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		}
 		for(PVReaderListener<Object> pvReaderListener : listenerMap.values())
 			pvReader.addPVReaderListener(pvReaderListener);
-		pvWriter = PVManager.write(channel(name))
+		
+		pvWriter = PVManager.write(channel(name)).notifyOn(PMPV_THREAD)
 				.routeExceptionsTo(exceptionHandler).async();
+		pvWriter.addPVWriterListener(new PVWriterListener<Object>() {
+
+			@Override
+			public void pvChanged(PVWriterEvent<Object> event) {
+				//give an update if write connection state changed
+				if(event.isConnectionChanged())
+					for(PVListener listener: listenerMap.keySet()){
+						listener.pvValueUpdate(PVManagerPV.this);
+					}
+			}
+		});		
+
+		
 	}
 
 	public boolean isValueBuffered() {
@@ -240,7 +225,9 @@ public class PVManagerPV implements PV {
 	@Override
 	public synchronized IValue getValue() {
 		checkIfPVStarted();
-		return new PMObjectValue(pvReader.getValue(), valueBuffered);
+		if(pvReader.getValue() != null)
+			return new PMObjectValue(pvReader.getValue(), valueBuffered);
+		return null;
 	}
 
 	@Override
@@ -253,22 +240,5 @@ public class PVManagerPV implements PV {
 		if(pvReader == null || pvWriter == null)
 			throw new IllegalStateException("PVManagerPV is not started yet.");
 	}
-	
-
-	private static Executor createSWTThread(final org.eclipse.swt.widgets.Display display) {
-		return new Executor() {
-
-	        @Override
-	        public void execute(Runnable task) {
-	            try {
-	            	if (!display.isDisposed()) {
-	            	    display.asyncExec(task);
-	            	}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	        }
-	    };
-	}
-
+		
 }

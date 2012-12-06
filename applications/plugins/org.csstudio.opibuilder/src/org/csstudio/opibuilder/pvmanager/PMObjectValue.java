@@ -36,6 +36,10 @@ public class PMObjectValue implements IValue {
 	private Object latestValue;
 	private List<Object> allValues;
 	
+	/**
+	 * @param pmValue value from PVManager, cannot be null.
+	 * @param valueBuffered if all value is buffered.
+	 */
 	@SuppressWarnings("unchecked")
 	public PMObjectValue(Object pmValue, boolean valueBuffered) {
 		if(valueBuffered){
@@ -153,6 +157,19 @@ public class PMObjectValue implements IValue {
 			cachedString = sb.toString();
 		}
 		return cachedString;
+	}
+	
+	@Override
+	public int hashCode() {
+		return latestValue.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof PMObjectValue)
+			if(((PMObjectValue)obj).getLatestValue().equals(latestValue))
+				return true;
+		return false;
 	}
 
 }

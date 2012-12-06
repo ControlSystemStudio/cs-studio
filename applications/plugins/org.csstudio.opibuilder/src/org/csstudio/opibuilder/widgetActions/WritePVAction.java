@@ -84,9 +84,7 @@ public class WritePVAction extends AbstractWidgetAction {
 				String text = getValue().trim();
 				PV pv = null;	
 				try {
-					pv = BOYPVFactory.createPV(getPVName(), false,
-							getWidgetModel().getRootDisplayModel().getViewer()
-									.getControl().getDisplay());
+					pv = BOYPVFactory.createPV(getPVName(), false);
 					pv.start();
 					long startTime = System.currentTimeMillis();
 					int timeout = getTimeout()*1000;

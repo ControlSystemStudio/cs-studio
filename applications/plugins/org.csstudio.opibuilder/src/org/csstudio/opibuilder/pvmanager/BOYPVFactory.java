@@ -22,21 +22,20 @@ public class BOYPVFactory{
 	 * @see {@link #createPV(String, boolean, int)}
 	 */
 	public static PV createPV(final String name) throws Exception {
-		return createPV(name, false, null);
+		return createPV(name, false);
 	}
 	
 	/**Create a PV. If it is using PV Manager, max update rate is determined by GUI Refresh cycle.
 	 * @param name name of the PV.
 	 * @param bufferAllValues if all values should be buffered. Only meaningful if it is using
 	 * PV Manager.
-	 * @param display the display related to the SWT thread.
 	 * @return the PV
 	 * @throws Exception
 	 * @see {@link #createPV(String, boolean, int)}
 	 */
-	public static PV createPV(final String name, final boolean bufferAllValues, final Display display) throws Exception{
+	public static PV createPV(final String name, final boolean bufferAllValues) throws Exception{
 		return createPV(name, bufferAllValues, 
-				PreferencesHelper.getGUIRefreshCycle(), display);
+				PreferencesHelper.getGUIRefreshCycle());
 	}
 	
 	/**Create a PV based on PV connection layer preference.
@@ -44,15 +43,14 @@ public class BOYPVFactory{
 	 * @param bufferAllValues if all values should be buffered. Only meaningful if it is using
 	 * PV Manager.
 	 * @param updateDuration the fastest update duration.
-	 * @param display the display related to the SWT thread.
 	 * @return the PV
 	 * @throws Exception
 	 */
 	public static PV createPV(final String name, 
-			final boolean bufferAllValues, final int updateDuration, final Display display) throws Exception{
+			final boolean bufferAllValues, final int updateDuration) throws Exception{
 		switch (PreferencesHelper.getPVConnectionLayer()) {
 		case PV_MANAGER:
-			return new PVManagerPV(name, bufferAllValues, updateDuration, display);
+			return new PVManagerPV(name, bufferAllValues, updateDuration);
 		case UTILITY_PV:
 		default:
 			return PVFactory.createPV(name);			

@@ -82,13 +82,17 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 				}
 
 			}
-			if(ignoreOldPVValue){
-				widgetModel.getPVMap().get(widgetModel.
-					getProperty(pvPropID)).setPropertyValue_IgnoreOldValue(pv.getValue());
-			}else
-				widgetModel.getPVMap().get(widgetModel.
-					getProperty(pvPropID)).setPropertyValue(pv.getValue());
-
+			if (pv.getValue() != null) {
+				if (ignoreOldPVValue) {
+					widgetModel.getPVMap()
+							.get(widgetModel.getProperty(pvPropID))
+							.setPropertyValue_IgnoreOldValue(pv.getValue());
+				} else
+					widgetModel.getPVMap()
+							.get(widgetModel.getProperty(pvPropID))
+							.setPropertyValue(pv.getValue());
+			}
+			
 		}
 	}
 	//invisible border for no_alarm state, this can prevent the widget from resizing
