@@ -11,19 +11,23 @@ import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Time;
+import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VEnumArray;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
 /** {@link VType} helper
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class VTypeHelper
 {
 	/** Number of array elements to show before shortening the printout */
@@ -39,9 +43,46 @@ public class VTypeHelper
             return ((VNumber)value).getValue().doubleValue();
         if (value instanceof VEnum)
             return ((VEnum)value).getIndex();
+        if (value instanceof VStatistics)
+            return ((VStatistics)value).getAverage();
+        if (value instanceof VNumberArray)
+        {
+            final ListNumber data = ((VNumberArray) value).getData();
+            return data.getDouble(0);
+        }
+        if (value instanceof VEnumArray)
+        {
+            final ListInt data = ((VEnumArray) value).getIndexes();
+            return data.getDouble(0);
+        }
         return Double.NaN;
     }
 
+    /** Read number from a {@link VType}
+     *  @param value Value
+     *  @param index Waveform index
+     *  @return double or NaN
+     */
+    final public static double toDouble(final VType value, final int index)
+    {
+        if (index == 0)
+            return toDouble(value);
+        if (value instanceof VNumberArray)
+        {
+            final ListNumber data = ((VNumberArray) value).getData();
+            if (index < data.size())
+                return data.getDouble(index);
+        }
+        if (value instanceof VEnumArray)
+        {
+            final ListInt data = ((VEnumArray) value).getIndexes();
+            if (index < data.size())
+                return data.getDouble(index);
+        }
+        return Double.NaN;
+    }
+
+    
     /** Decode a {@link VType}'s time stamp
 	 *  @param value Value to decode
 	 *  @return {@link Timestamp}
@@ -57,6 +98,52 @@ public class VTypeHelper
 	    return Timestamp.now();
 	}
 	
+    /** @return Copy of given value with timestamp set to 'now',
+     *          or <code>null</code> if value is not handled
+     */
+    public static VType transformTimestampToNow(final VType value)
+    {
+        return transformTimestamp(value, Timestamp.now());
+    }
+
+    /** @return Copy of given value with updated timestamp,
+     *          or <code>null</code> if value is not handled
+     */
+    public static VType transformTimestamp(final VType value,
+                                           final Timestamp time)
+    {
+        if (value instanceof VNumber)
+        {
+            final VNumber number = (VNumber) value;
+            return new ArchiveVNumber(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getValue());
+        }
+        if (value instanceof VString)
+        {
+            final VString string = (VString) value;
+            return new ArchiveVString(time, string.getAlarmSeverity(), string.getAlarmName(), string.getValue());
+        }
+        if (value instanceof VDoubleArray)
+        {
+            final VDoubleArray number = (VDoubleArray) value;
+            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getData());
+        }
+        if (value instanceof VNumberArray)
+        {
+            final VNumberArray number = (VNumberArray) value;
+            final ListNumber data = number.getData();
+            final double[] dbl = new double[data.size()];
+            for (int i=0; i<dbl.length; ++i)
+                dbl[i] = data.getDouble(i);
+            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, dbl);
+        }
+        if (value instanceof VEnum)
+        {
+            final VEnum labelled = (VEnum) value;
+            return new ArchiveVEnum(time, labelled.getAlarmSeverity(), labelled.getAlarmName(), labelled.getLabels(), labelled.getIndex());
+        }
+        return null;
+    }
+    
 	/** @param buf Buffer where value's time stamp is added
 	 *  @param value {@link VType}
 	 */
@@ -141,7 +228,7 @@ public class VTypeHelper
 			final VNumber number = (VNumber) value;
 			final Display display = (Display) number;
 			addNumber(buf, display, number.getValue().doubleValue());
-			if (display.getUnits() != null)
+			if (display != null  &&  display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}
 		else if (value instanceof VNumberArray)
@@ -175,7 +262,7 @@ public class VTypeHelper
 					addNumber(buf, display, list.getDouble(i));
 				}
 			}
-			if (display.getUnits() != null)
+            if (display != null  &&  display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}
 		else if (value instanceof VStatistics)
@@ -188,7 +275,7 @@ public class VTypeHelper
 			if (dev > 0)
 				buf.append(", dev ").append(dev);
 			buf.append("]");
-			if (display.getUnits() != null)
+            if (display != null  &&  display.getUnits() != null)
 				buf.append(" ").append(display.getUnits());
 		}
 		else if (value instanceof VString)

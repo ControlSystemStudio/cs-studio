@@ -95,7 +95,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                     return;
                 }
                 // No new value, but we'd like to write a sample every once in a while
-                value = ValueButcher.transformTimestampToNow(most_recent_value);
+                value = VTypeHelper.transformTimestampToNow(most_recent_value);
                 if (value == null)
                 {
                     Activator.getLogger().log(Level.WARNING, "{0} cannot handle value type {1}",

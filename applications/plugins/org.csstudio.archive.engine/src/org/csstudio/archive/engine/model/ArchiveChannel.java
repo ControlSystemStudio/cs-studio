@@ -370,7 +370,7 @@ abstract public class ArchiveChannel
                 if (last.compareTo(VTypeHelper.getTimestamp(value)) >= 0)
                 {   // Patch the time stamp
                     final Timestamp next = last.plus(TimeDuration.ofMillis(100));
-                    value = ValueButcher.transformTimestamp(value, next);
+                    value = VTypeHelper.transformTimestamp(value, next);
                 }
                 // else: value is OK as is
             }
@@ -471,7 +471,7 @@ abstract public class ArchiveChannel
             if (value != null)
             {   // Add to the buffer with timestamp 'now' to show
                 // the re-enablement
-                value = ValueButcher.transformTimestampToNow(value);
+                value = VTypeHelper.transformTimestampToNow(value);
                 addValueToBuffer(value);
             }
         }
