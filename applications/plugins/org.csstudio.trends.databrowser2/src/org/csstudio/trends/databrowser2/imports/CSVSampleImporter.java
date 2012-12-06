@@ -46,8 +46,10 @@ public class CSVSampleImporter implements SampleImporter
         // To be reentrant, need per-call parsers
         final DateFormat date_parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         final Pattern pattern = Pattern.compile(
-                //    YYYY-MM-DD HH:MM:SS.SSS
-                "\\s*([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])[ \\t,]+([-+0-9.e]+)\\s*");
+                //    YYYY-MM-DD HH:MM:SS.SSS   value  ignore
+                // or
+                //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value  ignore
+                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.eE]+)\\s*.*");
 
         final List<IValue> values = new ArrayList<IValue>();
 
@@ -56,8 +58,8 @@ public class CSVSampleImporter implements SampleImporter
         while ((line = reader.readLine()) != null)
         {
             line = line.trim();
-            // Skip empty lines
-            if (line.length() <= 0)
+            // Skip empty lines, comments
+            if (line.length() <= 0  ||  line.startsWith("#"))
                 continue;
             // Locate time and value
             final Matcher matcher = pattern.matcher(line);
@@ -67,7 +69,12 @@ public class CSVSampleImporter implements SampleImporter
                 continue;
             }
             // Parse
-            final Date date = date_parser.parse(matcher.group(1));
+            // Date may use '-' or '/' as separator. Force '-'
+            String date_text = matcher.group(1).replace('/', '-');
+            // Can only parse up to millisecs, so limit length
+            if (date_text.length() > 23)
+                date_text = date_text.substring(0, 23);
+            final Date date = date_parser.parse(date_text);
             final double number = Double.parseDouble(matcher.group(2));
             // Turn into IValue
             final ITimestamp time = TimestampFactory.fromMillisecs(date.getTime());
