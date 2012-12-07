@@ -9,11 +9,11 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -35,6 +35,9 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** (Headless) JUnit Plug-in demo of Plot
@@ -49,7 +52,7 @@ public class PlotDemo
 {
     private boolean run = true;
     private volatile boolean scroll = true;
-    private ITimestamp start_time, end_time;
+    private Timestamp start_time, end_time;
 
     final private PlotListener listener = new PlotListener()
     {
@@ -69,8 +72,8 @@ public class PlotDemo
         @Override
         public void timeAxisChanged(final long start_ms, final long end_ms)
         {
-        	start_time = TimestampFactory.fromMillisecs(start_ms);
-        	end_time = TimestampFactory.fromMillisecs(end_ms);
+        	start_time = TimestampHelper.fromMillisecs(start_ms);
+        	end_time = TimestampHelper.fromMillisecs(end_ms);
         	System.out.println("Time axis: " + start_time + " ... " + end_time);
         }
 
@@ -211,10 +214,9 @@ public class PlotDemo
         plot.addListener(listener);
 
         // Create demo samples
-        final ArrayList<IValue> values = new ArrayList<IValue>();
-        for (int i=1; i<10; ++i) {
+        final List<VType> values = new ArrayList<VType>();
+        for (int i=1; i<10; ++i)
             values.add(TestHelper.makeValue(i));
-        }
         values.add(TestHelper.makeError(15, "Disconnected"));
         // Single value. Line should continue until the following 'disconnect'.
         values.add(TestHelper.makeValue(17));
@@ -245,8 +247,8 @@ public class PlotDemo
         item.setColor(new RGB(0, 0, 255));
         plot.addTrace(item);
 
-        start_time = samples.getSample(0).getValue().getTime();
-        end_time = samples.getSample(samples.getSize()-1).getValue().getTime();
+        start_time = VTypeHelper.getTimestamp(samples.getSample(0).getValue());
+        end_time = VTypeHelper.getTimestamp(samples.getSample(samples.getSize()-1).getValue());
         plot.setTimeRange(start_time, end_time);
 
         new Thread(new Runnable()
@@ -266,8 +268,8 @@ public class PlotDemo
 					}
 					if (scroll)
 					{
-						start_time = TimestampFactory.createTimestamp(start_time.seconds() + 1, start_time.nanoseconds());
-						end_time = TimestampFactory.createTimestamp(end_time.seconds() + 1, end_time.nanoseconds());
+						start_time = start_time.plus(TimeDuration.ofSeconds(1));
+						end_time = end_time.plus(TimeDuration.ofSeconds(1));
 						display.syncExec(new Runnable()
 						{
 							@Override

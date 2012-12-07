@@ -65,6 +65,33 @@ public class HamcrestMatchers
             }
         };
     }
+    
+    /** @param threshold Threshold for less-than
+     *  @return {@link Matcher}
+     */
+    public static Matcher<Number> lessThan(final Number threshold)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("less than " + threshold);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return dbl < threshold.doubleValue();
+                }
+                return false;
+            }
+        };
+    }
+
 
     /** @param minimum Desired minimum value
      *  @return {@link Matcher}

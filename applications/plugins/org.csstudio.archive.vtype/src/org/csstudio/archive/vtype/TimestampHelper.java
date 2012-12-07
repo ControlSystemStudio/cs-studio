@@ -66,15 +66,37 @@ public class TimestampHelper
         return Timestamp.of(seconds,  nanoseconds);
     }
     
+    /** @param millisecs Milliseconds since 1970 epoch
+     *  @return EPICS Timestamp
+     */
+    public static Timestamp fromMillisecs(final long millisecs)
+    {
+        long seconds = millisecs/1000;
+        int nanoseconds = (int) (millisecs % 1000) * 1000000;
+        if (nanoseconds < 0)
+        {
+            long pastSec = nanoseconds / 1000000000;
+            pastSec--;
+            seconds += pastSec;
+            nanoseconds -= pastSec * 1000000000;
+        }
+        return Timestamp.of(seconds,  nanoseconds);
+    }
+    
     /** @param calendar Calendar
      *  @return EPICS Timestamp
      */
     public static Timestamp fromCalendar(final Calendar calendar)
     {
-        final long millisecs = calendar.getTimeInMillis();
-        final long seconds = millisecs/1000;
-        final int nanoseconds = (int) ((millisecs % 1000) * 1000000);
-        return Timestamp.of(seconds,  nanoseconds);
+        return fromMillisecs(calendar.getTimeInMillis());
+    }
+
+    /** @param timestamp EPICS Timestamp
+     *  @return Milliseconds since 1970 epoch
+     */
+    public static long toMillisecs(final Timestamp timestamp)
+    {
+        return timestamp.getSec()*1000 + timestamp.getNanoSec()/1000000;
     }
 
     /** Round time to next multiple of given duration

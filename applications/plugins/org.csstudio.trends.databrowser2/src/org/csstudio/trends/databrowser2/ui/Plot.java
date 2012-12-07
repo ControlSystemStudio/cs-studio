@@ -11,9 +11,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
@@ -51,6 +50,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
+import org.epics.util.time.Timestamp;
 
 /**
  * Data Browser 'Plot' that displays the samples in a {@link Model}.
@@ -769,10 +769,10 @@ public class Plot
 	 * @param end
 	 *            End time
 	 */
-	public void setTimeRange(final ITimestamp start, final ITimestamp end)
+	public void setTimeRange(final Timestamp start, final Timestamp end)
 	{
-		final double start_ms = start.toDouble() * 1000;
-		final double end_ms = end.toDouble() * 1000;
+		final double start_ms = TimestampHelper.toMillisecs(start);
+		final double end_ms = TimestampHelper.toMillisecs(end);
 		plot_changes_graph = true;
 		xygraph.primaryXAxis.setRange(start_ms, end_ms);
 		plot_changes_graph = false;
@@ -850,8 +850,8 @@ public class Plot
 			final List<Axis> yaxes = xygraph.getYAxisList();
 			final int y = yaxes.indexOf(axis);
 			// Axis uses millisecs, timestamp uses fractional seconds
-			final ITimestamp timestamp = TimestampFactory.fromDouble(annotation
-					.getXValue() / 1000.0);
+			final Timestamp timestamp =
+		        TimestampHelper.fromMillisecs((long) annotation.getXValue());
 			final double value = annotation.getYValue();
 
 			// ADD Laurent PHILIPPE
