@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {//implements IProcessVariableWithSamples {
+public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdvancedSliderEditPart.class);
 
