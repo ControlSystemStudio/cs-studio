@@ -9,8 +9,6 @@ package org.csstudio.trends.databrowser2.model;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
-import org.csstudio.trends.databrowser2.Messages;
-import org.eclipse.osgi.util.NLS;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VType;

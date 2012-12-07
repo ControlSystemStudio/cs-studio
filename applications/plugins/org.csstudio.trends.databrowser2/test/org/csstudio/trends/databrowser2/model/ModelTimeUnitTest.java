@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.csstudio.utility.test.HamcrestMatchers.*;
+import static org.hamcrest.CoreMatchers.*;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit Test of model's start/end time handling
@@ -31,35 +32,36 @@ public class ModelTimeUnitTest
         assertEquals(hour, model.getTimespan(), 1.0);
 
         // 1 hour ago ... now?
-        ITimestamp now = TimestampFactory.now();
-        ITimestamp start = model.getStartTime();
-        ITimestamp end = model.getEndTime();
-        assertEquals(now.toDouble(), end.toDouble(), 5.0);
-        assertEquals(now.toDouble() - hour, start.toDouble(), 5.0);
+        Timestamp now = Timestamp.now();
+        Timestamp start = model.getStartTime();
+        Timestamp end = model.getEndTime();
+        assertThat(end.durationFrom(now).toSeconds(), closeTo(0, 5));
+        assertThat(now.durationFrom(start).toSeconds(), closeTo(hour, 5.0));
 
         System.out.println("Scroll starts OK, waiting 5 seconds...");
         Thread.sleep(5*1000);
 
         // Still 1 hour ago ... now, but 'now' has changed?
-        final double change = model.getEndTime().toDouble() - now.toDouble();
-        assertEquals(5.0, change, 1.0);
+        final double change =
+                model.getEndTime().durationFrom(now).toSeconds();
+        assertThat(change, closeTo(5.0, 1.0));
 
-        now = TimestampFactory.now();
+        now = Timestamp.now();
         start = model.getStartTime();
         end = model.getEndTime();
-        assertEquals(now.toDouble(), end.toDouble(), 5.0);
-        assertEquals(now.toDouble() - hour, start.toDouble(), 5.0);
+        assertThat(end.durationFrom(now).toSeconds(), closeTo(0, 5));
+        assertThat(now.durationFrom(start).toSeconds(), closeTo(hour, 5.0));
 
-        System.out.println("Scroll updated OK, waiting 5 seconds...");
-        Thread.sleep(5*1000);
-
+        System.out.println("Scroll updated OK. Disabling scoll, waiting 5 seconds...");
         // Turn scrolling off
         model.enableScrolling(false);
-        assertEquals(false, model.isScrollEnabled());
+        assertThat(model.isScrollEnabled(), equalTo(false));
+
+        Thread.sleep(5*1000);
 
         // Start/end should no longer change
-        assertEquals(start.toDouble(), model.getStartTime().toDouble(), 1.0);
-        assertEquals(end.toDouble(),   model.getEndTime().toDouble(), 1.0);
+        assertThat(start.durationBetween(model.getStartTime()).toSeconds(), closeTo(0.0, 1.0));
+        assertThat(end.durationBetween(model.getEndTime()).toSeconds(), closeTo(0.0, 1.0));
         System.out.println("Start/end stayed constant in no-scroll mode");
     }
 }

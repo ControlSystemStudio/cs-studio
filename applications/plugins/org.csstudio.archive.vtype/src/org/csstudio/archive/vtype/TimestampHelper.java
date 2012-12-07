@@ -65,6 +65,17 @@ public class TimestampHelper
         final int nanoseconds = sql_time.getNanos();
         return Timestamp.of(seconds,  nanoseconds);
     }
+    
+    /** @param calendar Calendar
+     *  @return EPICS Timestamp
+     */
+    public static Timestamp fromCalendar(final Calendar calendar)
+    {
+        final long millisecs = calendar.getTimeInMillis();
+        final long seconds = millisecs/1000;
+        final int nanoseconds = (int) ((millisecs % 1000) * 1000000);
+        return Timestamp.of(seconds,  nanoseconds);
+    }
 
     /** Round time to next multiple of given duration
      *  @param time Original time stamp

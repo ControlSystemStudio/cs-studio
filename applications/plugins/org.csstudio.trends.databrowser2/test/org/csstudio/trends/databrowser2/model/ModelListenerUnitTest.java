@@ -13,12 +13,12 @@ import static org.junit.Assert.fail;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Test;
 
-/** [Headless] JUnit Plug-in test of the ModelListener
+/** JUnit test of the ModelListener
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto added test case for waveform index
  */
 @SuppressWarnings("nls")
-public class ModelListenerHeadlessTest
+public class ModelListenerUnitTest
 {
     private int additions = 0;
 
