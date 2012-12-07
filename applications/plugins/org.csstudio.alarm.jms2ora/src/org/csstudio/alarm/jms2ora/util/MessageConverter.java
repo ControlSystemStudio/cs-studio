@@ -45,17 +45,19 @@ public class MessageConverter extends Thread implements IMessageConverter {
     private static final Logger LOG = LoggerFactory.getLogger(MessageConverter.class);
 
     /** Writes the ArchiveMessage content to the DB */
-    private final IMessageProcessor messageProcessor;
+    private IMessageProcessor messageProcessor;
 
     /** Object that gets all JMS messages */
-    private final MessageAcceptor messageAcceptor;
+    private MessageAcceptor messageAcceptor;
 
     /** Queue for received messages */
-    private final ConcurrentLinkedQueue<RawMessage> rawMessages;
+    private ConcurrentLinkedQueue<RawMessage> rawMessages;
 
     /** Object that creates the MessageContent objects */
-    private final MessageContentCreator contentCreator;
+    private MessageContentCreator contentCreator;
 
+    private Object lock;
+    
     private boolean working;
     
     private boolean stoppedClean;
@@ -64,6 +66,7 @@ public class MessageConverter extends Thread implements IMessageConverter {
         messageProcessor = processor;
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator(c);
+        lock = new Object();
         working = true;
         stoppedClean = false;
         messageAcceptor = new MessageAcceptor(this, c);
@@ -71,6 +74,15 @@ public class MessageConverter extends Thread implements IMessageConverter {
         this.start();
     }
 
+    private void convertRemainingRawMessages() {
+        final Vector<RawMessage> convertMe = new Vector<RawMessage>(rawMessages);
+        rawMessages.removeAll(convertMe);
+        final Vector<ArchiveMessage> am = contentCreator.convertRawMessages(convertMe);
+        messageProcessor.putArchiveMessages(am);
+        am.clear();
+        convertMe.clear();
+    }
+    
     @Override
     public void run() {
 
@@ -78,10 +90,10 @@ public class MessageConverter extends Thread implements IMessageConverter {
 
         while (working) {
 
-            synchronized (this) {
+            synchronized (lock) {
                 try {
                     if (rawMessages.isEmpty()) {
-                        this.wait();
+                        lock.wait();
                     }
                 } catch (final InterruptedException ie) {
                     LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
@@ -89,17 +101,15 @@ public class MessageConverter extends Thread implements IMessageConverter {
             }
 
             if (rawMessages.size() > 0) {
-                final Vector<RawMessage> convertMe = new Vector<RawMessage>(rawMessages);
-                rawMessages.removeAll(convertMe);
-                final Vector<ArchiveMessage> am = contentCreator.convertRawMessages(convertMe);
-                messageProcessor.putArchiveMessages(am);
-                am.clear();
-                convertMe.clear();
+                convertRemainingRawMessages();
             }
         }
 
+        LOG.info("Ordering the MessageAcceptor to close all its receivers.");
         messageAcceptor.closeAllReceivers();
         stoppedClean = true;
+        
+        LOG.info("Leaving...");
     }
 
     public int getQueueSize() {
@@ -109,8 +119,8 @@ public class MessageConverter extends Thread implements IMessageConverter {
     @Override
     public final void putRawMessage(@Nonnull final RawMessage m) {
         rawMessages.add(m);
-        synchronized (this) {
-            this.notify();
+        synchronized (lock) {
+            lock.notify();
         }
     }
 
@@ -132,8 +142,9 @@ public class MessageConverter extends Thread implements IMessageConverter {
      */
     public void stopWorking() {
         working = false;
-        synchronized (this) {
-            this.notify();
+        convertRemainingRawMessages();
+        synchronized (lock) {
+            lock.notify();
         }
     }
     

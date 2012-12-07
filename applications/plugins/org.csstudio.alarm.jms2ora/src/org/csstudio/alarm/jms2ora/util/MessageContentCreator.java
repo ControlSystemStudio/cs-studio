@@ -453,7 +453,7 @@ public class MessageContentCreator {
 
         msgProperty = new Hashtable<String, Long>();
 
-        msgProperty = metaDataService.getMessageContentProperties();
+        msgProperty = metaDataService.getMsgPropertyTypeContent();
         if(msgProperty.isEmpty()) {
             result = false;
         } else {
