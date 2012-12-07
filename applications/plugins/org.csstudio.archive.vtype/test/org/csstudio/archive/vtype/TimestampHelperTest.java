@@ -18,74 +18,75 @@ import org.junit.Test;
 /** JUnit test of {@link TimestampHelper}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class TimestampHelperTest
 {
-	@Test
-	public void testRoundUp() throws Exception
-	{
-		final TimestampFormat format = new TimestampFormat(TimestampHelper.FORMAT_SECONDS);
+     @Test
+     public void testRoundUp() throws Exception
+     {
+          final TimestampFormat format = new TimestampFormat(TimestampHelper.FORMAT_SECONDS);
 
-		final Timestamp orig = format.parse("2012-01-19 12:23:14");
-		String text = format.format(orig);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 12:23:14"));
-		
-		Timestamp time;
-		
-		// Round within a few seconds
-		time = TimestampHelper.roundUp(orig, 10);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 12:23:20"));
+          final Timestamp orig = format.parse("2012-01-19 12:23:14");
+          String text = format.format(orig);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 12:23:14"));
+          
+          Timestamp time;
+          
+          // Round within a few seconds
+          time = TimestampHelper.roundUp(orig, 10);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 12:23:20"));
 
-		time = TimestampHelper.roundUp(orig, TimeDuration.ofSeconds(30));
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 12:23:30"));
+          time = TimestampHelper.roundUp(orig, TimeDuration.ofSeconds(30));
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 12:23:30"));
 
-		// .. to minute
-		time = TimestampHelper.roundUp(orig, 60);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 12:24:00"));
+          // .. to minute
+          time = TimestampHelper.roundUp(orig, 60);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 12:24:00"));
 
-		// .. to hours
-		time = TimestampHelper.roundUp(orig, TimeDuration.ofHours(1.0));
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 13:00:00"));
+          // .. to hours
+          time = TimestampHelper.roundUp(orig, TimeDuration.ofHours(1.0));
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 13:00:00"));
 
-		time = TimestampHelper.roundUp(orig, 2L*60*60);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-19 14:00:00"));
-		
-		// .. full day(s)
-		assertThat(24L*60*60, equalTo(TimestampHelper.SECS_PER_DAY));
+          time = TimestampHelper.roundUp(orig, 2L*60*60);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-19 14:00:00"));
+          
+          // .. full day(s)
+          assertThat(24L*60*60, equalTo(TimestampHelper.SECS_PER_DAY));
 
-		time = TimestampHelper.roundUp(orig, TimestampHelper.SECS_PER_DAY);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-20 00:00:00"));
-		
-		time = TimestampHelper.roundUp(orig, 3*TimestampHelper.SECS_PER_DAY);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-22 00:00:00"));
+          time = TimestampHelper.roundUp(orig, TimestampHelper.SECS_PER_DAY);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-20 00:00:00"));
+          
+          time = TimestampHelper.roundUp(orig, 3*TimestampHelper.SECS_PER_DAY);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-22 00:00:00"));
 
-		// Into next month
-		time = TimestampHelper.roundUp(orig, 13*TimestampHelper.SECS_PER_DAY);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-02-01 00:00:00"));
+          // Into next month
+          time = TimestampHelper.roundUp(orig, 13*TimestampHelper.SECS_PER_DAY);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-02-01 00:00:00"));
 
-		// .. full day(s)
-		assertThat(24L*60*60, equalTo(TimestampHelper.SECS_PER_DAY));
+          // .. full day(s)
+          assertThat(24L*60*60, equalTo(TimestampHelper.SECS_PER_DAY));
 
-		// 1.5 days
-		time = TimestampHelper.roundUp(orig, (3*TimestampHelper.SECS_PER_DAY)/2);
-		text = format.format(time);
-		System.out.println(text);
-		assertThat(text, equalTo("2012-01-20 12:00:00"));
-	}
+          // 1.5 days
+          time = TimestampHelper.roundUp(orig, (3*TimestampHelper.SECS_PER_DAY)/2);
+          text = format.format(time);
+          System.out.println(text);
+          assertThat(text, equalTo("2012-01-20 12:00:00"));
+     }
 }

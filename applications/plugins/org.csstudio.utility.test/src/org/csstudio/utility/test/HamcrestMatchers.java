@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.display.pvtable;
+package org.csstudio.utility.test;
 
 import org.hamcrest.Description;
 import org.hamcrest.BaseMatcher;
@@ -13,9 +13,6 @@ import org.hamcrest.Matcher;
 
 /** Matchers for Hamcrest
  *  @author Kay Kasemir
- *  
- *  TODO Find shared place for this.
- *  For now the 'master' is in archive.vtype
  */
 @SuppressWarnings("nls")
 public class HamcrestMatchers
@@ -23,7 +20,7 @@ public class HamcrestMatchers
 	/** @param segment Segment to find within {@link String}
 	 *  @return {@link Matcher}
 	 */
-	public static Matcher<String> contains(final String segment)
+	public static Matcher<String> containsString(final String segment)
 	{
 		return new BaseMatcher<String>()
 		{
@@ -46,7 +43,7 @@ public class HamcrestMatchers
 	 *  @param tolerance Allowed tolerance
      *  @return {@link Matcher}
 	 */
-    public static Matcher<Number> equalTo(final Number goal, final double tolerance)
+    public static Matcher<Number> closeTo(final Number goal, final double tolerance)
     {
         return new BaseMatcher<Number>()
         {
@@ -69,4 +66,29 @@ public class HamcrestMatchers
         };
     }
 
+    /** @param minimum Desired minimum value
+     *  @return {@link Matcher}
+     */
+    public static Matcher<Number> greaterThanOrEqualTo(final Number minimum)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("at least " + minimum);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return dbl >= minimum.doubleValue();
+                }
+                return false;
+            }
+        };
+    }
 }

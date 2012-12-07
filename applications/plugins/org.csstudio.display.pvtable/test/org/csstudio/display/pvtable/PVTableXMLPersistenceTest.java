@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import static org.csstudio.display.pvtable.HamcrestMatchers.contains;
+import static org.csstudio.utility.test.HamcrestMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -56,8 +56,8 @@ public class PVTableXMLPersistenceTest
         System.out.println(xml);
         model.dispose();
         
-        assertThat(xml, contains("<pvtable"));
-        assertThat(xml, contains("<pv>"));
-        assertThat(xml, contains("<name>"+TestSettings.NAME+"</name>"));
+        assertThat(xml, containsString("<pvtable"));
+        assertThat(xml, containsString("<pv>"));
+        assertThat(xml, containsString("<name>"+TestSettings.NAME+"</name>"));
     }
 }
