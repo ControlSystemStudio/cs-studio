@@ -183,6 +183,6 @@ public class PlotSample implements ISample
     @Override
     public String toString()
     {
-        return NLS.bind(Messages.PlotSampleFmt, new Object[] { VTypeHelper.toString(value), source });
+        return VTypeHelper.toString(value);
     }
 }

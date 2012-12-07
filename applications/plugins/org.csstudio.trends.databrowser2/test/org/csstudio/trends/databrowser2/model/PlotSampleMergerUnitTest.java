@@ -37,7 +37,7 @@ public class PlotSampleMergerUnitTest
     {
         // Start with nothing, add new samples
         final PlotSample orig[] = null;
-        final PlotSample add[] = TestSampleBuilder.makePlotSamples(0, 10);
+        final PlotSample add[] = TestHelper.makePlotSamples(0, 10);
         PlotSample result[] = PlotSampleMerger.merge(orig, add);
         assertTrue(check(result));
         assertArrayEquals(add, result);
@@ -51,8 +51,8 @@ public class PlotSampleMergerUnitTest
     @Test
     public void addBeforeOrAfter()
     {
-        final PlotSample earlier[] = TestSampleBuilder.makePlotSamples(0, 10);
-        final PlotSample later[] = TestSampleBuilder.makePlotSamples(10, 20);
+        final PlotSample earlier[] = TestHelper.makePlotSamples(0, 10);
+        final PlotSample later[] = TestHelper.makePlotSamples(10, 20);
         // Time line: old ... new
         PlotSample result[] = PlotSampleMerger.merge(earlier, later);
         assertTrue(check(result));
@@ -72,11 +72,11 @@ public class PlotSampleMergerUnitTest
     public void addOverlapsStartOfOldData()
     {
         // 0, 1, ...10
-        final PlotSample add[] = TestSampleBuilder.makePlotSamples(0, 10);
+        final PlotSample add[] = TestHelper.makePlotSamples(0, 10);
         // 5, 10, 15, 20, ..
         final PlotSample existing[] = new PlotSample[10];
         for (int i=0; i<10; ++i) {
-            existing[i] = TestSampleBuilder.makePlotSample(5 * (i+1));
+            existing[i] = TestHelper.makePlotSample(5 * (i+1));
         }
 
         final PlotSample result[] = PlotSampleMerger.merge(existing, add);
@@ -94,11 +94,11 @@ public class PlotSampleMergerUnitTest
     {
         //System.out.println("addOverlapsEndOfOldData()");
         // 45, 46, ..., 54
-        final PlotSample add[] = TestSampleBuilder.makePlotSamples(45, 55);
+        final PlotSample add[] = TestHelper.makePlotSamples(45, 55);
         // 5, 10, 15, 20, .., 50
         final PlotSample existing[] = new PlotSample[10];
         for (int i=0; i<10; ++i) {
-            existing[i] = TestSampleBuilder.makePlotSample(5 * (i+1));
+            existing[i] = TestHelper.makePlotSample(5 * (i+1));
         }
 
         final PlotSample result[] = PlotSampleMerger.merge(existing, add);
@@ -118,11 +118,11 @@ public class PlotSampleMergerUnitTest
     public void addWithinExistingData()
     {
         // 15, 16, ..., 21
-        final PlotSample add[] = TestSampleBuilder.makePlotSamples(14, 22);
+        final PlotSample add[] = TestHelper.makePlotSamples(14, 22);
         // 5, 10, 15, 20, .., 50
         final PlotSample existing[] = new PlotSample[10];
         for (int i=0; i<10; ++i) {
-            existing[i] = TestSampleBuilder.makePlotSample(5 * (i+1));
+            existing[i] = TestHelper.makePlotSample(5 * (i+1));
         }
 
         final PlotSample result[] = PlotSampleMerger.merge(existing, add);
@@ -142,8 +142,8 @@ public class PlotSampleMergerUnitTest
     @Test
     public void newDataCompletelyReplacesOld()
     {
-        final PlotSample existing[] = TestSampleBuilder.makePlotSamples(15, 21);
-        final PlotSample add[] = TestSampleBuilder.makePlotSamples(1, 30);
+        final PlotSample existing[] = TestHelper.makePlotSamples(15, 21);
+        final PlotSample add[] = TestHelper.makePlotSamples(1, 30);
 
         final PlotSample result[] = PlotSampleMerger.merge(existing, add);
         assertTrue(check(result));

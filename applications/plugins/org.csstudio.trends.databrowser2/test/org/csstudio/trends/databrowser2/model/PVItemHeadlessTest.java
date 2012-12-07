@@ -8,13 +8,16 @@
 package org.csstudio.trends.databrowser2.model;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Timer;
 
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.csstudio.utility.pv.PVFactory;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.csstudio.trends.databrowser2.model.HamcrestMatchers.equalTo;
 
 /** [Headless] JUnit Plug-In test of the PVItem
  *  @author Kay Kasemir
@@ -25,18 +28,10 @@ public class PVItemHeadlessTest
     /** Time in seconds for each test */
     private static final double RUNTIME_SECS = 10.0;
 
-    @Test
-    public void checkPV() throws Exception
+    @Before
+    public void setup()
     {
-        try
-        {
-            PVFactory.getSupportedPrefixes();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            fail("Must run as JUnit *Plug-In* test to use PVFactory");
-        }
+        TestHelper.setup();
     }
     
     /** Check if PVItem scans its PV */
@@ -52,7 +47,8 @@ public class PVItemHeadlessTest
         // Should have about 1 sample per second
         final IDataProvider samples = pv.getSamples();
         System.out.println(samples);
-        assertEquals(RUNTIME_SECS, samples.getSize(), 2.0);
+        
+        assertThat(samples.getSize(), equalTo(RUNTIME_SECS, 2.0));
         checkMinMax(samples);
     }
 
@@ -114,7 +110,8 @@ public class PVItemHeadlessTest
             if (value > max)
                 max = value;
         }
-        assertEquals(new Range(min, max), samples.getYDataMinMax());
+        assertThat(samples.getYDataMinMax().getLower(), equalTo(min));
+        assertThat(samples.getYDataMinMax().getUpper(), equalTo(max));
     }
 
     /** Check if PVItem correctly handles waveform index */

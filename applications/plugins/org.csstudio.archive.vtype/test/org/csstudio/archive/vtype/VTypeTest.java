@@ -9,7 +9,7 @@ package org.csstudio.archive.vtype;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.csstudio.archive.vtype.StringMatcher.*;
+import static org.csstudio.archive.vtype.HamcrestMatchers.*;
 
 import java.util.Arrays;
 import java.util.Date;

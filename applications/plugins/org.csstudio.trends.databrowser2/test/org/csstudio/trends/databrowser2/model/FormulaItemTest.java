@@ -15,13 +15,14 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Timer;
 
-import org.csstudio.data.values.IMinMaxDoubleValue;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVWriter;
+
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+import org.junit.Before;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the FormulaItem
@@ -33,31 +34,21 @@ public class FormulaItemTest
     /** Time in seconds for each test */
     private static final double RUNTIME_SECS = 10.0;
 
-    @Test
-    public void checkPV() throws Exception
+    @Before
+    public void setup()
     {
-        try
-        {
-            PVFactory.getSupportedPrefixes();
-        }
-        catch (final Exception ex)
-        {
-            ex.printStackTrace();
-            fail("Must run as JUnit *Plug-In* test to use PVFactory");
-        }
+        TestHelper.setup();
     }
-
+    
     /** Check trivial Formula */
     @Test
     public void testSimpleFormula() throws Exception
     {
-        //System.out.println("*** Trivial Example");
+        System.out.println("*** Trivial Example");
 
         // Create a (local) PV that we can change as needed
-        final PV pv = PVFactory.createPV("loc://num");
-        pv.start();
-        pv.setValue(new Double(21.0));
-
+        PVWriter<Object> pv = PVManager.write(channel("loc://num")).sync();
+        
         // Now create model item for the same PV
         final Timer scan_timer = new Timer();
         final PVItem pv_item = new PVItem("loc://num", 0);
@@ -161,8 +152,8 @@ public class FormulaItemTest
         {
             data.add(
                 ValueFactory.createMinMaxDoubleValue(TimestampFactory.fromDouble(i),
-                        TestSampleBuilder.ok,
-                        TestSampleBuilder.ok.toString(),
+                        TestHelper.ok,
+                        TestHelper.ok.toString(),
                         PlotSample.dummy_meta,
                         IValue.Quality.Interpolated,
                         new double[] { i }, i-1, i+1));

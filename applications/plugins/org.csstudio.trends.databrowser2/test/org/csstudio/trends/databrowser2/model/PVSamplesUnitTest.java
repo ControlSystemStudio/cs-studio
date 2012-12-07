@@ -42,21 +42,21 @@ public class PVSamplesUnitTest
         // Add 'historic' samples
         final List<VType> history = new ArrayList<VType>();
         for (int i=0; i<10; ++i)
-            history.add(TestSampleBuilder.makeValue(i));
+            history.add(TestHelper.makeValue(i));
         samples.mergeArchivedData("Test", history);
         // PVSamples include continuation until 'now'
         System.out.println(samples.toString());
         assertEquals(history.size()+1, samples.getSize());
 
         // Add 2 'live' samples
-        samples.addLiveSample(TestSampleBuilder.makeValue(samples.getSize()));
-        samples.addLiveSample(TestSampleBuilder.makeValue(samples.getSize()));
+        samples.addLiveSample(TestHelper.makeValue(samples.getSize()));
+        samples.addLiveSample(TestHelper.makeValue(samples.getSize()));
         // PVSamples include history, live, continuation until 'now'
         System.out.println(samples.toString());
         assertEquals(history.size()+3, samples.getSize());
 
         // Add a non-numeric sample
-        samples.addLiveSample(TestSampleBuilder.makeError(samples.getSize(), "Disconnected"));
+        samples.addLiveSample(TestHelper.makeError(samples.getSize(), "Disconnected"));
         // PVSamples include history, live, NO continuation
         System.out.println(samples.toString());
         assertEquals(history.size()+3, samples.getSize());
@@ -65,7 +65,7 @@ public class PVSamplesUnitTest
         // Create 'history' data from 0 to 20.
         history.clear();
         for (int i=0; i<21; ++i)
-            history.add(TestSampleBuilder.makeValue(i));
+            history.add(TestHelper.makeValue(i));
         samples.mergeArchivedData("Test", history);
 
         // Since 'live' data starts at 11, history is only visible up to there,
@@ -112,8 +112,8 @@ public class PVSamplesUnitTest
 
         // Add 'historic' samples
         final List<VType> history = new ArrayList<VType>();
-        history.add(TestSampleBuilder.makeWaveform(0, new double[] {0.0, 0.1, 0.2}));
-        history.add(TestSampleBuilder.makeWaveform(1, new double[] {1.0, 1.1, 1.2, 1.3}));
+        history.add(TestHelper.makeWaveform(0, new double[] {0.0, 0.1, 0.2}));
+        history.add(TestHelper.makeWaveform(1, new double[] {1.0, 1.1, 1.2, 1.3}));
         samples.mergeArchivedData("Test", history);
         System.out.println(samples.toString());
         
@@ -137,8 +137,8 @@ public class PVSamplesUnitTest
 
         // Add more 'historic' samples with non-zero waveform index
         final List<VType> history2 = new ArrayList<VType>();
-        history2.add(TestSampleBuilder.makeWaveform(2, new double[] {2.0, 2.1, 2.2}));
-        history2.add(TestSampleBuilder.makeWaveform(3, new double[] {3.0, 3.1, 3.2, 3.3}));
+        history2.add(TestHelper.makeWaveform(2, new double[] {2.0, 2.1, 2.2}));
+        history2.add(TestHelper.makeWaveform(3, new double[] {3.0, 3.1, 3.2, 3.3}));
         samples.mergeArchivedData("Test2", history2);
         System.out.println(samples.toString());
         
@@ -148,8 +148,8 @@ public class PVSamplesUnitTest
         assertEquals(new Range(0.2, 3.2), samples.getYDataMinMax());
         
         // Add 2 'live' samples
-        samples.addLiveSample(TestSampleBuilder.makeWaveform(4, new double[] {4.0, 4.1, 4.2}));
-        samples.addLiveSample(TestSampleBuilder.makeWaveform(5, new double[] {5.0, 5.1, 5.2, 5.3}));
+        samples.addLiveSample(TestHelper.makeWaveform(4, new double[] {4.0, 4.1, 4.2}));
+        samples.addLiveSample(TestHelper.makeWaveform(5, new double[] {5.0, 5.1, 5.2, 5.3}));
         System.out.println(samples.toString());
         
         // Check if Y values indicate the third element

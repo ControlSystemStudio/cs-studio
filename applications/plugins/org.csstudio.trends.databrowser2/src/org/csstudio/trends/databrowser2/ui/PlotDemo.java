@@ -22,7 +22,7 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
-import org.csstudio.trends.databrowser2.model.TestSampleBuilder;
+import org.csstudio.trends.databrowser2.model.TestHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -213,15 +213,15 @@ public class PlotDemo
         // Create demo samples
         final ArrayList<IValue> values = new ArrayList<IValue>();
         for (int i=1; i<10; ++i) {
-            values.add(TestSampleBuilder.makeValue(i));
+            values.add(TestHelper.makeValue(i));
         }
-        values.add(TestSampleBuilder.makeError(15, "Disconnected"));
+        values.add(TestHelper.makeError(15, "Disconnected"));
         // Single value. Line should continue until the following 'disconnect'.
-        values.add(TestSampleBuilder.makeValue(17));
-        values.add(TestSampleBuilder.makeError(18, "Disconnected"));
+        values.add(TestHelper.makeValue(17));
+        values.add(TestHelper.makeError(18, "Disconnected"));
 
         for (int i=20; i<30; ++i) {
-            values.add(TestSampleBuilder.makeValue(i));
+            values.add(TestHelper.makeValue(i));
         }
 
         final PlotSampleArray samples = new PlotSampleArray();

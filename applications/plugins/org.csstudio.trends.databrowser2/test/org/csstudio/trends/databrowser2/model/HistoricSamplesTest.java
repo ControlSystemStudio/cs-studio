@@ -33,7 +33,7 @@ public class HistoricSamplesTest
         // Initial data, time 10..19
         final List<VType> samples = new ArrayList<VType>();
         for (int i=0; i<N; ++i) {
-            samples.add(TestSampleBuilder.makeValue(N+i));
+            samples.add(TestHelper.makeValue(N+i));
         }
 
         final String source = "Test";
@@ -59,7 +59,7 @@ public class HistoricSamplesTest
 
         // Pre-pend time 0..9
         for (int i=0; i<N; ++i) {
-            samples.set(i, TestSampleBuilder.makeValue(i));
+            samples.set(i, TestHelper.makeValue(i));
         }
         history.mergeArchivedData(source, samples);
         assertEquals(2*N, history.getSize());

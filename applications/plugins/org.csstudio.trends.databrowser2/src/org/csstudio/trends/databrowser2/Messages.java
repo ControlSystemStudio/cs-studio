@@ -166,7 +166,6 @@ public class Messages extends NLS
     public static String OpenSearchView;
     public static String OpenPropertiesView;
     public static String OpenWaveformView;
-    public static String PlotSampleFmt;
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
     public static String Plot_ValueAxisNameFMT;

@@ -5,16 +5,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.vtype;
+package org.csstudio.display.pvtable;
 
 import org.hamcrest.Description;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Matcher;
 
-/** JUnit test of {@link VType}
+/** Matchers for Hamcrest
  *  @author Kay Kasemir
+ *  
+ *  TODO Find shared place for this.
+ *  For now the 'master' is in archive.vtype
  */
-public class StringMatcher
+@SuppressWarnings("nls")
+public class HamcrestMatchers
 {
 	/** @param segment Segment to find within {@link String}
 	 *  @return {@link Matcher}
@@ -23,7 +27,7 @@ public class StringMatcher
 	{
 		return new BaseMatcher<String>()
 		{
-			@Override
+            @Override
 			public void describeTo(final Description descr)
 			{
 				descr.appendText("text that contains \"").appendText(segment).appendText("\"");
@@ -37,4 +41,32 @@ public class StringMatcher
 			}
 		};
 	}
+	
+	/** @param goal Desired value
+	 *  @param tolerance Allowed tolerance
+     *  @return {@link Matcher}
+	 */
+    public static Matcher<Number> equalTo(final Number goal, final double tolerance)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText(goal + " +- " + tolerance);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return Math.abs(goal.doubleValue() - dbl) <= tolerance;
+                }
+                return false;
+            }
+        };
+    }
+
 }

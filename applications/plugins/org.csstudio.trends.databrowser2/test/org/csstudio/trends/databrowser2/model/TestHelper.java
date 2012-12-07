@@ -7,9 +7,17 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueFactory;
+import org.epics.pvmanager.loc.LocalDataSource;
+import org.epics.pvmanager.sim.SimulationDataSource;
 import org.epics.util.time.Timestamp;
 
 /** Unit-test helper for creating samples
@@ -17,8 +25,24 @@ import org.epics.util.time.Timestamp;
  *  @author Takashi Nakamoto added makeWaveform() method
  */
 @SuppressWarnings("nls")
-public class TestSampleBuilder
+public class TestHelper
 {
+    public static void setup()
+    {
+        // PVManager data sources
+        final CompositeDataSource sources = new CompositeDataSource();
+        sources.putDataSource("loc", new LocalDataSource());
+        sources.putDataSource("sim", new SimulationDataSource());
+        PVManager.setDefaultDataSource(sources);
+        
+        // Logging
+        final Level level = Level.FINE;
+        Logger logger = Logger.getLogger("");
+        logger.setLevel(level);
+        for (Handler handler : logger.getHandlers())
+            handler.setLevel(level);
+    }
+    
     /** @param i Numeric value as well as pseudo-timestamp
      *  @return Sample that has value and time based on input parameter
      */
@@ -72,3 +96,5 @@ public class TestSampleBuilder
         return result;
     }
 }
+   
+ 
