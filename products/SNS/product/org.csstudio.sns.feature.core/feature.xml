@@ -92,6 +92,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.6" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -442,6 +443,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

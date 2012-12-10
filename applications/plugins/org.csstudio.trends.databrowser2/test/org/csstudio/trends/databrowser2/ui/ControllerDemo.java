@@ -8,7 +8,6 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.apputil.macros.MacroTable;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
@@ -28,6 +27,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of Controller for Plot and Model.
@@ -142,13 +142,13 @@ public class ControllerDemo
                 if (samples.getSize() <= 0) {
                     continue;
                 }
-                ITimestamp last = samples.getSample(0).getTime();
+                Timestamp last = samples.getSample(0).getTime();
                 for (int s=0; s<samples.getSize(); ++s)
                 {
                     final PlotSample sample = samples.getSample(s);
                     System.out.println(sample);
-                    final ITimestamp time = sample.getTime();
-                    if (time.isLessThan(last))
+                    final Timestamp time = sample.getTime();
+                    if (time.compareTo(last) < 0)
                     {
                         System.out.println("Time sequence error!");
                         break;

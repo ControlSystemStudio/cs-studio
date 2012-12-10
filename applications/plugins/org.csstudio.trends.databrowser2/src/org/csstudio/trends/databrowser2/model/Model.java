@@ -898,12 +898,14 @@ public class Model
         }
 
         // Time axis config
-        XMLWriter.start(writer, 1, TAG_TIME_AXIS);
-        writer.println();
-        timeAxis.write(writer);
-        XMLWriter.end(writer, 1, TAG_TIME_AXIS);
-        writer.println();
-
+        if (timeAxis != null)
+        {
+            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+            writer.println();
+            timeAxis.write(writer);
+            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+            writer.println();
+        }
 
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);

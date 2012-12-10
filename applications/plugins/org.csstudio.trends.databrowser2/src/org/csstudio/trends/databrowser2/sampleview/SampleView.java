@@ -7,10 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.sampleview;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IMinMaxDoubleValue;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -41,6 +38,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VStatistics;
+import org.epics.pvmanager.data.VType;
 
 /** A View that shows all the current Model Samples in a list.
  *
@@ -147,32 +148,33 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(sample.getValue().format());
+                cell.setText(VTypeHelper.formatValue(sample.getValue()));
             }
 
             @Override
             public String getToolTipText(Object element)
             {
                 final PlotSample sample = (PlotSample) element;
-                final IValue value = sample.getValue();
-                if (value instanceof IMinMaxDoubleValue)
+                final VType value = sample.getValue();
+                // Show numbers in their 'natural' format which may differ from the Display settings
+                if (value instanceof VStatistics)
                 {
-                    final IMinMaxDoubleValue mmd = (IMinMaxDoubleValue) value;
+                    final VStatistics mmd = (VStatistics) value;
                     return NLS.bind(Messages.SampleView_MinMaxValueTT,
                         new String[]
                         {
-                            Double.toString(mmd.getValue()),
-                            Double.toString(mmd.getMinimum()),
-                            Double.toString(mmd.getMaximum())
+                            Double.toString(mmd.getAverage()),
+                            Double.toString(mmd.getMin()),
+                            Double.toString(mmd.getMax())
                         });
                 }
-                else if (value instanceof IDoubleValue)
+                else if (value instanceof VNumber)
                 {
-                    final IDoubleValue dbl = (IDoubleValue) value;
-                    return Double.toString(dbl.getValue());
+                    final VNumber dbl = (VNumber) value;
+                    return Double.toString(dbl.getValue().doubleValue());
                 }
                 else
-                    return value.toString();
+                    return VTypeHelper.toString(value);
             }
         });
         // Severity column
@@ -183,18 +185,18 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                final IValue value = sample.getValue();
-                final ISeverity severity = value.getSeverity();
+                final VType value = sample.getValue();
+                final AlarmSeverity severity = VTypeHelper.getSeverity(value);
                 cell.setText(severity.toString());
-                if (severity.isOK())
+                if (severity == AlarmSeverity.NONE)
                 {
                     cell.setBackground(null);
                     return;
                 }
                 final Display display = cell.getControl().getDisplay();
-                if (severity.isMajor())
+                if (severity == AlarmSeverity.MAJOR)
                     cell.setBackground(display.getSystemColor(SWT.COLOR_RED));
-                else if (severity.isMinor())
+                else if (severity == AlarmSeverity.MINOR)
                     cell.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
                 else
                     cell.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
@@ -208,8 +210,8 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                final IValue value = sample.getValue();
-                cell.setText(value.getStatus());
+                final VType value = sample.getValue();
+                cell.setText(VTypeHelper.getMessage(value));
             }
         });
         // Sample Source column
@@ -221,17 +223,6 @@ public class SampleView extends DataBrowserAwareView
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
                 cell.setText(sample.getSource());
-            }
-        });
-        // Data Quality column
-        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Quality, 90, 10);
-        col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(sample.getValue().getQuality().toString());
             }
         });
         ColumnViewerToolTipSupport.enableFor(sample_table);
@@ -365,14 +356,8 @@ public class SampleView extends DataBrowserAwareView
 	public void scrollEnabled(boolean scroll_enabled) {}
 
 	@Override
-	public void changedAnnotations() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void changedAnnotations() {}
 
 	@Override
-	public void changedXYGraphConfig() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void changedXYGraphConfig() {}
 }

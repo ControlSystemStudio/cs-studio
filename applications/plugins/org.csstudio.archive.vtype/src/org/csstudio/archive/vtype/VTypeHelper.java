@@ -286,6 +286,17 @@ public class VTypeHelper
 			buf.append(value.toString());
 	}
 
+	/** Format just the value of a {@link VType} as string (not timestamp, ..)
+     *  @param value Value
+     *  @return String representation of its value
+     */
+    final public static String formatValue(final VType value)
+    {
+        final StringBuilder buf = new StringBuilder();
+        addValue(buf, value);
+        return buf.toString();
+    }
+	
 	/** Format value as string
      *  @param value Value
      *  @return String representation
