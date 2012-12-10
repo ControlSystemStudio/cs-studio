@@ -7,12 +7,13 @@
  ******************************************************************************/
 package org.cstudio.archive.reader;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 
 import org.csstudio.archive.reader.MergingValueIterator;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.VTypeHelper;
+import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.archive.vtype.VTypeFormat;
 import org.epics.pvmanager.data.VType;
 import org.junit.Test;
 
@@ -32,13 +33,14 @@ public class MergingValueIteratorUnitTest
         final ValueIterator merge = new MergingValueIterator(iter1, iter2);
         int count = 0;
         final StringBuilder result = new StringBuilder();
+        final VTypeFormat format = new DefaultVTypeFormat();
         while (merge.hasNext())
         {
             final VType value = merge.next();
 			System.out.println(value);
 			if (result.length() > 0)
 				result.append(", ");
-			VTypeHelper.addValue(result, value);
+			format.format(value, result);
             ++count;
         }
         assertThat(count, equalTo(20));

@@ -71,7 +71,8 @@ public class HamcrestMatchersTest
         }
         catch (AssertionError ex)
         {
-            assertThat(ex.getMessage(), containsString("at least 2"));
+            assertThat(ex.getMessage(), containsString("greater than or equal"));
+            assertThat(ex.getMessage(), containsString("2"));
         }
     }
 }

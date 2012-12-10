@@ -66,7 +66,89 @@ public class HamcrestMatchers
         };
     }
     
-    /** @param threshold Threshold for less-than
+
+    /** @param threshold Desired minimum value
+     *  @return {@link Matcher}
+     */
+    public static Matcher<Number> greaterThanOrEqualTo(final Number threshold)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("greater than or equal " + threshold);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return dbl >= threshold.doubleValue();
+                }
+                return false;
+            }
+        };
+    }
+    
+    
+    /** @param threshold Desired minimum value
+     *  @return {@link Matcher}
+     */
+    public static Matcher<Number> greaterThan(final Number threshold)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("greater than " + threshold);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return dbl > threshold.doubleValue();
+                }
+                return false;
+            }
+        };
+    }
+
+
+    /** @param threshold Desired maximum value
+     *  @return {@link Matcher}
+     */
+    public static Matcher<Number> lessThanOrEqualTo(final Number threshold)
+    {
+        return new BaseMatcher<Number>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("less than or equal " + threshold);
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Number)
+                {
+                    final double dbl = ((Number)value).doubleValue();
+                    return dbl <= threshold.doubleValue();
+                }
+                return false;
+            }
+        };
+    }
+    
+    
+    /** @param threshold Desired maximum value
      *  @return {@link Matcher}
      */
     public static Matcher<Number> lessThan(final Number threshold)
@@ -86,33 +168,6 @@ public class HamcrestMatchers
                 {
                     final double dbl = ((Number)value).doubleValue();
                     return dbl < threshold.doubleValue();
-                }
-                return false;
-            }
-        };
-    }
-
-
-    /** @param minimum Desired minimum value
-     *  @return {@link Matcher}
-     */
-    public static Matcher<Number> greaterThanOrEqualTo(final Number minimum)
-    {
-        return new BaseMatcher<Number>()
-        {
-            @Override
-            public void describeTo(final Description desc)
-            {
-                desc.appendText("at least " + minimum);
-            }
-            
-            @Override
-            public boolean matches(final Object value)
-            {
-                if (value instanceof Number)
-                {
-                    final double dbl = ((Number)value).doubleValue();
-                    return dbl >= minimum.doubleValue();
                 }
                 return false;
             }

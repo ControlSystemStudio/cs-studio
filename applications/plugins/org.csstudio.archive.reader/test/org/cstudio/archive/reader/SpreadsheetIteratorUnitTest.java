@@ -12,6 +12,8 @@ import static org.junit.Assert.assertThat;
 
 import org.csstudio.archive.reader.SpreadsheetIterator;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.epics.pvmanager.data.VType;
 import org.junit.Test;
@@ -51,6 +53,7 @@ public class SpreadsheetIteratorUnitTest
                 new ValueIterator[] { iter1, iter2 });
         final StringBuilder result = new StringBuilder();
         int count = 0;
+        final VTypeFormat format = new DefaultVTypeFormat();
         while (sheet.hasNext())
         {
             System.out.print(sheet.getTime());
@@ -60,7 +63,7 @@ public class SpreadsheetIteratorUnitTest
                 System.out.print("\t" + (value == null ? "-" : VTypeHelper.toString(value)));
                 if (result.length() > 0)
                 	result.append(",");
-                VTypeHelper.addValue(result, value);
+                format.format(value, result);
             }
             System.out.println();
             ++count;

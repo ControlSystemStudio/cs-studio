@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.sampleview;
 
+import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
@@ -65,6 +67,8 @@ public class SampleView extends DataBrowserAwareView
     /** GUI elements */
     private Combo items;
     private TableViewer sample_table;
+    
+    private VTypeFormat format = new DefaultVTypeFormat();
 
     /** {@inheritDoc} */
     @Override
@@ -148,7 +152,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(VTypeHelper.formatValue(sample.getValue()));
+                cell.setText(format.format(sample.getValue()));
             }
 
             @Override

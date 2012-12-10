@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -22,35 +23,12 @@ import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
-/** JUnit test of {@link VType}
+/** JUnit test of Archive {@link VType}s
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class VTypeTest
+public class ArchiveVTypeTest
 {
-    @Test
-    public void testFormat() throws Exception
-    {
-        final Date now = new Date();
-        final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(3), 8.0, 9.0, 10.0, 0.0, 10.0);
-        final VType num = new ArchiveVNumber(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 3.14);
-        
-        String text = VTypeHelper.toString(num);
-        System.out.println(text);
-        assertThat(now, equalTo(VTypeHelper.getTimestamp(num).toDate()));
-        assertThat(text, containsString("3.14"));
-        assertThat(text, containsString("a.u."));
-        assertThat(text, containsString("MINOR"));
-        assertThat(text, containsString("Troubling"));
-
-        final List<String> labels = Arrays.asList("zero", "one", "two", "three");
-        final VType enumerated = new ArchiveVEnum(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", labels, 3);
-        text = VTypeHelper.toString(enumerated);
-        System.out.println(text);
-        assertThat(text, containsString("three"));
-        assertThat(text, containsString("(3)"));
-    }
-
     @Test
     public void testEqual() throws Exception
     {

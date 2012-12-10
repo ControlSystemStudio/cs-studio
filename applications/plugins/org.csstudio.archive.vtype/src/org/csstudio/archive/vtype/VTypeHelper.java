@@ -30,8 +30,7 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class VTypeHelper
 {
-	/** Number of array elements to show before shortening the printout */
-	final private static int MAX_ARRAY_ELEMENTS = 10;
+	final private static VTypeFormat default_format = new DefaultVTypeFormat();
 	
 	/** Read number from a {@link VType}
      *  @param value Value
@@ -187,130 +186,34 @@ public class VTypeHelper
        	   .append("/")
        	   .append(alarm.getAlarmName());
 	}
-
-	/** @param buf Buffer where number is added
-	 *  @param display Display information to use, may be <code>null</code>
-	 *  @param number Number to format
-	 */
-	final private static void addNumber(final StringBuilder buf,
-			final Display display, final double number)
-	{
-		if (display != null  &&  display.getFormat() != null)
-			buf.append(display.getFormat().format(number));
-		else
-			buf.append(number);
-	}
-
-	/** @param buf Buffer where value's actual value is added (number, ...)
-	 *  @param value {@link VType}
-	 */
-	final public static void addValue(final StringBuilder buf, final VType value)
-	{
-		// After the time this is implemented, VEnum may change into a class
-		// that also implements VNumber and/or VString.
-		// Handle it first to assert that VEnum is always identified as such
-		// and not handled as Number.
-		if (value instanceof VEnum)
-		{
-			final VEnum enumerated = (VEnum)value;
-			try
-			{
-				buf.append(enumerated.getValue());
-				buf.append(" (").append(enumerated.getIndex()).append(")");
-			}
-			catch (ArrayIndexOutOfBoundsException ex)
-			{	// Error getting label for invalid index?
-				buf.append("<enum ").append(enumerated.getIndex()).append(">");
-			}
-		}
-		else if (value instanceof VNumber)
-		{
-			final VNumber number = (VNumber) value;
-			final Display display = (Display) number;
-			addNumber(buf, display, number.getValue().doubleValue());
-			if (display != null  &&  display.getUnits() != null)
-				buf.append(" ").append(display.getUnits());
-		}
-		else if (value instanceof VNumberArray)
-		{
-			final VNumberArray array = (VNumberArray) value;
-			final Display display = (Display) array;
-			final ListNumber list = array.getData();
-			final int N = list.size();
-			if (N <= MAX_ARRAY_ELEMENTS)
-			{
-				if (N > 0)
-					addNumber(buf, display, list.getDouble(0));
-				for (int i=1; i<N; ++i)
-				{
-					buf.append(", ");
-					addNumber(buf, display, list.getDouble(i));
-				}
-			}
-			else
-			{
-				addNumber(buf, display, list.getDouble(0));
-				for (int i=1; i<MAX_ARRAY_ELEMENTS/2; ++i)
-				{
-					buf.append(", ");
-					addNumber(buf, display, list.getDouble(i));
-				}
-				buf.append(", ... (total ").append(N).append(" elements) ...");
-				for (int i = N - MAX_ARRAY_ELEMENTS/2;  i<N;  ++i)
-				{
-					buf.append(", ");
-					addNumber(buf, display, list.getDouble(i));
-				}
-			}
-            if (display != null  &&  display.getUnits() != null)
-				buf.append(" ").append(display.getUnits());
-		}
-		else if (value instanceof VStatistics)
-		{
-			final VStatistics stats = (VStatistics) value;
-			final Display display = (Display) stats;
-			buf.append(stats.getAverage());
-			buf.append(" [").append(stats.getMin()).append(" ... ").append(stats.getMax());
-			final Double dev = stats.getStdDev();
-			if (dev > 0)
-				buf.append(", dev ").append(dev);
-			buf.append("]");
-            if (display != null  &&  display.getUnits() != null)
-				buf.append(" ").append(display.getUnits());
-		}
-		else if (value instanceof VString)
-			buf.append(((VString)value).getValue());
-		else if (value == null)
-			buf.append("null");
-		else
-			buf.append(value.toString());
-	}
-
-	/** Format just the value of a {@link VType} as string (not timestamp, ..)
-     *  @param value Value
-     *  @return String representation of its value
-     */
-    final public static String formatValue(final VType value)
-    {
-        final StringBuilder buf = new StringBuilder();
-        addValue(buf, value);
-        return buf.toString();
-    }
-	
+   
 	/** Format value as string
      *  @param value Value
+     *  @param format Format to use
      *  @return String representation
      */
-    final public static String toString(final VType value)
+    final public static String toString(final VType value, final VTypeFormat format)
     {
     	if (value == null)
     		return "null";
     	final StringBuilder buf = new StringBuilder();
     	addTimestamp(buf, value);
     	buf.append("\t");
-    	addValue(buf, value);
+    	format.format(value, buf);
+    	final Display display = ValueUtil.displayOf(value);
+        if (display != null  &&  display.getUnits() != null)
+            buf.append(" ").append(display.getUnits());
     	buf.append("\t");
     	addAlarm(buf, value);
         return buf.toString();
+    }
+
+    /** Format value as string
+     *  @param value Value
+     *  @return String representation
+     */
+    final public static String toString(final VType value)
+    {
+        return toString(value, default_format);
     }
 }

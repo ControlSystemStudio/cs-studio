@@ -7,15 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.export;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IMinMaxDoubleValue;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Format;
+import org.csstudio.archive.vtype.Style;
+import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.pvmanager.data.VStatistics;
+import org.epics.pvmanager.data.VType;
 
 /** Format an IValue as default, decimal, ...
  *
@@ -24,41 +20,18 @@ import org.csstudio.trends.databrowser2.Messages;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class ValueFormatter
 {
-    final private Format format;
-    final private int precision;
     private boolean min_max_column = false;
-    private NumberFormat number_format = null;
+    private VTypeFormat format = null;
 
     /** Initialize
-     *  @param format Number format to use
+     *  @param style Number style to use
      *  @param precision Precision
      */
-    public ValueFormatter(final Format format, final int precision)
+    public ValueFormatter(final Style style, final int precision)
     {
-        this.format = format;
-        this.precision = precision;
-        if (precision > 0)
-        {
-        	if (format == Format.Decimal)
-	        {
-	        	number_format = NumberFormat.getNumberInstance();
-	        	number_format.setMinimumFractionDigits(precision);
-	        	number_format.setMaximumFractionDigits(precision);
-	        }
-        	else if (format == Format.Exponential)
-        	{
-        		// Is there a better way to get this silly format?
-            	final StringBuffer pattern = new StringBuffer(10);
-                pattern.append("0.");
-                for (int i=0; i<precision; ++i)
-                    pattern.append('0');
-                pattern.append("E0");
-                number_format = new DecimalFormat(pattern.toString());
-        	}
-    	}
+        this.format = Style.getFormat(style, precision);
     }
 
     /** @param min_max_column Display min/max info in separate column? */
@@ -79,7 +52,7 @@ public class ValueFormatter
     }
 
     /** @return Value formatted into columns */
-    public String format(final IValue value)
+    public String format(final VType value)
     {
         if (value == null)
         {
@@ -91,42 +64,24 @@ public class ValueFormatter
                 return Messages.Export_NoValueMarker;
         }
 
+        final VStatistics stats = (value instanceof VStatistics) ? (VStatistics) value : null;
+
+        
         final StringBuilder buf = new StringBuilder();
-        // Value itself
-        if (number_format == null)
-            buf.append(value.format(format, precision));
-        else if (value instanceof IDoubleValue)
-        {
-        	final double v[] = ((IDoubleValue) value).getValues();
-        	for (int i=0; i<v.length; ++i)
-        	{
-        		if (i > 0)
-        			buf.append(Messages.Export_Delimiter);
-        		buf.append(number_format.format(v[i]));
-        	}
-        }
-        else if (value instanceof ILongValue)
-        {
-        	final long v[] = ((ILongValue) value).getValues();
-        	for (int i=0; i<v.length; ++i)
-        	{
-        		if (i > 0)
-        			buf.append(Messages.Export_Delimiter);
-        		buf.append(number_format.format(v[i]));
-        	}
-        }
+        if (stats != null)
+            // Show only the average, since min/max handled separately
+            format.format(stats.getAverage(), stats, buf);
         else
-        	buf.append(value.format(format, precision));
+            format.format(value, buf);
         // Optional min, max
         if (min_max_column)
         {
             buf.append(Messages.Export_Delimiter);
-            if (value instanceof IMinMaxDoubleValue)
+            if (stats != null)
             {   // Turn min..max into negative & positive error
-                final IMinMaxDoubleValue mmv = (IMinMaxDoubleValue) value;
-                buf.append(mmv.getValue() - mmv.getMinimum());
+                buf.append(stats.getAverage() - stats.getMin());
                 buf.append(Messages.Export_Delimiter);
-                buf.append(mmv.getMaximum() - mmv.getValue());
+                buf.append(stats.getMax() - stats.getAverage());
             }
             else
             {
@@ -141,22 +96,6 @@ public class ValueFormatter
     @Override
     public String toString()
     {
-        switch (format)
-        {
-        case Default:
-            return Messages.Format_Default;
-        case Decimal:
-            return nameWithPrecision(Messages.Format_Decimal);
-        case Exponential:
-            return nameWithPrecision(Messages.Format_Exponential);
-        default:
-            return format.name();
-        }
-    }
-
-    /** @return name of format with info on 'digits' */
-    private String nameWithPrecision(final String name)
-    {
-        return name + " (" + precision + " digits)";
+        return format.toString();
     }
 }

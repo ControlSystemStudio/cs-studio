@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import static org.junit.Assert.assertTrue;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
 import java.util.List;
 
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.VType;
 import org.junit.Test;
 
 /** JUnit test of the {@link CSVSampleImporter}
@@ -28,9 +31,13 @@ public class CSVSampleImporterUnitTest
         final InputStream input = getClass().getResourceAsStream("Lakeshore_A_9_2011.xml");
         final SampleImporter importer = new CSVSampleImporter();
 
-        final List<IValue> values = importer.importValues(input);
-        assertTrue(values.size() > 0);
-        for (IValue value : values)
-            System.out.println(value);
+        final List<VType> values = importer.importValues(input);
+        assertThat(values.size(), greaterThan(0));
+        for (VType value : values)
+            System.out.println(VTypeHelper.toString(value));
+        final String text = VTypeHelper.toString(values.get(values.size()-1));
+        assertThat(text, containsString("2011-09-13"));
+        assertThat(text, containsString("08:57:44.968"));
+        assertThat(text, containsString("84.912"));
     }
 }

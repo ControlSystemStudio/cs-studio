@@ -9,10 +9,13 @@ package com.jmatio;
 
 import java.util.ArrayList;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 import com.jmatio.io.MatFileIncrementalWriter;
@@ -56,11 +59,11 @@ public class JMatioDemo
     public void writeMatlabFile2() throws Exception
     {
         // Example values
-        final IValue[] values = new IValue[10];
+        final VType[] values = new VType[10];
         for (int i=0; i<10; ++i)
-            values[i] = ValueFactory.createDoubleValue(TimestampFactory.now(),
-                    ValueFactory.createOKSeverity(), "OK", null, null,
-                    new double[] { Math.exp(-((5.0-i)*(5.0-i))) });
+            values[i] = new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK",
+                    ValueFactory.displayNone(),
+                    Math.exp(-((5.0-i)*(5.0-i))) );
 
         // Turn values into Matlab data
         final int[] dims = new int[] { values.length, 1 };
@@ -70,10 +73,10 @@ public class JMatioDemo
         final MLCell status = new MLCell(null, dims);
         for (int i=0; i<values.length; ++i)
         {
-            value.set(ValueUtil.getDouble(values[i]), i);
-            setCellText(time, i, values[i].getTime().toString());
-            setCellText(severity, i, values[i].getSeverity().toString());
-            setCellText(status, i, values[i].getStatus());
+            value.set(VTypeHelper.toDouble(values[i]), i);
+            setCellText(time, i, TimestampHelper.format(VTypeHelper.getTimestamp(values[i])));
+            setCellText(severity, i, VTypeHelper.getSeverity(values[i]).toString());
+            setCellText(severity, i, VTypeHelper.getMessage(values[i]));
         }
         final MLStructure struct = new MLStructure("channel0", new int[] { 1, 1 });
         struct.setField("value", value);

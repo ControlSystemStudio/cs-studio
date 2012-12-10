@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.waveformview;
 
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
+import org.epics.pvmanager.data.VType;
 
 /** View for inspecting Waveform (Array) Samples of the current Model
  *  @author Kay Kasemir
@@ -298,7 +300,7 @@ public class WaveformView extends DataBrowserAwareView
     {
         // Get selected sample (= one waveform)
         final PlotSamples samples = model_item.getSamples();
-        final IValue value;
+        final VType value;
         synchronized (samples)
         {
             sample_index.setMaximum(samples.getSize());
@@ -310,8 +312,8 @@ public class WaveformView extends DataBrowserAwareView
             clearInfo();
         else
         {
-            timestamp.setText(value.getTime().toString());
-            status.setText(NLS.bind(Messages.SeverityStatusFmt, value.getSeverity().toString(), value.getStatus()));
+            timestamp.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
+            status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
         }
     }
 

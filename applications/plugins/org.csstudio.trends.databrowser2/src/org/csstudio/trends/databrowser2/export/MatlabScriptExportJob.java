@@ -12,13 +12,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.epics.pvmanager.data.VType;
+import org.epics.util.time.Timestamp;
 
 /** Eclipse Job for exporting data from Model to Matlab-format file.
  *  @author Kay Kasemir
@@ -26,8 +26,8 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class MatlabScriptExportJob extends ExportJob
 {
-    public MatlabScriptExportJob(final Model model, final ITimestamp start,
-            final ITimestamp end, final Source source,
+    public MatlabScriptExportJob(final Model model, final Timestamp start,
+            final Timestamp end, final Source source,
             final int optimize_count, final String filename,
             final ExportErrorHandler error_handler)
     {
@@ -73,19 +73,19 @@ public class MatlabScriptExportJob extends ExportJob
             out.println("clear q;");
             while (values.hasNext()  &&  !monitor.isCanceled())
             {
-                final IValue value = values.next();
+                final VType value = values.next();
                 ++line_count;
                 // t(1)='2010/03/15 13:30:10.123';
                 out.println("t{" + line_count + "}='" +
-                    date_format.format(value.getTime().toCalendar().getTime()) + "';");
+                    date_format.format(VTypeHelper.getTimestamp(value).toDate()) + "';");
                 // v(1)=4.125;
-                final double num = ValueUtil.getDouble(value);
+                final double num = VTypeHelper.toDouble(value);
                 if (Double.isNaN(num) || Double.isInfinite(num))
                     out.println("v(" + line_count + ")=NaN;");
                 else
                     out.println("v(" + line_count + ")=" + num +";");
                 // q(1)=0;
-                out.println("q(" + line_count + ")=" + qualities.getQualityCode(value.getSeverity(), value.getStatus()) +";");
+                out.println("q(" + line_count + ")=" + qualities.getQualityCode(VTypeHelper.getSeverity(value), VTypeHelper.getMessage(value)) +";");
                 if (line_count % PROGRESS_UPDATE_LINES == 0)
                     monitor.subTask(NLS.bind("{0}: Wrote {1} samples", item.getName(), line_count));
             }
