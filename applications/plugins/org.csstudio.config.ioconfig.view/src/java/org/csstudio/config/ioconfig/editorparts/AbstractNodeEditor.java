@@ -1077,18 +1077,28 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeSharedImpl<?,?>> 
     }
 
     @Nonnull
-    protected String getShortDesc(@Nonnull final String descText) {
-            final String[] split = descText.split("[\r\n]");
-            String shortDesc = split[0];
-            if (split.length > 0) {
-                if (shortDesc.length() > 40) {
-                    shortDesc = shortDesc.substring(0, 40);
-                } else {
-                    shortDesc = split[0];
-                }
-            }
-        return shortDesc;
-    }
+	protected String getShortDesc(@Nonnull final String descText) {
+		// guard: do not process null or empty
+		if ((descText == null) || (descText.isEmpty())) {
+			return "";
+		}
+		
+		final String[] split = descText.split("[\r\n]");
+		// take care if splitting fails
+		if ((split == null) || (split.length == 0)) {
+			return "";
+		}
+		
+		String shortDesc = split[0];
+		if (split.length > 0) {
+			if (shortDesc.length() > 40) {
+				shortDesc = shortDesc.substring(0, 40);
+			} else {
+				shortDesc = split[0];
+			}
+		}
+		return shortDesc;
+	}
 
     /**
      * {@inheritDoc}
