@@ -200,9 +200,12 @@ public class VTypeHelper
     	addTimestamp(buf, value);
     	buf.append("\t");
     	format.format(value, buf);
-    	final Display display = ValueUtil.displayOf(value);
-        if (display != null  &&  display.getUnits() != null)
-            buf.append(" ").append(display.getUnits());
+    	if (value instanceof Display)
+    	{
+        	final Display display = (Display) value;
+            if (display != null  &&  display.getUnits() != null)
+                buf.append(" ").append(display.getUnits());
+    	}
     	buf.append("\t");
     	addAlarm(buf, value);
         return buf.toString();

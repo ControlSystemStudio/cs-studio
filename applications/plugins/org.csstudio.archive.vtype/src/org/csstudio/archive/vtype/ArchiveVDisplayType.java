@@ -44,7 +44,7 @@ public class ArchiveVDisplayType extends ArchiveVType implements Display
     @Override
     public Double getLowerAlarmLimit()
     {
-        return display == null ? Double.NaN : display.getLowerWarningLimit();
+        return display == null ? Double.NaN : display.getLowerAlarmLimit();
     }
 
     @Override

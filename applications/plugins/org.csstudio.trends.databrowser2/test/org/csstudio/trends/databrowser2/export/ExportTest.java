@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.export;
 
-import org.csstudio.data.values.IValue.Format;
+import org.csstudio.archive.vtype.Style;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -20,7 +20,6 @@ import org.junit.Test;
  *  for the site where this test should run.
  *
  *  @author Kay Kasemir
- *  FIXME (kasemir) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
 @Ignore("See FIXME")
@@ -38,14 +37,6 @@ public class ExportTest implements ExportErrorHandler
         model.addItem(createPVItem("SCL_LLRF:IOC01a:Load"));
         model.getItem(0).setDisplayName("CPU Load");
         model.setTimespan(2*60*24);
-//        model.write(new OutputStream()
-//        {
-//            @Override
-//            public void write(int b) throws IOException
-//            {
-//                System.out.write(b);
-//            }
-//        });
         return model;
     }
 
@@ -67,7 +58,7 @@ public class ExportTest implements ExportErrorHandler
         final ExportJob export = new PlainExportJob(model,
                 model.getStartTime(), model.getEndTime(),
                 Source.OPTIMIZED_ARCHIVE, 60,
-                new ValueWithInfoFormatter(Format.Exponential, 6),
+                new ValueWithInfoFormatter(Style.Exponential, 6),
                 "/tmp/plain.dat", this);
         export.run(new SysoutProgressMonitor());
     }
@@ -82,7 +73,7 @@ public class ExportTest implements ExportErrorHandler
         final ExportJob export = new SpreadsheetExportJob(model,
                 model.getStartTime(), model.getEndTime(),
                 Source.RAW_ARCHIVE, 10,
-                new ValueWithInfoFormatter(Format.Exponential, 3),
+                new ValueWithInfoFormatter(Style.Exponential, 3),
                 "/tmp/sheet.dat", this);
         export.run(new SysoutProgressMonitor());
     }
