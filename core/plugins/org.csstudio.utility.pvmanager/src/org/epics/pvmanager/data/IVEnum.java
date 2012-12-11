@@ -38,5 +38,10 @@ class IVEnum extends IVMetadata implements VEnum {
     public List<String> getLabels() {
         return labels;
     }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
     
 }

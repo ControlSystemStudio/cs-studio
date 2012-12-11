@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_TIME_Byte;
 import gov.aps.jca.dbr.DBR_TIME_String;
 import org.epics.pvmanager.data.VString;
+import org.epics.pvmanager.data.VTypeToString;
 
 /**
  *
@@ -37,6 +38,11 @@ class VStringFromDbr extends VMetadata<DBR_TIME_String> implements VString {
     @Override
     public String getValue() {
         return dbrValue.getStringValue()[0];
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }
