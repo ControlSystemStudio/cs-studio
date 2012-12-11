@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.pvmanager;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.csstudio.opibuilder.datadefinition.DataType;
@@ -26,6 +27,7 @@ import org.epics.pvmanager.data.VShortArray;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VStringArray;
 import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 
 /**
@@ -104,7 +106,7 @@ public class PVManagerHelper{
         }
 
         if (obj instanceof Array) {
-            return ((Array<?>) obj).getSizes().get(0);
+            return ((Array) obj).getSizes().getInt(0);
         }
         return 1;
 	}
@@ -119,31 +121,25 @@ public class PVManagerHelper{
             if (v instanceof Number)
                 return new double[]{((Number) v).doubleValue()};
         }
-
 		if(obj instanceof Array){
-			Object array = ((Array<?>) obj).getArray();
-			if(array instanceof double[])
-				return (double[]) array;
+			Object array = ((Array) obj).getData();
+			if(array instanceof ListNumber)
+				return ListNumberToDoubleArray((ListNumber) array);
 			if(obj instanceof VEnumArray){
-				int[] tArray = ((VEnumArray) obj).getIndexes();
-				final double[] result = new double[tArray.length];
-				for (int i = 0; i < tArray.length; i++) {
-					result[i] = tArray[i];
-				}
-				return result;	            
+				ListInt tArray = ((VEnumArray) obj).getIndexes();
+				return ListNumberToDoubleArray(tArray);           
 			}				
-		}
-		
-		if (obj instanceof VNumberArray){
-			ListNumber data = ((VNumberArray)(obj)).getData();
-			final double[] result = new double[data.size()];
-			 for(int i=0; i<result.length; i++){
-             	result[i] = data.getDouble(i);
-             }
-             return result;			
-		}
+		}		
 		
         return new double[0];
+	}
+	
+	private static double[] ListNumberToDoubleArray(ListNumber listNumber){
+		final double[] result = new double[listNumber.size()];
+		 for(int i=0; i<result.length; i++){
+        	result[i] = listNumber.getDouble(i);
+        }
+        return result;		
 	}
 	
 	
@@ -169,9 +165,9 @@ public class PVManagerHelper{
 			if(pmValue instanceof VNumberArray)
 				return formatNumberArray(formatEnum, (VNumberArray)pmValue, precision);
 			else {
-				Object array = ((Array<?>) pmValue).getArray();
-				if (array instanceof Object[]){
-					return formatObjectArray((Object[]) array);
+				Object array = ((Array) pmValue).getData();
+				if (array instanceof List){
+					return formatObjectArray(((List<?>)array).toArray());
 				}				
 			}
 		}
@@ -208,8 +204,7 @@ public class PVManagerHelper{
 		}
 		return sb.toString();
 	}
-	
-	
+		
 	
 	private String formatNumberArray(FormatEnum formatEnum, VNumberArray pmArray, int precision){
 		ListNumber data = ((VNumberArray)pmArray).getData();

@@ -167,7 +167,7 @@ public class PVManagerTest {
 		        	 System.out.println(ValueUtil.timeOf(newValue).getTimestamp() + " " + 
 								ValueUtil.numericValueOf(newValue) + " "+
 								ValueUtil.alarmOf(newValue).getAlarmSeverity() + " " + 
-								ValueUtil.alarmOf(newValue).getAlarmStatus() +" "
+								ValueUtil.alarmOf(newValue).getAlarmName() +" "
 //								ValueUtil.displayOf(newValue).getFormat().format(ValueUtil.numericValueOf(newValue)) + " "+
 							);
 		         }

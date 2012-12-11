@@ -24,7 +24,6 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.pvmanager.PMObjectValue;
-import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
@@ -49,6 +48,7 @@ import org.eclipse.swt.widgets.Display;
 import org.epics.pvmanager.data.Array;
 import org.epics.pvmanager.data.Scalar;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumberArray;
 
 /**
  * The editpart for text input widget.)
@@ -387,9 +387,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
 				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))
 				||(pvValue instanceof PMObjectValue && 
-					((PMObjectValue)pvValue).getLatestValue() instanceof Array) &&
-					PVManagerHelper.isPrimaryNumberArray(
-						((Array<?>)((PMObjectValue)pvValue).getLatestValue()).getArray())){
+					((PMObjectValue)pvValue).getLatestValue() instanceof VNumberArray)){
 			double[] result = new double[texts.length];
 			for (int i = 0; i < texts.length; i++) {
 				Object o = parseString(texts[i]);
@@ -475,14 +473,13 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					return text;
 			}			
 		}else if(pvValue instanceof Array){
-			Object array = ((Array<?>) pvValue).getArray();
-			if(PVManagerHelper.isPrimaryNumberArray(array)){
+			if(pvValue instanceof VNumberArray){
 				switch (formatEnum) {
 				case HEX:
 				case HEX64:
 					return parseHEX(text, true);
 				case STRING:					
-					return parseCharArray(text, ((Array<?>)pvValue).getSizes().get(0));					
+					return parseCharArray(text, ((VNumberArray)pvValue).getData().size());					
 				case DECIMAL:
 				case EXP:
 				case COMPACT:

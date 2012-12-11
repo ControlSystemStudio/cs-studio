@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
+import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
@@ -34,6 +35,8 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.epics.pvmanager.data.Array;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.util.array.ListNumber;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen
@@ -125,8 +128,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 				IValue value = (IValue)newValue;
 				if(value instanceof PMObjectValue){
 					Object obj = ((PMObjectValue)value).getLatestValue();
-					if(obj instanceof Array){
-						setValue(((Array<?>)obj).getArray());
+					if(obj instanceof VNumberArray){
+						setValue(((VNumberArray)obj).getData());
 						return false;
 					}
 				}				
@@ -463,7 +466,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
-		} else if(value instanceof short[]){
+		}else if(value instanceof ListNumber)
+			((IntensityGraphFigure)getFigure()).setDataArray(
+					new ListNumberWrapper((ListNumber)value));
+		else if(value instanceof short[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((short[]) value);
 		}else if(value instanceof byte[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((byte[]) value);
