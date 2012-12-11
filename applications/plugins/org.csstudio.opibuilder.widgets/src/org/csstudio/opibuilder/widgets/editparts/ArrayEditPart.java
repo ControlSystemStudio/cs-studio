@@ -64,9 +64,10 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
-import org.epics.pvmanager.data.Array;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VNumberArray;
 import org.epics.pvmanager.data.VString;
+import org.epics.util.array.CollectionNumbers;
 
 /**
  * Editpart for array widget.
@@ -661,8 +662,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 					setValue(((IStringValue) value).getValues());
 				} else if (value instanceof PMObjectValue){
 						Object pmValue = ((PMObjectValue)value).getLatestValue();
-						if (pmValue instanceof Array)
-							setValue(((Array<?>)pmValue).getArray());
+						if (pmValue instanceof VNumberArray)
+							setValue(CollectionNumbers.wrappedArray(((VNumberArray)pmValue).getData()));						
 						else{
 							if(pmValue instanceof VEnum)						
 								setValue(new String[]{((VEnum)pmValue).getValue()});

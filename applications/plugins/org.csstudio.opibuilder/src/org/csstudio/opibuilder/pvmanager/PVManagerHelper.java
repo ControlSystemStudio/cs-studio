@@ -27,6 +27,7 @@ import org.epics.pvmanager.data.VShortArray;
 import org.epics.pvmanager.data.VString;
 import org.epics.pvmanager.data.VStringArray;
 import org.epics.pvmanager.data.ValueUtil;
+import org.epics.util.array.CollectionNumbers;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 
@@ -135,6 +136,10 @@ public class PVManagerHelper{
 	}
 	
 	private static double[] ListNumberToDoubleArray(ListNumber listNumber){
+		Object wrappedArray = CollectionNumbers.wrappedArray(listNumber);
+		if(wrappedArray instanceof double[])
+			return (double[])wrappedArray;
+			
 		final double[] result = new double[listNumber.size()];
 		 for(int i=0; i<result.length; i++){
         	result[i] = listNumber.getDouble(i);
