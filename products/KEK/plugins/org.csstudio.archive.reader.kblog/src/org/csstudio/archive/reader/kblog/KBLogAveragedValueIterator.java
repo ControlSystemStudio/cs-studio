@@ -5,12 +5,15 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.data.ValueFactory;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /**
  * Averaging sample iterator for KBLog.
@@ -24,10 +27,10 @@ import org.csstudio.data.values.ValueFactory;
 public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private KBLogRawValueIterator base;
 	private int stepSecond;
-	private ITimestamp currentTime;
-	private ITimestamp endTime;
-	private IValue nextBaseValue;
-	private PriorityBlockingQueue<IValue> processedValues;
+	private Timestamp currentTime;
+	private Timestamp endTime;
+	private VType nextBaseValue;
+	private PriorityBlockingQueue<VType> processedValues;
 	private boolean initialized;
 	
 	/**
@@ -37,7 +40,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param startTime The beginning time of the time range.
 	 * @param stepSecond Time step.
 	 */
-	public KBLogAveragedValueIterator(KBLogRawValueIterator base, ITimestamp startTime, ITimestamp endTime, int stepSecond) {
+	public KBLogAveragedValueIterator(KBLogRawValueIterator base, Timestamp startTime, Timestamp endTime, int stepSecond) {
 		this.base = base;
 		this.currentTime = startTime;
 		this.endTime = endTime;
@@ -49,7 +52,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		else
 			this.stepSecond = stepSecond;
 		
-		processedValues = new PriorityBlockingQueue<IValue>(1, new ValueTimeComparator());
+		processedValues = new PriorityBlockingQueue<VType>(1, new ValueTimeComparator());
 	}
 	
 	/**
@@ -64,27 +67,19 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param value value
 	 * @return whether the given value represents normal value which can be processed while averaging. 
 	 */
-	private boolean isNormalValue(IValue value) {
-		if (!value.getSeverity().hasValue())
-			return false;
-		
-		if (value instanceof IDoubleValue) {
-			if (((IDoubleValue) value).getValues().length != 1)
-				return false; // array or no value
-			
-			double val = ((IDoubleValue) value).getValue();
-			if (val == Double.NaN || val == Double.NEGATIVE_INFINITY || val == Double.POSITIVE_INFINITY)
-				return false;
-			
-			return true;
-		} else if (value instanceof ILongValue) {
-			if (((ILongValue) value).getValues().length != 1)
-				return false; // array or no value
-			
-			return true;
-		} else {
-			return false;
-		}
+	private boolean isNormalValue(final VType value) {
+	    if (! (value instanceof VNumber))
+	        return false;
+	    
+	    final VNumber number = (VNumber) value;
+	    final double dbl = number.getValue().doubleValue();
+        if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
+	        return false;
+        
+        if (number.getAlarmSeverity() == AlarmSeverity.UNDEFINED)
+            return false;
+        
+        return true;
 	}
 	
 	/**
@@ -93,16 +88,11 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param value value
 	 * @return whether the given value represents array or not
 	 */
-	private boolean isArray(IValue value) {
-		if (value instanceof IDoubleValue) {
-			if (((IDoubleValue) value).getValues().length >= 2)
-				return true;
-		} else if (value instanceof ILongValue) {
-			if (((ILongValue) value).getValues().length >= 2)
-				return true;
-		}
-		
-		return false;
+	private boolean isArray(final VType value) {
+	    if (! (value instanceof VNumberArray))
+	        return false;
+	    final VNumberArray array = (VNumberArray) value;
+	    return array.getData().size() >= 2;
 	}
 
 	/**
@@ -122,22 +112,22 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		double min = 0;
 		double max = 0;
 		long countOfNormalValue = 0;
-		IValue lastNormalValue = null;
+		VType lastNormalValue = null;
 		boolean addedArray = false;
 		
-		ITimestamp nextTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
+		Timestamp nextTime = currentTime.plus(TimeDuration.ofSeconds(stepSecond));
 		
 		try{
 			while (nextBaseValue != null) {
-				ITimestamp time = nextBaseValue.getTime();
+				Timestamp time = VTypeHelper.getTimestamp(nextBaseValue);
 				
-				if (time.isGreaterOrEqual(nextTime)) {
+				if (time.compareTo(nextTime) >= 0) {
 					// The obtained value is the data in the next step, which will be processed
 					// when this method is called next time.
 					break;
 				}
 
-				if (time.isLessThan(currentTime)) {
+				if (time.compareTo(currentTime) < 0) {
 					// A value archived earlier than this time step is found.
 					// Ignore this value and continue averaging.
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
@@ -154,13 +144,8 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 				}
 
 				if (isNormalValue(nextBaseValue)) {
-					double val;
-					
-					if (nextBaseValue instanceof IDoubleValue) {
-						val = ((IDoubleValue) nextBaseValue).getValue();
-					} else if (nextBaseValue instanceof ILongValue) {
-						val = (double)((ILongValue) nextBaseValue).getValue();
-					} else {
+					final double val = VTypeHelper.toDouble(nextBaseValue);
+				    if (Double.isNaN(val)) {
 						// This part is not supposed to be reached.
 						throw new Exception("This thread reached the part which must not be reached.");
 					}
@@ -214,15 +199,14 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			processedValues.add(lastNormalValue);
 		} else if (countOfNormalValue > 1) {
 			// Middle time of this time step
-			ITimestamp midTime = TimestampFactory.fromDouble(currentTime.toDouble() + (double)stepSecond / 2.0);		
+			Timestamp midTime = currentTime.plus(TimeDuration.ofSeconds(stepSecond / 2.0));		
 			
 			// Add the averaged value in this time step to the processed value queue.
-			IValue averagedValue = ValueFactory.createMinMaxDoubleValue(midTime,
-					KBLogSeverityInstances.normal,
-					KBLogMessages.StatusNormal,
-					null,
-					IValue.Quality.Interpolated,
-					new double[] { avg }, min, max);
+			VType averagedValue = new ArchiveVStatistics(midTime,
+			        AlarmSeverity.NONE,
+			        KBLogMessages.StatusNormal,
+			        ValueFactory.displayNone(),
+			        avg, min, max, 0.0, 1);
 			processedValues.add(averagedValue);
 		}
 	}
@@ -256,9 +240,9 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			examineCurrentTimeStep();
 		
 			// Go to the next time step.
-			currentTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
+			currentTime = currentTime.plus(TimeDuration.ofSeconds(stepSecond));
 			
-			if (currentTime.isGreaterOrEqual(endTime))
+			if (currentTime.compareTo(endTime) >= 0)
 				break;
 		}
 	}
@@ -280,7 +264,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	}
 
 	@Override
-	public synchronized IValue next() throws Exception {
+	public synchronized VType next() throws Exception {
 		if (!initialized)
 			init();
 		
@@ -315,17 +299,10 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * 
 	 * @author Takashi Nakamoto
 	 */
-	private class ValueTimeComparator implements Comparator<IValue> {
+	private class ValueTimeComparator implements Comparator<VType> {
 		@Override
-		public int compare(IValue arg0, IValue arg1) {
-			if (arg0.getTime().isLessOrEqual(arg1.getTime())){
-				if (arg0.getTime().isLessThan(arg1.getTime()))
-					return -1;
-				else
-					return 0;
-			} else {
-				return 1;
-			}
+		public int compare(VType arg0, VType arg1) {
+		    return VTypeHelper.getTimestamp(arg0).compareTo(VTypeHelper.getTimestamp(arg1));
 		}
 	}
 }
