@@ -21,6 +21,44 @@ public class CollectionNumbers {
      * @param coll the collection
      * @return the array or null
      */
+    public static Object wrappedArray(CollectionNumber coll) {
+        Object data = wrappedFloatArray(coll);
+        if (data != null) {
+            return data;
+        }
+        data = wrappedDoubleArray(coll);
+        if (data != null) {
+            return data;
+        }
+        data = wrappedByteArray(coll);
+        if (data != null) {
+            return data;
+        }
+        data = wrappedShortArray(coll);
+        if (data != null) {
+            return data;
+        }
+        data = wrappedIntArray(coll);
+        if (data != null) {
+            return data;
+        }
+        data = wrappedLongArray(coll);
+        if (data != null) {
+            return data;
+        }
+        return null;
+    }
+    
+    /**
+     * If available, return the array wrapped by the collection - USE WITH
+     * CAUTION AS IT EXPOSES THE INTERNAL STATE OF THE COLLECTION. This
+     * is provided in case an external routine for computation
+     * requires you to use array, and you want to avoid the copy
+     * for performance reason.
+     * 
+     * @param coll the collection
+     * @return the array or null
+     */
     public static float[] wrappedFloatArray(CollectionNumber coll) {
         if (coll instanceof ArrayFloat) {
             return ((ArrayFloat) coll).wrappedArray();
