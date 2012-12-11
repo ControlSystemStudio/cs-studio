@@ -70,8 +70,17 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 
 	}
 
-	protected String iOpenFileBrowser(Shell shell, int style) {
-		FileDialog dlg = new FileDialog(shell, style);
-		return dlg.open();
+	protected String iOpenFileBrowser(final Shell shell, final int style)
+	{
+	    // On OS X, the JRE crashed when invoking this
+	    // a second time after the first FileDialog was "cancel"ed by the user?!
+	    // Fix seemed to be:
+	    // Assert that the same JRE system library is used for the main DataBrowser
+	    // plugin and this fragment. Best done by always using the 'workspace'
+	    // JRE and not picking any specific one which then needs to be set to the
+	    // same in both the main plugin and the fragment.
+	    final FileDialog dlg = new FileDialog(shell, style);
+	    final String result = dlg.open();
+		return result;
 	}
 }
