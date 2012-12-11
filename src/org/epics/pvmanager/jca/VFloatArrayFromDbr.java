@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Float;
 import org.epics.pvmanager.data.VFloatArray;
+import org.epics.pvmanager.data.VTypeToString;
 import org.epics.util.array.ArrayFloat;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListFloat;
@@ -30,6 +31,11 @@ class VFloatArrayFromDbr extends VNumberMetadata<DBR_TIME_Float, DBR_CTRL_Double
     @Override
     public ListFloat getData() {
         return new ArrayFloat(dbrValue.getFloatValue());
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

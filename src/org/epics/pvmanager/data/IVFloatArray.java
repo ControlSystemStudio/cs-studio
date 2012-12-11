@@ -35,4 +35,9 @@ class IVFloatArray extends IVNumeric implements VFloatArray {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
+
 }

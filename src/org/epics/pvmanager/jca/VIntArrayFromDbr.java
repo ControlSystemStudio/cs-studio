@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import org.epics.pvmanager.data.VIntArray;
+import org.epics.pvmanager.data.VTypeToString;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListInt;
 
@@ -28,6 +29,11 @@ class VIntArrayFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> im
     @Override
     public ListInt getData() {
         return new ArrayInt(dbrValue.getIntValue());
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

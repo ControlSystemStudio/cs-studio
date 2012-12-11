@@ -6,6 +6,7 @@ package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
 import java.util.List;
+import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
@@ -247,7 +248,9 @@ public class ValueFactory {
         };
     }
     
-    private static final Display displayNone = newDisplay(null, null, null, null, null, null, null, null, null, null);
+    private static final Display displayNone = newDisplay(Double.NaN, Double.NaN, 
+            Double.NaN, "", NumberFormats.toStringFormat(), Double.NaN, Double.NaN,
+            Double.NaN, Double.NaN, Double.NaN);
     
     /**
      * Empty display information.

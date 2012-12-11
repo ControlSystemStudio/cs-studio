@@ -9,6 +9,7 @@ import gov.aps.jca.dbr.DBR_TIME_Enum;
 import java.util.Arrays;
 import java.util.List;
 import org.epics.pvmanager.data.VEnum;
+import org.epics.pvmanager.data.VTypeToString;
 
 /**
  *
@@ -50,6 +51,11 @@ class VEnumFromDbr extends VMetadata<DBR_TIME_Enum> implements VEnum {
         if (metadata.getLabels() == null)
             throw new RuntimeException("Metadata returned no labels");
         return Arrays.asList(metadata.getLabels());
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

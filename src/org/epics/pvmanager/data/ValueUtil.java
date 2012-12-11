@@ -6,11 +6,14 @@ package org.epics.pvmanager.data;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.epics.util.array.ListNumber;
+import org.epics.util.time.TimestampFormat;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -236,6 +239,64 @@ public class ValueUtil {
         }
         
         return false;
+    }
+    
+    private static volatile TimestampFormat defaultTimestampFormat = new TimestampFormat();
+    private static volatile NumberFormat defaultNumberFormat = new DecimalFormat();
+    private static volatile ValueFormat defaultValueFormat = new SimpleValueFormat(3);
+    
+    /**
+     * The default object to format and parse timestamps.
+     * 
+     * @return the default timestamp format
+     */
+    public static TimestampFormat getDefaultTimestampFormat() {
+        return defaultTimestampFormat;
+    }
+
+    /**
+     * Changes the default timestamp format.
+     * 
+     * @param defaultTimestampFormat the new default timestamp format
+     */
+    public static void setDefaultTimestampFormat(TimestampFormat defaultTimestampFormat) {
+        ValueUtil.defaultTimestampFormat = defaultTimestampFormat;
+    }
+    
+    /**
+     * The default format for numbers.
+     * 
+     * @return the default number format
+     */
+    public static NumberFormat getDefaultNumberFormat() {
+        return defaultNumberFormat;
+    }
+
+    /**
+     * Changes the default format for numbers.
+     * 
+     * @param defaultNumberFormat the new default number format
+     */
+    public static void setDefaultNumberFormat(NumberFormat defaultNumberFormat) {
+        ValueUtil.defaultNumberFormat = defaultNumberFormat;
+    }
+
+    /**
+     * The default format for VTypes.
+     * 
+     * @return the default format
+     */
+    public static ValueFormat getDefaultValueFormat() {
+        return defaultValueFormat;
+    }
+
+    /**
+     * Changes the default format for VTypes.
+     * 
+     * @param defaultValueFormat the new default format
+     */
+    public static void setDefaultValueFormat(ValueFormat defaultValueFormat) {
+        ValueUtil.defaultValueFormat = defaultValueFormat;
     }
     
 }
