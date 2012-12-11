@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
+import org.epics.util.array.CollectionNumbers;
+import org.epics.util.array.ListNumber;
 
 /**
  * A ChannelHandler for the JCADataSource.
@@ -127,6 +129,17 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     private void put(Object newValue, final ChannelWriteCallback callback) throws CAException {
+        // If it's a ListNumber, extract the array
+        if (newValue instanceof ListNumber) {
+            ListNumber data = (ListNumber) newValue;
+            Object wrappedArray = CollectionNumbers.wrappedArray(data);
+            if (wrappedArray == null) {
+                newValue = CollectionNumbers.doubleArrayCopyOf(data);
+            } else {
+                newValue = wrappedArray;
+            }
+        }
+        
         if (newValue instanceof String) {
             channel.put(newValue.toString());
         } else if (newValue instanceof byte[]) {

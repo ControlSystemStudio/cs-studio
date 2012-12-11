@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.LatestValueCollector;
 import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.WriteFunction;
 import static org.epics.pvmanager.data.ValueFactory.*;
 import org.epics.pvmanager.expression.ChannelExpression;
 import org.epics.pvmanager.expression.ChannelExpressionList;
@@ -16,10 +18,18 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.SourceRateExpression;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
+import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.pvmanager.expression.WriteExpressionImpl;
+import org.epics.util.array.ArrayByte;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayFloat;
 import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ArrayShort;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
@@ -136,8 +146,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VFloatArray, float[]> vFloatArray(String name) {
-        return channel(name, VFloatArray.class, float[].class);
+    public static ChannelExpression<VFloatArray, ArrayFloat> vFloatArray(String name) {
+        return channel(name, VFloatArray.class, ArrayFloat.class);
     }
 
     /**
@@ -146,8 +156,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VDoubleArray, float[]> vDoubleArray(String name) {
-        return channel(name, VDoubleArray.class, float[].class);
+    public static ChannelExpression<VDoubleArray, ArrayDouble> vDoubleArray(String name) {
+        return channel(name, VDoubleArray.class, ArrayDouble.class);
     }
 
     /**
@@ -156,8 +166,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VByteArray, byte[]> vByteArray(String name) {
-        return channel(name, VByteArray.class, byte[].class);
+    public static ChannelExpression<VByteArray, ArrayByte> vByteArray(String name) {
+        return channel(name, VByteArray.class, ArrayByte.class);
     }
 
     /**
@@ -166,8 +176,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VShortArray, short[]> vShortArray(String name) {
-        return channel(name, VShortArray.class, short[].class);
+    public static ChannelExpression<VShortArray, ArrayShort> vShortArray(String name) {
+        return channel(name, VShortArray.class, ArrayShort.class);
     }
 
     /**
@@ -176,8 +186,8 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VIntArray, int[]> vIntArray(String name) {
-        return channel(name, VIntArray.class, int[].class);
+    public static ChannelExpression<VIntArray, ArrayInt> vIntArray(String name) {
+        return channel(name, VIntArray.class, ArrayInt.class);
     }
 
     /**
@@ -189,6 +199,48 @@ public class ExpressionLanguage {
     public static ChannelExpression<VString, String> vString(String name) {
         return channel(name, VString.class, String.class);
     }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * given format.
+     * 
+     * @param expression the expression to format
+     * @param valueFormat the format to use for the conversion
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression, ValueFormat valueFormat) {
+        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), valueFormat), expression.getName());
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * default format.
+     * 
+     * @param expression the expression to format
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression) {
+        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), ValueUtil.getDefaultValueFormat()), expression.getName());
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * default format.
+     * 
+     * @param expression the expression to format
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateReadWriteExpression<VString, String> vStringOf(DesiredRateReadWriteExpression<? extends VType, ? extends Object> expression) {
+        LatestValueCollector<VType> forward = new LatestValueCollector<>();
+        DesiredRateExpression<VString> readExp = new DesiredRateExpressionImpl<>(expression,
+                new VStringOfFunction(expression.getFunction(), ValueUtil.getDefaultValueFormat(), forward)
+                , expression.getName());
+        @SuppressWarnings("unchecked")
+        WriteFunction<Object> writeFunction = (WriteFunction<Object>) (WriteFunction) expression.getWriteFunction();
+        WriteExpression<String> writeExp = new WriteExpressionImpl<>(expression,
+                new VStringOfWriteFunction(forward, ValueUtil.getDefaultValueFormat(), writeFunction), expression.getName());
+        return new DesiredRateReadWriteExpressionImpl<>(readExp, writeExp);
+    }
 
     /**
      * A channel with the given name of type VStringArray.
@@ -196,8 +248,9 @@ public class ExpressionLanguage {
      * @param name the channel name; can't be null
      * @return an expression representing the channel
      */
-    public static ChannelExpression<VStringArray, String[]> vStringArray(String name) {
-        return channel(name, VStringArray.class, String[].class);
+    @SuppressWarnings("unchecked")
+    public static ChannelExpression<VStringArray, List<String>> vStringArray(String name) {
+        return (ChannelExpression<VStringArray, List<String>>) (ChannelExpression) channel(name, VStringArray.class, List.class);
     }
 
     /**

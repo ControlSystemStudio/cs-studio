@@ -22,4 +22,9 @@ class IVString extends IVMetadata implements VString {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
+
 }
