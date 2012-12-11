@@ -57,6 +57,7 @@
             name="%CSS">
       </category>
       <view
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.trends.databrowser2.search.SearchView"
             icon="icons/search.gif"
@@ -65,6 +66,7 @@
             restorable="true">
       </view>
       <view
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.trends.databrowser2.sampleview.SampleView"
             icon="icons/inspect.gif"
@@ -73,6 +75,7 @@
             restorable="true">
       </view>
       <view
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.trends.databrowser2.exportview.ExportView"
             icon="icons/export.png"

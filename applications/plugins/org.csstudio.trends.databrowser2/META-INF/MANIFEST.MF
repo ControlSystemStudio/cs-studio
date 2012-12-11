@@ -2,34 +2,50 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 3.1.2.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser2.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
- org.eclipse.ui;bundle-version="3.5.0",
- org.eclipse.core.runtime;bundle-version="3.5.0",
+ org.eclipse.ui;bundle-version="3.5.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional;visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="3.5.0";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.5.0",
- org.eclipse.draw2d;bundle-version="3.5.0",
- org.eclipse.ui.views;bundle-version="3.4.1",
- org.eclipse.ui.cheatsheets,
- org.eclipse.ui.ide;bundle-version="3.6.0",
- org.csstudio.csdata;bundle-version="3.0.0",
- org.csstudio.ui.util;bundle-version="3.1.0",
- org.csstudio.apputil;bundle-version="1.1.0",
- org.csstudio.apputil.ui;bundle-version="1.1.7",
- org.csstudio.utility.pv;bundle-version="1.2.0",
+ org.eclipse.gef;resolution:=optional;visibility:=reexport,
+ org.eclipse.rap.gef;bundle-version="1.4.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.draw2d;bundle-version="3.5.0";resolution:=optional,
+ org.eclipse.rap.draw2d;bundle-version="1.4.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.rap.draw2d.compatibility;bundle-version="1.4.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.ui.views;bundle-version="3.4.1";resolution:=optional;visibility:=reexport,
+ org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional;visibility:=reexport,
+ org.eclipse.ui.cheatsheets;resolution:=optional,
+ org.eclipse.ui.ide;bundle-version="3.6.0";resolution:=optional,
+ org.csstudio.csdata;bundle-version="3.0.0";visibility:=reexport,
+ org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional;visibility:=reexport,
+ org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
+ org.csstudio.apputil;bundle-version="1.1.0";visibility:=reexport,
+ org.csstudio.apputil.ui;bundle-version="3.2.0";visibility:=reexport,
+ org.csstudio.utility.pv;bundle-version="1.2.0";visibility:=reexport,
  org.csstudio.swt.xygraph;bundle-version="1.0.2",
- org.csstudio.archive.reader;bundle-version="2.0.1",
+ org.csstudio.archive.reader;bundle-version="2.0.1";visibility:=reexport,
  org.csstudio.logbook;bundle-version="1.0.2",
- org.csstudio.email.ui;bundle-version="1.0.0",
+ org.csstudio.email.ui;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
  org.csstudio.openfile;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
 Export-Package: org.csstudio.trends.databrowser2,
+ org.csstudio.trends.databrowser2.archive,
  org.csstudio.trends.databrowser2.editor,
+ org.csstudio.trends.databrowser2.export,
+ org.csstudio.trends.databrowser2.exportview,
  org.csstudio.trends.databrowser2.imports,
  org.csstudio.trends.databrowser2.model,
- org.csstudio.trends.databrowser2.ui
+ org.csstudio.trends.databrowser2.preferences,
+ org.csstudio.trends.databrowser2.propsheet,
+ org.csstudio.trends.databrowser2.sampleview,
+ org.csstudio.trends.databrowser2.ui,
+ org.csstudio.trends.databrowser2.util,
+ org.csstudio.trends.databrowser2.waveformview
+Bundle-ClassPath: .

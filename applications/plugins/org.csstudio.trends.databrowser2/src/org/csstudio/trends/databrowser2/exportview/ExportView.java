@@ -28,6 +28,7 @@ import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.csstudio.trends.databrowser2.util.SingleSourceHelper;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -43,7 +44,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -360,8 +360,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                FileDialog dlg = new FileDialog(parent.getShell(), SWT.SAVE);
-                final String name = dlg.open();
+            	final String name =  SingleSourceHelper.openFileBrowser(parent.getShell(), SWT.SAVE);
                 if (name != null)
                     filename.setText(name.trim());
             }

@@ -10,7 +10,9 @@ package org.csstudio.trends.databrowser2;
 import java.util.Dictionary;
 import java.util.logging.Logger;
 
+import org.csstudio.trends.databrowser2.util.SingleSourceHelper;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -34,11 +36,16 @@ public class Activator extends AbstractUIPlugin
     /** Logger for this plugin */
     private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
+	private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
+
     /** {@inheritDoc} */
     @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
+		if(isRAP) {
+			SingleSourceHelper.rapPluginStartUp();
+		}
         plugin = this;
     }
 
@@ -93,4 +100,11 @@ public class Activator extends AbstractUIPlugin
     {
         return logger;
     }
+	
+	/**
+	 * @return true if this is running in RAP.
+	 */
+	public static boolean isRAP() {
+		return isRAP;
+	}
 }

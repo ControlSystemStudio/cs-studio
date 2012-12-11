@@ -11,7 +11,6 @@ import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -27,7 +26,6 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -236,7 +234,7 @@ public class SampleView extends DataBrowserAwareView
                 cell.setText(sample.getValue().getQuality().toString());
             }
         });
-        ColumnViewerToolTipSupport.enableFor(sample_table, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(sample_table);
         
         // Be ignorant of any change of the current model after this view
         // is disposed.
