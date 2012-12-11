@@ -18,9 +18,6 @@ import org.epics.util.array.ListNumber;
 @SuppressWarnings("nls")
 public class StringVTypeFormat extends DefaultVTypeFormat
 {
-    
-    // TODO CAtch VNumberArray, display as text
-    
     /** {@inheritDoc} */
     public StringBuilder format(final VType value, final StringBuilder buf)
     {
@@ -53,6 +50,10 @@ public class StringVTypeFormat extends DefaultVTypeFormat
         return buf;
     }
     
+    /** Handle 'printable' characters
+     *  @param code Code point to add to buffer
+     *  @param buf Buffer
+     */
     private void formatChar(final int code, final StringBuilder buf)
     {
         // Ideally, this was some combination of

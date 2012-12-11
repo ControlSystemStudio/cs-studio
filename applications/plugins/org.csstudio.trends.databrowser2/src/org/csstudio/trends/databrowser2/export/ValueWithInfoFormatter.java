@@ -38,7 +38,7 @@ public class ValueWithInfoFormatter extends ValueFormatter
     @Override
     public String format(final VType value)
     {
-        if (value == null)
+        if (Double.isNaN(VTypeHelper.toDouble(value)))
             return super.format(null) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;

@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.export;
 
 import org.csstudio.archive.vtype.Style;
 import org.csstudio.archive.vtype.VTypeFormat;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VType;
@@ -54,7 +55,7 @@ public class ValueFormatter
     /** @return Value formatted into columns */
     public String format(final VType value)
     {
-        if (value == null)
+        if (Double.isNaN(VTypeHelper.toDouble(value)))
         {
             if (min_max_column)
                 return Messages.Export_NoValueMarker +
@@ -65,7 +66,6 @@ public class ValueFormatter
         }
 
         final VStatistics stats = (value instanceof VStatistics) ? (VStatistics) value : null;
-
         
         final StringBuilder buf = new StringBuilder();
         if (stats != null)

@@ -19,7 +19,7 @@ import org.epics.pvmanager.data.VType;
 @SuppressWarnings("nls")
 public class DecimalVTypeFormat extends VTypeFormat
 {
-    final private int precision;
+    final protected int precision;
     final private NumberFormat format;
    
     /** Initialize
@@ -28,9 +28,16 @@ public class DecimalVTypeFormat extends VTypeFormat
     public DecimalVTypeFormat(final int precision)
     {
         this.precision = precision;
-        format = NumberFormat.getNumberInstance();
+        this.format = initFormat();
+    }
+    
+    /** @return NumberFormat to use in this formatter */
+    protected NumberFormat initFormat()
+    {
+        final NumberFormat format = NumberFormat.getNumberInstance();
         format.setMinimumFractionDigits(precision);
         format.setMaximumFractionDigits(precision); 
+        return format;
     }
     
     /** {@inheritDoc} */
@@ -47,10 +54,18 @@ public class DecimalVTypeFormat extends VTypeFormat
     }
     
     /** {@inheritDoc} */
-    public void format(final Number number,
+    public StringBuilder format(final Number number,
             final Display display, final StringBuilder buf)
     {
-        buf.append(format.format(number));
+        if (number instanceof Double)
+        {
+            final Double dbl = (Double) number;
+            if (dbl.isNaN())
+                return buf.append(VTypeFormat.NOT_A_NUMBER);
+            else if (dbl.isInfinite())
+                return buf.append(VTypeFormat.INFINITE);
+        }
+        return buf.append(format.format(number));
     }
     
     /** {@inheritDoc} */

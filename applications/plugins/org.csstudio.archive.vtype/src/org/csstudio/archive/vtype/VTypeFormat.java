@@ -25,6 +25,9 @@ abstract public class VTypeFormat
 	/** Number of array elements to show before shortening the printout */
 	final public static int MAX_ARRAY_ELEMENTS = 10;
 	
+	final public static String NOT_A_NUMBER = "NaN";
+    final public static String INFINITE = "Inf";
+	
 	/** Format just the value of a {@link VType} as string (not timestamp, ..)
 	 *  @param value Value
 	 *  @return String representation of its value
@@ -120,8 +123,9 @@ abstract public class VTypeFormat
     /** @param number {@link Number}
      *  @param display {@link Display}
      *  @param buf {@link StringBuilder}
+     *  @return {@link StringBuilder}
      */
-    abstract public void format(final Number number,
+    abstract public StringBuilder format(final Number number,
             final Display display, final StringBuilder buf);
     
     /** @return Description of the format */

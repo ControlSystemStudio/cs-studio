@@ -21,8 +21,8 @@ import org.epics.util.time.TimestampFormat;
 @SuppressWarnings("nls")
 public class TimestampHelper
 {
-    final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.NNNNNNNNN";
-	final public static String FORMAT_SECONDS = "yyyy-MM-dd HH:mm:ss";
+    final public static String FORMAT_FULL = "yyyy/MM/dd HH:mm:ss.NNNNNNNNN";
+	final public static String FORMAT_SECONDS = "yyyy/MM/dd HH:mm:ss";
 
 	/** Time stamp format */
 	final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
@@ -134,8 +134,8 @@ public class TimestampHelper
 	        return Timestamp.of(secs, 0);
         }
 
-        // When rounding "2012-01-19 12:23:14" by 2 hours,
-        // the user likely expects "2012-01-19 14:00:00"
+        // When rounding "2012/01/19 12:23:14" by 2 hours,
+        // the user likely expects "2012/01/19 14:00:00"
         // because 12.xx rounded up by 2 is 14.
         //
         // In other words, rounding by 2 should result in an even hour,

@@ -11,6 +11,7 @@ import java.io.PrintStream;
 
 import org.csstudio.archive.reader.SpreadsheetIterator;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -60,11 +61,13 @@ public class SpreadsheetExportJob extends PlainExportJob
         final SpreadsheetIterator sheet = new SpreadsheetIterator(iters);
         // Dump the spreadsheet lines
         long line_count = 0;
+        
         while (sheet.hasNext()  &&  !monitor.isCanceled())
         {
             final Timestamp time = sheet.getTime();
             final VType line[] = sheet.next();
-            out.print(time);
+            out.print(TimestampHelper.format(time));
+           
             for (int i=0; i<line.length; ++i)
                 out.print(Messages.Export_Delimiter + formatter.format(line[i]));
             out.println();

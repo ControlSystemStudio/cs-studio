@@ -18,13 +18,13 @@ public class DefaultVTypeFormat extends VTypeFormat
 {
     /** {@inheritDoc} */
     @Override
-    public void format(final Number number,
+    public StringBuilder format(final Number number,
             final Display display, final StringBuilder buf)
     {
         if (display != null  &&  display.getFormat() != null)
-            buf.append(display.getFormat().format(number));
+            return buf.append(display.getFormat().format(number));
         else
-            buf.append(number);
+            return buf.append(number);
     }
     
     /** {@inheritDoc} */
