@@ -5,6 +5,7 @@ org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
 org.csstudio.alarm.beast.msghist/**
+org.csstudio.alarm.beast.notifier/**
 org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
@@ -25,6 +26,7 @@ org.csstudio.archive.reader.rdb.test/**
 org.csstudio.archive.writer/**
 org.csstudio.archive.writer.rdb/**
 org.csstudio.archive.writer.test/**
+org.csstudio.archive.vtype/**
 org.csstudio.auth/**
 org.csstudio.auth.ui/**
 org.csstudio.basic.epics.product/**

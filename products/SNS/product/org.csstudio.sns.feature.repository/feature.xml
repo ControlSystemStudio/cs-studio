@@ -31,10 +31,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <includes
-         id="org.csstudio.sns.feature.repository.svn"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.sns.feature.repository.git"
          version="0.0.0"/>
 

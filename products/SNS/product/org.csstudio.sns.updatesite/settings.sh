@@ -6,6 +6,19 @@
 
 export VERSION=3.2.0I
 
+# Must use Java 7
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home
+
+if [ ! -d $JAVA_HOME/Classes ]
+then
+   echo "On OS X, to make new Oracle JDK look like old Apple JDK"
+   echo "that RCP headless build still expects, do this:"
+   echo "ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
+   exit -1
+fi
+
+export PATH=$JAVA_HOME/bin:$PATH
+
 # Top of repository tree
 export TOP=/Users/ky9/git/cs-studio
 
