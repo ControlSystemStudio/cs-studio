@@ -7,15 +7,21 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
 import org.csstudio.opibuilder.widgets.symbol.image.ControlSymbolImage;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolBrowser;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
+import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -24,6 +30,8 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -147,7 +155,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	 * Inform all control listeners that the manual value has changed.
 	 */
 	protected void fireManualValueChange(final String newManualState) {
-		setState(newManualState);
+//		setState(newManualState);
 		if (!isEditMode()) {
 			for (IManualStringValueChangeListener l : controlListeners) {
 				l.manualValueChanged(newManualState);
@@ -189,12 +197,16 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	
 	private void initSymbolBrowser() {
 		// initialize symbol browser with images
-		symbolBrowser.clear();
-		for (String state : states) {
-			if (images.get(state) != null)
-				symbolBrowser.addImage(state, images.get(state)
-						.getOriginalImageData());
-		}
+//		symbolBrowser.clear();
+		if (symbolBrowser.isEmpty())
+			try {
+				loadSymbolBrowserImages();
+			} catch (Exception e) {
+				Activator.getLogger().log(
+						Level.SEVERE,
+						"ERROR in loading symbol browser images:\n"
+								+ e.getMessage());
+			}
 		symbolBrowser.setCurrentState(currentState);
 		symbolBrowser.initCurrentDisplay();
 		
@@ -207,6 +219,52 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 		int height = symbolBrowser.getSize().y;
 		symbolBrowser.setBounds(xPos, yPos, width, height);
 		symbolBrowser.moveAbove(null);
+	}
+	
+	private void loadSymbolBrowserImages() throws Exception {
+		if (states == null || states.isEmpty()) {
+			ImageData data = getImageData(originalSymbolImagePath);
+			symbolBrowser.addImage("??", data);
+			return;
+		}
+		// Get base name
+		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath, states);
+		if (imageBasePath == null) { // Image do not match any state
+			// TODO: alert state image missing
+			for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
+				String state = states.get(stateIndex);
+				// Load default image for all states
+				ImageData data = getImageData(originalSymbolImagePath);
+				symbolBrowser.addImage(state, data);
+			}
+			return;
+		}
+		// Retrieve & set images paths
+		for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
+			String state = states.get(stateIndex);
+			IPath path = ImageUtils.searchStateImage(stateIndex, imageBasePath);
+			ImageData data = null;
+			if (path == null) { // Test existence
+				// TODO: alert state image missing
+				data = getImageData(originalSymbolImagePath);
+			} else {
+				// Launch loading !
+				data = getImageData(path);
+			}
+			symbolBrowser.addImage(state, data);
+		}
+	}
+	
+	private ImageData getImageData(IPath imagePath) throws Exception {
+		AbstractSymbolImage asi = createSymbolImage(true);
+		asi.setImagePath(imagePath);
+		if (!workingWithSVG) {
+			InputStream stream = ResourceUtil.pathToInputStream(imagePath);
+			Image tempImage = new Image(Display.getDefault(), stream);
+			ImageData imgData = tempImage.getImageData();
+			asi.setOriginalImageData(imgData);
+		}
+		return asi.getOriginalImageData();
 	}
 	
 	// ************************************************************

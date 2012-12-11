@@ -13,6 +13,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -711,9 +712,15 @@ public final class ImageUtils {
 			return null;
 		if (states == null || states.isEmpty())
 			return null;
-		
-		// build regular expression to match: <absolute base path>
-		// <state>.<extension>
+		// Clean empty states
+		Iterator<String> it = states.iterator();
+		while (it.hasNext()) {
+			String s = it.next();
+			if (s == null || s.isEmpty()) {
+				it.remove();
+			}
+		}
+		// build regular expression to match: <absolute base path> <state>.<extension>
 		StringBuilder sb = new StringBuilder();
 		sb.append("^(.*)(");
 		for (int i = 0; i < IMAGE_EXTENSIONS.length; i++) {
@@ -737,9 +744,18 @@ public final class ImageUtils {
 		}
 		// search if the state list contains <state> 
 		int stateIndex = 0;
-		for (String state : states) {
-			int index = pathWOExt.lastIndexOf(state);
-			if (index > 0 && index + state.length() == pathWOExt.length()) {
+		// Bug 3479: update widget to use state index instead of string value
+//		for (String state : states) {
+//			int index = pathWOExt.lastIndexOf(state);
+//			if (index > 0 && index + state.length() == pathWOExt.length()) {
+//				stateIndex = index;
+//				break;
+//			}
+//		}
+		for (int count = 0; count < states.size(); count++) {
+			String countStr = String.valueOf(count);
+			int index = pathWOExt.lastIndexOf(countStr);
+			if (index > 0 && index + countStr.length() == pathWOExt.length()) {
 				stateIndex = index;
 				break;
 			}
@@ -788,6 +804,18 @@ public final class ImageUtils {
 		if (basePath == null || basePath.isEmpty())
 			return null;
 		String path = basePath.replace(STATE_MARKER, state);
+		IPath stateImagePath = new Path(path);
+		if (isFileExists(stateImagePath)) {
+			return stateImagePath;
+		}
+		return null;
+	}
+	
+	public static IPath searchStateImage(int stateIndex, String basePath) {
+		if (basePath == null || basePath.isEmpty())
+			return null;
+		String path = basePath
+				.replace(STATE_MARKER, String.valueOf(stateIndex));
 		IPath stateImagePath = new Path(path);
 		if (isFileExists(stateImagePath)) {
 			return stateImagePath;

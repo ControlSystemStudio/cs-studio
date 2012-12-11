@@ -105,7 +105,7 @@ public class PermutationMatrix {
 		if (getClass() != obj.getClass())
 			return false;
 		PermutationMatrix other = (PermutationMatrix) obj;
-		if (!Arrays.equals(matrix, other.matrix))
+		if (!Arrays.deepEquals(matrix, other.matrix))
 			return false;
 		return true;
 	}
