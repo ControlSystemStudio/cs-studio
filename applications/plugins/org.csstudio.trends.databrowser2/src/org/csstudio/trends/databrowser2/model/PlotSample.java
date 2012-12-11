@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.model;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueFactory;
@@ -91,7 +92,13 @@ public class PlotSample implements ISample
     /** @return Control system time stamp */
     public Timestamp getTime()
     {
-        return VTypeHelper.getTimestamp(value);
+        // NOT checking if time.isValid()
+        // because that actually takes quite some time.
+        // We just plot what we have, and that includes
+        // the case where the time stamp is invalid.
+        if (value instanceof Time)
+            return ((Time) value).getTimestamp();
+        return Timestamp.now();
     }
 
     /** Since the 'X' axis is used as a 'Time' axis, this

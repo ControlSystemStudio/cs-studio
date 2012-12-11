@@ -16,8 +16,12 @@ import org.epics.util.time.Timestamp;
 /** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ArchiveVType implements Alarm, Time, VType
 {
+    /** Alarm status message for 'OK' */
+    final public static String STATUS_OK = "NO_ALARM";
+    
 	final private Timestamp timestamp;
 	final private AlarmSeverity severity;
 	final private String status;

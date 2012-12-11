@@ -20,6 +20,7 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.csstudio.trends.databrowser2.model.TestHelper;
@@ -35,7 +36,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 import org.junit.Test;
@@ -214,20 +214,19 @@ public class PlotDemo
         plot.addListener(listener);
 
         // Create demo samples
-        final List<VType> values = new ArrayList<VType>();
+        final List<PlotSample> values = new ArrayList<PlotSample>();
         for (int i=1; i<10; ++i)
-            values.add(TestHelper.makeValue(i));
-        values.add(TestHelper.makeError(15, "Disconnected"));
+            values.add(new PlotSample("Test", TestHelper.makeValue(i)));
+        values.add(new PlotSample("Test", TestHelper.makeError(15, "Disconnected")));
         // Single value. Line should continue until the following 'disconnect'.
-        values.add(TestHelper.makeValue(17));
-        values.add(TestHelper.makeError(18, "Disconnected"));
+        values.add(new PlotSample("Test", TestHelper.makeValue(17)));
+        values.add(new PlotSample("Test", TestHelper.makeError(18, "Disconnected")));
 
-        for (int i=20; i<30; ++i) {
-            values.add(TestHelper.makeValue(i));
-        }
+        for (int i=20; i<30; ++i)
+            values.add(new PlotSample("Test", TestHelper.makeValue(i)));
 
         final PlotSampleArray samples = new PlotSampleArray();
-        samples.set("Demo", values);
+        samples.set(values);
 
         // Add item with demo samples
         final ModelItem item = new ModelItem("Demo")

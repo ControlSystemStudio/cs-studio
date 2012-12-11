@@ -18,7 +18,6 @@ import org.epics.pvmanager.data.AlarmSeverity;
 /** Caching RDB interface to severity info.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SeverityCache
 {
     /** RDB Helper. */

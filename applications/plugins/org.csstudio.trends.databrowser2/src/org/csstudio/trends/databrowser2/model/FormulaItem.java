@@ -17,9 +17,11 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.VStatistics;
 import org.epics.pvmanager.data.VType;
 import org.epics.pvmanager.data.ValueFactory;
@@ -36,6 +38,7 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FormulaItem extends ModelItem
 {
     /** Evaluate-able Formula
@@ -130,7 +133,8 @@ public class FormulaItem extends ModelItem
      */
     private void compute()
     {
-        final List<VType> result = new ArrayList<VType>();
+        final List<PlotSample> result = new ArrayList<PlotSample>();
+        final Display display = ValueFactory.displayNone();
         // Prevent changes to formula & inputs
         synchronized (this)
         {
@@ -234,18 +238,22 @@ public class FormulaItem extends ModelItem
                         variables[i].setValue(max[i]);
                     final double res_max = formula.eval();
                     value = new ArchiveVStatistics(time, AlarmSeverity.NONE, Messages.Formula,
-                            ValueFactory.displayNone(), res_val, res_min, res_max, 0.0, 1);
+                            display, res_val, res_min, res_max, 0.0, 1);
                 }
                 else
                 {   // No min/max.
-                    value = new ArchiveVNumber(time, AlarmSeverity.NONE, Messages.Formula,
-                            ValueFactory.displayNone(), res_val);
+                    if (Double.isNaN(res_val))
+                        value = new ArchiveVNumber(time, AlarmSeverity.INVALID, Messages.Formula,
+                                    display, res_val);
+                    else
+                        value = new ArchiveVNumber(time, AlarmSeverity.NONE, ArchiveVType.STATUS_OK,
+                                    display, res_val);
                 }
-                result.add(value);
+                result.add(new PlotSample(Messages.Formula, value));
             }
         }
-        // Convert numbers into PlotSamples
-        samples.set(Messages.Formula, result);
+        // Update PlotSamples
+        samples.set(result);
     }
 
     /** Re-evaluate the formula in case some of the input samples changed.
@@ -310,7 +318,6 @@ public class FormulaItem extends ModelItem
      *  @return FormulaItem
      *  @throws Exception on error
      */
-    @SuppressWarnings("nls")
     public static FormulaItem fromDocument(final Model model, final Element node) throws Exception
     {
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);

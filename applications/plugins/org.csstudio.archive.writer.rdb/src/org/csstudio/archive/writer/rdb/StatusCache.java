@@ -9,6 +9,7 @@ package org.csstudio.archive.writer.rdb;
 
 import java.util.HashMap;
 
+import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.StringID;
 import org.csstudio.platform.utility.rdb.StringIDHelper;
@@ -16,12 +17,8 @@ import org.csstudio.platform.utility.rdb.StringIDHelper;
 /** Caching RDB interface to status info.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class StatusCache
 {
-    /** Name used for default (empty) status strings. */
-	private static final String DEFAULT_NAME = "OK";
-
 	/** Helper. */
 	final private StringIDHelper helper;
 	
@@ -57,7 +54,7 @@ public class StatusCache
 	private Status find(String name) throws Exception
 	{
 		if (name.length() == 0)
-			name = DEFAULT_NAME;
+			name = ArchiveVType.STATUS_OK;
 		// Check cache
 		Status status = cache_by_name.get(name);
 		if (status != null)
@@ -80,7 +77,7 @@ public class StatusCache
 	public Status findOrCreate(String name) throws Exception
 	{
     	if (name.length() == 0)
-    		name = DEFAULT_NAME;
+    		name = ArchiveVType.STATUS_OK;
     	// Existing entry?
         Status status = find(name);
         if (status != null)

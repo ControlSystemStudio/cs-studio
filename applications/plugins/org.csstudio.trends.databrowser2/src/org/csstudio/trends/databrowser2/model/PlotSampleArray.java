@@ -7,39 +7,33 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.util.Collections;
 import java.util.List;
-
-import org.epics.pvmanager.data.VType;
 
 /** Plain array implementation of PlotSamples
  *  @author Kay Kasemir
  */
 public class PlotSampleArray extends PlotSamples
 {
-    private PlotSample samples[];
-
-    /** {@inheritDoc} */
-    @Override
-    synchronized public int getSize()
+    private List<PlotSample> samples = Collections.emptyList();
+    
+    /** @param samples Samples <u>which are NOT copied</u> */
+    public synchronized void set(final List<PlotSample> samples)
     {
-        return samples.length;
+        this.samples = samples;
     }
 
     /** {@inheritDoc} */
     @Override
-    synchronized public PlotSample getSample(int index)
+    public synchronized int getSize()
     {
-        return samples[index];
+        return samples.size();
     }
 
-    /** @param source Source of the values
-     *  @param values Values from which to set the sample array
-     */
-    synchronized public void set(final String source, final List<VType> values)
+    /** {@inheritDoc} */
+    @Override
+    public synchronized PlotSample getSample(int index)
     {
-        samples = new PlotSample[values.size()];
-        for (int i = 0; i < samples.length; ++i)
-            samples[i] = new PlotSample(source, values.get(i));
-        have_new_samples = true;
+        return samples.get(index);
     }
 }
