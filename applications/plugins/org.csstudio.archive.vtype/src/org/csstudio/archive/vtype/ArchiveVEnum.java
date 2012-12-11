@@ -18,6 +18,7 @@ import org.epics.util.time.Timestamp;
 /** Archive-derived {@link VEnum} implementation
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ArchiveVEnum extends ArchiveVType implements VEnum
 {
 	final private List<String> labels;
@@ -38,7 +39,7 @@ public class ArchiveVEnum extends ArchiveVType implements VEnum
 		return labels;
 	}
 
-	@Override
+    @Override
 	public String getValue()
 	{
 		try

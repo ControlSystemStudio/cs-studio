@@ -16,9 +16,9 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.AsyncCallback;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.csstudio.archive.vtype.ArchiveVDoubleArray;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -333,7 +333,7 @@ public class ValueRequest implements AsyncCallback
                 	if (values.length == 1)
                 		samples[si] = new ArchiveVNumber(time, severity, stat, display, values[0]);
                 	else
-                		samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
+                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
                 }
 			}
 			else if (type == TYPE_ENUM)
@@ -355,10 +355,10 @@ public class ValueRequest implements AsyncCallback
                 		samples[si] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
 					else
 					{
-		                final double values[] = new double[count];
+		                final int values[] = new int[count];
 		                for (int vi=0; vi<count; ++vi)
 		                    values[vi] = ((Integer)vv.get(vi));
-                		samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
+                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
 					}
 				}
 			}
@@ -376,10 +376,10 @@ public class ValueRequest implements AsyncCallback
 				}
 				else
 				{
-					final double values[] = new double[count];
+					final int values[] = new int[count];
 					for (int vi=0; vi<count; ++vi)
 						values[vi] = ((Integer)vv.get(vi));
-					samples[si] = new ArchiveVDoubleArray(time, severity, stat, display, values);
+					samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
 				}
 			}
 			else

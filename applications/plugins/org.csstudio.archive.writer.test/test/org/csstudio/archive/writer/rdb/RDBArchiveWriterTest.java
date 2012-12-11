@@ -15,9 +15,9 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.archive.vtype.ArchiveVDoubleArray;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.writer.WriteChannel;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -27,8 +27,8 @@ import org.epics.pvmanager.util.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.junit.After;
 import org.junit.Before;
-//import org.junit.Ignore;
 import org.junit.Test;
+//import org.junit.Ignore;
 
 /** JUnit test of the archive writer
  * 
@@ -114,8 +114,8 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double array sample for channel " + array_name);
 		final WriteChannel channel = writer.getChannel(array_name);
-		writer.addSample(channel, new ArchiveVDoubleArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
-				3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+		writer.addSample(channel, new ArchiveVNumberArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
+				3.14, 6.28, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0));
 		writer.flush();
 	}
 

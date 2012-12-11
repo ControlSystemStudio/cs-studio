@@ -57,13 +57,13 @@ public class VTypeFormatTest
         assertThat(exponen.format(value), equalTo("3.0E0"));
         assertThat(strings.format(value), equalTo("three"));
 
-        value = new ArchiveVDoubleArray(now, AlarmSeverity.NONE, "", display, 1.0, 2.0, 3.0);
+        value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, 1.0, 2.0, 3.0);
         assertThat(devault.format(value), equalTo("1.000, 2.000, 3.000"));
         assertThat(decimal.format(value), equalTo("1.00, 2.00, 3.00"));
         assertThat(exponen.format(value), equalTo("1.0E0, 2.0E0, 3.0E0"));
         assertThat(strings.format(value), equalTo("\\u0001\\u0002\\u0003"));
 
-        value = new ArchiveVDoubleArray(now, AlarmSeverity.NONE, "", display, 72, 101, 108, 108, 111, 32, 33, 0);
+        value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, 72, 101, 108, 108, 111, 32, 33, 0);
         assertThat(decimal.format(value), equalTo("72.00, 101.00, 108.00, 108.00, 111.00, 32.00, 33.00, 0.00"));
         assertThat(strings.format(value), equalTo("Hello !"));
         
@@ -71,7 +71,7 @@ public class VTypeFormatTest
         final double[] data = new double[20];
         for (int i=0; i<data.length; ++i)
             data[i] = i;
-        value = new ArchiveVDoubleArray(now, AlarmSeverity.NONE, "", display, data);
+        value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, data);
         String text = devault.format(value);
         System.out.println(text);
         assertThat(text, containsString("0.000, 1.000, 2.000, 3.000, 4.000"));

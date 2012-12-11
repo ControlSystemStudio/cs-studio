@@ -56,9 +56,9 @@ public class ArchiveVTypeTest
         assertThat(enum3, equalTo(str3));
         assertThat(str3, equalTo(enum3));
     
-        final VType arr1 = new ArchiveVDoubleArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
-        final VType arr1b = new ArchiveVDoubleArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
-        final VType arr2 = new ArchiveVDoubleArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.1);
+        final VType arr1 = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
+        final VType arr1b = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
+        final VType arr2 = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.1);
         System.out.println(arr1);
         assertThat(arr1, not(equalTo(int3)));
         assertThat(arr1, not(equalTo(arr2)));

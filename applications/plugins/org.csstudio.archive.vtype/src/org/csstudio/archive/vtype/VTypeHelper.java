@@ -11,7 +11,6 @@ import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VEnum;
 import org.epics.pvmanager.data.VEnumArray;
 import org.epics.pvmanager.data.VNumber;
@@ -121,19 +120,10 @@ public class VTypeHelper
             final VString string = (VString) value;
             return new ArchiveVString(time, string.getAlarmSeverity(), string.getAlarmName(), string.getValue());
         }
-        if (value instanceof VDoubleArray)
-        {
-            final VDoubleArray number = (VDoubleArray) value;
-            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getData());
-        }
         if (value instanceof VNumberArray)
         {
             final VNumberArray number = (VNumberArray) value;
-            final ListNumber data = number.getData();
-            final double[] dbl = new double[data.size()];
-            for (int i=0; i<dbl.length; ++i)
-                dbl[i] = data.getDouble(i);
-            return new ArchiveVDoubleArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, dbl);
+            return new ArchiveVNumberArray(time, number.getAlarmSeverity(), number.getAlarmName(), number, number.getData());
         }
         if (value instanceof VEnum)
         {

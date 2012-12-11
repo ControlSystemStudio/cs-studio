@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.ArchiveVDoubleArray;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.pvmanager.data.AlarmSeverity;
@@ -198,7 +198,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     		if (data.length == 1)
     			return new ArchiveVNumber(time, severity, status, display, data[0]);
     		else
-    			return new ArchiveVDoubleArray(time, severity, status, display, data);
+    			return new ArchiveVNumberArray(time, severity, status, display, data);
         }
 
         // Try integer
