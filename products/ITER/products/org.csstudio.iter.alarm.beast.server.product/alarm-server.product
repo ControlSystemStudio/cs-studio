@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Alarm Server" id="org.csstudio.iter.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="2.1.0" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.suppressErrors</programArgs>
+      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m -Declipse.exitdata=</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="alarm-server">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.server"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.iter.alarm.beast.server.product"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.utility.pv"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.iter.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.core.util.feature" version="1.0.0"/>
+      <feature id="org.csstudio.iter.alarm.beast.server.app.feature" version="1.0.0"/>
+   </features>
+
+
+</product>
