@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import org.epics.pvmanager.data.VDoubleArray;
+import org.epics.pvmanager.data.VTypeToString;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
@@ -30,6 +31,11 @@ class VDoubleArrayFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Doub
     @Override
     public ListInt getSizes() {
         return new ArrayInt(dbrValue.getDoubleValue().length);
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

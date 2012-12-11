@@ -54,5 +54,10 @@ class IVEnumArray extends IVMetadata implements VEnumArray {
     public ListInt getSizes() {
         return sizes;
     }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
     
 }

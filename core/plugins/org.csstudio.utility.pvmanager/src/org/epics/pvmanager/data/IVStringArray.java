@@ -31,5 +31,10 @@ class IVStringArray extends IVMetadata implements VStringArray {
     public ListInt getSizes() {
         return sizes;
     }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
     
 }

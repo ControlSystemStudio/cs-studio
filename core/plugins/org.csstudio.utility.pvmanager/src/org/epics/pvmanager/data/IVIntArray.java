@@ -34,4 +34,9 @@ class IVIntArray extends IVNumeric implements VIntArray {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
+
 }

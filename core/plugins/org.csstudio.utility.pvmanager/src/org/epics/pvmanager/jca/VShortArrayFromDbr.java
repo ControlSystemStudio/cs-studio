@@ -7,6 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import org.epics.pvmanager.data.VShortArray;
+import org.epics.pvmanager.data.VTypeToString;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayShort;
 import org.epics.util.array.ListInt;
@@ -30,6 +31,11 @@ class VShortArrayFromDbr extends VNumberMetadata<DBR_TIME_Short, DBR_CTRL_Double
     @Override
     public ListShort getData() {
         return new ArrayShort(dbrValue.getShortValue());
+    }
+    
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
 
 }

@@ -1,8 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
+ * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.data;
+
+import org.epics.pvmanager.util.NumberFormats;
+import org.epics.util.time.TimestampFormat;
 
 /**
  * Helper class that provides default implementation of toString for VTypes.
@@ -14,22 +17,31 @@ public class VTypeToString {
         // Do not create
     }
     
+    private static void appendAlarm(StringBuilder builder, Alarm alarm) {
+        if (!alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
+            builder.append(", ")
+                    .append(alarm.getAlarmSeverity())
+                    .append("(")
+                    .append(alarm.getAlarmName())
+                    .append(")");
+        }
+    }
+    
+    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd hh:mm:ss.SSS");
+    
+    private static void appendTime(StringBuilder builder, Time time) {
+        builder.append(", ").append(timeFormat.format(time.getTimestamp()));
+    }
+    
     public static String toString(VNumber vNumber) {
         StringBuilder builder = new StringBuilder();
         Class type = ValueUtil.typeOf(vNumber);
         builder.append(type.getSimpleName())
                 .append('[')
                 .append(vNumber.getValue());
-        if (!vNumber.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
-            builder.append(", ")
-                    .append(vNumber.getAlarmSeverity())
-                    .append("(")
-                    .append(vNumber.getAlarmName())
-                    .append(")");
-        }
-        builder.append(", ")
-                .append(vNumber.getTimestamp())
-                .append(']');
+        appendAlarm(builder, vNumber);
+        appendTime(builder, vNumber);
+        builder.append(']');
         return builder.toString();
     }
     
@@ -37,19 +49,11 @@ public class VTypeToString {
         StringBuilder builder = new StringBuilder();
         Class type = ValueUtil.typeOf(vString);
         builder.append(type.getSimpleName())
-                .append("[\"")
-                .append(vString.getValue())
-                .append('\"');
-        if (!vString.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
-            builder.append(", ")
-                    .append(vString.getAlarmSeverity())
-                    .append("(")
-                    .append(vString.getAlarmName())
-                    .append(")");
-        }
-        builder.append(", ")
-                .append(vString.getTimestamp())
-                .append(']');
+                .append("[")
+                .append(vString.getValue());
+        appendAlarm(builder, vString);
+        appendTime(builder, vString);
+        builder.append(']');
         return builder.toString();
     }
     
@@ -57,21 +61,62 @@ public class VTypeToString {
         StringBuilder builder = new StringBuilder();
         Class type = ValueUtil.typeOf(vEnum);
         builder.append(type.getSimpleName())
-                .append("[\"")
+                .append("[")
                 .append(vEnum.getValue())
-                .append("\"(")
+                .append("(")
                 .append(vEnum.getIndex())
                 .append(")");
-        if (!vEnum.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
-            builder.append(", ")
-                    .append(vEnum.getAlarmSeverity())
-                    .append("(")
-                    .append(vEnum.getAlarmName())
-                    .append(")");
-        }
-        builder.append(", ")
-                .append(vEnum.getTimestamp())
-                .append(']');
+        appendAlarm(builder, vEnum);
+        appendTime(builder, vEnum);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    private final static ValueFormat format = new SimpleValueFormat(3);
+    
+    static {
+        format.setNumberFormat(NumberFormats.toStringFormat());
+    }
+    
+    public static String toString(VNumberArray vNumberArray) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vNumberArray);
+        builder.append(type.getSimpleName())
+                .append("[");
+        builder.append(format.format(vNumberArray));
+        builder.append(", size ")
+                .append(vNumberArray.getData().size());
+        appendAlarm(builder, vNumberArray);
+        appendTime(builder, vNumberArray);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    public static String toString(VStringArray vStringArray) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vStringArray);
+        builder.append(type.getSimpleName())
+                .append("[");
+        builder.append(format.format(vStringArray));
+        builder.append(", size ")
+                .append(vStringArray.getData().size());
+        appendAlarm(builder, vStringArray);
+        appendTime(builder, vStringArray);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    public static String toString(VEnumArray vEnumArray) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vEnumArray);
+        builder.append(type.getSimpleName())
+                .append("[");
+        builder.append(format.format(vEnumArray));
+        builder.append(", size ")
+                .append(vEnumArray.getData().size());
+        appendAlarm(builder, vEnumArray);
+        appendTime(builder, vEnumArray);
+        builder.append(']');
         return builder.toString();
     }
 }
