@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Notification Application
 Bundle-SymbolicName: org.csstudio.alarm.beast.notifier;singleton:=true
 Bundle-Version: 1.1.0.qualifier
-Bundle-Vendor: Fred Arnaud <farnaud@sopragroup.com> - Sopra Group
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-Description: BEAST Alarm Notification
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
