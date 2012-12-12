@@ -113,6 +113,8 @@ public class InfoServlet extends HttpServlet {
         this.appendLineRow(page);
         this.appendInfoIocViewerServlet(page);
         this.appendLineRow(page);
+        this.appendInfoIocListServlet(page);
+        this.appendLineRow(page);
         this.appendInfoHowToViewerServlet(page);
         this.appendLineRow(page);
         this.appendInfoHowToSearchServlet(page);
@@ -183,6 +185,14 @@ public class InfoServlet extends HttpServlet {
         page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/html/IocViewer.html\">IocViewer</a></td>\n");
         page.append("<td class=\"info\">Doc</td>");
         page.append("<td class=\"info\">Infos zu einem IOC anzeigen (fuer die Alarmbenachrichtigung per SMS)</td>");
+        page.append("</tr>\n");
+    }
+
+    private void appendInfoIocListServlet(final StringBuilder page) {
+        page.append("<tr>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/IocList\">IocList</a></td>\n");
+        page.append("<td class=\"info\">Direkt</td>");
+        page.append("<td class=\"info\">Liste aller IOCs für eine Facility anzeigen</td>");
         page.append("</tr>\n");
     }
 

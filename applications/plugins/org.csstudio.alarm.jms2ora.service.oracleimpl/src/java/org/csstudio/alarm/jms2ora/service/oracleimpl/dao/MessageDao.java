@@ -90,7 +90,7 @@ public class MessageDao implements IMessageArchiveDao {
         metaDataServiceTracker = new MetaDataReaderServiceTracker(Activator.getContext());
         metaDataServiceTracker.open();
         metaDataReaderService = (IMetaDataReader) metaDataServiceTracker.getService();
-        messageCol = metaDataReaderService.getMessageProperties();
+        messageCol = metaDataReaderService.getMessageMetaData();
     }
     
     private void logError(String msg) {

@@ -23,8 +23,9 @@
 
 package org.csstudio.websuite;
 
+import java.io.IOException;
+import java.net.URL;
 import javax.servlet.ServletException;
-
 import org.csstudio.platform.httpd.HttpServiceHelper;
 import org.csstudio.websuite.ams.servlet.AmsServlet;
 import org.csstudio.websuite.dao.AlarmMessageListProvider;
@@ -46,12 +47,14 @@ import org.csstudio.websuite.servlet.HowToSearchServlet;
 import org.csstudio.websuite.servlet.HowToServlet;
 import org.csstudio.websuite.servlet.HowToViewServletHtml;
 import org.csstudio.websuite.servlet.InfoServlet;
+import org.csstudio.websuite.servlet.IocListServlet;
 import org.csstudio.websuite.servlet.IocViewServlet;
 import org.csstudio.websuite.servlet.PersonalPVInfoEditServlet;
 import org.csstudio.websuite.servlet.PersonalPVInfoListServlet;
 import org.csstudio.websuite.servlet.PersonalPVInfoServlet;
 import org.csstudio.websuite.servlet.RedirectServlet;
 import org.csstudio.websuite.servlet.Wetter;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -114,7 +117,7 @@ public class WebSuiteApplication implements IApplication, Stoppable,
         LOG.info("Using port {} for JETTY.", jettyPort);
 
         connectToXMPPServer();
-
+        
         try {
             final HttpService http = HttpServiceHelper.createHttpService(WebSuiteActivator.getBundleContext(), jettyPort);
             configureHttpService(http);
@@ -177,7 +180,8 @@ public class WebSuiteApplication implements IApplication, Stoppable,
         http.registerResources("/style", "/webapp/style", httpContext);
         http.registerResources("/images", "/webapp/images", httpContext);
         http.registerResources("/html", "/webapp/html", httpContext);
-
+        http.registerResources("/config", "/webapp/config", httpContext);
+        
         //creates servlet according to the configurations
         if(preferences.getBoolean(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.ACTIVATE_HTML_SERVLET, true, null)){
             http.registerServlet(htmlServletAddress, new AlarmViewServletHtml(), null, httpContext);
@@ -202,6 +206,16 @@ public class WebSuiteApplication implements IApplication, Stoppable,
         http.registerServlet("/", new RedirectServlet(), null, httpContext);
         http.registerServlet("/ChannelViewer", new ChannelViewServlet(), null, httpContext);
         http.registerServlet("/IocViewer", new IocViewServlet(), null, httpContext);
+
+        String xmlPath = null;
+        URL url = WebSuiteActivator.getBundleContext().getBundle().getResource("webapp/config/ioc-status.xml");
+        try {
+            xmlPath = FileLocator.toFileURL(url).getPath();
+        } catch (IOException ioe) {
+            LOG.warn("Cannot resolve the path to webapp/config/ioc-status.xml");
+        }
+        http.registerServlet("/IocList", new IocListServlet(xmlPath), null, httpContext);
+
         http.registerServlet("/HowToViewer", new HowToViewServletHtml(), null, httpContext);
         http.registerServlet("/HowToSearch", new HowToServlet(), null, httpContext);
         http.registerServlet("/HowToSearchHandler", new HowToSearchServlet(), null, httpContext);
