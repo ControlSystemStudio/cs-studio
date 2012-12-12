@@ -5,6 +5,7 @@ import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,8 +62,7 @@ public class PVManagerPV implements PV {
 
 	@Override
 	public IValue getValue(double timeout_seconds) throws Exception {
-		checkIfPVStarted();
-		return new PMObjectValue(pvReader.getValue(), valueBuffered);
+		return getValue();
 	}
 
 	/** Listener should not be added after pv started. It will miss the previous value.
@@ -222,11 +222,15 @@ public class PVManagerPV implements PV {
 		pvWriter = null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized IValue getValue() {
 		checkIfPVStarted();
-		if(pvReader.getValue() != null)
+		if(pvReader.getValue() != null){
+			if(!valueBuffered || 
+					(valueBuffered && ((List<Object>)(pvReader.getValue())).size()>0))
 			return new PMObjectValue(pvReader.getValue(), valueBuffered);
+		}
 		return null;
 	}
 

@@ -167,6 +167,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	//The update from PV will be suppressed for a brief time when writing was performed
 	protected OPITimer updateSuppressTimer;
 	private IPVWidgetModel widgetModel;
+	private boolean isAllValuesBuffered;
 	
 	private ListenerList setPVValueListeners;
 	
@@ -199,7 +200,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 						continue;
 
 					try {
-						PV pv = BOYPVFactory.createPV((String) sp.getPropertyValue());
+						PV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(), 
+								isAllValuesBuffered);
 						pvMap.put(sp.getPropertyID(), pv);
 						editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
 						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
@@ -610,6 +612,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		for(Object listener: setPVValueListeners.getListeners()){
 			((ISetPVValueListener)listener).beforeSetPVValue(pvPropId, value);
 		}
+	}
+
+	public boolean isAllValuesBuffered() {
+		return isAllValuesBuffered;
+	}
+
+	public void setAllValuesBuffered(boolean isAllValuesBuffered) {
+		this.isAllValuesBuffered = isAllValuesBuffered;
 	}
 	
 }

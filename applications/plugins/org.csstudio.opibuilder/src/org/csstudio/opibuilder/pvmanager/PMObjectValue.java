@@ -38,12 +38,13 @@ public class PMObjectValue implements IValue {
 	
 	/**
 	 * @param pmValue value from PVManager, cannot be null.
-	 * @param valueBuffered if all value is buffered.
+	 * @param valueBuffered if all value is buffered. 
+	 * If this is true, pmValue must not be empty.
 	 */
 	@SuppressWarnings("unchecked")
 	public PMObjectValue(Object pmValue, boolean valueBuffered) {
 		if(valueBuffered){
-			this.allValues = (List<Object>) pmValue;	
+			this.allValues = (List<Object>) pmValue;		
 			this.latestValue = allValues.get(allValues.size()-1);
 			
 		}else			

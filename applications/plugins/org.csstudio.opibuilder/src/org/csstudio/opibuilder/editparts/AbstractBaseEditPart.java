@@ -187,7 +187,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 							pvArray[i] = pvMap.get(pvName);
 						} else {
 							try {
-								PV pv = BOYPVFactory.createPV(pvName);
+								PV pv = BOYPVFactory.createPV(pvName, false, 2);
 								pvMap.put(pvName, pv);
 								addToConnectionHandler(pvName, pv);
 								pvArray[i] = pv;
