@@ -30,10 +30,12 @@ abstract class Simulation<T> {
      * @param secondsBeetwenSamples seconds between each samples
      */
     Simulation(TimeDuration scanRate, Class<T> classToken) {
-        if (scanRate.getNanoSec() < 1000000) {
+        // XXX: this is dead code at this point. If needed, use it when setting up
+        // the scan job. Ignore otherwise.
+        if (scanRate.compareTo(TimeDuration.ofMillis(1)) < 0) {
             throw new IllegalArgumentException("Scans must be at least every ms (was " + scanRate + ")");
         }
-        this.intervalBetweenExecution = Math.max(scanRate.getNanoSec() / 1000000, 1);
+        this.intervalBetweenExecution = Math.max(scanRate.toNanosLong() / 1000000, 1);
         this.classToken = classToken;
     }
 

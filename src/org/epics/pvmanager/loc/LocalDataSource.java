@@ -4,11 +4,14 @@
  */
 package org.epics.pvmanager.loc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.data.DataTypeSupport;
 import org.epics.pvmanager.util.FunctionParser;
+import org.epics.util.array.ArrayDouble;
 
 /**
  * Data source for locally written data. Each instance of this
@@ -48,11 +51,37 @@ public final class LocalDataSource extends DataSource {
     private List<Object> parseName(String channelName) {
         // Parse the channel name
         List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
-        if (parsedTokens == null || parsedTokens.size() > 2) {
-            throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+        if (parsedTokens != null && parsedTokens.size() <= 2) {
+            return parsedTokens;
         }
         
-        return parsedTokens;
+        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof Double) {
+            double[] data = new double[parsedTokens.size() - 1];
+            for (int i = 1; i < parsedTokens.size(); i++) {
+                Object value = parsedTokens.get(i);
+                if (value instanceof Double) {
+                    data[i-1] = (Double) value;
+                } else {
+                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+                }
+            }
+            return Arrays.asList(parsedTokens.get(0), new ArrayDouble(data));
+        }
+        
+        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof String) {
+            List<String> data = new ArrayList<>();
+            for (int i = 1; i < parsedTokens.size(); i++) {
+                Object value = parsedTokens.get(i);
+                if (value instanceof String) {
+                    data.add((String) value);
+                } else {
+                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+                }
+            }
+            return Arrays.asList(parsedTokens.get(0), data);
+        }
+        
+        throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
     }
 
     @Override
