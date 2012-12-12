@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Samples" link_to="toc/toc.xml#samples"> 
+	<topic label="ICH Sample"  href="toc/html/samples/ichsample.html"> 
+	</topic>
+	<topic href="toc/html/samples/plcsample.html" label="PLC Sample">
+	</topic> 
+</toc>

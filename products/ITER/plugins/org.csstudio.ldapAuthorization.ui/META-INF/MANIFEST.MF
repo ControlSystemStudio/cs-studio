@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: LDAP Authorization UI
+Bundle-SymbolicName: org.csstudio.ldapAuthorization.ui;singleton:=true
+Bundle-Version: 1.1.1.qualifier
+Bundle-Activator: org.csstudio.ldapauthorization.ui.Activator
+Bundle-Vendor: SNS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.auth;bundle-version="1.0.0",
+ org.csstudio.auth.ui;bundle-version="1.0.0",
+ org.csstudio.ldapAuthorization;bundle-version="3.0.0"
+Import-Package: org.csstudio.ldapauthorization
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
