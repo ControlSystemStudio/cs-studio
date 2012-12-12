@@ -13,6 +13,8 @@ public class Messages extends NLS
     public static String CurrentCommandFmt;
     public static String Error;
     public static String ErrorMsgFmt;
+    public static String FinishTime;
+    public static String FinishTimeFmt;
     public static String ID;
     public static String ID_Fmt;
     public static String Info;
