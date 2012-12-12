@@ -16,6 +16,7 @@
 package org.csstudio.scan.server;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /** Information about a Scan
  *  @author Kay Kasemir
@@ -119,6 +120,24 @@ public class ScanInfo extends Scan implements Serializable
         if (total_work_units <= 0)
             return 0;
         return (int) (performed_work_units * 100 / total_work_units);
+    }
+    
+    /** @return (Estimated) finish time or <code>null</code> */
+    public Date getFinishTime()
+    {
+        if (state.isDone())
+            return new Date(getCreated().getTime() + runtime_ms);
+        if (state.isActive())
+        {
+            // Better estimate based on total_work_units?
+            if (performed_work_units <= 0)
+                return getCreated();
+
+            // Will need runtime_ms*total_work_units/performed_work_units
+            final Date finish = new Date(getCreated().getTime() + runtime_ms*total_work_units/performed_work_units);
+            return finish;
+        }
+        return null;
     }
 
     /** @return Address of currently executing command or -1 */
