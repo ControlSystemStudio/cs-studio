@@ -119,7 +119,19 @@ public abstract class ValueFormat extends Format {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public Object parseObject(String source, Object reference) {
+    /**
+     * Parses the string given the object as a reference.
+     * <p>
+     * This function will parse the string based on the object provided as a
+     * reference (e.g. if reference is a VDouble, it will parse the string as a double).
+     * The data in the reference will also be used for the actual parsing (e.g.
+     * if reference is Enum, the labels will be used to match the string).
+     * 
+     * @param source the text to parse
+     * @param reference the vtype object to reference
+     * @return the parsed representation
+     */
+    public Object parseObject(String source, VType reference) {
         if (reference instanceof VDouble) {
             return parseDouble(source);
         }
@@ -166,6 +178,14 @@ public abstract class ValueFormat extends Format {
         throw new IllegalArgumentException("Type " + ValueUtil.typeOf(reference) + " is not supported");
     }
     
+    /**
+     * Parses the string and returns a double representation.
+     * <p>
+     * Default implementation uses {@link Double#parseDouble(java.lang.String) }
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public double parseDouble(String source) {
         try {
             double value = Double.parseDouble(source);
@@ -175,6 +195,14 @@ public abstract class ValueFormat extends Format {
         }
     }
     
+    /**
+     * Parses the string and returns a float representation.
+     * <p>
+     * Default implementation uses {@link Float#parseFloat(java.lang.String) }
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public float parseFloat(String source) {
         try {
             float value = Float.parseFloat(source);
@@ -184,6 +212,14 @@ public abstract class ValueFormat extends Format {
         }
     }
     
+    /**
+     * Parses the string and returns an integer representation.
+     * <p>
+     * Default implementation uses {@link Integer#parseInt(java.lang.String) }
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public int parseInt(String source) {
         try {
             int value = Integer.parseInt(source);
@@ -193,6 +229,14 @@ public abstract class ValueFormat extends Format {
         }
     }
     
+    /**
+     * Parses the string and returns a short representation.
+     * <p>
+     * Default implementation uses {@link Short#parseShort(java.lang.String) }
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public short parseShort(String source) {
         try {
             short value = Short.parseShort(source);
@@ -202,6 +246,14 @@ public abstract class ValueFormat extends Format {
         }
     }
     
+    /**
+     * Parses the string and returns a byte representation.
+     * <p>
+     * Default implementation uses {@link Byte#parseByte(java.lang.String) }
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public byte parseByte(String source) {
         try {
             byte value = Byte.parseByte(source);
@@ -211,10 +263,27 @@ public abstract class ValueFormat extends Format {
         }
     }
     
+    /**
+     * Parses the string and returns a string representation.
+     * <p>
+     * Default implementation returns the string.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public String parseString(String source) {
         return source;
     }
     
+    /**
+     * Parses the string and returns the index in the enum.
+     * <p>
+     * Default implementation matches the label and returns the index.
+     * 
+     * @param source the text to parse
+     * @param labels the labels for the enum
+     * @return the parsed representation
+     */    
     public int parseEnum(String source, List<String> labels) {
         int index = labels.indexOf(source);
         if (index != -1) {
@@ -223,6 +292,15 @@ public abstract class ValueFormat extends Format {
         throw new RuntimeException(source  + " is not part of enum " + labels);
     }
     
+    /**
+     * Parses the string and returns a double array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseDouble(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public ListDouble parseDoubleArray(String source) {
         String[] tokens = source.split(",");
         double[] values = new double[tokens.length];
@@ -232,6 +310,15 @@ public abstract class ValueFormat extends Format {
         return new ArrayDouble(values);
     }
     
+    /**
+     * Parses the string and returns a float array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseFloat(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public ListFloat parseFloatArray(String source) {
         String[] tokens = source.split(",");
         float[] values = new float[tokens.length];
@@ -241,6 +328,15 @@ public abstract class ValueFormat extends Format {
         return new ArrayFloat(values);
     }
     
+    /**
+     * Parses the string and returns an int array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseInt(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public ListInt parseIntArray(String source) {
         String[] tokens = source.split(",");
         int[] values = new int[tokens.length];
@@ -250,6 +346,15 @@ public abstract class ValueFormat extends Format {
         return new ArrayInt(values);
     }
     
+    /**
+     * Parses the string and returns a short array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseShort(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public ListShort parseShortArray(String source) {
         String[] tokens = source.split(",");
         short[] values = new short[tokens.length];
@@ -259,6 +364,15 @@ public abstract class ValueFormat extends Format {
         return new ArrayShort(values);
     }
     
+    /**
+     * Parses the string and returns a byte array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseByte(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public ListByte parseByteArray(String source) {
         String[] tokens = source.split(",");
         byte[] values = new byte[tokens.length];
@@ -268,15 +382,34 @@ public abstract class ValueFormat extends Format {
         return new ArrayByte(values);
     }
     
+    /**
+     * Parses the string and returns a string array representation.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseString(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @return the parsed representation
+     */
     public List<String> parseStringArray(String source) {
         String[] tokens = source.split(",");
         List<String> values = new ArrayList<>();
         for (String token : tokens) {
-            values.add(token.trim());
+            values.add(parseString(token.trim()));
         }
         return values;
     }
     
+    /**
+     * Parses the string and returns an array of indexes in the enum.
+     * <p>
+     * Default implementation expects a comma separated list, and parses
+     * each element with {@link #parseEnum(java.lang.String) }.
+     * 
+     * @param source the text to parse
+     * @param labels the labels for the enum
+     * @return the parsed representation
+     */
     public ListInt parseEnumArray(String source, List<String> labels) {
         String[] tokens = source.split(",");
         int[] values = new int[tokens.length];

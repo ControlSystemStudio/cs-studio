@@ -55,7 +55,14 @@ public class ConnectionCollector implements ReadFunction<Boolean> {
         
     }
 
-    public WriteFunction<Boolean> addChannel(final String name) {
+    /**
+     * Adds a new channel to the collector and returns the write function
+     * to use to change the connection status.
+     * 
+     * @param name channel name
+     * @return the write function
+     */
+    WriteFunction<Boolean> addChannel(final String name) {
         synchronized (lock) {
             if (channelConnected.containsKey(name)) {
                 ConnectionWriteFunction writeFunction = writeFunctions.get(name);
@@ -82,7 +89,17 @@ public class ConnectionCollector implements ReadFunction<Boolean> {
         }
     }
 
-    protected boolean calculate(Map<String, Boolean> channelConnected) {
+    /**
+     * Calculates the overall connection status based on the status of each
+     * channel.
+     * <p>
+     * For future development, this is the method that one could
+     * override to implement a different connection logic.
+     * 
+     * @param channelConnected the connection status of each channel
+     * @return the overall connection status
+     */
+    boolean calculate(Map<String, Boolean> channelConnected) {
         for (Boolean conn : channelConnected.values()) {
             if (conn != Boolean.TRUE) {
                 return false;
@@ -91,7 +108,12 @@ public class ConnectionCollector implements ReadFunction<Boolean> {
         return true;
     }
 
-    public void removeChannel(String channelName) {
+    /**
+     * Remove a channel from the collector.
+     * 
+     * @param channelName the channel name
+     */
+    void removeChannel(String channelName) {
         synchronized(lock) {
             ConnectionWriteFunction function = writeFunctions.get(channelName);
             if (function == null) {

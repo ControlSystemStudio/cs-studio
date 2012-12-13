@@ -65,6 +65,15 @@ public class SimpleValueFormat extends ValueFormat {
         return null;
     }
 
+    /**
+     * Formats a numeric array. This method can be overridden to change
+     * the way numeric arrays are formatted.
+     * 
+     * @param array the array to format
+     * @param toAppendTo the buffer to append to
+     * @param pos the position of the field
+     * @return  the string buffer
+     */
     protected StringBuffer format(VNumberArray array, StringBuffer toAppendTo, FieldPosition pos) {
         NumberFormat f = nf(array);
         
@@ -94,6 +103,15 @@ public class SimpleValueFormat extends ValueFormat {
         return toAppendTo;
     }
 
+    /**
+     * Formats a string array. This method can be overridden to change
+     * the way string arrays are formatted.
+     * 
+     * @param data the data to format
+     * @param toAppendTo the buffer to append to
+     * @param pos the position of the field
+     * @return  the string buffer
+     */
     protected StringBuffer format(List<String> data, StringBuffer toAppendTo, FieldPosition pos) {
         toAppendTo.append("[");
         boolean hasMore = false;

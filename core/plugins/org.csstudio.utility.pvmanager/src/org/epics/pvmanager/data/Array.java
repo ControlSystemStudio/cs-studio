@@ -5,6 +5,7 @@
 package org.epics.pvmanager.data;
 
 import java.util.List;
+import org.epics.util.array.CollectionNumbers;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 
@@ -27,10 +28,17 @@ public interface Array {
      * least try to prevent modifications. ListNumber has also several
      * advantages over the Java arrays, including the ability to iterate the list
      * regardless of numeric type.
+     * <p>
+     * If a numeric array is actually needed, refer to {@link CollectionNumbers}.
      * 
      * @return 
      */
     Object getData();
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     ListInt getSizes();
 }

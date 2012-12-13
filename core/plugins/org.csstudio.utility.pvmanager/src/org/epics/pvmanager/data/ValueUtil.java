@@ -220,6 +220,13 @@ public class ValueUtil {
         return ValueFactory.newVImage(image.getHeight(), image.getWidth(), buffer);
     }
     
+    /**
+     * Returns true if the two displays contain the same information.
+     * 
+     * @param d1 the first display
+     * @param d2 the second display
+     * @return true if they match
+     */
     public static boolean displayEquals(Display d1, Display d2) {
         if (d1 == d2) {
             return true;

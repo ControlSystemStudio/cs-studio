@@ -420,6 +420,14 @@ public class ValueFactory {
         return newVDoubleArray(values, new ArrayInt(values.length), alarmNone(), timeNow(), display);
     }
 
+    /**
+     * Creates a new VImage given the data and the size.
+     * 
+     * @param height the height
+     * @param width the width
+     * @param data the data
+     * @return a new object
+     */
     public static VImage newVImage(int height, int width, byte[] data) {
         return new IVImage(height, width, data);
     }
@@ -440,7 +448,7 @@ public class ValueFactory {
     /**
      * Create a new VEnumArray.
      * 
-     * @param index the index in the label array
+     * @param indexes the indexes in the label array
      * @param labels the labels
      * @param alarm the alarm
      * @param time the time
