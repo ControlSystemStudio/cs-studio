@@ -47,6 +47,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.DATABASE_URL, "");
         prefs.put(PreferenceConstants.DATABASE_USER , "");
         prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");
-        prefs.put(PreferenceConstants.META_DATA_DIRECTORY , "./var/columns");
+        prefs.put(PreferenceConstants.META_DATA_DIRECTORY , "./var/tables");
     }
 }

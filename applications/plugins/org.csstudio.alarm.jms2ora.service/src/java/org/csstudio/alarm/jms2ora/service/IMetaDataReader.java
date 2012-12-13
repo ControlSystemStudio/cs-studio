@@ -55,7 +55,7 @@ public interface IMetaDataReader {
      * @return Hashtable containing the content of table 'MSG_PROPERTY_TYPE'
      */
     @Nonnull
-    Hashtable<String, Long> getMessageContentProperties();
+    Hashtable<String, Long> getMsgPropertyTypeContent();
 
     /**
      * Returns the column names and precision of type VARCHAR2 of the table 'MESSAGE'.
@@ -63,5 +63,5 @@ public interface IMetaDataReader {
      * @return Hashtable containing the column names and precision of type VARCHAR2 of table 'MESSAGE'
      */
     @Nonnull
-    Hashtable<String, Integer> getMessageProperties();
+    Hashtable<String, Integer> getMessageMetaData();
 }

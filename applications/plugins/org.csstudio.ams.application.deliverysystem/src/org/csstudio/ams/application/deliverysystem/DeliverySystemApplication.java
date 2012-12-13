@@ -44,7 +44,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -63,10 +62,9 @@ public class DeliverySystemApplication implements IApplication,
 	
     // 6 minutes
     private final static long WORKER_WATCH_INTERVAL = 360000L;
-    
-    /** The ECF service */
-    private ISessionService xmppService;
 
+    private XmppSessionHandler xmppSessionHandler;
+    
     private Hashtable<AbstractDeliveryWorker, Thread> deliveryWorker;
     
     private long workerStopTimeout;
@@ -78,6 +76,7 @@ public class DeliverySystemApplication implements IApplication,
     private boolean restart;
     
     public DeliverySystemApplication() {
+        xmppSessionHandler = new XmppSessionHandler();
         deliveryWorker = new Hashtable<AbstractDeliveryWorker, Thread>();
         workerStopTimeout = DeliverySystemPreference.WORKER_STOP_TIMEOUT.getValue();
         LOG.info("Timeout for worker shutdown: {}", workerStopTimeout);
@@ -92,7 +91,7 @@ public class DeliverySystemApplication implements IApplication,
 	@Override
     public Object start(IApplicationContext context) throws Exception {
 		
-	    Activator.getPlugin().addSessionServiceListener(this);
+	    xmppSessionHandler.connect(this);
 	    
 	    IPreferencesService prefs = Platform.getPreferencesService();
 	    
@@ -132,12 +131,15 @@ public class DeliverySystemApplication implements IApplication,
             }
             
             // Check XMPP connection
-            ID connectedId = xmppService.getConnectedID();
-            if (connectedId != null) {
+            if (xmppSessionHandler.isConnected()) {
                 LOG.debug("XMPP connection is working.");
             } else {
                 LOG.warn("XMPP connection is broken! Try to re-connect.");
-                Activator.getPlugin().addSessionServiceListener(this);
+                try {
+                    xmppSessionHandler.reconnect();
+                } catch (XmppSessionException e) {
+                    xmppSessionHandler.connect(this);
+                }
             }
             
             boolean restartWorker = false;
@@ -214,17 +216,7 @@ public class DeliverySystemApplication implements IApplication,
             thread.join(5000);
         }
         
-        if (xmppService != null) {
-            synchronized (xmppService) {
-                try {
-                    xmppService.wait(500);
-                } catch (InterruptedException ie) {
-                    LOG.warn("XMPP service waited and was interrupted.");
-                }
-            }
-            xmppService.disconnect();
-            LOG.info("XMPP disconnected.");
-        }
+        xmppSessionHandler.disconnect();
         
         Integer exitCode = IApplication.EXIT_OK;
         if (restart) {
@@ -306,7 +298,7 @@ public class DeliverySystemApplication implements IApplication,
 
         try {
             sessionService.connect(xmppUser, xmppPassword, xmppServer);
-            xmppService = sessionService;
+            xmppSessionHandler.setSessionService(sessionService);
         } catch (final Exception e) {
             LOG.warn("XMPP connection is not available: {}", e.toString());
         }

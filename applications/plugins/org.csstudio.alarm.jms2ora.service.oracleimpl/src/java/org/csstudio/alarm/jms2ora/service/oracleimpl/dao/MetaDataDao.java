@@ -66,7 +66,13 @@ public class MetaDataDao implements IMessageArchiveDao {
      *  Contains the names of the columns of the table MESSAGE. The key is the name of column and the value
      *  is the precision.
      */
-    private Hashtable<String, Integer> messageCol;
+    private Hashtable<String, Integer> messageMetaData;
+    
+    /**
+     *  Contains the content of the table MSG_PROPERTY_TYPE. The key is the value of column and the value
+     *  is the table id.
+     */
+    private Hashtable<String, Long> msgPropertyType;
 
     /**
      * Constructor. Oh, really!
@@ -78,12 +84,14 @@ public class MetaDataDao implements IMessageArchiveDao {
         IPreferencesService prefs = Platform.getPreferencesService();
         String metaDataDir = prefs.getString(Activator.getPluginId(),
                                              PreferenceConstants.META_DATA_DIRECTORY,
-                                             "./var/columns",
+                                             "./var/tables",
                                              null);
         dataDirectories = new DataDirectory(metaDataDir);
-        messageCol = new Hashtable<String, Integer>();
+        messageMetaData = new Hashtable<String, Integer>();
+        msgPropertyType = new Hashtable<String, Long>();
         
-        readTableColumns();
+        readMessageMetaData();
+        readMsgPropertyType();
     }
     
     @Override
@@ -131,20 +139,24 @@ public class MetaDataDao implements IMessageArchiveDao {
      * 
      * @return Hashtable containg the VARCHAR2 types and precision of table 'MESSAGE'
      */
-    public Hashtable<String, Integer> getMessageProperties() {
-        
-        if (messageCol.isEmpty()) {
-            this.readTableColumns();
+    public Hashtable<String, Integer> getMessageMetaData() {
+        if (messageMetaData.isEmpty()) {
+            this.readMessageMetaData();
         }
-        
-        return messageCol;
+        return messageMetaData;
     }
     
-    public Hashtable<String, Long> getMessageContentProperties() {
+    public Hashtable<String, Long> getMsgPropertyTypeContent() {
+        if (msgPropertyType.isEmpty()) {
+            this.readMsgPropertyType();
+        }
+        return msgPropertyType;
+    }
+        
+    private void readMsgPropertyType() {
         
         PreparedStatement pst = null;
         ResultSet rsProperty = null;
-        Hashtable<String, Long> msgProperty = new Hashtable<String, Long>();
         
         Connection connection;
         try {
@@ -158,61 +170,24 @@ public class MetaDataDao implements IMessageArchiveDao {
             if(rsProperty != null) {
                 // Fill the hash table with the received data of the property table
                 while(rsProperty.next()) {
-                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
+                    msgPropertyType.put(rsProperty.getString(2), rsProperty.getLong(1));                 
                 }
             }
+            
+            saveMsgPropertyTypeToFile();
+            
         } catch(Exception e) {
-            msgProperty.clear();
+            LOG.warn("[*** Exception ***]: Cannot read the table msg_property_type: " + e.getMessage());
+            LOG.warn("Using stored table.");
+            readMsgPropertyTypeFromFile();
         } finally {
             if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){/*Ignore me*/}rsProperty=null;}
             if(pst!=null){try{pst.close();}catch(Exception e){/*Ignore me*/}pst=null;}
             connectionHandler.disconnect();
         }
-        
-        return msgProperty;
     }
     
-    private void saveColumnNames() {
-        
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-
-        if(messageCol.isEmpty()) {
-            LOG.info("Column list is empty.");
-            return;
-        }
-
-        if(dataDirectories.existsDataDirectory() == false) {
-            LOG.warn("Object folder does not exist. Columns cannot be stored.");
-            return;
-        }
-        
-        try {
-            fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + "ColumnNames.ser");
-            oos = new ObjectOutputStream(fos);
-            
-            // Write the MessageContent object to disk
-            oos.writeObject(messageCol);
-            oos.flush();
-        } catch(FileNotFoundException fnfe) {
-            LOG.error("FileNotFoundException : " + fnfe.getMessage());
-        } catch(IOException ioe) {
-            LOG.error("IOException : " + ioe.getMessage());
-        } catch (DataDirectoryException dde) {
-            LOG.error("DataDirectoryException : " + dde.getMessage());
-        } finally {
-            if(oos != null){try{oos.close();}catch(IOException ioe){/*Ignore me*/}}
-            if(fos != null){try{fos.close();}catch(IOException ioe){/*Ignore me*/}}
-            
-            oos = null;
-            fos = null;            
-        }
-    }
-    
-    /**
-     * 
-     */
-    private void readTableColumns() {
+    private void readMessageMetaData() {
         
         ResultSetMetaData meta = null;
         ResultSet rs = null;
@@ -221,7 +196,7 @@ public class MetaDataDao implements IMessageArchiveDao {
         int prec = 0;
         int count = 0;
         
-        messageCol.clear();
+        messageMetaData.clear();
         
         Connection connection;        
         try {
@@ -240,36 +215,130 @@ public class MetaDataDao implements IMessageArchiveDao {
                 if((name.compareToIgnoreCase("id") != 0) 
                     && (name.compareToIgnoreCase("datum") != 0)
                     && (name.compareToIgnoreCase("msg_type_id") != 0)) {
-                    messageCol.put(name, new Integer(prec));
+                    messageMetaData.put(name, new Integer(prec));
                 }
             }
             
-            saveColumnNames();
+            saveMessageMetaDataToFile();
             
         } catch(Exception e) {
-            LOG.warn("[*** Exception ***]: Cannot read the table column names: " + e.getMessage());
-            LOG.warn("Using stored column names.");
-            readColumnNames();
+            LOG.warn("[*** Exception ***]: Cannot read the table message: " + e.getMessage());
+            LOG.warn("Using stored table.");
+            readMessageMetaDataFromFile();
         } finally {
             close();
         }
     }
     
-    @SuppressWarnings("unchecked")
-    private void readColumnNames() {
+    private void saveMsgPropertyTypeToFile() {
         
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+
+        if(msgPropertyType.isEmpty()) {
+            LOG.info("Hashtable containing the content of MsgPropertyType is empty.");
+            return;
+        }
+
+        if(dataDirectories.existsDataDirectory() == false) {
+            LOG.warn("Object folder does not exist. Object cannot be stored.");
+            return;
+        }
+        
+        try {
+            fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + "MsgPropertyType.ser");
+            oos = new ObjectOutputStream(fos);
+            
+            // Write the MessageContent object to disk
+            oos.writeObject(msgPropertyType);
+            oos.flush();
+        } catch(FileNotFoundException fnfe) {
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
+        } catch(IOException ioe) {
+            LOG.error("IOException : " + ioe.getMessage());
+        } catch (DataDirectoryException dde) {
+            LOG.error("DataDirectoryException : " + dde.getMessage());
+        } finally {
+            if(oos != null){try{oos.close();}catch(IOException ioe){/*Ignore me*/}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){/*Ignore me*/}}
+            
+            oos = null;
+            fos = null;            
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void readMsgPropertyTypeFromFile() {
         FileInputStream fis = null;
         ObjectInputStream ois = null;
-
         try {
-            fis = new FileInputStream(dataDirectories.getDataDirectoryAsString() + "ColumnNames.ser");
+            fis = new FileInputStream(dataDirectories.getDataDirectoryAsString() + "MsgPropertyType.ser");
             ois = new ObjectInputStream(fis);
             
             // Write the MessageContent object to disk
-            messageCol = (Hashtable<String, Integer>)ois.readObject();            
+            msgPropertyType = (Hashtable<String, Long>) ois.readObject();            
         } catch(Exception e) {
             LOG.warn("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
-            messageCol = new Hashtable<String, Integer>();
+            msgPropertyType = new Hashtable<String, Long>();
+        } finally {
+            if(ois != null){try{ois.close();}catch(IOException ioe){/*Ignore me*/}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){/*Ignore me*/}}
+            
+            ois = null;
+            fis = null;            
+        }
+    }
+    
+    private void saveMessageMetaDataToFile() {
+        
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+
+        if(messageMetaData.isEmpty()) {
+            LOG.info("Hashtable containing the MessageMetaData is empty.");
+            return;
+        }
+
+        if(dataDirectories.existsDataDirectory() == false) {
+            LOG.warn("Object folder does not exist. Object cannot be stored.");
+            return;
+        }
+        
+        try {
+            fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + "MessageMetaData.ser");
+            oos = new ObjectOutputStream(fos);
+            
+            // Write the MessageContent object to disk
+            oos.writeObject(messageMetaData);
+            oos.flush();
+        } catch(FileNotFoundException fnfe) {
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
+        } catch(IOException ioe) {
+            LOG.error("IOException : " + ioe.getMessage());
+        } catch (DataDirectoryException dde) {
+            LOG.error("DataDirectoryException : " + dde.getMessage());
+        } finally {
+            if(oos != null){try{oos.close();}catch(IOException ioe){/*Ignore me*/}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){/*Ignore me*/}}
+            
+            oos = null;
+            fos = null;            
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readMessageMetaDataFromFile() {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+            fis = new FileInputStream(dataDirectories.getDataDirectoryAsString() + "MessageMetaData.ser");
+            ois = new ObjectInputStream(fis);
+            
+            // Write the MessageContent object to disk
+            messageMetaData = (Hashtable<String, Integer>) ois.readObject();            
+        } catch(Exception e) {
+            LOG.warn("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+            messageMetaData = new Hashtable<String, Integer>();
         } finally {
             if(ois != null){try{ois.close();}catch(IOException ioe){/*Ignore me*/}}
             if(fis != null){try{fis.close();}catch(IOException ioe){/*Ignore me*/}}
