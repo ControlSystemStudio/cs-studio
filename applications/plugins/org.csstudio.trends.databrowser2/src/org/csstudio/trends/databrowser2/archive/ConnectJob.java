@@ -48,8 +48,8 @@ abstract public class ConnectJob extends Job
         }
         catch (final Exception ex)
         {
-            monitor.setCanceled(true);
             archiveServerError(url, ex);
+            monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }
         monitor.done();

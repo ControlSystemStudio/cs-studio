@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="icons/about.gif"/>
+      <text>
+         Control System Studio (CSS) is a combined
+effort of several parties, including:
+- DESY (Hamburg, Germany)
+- SNS (Oak Ridge, TN)
+- ITER (Cadarache, France)
+- BNL (Brookhaven, NY)
+
+It provides a collection of control system
+tools in a common environment, based
+on Eclipse.
+
+See http://sourceforge.net/apps/trac/cs-studio
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.defaultAction
+openFile</programArgs>
+      <vmArgs>-Xmx1024m
+-Xms128m
+-XX:MaxPermSize=256M
+-XX:PermSize=128m
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal
+-Dpython.cachedir.skip=true</vmArgs>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.iter.product.css/icons/css16.png" i32="/org.csstudio.iter.product.css/icons/css32.png" i48="/org.csstudio.iter.product.css/icons/css48.png" i64="/org.csstudio.iter.product.css/icons/css64.png" i128="/org.csstudio.iter.product.css/icons/css128.png"/>
+
+   <splash
+      location="org.csstudio.iter.product.css"
+      startupProgressRect="5,210,445,15"
+      startupMessageRect="7,190,445,20"
+      startupForegroundColor="0064C6" />
+   <launcher name="css">
+      <linux icon="/org.csstudio.iter.product.css/icons/css48.xpm"/>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="org.eclipse.ui.intro.universal"/>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx</url>
+        <text>
+   Copyright (c) : 2010-2012 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+ 
+This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+         </text>
+   </license>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="de.desy.language.editor.core"/>
+      <plugin id="de.desy.language.editor.details"/>
+      <plugin id="de.desy.language.editor.ui"/>
+      <plugin id="de.desy.language.libraries"/>
+      <plugin id="de.desy.language.snl"/>
+      <plugin id="de.desy.language.snl.configuration.linux"/>
+      <plugin id="de.desy.language.snl.diagram"/>
+      <plugin id="de.desy.language.snl.diagram.ui"/>
+      <plugin id="de.desy.language.snl.ui"/>
+      <plugin id="javax.annotation"/>
+      <plugin id="javax.mail"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.batik"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.annunciator"/>
+      <plugin id="org.csstudio.alarm.beast.msghist"/>
+      <plugin id="org.csstudio.alarm.beast.notifier"/>
+      <plugin id="org.csstudio.alarm.beast.ui"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtable"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtree"/>
+      <plugin id="org.csstudio.alarm.beast.ui.areapanel"/>
+      <plugin id="org.csstudio.alarm.beast.ui.globaltable"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.reader"/>
+      <plugin id="org.csstudio.archive.reader.channelarchiver"/>
+      <plugin id="org.csstudio.archive.reader.rdb"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.auth.ui"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.csdata.clipboard"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.debugging.jmsmonitor"/>
+      <plugin id="org.csstudio.debugging.rdbshell"/>
+      <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.diag.postanalyser"/>
+      <plugin id="org.csstudio.diag.probe"/>
+      <plugin id="org.csstudio.display.pvtable"/>
+      <plugin id="org.csstudio.display.rdbtable"/>
+      <plugin id="org.csstudio.email"/>
+      <plugin id="org.csstudio.email.ui"/>
+      <plugin id="org.csstudio.iter.css.product"/>
+      <plugin id="org.csstudio.iter.passwordprovider"/>
+      <plugin id="org.csstudio.iter.startuphelper"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.ldapAuthorization"/>
+      <plugin id="org.csstudio.ldapAuthorization.ui"/>
+      <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.ui"/>
+      <plugin id="org.csstudio.openfile"/>
+      <plugin id="org.csstudio.opibuilder"/>
+      <plugin id="org.csstudio.opibuilder.converter"/>
+      <plugin id="org.csstudio.opibuilder.editor"/>
+      <plugin id="org.csstudio.opibuilder.examples"/>
+      <plugin id="org.csstudio.opibuilder.imagelib"/>
+      <plugin id="org.csstudio.opibuilder.rcp" fragment="true"/>
+      <plugin id="org.csstudio.opibuilder.widgets"/>
+      <plugin id="org.csstudio.opibuilder.widgets.rcp" fragment="true"/>
+      <plugin id="org.csstudio.opibuilder.widgets.symbol"/>
+      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.jaasAuthentication"/>
+      <plugin id="org.csstudio.platform.jaasAuthentication.ui"/>
+      <plugin id="org.csstudio.platform.libs.easymock"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.ui"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.jms.ui"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.remote"/>
+      <plugin id="org.csstudio.servicelocator"/>
+      <plugin id="org.csstudio.startup"/>
+      <plugin id="org.csstudio.startuphelper"/>
+      <plugin id="org.csstudio.swt.chart"/>
+      <plugin id="org.csstudio.swt.widgets"/>
+      <plugin id="org.csstudio.swt.widgets.rcp" fragment="true"/>
+      <plugin id="org.csstudio.swt.xygraph"/>
+      <plugin id="org.csstudio.swt.xygraph.rcp" fragment="true"/>
+      <plugin id="org.csstudio.trends.databrowser2"/>
+      <plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
+      <plugin id="org.csstudio.ui.help"/>
+      <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.menu.app"/>
+      <plugin id="org.csstudio.ui.preferences"/>
+      <plugin id="org.csstudio.ui.util"/>
+      <plugin id="org.csstudio.utility.caSnooperUi"/>
+      <plugin id="org.csstudio.utility.clock"/>
+      <plugin id="org.csstudio.utility.eliza"/>
+      <plugin id="org.csstudio.utility.httpd"/>
+      <plugin id="org.csstudio.utility.product"/>
+      <plugin id="org.csstudio.utility.pv"/>
+      <plugin id="org.csstudio.utility.pv.epics"/>
+      <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.utility.pv.ui"/>
+      <plugin id="org.csstudio.utility.speech"/>
+      <plugin id="org.csstudio.utility.sysmon"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.compare"/>
+      <plugin id="org.eclipse.compare.core"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filebuffers"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.net.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.draw2d"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+      <plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+      <plugin id="org.eclipse.equinox.p2.core"/>
+      <plugin id="org.eclipse.equinox.p2.director"/>
+      <plugin id="org.eclipse.equinox.p2.directorywatcher"/>
+      <plugin id="org.eclipse.equinox.p2.engine"/>
+      <plugin id="org.eclipse.equinox.p2.extensionlocation"/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+      <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+      <plugin id="org.eclipse.equinox.p2.metadata"/>
+      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+      <plugin id="org.eclipse.equinox.p2.publisher"/>
+      <plugin id="org.eclipse.equinox.p2.publisher.eclipse"/>
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins"/>
+      <plugin id="org.eclipse.equinox.p2.repository"/>
+      <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.gef"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.ltk.core.refactoring"/>
+      <plugin id="org.eclipse.ltk.ui.refactoring"/>
+      <plugin id="org.eclipse.net4j.jms.api"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
+      <plugin id="org.eclipse.search"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.team.core"/>
+      <plugin id="org.eclipse.team.ui"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.browser"/>
+      <plugin id="org.eclipse.ui.cheatsheets"/>
+      <plugin id="org.eclipse.ui.console"/>
+      <plugin id="org.eclipse.ui.editors"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.ide"/>
+      <plugin id="org.eclipse.ui.intro"/>
+      <plugin id="org.eclipse.ui.intro.universal"/>
+      <plugin id="org.eclipse.ui.navigator"/>
+      <plugin id="org.eclipse.ui.navigator.resources"/>
+      <plugin id="org.eclipse.ui.net"/>
+      <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.ui.workbench.texteditor"/>
+      <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.hamcrest"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jdom"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+      <plugin id="org.mockito"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.python"/>
+      <plugin id="org.sat4j.core"/>
+      <plugin id="org.sat4j.pb"/>
+      <plugin id="org.slf4j"/>
+      <plugin id="org.tigris.subversion.clientadapter"/>
+      <plugin id="org.tigris.subversion.clientadapter.svnkit"/>
+      <plugin id="org.tigris.subversion.subclipse.core"/>
+      <plugin id="org.tigris.subversion.subclipse.doc"/>
+      <plugin id="org.tigris.subversion.subclipse.ui"/>
+      <plugin id="org.tmatesoft.svnkit"/>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.iter.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.core.util.feature" version="1.0.0"/>
+      <feature id="org.eclipse.iter.ui.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.css.app.feature" version="1.0.0"/>
+      <feature id="org.csstudio.iter.email.feature" version="1.0.0"/>
+      <feature id="org.csstudio.iter.alarm.beast.ui.feature" version="1.0.0"/>
+      <feature id="org.csstudio.trends.databrowser2.feature" version="3.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.opibuilder.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.css.util.feature" version="1.0.0"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+   </configurations>
+
+</product>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+    <extensionContent id="org.csstudio.iter.css.product.overview" name="ITER CSS" style="css/style.css" path="overview/@">
+        <group id="content-group" style-id="content-group">
+            <link id="cssiter" label="CSS for ITER" style-id="content-link"
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/toc/html/toc.html" >
+				<text>
+				  CSS is a collection of control system tools, and this version of CSS
+				  was pre-configured for CODAC Core System to control and monitor a
+				  Plant System Instrumentation and Control based on EPICS.
+				  To get started, read the 'First Steps' that introduce the various tools.
+				  Then, have a look at the provided Samples.
+				  Learn about the latest features in What’s New.
+				  Finally access to the online Help for more detailed information.
+                </text>
+            </link>
+        </group>
+    </extensionContent>
+</introContent>

@@ -28,6 +28,7 @@ import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -263,6 +264,10 @@ public class Plot
 				        return;
 				    try
 				    {
+  				  		// TODO RAP and RCP
+						if (Activator.isRAP()) {
+   				             throw new RuntimeException("Not yet implemented for web version.");
+						}
 				        // Only allow workspace files
     				    final URI location = new URI("file",null, files[0], null); //$NON-NLS-1$
     				    final IFile[] ws_files = ResourcesPlugin.getWorkspace().

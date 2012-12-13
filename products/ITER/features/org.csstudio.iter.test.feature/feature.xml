@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.test.feature"
+      label="Test Plugins"
+      version="1.0.0"
+      provider-name="ITER"
+      os="linux"
+      ws="gtk"
+      nl="en"
+      arch="x86_64">
+
+   <requires>
+     <import plugin="org.hamcrest.core"/>
+	 <import plugin="org.junit"/>
+	 <import plugin="org.junit4"/>
+   </requires>
+
+   <plugin
+         id="org.hamcrest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
