@@ -8,7 +8,7 @@ import org.epics.pvmanager.NotificationSupport;
 import org.epics.pvmanager.TypeSupport;
 
 /**
- * Adds support for control system standard types defined in this package.
+ * Adds support for control system standard value types.
  *
  * @author carcassi
  */

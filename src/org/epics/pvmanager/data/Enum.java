@@ -18,7 +18,6 @@ public interface Enum {
      *
      * @return the possible values
      */
-    @Metadata
     List<String> getLabels();
 
 }

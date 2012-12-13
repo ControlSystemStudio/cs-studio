@@ -37,7 +37,7 @@ import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 
 /**
- * PVManager expression language support for EPICS types.
+ * PVManager expression language support for value types.
  *
  * @author carcassi
  */
@@ -45,7 +45,7 @@ public class ExpressionLanguage {
     private ExpressionLanguage() {}
 
     static {
-        // Add support for Epics types.
+        // Add support for value types.
         DataTypeSupport.install();
     }
     
@@ -54,7 +54,7 @@ public class ExpressionLanguage {
     //
 
     /**
-     * A channel with the given name that returns any of the value type.
+     * A channel with the given name that returns any of the value types.
      *
      * @param name the channel name; can't be null
      * @return an expression representing the channel
@@ -62,14 +62,15 @@ public class ExpressionLanguage {
     public static ChannelExpression<VType, Object> vType(String name) {
         return channel(name, VType.class, Object.class);
     }
+    
     /**
-     * A list of channels with the given names that return any of the value type.
+     * A list of channels with the given names that return any of the value types.
      *
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static ChannelExpressionList<VType, Object> vTypes(Collection<String> name) {
-        return channels(name, VType.class, Object.class);
+    public static ChannelExpressionList<VType, Object> vTypes(Collection<String> names) {
+        return channels(names, VType.class, Object.class);
     }
 
     /**
@@ -88,8 +89,8 @@ public class ExpressionLanguage {
      * @param names the channel names; can't be null
      * @return a list of expressions representing the channels
      */
-    public static ChannelExpressionList<VNumber, Number> vNumbers(Collection<String> name) {
-        return channels(name, VNumber.class, Number.class);
+    public static ChannelExpressionList<VNumber, Number> vNumbers(Collection<String> names) {
+        return channels(names, VNumber.class, Number.class);
     }
 
     /**
@@ -103,6 +104,16 @@ public class ExpressionLanguage {
     }
 
     /**
+     * A channel with the given name of type VFloat.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VFloat, Float> vFloat(String name) {
+        return channel(name, VFloat.class, Float.class);
+    }
+
+    /**
      * A channel with the given name of type VInt.
      *
      * @param name the channel name; can't be null
@@ -110,6 +121,26 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VInt, Integer> vInt(String name) {
         return channel(name, VInt.class, Integer.class);
+    }
+
+    /**
+     * A channel with the given name of type VShort.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VShort, Short> vShort(String name) {
+        return channel(name, VShort.class, Short.class);
+    }
+
+    /**
+     * A channel with the given name of type VByte.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VByte, Byte> vByte(String name) {
+        return channel(name, VByte.class, Byte.class);
     }
 
     /**
@@ -198,48 +229,6 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VString, String> vString(String name) {
         return channel(name, VString.class, String.class);
-    }
-    
-    /**
-     * An expression that formats the given expression to a string using the
-     * given format.
-     * 
-     * @param expression the expression to format
-     * @param valueFormat the format to use for the conversion
-     * @return an expression with the string representation of the argument
-     */
-    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression, ValueFormat valueFormat) {
-        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), valueFormat), expression.getName());
-    }
-    
-    /**
-     * An expression that formats the given expression to a string using the
-     * default format.
-     * 
-     * @param expression the expression to format
-     * @return an expression with the string representation of the argument
-     */
-    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression) {
-        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), ValueUtil.getDefaultValueFormat()), expression.getName());
-    }
-    
-    /**
-     * An expression that formats the given expression to a string using the
-     * default format.
-     * 
-     * @param expression the expression to format
-     * @return an expression with the string representation of the argument
-     */
-    public static DesiredRateReadWriteExpression<VString, String> vStringOf(DesiredRateReadWriteExpression<? extends VType, ? extends Object> expression) {
-        LatestValueCollector<VType> forward = new LatestValueCollector<>();
-        DesiredRateExpression<VString> readExp = new DesiredRateExpressionImpl<>(expression,
-                new VStringOfFunction(expression.getFunction(), ValueUtil.getDefaultValueFormat(), forward)
-                , expression.getName());
-        @SuppressWarnings("unchecked")
-        WriteFunction<Object> writeFunction = (WriteFunction<Object>) (WriteFunction) expression.getWriteFunction();
-        WriteExpression<String> writeExp = new WriteExpressionImpl<>(expression,
-                new VStringOfWriteFunction(forward, ValueUtil.getDefaultValueFormat(), writeFunction), expression.getName());
-        return new DesiredRateReadWriteExpressionImpl<>(readExp, writeExp);
     }
 
     /**
@@ -383,6 +372,61 @@ public class ExpressionLanguage {
             list.and(constant(newVString(value, alarmNone(), timeNow())));
         }
         return list;
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * given format.
+     * 
+     * @param expression the expression to format
+     * @param valueFormat the format to use for the conversion
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression, ValueFormat valueFormat) {
+        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), valueFormat), expression.getName());
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * default format.
+     * 
+     * @param expression the expression to format
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateExpression<VString> vStringOf(DesiredRateExpression<? extends VType> expression) {
+        return new DesiredRateExpressionImpl<>(expression, new VStringOfFunction(expression.getFunction(), ValueUtil.getDefaultValueFormat()), expression.getName());
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * default format.
+     * 
+     * @param expression the expression to format
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateReadWriteExpression<VString, String> vStringOf(DesiredRateReadWriteExpression<? extends VType, ? extends Object> expression) {
+        return vStringOf(expression, ValueUtil.getDefaultValueFormat());
+    }
+    
+    /**
+     * An expression that formats the given expression to a string using the
+     * given format.
+     * 
+     * @param expression the expression to format
+     * @param valueFormat the format to use for the conversion
+     * @return an expression with the string representation of the argument
+     */
+    public static DesiredRateReadWriteExpression<VString, String> vStringOf(DesiredRateReadWriteExpression<? extends VType, ? extends Object> expression,
+            ValueFormat valueFormat) {
+        LatestValueCollector<VType> forward = new LatestValueCollector<>();
+        DesiredRateExpression<VString> readExp = new DesiredRateExpressionImpl<>(expression,
+                new VStringOfFunction(expression.getFunction(), valueFormat, forward)
+                , expression.getName());
+        @SuppressWarnings("unchecked")
+        WriteFunction<Object> writeFunction = (WriteFunction<Object>) (WriteFunction) expression.getWriteFunction();
+        WriteExpression<String> writeExp = new WriteExpressionImpl<>(expression,
+                new VStringOfWriteFunction(forward, valueFormat, writeFunction), expression.getName());
+        return new DesiredRateReadWriteExpressionImpl<>(readExp, writeExp);
     }
 
     /**

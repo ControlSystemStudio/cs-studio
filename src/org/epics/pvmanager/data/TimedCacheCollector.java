@@ -10,8 +10,7 @@ import org.epics.pvmanager.ReadFunction;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.TimeInterval;
 
-
-    /**
+/**
  *
  * @author carcassi
  */

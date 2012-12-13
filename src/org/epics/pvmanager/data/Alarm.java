@@ -5,7 +5,7 @@
 package org.epics.pvmanager.data;
 
 /**
- * Alarm information. Represents the severity and status of the highest alarm
+ * Alarm information. Represents the severity and name of the highest alarm
  * associated with the channel.
  *
  * @author carcassi
