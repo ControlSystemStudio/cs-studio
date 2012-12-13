@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Nonnull;
 import org.csstudio.alarm.jms2ora.IMessageConverter;
 import org.csstudio.alarm.jms2ora.IMessageProcessor;
+import org.csstudio.alarm.jms2ora.ThreadExceptionHandler;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,7 @@ public class MessageConverter extends Thread implements IMessageConverter {
     private boolean stoppedClean;
 
     public MessageConverter(@Nonnull final IMessageProcessor processor, @Nonnull final StatisticCollector c) {
+        this.setUncaughtExceptionHandler(ThreadExceptionHandler.getInstance());
         messageProcessor = processor;
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator(c);
