@@ -399,6 +399,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.csstudio.platform.libs.epics.win32"
          os="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
