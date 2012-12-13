@@ -179,12 +179,15 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				}
 			}
 			//Load system macro
-			if(loadTarget.getMacrosInput().isInclude_parent_macros())
-				loadTarget.setMacroMap(
+			if(loadTarget.getMacrosInput().isInclude_parent_macros()){				
+				loadTarget.getMacroMap().putAll(
 						(LinkedHashMap<String, String>) tempDisplayModel.getParentMacroMap());
+			}
 			//Load macro from its macrosInput
 			loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
-			//It also include the macros on this linking container. It will replace the old one too.
+			//It also include the macros on this linking container 
+			//which includes the macros from action and global macros if included
+			//It will replace the old one too.
 			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());
 			
 			for(AbstractWidgetModel child : loadTarget.getChildren()){

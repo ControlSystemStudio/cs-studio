@@ -9,6 +9,8 @@ org.csstudio.sns.feature.optional/**
 org.csstudio.sns.feature.optional.linux/**
 org.csstudio.sns.feature.optional.win32/**
 org.csstudio.sns.feature.repository/**
+org.csstudio.sns.feature.repository.cvs/**
+org.csstudio.sns.feature.repository.git/**
 org.csstudio.sns.feature.snsapps/**
 org.csstudio.sns.feature.snscore/**
 org.csstudio.trends.databrowser2.feature/**

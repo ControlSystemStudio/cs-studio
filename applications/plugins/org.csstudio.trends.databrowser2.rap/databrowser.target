@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?><target name="RAP" sequenceNumber="107">
+<locations>
+<location path="/opt/codac/css/css/plugins" type="Directory"/>
+<location path="/home/ITER/dequidd/rap-runtime-1.5.1-R-20120917-1116" type="Directory"/>
+<location path="/home/ITER/dequidd/workspaces/css-dev/cs-studio-git/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
+</locations>
+<includeBundles>
+<plugin id="org.csstudio.debugging.rdbshell"/>
+<plugin id="org.eclipse.rap.junit.runtime"/>
+<plugin id="org.eclipse.equinox.p2.director"/>
+<plugin id="de.desy.language.snl.ui"/>
+<plugin id="org.hamcrest.core"/>
+<plugin id="org.csstudio.logbook"/>
+<plugin id="org.eclipse.swt"/>
+<plugin id="org.eclipse.rap.junit"/>
+<plugin id="org.eclipse.help" version="3.5.100.v20110426"/>
+<plugin id="org.csstudio.utility.sysmon"/>
+<plugin id="org.apache.lucene"/>
+<plugin id="org.sat4j.core"/>
+<plugin id="org.eclipse.equinox.http.servlet" version="1.1.300.v20120522-1841"/>
+<plugin id="org.eclipse.equinox.http.servletbridge"/>
+<plugin id="org.csstudio.utility.pv"/>
+<plugin id="org.mockito"/>
+<plugin id="org.csstudio.diag.probe"/>
+<plugin id="org.csstudio.swt.widgets.rcp"/>
+<plugin id="org.tigris.subversion.subclipse.core"/>
+<plugin id="org.eclipse.equinox.http.jetty" version="3.0.0.v20120522-1841"/>
+<plugin id="org.csstudio.opibuilder.widgets.rcp"/>
+<plugin id="org.eclipse.jface.databinding"/>
+<plugin id="org.eclipse.osgi.source"/>
+<plugin id="org.eclipse.equinox.common" version="3.6.0.v20110523"/>
+<plugin id="org.csstudio.diag.postanalyser"/>
+<plugin id="org.csstudio.platform.libs.jdbc"/>
+<plugin id="org.eclipse.osgi" version="3.7.0.v20110613"/>
+<plugin id="org.eclipse.jetty.continuation"/>
+<plugin id="org.eclipse.rap.jface.databinding"/>
+<plugin id="org.csstudio.platform.ui"/>
+<plugin id="org.eclipse.osgi.util"/>
+<plugin id="org.csstudio.swt.xygraph"/>
+<plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+<plugin id="org.eclipse.ui.views.properties.tabbed"/>
+<plugin id="javax.servlet" version="3.0.0.v201112011016"/>
+<plugin id="org.eclipse.rap.ui.cheatsheets"/>
+<plugin id="org.csstudio.ldapAuthorization.ui"/>
+<plugin id="org.eclipse.jface.text"/>
+<plugin id="org.csstudio.alarm.beast.ui.globaltable"/>
+<plugin id="org.eclipse.draw2d"/>
+<plugin id="de.desy.language.editor.ui"/>
+<plugin id="org.eclipse.rap.jface.databinding.source"/>
+<plugin id="org.eclipse.osgi.services" version="3.3.0.v20110513"/>
+<plugin id="org.csstudio.platform.libs.jmock"/>
+<plugin id="org.eclipse.core.expressions.source"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator"/>
+<plugin id="org.eclipse.equinox.preferences.source"/>
+<plugin id="org.eclipse.rap.junit.source"/>
+<plugin id="de.desy.language.snl"/>
+<plugin id="org.apache.batik"/>
+<plugin id="org.csstudio.opibuilder.imagelib"/>
+<plugin id="org.eclipse.jetty.util"/>
+<plugin id="org.csstudio.trends.databrowser2"/>
+<plugin id="org.eclipse.core.commands.source"/>
+<plugin id="org.eclipse.osgi.services.source"/>
+<plugin id="org.csstudio.email"/>
+<plugin id="org.csstudio.utility.clock"/>
+<plugin id="org.eclipse.gef"/>
+<plugin id="org.eclipse.equinox.p2.repository"/>
+<plugin id="org.eclipse.equinox.util" version="1.0.400.v20120522-2049"/>
+<plugin id="org.eclipse.equinox.security"/>
+<plugin id="org.eclipse.ltk.ui.refactoring"/>
+<plugin id="org.junit.source"/>
+<plugin id="org.csstudio.java"/>
+<plugin id="org.eclipse.rap.ui.source"/>
+<plugin id="org.csstudio.platform.libs.jms"/>
+<plugin id="org.eclipse.core.databinding.beans.source"/>
+<plugin id="org.csstudio.opibuilder.editor"/>
+<plugin id="org.eclipse.core.filesystem"/>
+<plugin id="org.eclipse.ui.navigator.resources"/>
+<plugin id="com.ibm.icu"/>
+<plugin id="org.sat4j.pb"/>
+<plugin id="org.eclipse.rap.ui.workbench.source"/>
+<plugin id="org.eclipse.rap.ui"/>
+<plugin id="org.csstudio.platform.utility.rdb"/>
+<plugin id="org.eclipse.jetty.http"/>
+<plugin id="org.eclipse.jetty.server"/>
+<plugin id="org.eclipse.jdt.junit.runtime"/>
+<plugin id="org.csstudio.ui.util"/>
+<plugin id="org.csstudio.utility.product"/>
+<plugin id="org.csstudio.debugging.jmsmonitor"/>
+<plugin id="org.eclipse.net4j.jms.api"/>
+<plugin id="org.eclipse.jetty.io"/>
+<plugin id="org.eclipse.rap.jface.source"/>
+<plugin id="org.eclipse.jface"/>
+<plugin id="de.desy.language.snl.configuration.linux"/>
+<plugin id="org.eclipse.core.resources"/>
+<plugin id="org.csstudio.swt.chart"/>
+<plugin id="org.csstudio.iter.startuphelper"/>
+<plugin id="org.eclipse.equinox.p2.publisher"/>
+<plugin id="org.csstudio.utility.pv.epics"/>
+<plugin id="org.eclipse.core.filebuffers"/>
+<plugin id="org.eclipse.equinox.http.servlet.source"/>
+<plugin id="org.eclipse.core.databinding.observable" version="1.4.0.I20110222-0800"/>
+<plugin id="org.csstudio.alarm.beast.notifier"/>
+<plugin id="org.eclipse.ui"/>
+<plugin id="org.csstudio.utility.eliza"/>
+<plugin id="org.csstudio.platform.libs.easymock"/>
+<plugin id="de.desy.language.snl.diagram.ui"/>
+<plugin id="org.csstudio.utility.caSnooperUi"/>
+<plugin id="org.tigris.subversion.clientadapter"/>
+<plugin id="org.eclipse.ui.workbench"/>
+<plugin id="org.apache.commons.el"/>
+<plugin id="org.eclipse.help.appserver"/>
+<plugin id="org.eclipse.equinox.servletbridge"/>
+<plugin id="org.csstudio.auth.ui"/>
+<plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
+<plugin id="org.eclipse.equinox.p2.publisher.eclipse"/>
+<plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+<plugin id="org.csstudio.archive.reader.channelarchiver"/>
+<plugin id="org.csstudio.alarm.beast.ui.areapanel"/>
+<plugin id="org.eclipse.rap.rwt.osgi"/>
+<plugin id="org.eclipse.ui.navigator"/>
+<plugin id="org.csstudio.swt.xygraph.rcp"/>
+<plugin id="org.csstudio.alarm.beast.ui"/>
+<plugin id="org.apache.log4j"/>
+<plugin id="org.tigris.subversion.subclipse.doc"/>
+<plugin id="org.eclipse.rap.draw2d.compatibility"/>
+<plugin id="javax.annotation"/>
+<plugin id="org.csstudio.opibuilder.rcp"/>
+<plugin id="org.eclipse.rap.design.example.source"/>
+<plugin id="org.apache.lucene.core"/>
+<plugin id="org.csstudio.platform.jaasAuthentication"/>
+<plugin id="org.csstudio.platform"/>
+<plugin id="org.eclipse.equinox.ds" version="1.4.0.v20120522-1841"/>
+<plugin id="org.tigris.subversion.clientadapter.svnkit"/>
+<plugin id="org.eclipse.equinox.jsp.jasper"/>
+<plugin id="org.csstudio.swt.widgets"/>
+<plugin id="org.csstudio.csdata.clipboard"/>
+<plugin id="org.eclipse.equinox.p2.engine"/>
+<plugin id="org.eclipse.rap.ui.cheatsheets.source"/>
+<plugin id="org.eclipse.core.commands" version="3.6.0.I20110111-0800"/>
+<plugin id="org.csstudio.logging"/>
+<plugin id="org.csstudio.opibuilder.widgets.symbol"/>
+<plugin id="org.csstudio.platform.libs.epics.linux"/>
+<plugin id="org.eclipse.core.runtime.compatibility.registry"/>
+<plugin id="org.apache.commons.logging"/>
+<plugin id="org.eclipse.rap.ui.views"/>
+<plugin id="org.eclipse.rap.demo.databinding.source"/>
+<plugin id="org.csstudio.archive.rdb"/>
+<plugin id="org.eclipse.equinox.http.registry.source"/>
+<plugin id="org.csstudio.utility.pv.simu"/>
+<plugin id="org.eclipse.rap.draw2d"/>
+<plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+<plugin id="org.eclipse.rap.junit.runtime.source"/>
+<plugin id="org.eclipse.equinox.common.source"/>
+<plugin id="org.csstudio.archive.reader"/>
+<plugin id="org.eclipse.rap.demo.databinding"/>
+<plugin id="org.csstudio.archive.reader.rdb"/>
+<plugin id="org.csstudio.platform.libs.epics.ui"/>
+<plugin id="org.eclipse.core.jobs" version="3.5.100.v20110404"/>
+<plugin id="org.eclipse.core.contenttype.source"/>
+<plugin id="org.csstudio.utility.speech"/>
+<plugin id="org.csstudio.servicelocator"/>
+<plugin id="org.eclipse.core.databinding.beans"/>
+<plugin id="org.eclipse.equinox.app" version="1.3.100.v20110321"/>
+<plugin id="org.eclipse.core.databinding.source"/>
+<plugin id="javax.mail"/>
+<plugin id="org.eclipse.core.net.linux.x86_64"/>
+<plugin id="org.eclipse.help.base"/>
+<plugin id="org.eclipse.ui.workbench.texteditor"/>
+<plugin id="org.csstudio.alarm.beast.msghist"/>
+<plugin id="de.desy.language.editor.core"/>
+<plugin id="org.csstudio.ui.menu.app"/>
+<plugin id="org.eclipse.core.databinding" version="1.4.0.I20110111-0800"/>
+<plugin id="org.eclipse.rap.rwt"/>
+<plugin id="org.eclipse.rap.demo.source"/>
+<plugin id="com.ibm.icu.base"/>
+<plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
+<plugin id="org.csstudio.ui.preferences"/>
+<plugin id="org.csstudio.opibuilder.examples"/>
+<plugin id="org.eclipse.compare.core"/>
+<plugin id="org.csstudio.startup"/>
+<plugin id="org.csstudio.auth"/>
+<plugin id="org.slf4j"/>
+<plugin id="org.eclipse.help.webapp"/>
+<plugin id="org.eclipse.ltk.core.refactoring"/>
+<plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+<plugin id="org.csstudio.ldapAuthorization"/>
+<plugin id="org.csstudio.iter.css.product"/>
+<plugin id="org.eclipse.ui.intro.universal"/>
+<plugin id="org.csstudio.display.rdbtable"/>
+<plugin id="org.eclipse.ui.intro"/>
+<plugin id="org.eclipse.jetty.security"/>
+<plugin id="org.eclipse.ui.cheatsheets"/>
+<plugin id="org.eclipse.jetty.servlet"/>
+<plugin id="org.eclipse.equinox.launcher"/>
+<plugin id="org.python"/>
+<plugin id="org.csstudio.platform.jaasAuthentication.ui"/>
+<plugin id="org.csstudio.platform.utility.jms.ui"/>
+<plugin id="org.csstudio.workspace"/>
+<plugin id="org.eclipse.core.contenttype" version="3.4.100.v20110423-0524"/>
+<plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+<plugin id="org.csstudio.email.ui"/>
+<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64"/>
+<plugin id="org.csstudio.remote"/>
+<plugin id="org.csstudio.opibuilder.converter"/>
+<plugin id="org.eclipse.rap.ui.forms"/>
+<plugin id="org.csstudio.ui.menu"/>
+<plugin id="org.csstudio.iter.passwordprovider"/>
+<plugin id="org.eclipse.core.databinding.property.source"/>
+<plugin id="com.ibm.icu.base.source"/>
+<plugin id="org.eclipse.ui.views"/>
+<plugin id="org.csstudio.data"/>
+<plugin id="org.eclipse.ui.forms"/>
+<plugin id="org.tmatesoft.svnkit"/>
+<plugin id="org.tigris.subversion.subclipse.ui"/>
+<plugin id="org.eclipse.ui.ide"/>
+<plugin id="org.csstudio.opibuilder"/>
+<plugin id="org.eclipse.core.jobs.source"/>
+<plugin id="org.csstudio.csdata"/>
+<plugin id="org.eclipse.ui.console"/>
+<plugin id="org.csstudio.utility.pv.ui"/>
+<plugin id="org.csstudio.display.pvtable"/>
+<plugin id="org.eclipse.equinox.registry.source"/>
+<plugin id="org.csstudio.startuphelper"/>
+<plugin id="de.desy.language.snl.diagram"/>
+<plugin id="org.eclipse.equinox.p2.reconciler.dropins"/>
+<plugin id="org.eclipse.ui.net"/>
+<plugin id="org.eclipse.text"/>
+<plugin id="org.eclipse.ui.editors"/>
+<plugin id="org.eclipse.jdt.junit.runtime.source"/>
+<plugin id="org.csstudio.diag.epics.pvtree"/>
+<plugin id="org.csstudio.platform.utility.jms"/>
+<plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
+<plugin id="org.eclipse.core.runtime.source"/>
+<plugin id="org.eclipse.team.ui"/>
+<plugin id="org.eclipse.search"/>
+<plugin id="org.eclipse.rap.ui.forms.source"/>
+<plugin id="org.eclipse.equinox.app.source"/>
+<plugin id="org.eclipse.equinox.servletbridge.extensionbundle"/>
+<plugin id="org.eclipse.help.ui"/>
+<plugin id="org.eclipse.equinox.p2.directorywatcher"/>
+<plugin id="org.csstudio.alarm.beast.annunciator"/>
+<plugin id="org.csstudio.logging.ui"/>
+<plugin id="org.eclipse.rap.rwt.testfixture"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+<plugin id="org.junit4"/>
+<plugin id="org.eclipse.core.databinding.observable.source"/>
+<plugin id="org.eclipse.help.source"/>
+<plugin id="org.eclipse.rap.gef"/>
+<plugin id="org.csstudio.alarm.beast"/>
+<plugin id="org.eclipse.compare"/>
+<plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+<plugin id="org.eclipse.core.runtime" version="3.7.0.v20110110"/>
+<plugin id="org.eclipse.rap.design.example"/>
+<plugin id="org.eclipse.team.core"/>
+<plugin id="org.eclipse.rap.ui.workbench"/>
+<plugin id="org.eclipse.core.variables"/>
+<plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
+<plugin id="org.csstudio.platform.libs.epics"/>
+<plugin id="org.csstudio.apputil.ui"/>
+<plugin id="org.eclipse.equinox.registry" version="3.5.100.v20110502"/>
+<plugin id="org.eclipse.rap.jface"/>
+<plugin id="org.eclipse.equinox.frameworkadmin"/>
+<plugin id="org.eclipse.equinox.p2.extensionlocation"/>
+<plugin id="org.eclipse.core.expressions" version="3.4.300.v20110228"/>
+<plugin id="org.csstudio.apputil"/>
+<plugin id="org.eclipse.equinox.p2.core"/>
+<plugin id="org.eclipse.rap.demo"/>
+<plugin id="org.jdom"/>
+<plugin id="javax.servlet.source"/>
+<plugin id="org.eclipse.equinox.p2.metadata"/>
+<plugin id="org.csstudio.utility.httpd"/>
+<plugin id="org.eclipse.core.net"/>
+<plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+<plugin id="org.eclipse.rap.ui.views.source"/>
+<plugin id="org.eclipse.equinox.http.registry" version="1.1.100.v20110502"/>
+<plugin id="org.eclipse.rap.rwt.source"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+<plugin id="org.hamcrest"/>
+<plugin id="de.desy.language.libraries"/>
+<plugin id="org.csstudio.opibuilder.widgets"/>
+<plugin id="org.csstudio.alarm.beast.ui.alarmtree"/>
+<plugin id="org.eclipse.ui.browser"/>
+<plugin id="org.eclipse.equinox.preferences" version="3.4.0.v20110502"/>
+<plugin id="org.csstudio.openfile"/>
+<plugin id="de.desy.language.editor.details"/>
+<plugin id="org.csstudio.ui.help"/>
+<plugin id="org.csstudio.alarm.beast.ui.alarmtable"/>
+<plugin id="org.apache.lucene.analysis"/>
+<plugin id="org.apache.jasper"/>
+<plugin id="org.eclipse.core.databinding.property" version="1.4.0.I20110222-0800"/>
+</includeBundles>
+<environment>
+<os>linux</os>
+<ws>gtk</ws>
+<arch>x86_64</arch>
+<nl>en_US</nl>
+</environment>
+<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-1.7.0-oracle-1.7.0.7.x86_64"/>
+</target>

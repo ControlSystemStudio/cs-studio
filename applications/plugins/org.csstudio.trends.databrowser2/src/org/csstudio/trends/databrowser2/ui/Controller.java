@@ -135,17 +135,17 @@ public class Controller implements ArchiveFetchJobListener
             // Update 'iconized' state from shell
             shell.addShellListener(new ShellListener()
             {
-                @Override
-                public void shellIconified(ShellEvent e)
-                {
-                    window_is_iconized = true;
-                }
+				// Remove Override annotation for RAP
+				// @Override
+				public void shellIconified(ShellEvent e) {
+					window_is_iconized = true;
+				}
 
-                @Override
-                public void shellDeiconified(ShellEvent e)
-                {
-                    window_is_iconized = false;
-                }
+				// Remove Override annotation for RAP
+				// @Override
+				public void shellDeiconified(ShellEvent e) {
+					window_is_iconized = false;
+				}
 
                 @Override
                 public void shellDeactivated(ShellEvent e) { /* Ignore */  }

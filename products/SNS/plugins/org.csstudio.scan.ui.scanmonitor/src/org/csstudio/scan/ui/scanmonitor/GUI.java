@@ -223,6 +223,23 @@ public class GUI implements ScanInfoModelListener
                     cell.setText(info.getRuntimeText());
             }
         });
+        createColumn(table_viewer, table_layout, Messages.FinishTime, 65, 5, new CellLabelProvider()
+        {
+            @Override
+            public String getToolTipText(final Object element)
+            {
+                final ScanInfo info = (ScanInfo) element;
+                return NLS.bind(Messages.FinishTimeFmt,
+                        ScanSampleFormatter.format(info.getFinishTime()));
+            }
+
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ScanInfo info = (ScanInfo) cell.getElement();
+                cell.setText(ScanSampleFormatter.formatTime(info.getFinishTime()));
+            }
+        });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
         {
             @Override

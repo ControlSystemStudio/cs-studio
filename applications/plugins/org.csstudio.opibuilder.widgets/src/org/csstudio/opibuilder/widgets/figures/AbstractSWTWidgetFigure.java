@@ -58,6 +58,10 @@ so change its order with change order action will only be reflected after reopen
 public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure {
 	
 	private class ToolTipListener extends MouseTrackAdapter {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private Control control;
 		
 		public ToolTipListener(Control control) {
@@ -86,8 +90,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	private boolean isIntersectViewPort = true;
 
 	private boolean isShowing = true;
-	
-	private Rectangle oldClientArea;
 	
 	private T swtWidget;
 	
@@ -171,6 +173,11 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
 					
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public void menuDetected(MenuDetectEvent e) {
 						editPart.getViewer().select(editPart);								
@@ -211,14 +218,10 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	private boolean isDirectlyOnDisplay(){
 		return parentEditPart instanceof DisplayEditpart;
 	}
-	
 	@Override
 	protected void layout() {
 		super.layout();
-		if(!getClientArea().equals(oldClientArea)){
-			relocateWidget();
-			oldClientArea = getClientArea();
-		}
+		relocateWidget();
 	}
 
 	/**Get the SWT widget on this figure. 
@@ -459,7 +462,9 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				Point oldSize = getSWTWidget().getSize();
 				if (oldSize.x != rect.width || oldSize.y != rect.height)
 					getSWTWidget().setSize(rect.width, rect.height);
-			} else
+			} else if (!getSWTWidget().getBounds().equals(
+					new org.eclipse.swt.graphics.Rectangle(rect.x, rect.y,
+							rect.width, rect.height)))
 				getSWTWidget().setBounds(rect.x, rect.y, rect.width,
 						rect.height);
 

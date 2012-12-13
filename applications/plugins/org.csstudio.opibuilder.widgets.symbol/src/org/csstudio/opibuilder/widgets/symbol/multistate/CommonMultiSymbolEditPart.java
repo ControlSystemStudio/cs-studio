@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import java.util.ArrayList;
@@ -11,9 +18,8 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.symbol.util.ImageOperation;
-import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
-import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.IImageLoadedListener;
+import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.utility.pv.PV;
@@ -21,9 +27,11 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * @author Fred Arnaud (Sopra Group)
+ */
 public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart {
 
 	private PVListener loadItemsFromPVListener;
@@ -55,7 +63,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		sip.setDegree(model.getDegree());
 		sip.setFlipH(model.isFlipHorizontal());
 		sip.setFlipV(model.isFlipVertical());
-		sip.setDisposition(model.getDisposition());
+		sip.setMatrix(model.getPermutationMatrix());
 		
 		figure.setSymbolProperties(sip);
 		figure.setOnColor(model.getOnColor());
@@ -65,7 +73,18 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		figure.setShowSymbolLabel(model.isShowSymbolLabel());
 		figure.setSymbolLabelPosition(model.getSymbolLabelPosition());
 		
-		if (!model.isItemsFromPV()) {
+		// Resize when new image is loaded
+		figure.setImageLoadedListener(new IImageLoadedListener() {
+
+			@Override
+			public void imageLoaded(final IFigure figure) {
+				CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) figure;
+				autoSizeWidget(symbolFigure);
+			}
+		});
+		
+		if (!model.isItemsFromPV()
+				&& !(getExecutionMode() == ExecutionMode.EDIT_MODE)) {
 			List<String> items = getWidgetModel().getItems();
 			if (items != null)
 				figure.setStates(items);
@@ -157,17 +176,17 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				return false;
 			}
 		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
-				pvNameHandler);
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 		
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (newValue != null && newValue instanceof IValue) {
+					CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) refreshableFigure;
 					String stringValue = ValueUtil.getString((IValue) newValue);
-					((CommonMultiSymbolFigure) refreshableFigure)
-							.setState(stringValue);
+					symbolFigure.setState(stringValue);
+					autoSizeWidget(symbolFigure);
 				}
 				return false;
 			}
@@ -180,18 +199,17 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (newValue != null && newValue instanceof List) {
-					((CommonMultiSymbolFigure) refreshableFigure)
-							.setStates(((List<String>) newValue));
-					if (getWidgetModel().isItemsFromPV())
-						((CommonMultiSymbolFigure) refreshableFigure)
-								.setState(ValueUtil
-										.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+					CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) refreshableFigure;
+					symbolFigure.setStates(((List<String>) newValue));
+					if (getWidgetModel().isItemsFromPV()) {
+						symbolFigure.setState(ValueUtil.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+						autoSizeWidget(symbolFigure);
+					}
 				}
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS,
-				itemsHandler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS, itemsHandler);
 	}
 	
 	@Override
@@ -204,10 +222,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		if (value instanceof String)
 			((CommonMultiSymbolFigure) getFigure()).setState((String) value);
 		else if (value instanceof Number)
-			((CommonMultiSymbolFigure) getFigure()).setState(((Number) value)
-					.intValue());
-		else
-			super.setValue(value);
+			((CommonMultiSymbolFigure) getFigure()).setState(((Number) value).intValue());
+		else super.setValue(value);
 	}
 	
 	// -----------------------------------------------------------------
@@ -224,8 +240,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SHOW_SYMBOL_LABEL,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SHOW_SYMBOL_LABEL, handler);
 
 		// symbol label position
 		handler = new IWidgetPropertyChangeHandler() {
@@ -236,8 +251,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_LABEL_POS,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_LABEL_POS, handler);
 	}
 	
 	// -----------------------------------------------------------------
@@ -259,8 +273,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_IMAGE_FILE,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
 	}
 	
 	private void registerImageColorPropertyHandlers() {
@@ -312,7 +325,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
-				imageFigure.resizeImage();
+//				imageFigure.resizeImage();
 				autoSizeWidget(imageFigure);
 				return false;
 			}
@@ -329,15 +342,13 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
-				imageFigure.resizeImage();
+//				imageFigure.resizeImage();
 				autoSizeWidget(imageFigure);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_WIDTH,
-				handler);
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_STYLE,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_WIDTH, handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_STYLE, handler);
 	}
 
 	/**
@@ -359,43 +370,33 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	/**
 	 * Registers image rotation property change handlers
 	 */
-	private void registerImageRotationPropertyHandlers() {
+	public void registerImageRotationPropertyHandlers() {
 		// degree rotation property
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				int newDegree = (Integer) newValue;
-				if (newDegree != 0 && newDegree != 90 && newDegree != 180
-						&& newDegree != 270) { // Reset with previous value
-					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE,
-							oldValue);
-				} else {
-					// imageFigure.setDegree(newDegree);
-					int oldDegree = (Integer) oldValue;
-					int direction = ImageUtils.getRotationDirection(oldDegree,
-							newDegree);
-					if (direction != -1) {
-						ImageOperation IOp = null;
-						String disposition = imageFigure.getImageState();
-						switch (direction) {
-						case SWT.LEFT: // left 90 degrees
-							IOp = ImageOperation.RL90;
-							break;
-						case SWT.RIGHT: // right 90 degrees
-							IOp = ImageOperation.RR90;
-							break;
-						case SWT.DOWN: // 180 degrees
-							IOp = ImageOperation.R180;
-							break;
-						}
-						char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), IOp);
-						disposition = String.valueOf(result);
-						setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
-						imageFigure.setImageState(disposition);
-					}
+				int oldDegree = (Integer) oldValue;
+
+				PermutationMatrix oldMatrix = new PermutationMatrix(
+						(double[][]) getPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX));
+				PermutationMatrix newMatrix = PermutationMatrix
+						.generateRotationMatrix(newDegree - oldDegree);
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
+
+//				if (newDegree != 0 && newDegree != 90 && newDegree != 180
+//						&& newDegree != 270) { // Reset with previous value
+//					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE, oldValue);
+//					Activator.getLogger().log(Level.WARNING,
+//									"ERROR in value of old degree " + oldDegree
+//									+ ". The degree can only be 0, 90, 180 or 270");
+//				} else {
+					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE, newDegree);
+					imageFigure.setPermutationMatrix(result);
 					autoSizeWidget(imageFigure);
-				}
+//				}
 				return false;
 			}
 		};
@@ -407,17 +408,18 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				// imageFigure.setFlipH((Boolean) newValue);
-				String disposition = imageFigure.getImageState();
-				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FH);
-				disposition = String.valueOf(result);
-				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
-				imageFigure.setImageState(disposition);
+				PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
+				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+				
+				setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
+				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
+				imageFigure.setPermutationMatrix(result);
 				autoSizeWidget(imageFigure);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, handler);
 
 		// flip vertical rotation property
 		handler = new IWidgetPropertyChangeHandler() {
@@ -425,17 +427,18 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					final Object newValue, final IFigure figure) {
 				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
 				// imageFigure.setFlipV((Boolean) newValue);
-				String disposition = imageFigure.getImageState();
-				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FV);
-				disposition = String.valueOf(result);
-				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
-				imageFigure.setImageState(disposition);
+				PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
+				PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
+				PermutationMatrix result = newMatrix.multiply(oldMatrix);
+				
+				setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
+				setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
+				imageFigure.setPermutationMatrix(result);
 				autoSizeWidget(imageFigure);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_VERTICAL,
-				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, handler);
 	}
 
 	/**

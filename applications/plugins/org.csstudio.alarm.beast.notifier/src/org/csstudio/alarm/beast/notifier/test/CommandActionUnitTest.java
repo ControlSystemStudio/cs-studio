@@ -1,54 +1,38 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.alarm.beast.notifier.test;
 
-import org.csstudio.alarm.beast.notifier.actions.CommandNotificationAction;
-import org.csstudio.alarm.beast.notifier.util.CommandExecutorThread;
+import org.csstudio.alarm.beast.notifier.actions.CommandActionImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link CommandNotificationAction}
+ * Unit test for {@link CommandActionImpl}
  * @author Fred Arnaud (Sopra Group)
  *
  */
 public class CommandActionUnitTest {
 
-	private String command;
-
-	/**
-	 * CommandExecutorThread for the command, using the wait time from
-	 * preferences, displaying errors as dialog.
-	 * 
-	 * JProfiler shows that this gets removed by the GC, but a
-	 * java.lang.UnixProcess for the external process remains until the external
-	 * program exits.
-	 */
-	private class ExecuteActionThread extends CommandExecutorThread 
-	{
-		public ExecuteActionThread(final String dir) {
-			super(command, dir, 10);
-		}
-
-		@Override
-		public void error(final int exit_code, final String stderr) {
-			System.out.println("Exit code: " + exit_code + "\nstderr: " + stderr);
-		}
-	}
-	
 	@Test
 	public void testFakeCommand() {
 		final String dir = "/home/ITER/arnaudf/";
-		command = "dtc";
-		ExecuteActionThread eat = new ExecuteActionThread(dir);
-		eat.run();
-		Assert.assertTrue(eat.getCommandState().equals(ExecuteActionThread.CommandState.ERROR));
+		final String command = "dtc";
+		CommandActionImpl ca = new CommandActionImpl();
+		ca.execCmd(dir, command, 1);
+		Assert.assertTrue(ca.getCommandState().equals(CommandActionImpl.CommandState.ERROR));
 	}
-	
+
 	@Test
 	public void testSimpleCommand() {
 		final String dir = "/home/ITER/arnaudf/";
-		command = "dirname .";
-		ExecuteActionThread eat = new ExecuteActionThread(dir);
-		eat.run();
-		Assert.assertTrue(eat.getCommandState().equals(ExecuteActionThread.CommandState.FINISHED_OK));
+		final String command = "dirname .";
+		CommandActionImpl ca = new CommandActionImpl();
+		ca.execCmd(dir, command, 1);
+		Assert.assertTrue(ca.getCommandState().equals(CommandActionImpl.CommandState.FINISHED_OK));
 	}
 }

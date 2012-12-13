@@ -25,7 +25,6 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
@@ -178,8 +177,10 @@ public class XMLUtil {
 					display.asyncExec(new Runnable() {
 						@Override
 						public void run() {
-							MessageDialog.openWarning(null, "Warning", message);
+//							MessageDialog.openWarning(null, "Warning", message);
 							ConsoleService.getInstance().writeWarning(message);
+							OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						            message); //$NON-NLS-1$	
 						}
 					});			
 			 }	 

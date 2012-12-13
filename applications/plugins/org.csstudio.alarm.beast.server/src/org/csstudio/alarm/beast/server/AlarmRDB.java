@@ -165,7 +165,7 @@ public class AlarmRDB
                 // Ignoring config. time from result.getTimestamp(2)
 
                 // Check PV's ID. If null, this is a component, not PV
-                result.getInt(3);
+                final int pv_id = result.getInt(3);
                 if (result.wasNull())
                 {
                     final TreeItem child = new TreeItem(parent, name, id);
@@ -173,6 +173,8 @@ public class AlarmRDB
                 }
                 else
                 {   // Handle PV
+                    if (id != pv_id)
+                        throw new Exception("Internal RDB error: Item '" + name + "' as ID " + id + " but also PV ID " + pv_id);
                     // Easy results
                     String description = result.getString(4);
                     // Description should not be empty
@@ -223,7 +225,6 @@ public class AlarmRDB
                         ? TimestampFactory.now()
                         : TimestampFactory.fromSQLTimestamp(time);
 
-                    // TODO Get global_delay from
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
 
                     new AlarmPV(server, parent, id, name, description,

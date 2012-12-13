@@ -1,0 +1,26 @@
+IO Normal = arial-regular-10
+IO Title = arial-bold-14
+IO SubTitle = arial-bold-12
+
+IO Label 1 = arial-regular-10
+IO Label 2 = arial-regular-9
+IO Label 3 = arial-regular-8
+
+IO Input 1 = arial-bold-10
+IO Input 2 = arial-bold-9
+IO Output 1 = arial-bold-10
+IO Output 2 = arial-bold-9
+
+IO Scale 1 = arial-regular-10
+IO Scale 2 = arial-regular-9
+IO Scale 3 = arial-regular-8
+
+
+Header = arial-bold-12
+Header2 = arial-bold-10
+Header3 = arial-regular-10
+Text = arial-regular-10
+Msg = arial-regular-8
+Msg2 = carial-bold-7
+LinkText = arial-italic-10
+

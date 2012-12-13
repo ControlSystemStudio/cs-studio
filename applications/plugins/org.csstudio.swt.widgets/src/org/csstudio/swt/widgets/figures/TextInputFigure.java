@@ -84,7 +84,8 @@ public class TextInputFigure extends TextFigure {
 	public enum FileReturnPart{		
 		FULL_PATH("Full Path"),
 		NAME_EXT("Name & Extension"),
-		NAME_ONLY("Name Only");
+		NAME_ONLY("Name Only"),
+		DIRECTORY("Directory");
 		
 		public String description;
 		

@@ -59,9 +59,7 @@ public class Preferences
     final private static String CLIENT_SUFFIX = "_CLIENT";
     final private static String TALK_SUFFIX = "_TALK";
 
-    final private static String NOTIFIER_SUFFIX_EXECUTE = "_NOTIFIER_EXE";
-    final private static String NOTIFIER_SUFFIX_RETURN = "_NOTIFIER_RTN";
-    
+
     /** @param setting Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -172,22 +170,6 @@ public class Preferences
         return config + CLIENT_SUFFIX;
     }
 
-    /** @param config Alarm configuration name (root)
-     *  @return JMS topic used for executing automated actions
-     */
-    public static String getJMS_AlarmNotifierExeTopic(final String config)
-    {
-        return config + NOTIFIER_SUFFIX_EXECUTE;
-    }
-    
-    /** @param config Alarm configuration name (root)
-     *  @return JMS topic used for read automated actions result
-     */
-    public static String getJMS_AlarmNotifierRtnTopic(final String config)
-    {
-        return config + NOTIFIER_SUFFIX_RETURN;
-    }
-    
     /** @param config Alarm configuration name (root)
      *  @return JMS topic used to annunciate alarm messages
      */

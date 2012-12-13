@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BOY Symbol Widgets
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.symbol;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
@@ -16,4 +17,3 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: registered
-Bundle-Vendor: ITER

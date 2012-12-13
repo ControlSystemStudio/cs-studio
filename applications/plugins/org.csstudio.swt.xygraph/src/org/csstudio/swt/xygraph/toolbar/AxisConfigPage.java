@@ -208,8 +208,9 @@ public class AxisConfigPage {
 		formatLabel = new Label(composite, 0);		
 		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);	
 		formatLabel.setLayoutData(labelGd);		
-		formatText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		formatText = new Text(composite, SWT.BORDER | SWT.MULTI);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2);
+		gd.minimumHeight = 40;
 		formatText.setLayoutData(gd);		
 		
 		dateEnabledButton.addSelectionListener(new SelectionAdapter(){

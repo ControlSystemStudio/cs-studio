@@ -87,7 +87,11 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         final IValue value = device.read();
         if (value instanceof IStringValue)
             return ValueUtil.getString(value);
-        return ValueUtil.getDouble(value);
+        // If array-type, return double[]
+        final double[] array = ValueUtil.getDoubleArray(value);
+        if (array.length == 1)
+        	return array[0];
+		return array;
     }
 
     /** {@inheritDoc} */

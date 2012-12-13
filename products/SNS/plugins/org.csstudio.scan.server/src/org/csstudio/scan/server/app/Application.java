@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server.app;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +53,12 @@ public class Application implements IApplication
 	        final String version = (String)
 	            context.getBrandingBundle().getHeaders().get("Bundle-Version");
 	        log.info(context.getBrandingName() + " " + version);
+	        log.info("Beamline config   : " + ScanSystemPreferences.getBeamlineConfigPath());
+	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
+	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
+	        log.info("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
+	        log.info("Post-scan commands: " + Arrays.toString(ScanSystemPreferences.getPostScanPaths()));
+	        log.info("Script paths      : " + Arrays.toString(ScanSystemPreferences.getScriptPaths()));
 
 	        // Start server
 	        final int port = ScanSystemPreferences.getServerPort();

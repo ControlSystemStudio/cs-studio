@@ -66,10 +66,10 @@ mailto:fred@my.org
             <annotation>
                <documentation>
                   Java class that provides the automated action&apos;s validator (optional) and notifier.
-Must implement &lt;code&gt;org.csstudio.alarm.beast.notifier.model.IAutomatedAction&lt;/code&gt;
+Must implement &lt;code&gt;org.csstudio.alarm.beast.notifier.model.IActionProvider&lt;/code&gt;
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.notifier.model.IAutomatedAction"/>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.notifier.model.IActionProvider"/>
                </appInfo>
             </annotation>
          </attribute>

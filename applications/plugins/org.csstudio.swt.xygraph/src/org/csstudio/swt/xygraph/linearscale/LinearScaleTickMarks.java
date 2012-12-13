@@ -76,7 +76,11 @@ public class LinearScaleTickMarks extends Figure {
 	 */
 	public void updateMinorTickParas() {
 		if(scale.isDateEnabled()) {
-			minorTicksNumber = 6;
+			// when range < 10 min, minor ticks is 5
+			if(Math.abs(scale.getRange().getUpper() - scale.getRange().getLower()) < 600000)
+				minorTicksNumber = 5;
+			else
+				minorTicksNumber = 6;
 			minorGridStepInPixel = (int) (scale.getScaleTickLabels().getGridStepInPixel()/6.0);
 			return;
 		}

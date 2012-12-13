@@ -12,7 +12,6 @@ import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.ui.part.FileEditorInput;
 
 /** Support opening Data Browser configurations from
  *  the command-line.
@@ -35,7 +34,7 @@ public class OpenDisplayFile implements IOpenDisplayAction
         	throw new Exception("File  '" + file + "' does not exist in workspace");
 
     	// Create new editor
-        final DataBrowserEditor editor = DataBrowserEditor.createInstance(new FileEditorInput(file));
+        final DataBrowserEditor editor = DataBrowserEditor.createInstance(new DataBrowserInput(file.getFullPath()));
         if (editor == null)
             throw new Exception("Cannot create Data Browser");
 	}

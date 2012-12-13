@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import java.io.IOException;
@@ -12,7 +19,9 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
+import org.csstudio.opibuilder.widgets.symbol.util.IImageLoadedListener;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
@@ -34,12 +43,16 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * @author Fred Arnaud (Sopra Group)
+ */
 public abstract class CommonMultiSymbolFigure extends Figure {
 
 	// delegation pattern
 	protected AbstractSymbolImage symbolImage;
 	protected SymbolImageProperties symbolProperties;
 	protected boolean workingWithSVG = false;
+	protected boolean workingWithBool = false;
 	
 	// symbol label attributes
 	protected Label label;
@@ -51,13 +64,13 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * The {@link IPath} to the states images.
 	 */
 	protected IPath symbolImagePath;
+	protected IPath originalSymbolImagePath;
 	protected Map<String, AbstractSymbolImage> images;
 	
 	protected String currentState;
 	protected String previousState;
 	protected List<String> states;
 	
-	protected boolean fromSetState = false;
 	private ExecutionMode executionMode;
 
 	private int remainingImagesToLoad = 0;
@@ -68,6 +81,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	protected Color offColor = CustomMediaFactory.getInstance().getColor(
 			CommonMultiSymbolModel.DEFAULT_OFF_COLOR);
 	
+	private IImageLoadedListener imageLoadedListener;
 	
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
@@ -92,7 +106,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * Return the current displayed image. If null, returns an empty image.
 	 */
 	public AbstractSymbolImage getSymbolImage() {
-		if(ExecutionMode.RUN_MODE.equals(executionMode)) {
+		if (ExecutionMode.RUN_MODE.equals(executionMode)) {
 			symbolImage = images.get(currentState);
 		}
 		if (symbolImage == null) { // create an empty image
@@ -172,12 +186,10 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	public synchronized void setState(int stateIndex) {
 		if (stateIndex >= 0 && stateIndex < states.size()) {
-			fromSetState = true;
 			currentState = states.get(stateIndex);
 			if (currentState != null) {
 				label.setText(currentState);
 			}
-			fromSetState = false;
 			repaint();
 		} else {
 			// TODO: display alert ?
@@ -187,11 +199,26 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	public synchronized void setState(String state) {
 		int index = states.indexOf(state);
 		if (index < 0) { // search if image exists
-			String imageBasePath = ImageUtils
-					.getMultistateBaseImagePath(symbolImagePath);
-			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
-			if (path == null)
-				return;
+			int newIndex = states.size();
+			IPath path = null;
+			if (workingWithBool) {
+				IPath onImagePath, offImagePath = null;
+				if (ImageUtils.isOnImage(symbolImagePath)) {
+					onImagePath = symbolImagePath;
+					offImagePath = ImageUtils.searchOffImage(symbolImagePath);
+					if (offImagePath == null) offImagePath = symbolImagePath;
+				} else { // Off image
+					offImagePath = symbolImagePath;
+					onImagePath = ImageUtils.searchOnImage(symbolImagePath);
+					if (onImagePath == null) onImagePath = symbolImagePath;
+				}
+				if (newIndex > 0) path = onImagePath;
+				else path = offImagePath;
+			} else {
+				String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath);
+				path = ImageUtils.searchStateImage(newIndex, imageBasePath);
+				if (path == null) path = symbolImagePath; // default
+			}
 			states.add(state);
 			remainingImagesToLoad = 1;
 			loadImageFromFile(path, state);
@@ -207,25 +234,54 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 */
 	public void setStates(List<String> states) {
 		this.states = states;
+		loadAllImages(states);
+	}
+
+	private void loadAllImages(List<String> states) {
 		disposeAll();
-		// Set threads variables
-		remainingImagesToLoad = states.size();
-		
-		// Get base name
-		String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath, states);
-		if (imageBasePath == null) { // Image do not match any state
-			// TODO: alert state image missing
+		if (states == null || states.isEmpty()) {
+			remainingImagesToLoad = 1;
+			loadImageFromFile(symbolImagePath, null);
 			return;
 		}
-		// Retrieve & set images paths
-		for (String state : states) {
-			IPath path = ImageUtils.searchStateImage(state, imageBasePath);
-			if (path == null) { // Test existence
-				decrementLoadingCounter();
+		// Set threads variables
+		remainingImagesToLoad = states.size();
+
+		// Get base name
+		if (workingWithBool) {
+			IPath onImagePath, offImagePath = null;
+			if (ImageUtils.isOnImage(symbolImagePath)) {
+				onImagePath = symbolImagePath;
+				offImagePath = ImageUtils.searchOffImage(symbolImagePath);
+				if (offImagePath == null) offImagePath = symbolImagePath;
+			} else { // Off image
+				offImagePath = symbolImagePath;
+				onImagePath = ImageUtils.searchOnImage(symbolImagePath);
+				if (onImagePath == null) onImagePath = symbolImagePath;
+			}
+			String state = states.get(0);
+			loadImageFromFile(offImagePath, state);
+			for (int stateIndex = 1; stateIndex < states.size(); stateIndex++) {
+				state = states.get(stateIndex);
+				loadImageFromFile(onImagePath, state);
+			}
+		} else { // Standard behavior
+			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath, states);
+			if (imageBasePath == null) { // Image do not match any state
 				// TODO: alert state image missing
-			} else {
-				// Launch loading !
-				loadImageFromFile(path, state);
+				for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
+					String state = states.get(stateIndex);
+					// Load default image for all states
+					loadImageFromFile(symbolImagePath, state);
+				}
+				return;
+			}
+			// Retrieve & set images paths
+			for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
+				String state = states.get(stateIndex);
+				IPath path = ImageUtils.searchStateImage(stateIndex, imageBasePath);
+				if (path == null) loadImageFromFile(symbolImagePath, state);
+				else loadImageFromFile(path, state);
 			}
 		}
 	}
@@ -234,8 +290,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		return currentState;
 	}
 
-	public synchronized String getAllowedState(
-			AbstractInputStreamRunnable uiTask) {
+	public synchronized String getAllowedState(AbstractInputStreamRunnable uiTask) {
 		if (allowedStateMap != null) {
 			return allowedStateMap.get(uiTask);
 		}
@@ -253,6 +308,14 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	public synchronized void decrementLoadingCounter() {
 		remainingImagesToLoad--;
 	}
+	
+	public void setImageLoadedListener(IImageLoadedListener listener) {
+		this.imageLoadedListener = listener;
+	}
+
+	public synchronized void fireImageLoadedListeners() {
+		imageLoadedListener.imageLoaded(this);
+	}
 
 	/**
 	 * Set user selected image path (edit mode)
@@ -260,18 +323,10 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * @param model
 	 * @param imagePath
 	 */
-	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model,
-			IPath imagePath) {
+	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
 		if (imagePath.isEmpty()) {
 			return;
 		}
-		if (!imagePath.isAbsolute()) {
-			imagePath = org.csstudio.opibuilder.util.ResourceUtil
-					.buildAbsolutePath(model, imagePath);
-		}
-		symbolImagePath = imagePath;
-
-		// Load selected image
 		if (!ImageUtils.isExtensionAllowed(imagePath)) {
 			Activator.getLogger().log(
 					Level.WARNING,
@@ -279,18 +334,20 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 							+ imagePath);
 			return;
 		}
-		disposeCurrent();
-		remainingImagesToLoad = 1;
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
-			workingWithSVG = true;
-		} else {
-			workingWithSVG = false;
+		if (!imagePath.isAbsolute()) {
+			imagePath = org.csstudio.opibuilder.util.ResourceUtil
+					.buildAbsolutePath(model, imagePath);
 		}
-		loadImageFromFile(imagePath, null);
+		symbolImagePath = imagePath;
+		if (originalSymbolImagePath == null) originalSymbolImagePath = imagePath;
+		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) workingWithSVG = true;
+		else workingWithSVG = false;
+		if (ImageUtils.isOffImage(imagePath) || ImageUtils.isOnImage(imagePath)) workingWithBool = true;
+		else workingWithBool = false;
+		loadAllImages(states);
 	}
 	
-	private synchronized void loadImageFromFile(final IPath imagePath,
-			final String state) {
+	private synchronized void loadImageFromFile(final IPath imagePath, final String state) {
 		if (imagePath != null && !imagePath.isEmpty()) {
 			loadImage(imagePath, state, new IJobErrorHandler() {
 				private int maxAttempts = 5;
@@ -319,7 +376,6 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 				synchronized (CommonMultiSymbolFigure.this) {
 					Image tempImage = null;
 					try {
-
 						switch (executionMode) {
 						case RUN_MODE:
 							String state = getAllowedState(this);
@@ -331,7 +387,17 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 									ImageData imgData = tempImage.getImageData();
 									asi.setOriginalImageData(imgData);
 								}
+								asi.updateData();
 								setImage(state, asi);
+							} else {
+								symbolImage = createSymbolImage(false);
+								symbolImage.setImagePath(imagePath);
+								if (!workingWithSVG) {
+									tempImage = new Image(Display.getDefault(), stream);
+									ImageData imgData = tempImage.getImageData();
+									symbolImage.setOriginalImageData(imgData);
+								}
+								symbolImage.updateData();
 							}
 							break;
 						case EDIT_MODE:
@@ -342,6 +408,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 								ImageData imgData = tempImage.getImageData();
 								symbolImage.setOriginalImageData(imgData);
 							}
+							symbolImage.updateData();
 							break;
 						}
 					} finally {
@@ -357,8 +424,12 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 											exception);
 						}
 					}
+					// WARNING: the order is important
+					// => image need to be initialized before size calculation 
 					decrementLoadingCounter();
 					repaint();
+					revalidate();
+					fireImageLoadedListeners();
 				}
 			}
 		};
@@ -393,9 +464,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	@Override
 	public synchronized void paintFigure(final Graphics gfx) {
-		if (isLoadingImage() || fromSetState) {
-			return;
-		}
+		if (isLoadingImage())  return;
 		if (!isEditMode()) {
 			// if run mode & state does not changes => nothing change
 			if (currentState == null || currentState.equals(previousState))
@@ -629,15 +698,15 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		}
 		repaint();
 	}
-	public void setImageState(String imageState) {
+	public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
 		if (symbolProperties != null) {
-			symbolProperties.setDisposition(imageState);
+			symbolProperties.setMatrix(permutationMatrix);
 			updateProperties();
 		}
 		repaint();
 	}
-	public String getImageState() {
-		return getSymbolImage().getImageState();
+	public PermutationMatrix getPermutationMatrix() {
+		return getSymbolImage().getPermutationMatrix();
 	}
 	public boolean isStretch() {
 		return getSymbolImage().isStretch();

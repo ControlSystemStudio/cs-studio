@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.iter.application"
+            description="CSS set of tools for ITER"
+            name="Css">
+         <property
+               name="windowImages"
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png"/>
+         <property
+               name="aboutImage"
+               value="icons/about.gif"/>
+         <property
+               name="aboutText"
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including:&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- ITER (Cadarache, France)&#x0A;- BNL (Brookhaven, NY)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://sourceforge.net/apps/trac/cs-studio">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="0064C6">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,210,445,15">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,190,445,20">
+         </property>
+         <property
+               name="appName"
+               value="Css">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property 
+            name="introTitle"
+            value="Welcome to CSS for ITER!&lt;/h1&gt;&lt;p&gt;Control System Studio (CSS) is a collection of tools to monitor and operate a plant system.&lt;/p&gt;&lt;h1&gt;">
+         </property> 
+         <property 
+            name="introBrandingImage"
+            value="product:icons/css64.png"/>
+         <property
+            name="introBrandingImageText"
+            value="Css"/>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.applications"
+         id="org.csstudio.iter.application"
+         name="Css)">
+      <application>
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
+   </extension>
+
+   <!-- Note that the classes listed in here should be in plugins
+        that can be loaded without locking the workspace.
+        This means the plugins loaded for these classes
+        should not use preferences or anything else that
+        triggers initialization of the workspace
+     -->
+   <extension point="org.csstudio.startup.module">
+      <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
+      <workspace class="org.csstudio.iter.startuphelper.WorkspacePrompt"/>
+      <workbench class="org.csstudio.utility.product.Workbench"/>
+      <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.iter.css.product.CSS_Perspective"
+            icon="icons/perspective.gif"
+            id="org.csstudio.iter.css.product.CSS_Perspective"
+            name="ITER Control System Studio">
+      </perspective>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.iter.css.product.product"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/overview.xml">
+      </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/whatsnew.xml">
+      </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/samples.xml">
+      </configExtension>
+   </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc/toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="toc/tocreference.xml">
+      </toc>
+      <toc
+            file="toc/tocsamples.xml">
+      </toc>
+      <toc
+            file="toc/toctasks.xml">
+      </toc>
+      <toc
+            file="toc/tocconcepts.xml">
+      </toc>
+      <toc
+            file="toc/tocgettingstarted.xml">
+      </toc>
+      <toc
+            file="toc/tochardware.xml">
+      </toc>
+   </extension>
+
+</plugin>

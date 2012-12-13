@@ -24,10 +24,13 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.swt.widgets.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -83,6 +86,26 @@ public final class ImageModel extends AbstractWidgetModel {
 	private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "bmp", "png"};
 	
 	/**
+	 * Degree value of the image.
+	 */
+	public static final String PROP_DEGREE = "degree";
+	/**
+	 * Horizontal flip applied on the image.
+	 */
+	public static final String PROP_FLIP_HORIZONTAL = "flip_horizontal";
+	/**
+	 * Vertical flip applied on the image.
+	 */
+	public static final String PROP_FLIP_VERTICAL = "flip_vertical";
+	
+	/**
+	 * Image disposition (permutation matrix)
+	 */
+	public static final String PERMUTATION_MATRIX = "permutation_matrix";
+	
+	private static final String[] allowedDegrees = new String[] { "0", "90", "180", "270" };
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -111,6 +134,16 @@ public final class ImageModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Image,true));
 		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
 				WidgetPropertyCategory.Image,false));
+		addProperty(new ComboProperty(PROP_DEGREE, "Rotation Angle",
+				WidgetPropertyCategory.Image, allowedDegrees, 0));
+		addProperty(new BooleanProperty(PROP_FLIP_HORIZONTAL,
+				"Flip Horizontal", WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, "Flip Vertical",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new MatrixProperty(PERMUTATION_MATRIX,
+				"Permutation Matrix", WidgetPropertyCategory.Image,
+				PermutationMatrix.generateIdentityMatrix().getMatrix()));
+		setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
 	}
 	
 	/**
@@ -176,5 +209,42 @@ public final class ImageModel extends AbstractWidgetModel {
 	 */
 	public boolean isStopAnimation() {
 		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
+	}
+	
+	/**
+	 * @return The permutation matrix
+	 */
+	public PermutationMatrix getPermutationMatrix() {
+		return new PermutationMatrix((double[][]) getProperty(
+				PERMUTATION_MATRIX).getPropertyValue());
+	}
+	
+	public int getDegree(int index) {
+		return Integer.valueOf(allowedDegrees[index]);
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		int index = (Integer) getPropertyValue(ImageModel.PROP_DEGREE);
+		if (clockwise) {
+			if (index == allowedDegrees.length - 1) index = 0;
+			else index++;
+		} else {
+			if (index == 0) index = allowedDegrees.length - 1;
+			else index--;
+		}
+		setPropertyValue(ImageModel.PROP_DEGREE, index);
+	}
+
+	@Override
+	public void flipHorizontally() {
+		boolean oldValue = (Boolean) getPropertyValue(ImageModel.PROP_FLIP_HORIZONTAL);
+		setPropertyValue(ImageModel.PROP_FLIP_HORIZONTAL, !oldValue);
+	}
+
+	@Override
+	public void flipVertically() {
+		boolean oldValue = (Boolean) getPropertyValue(ImageModel.PROP_FLIP_VERTICAL);
+		setPropertyValue(ImageModel.PROP_FLIP_VERTICAL, !oldValue);
 	}
 }

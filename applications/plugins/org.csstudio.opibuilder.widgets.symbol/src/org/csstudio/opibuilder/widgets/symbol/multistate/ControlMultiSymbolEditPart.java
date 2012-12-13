@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
@@ -6,6 +13,9 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
+/**
+ * @author Fred Arnaud (Sopra Group)
+ */
 public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 
 	public ControlMultiSymbolModel getWidgetModel() {
@@ -28,12 +38,11 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 		figure.addManualValueChangeListener(new IManualStringValueChangeListener() {
 			public void manualValueChanged(final String newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue.trim());
 				}
 			}
 		});
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME,
-				AbstractPVWidgetModel.PROP_PVVALUE);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return figure;
 	}
 	

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ITER Jms2rdb
+Bundle-SymbolicName: org.csstudio.iter.jms2rdb.product;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.iter.jms2rdb.Activator
+Bundle-Vendor: ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.jms2rdb
+Export-Package: org.csstudio.iter.jms2rdb

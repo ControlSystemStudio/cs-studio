@@ -11,6 +11,9 @@
 
 source settings.sh
 
+type javac
+java -version
+
 # Fetch new copy of sources
 $ANT clean
 
@@ -75,18 +78,18 @@ then
     mkdir -p $BUILDDIR/apps
     
     ## Basic EPICS
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-macosx.cocoa.x86.zip   CSS_EPICS_$VERSION apps/epics_css_$VERSION-macosx.cocoa.x86.zip
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86.zip
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86_64.zip
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86.zip
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86_64.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-macosx.cocoa.x86.zip    CSS_EPICS_$VERSION apps/epics_css_$VERSION-macosx.cocoa.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip       CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip    CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86_64.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip     CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip  CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86_64.zip  $JRE_Win64
 
     ## SNS CSS
-    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip       CSS_$VERSION      apps/sns_css_$VERSION-macosx.cocoa.x86.zip
-	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip          CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86.zip
-	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip       CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86_64.zip
-	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip        CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86.zip
-	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip     CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86_64.zip
+    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip        CSS_$VERSION       apps/sns_css_$VERSION-macosx.cocoa.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip           CSS_$VERSION       apps/sns_css_$VERSION-linux.gtk.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip        CSS_$VERSION       apps/sns_css_$VERSION-linux.gtk.x86_64.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip         CSS_$VERSION       apps/sns_css_$VERSION-win32.win32.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip      CSS_$VERSION       apps/sns_css_$VERSION-win32.win32.x86_64.zip    $JRE_Win64
 
     ## 'Simple' products (headless) that are not patched
     mv $BUILDDIR/I.alarm_server_$VERSION/alarm_server_$VERSION* $BUILDDIR/apps

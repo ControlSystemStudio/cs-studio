@@ -33,7 +33,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
             @Override
             public VDouble createValue(DBR value, DBR metadata, boolean disconnected) {
-                return new VDoubleFromDbr((DBR_TIME_Float) value, (DBR_CTRL_Double) metadata, disconnected);
+                return new VDoubleFromDbr((DBR_TIME_Double) value, (DBR_CTRL_Double) metadata, disconnected);
             }
         };
 
@@ -51,7 +51,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
             @Override
             public VInt createValue(DBR value, DBR metadata, boolean disconnected) {
-                return new VIntFromDbr((DBR_TIME_Byte) value, (DBR_CTRL_Double) metadata, disconnected);
+                return new VIntFromDbr((DBR_TIME_Int) value, (DBR_CTRL_Double) metadata, disconnected);
             }
         };
     
@@ -60,7 +60,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
             @Override
             public VInt createValue(DBR value, DBR metadata, boolean disconnected) {
-                return new VIntFromDbr((DBR_TIME_Short) value, (DBR_CTRL_Double) metadata, disconnected);
+                return new VIntFromDbr((DBR_TIME_Int) value, (DBR_CTRL_Double) metadata, disconnected);
             }
         };
 

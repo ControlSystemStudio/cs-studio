@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
+import org.csstudio.trends.databrowser2.util.ResourceUtil;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -34,6 +36,8 @@ public class Preferences
 
     /** Separator between components within an item */
     static final String COMPONENT_SEPARATOR = "|";
+    
+	public static final String PLT_REPOSITORY = "plt_repository"; //$NON-NLS-1$
 
     /** Preference tags.
      *  For explanation of the settings see preferences.ini
@@ -175,5 +179,16 @@ public class Preferences
             Activator.getLogger().log(Level.WARNING, "Undefined rescale option", ex);
         }
         return ArchiveRescale.STAGGER;
-    }
+	}
+
+	public static IPath getPltRepository() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return null;
+		String pltRepo = prefs.getString(Activator.PLUGIN_ID, PLT_REPOSITORY,
+				null, null);
+		if (pltRepo == null || pltRepo.trim().isEmpty())
+			return null;
+		return ResourceUtil.getPathFromString(pltRepo);
+	}
 }

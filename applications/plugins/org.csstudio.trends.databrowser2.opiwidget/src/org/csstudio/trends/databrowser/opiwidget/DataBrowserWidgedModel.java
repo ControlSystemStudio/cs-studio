@@ -29,7 +29,6 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /** Model for persisting data browser widget configuration.
  *
@@ -123,7 +122,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         try
         {
             final String new_path = MacroUtil.replaceMacros(path.toPortableString(), getAllMacros());
-            path = new Path(new_path);
+            path = ResourceUtil.getPathFromString(new_path);
         }
         catch (InfiniteLoopException e)
         {

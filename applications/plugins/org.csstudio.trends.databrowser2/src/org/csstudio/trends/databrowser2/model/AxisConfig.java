@@ -403,7 +403,7 @@ public class AxisConfig
 		FontData fontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			fontData = new FontData(fontInfo);
+			fontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
 		}
 
 		fontInfo = DOMHelper.getSubelementString(node, Model.TAG_SCALE_FONT);
@@ -411,7 +411,7 @@ public class AxisConfig
 		FontData scaleFontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			scaleFontData = new FontData(fontInfo);
+			scaleFontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
 		}
 
 		final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN,

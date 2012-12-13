@@ -170,6 +170,7 @@ public class DistributorStart implements IApplication,
             
             // Create the cache db
             ConfigReplicator.createMemoryCacheDb(cacheDatabaseConnection, sqlFile);
+            ConfigReplicator.replicateConfigurationToHsql(localDatabaseConnection, cacheDatabaseConnection);
 
             // Prepare JMS connections
             String publisherUrl = ps.getString(AmsActivator.PLUGIN_ID,
@@ -216,7 +217,7 @@ public class DistributorStart implements IApplication,
                                               commandMessageProducer);
             final Thread synchronizerThread = new Thread(synchronizer);
             synchronizerThread.start();
-
+            
             // Create the receiver connections
             final DistributorWork worker = new DistributorWork(localDatabaseConnection,
                                                                cacheDatabaseConnection,

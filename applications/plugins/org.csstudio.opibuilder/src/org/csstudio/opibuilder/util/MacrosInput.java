@@ -143,6 +143,8 @@ public class MacrosInput {
 				String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
 				if(macro.length == 2)
 					macrosInput.getMacrosMap().put(macro[0], macro[1]);
+				else if(macro.length == 1) //if it is an empty value macro
+		        	macrosInput.getMacrosMap().put(macro[0], ""); //$NON-NLS-1$
 			}				
 		}
 		return macrosInput;

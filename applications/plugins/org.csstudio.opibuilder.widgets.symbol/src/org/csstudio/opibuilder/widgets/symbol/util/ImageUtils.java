@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2012 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.util;
 
 import java.awt.image.BufferedImage;
@@ -6,6 +13,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -26,9 +34,7 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * Utility class to change image behavior like color, shape, rotation
  * management, ...
- * 
- * @author SOPRA Group
- * 
+ * @author Fred Arnaud (Sopra Group)
  */
 public final class ImageUtils {
 
@@ -49,23 +55,104 @@ public final class ImageUtils {
 	 */
 	private static final String[] IMAGE_EXTENSIONS = new String[] { "gif",
 		"png", "svg", "GIF", "PNG", "SVG"};
-	/**
-	 * Pixel threshold
-	 */
-//	private static final int GRAY_OFFSET = 20;
+
 	
 	/**
 	 * Constructor cannot be call because of static invocation.
 	 */
 	private ImageUtils() {}
+	
+	
+	public static ImageData applyMatrix(ImageData srcData, PermutationMatrix pm) {
+		double[][] matrix = pm.getMatrix();
 
+		// point to rotate about => center of image
+		double x0 = 0.5 * (srcData.width - 1);
+		double y0 = 0.5 * (srcData.height - 1);
+
+		// apply permutation to 4 corners
+		int[] a = translate(0, 0, x0, y0, matrix);
+		int[] b = translate(srcData.width - 1, 0, x0, y0, matrix);
+		int[] c = translate(srcData.width - 1, srcData.height - 1, x0, y0, matrix);
+		int[] d = translate(0, srcData.height - 1, x0, y0, matrix);
+
+		// find new point
+		int minX = findMin(a[0], b[0], c[0], d[0]);
+		int minY = findMin(a[1], b[1], c[1], d[1]);
+		int maxX = findMax(a[0], b[0], c[0], d[0]);
+		int maxY = findMax(a[1], b[1], c[1], d[1]);
+		int newWidth = maxX - minX;
+		int newHeight = maxY - minY;
+
+		ImageData newImageData = new ImageData(newWidth, newHeight,
+				srcData.depth, srcData.palette);
+
+		for (int srcX = 0; srcX < srcData.width; srcX++) {
+			for (int srcY = 0; srcY < srcData.height; srcY++) {
+				int destX = 0, destY = 0;
+				int[] destP = translate(srcX, srcY, x0, y0, matrix);
+				destX = (int) (destP[0] - minX);
+				destY = (int) (destP[1] - minY);
+
+				if (destX >= 0 && destX < newWidth && destY >= 0
+						&& destY < newHeight) {
+					newImageData.setPixel(destX, destY, srcData.getPixel(srcX, srcY));
+					newImageData.setAlpha(destX, destY, srcData.getAlpha(srcX, srcY));
+				}
+			}
+		}
+		// Re-set the lost transparency
+		newImageData.transparentPixel = srcData.transparentPixel;
+		return newImageData;
+	}
+	
+	// multiply matrices
+	private static double[][] multiply(double[][] m1, double[][] m2) {
+		int p1 = m1.length, p2 = m2.length, q2 = m2[0].length;
+		double[][] result = new double[p1][q2];
+		for (int i = 0; i < p1; i++)
+			for (int j = 0; j < q2; j++)
+				for (int k = 0; k < p2; k++)
+					result[i][j] += m1[i][k] * m2[k][j];
+		return result;
+	}
+	
+	// calculate new coordinates
+	private static int[] translate(int x, int y, double x0, double y0, double[][] matrix) {
+		// translate coordinates
+		double[][] p = new double[2][1];
+		p[0][0] = x - x0;
+		p[1][0] = y - y0;
+		// apply permutation
+		double[][] pp = multiply(matrix, p);
+		// translate back
+		int[] result = new int[2];
+		result[0] = (int) (pp[0][0] + x0);
+		result[1] = (int) (pp[1][0] + y0);
+		return result;
+	}
+	
+	private static int findMax(int a, int b, int c, int d) {
+		int result = Math.max(a, b);
+		result = Math.max(result, c);
+		result = Math.max(result, d);
+		return result;
+	}
+	
+	private static int findMin(int a, int b, int c, int d) {
+		int result = Math.min(a, b);
+		result = Math.min(result, c);
+		result = Math.min(result, d);
+		return result;
+	}
+	
 	/**
 	 * Apply color change on an image.
 	 * 
 	 * @param color
 	 * @param imageData
 	 */
-	public static void changeImageColor(Color color, ImageData imageData) {
+	public static void oldChangeImageColor(Color color, ImageData imageData) {
 		if (color == null || imageData == null)
 			return;
 
@@ -119,7 +206,7 @@ public final class ImageUtils {
 		}
 	}
 	
-	public static void changeImageColor2(Color color, ImageData imageData) {
+	public static void oldChangeImageColor2(Color color, ImageData imageData) {
 		if (color == null || imageData == null)
 			return;
 		if (color.getRGB().equals(new RGB(0, 0, 0))) // Avoid black
@@ -143,21 +230,117 @@ public final class ImageUtils {
 					if (!palette.isDirect) {
 						pixelValue = palette.getPixel(palette.colors[lineData[x]]);
 					}
-					float[] pixelHSB = Arrays.copyOf(hsb, hsb.length);
-					// In gray scale r == g == b, so we can take anyone
-					int lvl = (pixelValue & palette.blueMask) >> palette.blueShift;
-					// Gray scale pixel value = brightness
-					float brightness = (float) (1 - (lvl / 255f)) < 0 ? 0 : (float) (1 - (lvl / 255f));
-					
-					pixelHSB[1] = brightness;
-					int appliedColor = java.awt.Color.HSBtoRGB(pixelHSB[0], pixelHSB[1], pixelHSB[2]);
-					if (palette.isDirect) {
-						imageData.setPixel(x, y, appliedColor);
-					} else {
-						palette.colors[lineData[x]] = palette.getRGB(appliedColor);
+					if(!skipPixel(pixelValue, palette))
+					{
+						float[] pixelHSB = Arrays.copyOf(hsb, hsb.length);
+						// In gray scale r == g == b, so we can take anyone
+						int lvl = (pixelValue & palette.blueMask) >> palette.blueShift;
+						// Gray scale pixel value = brightness
+						float saturation = (float) (1 - (lvl / 255f)) < 0 ? 0 : (float) (1 - (lvl / 255f));
+						
+						pixelHSB[1] = saturation;
+						int appliedColor = java.awt.Color.HSBtoRGB(pixelHSB[0], pixelHSB[1], pixelHSB[2]);
+						if (palette.isDirect) {
+							imageData.setPixel(x, y, appliedColor);
+						} else {
+							palette.colors[lineData[x]] = palette.getRGB(appliedColor);
+						}
 					}
 				}
 			}
+		}
+	}
+	
+	public static void changeImageColor(Color color, ImageData imageData) {
+
+		if (color == null || imageData == null)
+			return;
+		if (color.getRGB().equals(new RGB(0, 0, 0))) // Avoid black
+			return;
+
+		float[] hsb = new float[3];
+		java.awt.Color.RGBtoHSB(
+				color.getRGB().red, 
+				color.getRGB().green,
+				color.getRGB().blue, hsb);
+		int[] lineData = new int[imageData.width];
+		PaletteData palette = imageData.palette;
+
+		for (int y = 0; y < imageData.height; y++) {
+			imageData.getPixels(0, y, imageData.width, lineData, 0);
+
+			// Analyze each pixel value in the line
+			for (int x = 0; x < lineData.length; x++) {
+				int pixelValue = lineData[x];
+
+				// Do not set transparent pixel
+				if (lineData[x] != imageData.transparentPixel) {
+					// Get pixel color value if not using direct palette
+					if (!palette.isDirect) {
+						pixelValue = palette.getPixel(palette.colors[lineData[x]]);
+					}
+					if (!skipPixel(pixelValue, palette)) {
+						RGB current = palette.getRGB(pixelValue);
+						RGB degraded = degradeColor(color.getRGB(), 
+								new RGB(255, 255, 255), current.red + 1);
+						int appliedColor = palette.getPixel(degraded);
+
+						if (palette.isDirect) {
+							imageData.setPixel(x, y, appliedColor);
+						} else {
+							palette.colors[lineData[x]] = palette
+									.getRGB(appliedColor);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Compute the degraded color corresponding to a given color.
+	 * 
+	 * @param from: the color to degrade.
+	 * @param to: the target color.
+	 * @param nbOfShade: number of shade to degrade to.
+	 * @return the degraded color.
+	 */
+	private static RGB degradeColor(RGB from, RGB to, int nbOfShade) {
+		// from color data
+		int r1 = from.red;
+		int g1 = from.green;
+		int b1 = from.blue;
+		// to color data
+		int r2 = to.red;
+		int g2 = to.green;
+		int b2 = to.blue;
+
+		// for every channel, we compute the differential between every shade
+		// (nbVal is the number of shade of the gradation)
+		int dr = ((r2 - r1) / nbOfShade);
+		int dg = ((g2 - g1) / nbOfShade);
+		int db = ((b2 - b1) / nbOfShade);
+
+		return new RGB(r2 - (dr * nbOfShade), g2 - (dg * nbOfShade), b2
+				- (db * nbOfShade));
+	}
+
+	/**
+	 * Skip White and non grey pixels
+	 * 
+	 * @param pixelColor
+	 * @param palette
+	 * @return
+	 */
+	private static boolean skipPixel(int pixelColor, PaletteData palette) {
+		if (pixelColor == 16777215) { // white color: 16777215
+			return true;
+		} else {
+			RGB rgb = palette.getRGB(pixelColor);
+			if (rgb.blue == rgb.green && rgb.blue == rgb.red) // gray scale
+				return false;
+			else
+				return true;
 		}
 	}
 
@@ -529,9 +712,15 @@ public final class ImageUtils {
 			return null;
 		if (states == null || states.isEmpty())
 			return null;
-		
-		// build regular expression to match: <absolute base path>
-		// <state>.<extension>
+		// Clean empty states
+		Iterator<String> it = states.iterator();
+		while (it.hasNext()) {
+			String s = it.next();
+			if (s == null || s.isEmpty()) {
+				it.remove();
+			}
+		}
+		// build regular expression to match: <absolute base path> <state>.<extension>
 		StringBuilder sb = new StringBuilder();
 		sb.append("^(.*)(");
 		for (int i = 0; i < IMAGE_EXTENSIONS.length; i++) {
@@ -555,9 +744,18 @@ public final class ImageUtils {
 		}
 		// search if the state list contains <state> 
 		int stateIndex = 0;
-		for (String state : states) {
-			int index = pathWOExt.lastIndexOf(state);
-			if (index > 0 && index + state.length() == pathWOExt.length()) {
+		// Bug 3479: update widget to use state index instead of string value
+//		for (String state : states) {
+//			int index = pathWOExt.lastIndexOf(state);
+//			if (index > 0 && index + state.length() == pathWOExt.length()) {
+//				stateIndex = index;
+//				break;
+//			}
+//		}
+		for (int count = 0; count < states.size(); count++) {
+			String countStr = String.valueOf(count);
+			int index = pathWOExt.lastIndexOf(countStr);
+			if (index > 0 && index + countStr.length() == pathWOExt.length()) {
 				stateIndex = index;
 				break;
 			}
@@ -606,6 +804,18 @@ public final class ImageUtils {
 		if (basePath == null || basePath.isEmpty())
 			return null;
 		String path = basePath.replace(STATE_MARKER, state);
+		IPath stateImagePath = new Path(path);
+		if (isFileExists(stateImagePath)) {
+			return stateImagePath;
+		}
+		return null;
+	}
+	
+	public static IPath searchStateImage(int stateIndex, String basePath) {
+		if (basePath == null || basePath.isEmpty())
+			return null;
+		String path = basePath
+				.replace(STATE_MARKER, String.valueOf(stateIndex));
 		IPath stateImagePath = new Path(path);
 		if (isFileExists(stateImagePath)) {
 			return stateImagePath;

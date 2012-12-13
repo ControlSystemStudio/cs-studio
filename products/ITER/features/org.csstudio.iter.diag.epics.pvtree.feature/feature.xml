@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.diag.epics.pvtree.feature"
+      label="CSS EPICS PV Tree Component"
+      version="1.0.0"
+      provider-name="ITER"
+      os="linux"
+      ws="gtk"
+      nl="en"
+      arch="x86_64">
+
+   <requires>
+      <import plugin="org.apache.lucene"/>
+      <import plugin="org.apache.lucene.analysis"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.data"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.csstudio.ui.util"/>
+      <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.equinox.common"/>
+      <import plugin="org.eclipse.equinox.security"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.junit4"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.diag.epics.pvtree"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
