@@ -65,8 +65,6 @@ public class PVManagerPV implements PV {
 		return getValue();
 	}
 
-	/** Listener should not be added after pv started. It will miss the previous value.
-	 */
 	@Override
 	public synchronized void addListener(final PVListener listener) {		
 		final PVReaderListener<Object> pvReaderListener = new PVReaderListener<Object>() {
@@ -77,10 +75,7 @@ public class PVManagerPV implements PV {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
 				}
-//				Object newValue = pvReader.getValue();
-//				if (newValue == null) {
-//					return;
-//				}
+
 				listener.pvValueUpdate(PVManagerPV.this);
 			}
 		};
