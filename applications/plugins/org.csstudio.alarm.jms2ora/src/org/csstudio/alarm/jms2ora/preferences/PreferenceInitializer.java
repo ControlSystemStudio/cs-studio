@@ -38,7 +38,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         
-        IEclipsePreferences prefs = new DefaultScope().getNode(Jms2OraActivator.getDefault().getPluginId());
+        IEclipsePreferences prefs = DefaultScope.INSTANCE
+                .getNode(Jms2OraActivator.getDefault().getPluginId());
 
         prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
         prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");

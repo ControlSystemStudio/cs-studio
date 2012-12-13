@@ -139,6 +139,7 @@ public class MessageDao implements IMessageArchiveDao {
         
         if ((messageId == -1) || (contentId == -1)) {
             logError("Cannot get the new ID: messageID = " + messageId + ", contentID = " + contentId);
+            connectionHandler.disconnect();
             return false;
         }
                 

@@ -200,7 +200,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             }
 
             // TODO: Check the worker...
-            LOG.debug("TODO: Check the worker...");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("TODO: Check the worker...");
+            }
         }
 
         if(messageProcessor != null) {
