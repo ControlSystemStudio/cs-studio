@@ -171,6 +171,7 @@ public class XYGraph extends Figure{
 				Display.getCurrent().getSystemFont().getFontData()[0].getName();
 		setTitleFont(XYGraphMediaFactory.getInstance().getFont(
 				new FontData(sysFontName, 12, SWT.BOLD)));
+		setFont(Display.getCurrent().getSystemFont());
 		//titleLabel.setVisible(false);
 		xAxisList = new ArrayList<Axis>();
 		yAxisList = new ArrayList<Axis>();
@@ -327,7 +328,7 @@ public class XYGraph extends Figure{
 		if(plotArea != null && plotArea.isVisible()){
 
 			Rectangle plotAreaBound = new Rectangle(
-					primaryXAxis.getBounds().x + primaryXAxis.getMargin(),
+					primaryXAxis.getBounds().x + primaryXAxis.getMargin()+1,
 					primaryYAxis.getBounds().y + primaryYAxis.getMargin(),
 					primaryXAxis.getBounds().width - 2*primaryXAxis.getMargin(),
 					primaryYAxis.getBounds().height - 2*primaryYAxis.getMargin()
@@ -522,7 +523,7 @@ public class XYGraph extends Figure{
 		}
 		super.paintFigure(graphics);
 	}
-
+	
 	/**
 	 * @param transparent the transparent to set
 	 */

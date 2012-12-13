@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ITER Archive Configtool
+Bundle-SymbolicName: org.csstudio.iter.archive.config.rdb.product;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.iter.archive.config.rdb.Activator
+Bundle-Vendor: ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime, 
+ org.csstudio.archive.config.rdb
+Export-Package: org.csstudio.iter.archive.config.rdb
+

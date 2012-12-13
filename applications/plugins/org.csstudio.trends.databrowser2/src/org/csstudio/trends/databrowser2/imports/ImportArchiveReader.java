@@ -16,6 +16,7 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
+import org.csstudio.trends.databrowser2.Activator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -89,6 +90,10 @@ public class ImportArchiveReader implements ArchiveReader
     {
         if (values == null)
         {
+  	  		// TODO RAP and RCP
+			if (Activator.isRAP()) {
+   	             throw new RuntimeException("Not yet implemented for web version.");
+			}
             // Locate file
             final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
             final InputStream input = file.getContents();

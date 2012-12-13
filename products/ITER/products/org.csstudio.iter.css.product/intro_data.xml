@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- This file controls the initial placement of Welcome (intro) page items.
+     File can be generated via the Welcome page preference panel.
+     
+     Items that are not listed in here will show in some default place on
+     their page.
+     Items listen in <hidden></hidden> sections will be, well, hidden.
+  -->
+<extensions>
+   <page id="overview">
+      <group path="page-content/top-left">
+         <extension id="org.csstudio.iter.css.product.overview" importance="high"/>
+      </group>
+   </page>
+   <page id="whatsnew">
+      <group path="page-content/top-left">
+         <extension id="org.csstudio.iter.css.product.whatsnew" importance="high"/>
+      </group>
+   </page>
+   <page id="firststeps">
+      <group path="page-content/top-left">
+         <extension id="org.csstudio.opibuilder" importance="medium"/>
+      </group>
+      <group path="page-content/top-right">
+         <extension id="org.csstudio.trends.databrowser" importance="medium"/>
+      </group>
+	  <group path="page-content/bottom-left">
+         <extension id="org.csstudio.opibuilder.widgets.symbol" importance="medium"/>
+      </group>
+      <group path="page-content/bottom-right">
+         <extension id="org.csstudio.alarm.beast.notifier" importance="medium"/>
+      </group>
+   </page>
+   <page id="samples">
+      <group path="page-content/top-left">
+         <extension id="org.csstudio.iter.css.product.samples" importance="high"/>
+      </group>
+   </page>
+</extensions>
+

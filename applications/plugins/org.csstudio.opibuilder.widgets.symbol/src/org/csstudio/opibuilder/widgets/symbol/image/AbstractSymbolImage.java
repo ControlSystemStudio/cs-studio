@@ -10,8 +10,6 @@ package org.csstudio.opibuilder.widgets.symbol.image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.logging.Level;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
@@ -37,12 +35,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Document;
-
-/**
- * Modified 
- * Add of imageUri variable : Use instead of imagePath when image stored in plugin sources
- * @author ITER, patard
- */
 
 /**
  * Main class for Symbol Image display.
@@ -89,8 +81,6 @@ public abstract class AbstractSymbolImage extends Figure {
 			.generateIdentityMatrix();
 	
 	
-	private URI imageUri = null;
-	
 	public AbstractSymbolImage(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
@@ -99,11 +89,7 @@ public abstract class AbstractSymbolImage extends Figure {
 
 	public void setImagePath(IPath imagePath) {
 		this.imagePath = imagePath;
-		callLoadDocument(imagePath.getFileExtension());
-	}
-	
-	private void callLoadDocument(String fileExtension){
-		if ("svg".compareToIgnoreCase(fileExtension) == 0) {
+		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 			transcoder = null;
 			failedToLoadDocument = false;
@@ -234,18 +220,28 @@ public abstract class AbstractSymbolImage extends Figure {
 		}
 	}
 	
-	private void updateData() {
+	public void updateData() {
 		dispose();
 		if (workingWithSVG) generateSVGData();
 		else generateData();
 	}
 	
 	private void updateAreas() {
-		if (image == null)
+		if (originalImageData == null)
 			return;
+		
 		// Update dimensions
-		int imgWidth = image.getBounds().width;
-		int imgHeight = image.getBounds().height;
+		int imgWidth = 0, imgHeight = 0;
+		if (image != null) {
+			imgWidth = image.getBounds().width;
+			imgHeight = image.getBounds().height;
+		} else if (imageData != null) {
+			imgWidth = imageData.width;
+			imgHeight = imageData.height;
+		} else {
+			imgWidth = originalImageData.width;
+			imgHeight = originalImageData.height;
+		}
 		imgDimension = new Dimension(imgWidth, imgHeight);
 		
 		// Avoid negative number
@@ -459,11 +455,11 @@ public abstract class AbstractSymbolImage extends Figure {
 	}
 	
 	public void setPermutationMatrix(final PermutationMatrix permutationMatrix) {
+		this.oldPermutationMatrix = this.permutationMatrix;
+		this.permutationMatrix = permutationMatrix;
 		if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix)) 
 				|| permutationMatrix == null)
 			return;
-		this.oldPermutationMatrix = this.permutationMatrix;
-		this.permutationMatrix = permutationMatrix;
 		imageData = null;
 	}
 	
@@ -504,39 +500,25 @@ public abstract class AbstractSymbolImage extends Figure {
 	
 	// ************************************************************
 	// SVG specific methods
-	// Additional treatment for images come from plugin development   
-	// ************************************************************ 
+	// ************************************************************
+	
 	private void loadDocument() {
 		transcoder = null;
 		failedToLoadDocument = true;
-	
+		if (imagePath == null || imagePath.isEmpty()) {
+			return;
+		}
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
 		try {
+			IPath workSpacePath=ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
 			
-			// If image is stored in a plugin sources
-			if(getImageUri() != null){
-				
-				final InputStream inputStrImage = ResourceUtil.openURLStream(imageUri.toURL());
-				svgDocument = factory.createDocument(getImageUri().getPath(), inputStrImage);
-			}
-			// Else if image come from widget model property
-			else{
-				
-				if (imagePath == null || imagePath.isEmpty()) {
-					return;
-				}
-				
-				IPath workSpacePath=ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
-				
-				String uri = "file://"
-						+  (workSpacePath == null? "" : workSpacePath.toOSString())//$NON-NLS-1$ //ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
-						+ imagePath.toString();
-			
-				final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
-				svgDocument = factory.createDocument(uri, inputStream);
-			}
-			
+			String uri = "file://"
+					+  (workSpacePath == null? "" : workSpacePath.toOSString())//$NON-NLS-1$ //ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
+					+ imagePath.toString();
+		
+			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
+			svgDocument = factory.createDocument(uri, inputStream);
 			transcoder = new SimpleImageTranscoder(svgDocument);
 			initRenderingHints();
 			BufferedImage awtImage = transcoder.getBufferedImage();
@@ -578,48 +560,4 @@ public abstract class AbstractSymbolImage extends Figure {
 				RenderingHints.VALUE_STROKE_PURE);
 	}
 	
-
-	/**
-	 * @return the imageUri
-	 */
-	public URI getImageUri() {
-		return imageUri;
-	}
-
-	/**
-	 * @param The imageUri to set and Input Stream Image when image come from
-	 * plugin development
-	 */
-	public void setImageUri(URI imageUri) {
-		// TODO Auto-generated method stub
-		this.imageUri = imageUri;
-		
-		String fileName = new String(""); // Svg File name
-		int index = 0;					  // Index for search extension file
-		String fileExtension = new String("");
-		
-		try {
-		
-			fileName = imageUri.toURL().getFile();
-			
-			// Find svg file extension
-			index = fileName.lastIndexOf('.');
-			
-			// If dot not found
-			if (index == -1) {
-				System.out.println("No . find in "+fileName);
-			}
-			
-			// Set svg file extention
-			fileExtension = fileName.substring(index + 1);
-		
-			
-			callLoadDocument(fileExtension);
-		
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			Activator.getLogger().log(Level.WARNING,
-					"Malformed URL : " +this.imageUri, e);
-		}	
-	}
 }

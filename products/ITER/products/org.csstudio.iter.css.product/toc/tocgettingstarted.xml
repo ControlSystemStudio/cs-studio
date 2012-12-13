@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Getting Started" link_to="toc/toc.xml#gettingstarted"> 
+	<topic label="CODAC Core System Overview"  href="toc/html/gettingstarted/overview.html"> 
+	</topic>
+	<topic href="toc/html/gettingstarted/dirstructure.html" label="Directory Structure of Software Repository">
+	</topic>
+ <topic href="toc/html/gettingstarted/install.html" label="Installed System Directory Structure">
+ </topic>
+ <topic href="toc/html/gettingstarted/PCDH.html" label="Plant Control Design Handbook">
+ </topic> 
+</toc>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Tasks" link_to="toc/toc.xml#tasks"> 
+	<topic label="How to install CODAC Core System software"  href="toc/html/tasks/install.html"> 
+	</topic>
+</toc>

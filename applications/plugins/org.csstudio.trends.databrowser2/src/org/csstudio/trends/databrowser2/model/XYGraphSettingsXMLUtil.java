@@ -86,7 +86,7 @@ public class XYGraphSettingsXMLUtil{
 		final String fontInfo = DOMHelper.getSubelementString(node, Model.TAG_TITLE_FONT);
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			FontData fontData = new FontData(fontInfo);
+			FontData fontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
 			//System.err.println("FONT DATA " + fontData.name + " " + fontData.height);
 			settings.setTitleFontData(fontData);
 		}

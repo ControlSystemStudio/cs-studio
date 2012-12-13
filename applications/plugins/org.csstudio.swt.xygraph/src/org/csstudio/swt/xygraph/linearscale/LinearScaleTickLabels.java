@@ -15,7 +15,7 @@ import org.eclipse.draw2d.geometry.Dimension;
  */
 public class LinearScaleTickLabels extends Figure {
 
-    private static final int TICK_LABEL_GAP = 8;
+    private static final int TICK_LABEL_GAP = 2;
 
 	/** the array of tick label vales */
     private ArrayList<Double> tickLabelValues;
@@ -481,8 +481,8 @@ public class LinearScaleTickLabels extends Figure {
         	//by default, make the least step to be minutes
         	
         	long timeStep;
-        	if(max-min<10000) //<10 sec, step = 1 ms
-        		timeStep=1l;
+        	if(max-min<1000) //<1 sec, step = 10 ms
+        		timeStep=10l;
         	else if(max - min < 60000) // < 1 min, step = 1 sec
         		timeStep = 1000l;
         	else if(max - min < 600000) // < 10 min, step = 10 sec
