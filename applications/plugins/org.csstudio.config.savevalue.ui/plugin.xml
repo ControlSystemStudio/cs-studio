@@ -32,17 +32,78 @@
             primary="true">
       </toc>
    </extension>
+     <extension
+        point="org.eclipse.ui.commands">
+     <command
+           description="%saveValueCommandDescription"
+           id="org.csstudio.config.savevalue.ui.commands.saveValue"
+           name="%saveValueCommand">
+        <commandParameter
+              id="org.csstudio.config.savevalue.ui.commands.saveValue.pv"
+              name="%saveValueCommandPVParameter"
+              optional="true">
+        </commandParameter>
+        <commandParameter
+              id="org.csstudio.config.savevalue.ui.commands.saveValue.value"
+              name="%saveValueCommandValueParamter"
+              optional="true">
+        </commandParameter>
+     </command>
+  </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="org.csstudio.config.savevalue.ui.SaveValueCommandHandler"
-            commandId="org.csstudio.platform.ui.commands.saveValue">
+            commandId="org.csstudio.config.savevalue.ui.commands.saveValue">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.csstudio.popmenu">
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.config.savevalue.ui.commands.saveValue"
+               icon="icon/save.gif"
+               label="%SaveValueAction.Label"
+               style="push"
+               tooltip="%SaveValueAction.Tooltip">
+            <visibleWhen>
+            <or>
+               <with variable="activeMenuSelection">
+                  <iterate>
+                     <adapt type="org.csstudio.sds.model.ProcessVariableWithSamples"/>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lorg.csstudio.sds.model.ProcessVariableWithSamples;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS">
+         </menu>
+      </menuContribution>
+   </extension>
+   <!--extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariableu">
          <command
                commandId="org.csstudio.platform.ui.commands.saveValue"
                icon="icon/save.gif"
@@ -59,9 +120,9 @@
                      <iterate
                            ifEmpty="false"
                            operator="and">
-                        <instanceof
-                              value="org.csstudio.platform.model.IProcessVariableWithSamples">
-                        </instanceof>
+                     <adapt
+                           type="[Lorg.csstudio.csdata.ProcessVariable;">
+                     </adapt>
                      </iterate>
                   </and>
                </with>
@@ -75,7 +136,7 @@
                label="CSS">
          </menu>
       </menuContribution>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
