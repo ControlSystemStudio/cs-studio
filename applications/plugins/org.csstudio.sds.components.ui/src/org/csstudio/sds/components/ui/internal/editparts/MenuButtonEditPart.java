@@ -57,7 +57,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Helge Rickens, Kai Meyer
  * 
  */
-public final class MenuButtonEditPart extends AbstractWidgetEditPart { //implements IProcessVariableWithSamples {
+public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 
 	
     /**
