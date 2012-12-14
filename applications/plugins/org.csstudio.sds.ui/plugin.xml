@@ -344,11 +344,11 @@
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
-               commandId="org.csstudio.display.pvtable.PVpopup"
+               commandId="org.csstudio.sds.ui.opendisplay.command"
                icon="icons/run.gif"
-               label="Run As Shell"
+               label="Open in Display"
                style="push"
-               tooltip="Run As Shell">
+               tooltip="Open in default display">
          </command>
       </menuContribution>
       </extension>
@@ -410,6 +410,11 @@
   </extension>
   <extension
         point="org.eclipse.ui.commands">
+     <command
+           description="OpenDefaultDisplay"
+           defaultHandler="org.csstudio.sds.ui.internal.actions.OpenPvInDefaultDisplayAction"
+           id="org.csstudio.sds.ui.opendisplay.command"
+           name="OpenDefaultDisplay"/>
      <command
            categoryId="org.eclipse.ui.category.edit"
            description="Copy Widgets"
