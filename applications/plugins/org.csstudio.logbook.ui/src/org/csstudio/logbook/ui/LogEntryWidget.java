@@ -570,7 +570,7 @@ public class LogEntryWidget extends Composite {
 		} catch (Exception ex) {
 			// Failed to get a client to the logbook
 			// Display exception and disable editing.
-			setLastException(new Exception(ex.getCause()));
+			setLastException(ex);
 		}
 
 	}
@@ -675,19 +675,22 @@ public class LogEntryWidget extends Composite {
 			tagList.setItems(new String[0]);
 			imageStackWidget.setSelectedImageFile(null);
 		}
-		for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
-				.entrySet()) {
-			if (editable
-					|| LogEntryUtil.getPropertyNames(logEntry).contains(
-							propertyFactoryEntry.getKey())) {
-				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
-				tbtmProperty.setText(propertyFactoryEntry.getKey());
-				AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
-						.getValue().create(tabFolder, SWT.NONE,
-								logEntryChangeset);
-				tbtmProperty.setControl(abstractPropertyWidget);
-				abstractPropertyWidget.setEditable(editable);
-			}
+		if (propertyWidgetFactories != null)
+		{
+    		for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
+    				.entrySet()) {
+    			if (editable
+    					|| LogEntryUtil.getPropertyNames(logEntry).contains(
+    							propertyFactoryEntry.getKey())) {
+    				CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
+    				tbtmProperty.setText(propertyFactoryEntry.getKey());
+    				AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
+    						.getValue().create(tabFolder, SWT.NONE,
+    								logEntryChangeset);
+    				tbtmProperty.setControl(abstractPropertyWidget);
+    				abstractPropertyWidget.setEditable(editable);
+    			}
+    		}
 		}
 		this.layout();
 	}
