@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ITER Password Provider
+Bundle-SymbolicName: org.csstudio.iter.passwordprovider;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.equinox.security
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

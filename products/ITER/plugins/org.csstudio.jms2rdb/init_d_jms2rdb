@@ -1,0 +1,28 @@
+# /etc/rc.d/init.d/jms2rdb:  Controls the JMS-2-RDB logger
+#
+# Version: JMS2RDB 1.0
+#
+# chkconfig: 345 99 01
+# description: Control the JMS-2-RDB logger
+#
+# kasemirk@ornl.gov
+
+USER=kasemir
+PROG=/usr/local/css/JMS2RDB/jms2rdb
+
+
+case $1 in
+start)
+    su - $USER -c "$PROG start"
+    ;;
+stop)
+    su - $USER -c "$PROG stop"
+    ;;
+status)
+    su - $USER -c "$PROG status"
+    ;;
+*)
+    echo $0 "start | stop | status"
+esac
+
+    

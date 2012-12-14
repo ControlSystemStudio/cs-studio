@@ -1,0 +1,37 @@
+# css.schema
+# Authorization related scheme elements
+# Based on information from http://css.desy.de
+#
+# @author Xihui Chen: Selected from DESY schema
+# @author Kay Kasemir: Put into plugin sources
+
+objectclass ( 1.3.6.1.4.1.341.999.2 NAME 'cssRole'
+  DESC 'Role for CSS authorization: cn is role, ou is group'
+  SUP top STRUCTURAL
+  MUST cn
+  MAY ( memberUid $ description )  )
+
+attributetype ( 1.3.6.1.4.1.341.999.1.3 NAME 'auid'
+  DESC 'name of authorize ID'
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+
+attributetype ( 1.3.6.1.4.1.341.999.1.2 NAME 'cssGroupRole'
+  DESC 'group and role, it must be in a format of (group,role)'
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+
+attributetype ( 1.3.6.1.4.1.341.999.1.1 NAME 'cssActionPath'
+  DESC 'the full path for an action or control in css'
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256}  )
+
+objectclass ( 1.3.6.1.4.1.341.999.1 NAME 'cssAuthorizeID'
+  DESC 'an authorized ID'
+  SUP top STRUCTURAL
+  MUST auid
+  MAY ( cssGroupRole $ cssActionPath $ description ) )
+

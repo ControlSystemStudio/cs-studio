@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.css.util.feature"
+      label="CSS Utils Component"
+      version="1.0.0"
+      provider-name="ITER"
+      os="linux"
+      ws="gtk"
+      nl="en"
+      arch="x86_64">
+
+   <includes
+         id="org.csstudio.iter.casnooper.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.debugging.jmsmonitor.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.debugging.rdbshell.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.diag.epics.pvtree.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.diag.probe.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.display.pvtable.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.snl.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.svn.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.test.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.utility.clock.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.utility.eliza.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.utility.sysmon.feature"
+         version="0.0.0"/>
+
+</feature>

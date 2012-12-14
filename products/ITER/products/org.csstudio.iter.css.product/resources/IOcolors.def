@@ -1,0 +1,60 @@
+# Alarm colors
+Major = 255,0,0
+Minor = 255,255,0
+Invalid = 200,100,200
+Disconnected = 200,100,200
+
+# Display widget colors
+IO Background = 255,255,205
+IO Foreground = 0, 0, 0
+IO Grid = 215,215,215
+
+# Shape colors
+IO Border = 215,215,215
+IO Shape Fill= 188, 188, 188
+IO Line = 0, 32, 92
+IO Link = 0, 32, 92
+
+# Label & Text colors
+IO Text Fg = 0, 32, 92
+
+# Boolean Symbol colors
+IO PV ON = 0,0,225
+IO PV OFF = 77, 77, 77
+
+# PV colors
+IO InputPV Bg = 255,255,255 
+IO InputPV Fg = 0, 32, 92
+IO OutputPV Bg = 121, 123, 126
+IO OutputPV Fg = 255,255,255
+
+# Scaled widget colors
+IO Stick = 0, 32, 92
+
+# XY Graph Trace colors
+IO Trace 1 = 79,129,189 
+IO Trace 2 = 192,80,77
+IO Trace 3 = 119,147,60
+IO Trace 4 = 135,112,107
+
+# Button color
+IO Button = 178, 178, 178
+
+IO StatusBar Bg = 0,75,125
+IO StatusBar Fg = 255,255,255
+IO TextButton = 0, 0, 0
+IO TextInactiveButton = 166,166,166
+IO Label = 0, 0, 0
+IO OK = 0,255,0
+IO Default = 255,0,0
+IO onGoing = 255,255,0
+IO Disconnected = 200,100,200
+IO Unselected = 255,255,255
+IO POS Backgroung = 205, 216, 192
+IO POS State = 160, 180, 137
+IO TCS Backgroung = 182, 217, 228
+IO TCS State = 75, 172, 198
+IO STM Background = 227, 218, 179
+IO STM State = 197, 177, 137
+IO LTM Backgroung = 217, 193, 223
+IO LTM State = 171, 154, 192

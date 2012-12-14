@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ITER Alarm Notifier
+Bundle-SymbolicName: org.csstudio.iter.alarm.beast.notifier.product;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.iter.alarm.beast.notifier.Activator
+Bundle-Vendor: ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime, 
+ org.csstudio.alarm.beast.notifier
+Export-Package: org.csstudio.iter.alarm.beast.notifier

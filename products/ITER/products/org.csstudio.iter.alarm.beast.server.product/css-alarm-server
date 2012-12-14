@@ -1,0 +1,41 @@
+#! /bin/bash
+#
+# Startup Script for CSS Alarm Server
+#
+# chkconfig: - 92 8
+# description: Starts and stops CSS Alarm Server
+#
+
+#+======================================================================
+# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css-beast/trunk/org.csstudio.alarm.beast.server/css-alarm-server $
+# $Id: css-alarm-server 29119 2012-07-06 14:01:44Z zagara $
+#
+# Project       : CODAC Core System
+#
+# Description   : Starts and stops CSS Alarm Server
+#
+# Author(s)     : Cosylab
+#
+# Copyright (c) : 2010-2012 ITER Organization,
+#                 CS 90 046
+#                 13067 St. Paul-lez-Durance Cedex
+#                 France
+#
+# This file is part of ITER CODAC software.
+# For the terms and conditions of redistribution or use of this software
+# refer to the file ITER-LICENSE.TXT located in the top level directory
+# of the distribution package.
+#
+#-======================================================================
+
+. codacenv
+
+CONFIGURATION=()
+VARFILES=()
+
+unset REQUSER
+DAEMONS=(/usr/bin/alarm-server)
+NAMES=("CSS Alarm Server")
+ARGS=("$([ $# -gt 1 ] && printf "'%s' " "${@:2}")")
+
+. $CODAC_ROOT/bin/services/service-startup
