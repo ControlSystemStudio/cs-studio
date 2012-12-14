@@ -27,6 +27,8 @@ public class PVUtil{
 	/**Create a PV and start it. PVListener can be added to the PV to monitor its
 	 * value change, but please note that the listener is executed in non-UI thread.
 	 * If the code need be executed in UI thread, please use {@link ScriptUtil#execInUI(Runnable, AbstractBaseEditPart)}.
+	 * The monitor's maximum update rate is 50hz. If the PV updates faster than this rate, some updates
+	 * will be discarded.  
 	 * <br>Example Jython script:
 	 * 
 	 *  <pre>
