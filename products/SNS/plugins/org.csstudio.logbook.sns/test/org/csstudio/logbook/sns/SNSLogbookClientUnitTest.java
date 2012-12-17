@@ -32,6 +32,8 @@ import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
+import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.TagBuilder;
 import org.junit.Test;
 
 /** JUnit test for {@link SNSLogbookClient}
@@ -51,6 +53,18 @@ public class SNSLogbookClientUnitTest
             System.out.println(logbook);
     }
 
+    
+    @Test
+    public void testListTags() throws Exception
+    {
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        final Collection<Tag> tags = client.listTags();
+        assertThat(tags, is(not(nullValue())));
+        assertThat(tags.size(), is(not(0)));
+        for (Tag tag : tags)
+            System.out.println(tag);
+    }
+    
     
     @Test
     public void testDetermineTitle() throws Exception
@@ -94,6 +108,8 @@ public class SNSLogbookClientUnitTest
         
         LogEntry entry = LogEntryBuilder.withText("Test\nThis is a test")
             .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
+            // Tags 'work', but the default user cannot add tags
+            //.addTag(TagBuilder.tag("Controls"))
             .build();
         entry = client.createLogEntry(entry);
         assertThat(entry.getId(), instanceOf(Long.class));

@@ -13,9 +13,14 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import oracle.jdbc.OracleTypes;
 
+import org.csstudio.logbook.Tag;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** SNS logbook support
@@ -25,11 +30,15 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class SNSLogbookSupport
 {
+    final private RDBUtil rdb;
+
     /** Maximum allowed size for text entry */
 	final private int MAX_TEXT_SIZE;
+	
 	private static final String DEFAULT_BADGE_NUMBER = "999992"; //$NON-NLS-1$
-	final private RDBUtil rdb;
-	final String badge_number;
+	final private String badge_number;
+	
+	final private Collection<Tag> tags;
 
 	/** Initialize
 	 *  @param url 	RDB URL
@@ -43,6 +52,7 @@ public class SNSLogbookSupport
 	    this.rdb = RDBUtil.connect(url, user, password, false);
 		badge_number = getBadgeNumber(user);
 		MAX_TEXT_SIZE = getMaxContentLength();
+		tags = readTags();
 	}
 
 	/** Get the badge number for the user in the connection dictionary
@@ -90,7 +100,35 @@ public class SNSLogbookSupport
         final int max_elog_text = tables.getInt("COLUMN_SIZE");
         return max_elog_text;
     }
-	
+    
+    /** Read supported tags (SNS logbook categories) from RDB
+     *  @return Available categories as 'Tag's
+     *  @throws Exception on error
+     */
+    private Collection<Tag> readTags() throws Exception
+    {
+        final List<Tag> tags = new ArrayList<Tag>();
+        final Statement statement = rdb.getConnection().createStatement();
+        try
+        {
+            final ResultSet result = statement.executeQuery(
+                    "SELECT cat_id, cat_nm FROM logbook.log_categories_v");
+            while (result.next())
+                tags.add(new SNSTag(result.getString(1), result.getString(2)));
+        }
+        finally
+        {
+            statement.close();
+        }
+        return tags;
+    }
+
+    /** @return supported tags */
+    public Collection<Tag> getTags()
+    {
+        return tags;
+    }
+    
 	/** Create entry
 	 *  @param logbook
 	 *  @param title
@@ -167,8 +205,8 @@ public class SNSLogbookSupport
 	private long fetchImageTypes(final String extension) throws Exception
 	{
 		final PreparedStatement statement = rdb.getConnection().prepareStatement(
-	        "SELECT image_type_id FROM LOGBOOK.IMAGE_TYPE WHERE UPPER(?)=UPPER(file_extension)");
-	    statement.setString(1, extension);
+	        "SELECT image_type_id FROM LOGBOOK.IMAGE_TYPE WHERE ?=UPPER(file_extension)");
+	    statement.setString(1, extension.toUpperCase());
 	    return fetchLongResult(statement);
 	}
 
@@ -195,7 +233,6 @@ public class SNSLogbookSupport
             statement.close();
         }
     }
-
 	
 	/** Fetch ID for attachment
 	 *  @param extension Attachment file extension.
@@ -205,8 +242,8 @@ public class SNSLogbookSupport
 	private long fetchAttachmentTypes(final String extension) throws Exception
 	{
 		final PreparedStatement statement = rdb.getConnection().prepareStatement(
-	        "SELECT attachment_type_id FROM LOGBOOK.ATTACHMENT_TYPE WHERE UPPER(file_extension)=UPPER(?)");
-	    statement.setString(1, extension);
+	        "SELECT attachment_type_id FROM LOGBOOK.ATTACHMENT_TYPE WHERE ?=UPPER(file_extension)");
+	    statement.setString(1, extension.toUpperCase());
         return fetchLongResult(statement);
 	}
 
@@ -277,7 +314,7 @@ public class SNSLogbookSupport
     private long getLastImageAttachment(final long entry_id) throws Exception
     {
         final Connection connection = rdb.getConnection();
-        final CallableStatement statement = connection.prepareCall(
+        final PreparedStatement statement = connection.prepareStatement(
             "SELECT image_id FROM LOGBOOK.LOG_ENTRY_IMAGE" +
             " WHERE log_entry_id=?" +
             " ORDER BY image_id DESC");
@@ -295,7 +332,7 @@ public class SNSLogbookSupport
     private long getLastOtherAttachment(final long entry_id) throws Exception
     {
         final Connection connection = rdb.getConnection();
-        final CallableStatement statement = connection.prepareCall(
+        final PreparedStatement statement = connection.prepareStatement(
             "SELECT attachment_id FROM LOGBOOK.LOG_ENTRY_ATTACHMENT" +
             " WHERE log_entry_id=?" +
             " ORDER BY attachment_id DESC");
@@ -303,9 +340,42 @@ public class SNSLogbookSupport
         return fetchLongResult(statement);
     }
 
+    /** Add tag (category) to entry
+     *  @param entry_id Log entry ID
+     *  @param tag_name Name of tag to add
+     *  @throws Exception on error
+     */
+    public void addTag(final long entry_id, final String tag_name) throws Exception
+    {
+        final String tag_id = getTagID(tag_name);
+        final Connection connection = rdb.getConnection();
+        final PreparedStatement statement = connection.prepareStatement(
+            "INSERT INTO LOGBOOK.LOG_ENTRY_CATEGORIES(LOG_ENTRY_ID, CAT_ID)" +
+            " VALUES(?, ?)");
+        try
+        {
+            statement.setLong(1, entry_id);
+            statement.setString(2, tag_id);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
+    
+    private String getTagID(final String tag_name) throws Exception
+    {
+        for (Tag tag : tags)
+            if (tag.getName().equalsIgnoreCase(tag_name)  &&
+                (tag instanceof SNSTag))
+                return ((SNSTag)tag).getID();
+        throw new Exception("Unknown logbook tag '" + tag_name + "'");
+    }
+
     /** Close RDB connection. Must be called when done using the logbook. */
     public void close()
     {
-    	rdb.close();
+        rdb.close();
     }
 }

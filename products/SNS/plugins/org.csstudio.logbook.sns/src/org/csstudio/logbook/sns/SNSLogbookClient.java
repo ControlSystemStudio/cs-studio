@@ -77,10 +77,19 @@ public class SNSLogbookClient implements LogbookClient
         return logbooks;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Collection<Tag> listTags() throws Exception
     {
-        return Collections.emptyList();
+        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        try
+        {
+            return support.getTags();
+        }
+        finally
+        {
+            support.close();
+        }
     }
 
     @Override
@@ -139,6 +148,11 @@ public class SNSLogbookClient implements LogbookClient
         try
         {
             id = support.createEntry(logbook, title, text);
+            
+            // Add optional tags
+            for (Tag tag : entry.getTags())
+                support.addTag(id, tag.getName());
+            
             // Add optional attachments
             for (Attachment attachment : entry.getAttachment())
             {
