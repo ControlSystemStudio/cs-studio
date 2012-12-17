@@ -71,7 +71,7 @@ public class SNSLogbookClientUnitTest
     }
 
     
-    @Test
+    @Test //(timeout=10000)
     public void testCreateEntry() throws Exception
     {
         final LogbookClient client = new SNSLogbookClientFactory().getClient();
@@ -83,4 +83,26 @@ public class SNSLogbookClientUnitTest
         assertThat(entry.getId(), instanceOf(Integer.class));
         assertThat(entry.getText(), equalTo("Test\nThis is a test"));
     }
+    
+    /** Long text, automatically turned into text attachment */
+    @Test //(timeout=10000)
+    public void testLongEntry() throws Exception
+    {
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        
+        // Happen to know that max text length is 4000...
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Long Text Test\n");
+        for (int i=0; i<=4000/28; ++i)
+            buf.append("This is a long test text... ");
+        assertTrue(buf.length() > 4000);
+        LogEntry entry = LogEntryBuilder.withText(buf.toString())
+            .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
+            .build();
+        entry = client.createLogEntry(entry);
+        assertThat(entry.getId(), instanceOf(Integer.class));
+    }
+
+    // TODO Text attachment
+    // TODO Image attachment
 }

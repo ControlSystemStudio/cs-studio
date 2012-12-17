@@ -7,14 +7,8 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.Writer;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,17 +17,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.BLOB;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** SNS logbook support
- *  @author Delphy Nypaver Armstrong
+ *  @author Delphy Nypaver Armstrong - Original version
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SNSLogbookSupport
 {
+    /** Maximum allowed size for text entry */
 	final private int MAX_TEXT_SIZE;
 	private static final String DEFAULT_BADGE_NUMBER = "999992"; //$NON-NLS-1$
 	final private RDBUtil rdb;
@@ -50,27 +44,55 @@ public class SNSLogbookSupport
 	{
 	    this.rdb = RDBUtil.connect(url, user, password, false);
 		badge_number = getBadgeNumber(user);
-		/* The maximum allowed size of logbook text entry */
-		MAX_TEXT_SIZE = getContentLength();
+		MAX_TEXT_SIZE = getMaxContentLength();
 	}
-	
-	/** Create new entry
-     *  @param logbook
-	 *  @param title
-	 *  @param text
-	 *  @param filenames
-	 *  @throws Exception
-	 *  @return Entry ID
-	 */
-	public int createEntry(final String logbook, final String title, final String text,
-	        final String... filenames) throws Exception
-    {
-		final String[] captions = new String[filenames.length];
-		for (int i=0; i<captions.length; ++i)
-			captions[i] = new File(filenames[i]).getName();
-		return createEntry(logbook, title, text, filenames, captions);
-    }
 
+	/** Get the badge number for the user in the connection dictionary
+	 *
+	 *  @param user user id of person logging in.
+	 *  @return the badge number for the specified user or a default
+	 *  @throws Exception
+	 */
+	private String getBadgeNumber(final String user) throws Exception
+	{ 
+	    final PreparedStatement statement = rdb.getConnection()
+               .prepareStatement(
+                       "select bn from OPER.EMPLOYEE_V where user_id=?");
+	    try
+	    {
+	        // OPER.EMPLOYEE_V seems to only keep uppercase user_id entries
+	        statement.setString(1, user.trim().toUpperCase());
+	        statement.execute();
+	        final ResultSet result = statement.getResultSet();
+	        if (result.next())
+	        {
+	            final String badge = result.getString("bn");
+	            if (badge.length() > 1)
+	                return badge;
+	        }
+	        // No error, but also not found: fall through
+	    }
+	    finally
+	    {
+	        statement.close();
+	    }
+	    return DEFAULT_BADGE_NUMBER;
+	}
+
+    /** Query the RDB for the specified Content length.
+     * @throws Exception
+     * @return Content length specified in the RDB
+     */
+    private int getMaxContentLength() throws Exception
+    {
+        final ResultSet tables = rdb.getConnection().getMetaData()
+                .getColumns(null, "LOGBOOK", "LOG_ENTRY", "CONTENT");
+        if (!tables.next())
+            throw new Exception("Unable to locate LOGBOOK.LOG_ENTRY.CONTENT");
+        final int max_elog_text = tables.getInt("COLUMN_SIZE");
+        return max_elog_text;
+    }
+	
 	/** Create entry
 	 *  @param logbook
 	 *  @param title
@@ -80,8 +102,7 @@ public class SNSLogbookSupport
 	 *  @throws Exception
      *  @return Entry ID
 	 */
-	public int createEntry(final String logbook, final String title, final String text,
-	        final String[] filenames, final String[] captions) throws Exception
+	public int createEntry(final String logbook, final String title, final String text) throws Exception
     {
 		final int entry_id; // Entry ID from RDB
 
@@ -93,30 +114,16 @@ public class SNSLogbookSupport
 		else
 		{
 			// If text is made into an attachment due to size restraints,
-			// replace the
-			// text that is now an attachment with text to explain why there is
-			// an
-			// attachment
+			// explain why there is an attachment
 			final String info = "Input text exceeds " + MAX_TEXT_SIZE
 			        + " characters, see attachment.";
 			entry_id = createBasicEntry(logbook, title, info);
 
-			// Get a name for the created text file
-			final File tmp_file = File.createTempFile("Logbook", ".txt");
-			final String fname = tmp_file.getAbsolutePath();
-
-			// Store the oversized text entry in the text file
-			setContents(tmp_file, text);
+			// Attach text
+			final InputStream stream = new ByteArrayInputStream(text.getBytes());
 			// Add the text attachment to the elog
-			addFileToElog(fname, "A", entry_id, "Full Text");
-			tmp_file.deleteOnExit();
-		}
-
-		// Attach remaining files
-		for (int i=0; i<filenames.length; ++i)
-		{
-			final String caption = i < captions.length ? captions[i] : filenames[i];
-			addFileToElog(filenames[i], "I", entry_id, caption);
+			addAttachment(entry_id, false, "FullEntry.txt", "Full Text", stream);
+			stream.close();
 		}
 		return entry_id;
 	}
@@ -157,215 +164,63 @@ public class SNSLogbookSupport
 
 	/** Determine the type of attachment, based on file extension, and add it
      *  to the elog entry with the entry_id.
-     *
-     *  @param fname  input filename, either an image or a text file
-     *  @param fileType  "I" for image file, "A" for text file
-     *  @param entry_id  ID of entry to which to add this file
-     *  @param caption   Caption or 'title' for the attachment
-     *  @throws Exception
+	 *
+	 *  @param entry_id ID of entry to which to add this file
+	 *  @param is_image Should attachment be treated as image (for display vs. download)?
+	 *  @param fname input filename, either an image or a text file
+	 *  @param caption Caption or 'title' for the attachment
+	 *  @param stream Stream with content of the attachment
+     *  @throws Exception on error
      */
-	private void addFileToElog(final String fname, String fileType,
-	        final int entry_id, final String caption) throws Exception
+	public void addAttachment(final int entry_id, final boolean is_image,
+	        final String fname, final String caption,
+	        final InputStream stream) throws Exception
 	{
+	    // Determine file type ID used in RDB for image resp. attachment
+	    String fileType = is_image ? "I" : "A";
+	    
 		// Get the file extension
 		final int ndx = fname.lastIndexOf(".");
-		final String extension = fname.substring(ndx + 1);
-		long fileTypeID = getFileTypeId(fileType, extension);
-
+        String extension;
+        long fileTypeID;
+        if (ndx > 0)
+        {
+            extension = fname.substring(ndx + 1);
+            fileTypeID = is_image ? fetchImageTypes(extension) : fetchAttachmentTypes(extension);
+        }
+        else
+        {
+            extension = "";
+            fileTypeID = -1;
+        }
 		// If the image type cannot be found in the RDB, change its file type to
 		// an attachment and look for the
 		// extension as an attachment
-		if (fileTypeID == -1 && fileType.equals("I"))
+		if (fileTypeID == -1  &&  is_image)
 		{
 			fileType = "A";
-			fileTypeID = getFileTypeId(fileType, extension);
+			fileTypeID = fetchAttachmentTypes(extension);
 		}
+		if (fileTypeID == -1)
+		    throw new Exception("Unsupported file type for '" + fname + "'");
 
-		// Initiate the sql to add attachments to the elog
-		final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
-		        + "(?, ?, ?, ?, ?)";
+		// Submit to RDB
 		final Connection connection = rdb.getConnection();
-		final CallableStatement statement = connection.prepareCall(mysql);
+		final CallableStatement statement = connection.prepareCall(
+	        "call logbook.logbook_pkg.add_entry_attachment(?, ?, ?, ?, ?)");
 		try
 		{
 			statement.setInt(1, entry_id);
 			statement.setString(2, fileType);
 			statement.setString(3, caption);
 			statement.setLong(4, fileTypeID);
-			final File inputFile = new File(fname);
-
-			// Send the image to the sql.
-			if (fileType.equals("I"))
-			{
-				try
-				{
-					final int file_size = (int) inputFile.length();
-					final FileInputStream input_stream = new FileInputStream(
-					        inputFile);
-					statement.setBinaryStream(5, input_stream, file_size);
-					input_stream.close();
-				}
-				catch (FileNotFoundException e1)
-				{
-					System.out.println("Could not find " + fname);
-					return;
-				}
-			}
-			// Send the text attachment to the sql
-			else
-			{
-				// Create a Blob to store the attachment in.
-				final BLOB blob = BLOB.createTemporary(connection, true,
-				        BLOB.DURATION_SESSION);
-				blob.setBytes(1L, getBytesFromFile(inputFile));
-				statement.setBlob(5, blob);
-			}
+			statement.setBinaryStream(5, stream);
 			statement.executeQuery();
 		}
 		finally
 		{
 			statement.close();
 		}
-	}
-
-	/**
-     * Returns the contents of the input file in a byte array
-     * @param file File this method should read
-     * @return byte[] Returns a byte[] array of the contents of the file
-     */
-	private static byte[] getBytesFromFile(final File file) throws Exception
-	{
-		final InputStream is = new FileInputStream(file);
-		try
-		{
-    		// Get the size of the file
-    		final long length = file.length();
-    
-    		// You cannot create an array using a long type. It needs to be an int
-    		// type. Before converting to an int type, check to ensure that file is
-    		// not longer than Integer.MAX_VALUE;
-    		if (length > Integer.MAX_VALUE)
-    			throw new Exception("Cannot read files with length of " + length);
-    
-    		// Create the byte array to hold the data
-    		final byte[] bytes = new byte[(int) length];
-    
-    		// Read in the bytes
-    		int offset = 0;
-    		int numRead = 0;
-    		while ((offset < bytes.length)
-    		        && ((numRead = is.read(bytes, offset, bytes.length - offset)) >= 0))
-    		{
-    			offset += numRead;
-    		}
-    
-    		// Ensure all the bytes have been read in
-    		if (offset < bytes.length)
-    			throw new IOException("Could not completely read file " + file.getName());
-    		return bytes;
-		}
-		finally
-		{
-		    is.close();
-		}
-	}
-
-	/** Ask the RDB for the fileTypeID, based on whether an image or text is to be
-     *  attached and the file extension.
-     *
-     *  @param fileType    an "I" for image, "A" for attachment.
-     *  @param extension   extension of file to be attached
-     *
-     *  @return extensioID from the RDB, -1 if not found
-     */
-	long getFileTypeId(final String fileType, final String extension) throws Exception
-	{
-		if (fileType.equalsIgnoreCase("I"))
-			return fetchImageTypes(extension);
-
-		else
-			return fetchAttachmentTypes(extension);
-	}
-
-	/** Change the contents of text file in its entirety, overwriting any
-     *  existing text.
-     *
-     *  This style of implementation throws all exceptions to the caller.
-     *
-     *  @param aFile is an existing file which can be written to.
-     *  @throws IllegalArgumentException if param does not comply.
-     *  @throws FileNotFoundException if the file does not exist.
-     *  @throws IOException if problem encountered during write.
-     */
-	static public void setContents(final File aFile, final String aContents)
-	        throws FileNotFoundException, IOException
-	{
-		if (aFile == null)
-		{
-			throw new IllegalArgumentException("File should not be null.");
-		}
-		if (!aFile.exists())
-		{
-			throw new FileNotFoundException("File does not exist: " + aFile);
-		}
-		if (!aFile.isFile())
-		{
-			throw new IllegalArgumentException("Should not be a directory: "
-			        + aFile);
-		}
-		if (!aFile.canWrite())
-		{
-			throw new IllegalArgumentException("File cannot be written: "
-			        + aFile);
-		}
-
-		// use buffering
-		final Writer output = new BufferedWriter(new FileWriter(aFile));
-		try
-		{
-			// FileWriter always assumes default encoding is OK!
-			output.write(aContents);
-		}
-		finally
-		{
-			output.close();
-		}
-	}
-
-	/** Get the badge number for the user in the connection dictionary
-	 *
-	 *  @param user user id of person logging in.
-	 *  @return the badge number for the specified user or a default
-	 *  @throws Exception
-	 */
-	private String getBadgeNumber(final String user) throws Exception
-	{
-		final PreparedStatement statement = rdb.getConnection()
-		        .prepareStatement(
-		                "select bn from OPER.EMPLOYEE_V where user_id=?");
-		try
-		{
-			// OPER.EMPLOYEE_V seems to only keep uppercase user_id entries
-			statement.setString(1, user.trim().toUpperCase());
-			statement.execute();
-			final ResultSet result = statement.getResultSet();
-			if (result.next())
-			{
-				final String badge = result.getString("bn");
-				if (badge.length() > 1) return badge;
-			}
-			// No error, but also not found: fall through
-		}
-		finally
-		{
-			statement.close();
-		}
-		return DEFAULT_BADGE_NUMBER;
-	}
-
-	public void close()
-	{
-		rdb.close();
 	}
 
 	/** Fetch the available image types.
@@ -424,17 +279,8 @@ public class SNSLogbookSupport
 		return -1;
 	}
 
-	/** Query the RDB for the specified Content length.
-	 * @throws Exception
-	 * @return Content length specified in the RDB
-	 */
-	private int getContentLength() throws Exception
-	{
-		final ResultSet tables = rdb.getConnection().getMetaData()
-		        .getColumns(null, "LOGBOOK", "LOG_ENTRY", "CONTENT");
-		if (!tables.next())
-		    throw new Exception("Unable to locate LOGBOOK.LOG_ENTRY.CONTENT");
-		final int max_elog_text = tables.getInt("COLUMN_SIZE");
-		return max_elog_text;
-	}
+    public void close()
+    {
+    	rdb.close();
+    }
 }
