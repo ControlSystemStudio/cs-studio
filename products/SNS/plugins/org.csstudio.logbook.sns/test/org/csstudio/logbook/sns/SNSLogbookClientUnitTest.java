@@ -7,7 +7,24 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Collection;
+
+import javax.imageio.ImageIO;
 
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
@@ -15,8 +32,6 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 /** JUnit test for {@link SNSLogbookClient}
  *  @author Kay Kasemir
@@ -83,7 +98,24 @@ public class SNSLogbookClientUnitTest
         assertThat(entry.getId(), instanceOf(Integer.class));
         assertThat(entry.getText(), equalTo("Test\nThis is a test"));
     }
-    
+
+    /** Text attachment */
+    @Test //(timeout=10000)
+    public void testTextAttachment() throws Exception
+    {
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        
+        LogEntry entry = LogEntryBuilder.withText("Text attachment Test\nThis is a test")
+            .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
+            .build();
+        entry = client.createLogEntry(entry);
+        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getText(), equalTo("Text attachment Test\nThis is a test"));
+        
+        final InputStream stream = new ByteArrayInputStream("This is the attachment".getBytes());
+        client.addAttachment(entry.getId(), stream, "demo.txt");
+    }
+
     /** Long text, automatically turned into text attachment */
     @Test //(timeout=10000)
     public void testLongEntry() throws Exception
@@ -102,7 +134,43 @@ public class SNSLogbookClientUnitTest
         entry = client.createLogEntry(entry);
         assertThat(entry.getId(), instanceOf(Integer.class));
     }
+    
+    /** @return Stream for a PNG image
+     *  @throws Exception on error
+     */
+    private static InputStream createImage() throws Exception
+    {
+        int WIDTH = 400;
+        int height = 300;
+        final BufferedImage image = new BufferedImage(WIDTH , height , BufferedImage.TYPE_INT_RGB);
+        final Graphics gc = image.getGraphics();
+        gc.setColor(new Color(100,  100, 255));
+        gc.fillRect(0, 0, WIDTH, height);
+        gc.setColor(new Color(100, 0, 0));
+        final String text = "Test";
+        final int wid = gc.getFontMetrics().stringWidth(text);
+        gc.drawString(text, (WIDTH - wid)/2, height/2);
+        
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", buffer);
+        buffer.close();
+        
+        return new ByteArrayInputStream(buffer.toByteArray());
+    }
 
-    // TODO Text attachment
-    // TODO Image attachment
+    /** Image attachment */
+    @Test //(timeout=10000)
+    public void testImageAttachment() throws Exception
+    {
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        
+        LogEntry entry = LogEntryBuilder.withText("Image Test\nThis is a test")
+            .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
+            .build();
+        entry = client.createLogEntry(entry);
+        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getText(), equalTo("Image Test\nThis is a test"));
+        
+        client.addAttachment(entry.getId(), createImage(), "demo.png");
+    }
 }

@@ -13,8 +13,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import oracle.jdbc.OracleTypes;
 
@@ -122,7 +120,7 @@ public class SNSLogbookSupport
 			// Attach text
 			final InputStream stream = new ByteArrayInputStream(text.getBytes());
 			// Add the text attachment to the elog
-			addAttachment(entry_id, false, "FullEntry.txt", "Full Text", stream);
+			addAttachment(entry_id, "FullEntry.txt", "Full Text", stream);
 			stream.close();
 		}
 		return entry_id;
@@ -166,41 +164,27 @@ public class SNSLogbookSupport
      *  to the elog entry with the entry_id.
 	 *
 	 *  @param entry_id ID of entry to which to add this file
-	 *  @param is_image Should attachment be treated as image (for display vs. download)?
-	 *  @param fname input filename, either an image or a text file
+	 *  @param fname input filename, must have a file extension
 	 *  @param caption Caption or 'title' for the attachment
-	 *  @param stream Stream with content of the attachment
+	 *  @param stream Stream with attachment content
      *  @throws Exception on error
      */
-	public void addAttachment(final int entry_id, final boolean is_image,
+	public void addAttachment(final int entry_id,
 	        final String fname, final String caption,
 	        final InputStream stream) throws Exception
 	{
-	    // Determine file type ID used in RDB for image resp. attachment
-	    String fileType = is_image ? "I" : "A";
-	    
-		// Get the file extension
+		// Determine file extension
 		final int ndx = fname.lastIndexOf(".");
-        String extension;
-        long fileTypeID;
-        if (ndx > 0)
-        {
-            extension = fname.substring(ndx + 1);
-            fileTypeID = is_image ? fetchImageTypes(extension) : fetchAttachmentTypes(extension);
-        }
-        else
-        {
-            extension = "";
-            fileTypeID = -1;
-        }
-		// If the image type cannot be found in the RDB, change its file type to
-		// an attachment and look for the
-		// extension as an attachment
-		if (fileTypeID == -1  &&  is_image)
-		{
-			fileType = "A";
-			fileTypeID = fetchAttachmentTypes(extension);
-		}
+        if (ndx <= 0)
+            throw new Exception("Attachment has no file extension: " + fname);
+        final String extension = fname.substring(ndx + 1);
+        
+        // Determine file type ID used in RDB. First try image
+        long fileTypeID = fetchImageTypes(extension);
+        final boolean is_image = fileTypeID != -1;
+        // Try non-image attachment
+        if (! is_image)
+            fileTypeID = fetchAttachmentTypes(extension);
 		if (fileTypeID == -1)
 		    throw new Exception("Unsupported file type for '" + fname + "'");
 
@@ -211,7 +195,7 @@ public class SNSLogbookSupport
 		try
 		{
 			statement.setInt(1, entry_id);
-			statement.setString(2, fileType);
+			statement.setString(2, is_image ? "I" : "A");
 			statement.setString(3, caption);
 			statement.setLong(4, fileTypeID);
 			statement.setBinaryStream(5, stream);
@@ -223,62 +207,61 @@ public class SNSLogbookSupport
 		}
 	}
 
-	/** Fetch the available image types.
-	 *  @param image_type  the extension of the input image file.
+	/** Fetch type ID for image
+	 *  @param extension File extension of image file.
 	 *  @return image_type_id from the RDB, -1 if not found
-	 *  @throws Exception
+	 *  @throws Exception on error
 	 */
-	private long fetchImageTypes(final String image_type) throws Exception
+	private long fetchImageTypes(final String extension) throws Exception
 	{
-		final Statement statement = rdb.getConnection().createStatement();
+		final PreparedStatement statement = rdb.getConnection().prepareStatement(
+	        "SELECT image_type_id FROM LOGBOOK.IMAGE_TYPE WHERE UPPER(?)=UPPER(file_extension)");
 		try
 		{
-			final ResultSet result = statement
-			        .executeQuery("select * from LOGBOOK.IMAGE_TYPE");
-
-			while (result.next())
-			{
-				final long ID = result.getLong("image_type_id");
-				final String extension = result.getString("file_extension");
-				if (image_type.equalsIgnoreCase(extension)) return ID;
-			}
+		    statement.setString(1, extension);
+			final ResultSet result = statement.executeQuery();
+			final long id;
+			if (result.next())
+			    id = result.getLong(1);
+			else
+			    id = -1;
+			result.close();
+			return id;
 		}
 		finally
 		{
 			statement.close();
 		}
-		return -1;
 	}
 
-	/** Fetch the available attachment types.
-	 *  @param attachment_type  the extension of the input attachment file.
-	 *  @throws SQLException
-	 *  @throws Exception
+	/** Fetch ID for attachment
+	 *  @param extension Attachment file extension.
 	 *  @return attachment_type_id from the RDB, -1 if not found
+	 *  @throws Exception on error
 	 */
-	private long fetchAttachmentTypes(String attachment_type)
-	        throws SQLException, Exception
+	private long fetchAttachmentTypes(final String extension) throws Exception
 	{
-		final Statement statement = rdb.getConnection().createStatement();
+		final PreparedStatement statement = rdb.getConnection().prepareStatement(
+	        "SELECT attachment_type_id FROM LOGBOOK.ATTACHMENT_TYPE WHERE UPPER(file_extension)=UPPER(?)");
 		try
 		{
-			final ResultSet result = statement
-			        .executeQuery("select * from LOGBOOK.ATTACHMENT_TYPE");
-
-			while (result.next())
-			{
-				long ID = result.getLong("attachment_type_id");
-				final String extension = result.getString("file_extension");
-				if (attachment_type.equalsIgnoreCase(extension)) return ID;
-			}
+		    statement.setString(1, extension);
+			final ResultSet result = statement.executeQuery();
+			final long id;
+            if (result.next())
+                id = result.getLong(1);
+            else
+                id = -1;
+            result.close();
+            return id;
 		}
 		finally
 		{
 			statement.close();
 		}
-		return -1;
 	}
 
+	/** Close RDB connection. Must be called when done using the logbook. */
     public void close()
     {
     	rdb.close();

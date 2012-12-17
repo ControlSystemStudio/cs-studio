@@ -186,10 +186,32 @@ public class SNSLogbookClient implements LogbookClient
     }
 
     @Override
-    public Attachment addAttachment(final Object logId, final InputStream file, final String name)
+    public Attachment addAttachment(final Object logId, final InputStream stream, final String name)
             throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        final int entry_id = getEntryID(logId);
+        
+        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        try
+        {
+            support.addAttachment(entry_id, name, name, stream);
+        }
+        finally
+        {
+            support.close();
+        }
+        
+        return new SNSAttachment();
+    }
+
+    /** @param logId Log ID as used by {@link LogbookClient} API
+     *  @return Log entry ID of SNS logbook
+     *  @throws Exception on error
+     */
+    private int getEntryID(final Object logId) throws Exception
+    {
+        if (! (logId instanceof Integer))
+            throw new Exception("Expecting Integer log entry ID");
+        return ((Integer) logId).intValue();
     }
 }
