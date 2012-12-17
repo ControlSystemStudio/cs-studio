@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import javax.imageio.ImageIO;
 
+import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
@@ -95,13 +96,13 @@ public class SNSLogbookClientUnitTest
             .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
             .build();
         entry = client.createLogEntry(entry);
-        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getId(), instanceOf(Long.class));
         assertThat(entry.getText(), equalTo("Test\nThis is a test"));
     }
 
     /** Text attachment */
     @Test //(timeout=10000)
-    public void testTextAttachment() throws Exception
+    public void testAddTextAttachment() throws Exception
     {
         final LogbookClient client = new SNSLogbookClientFactory().getClient();
         
@@ -109,7 +110,7 @@ public class SNSLogbookClientUnitTest
             .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
             .build();
         entry = client.createLogEntry(entry);
-        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getId(), instanceOf(Long.class));
         assertThat(entry.getText(), equalTo("Text attachment Test\nThis is a test"));
         
         final InputStream stream = new ByteArrayInputStream("This is the attachment".getBytes());
@@ -132,7 +133,7 @@ public class SNSLogbookClientUnitTest
             .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
             .build();
         entry = client.createLogEntry(entry);
-        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getId(), instanceOf(Long.class));
     }
     
     /** @return Stream for a PNG image
@@ -160,7 +161,7 @@ public class SNSLogbookClientUnitTest
 
     /** Image attachment */
     @Test //(timeout=10000)
-    public void testImageAttachment() throws Exception
+    public void testAddImageAttachment() throws Exception
     {
         final LogbookClient client = new SNSLogbookClientFactory().getClient();
         
@@ -168,9 +169,25 @@ public class SNSLogbookClientUnitTest
             .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
             .build();
         entry = client.createLogEntry(entry);
-        assertThat(entry.getId(), instanceOf(Integer.class));
+        assertThat(entry.getId(), instanceOf(Long.class));
         assertThat(entry.getText(), equalTo("Image Test\nThis is a test"));
         
         client.addAttachment(entry.getId(), createImage(), "demo.png");
+    }
+
+
+    /** Entry with immediate Image attachment */
+    @Test //(timeout=20000)
+    public void testEntryWithImage() throws Exception
+    {
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        
+        LogEntry entry = LogEntryBuilder.withText("Entry with Image\nThis is a test")
+            .addLogbook(LogbookBuilder.logbook(Preferences.getDefaultLogbook()))
+            .attach(AttachmentBuilder.attachment("demo.png").inputStream(createImage()))
+            .build();
+        entry = client.createLogEntry(entry);
+        assertThat(entry.getId(), instanceOf(Long.class));
+        assertThat(entry.getText(), equalTo("Entry with Image\nThis is a test"));
     }
 }

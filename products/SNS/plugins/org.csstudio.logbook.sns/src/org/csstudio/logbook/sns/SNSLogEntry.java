@@ -21,10 +21,10 @@ import org.csstudio.logbook.Tag;
  */
 public class SNSLogEntry implements LogEntry
 {
-    final private Integer id;
+    final private Long id;
     final private LogEntry info;
     
-    public SNSLogEntry(final int id, final LogEntry entry)
+    public SNSLogEntry(final long id, final LogEntry entry)
     {
         this.id = id;
         this.info = entry;

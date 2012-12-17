@@ -100,9 +100,9 @@ public class SNSLogbookSupport
 	 *  @throws Exception
      *  @return Entry ID
 	 */
-	public int createEntry(final String logbook, final String title, final String text) throws Exception
+	public long createEntry(final String logbook, final String title, final String text) throws Exception
     {
-		final int entry_id; // Entry ID from RDB
+		final long entry_id; // Entry ID from RDB
 
 		if (text.length() < MAX_TEXT_SIZE)
 		{
@@ -134,7 +134,7 @@ public class SNSLogbookSupport
 	 *  @param text text for the elog entry
 	 *  @throws Exception on error
 	 */
-	private int createBasicEntry(final String logbook, final String title, final String text)
+	private long createBasicEntry(final String logbook, final String title, final String text)
 	        throws Exception
 	{
 		// Initiate the multi-file sql and retrieve the entry_id
@@ -151,55 +151,7 @@ public class SNSLogbookSupport
 			statement.setString(5, text);
 			statement.registerOutParameter(6, OracleTypes.NUMBER);
 			statement.executeQuery();
-			final int entry_id = Integer.parseInt(statement.getString(6));
-			return entry_id;
-		}
-		finally
-		{
-			statement.close();
-		}
-	}
-
-	/** Determine the type of attachment, based on file extension, and add it
-     *  to the elog entry with the entry_id.
-	 *
-	 *  @param entry_id ID of entry to which to add this file
-	 *  @param fname input filename, must have a file extension
-	 *  @param caption Caption or 'title' for the attachment
-	 *  @param stream Stream with attachment content
-     *  @throws Exception on error
-     */
-	public void addAttachment(final int entry_id,
-	        final String fname, final String caption,
-	        final InputStream stream) throws Exception
-	{
-		// Determine file extension
-		final int ndx = fname.lastIndexOf(".");
-        if (ndx <= 0)
-            throw new Exception("Attachment has no file extension: " + fname);
-        final String extension = fname.substring(ndx + 1);
-        
-        // Determine file type ID used in RDB. First try image
-        long fileTypeID = fetchImageTypes(extension);
-        final boolean is_image = fileTypeID != -1;
-        // Try non-image attachment
-        if (! is_image)
-            fileTypeID = fetchAttachmentTypes(extension);
-		if (fileTypeID == -1)
-		    throw new Exception("Unsupported file type for '" + fname + "'");
-
-		// Submit to RDB
-		final Connection connection = rdb.getConnection();
-		final CallableStatement statement = connection.prepareCall(
-	        "call logbook.logbook_pkg.add_entry_attachment(?, ?, ?, ?, ?)");
-		try
-		{
-			statement.setInt(1, entry_id);
-			statement.setString(2, is_image ? "I" : "A");
-			statement.setString(3, caption);
-			statement.setLong(4, fileTypeID);
-			statement.setBinaryStream(5, stream);
-			statement.executeQuery();
+			return statement.getLong(6);
 		}
 		finally
 		{
@@ -216,24 +168,35 @@ public class SNSLogbookSupport
 	{
 		final PreparedStatement statement = rdb.getConnection().prepareStatement(
 	        "SELECT image_type_id FROM LOGBOOK.IMAGE_TYPE WHERE UPPER(?)=UPPER(file_extension)");
-		try
-		{
-		    statement.setString(1, extension);
-			final ResultSet result = statement.executeQuery();
-			final long id;
-			if (result.next())
-			    id = result.getLong(1);
-			else
-			    id = -1;
-			result.close();
-			return id;
-		}
-		finally
-		{
-			statement.close();
-		}
+	    statement.setString(1, extension);
+	    return fetchLongResult(statement);
 	}
 
+	/** Execute statement and return the first 'long' result
+     *  @param statement Statement to execute
+     *  @return First result, -1 if nothing was found
+     *  @throws Exception on error
+     */
+    private long fetchLongResult(final PreparedStatement statement) throws Exception
+    {
+        try
+        {
+            final ResultSet result = statement.executeQuery();
+            final long id;
+            if (result.next())
+                id = result.getLong(1);
+            else
+                id = -1;
+            result.close();
+            return id;
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
+
+	
 	/** Fetch ID for attachment
 	 *  @param extension Attachment file extension.
 	 *  @return attachment_type_id from the RDB, -1 if not found
@@ -243,25 +206,104 @@ public class SNSLogbookSupport
 	{
 		final PreparedStatement statement = rdb.getConnection().prepareStatement(
 	        "SELECT attachment_type_id FROM LOGBOOK.ATTACHMENT_TYPE WHERE UPPER(file_extension)=UPPER(?)");
-		try
-		{
-		    statement.setString(1, extension);
-			final ResultSet result = statement.executeQuery();
-			final long id;
-            if (result.next())
-                id = result.getLong(1);
-            else
-                id = -1;
-            result.close();
-            return id;
-		}
-		finally
-		{
-			statement.close();
-		}
+	    statement.setString(1, extension);
+        return fetchLongResult(statement);
 	}
 
-	/** Close RDB connection. Must be called when done using the logbook. */
+	/** Determine the type of attachment, based on file extension, and add it
+     *  to the elog entry with the entry_id.
+     *
+     *  @param entry_id ID of entry to which to add this file
+     *  @param fname input filename, must have a file extension
+     *  @param caption Caption or 'title' for the attachment
+     *  @param stream Stream with attachment content
+	 * @return 
+     *  @throws Exception on error
+     */
+    public SNSAttachment addAttachment(final long entry_id,
+            final String fname, final String caption,
+            final InputStream stream) throws Exception
+    {
+    	// Determine file extension
+    	final int ndx = fname.lastIndexOf(".");
+        if (ndx <= 0)
+            throw new Exception("Attachment has no file extension: " + fname);
+        final String extension = fname.substring(ndx + 1);
+        
+        // Determine file type ID used in RDB. First try image
+        long fileTypeID = fetchImageTypes(extension);
+        final boolean is_image = fileTypeID != -1;
+        // Try non-image attachment
+        if (! is_image)
+            fileTypeID = fetchAttachmentTypes(extension);
+    	if (fileTypeID == -1)
+    	    throw new Exception("Unsupported file type for '" + fname + "'");
+    
+    	// Submit to RDB
+    	final Connection connection = rdb.getConnection();
+    	final CallableStatement statement = connection.prepareCall(
+            "call logbook.logbook_pkg.add_entry_attachment(?, ?, ?, ?, ?)");
+    	try
+    	{
+    		statement.setLong(1, entry_id);
+    		statement.setString(2, is_image ? "I" : "A");
+    		statement.setString(3, caption);
+    		statement.setLong(4, fileTypeID);
+    		statement.setBinaryStream(5, stream);
+    		statement.executeQuery();
+    	}
+    	finally
+    	{
+    		statement.close();
+    	}
+    	final long attachment_id = is_image
+	        ? getLastImageAttachment(entry_id)
+            : getLastOtherAttachment(entry_id);
+    	
+        return new SNSAttachment(is_image, attachment_id);
+    }
+
+    /** Obtain ID of most recent image attachment
+     *  
+     *  <p>When using the stored procedure to add an attachment,
+     *  we don't receive the ID of the attachment.
+     *  But it is quite save to assume that the one we just
+     *  attached to a new entry is the one with the highest
+     *  ID.
+     *  @param entry_id Log entry ID
+     *  @return ID of attachment or -1
+     *  @throws Exception on error
+     */
+    private long getLastImageAttachment(final long entry_id) throws Exception
+    {
+        final Connection connection = rdb.getConnection();
+        final CallableStatement statement = connection.prepareCall(
+            "SELECT image_id FROM LOGBOOK.LOG_ENTRY_IMAGE" +
+            " WHERE log_entry_id=?" +
+            " ORDER BY image_id DESC");
+        statement.setLong(1, entry_id);
+        return fetchLongResult(statement);
+    }
+
+    /** Obtain ID of most recent non-image attachment
+     *  
+     *  @see #getLastImageAttachment(long)
+     *  @param entry_id Log entry ID
+     *  @return ID of attachment or -1
+     *  @throws Exception on error
+     */
+    private long getLastOtherAttachment(final long entry_id) throws Exception
+    {
+        final Connection connection = rdb.getConnection();
+        final CallableStatement statement = connection.prepareCall(
+            "SELECT attachment_id FROM LOGBOOK.LOG_ENTRY_ATTACHMENT" +
+            " WHERE log_entry_id=?" +
+            " ORDER BY attachment_id DESC");
+        statement.setLong(1, entry_id);
+        return fetchLongResult(statement);
+    }
+
+    /** Close RDB connection. Must be called when done using the logbook. */
     public void close()
     {
     	rdb.close();

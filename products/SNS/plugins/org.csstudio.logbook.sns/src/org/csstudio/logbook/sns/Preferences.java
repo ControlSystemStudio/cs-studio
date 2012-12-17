@@ -60,7 +60,7 @@ public class Preferences
    {
        final IPreferencesService service = Platform.getPreferencesService();
        if (service != null)
-           return service.getString(Activator.ID, "logbook_name", null, null);
+           return service.getString(Activator.ID, key, null, null);
        // Running as test, read setting from file
        final BufferedReader reader = new BufferedReader(new FileReader("preferences.ini"));
        try

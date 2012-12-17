@@ -135,10 +135,18 @@ public class SNSLogbookClient implements LogbookClient
         final String logbook = entry.getLogbooks().iterator().next().getName();
         
         final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
-        final int id;
+        final long id;
         try
         {
             id = support.createEntry(logbook, title, text);
+            // Add optional attachments
+            for (Attachment attachment : entry.getAttachment())
+            {
+                final String name = attachment.getFileName();
+                final InputStream stream = attachment.getInputStream();
+                if (stream != null)
+                    support.addAttachment(id, name, name, stream);
+            }
         }
         finally
         {
@@ -189,29 +197,27 @@ public class SNSLogbookClient implements LogbookClient
     public Attachment addAttachment(final Object logId, final InputStream stream, final String name)
             throws Exception
     {
-        final int entry_id = getEntryID(logId);
+        final long entry_id = getEntryID(logId);
         
         final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
         try
         {
-            support.addAttachment(entry_id, name, name, stream);
+            return support.addAttachment(entry_id, name, name, stream);
         }
         finally
         {
             support.close();
         }
-        
-        return new SNSAttachment();
     }
 
     /** @param logId Log ID as used by {@link LogbookClient} API
      *  @return Log entry ID of SNS logbook
      *  @throws Exception on error
      */
-    private int getEntryID(final Object logId) throws Exception
+    private long getEntryID(final Object logId) throws Exception
     {
-        if (! (logId instanceof Integer))
+        if (! (logId instanceof Long))
             throw new Exception("Expecting Integer log entry ID");
-        return ((Integer) logId).intValue();
+        return ((Long) logId).intValue();
     }
 }

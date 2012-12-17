@@ -19,7 +19,7 @@ public class SNSLogbookClientFactory implements LogbookClientFactory
     @Override
     public LogbookClient getClient() throws Exception
     {
-        return new SNSLogbookClient(Preferences.getURL(), Preferences.getLogListUser(), Preferences.getLogListPassword());
+        return getClient(Preferences.getLogListUser(), Preferences.getLogListPassword());
     }
 
     @Override
