@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import javax.imageio.ImageIO;
 
+import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
@@ -33,7 +34,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Tag;
-import org.csstudio.logbook.TagBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test for {@link SNSLogbookClient}
@@ -191,7 +192,6 @@ public class SNSLogbookClientUnitTest
         client.addAttachment(entry.getId(), createImage(), "demo.png");
     }
 
-
     /** Entry with immediate Image attachment */
     @Test //(timeout=20000)
     public void testEntryWithImage() throws Exception
@@ -205,5 +205,25 @@ public class SNSLogbookClientUnitTest
         entry = client.createLogEntry(entry);
         assertThat(entry.getId(), instanceOf(Long.class));
         assertThat(entry.getText(), equalTo("Entry with Image\nThis is a test"));
+    }
+
+    /** Read some specific attachments */
+    @Ignore
+    @Test
+    public void testReadAttachments() throws Exception
+    {
+        final SNSLogbookSupport logbook = new SNSLogbookSupport(Preferences.getURL(), Preferences.getLogListUser(), Preferences.getLogListPassword());
+        Collection<Attachment> attachments = logbook.getImageAttachments(395343);
+        for (Attachment attachment : attachments)
+            System.out.println(attachment.getFileName());
+        attachments = logbook.getOtherAttachments(395216);
+        for (Attachment attachment : attachments)
+        {
+            System.out.println(attachment.getFileName());
+            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            StreamHelper.copy(attachment.getInputStream(), buf);
+            System.out.println(buf.toString());
+        }
+        logbook.close();
     }
 }

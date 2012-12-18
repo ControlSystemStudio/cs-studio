@@ -21,13 +21,16 @@ import org.csstudio.logbook.Tag;
  */
 public class SNSLogEntry implements LogEntry
 {
+    final private Date date = new Date();
     final private Long id;
     final private LogEntry info;
+    final private Collection<Attachment> attachments;
     
-    public SNSLogEntry(final long id, final LogEntry entry)
+    public SNSLogEntry(final long id, final LogEntry entry, final Collection<Attachment> attachments)
     {
         this.id = id;
         this.info = entry;
+        this.attachments = attachments;
     }
 
     @Override
@@ -51,19 +54,19 @@ public class SNSLogEntry implements LogEntry
     @Override
     public Date getCreateDate()
     {
-        return info.getCreateDate();
+        return date;
     }
 
     @Override
     public Date getModifiedDate()
     {
-        return info.getModifiedDate();
+        return date;
     }
 
     @Override
     public Collection<Attachment> getAttachment()
     {
-        return info.getAttachment();
+        return attachments;
     }
 
     @Override
