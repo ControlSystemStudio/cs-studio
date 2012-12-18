@@ -44,7 +44,7 @@ public class StringListSelectionWidget extends Composite {
 		Label lblSelectedOptions = new Label(this, SWT.NONE);
 		lblSelectedOptions.setText("Selected:");
 
-		unselected = new org.eclipse.swt.widgets.List(this, SWT.BORDER);
+		unselected = new org.eclipse.swt.widgets.List(this, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		unselected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
 
@@ -133,7 +133,7 @@ public class StringListSelectionWidget extends Composite {
 			}
 		});
 
-		selected = new org.eclipse.swt.widgets.List(this, SWT.BORDER);
+		selected = new org.eclipse.swt.widgets.List(this, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		selected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
 				1));
 
