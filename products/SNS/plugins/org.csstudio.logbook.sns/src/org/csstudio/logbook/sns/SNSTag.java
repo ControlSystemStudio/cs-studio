@@ -7,19 +7,29 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns;
 
-import org.csstudio.logbook.Logbook;
+import org.csstudio.logbook.Tag;
 
-/** SNS logbook
+/** {@link Tag} for SNS logbook
+ * 
+ *  <p>Uses the 'categories'
+ * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SNSLogbook implements Logbook
+public class SNSTag implements Tag
 {
+    final private String id;
     final private String name;
-    
-    public SNSLogbook(final String name)
+
+    public SNSTag(final String id, final String name)
     {
+        this.id = id;
         this.name = name;
+    }
+
+    public String getID()
+    {
+        return id;
     }
     
     @Override
@@ -29,14 +39,14 @@ public class SNSLogbook implements Logbook
     }
 
     @Override
-    public String getOwner()
+    public String getState()
     {
-        return "";
+        return null;
     }
-
+    
     @Override
     public String toString()
     {
-        return "Logbook '" + name + "'";
+        return "Tag '" + name + "' (" + id + ")";
     }
 }

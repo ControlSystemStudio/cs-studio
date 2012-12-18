@@ -7,36 +7,19 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns;
 
-import org.csstudio.logbook.Logbook;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
-/** SNS logbook
+/** JUnit test for {@link Preferences}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SNSLogbook implements Logbook
+public class PreferencesUnitTest
 {
-    final private String name;
-    
-    public SNSLogbook(final String name)
+    @Test
+    public void testPreferences() throws Exception
     {
-        this.name = name;
-    }
-    
-    @Override
-    public String getName()
-    {
-        return name;
-    }
-
-    @Override
-    public String getOwner()
-    {
-        return "";
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Logbook '" + name + "'";
+        assertThat(Preferences.getDefaultLogbook(), equalTo("Scratch Pad"));
     }
 }
