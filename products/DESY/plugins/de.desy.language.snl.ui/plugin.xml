@@ -138,6 +138,7 @@
             name="SNL Development">
       </perspective>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -156,6 +157,7 @@
             sequence="M1+G">
       </key>
    </extension>
+   -->
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
