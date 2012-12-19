@@ -65,7 +65,7 @@ public class ControllerDemo
 
         item = new PVItem("sim://ramp(0, 2, 40, 0.5)", 0);
         item.setDisplayName("Ramp (monitored)");
-        item.setAxis(model.addAxis());
+        item.setAxis(model.addAxis(item.getDisplayName()));
         model.addItem(item);
 
         final ArchiveDataSource archive = new ArchiveDataSource("jdbc:oracle:thin:sns_reports/sns@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))",
@@ -73,13 +73,13 @@ public class ControllerDemo
         item = new PVItem("CCL_LLRF:IOC1:Load", 0);
         ((PVItem)item).addArchiveDataSource(archive);
         item.setDisplayName("CCL 1 CPU Load (monitored)");
-        item.setAxis(model.addAxis());
+        item.setAxis(model.addAxis(item.getDisplayName()));
         model.addItem(item);
 
         item = new PVItem("DTL_LLRF:IOC1:Load", 1.0);
         ((PVItem)item).addArchiveDataSource(archive);
         item.setDisplayName("DTL 1 CPU Load (1 sec)");
-        item.setAxis(model.addAxis());
+        item.setAxis(model.addAxis(item.getDisplayName()));
         model.addItem(item);
 
         item = new FormulaItem("calc", "dtl-10",

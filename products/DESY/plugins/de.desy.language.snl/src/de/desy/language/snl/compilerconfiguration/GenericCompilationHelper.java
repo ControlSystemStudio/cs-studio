@@ -41,30 +41,36 @@ public class GenericCompilationHelper {
 		return error;
 	}
 
-	private ErrorUnit createErrorUnit(Pattern errorPattern, String rawMessage, String rawDetails) {
+	private ErrorUnit createErrorUnit(Pattern errorPattern, String rawMessage,
+			String rawDetails) {
 		ErrorUnit error;
-		if (errorPattern == null ) {
+		if (errorPattern == null) {
 			String message = rawMessage;
 			String details = rawDetails;
 			if (rawMessage.contains("\n")) {
 				int lineBreak = rawMessage.indexOf("\n");
 				message = rawMessage.substring(0, lineBreak);
-				String detailsPart = rawMessage.substring(lineBreak+1);
+				String detailsPart = rawMessage.substring(lineBreak + 1);
 				if (detailsPart != null && detailsPart.trim().length() > 0) {
-					details = detailsPart + "\n" +rawDetails;
+					details = detailsPart + "\n" + rawDetails;
 				}
 			}
 			List<String> errorList = new ArrayList<String>();
 			errorList.add(details);
 			error = new ErrorUnit(message, errorList);
 		} else {
-			Matcher resultMatcher = errorPattern.matcher(rawMessage);
-			resultMatcher.find();
-			String clearedMessage = resultMatcher.group(5).trim();
-			int lineNumber = Integer.parseInt(resultMatcher.group(2).trim());
 			List<String> errorList = new ArrayList<String>();
 			errorList.add(rawDetails);
-			error = new ErrorUnit(clearedMessage, lineNumber, errorList);
+
+			Matcher resultMatcher = errorPattern.matcher(rawMessage);
+			if (resultMatcher.find()) {
+				String clearedMessage = resultMatcher.group(5).trim();
+				int lineNumber = Integer
+						.parseInt(resultMatcher.group(2).trim());
+				error = new ErrorUnit(clearedMessage, lineNumber, errorList);
+			} else {
+				error = new ErrorUnit(rawMessage, errorList);
+			}
 		}
 		return error;
 	}

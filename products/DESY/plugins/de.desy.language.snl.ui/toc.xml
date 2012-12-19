@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#editors" label="SNL Editor">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#editors" label="SNL Editor">
 <!-- 	<topic label="Synoptic Display Studio"> -->
 		<topic label="SNL Editor" href="html/SnlEditor.htm">
 		</topic>

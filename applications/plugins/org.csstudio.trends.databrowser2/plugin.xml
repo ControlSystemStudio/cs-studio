@@ -139,13 +139,6 @@
       </cheatsheet>
    </extension>
    <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="intro/firststeps.xml"
-            configId="org.eclipse.ui.intro.universalConfig">
-      </configExtension>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.csstudio.trends.databrowser2.OpenDataBrowserPopup"

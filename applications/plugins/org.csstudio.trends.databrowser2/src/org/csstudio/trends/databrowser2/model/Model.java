@@ -319,6 +319,18 @@ public class Model
                 return item;
         return null;
     }
+    
+    /** @param axis Axis to test
+     *  @return ModelItem linked to this axis count
+     */
+    public int countActiveItemsOnAxis(final AxisConfig axis)
+    {
+		int count = 0;
+		for (ModelItem item : items)
+			if (item.getAxis() == axis && item.isVisible())
+				count++;
+		return count;
+    }
 
     /** @return First unused axis (no items on axis),
      *          <code>null</code> if none found
@@ -334,13 +346,14 @@ public class Model
     /** Add value axis with default settings
      *  @return Newly added axis configuration
      */
-    public AxisConfig addAxis()
+    public AxisConfig addAxis(String name)
     {
-        final AxisConfig axis = new AxisConfig(
-                NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1));
-        axis.setColor(getNextItemColor());
-        addAxis(axis);
-        return axis;
+		if (name == null)
+			name = NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount() + 1);
+		final AxisConfig axis = new AxisConfig(name);
+		axis.setColor(getNextItemColor());
+		addAxis(axis);
+		return axis;
     }
 
     /** @param axis New axis to add */
@@ -485,7 +498,7 @@ public class Model
         if (item.getAxis() == null)
         {
             if (axes.size() == 0)
-                addAxis();
+                addAxis(item.getDisplayName());
             item.setAxis(axes.get(0));
         }
         // Check item axis

@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.palette;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -72,9 +74,15 @@ public class OPIEditorPaletteFactory {
 	private static void createPaletteContents(PaletteRoot palette){
 		Map<String, List<String>> categoriesMap = 
 			WidgetsService.getInstance().getAllCategoriesMap();
+		String[] hiddenWidgets = PreferencesHelper.getHiddenWidgets();
+		List<String> hiddenWidgetsList = null;
+		if(hiddenWidgets != null)
+			hiddenWidgetsList = Arrays.asList(hiddenWidgets);
 		for(final Map.Entry<String, List<String>> entry: categoriesMap.entrySet()){
 			PaletteDrawer categoryDrawer = new PaletteDrawer(entry.getKey());
 			for(String typeId : entry.getValue()){
+				if(hiddenWidgetsList != null && hiddenWidgetsList.indexOf(typeId) >=0)
+					continue;
 				WidgetDescriptor widgetDescriptor = 
 					WidgetsService.getInstance().getWidgetDescriptor(typeId);
 				ImageDescriptor icon = CustomMediaFactory.getInstance().

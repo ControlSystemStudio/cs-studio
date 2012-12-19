@@ -1,6 +1,5 @@
 package de.desy.language.snl.ui.wizards;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -36,8 +35,8 @@ public class SNLFileWizard extends Wizard implements INewWizard {
 		this.workbench = workbench1;
 		this.selection = selection1;
 		this.setWindowTitle("SNL File Creation Wizard");
-		this.setDefaultPageImageDescriptor(ImageDescriptor.createFromFile(
-				NewSNLProjectWizard.class, "sheet.gif"));
+//		this.setDefaultPageImageDescriptor(ImageDescriptor.createFromFile(
+//				NewSNLProjectWizard.class, "sheet.gif"));
 	}
 
 	/**
