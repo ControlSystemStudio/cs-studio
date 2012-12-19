@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 
 /** Undo-able command to change a PV item's request type
@@ -39,14 +40,24 @@ public class ChangeVisibilityCommand implements IUndoableCommand
     @Override
     public void redo()
     {
-        item.setVisible(new_visibility);
+		AxisConfig axis = item.getAxis();
+		// check if this is the last/only visible item on the axis
+		if (item.getModel().countActiveItemsOnAxis(axis) < 2) {
+			axis.setVisible(new_visibility);
+		}
+		item.setVisible(new_visibility);
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-        item.setVisible(old_visibility);
+		AxisConfig axis = item.getAxis();
+		// check if this is the last/only visible item on the axis
+		if (item.getModel().countActiveItemsOnAxis(axis) < 2) {
+			axis.setVisible(old_visibility);
+		}
+		item.setVisible(old_visibility);
     }
 
     /** @return Command name that appears in undo/redo menu */

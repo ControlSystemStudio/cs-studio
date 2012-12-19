@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Element;
@@ -176,7 +177,7 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
+		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, Preferences.useAutoScale(), false);
 	}
 
 	/**
