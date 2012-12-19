@@ -3,7 +3,7 @@
     <extensionContent id="org.csstudio.iter.css.product.overview" name="ITER CSS" style="css/style.css" path="overview/@">
         <group id="content-group" style-id="content-group">
             <link id="cssiter" label="CSS for ITER" style-id="content-link"
-                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/toc/html/toc.html" >
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/html/overview.html" >
 				<text>
 				  CSS is a collection of control system tools, and this version of CSS
 				  was pre-configured for CODAC Core System to control and monitor a
