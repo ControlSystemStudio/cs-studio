@@ -21,7 +21,7 @@ echo Fetching sources
 $ANT get_sources
 
 PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
-FEATS="config_build_optional config_build_scan"
+FEATS="config_build_optional config_build_scan config_build_beamline_image"
 
 # Build products and features
 for PROD in $PRODS
