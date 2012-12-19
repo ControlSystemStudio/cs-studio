@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.ui.util.swt.ImagePreview;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -144,7 +145,9 @@ public class ImageTabFolder
         box.setLayout(new GridLayout(2, false));
 
         // Preview
-        final ImagePreview image_preview = new ImagePreview(box, null, filename);
+        final ImagePreview image_preview = new ImagePreview(box);
+        image_preview.setImage(filename);
+        image_preview.setToolTipText(filename);
         image_preview.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // Delete button

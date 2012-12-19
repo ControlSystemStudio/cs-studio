@@ -98,12 +98,25 @@ public class SNSLogbookClient implements LogbookClient
         return Collections.emptyList();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Collection<Attachment> listAttachments(Object logId)
+    public Collection<Attachment> listAttachments(final Object logId)
             throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        final long entry_id = getEntryID(logId);
+        
+        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        try
+        {
+            final List<Attachment> attachments = new ArrayList<>();
+            attachments.addAll(support.getImageAttachments(entry_id));
+            attachments.addAll(support.getOtherAttachments(entry_id));
+            return attachments;
+        }
+        finally
+        {
+            support.close();
+        }
     }
 
     @Override
@@ -145,6 +158,7 @@ public class SNSLogbookClient implements LogbookClient
         
         final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
         final long id;
+        final List<Attachment> attachments = new ArrayList<>();
         try
         {
             id = support.createEntry(logbook, title, text);
@@ -159,14 +173,14 @@ public class SNSLogbookClient implements LogbookClient
                 final String name = attachment.getFileName();
                 final InputStream stream = attachment.getInputStream();
                 if (stream != null)
-                    support.addAttachment(id, name, name, stream);
+                    attachments.add(support.addAttachment(id, name, name, stream));
             }
         }
         finally
         {
             support.close();
         }
-        return new SNSLogEntry(id, entry);
+        return new SNSLogEntry(id, entry, attachments);
     }
 
     /** Split complete logbook text into title and content

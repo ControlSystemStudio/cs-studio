@@ -9,10 +9,11 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.apputil.ui.swt.ImagePreview;
+import org.csstudio.ui.util.swt.ImagePreview;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -168,7 +169,7 @@ public class ImageStackWidget extends Composite {
 						}
 					} else {
 						tableViewer.setInput(null);
-						imagePreview.setImage(null);
+						imagePreview.setImage((InputStream)null);
 					}
 					tableViewer.refresh();
 					imagePreview.redraw();

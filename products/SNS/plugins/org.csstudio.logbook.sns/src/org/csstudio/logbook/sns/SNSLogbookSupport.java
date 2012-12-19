@@ -8,7 +8,9 @@
 package org.csstudio.logbook.sns;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import oracle.jdbc.OracleTypes;
 
+import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.Tag;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
@@ -107,7 +110,7 @@ public class SNSLogbookSupport
      */
     private Collection<Tag> readTags() throws Exception
     {
-        final List<Tag> tags = new ArrayList<Tag>();
+        final List<Tag> tags = new ArrayList<>();
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
@@ -275,7 +278,15 @@ public class SNSLogbookSupport
             fileTypeID = fetchAttachmentTypes(extension);
     	if (fileTypeID == -1)
     	    throw new Exception("Unsupported file type for '" + fname + "'");
-    
+
+    	// Buffer the attachment data so that we can return it
+    	ByteArrayOutputStream data_buf = new ByteArrayOutputStream();
+    	StreamHelper.copy(stream, data_buf);
+    	stream.close();
+    	final byte[] data = data_buf.toByteArray();
+    	data_buf.close();
+    	data_buf = null;
+    	
     	// Submit to RDB
     	final Connection connection = rdb.getConnection();
     	final CallableStatement statement = connection.prepareCall(
@@ -286,60 +297,85 @@ public class SNSLogbookSupport
     		statement.setString(2, is_image ? "I" : "A");
     		statement.setString(3, caption);
     		statement.setLong(4, fileTypeID);
-    		statement.setBinaryStream(5, stream);
+    		statement.setBinaryStream(5, new ByteArrayInputStream(data));
     		statement.executeQuery();
     	}
     	finally
     	{
     		statement.close();
     	}
-    	final long attachment_id = is_image
-	        ? getLastImageAttachment(entry_id)
-            : getLastOtherAttachment(entry_id);
     	
-        return new SNSAttachment(is_image, attachment_id);
+        return new SNSAttachment(fname, data);
     }
 
-    /** Obtain ID of most recent image attachment
-     *  
-     *  <p>When using the stored procedure to add an attachment,
-     *  we don't receive the ID of the attachment.
-     *  But it is quite save to assume that the one we just
-     *  attached to a new entry is the one with the highest
-     *  ID.
+    /** Obtain image attachments
      *  @param entry_id Log entry ID
-     *  @return ID of attachment or -1
+     *  @return Image Attachments
      *  @throws Exception on error
      */
-    private long getLastImageAttachment(final long entry_id) throws Exception
+    public Collection<Attachment> getImageAttachments(final long entry_id) throws Exception
     {
+        final List<Attachment> images = new ArrayList<>();
         final Connection connection = rdb.getConnection();
         final PreparedStatement statement = connection.prepareStatement(
-            "SELECT image_id FROM LOGBOOK.LOG_ENTRY_IMAGE" +
-            " WHERE log_entry_id=?" +
-            " ORDER BY image_id DESC");
-        statement.setLong(1, entry_id);
-        return fetchLongResult(statement);
+            "SELECT e.image_id, i.image_nm, t.image_type_nm, i.image_data" +
+            " FROM LOGBOOK.LOG_ENTRY_IMAGE e" +
+            " JOIN LOGBOOK.IMAGE i ON e.image_id = i.image_id" +
+            " JOIN LOGBOOK.IMAGE_TYPE t ON i.image_type_id = t.image_type_id" +
+            " WHERE log_entry_id=?");
+        try
+        {
+            statement.setLong(1, entry_id);
+            final ResultSet result = statement.executeQuery();
+            while (result.next())
+            {
+                final String name = result.getString(2);
+                final Blob blob = result.getBlob(4);
+                final byte[] data = blob.getBytes(1, (int) blob.length());
+                images.add(new SNSAttachment(name, data));
+            }
+        }
+        finally
+        {
+            statement.close();
+        }
+        return images;
     }
 
-    /** Obtain ID of most recent non-image attachment
-     *  
-     *  @see #getLastImageAttachment(long)
+    /** Obtain non-image attachments
      *  @param entry_id Log entry ID
-     *  @return ID of attachment or -1
+     *  @return Attachments
      *  @throws Exception on error
      */
-    private long getLastOtherAttachment(final long entry_id) throws Exception
+    public Collection<Attachment> getOtherAttachments(final long entry_id) throws Exception
     {
+        final List<Attachment> attachments = new ArrayList<>();
         final Connection connection = rdb.getConnection();
         final PreparedStatement statement = connection.prepareStatement(
-            "SELECT attachment_id FROM LOGBOOK.LOG_ENTRY_ATTACHMENT" +
-            " WHERE log_entry_id=?" +
-            " ORDER BY attachment_id DESC");
-        statement.setLong(1, entry_id);
-        return fetchLongResult(statement);
+            "SELECT e.attachment_id, a.attachment_nm, t.attachment_type_nm, a.attachment_data, t.file_extension" +
+            " FROM LOGBOOK.LOG_ENTRY_ATTACHMENT e" +
+            " JOIN LOGBOOK.ATTACHMENT a ON e.attachment_id = a.attachment_id" +
+            " JOIN LOGBOOK.ATTACHMENT_TYPE t ON a.attachment_type_id = t.attachment_type_id" +
+            " WHERE log_entry_id=?");
+        try
+        {
+            statement.setLong(1, entry_id);
+            final ResultSet result = statement.executeQuery();
+            while (result.next())
+            {
+                final String name = result.getString(2);
+                final Blob blob = result.getBlob(4);
+                final byte[] data = blob.getBytes(1, (int) blob.length());
+                attachments.add(new SNSAttachment(name, data));
+            }
+        }
+        finally
+        {
+            statement.close();
+        }
+        return attachments;
     }
-
+    
     /** Add tag (category) to entry
      *  @param entry_id Log entry ID
      *  @param tag_name Name of tag to add

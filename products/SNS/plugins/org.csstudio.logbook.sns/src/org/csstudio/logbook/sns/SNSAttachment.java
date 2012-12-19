@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.logbook.Attachment;
@@ -14,36 +15,32 @@ import org.csstudio.logbook.Attachment;
 /** SNS logbook {@link Attachment}
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SNSAttachment implements Attachment
 {
-    final private boolean is_image;
-    final private long attachment_id;
+    final private String name;
+    final private byte[] data;
 
-    public SNSAttachment(final boolean is_image, final long attachment_id)
+    public SNSAttachment(final String name, final byte[] data)
     {
-        this.is_image = is_image;
-        this.attachment_id = attachment_id;
+        this.name = name;
+        this.data = data;
     }
 
     @Override
     public InputStream getInputStream()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ByteArrayInputStream(data);
     }
 
     @Override
     public String getFileName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     @Override
     public String getContentType()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -56,13 +53,12 @@ public class SNSAttachment implements Attachment
     @Override
     public Long getFileSize()
     {
-        // TODO Auto-generated method stub
         return null;
     }
     
     @Override
     public String toString()
     {
-        return (is_image ? "Image" : "Attachment") + " ID " + attachment_id;
+        return name;
     }
 }
