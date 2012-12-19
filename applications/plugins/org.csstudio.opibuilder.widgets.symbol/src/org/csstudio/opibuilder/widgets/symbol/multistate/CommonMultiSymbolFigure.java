@@ -69,7 +69,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	protected String currentState;
 	protected String previousState;
-	protected List<String> states;
+	protected List<String> statesStr;
+	protected List<Double> statesDbl;
 	
 	private ExecutionMode executionMode;
 
@@ -86,7 +87,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
-		states = new ArrayList<String>();
+		statesStr = new ArrayList<String>();
+		statesDbl = new ArrayList<Double>();
 		allowedStateMap = new HashMap<AbstractInputStreamRunnable, String>();
 		images = new HashMap<String, AbstractSymbolImage>();
 		label = new Label("STATE") {
@@ -185,55 +187,85 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	// ************************************************************
 	
 	public synchronized void setState(int stateIndex) {
-		if (stateIndex >= 0 && stateIndex < states.size()) {
-			currentState = states.get(stateIndex);
-			if (currentState != null) {
-				label.setText(currentState);
-			}
+		if (stateIndex >= 0 && stateIndex < statesStr.size()) {
+			currentState = statesStr.get(stateIndex);
+			if (currentState != null) label.setText(currentState);
 			repaint();
 		} else {
 			// TODO: display alert ?
 		}
 	}
-
-	public synchronized void setState(String state) {
-		int index = states.indexOf(state);
+	
+	public synchronized void setState(Double state) {
+		int index = statesDbl.indexOf(state);
 		if (index < 0) { // search if image exists
-			int newIndex = states.size();
-			IPath path = null;
-			if (workingWithBool) {
-				IPath onImagePath, offImagePath = null;
-				if (ImageUtils.isOnImage(symbolImagePath)) {
-					onImagePath = symbolImagePath;
-					offImagePath = ImageUtils.searchOffImage(symbolImagePath);
-					if (offImagePath == null) offImagePath = symbolImagePath;
-				} else { // Off image
-					offImagePath = symbolImagePath;
-					onImagePath = ImageUtils.searchOnImage(symbolImagePath);
-					if (onImagePath == null) onImagePath = symbolImagePath;
-				}
-				if (newIndex > 0) path = onImagePath;
-				else path = offImagePath;
-			} else {
-				String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath);
-				path = ImageUtils.searchStateImage(newIndex, imageBasePath);
-				if (path == null) path = symbolImagePath; // default
-			}
-			states.add(state);
+			int newIndex = statesDbl.size();
+			IPath path = findImage(newIndex);
+			String strValue = String.valueOf(state);
+			statesDbl.add(state);
+			statesStr.add(strValue);
 			remainingImagesToLoad = 1;
-			loadImageFromFile(path, state);
-			index = states.indexOf(state);
+			loadImageFromFile(path, strValue);
+			index = statesDbl.indexOf(state);
 		}
 		setState(index);
 	}
 
+	public synchronized void setState(String state) {
+		int index = statesStr.indexOf(state);
+		if (index < 0) { // search if image exists
+			int newIndex = statesStr.size();
+			IPath path = findImage(newIndex);
+			try {
+				statesDbl.add(Double.valueOf(state));
+			} catch (NumberFormatException e) {
+				statesDbl.add(null);
+			}
+			statesStr.add(state);
+			remainingImagesToLoad = 1;
+			loadImageFromFile(path, state);
+			index = statesStr.indexOf(state);
+		}
+		setState(index);
+	}
+	
+	private IPath findImage(int newIndex) {
+		IPath path = null;
+		if (workingWithBool) {
+			IPath onImagePath, offImagePath = null;
+			if (ImageUtils.isOnImage(symbolImagePath)) {
+				onImagePath = symbolImagePath;
+				offImagePath = ImageUtils.searchOffImage(symbolImagePath);
+				if (offImagePath == null) offImagePath = symbolImagePath;
+			} else { // Off image
+				offImagePath = symbolImagePath;
+				onImagePath = ImageUtils.searchOnImage(symbolImagePath);
+				if (onImagePath == null) onImagePath = symbolImagePath;
+			}
+			if (newIndex > 0) path = onImagePath;
+			else path = offImagePath;
+		} else {
+			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath);
+			path = ImageUtils.searchStateImage(newIndex, imageBasePath);
+			if (path == null) path = symbolImagePath; // default
+		}
+		return path;
+	}
+	
 	/**
 	 * Set all the state string values.
 	 * 
 	 * @param states the states
 	 */
 	public void setStates(List<String> states) {
-		this.states = states;
+		this.statesStr = states;
+		for (String state : states) {
+			try {
+				this.statesDbl.add(Double.valueOf(state));
+			} catch (NumberFormatException e) {
+				this.statesDbl.add(null);
+			}
+		}
 		loadAllImages(states);
 	}
 
@@ -344,7 +376,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		else workingWithSVG = false;
 		if (ImageUtils.isOffImage(imagePath) || ImageUtils.isOnImage(imagePath)) workingWithBool = true;
 		else workingWithBool = false;
-		loadAllImages(states);
+		loadAllImages(statesStr);
 	}
 	
 	private synchronized void loadImageFromFile(final IPath imagePath, final String state) {
@@ -498,7 +530,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		}
 		getSymbolImage().setBounds(bounds);
 		getSymbolImage().setBorder(getBorder());
-		int stateIndex = states.indexOf(currentState);
+		int stateIndex = statesStr.indexOf(currentState);
 		getSymbolImage().setCurrentColor(stateIndex == 0 ? offColor : onColor);
 		getSymbolImage().paintFigure(gfx);
 	}

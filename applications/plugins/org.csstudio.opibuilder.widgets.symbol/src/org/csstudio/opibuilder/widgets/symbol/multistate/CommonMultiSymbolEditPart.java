@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.symbol.multistate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
@@ -184,8 +185,15 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					final Object newValue, final IFigure refreshableFigure) {
 				if (newValue != null && newValue instanceof IValue) {
 					CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) refreshableFigure;
-					String stringValue = ValueUtil.getString((IValue) newValue);
-					symbolFigure.setState(stringValue);
+					if (newValue instanceof IDoubleValue) {
+						Double doubleValue = ValueUtil
+								.getDouble((IValue) newValue);
+						symbolFigure.setState(doubleValue);
+					} else {
+						String stringValue = ValueUtil
+								.getString((IValue) newValue);
+						symbolFigure.setState(stringValue);
+					}
 					autoSizeWidget(symbolFigure);
 				}
 				return false;

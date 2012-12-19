@@ -40,14 +40,22 @@ public class ChangeAxisCommand implements IUndoableCommand
     @Override
     public void redo()
     {
-        item.setAxis(new_axis);
+		if (!new_axis.isVisible())
+			new_axis.setVisible(true);
+		item.setAxis(new_axis);
+		if (item.getModel().countActiveItemsOnAxis(old_axis) == 0)
+			old_axis.setVisible(false);
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-        item.setAxis(old_axis);
+		if (!old_axis.isVisible())
+			old_axis.setVisible(true);
+		item.setAxis(old_axis);
+		if (item.getModel().countActiveItemsOnAxis(new_axis) == 0)
+			new_axis.setVisible(false);
     }
 
     /** @return Command name that appears in undo/redo menu */

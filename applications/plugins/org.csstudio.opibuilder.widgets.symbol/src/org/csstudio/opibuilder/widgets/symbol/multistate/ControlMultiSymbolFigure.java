@@ -222,17 +222,17 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	}
 	
 	private void loadSymbolBrowserImages() throws Exception {
-		if (states == null || states.isEmpty()) {
+		if (statesStr == null || statesStr.isEmpty()) {
 			ImageData data = getImageData(originalSymbolImagePath);
 			symbolBrowser.addImage("??", data);
 			return;
 		}
 		// Get base name
-		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath, states);
+		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath, statesStr);
 		if (imageBasePath == null) { // Image do not match any state
 			// TODO: alert state image missing
-			for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
-				String state = states.get(stateIndex);
+			for (int stateIndex = 0; stateIndex < statesStr.size(); stateIndex++) {
+				String state = statesStr.get(stateIndex);
 				// Load default image for all states
 				ImageData data = getImageData(originalSymbolImagePath);
 				symbolBrowser.addImage(state, data);
@@ -240,8 +240,8 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 			return;
 		}
 		// Retrieve & set images paths
-		for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
-			String state = states.get(stateIndex);
+		for (int stateIndex = 0; stateIndex < statesStr.size(); stateIndex++) {
+			String state = statesStr.get(stateIndex);
 			IPath path = ImageUtils.searchStateImage(stateIndex, imageBasePath);
 			ImageData data = null;
 			if (path == null) { // Test existence
