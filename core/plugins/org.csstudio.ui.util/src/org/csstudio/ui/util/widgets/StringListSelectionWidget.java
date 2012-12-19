@@ -1,4 +1,4 @@
-package org.csstudio.logbook.ui;
+package org.csstudio.ui.util.widgets;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui;
+package org.csstudio.ui.util.widgets;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.ui.util.swt.ImagePreview;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -44,6 +43,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
+ * A widget to display a set of Images 
+ * 
  * @author shroffk
  * 
  */

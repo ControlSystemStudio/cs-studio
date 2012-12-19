@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui;
+package org.csstudio.ui.util.widgets;
 
 import java.io.File;
 import java.util.ArrayList;

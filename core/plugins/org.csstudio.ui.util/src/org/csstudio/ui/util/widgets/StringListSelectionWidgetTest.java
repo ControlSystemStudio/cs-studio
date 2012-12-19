@@ -1,15 +1,11 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui;
+package org.csstudio.ui.util.widgets;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
-import org.csstudio.logbook.LogbookBuilder;
-import org.csstudio.logbook.util.LogEntryUtil;
+import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -22,7 +18,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 /**

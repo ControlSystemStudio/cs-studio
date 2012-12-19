@@ -1,12 +1,13 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui;
+package org.csstudio.ui.util.dialogs;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.StringListSelectionWidget;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
