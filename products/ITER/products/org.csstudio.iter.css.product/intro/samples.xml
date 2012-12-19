@@ -2,11 +2,10 @@
 <introContent>
     <extensionContent id="org.csstudio.iter.css.product.samples" name="ITER CSS" style="css/style.css" path="samples/@">
         <group id="content-group" style-id="content-group">
-            <link id="iterlogo" label="Core System Samples" style-id="content-link"
-                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/toc/html/samples/ichsample.html" >
+            <link id="samples" label="BOY Examples" style-id="content-link"
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.opibuilder/html/Install%20Examples.html" >
 				<text>
-				  ICH Sample is a Soft IOC sample that demonstrate the use of EPICS and 
-				  CSS set of tools. PLC Sample tests the communication with a Slow Controller.
+				  BOY Examples provide demo OPIs containing all available widgets.
                 </text>
             </link>
         </group>
