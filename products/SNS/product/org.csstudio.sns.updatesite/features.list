@@ -3,6 +3,7 @@ org.csstudio.opibuilder.feature/**
 org.csstudio.scan.ui.feature/**
 org.csstudio.sns.feature.applications/**
 org.csstudio.sns.feature.basiccore/**
+org.csstudio.sns.feature.beamline.image/**
 org.csstudio.sns.feature.core/**
 org.csstudio.sns.feature.eclipse/**
 org.csstudio.sns.feature.optional/**
