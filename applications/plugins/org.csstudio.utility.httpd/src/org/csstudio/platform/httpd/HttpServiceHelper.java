@@ -55,19 +55,13 @@ public class HttpServiceHelper
             String.format("(&(objectClass=%s)(other.info=%s))",
                             HttpService.class.getName(),
                             pid);
-        ServiceTracker http_tracker = new ServiceTracker(context,
+        final ServiceTracker<Object, HttpService> http_tracker =
+                new ServiceTracker<Object, HttpService>(context,
                         context.createFilter(filter), null);
         http_tracker.open();
-        final Object[] services = http_tracker.getServices();
-        if (services == null)
+        final HttpService http = http_tracker.getService();
+        if (http == null)
             throw new Exception("No HttpService found");
-        if (services.length != 1)
-            throw new Exception("Found " + services.length
-                            + " HttpServices instead of one");
-        if (! (services[0] instanceof HttpService))
-            throw new Exception("Got " + services[0].getClass().getName()
-                            + " instead of HttpService");
-        final HttpService http = (HttpService) services[0];
         
         // Don't close the tracker?
         // When closed, the HttpService seems to get
