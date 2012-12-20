@@ -12,8 +12,6 @@ import java.util.LinkedHashMap;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.openfile.IOpenDisplayAction;
-import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
@@ -54,9 +52,8 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 				originPath = ResourceUtil.getFileOnSearchPath(originPath, false);
 				if(originPath == null)
 					throw new FileNotFoundException(NLS.bind("File {0} doesn't exist on search path.", path));
-			}			
-			RunModeService.getInstance().runOPI(originPath, TargetWindow.SAME_WINDOW, 
-					null, macrosInput, null);
+			}		
+			OpenTopOPIsAction.runOPI(macrosInput, originPath);					
 		}
 	}
 
