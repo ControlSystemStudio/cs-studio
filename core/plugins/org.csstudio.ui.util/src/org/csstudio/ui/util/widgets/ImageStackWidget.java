@@ -6,14 +6,19 @@ package org.csstudio.ui.util.widgets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -60,7 +65,7 @@ public class ImageStackWidget extends Composite {
     private ImagePreview imagePreview;
     private Table table;
     private TableViewer tableViewer;
-    private Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
+    private Map<String, byte[]> imageInputStreamsMap = new HashMap<String, byte[]>();
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -95,8 +100,8 @@ public class ImageStackWidget extends Composite {
 		// use the OwnerDrawLabelProvider
 		String imageName = cell.getElement() == null ? "" : cell
 			.getElement().toString();
-		ImageData imageData = new ImageData(imageInputStreamsMap
-			.get(imageName));
+		ImageData imageData = new ImageData(new ByteArrayInputStream(
+			imageInputStreamsMap.get(imageName)));
 		cell.setImage(new Image(getDisplay(), imageData
 			.scaledTo(90, 90)));
 	    }
@@ -166,11 +171,14 @@ public class ImageStackWidget extends Composite {
 			// Set the Selected Image
 			if (imageInputStreamsMap.keySet().contains(
 				selectedImageName)) {
-			    imagePreview.setImage(imageInputStreamsMap
-				    .get(selectedImageName));
+			    imagePreview
+				    .setImage(new ByteArrayInputStream(
+					    imageInputStreamsMap
+						    .get(selectedImageName)));
 			} else {
-			    imagePreview.setImage(imageInputStreamsMap.values()
-				    .iterator().next());
+			    imagePreview.setImage(new ByteArrayInputStream(
+				    imageInputStreamsMap.values().iterator()
+					    .next()));
 			}
 		    } else {
 			tableViewer.setInput(null);
@@ -180,8 +188,8 @@ public class ImageStackWidget extends Composite {
 		    imagePreview.redraw();
 		    break;
 		case "selectedImageName":
-		    imagePreview.setImage(imageInputStreamsMap
-			    .get(selectedImageName));
+		    imagePreview.setImage(new ByteArrayInputStream(
+			    imageInputStreamsMap.get(selectedImageName)));
 		    imagePreview.redraw();
 		    break;
 		default:
@@ -204,20 +212,39 @@ public class ImageStackWidget extends Composite {
 
     public void setImageInputStream(
 	    Map<String, InputStream> imageInputStreamsMap) {
-	Map<String, InputStream> oldValue = this.imageInputStreamsMap;
-	this.imageInputStreamsMap = imageInputStreamsMap == null ? new HashMap<String, InputStream>()
-		: imageInputStreamsMap;
+	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
+	this.imageInputStreamsMap = new HashMap<String, byte[]>();
+	for (Entry<String, InputStream> test : imageInputStreamsMap.entrySet()) {
+	    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	    try {
+		byteArrayOutputStream.write(read2byteArray(test.getValue()));
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	    this.imageInputStreamsMap.put(test.getKey(),
+		    byteArrayOutputStream.toByteArray());
+	}
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
     }
 
     public void addImage(String imageName, InputStream imageInputStream) {
-	Map<String, InputStream> oldValue = this.imageInputStreamsMap;
-	this.imageInputStreamsMap.put(imageName, imageInputStream);
+	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	try {
+	    byteArrayOutputStream.write(read2byteArray(imageInputStream));
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	this.imageInputStreamsMap.put(imageName,
+		byteArrayOutputStream.toByteArray());
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getImageFilenames() {
 	return (List<String>) imageInputStreamsMap.keySet();
     }
@@ -233,4 +260,13 @@ public class ImageStackWidget extends Composite {
 		this.selectedImageName);
     }
 
+    private static byte[] read2byteArray(InputStream input) throws IOException {
+	byte[] buffer = new byte[8192];
+	int bytesRead;
+	ByteArrayOutputStream output = new ByteArrayOutputStream();
+	while ((bytesRead = input.read(buffer)) != -1) {
+	    output.write(buffer, 0, bytesRead);
+	}
+	return output.toByteArray();
+    }
 }
