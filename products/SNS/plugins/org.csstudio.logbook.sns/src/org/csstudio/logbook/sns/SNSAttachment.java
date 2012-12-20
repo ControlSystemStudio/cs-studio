@@ -11,54 +11,53 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.logbook.Attachment;
+import org.csstudio.logbook.sns.elog.ELogAttachment;
 
 /** SNS logbook {@link Attachment}
  *  @author Kay Kasemir
  */
 public class SNSAttachment implements Attachment
 {
-    final private String name;
-    final private byte[] data;
+    final private ELogAttachment attachment;
 
-    public SNSAttachment(final String name, final byte[] data)
+    public SNSAttachment(final ELogAttachment attachment)
     {
-        this.name = name;
-        this.data = data;
+        this.attachment = attachment;
     }
 
     @Override
     public InputStream getInputStream()
     {
-        return new ByteArrayInputStream(data);
+        return new ByteArrayInputStream(attachment.getData());
     }
 
     @Override
     public String getFileName()
     {
-        return name;
+        return attachment.getName();
     }
 
     @Override
     public String getContentType()
     {
-        return null;
+        return attachment.getType();
     }
 
     @Override
     public Boolean getThumbnail()
     {
-        return false;
+        return attachment.isImage();
     }
 
     @Override
     public Long getFileSize()
     {
-        return null;
+        return Long.valueOf(attachment.getData().length);
     }
     
     @Override
     public String toString()
     {
-        return name;
+        return attachment.toString();
     }
 }

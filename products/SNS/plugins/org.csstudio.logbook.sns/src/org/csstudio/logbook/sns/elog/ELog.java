@@ -191,7 +191,7 @@ public class ELog
         }
 
         final List<String> logbooks = getLogbooks(entry_id);
-        final List<String> categories = getCategories(entry_id);
+        final List<ELogCategory> categories = getCategories(entry_id);
         
         // Get attachments
         final List<ELogAttachment> images = getImageAttachments(entry_id);
@@ -232,11 +232,11 @@ public class ELog
      *  @return Categories used for this entry
      *  @throws Exception on error
      */
-	private List<String> getCategories(final long entry_id) throws Exception
+	private List<ELogCategory> getCategories(final long entry_id) throws Exception
 	{
-	    final List<String> logbooks = new ArrayList<>();
+	    final List<ELogCategory> logbooks = new ArrayList<>();
 	    final PreparedStatement statement = rdb.getConnection().prepareStatement(
-            "SELECT c.cat_nm" +
+            "SELECT e.cat_id, c.cat_nm" +
             " FROM LOGBOOK.log_categories_v c" +
             " JOIN LOGBOOK.LOG_ENTRY_CATEGORIES e ON e.cat_id = c.cat_id" +
             " AND e.log_entry_id = ?");
@@ -245,7 +245,7 @@ public class ELog
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
             while (result.next())
-                logbooks.add(result.getString(1));
+                logbooks.add(new ELogCategory(result.getString(1), result.getString(2)));
             result.close();
         }
         finally
@@ -380,10 +380,10 @@ public class ELog
      *  @param fname input filename, must have a file extension
      *  @param caption Caption or 'title' for the attachment
      *  @param stream Stream with attachment content
-	 * @return 
+	 *  @return Attachment that was added
      *  @throws Exception on error
      */
-    public void addAttachment(final long entry_id,
+    public ELogAttachment addAttachment(final long entry_id,
             final String fname, final String caption,
             final InputStream stream) throws Exception
     {
@@ -427,6 +427,8 @@ public class ELog
     	{
     		statement.close();
     	}
+    	
+    	return new ELogAttachment(is_image, fname, caption, data);
     }
 
     /** Obtain image attachments

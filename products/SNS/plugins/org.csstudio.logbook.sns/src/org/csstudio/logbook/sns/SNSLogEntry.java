@@ -8,6 +8,7 @@
 package org.csstudio.logbook.sns;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import org.csstudio.logbook.Attachment;
@@ -15,22 +16,21 @@ import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.sns.elog.ELogEntry;
 
 /** SNS implementation of a {@link LogEntry}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SNSLogEntry implements LogEntry
 {
-    final private Date date = new Date();
     final private Long id;
-    final private LogEntry info;
-    final private Collection<Attachment> attachments;
+    final private ELogEntry entry;
     
-    public SNSLogEntry(final long id, final LogEntry entry, final Collection<Attachment> attachments)
+    public SNSLogEntry(final long entry_id, final ELogEntry entry)
     {
-        this.id = id;
-        this.info = entry;
-        this.attachments = attachments;
+        this.id = entry_id;
+        this.entry = entry;
     }
 
     @Override
@@ -40,50 +40,56 @@ public class SNSLogEntry implements LogEntry
     }
 
     @Override
+    public Collection<Logbook> getLogbooks()
+    {
+        return Converter.convertLogbooks(entry.getLogbooks());
+    }
+
+    @Override
     public String getText()
     {
-        return info.getText();
+        return entry.getTitle() + "\n" + entry.getText();
     }
 
     @Override
     public String getOwner()
     {
-        return info.getOwner();
+        return entry.getUser();
     }
 
     @Override
     public Date getCreateDate()
     {
-        return date;
+        return entry.getDate();
     }
 
     @Override
     public Date getModifiedDate()
     {
-        return date;
+        return entry.getDate();
     }
 
     @Override
     public Collection<Attachment> getAttachment()
     {
-        return attachments;
+        return Converter.convertAttachments(entry.getImages(), entry.getAttachments());
     }
 
     @Override
     public Collection<Tag> getTags()
     {
-        return info.getTags();
-    }
-
-    @Override
-    public Collection<Logbook> getLogbooks()
-    {
-        return info.getLogbooks();
+        return Converter.convertCategories(entry.getCategories());
     }
 
     @Override
     public Collection<Property> getProperties()
     {
-        return info.getProperties();
+        return Collections.emptyList();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return entry.toString();
     }
 }

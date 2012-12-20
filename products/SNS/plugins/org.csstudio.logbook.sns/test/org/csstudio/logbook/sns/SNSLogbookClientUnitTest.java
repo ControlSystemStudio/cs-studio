@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import javax.imageio.ImageIO;
 
-import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
@@ -34,7 +33,6 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Tag;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test for {@link SNSLogbookClient}
@@ -208,22 +206,15 @@ public class SNSLogbookClientUnitTest
     }
 
     /** Read some specific attachments */
-    @Ignore
     @Test
     public void testReadAttachments() throws Exception
     {
-        final SNSLogbookSupport logbook = new SNSLogbookSupport(Preferences.getURL(), Preferences.getLogListUser(), Preferences.getLogListPassword());
-        Collection<Attachment> attachments = logbook.getImageAttachments(395343);
-        for (Attachment attachment : attachments)
-            System.out.println(attachment.getFileName());
-        attachments = logbook.getOtherAttachments(395216);
-        for (Attachment attachment : attachments)
-        {
-            System.out.println(attachment.getFileName());
-            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            StreamHelper.copy(attachment.getInputStream(), buf);
-            System.out.println(buf.toString());
-        }
-        logbook.close();
+        final LogbookClient client = new SNSLogbookClientFactory().getClient();
+        
+        LogEntry entry = client.findLogEntry(Long.valueOf(395343));
+        System.out.println(entry.getAttachment());
+
+        entry = client.findLogEntry(Long.valueOf(395216));
+        System.out.println(entry.getAttachment());
     }
 }

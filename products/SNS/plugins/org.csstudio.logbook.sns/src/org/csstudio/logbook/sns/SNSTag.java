@@ -18,20 +18,13 @@ import org.csstudio.logbook.Tag;
 @SuppressWarnings("nls")
 public class SNSTag implements Tag
 {
-    final private String id;
     final private String name;
 
-    public SNSTag(final String id, final String name)
+    public SNSTag(final String name)
     {
-        this.id = id;
         this.name = name;
     }
 
-    public String getID()
-    {
-        return id;
-    }
-    
     @Override
     public String getName()
     {
@@ -47,6 +40,6 @@ public class SNSTag implements Tag
     @Override
     public String toString()
     {
-        return "Tag '" + name + "' (" + id + ")";
+        return "Tag '" + name + "'";
     }
 }

@@ -21,14 +21,14 @@ public class ELogEntry
     final private String title;
     final private String text;
     final private List<String> logbooks;
-    final private List<String> categories;
+    final private List<ELogCategory> categories;
     final private List<ELogAttachment> images;
     final private List<ELogAttachment> attachments;
 
     public ELogEntry(final String user, final Date date,
             final String title, final String text,
             final List<String> logbooks,
-            final List<String> categories,
+            final List<ELogCategory> categories,
             final List<ELogAttachment> images,
             final List<ELogAttachment> attachments)
     {
@@ -67,7 +67,7 @@ public class ELogEntry
         return logbooks;
     }
 
-    public List<String> getCategories()
+    public List<ELogCategory> getCategories()
     {
         return categories;
     }

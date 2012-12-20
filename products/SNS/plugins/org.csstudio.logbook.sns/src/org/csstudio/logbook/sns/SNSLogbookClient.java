@@ -8,12 +8,8 @@
 package org.csstudio.logbook.sns;
 
 import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.csstudio.logbook.Attachment;
@@ -22,7 +18,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
-import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.logbook.sns.elog.ELog;
 
 /** {@link LogbookClient} for SNS 'ELog'
  *  @author ky9
@@ -58,40 +54,33 @@ public class SNSLogbookClient implements LogbookClient
     @Override
     public Collection<Logbook> listLogbooks() throws Exception
     {
-        final RDBUtil rdb = RDBUtil.connect(url, user, password, false);
-        final List<Logbook> logbooks = new ArrayList<Logbook>();
-        final Statement statement = rdb.getConnection().createStatement();
+        final ELog elog = new ELog(url, user, password);
         try
         {
-            final ResultSet result = statement.executeQuery(
-                    "SELECT oper_grp_nm FROM oper.oper_grp " +
-                    "WHERE elog_ind='Y' ORDER BY oper_grp_nm");
-            while (result.next())
-                logbooks.add(new SNSLogbook(result.getString(1)));
+            return Converter.convertLogbooks(elog.getLogbooks());
         }
         finally
         {
-            statement.close();
-            rdb.close();
+            elog.close();
         }
-        return logbooks;
     }
 
     /** {@inheritDoc} */
     @Override
     public Collection<Tag> listTags() throws Exception
     {
-        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        final ELog elog = new ELog(url, user, password);
         try
         {
-            return support.getTags();
+            return Converter.convertCategories(elog.getCategories());
         }
         finally
         {
-            support.close();
+            elog.close();
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Collection<Property> listProperties() throws Exception
     {
@@ -104,44 +93,55 @@ public class SNSLogbookClient implements LogbookClient
             throws Exception
     {
         final long entry_id = getEntryID(logId);
-        
-        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        final ELog elog = new ELog(url, user, password);
         try
         {
-            final List<Attachment> attachments = new ArrayList<>();
-            attachments.addAll(support.getImageAttachments(entry_id));
-            attachments.addAll(support.getOtherAttachments(entry_id));
-            return attachments;
+            return Converter.convertAttachments(elog.getImageAttachments(entry_id),
+                    elog.getOtherAttachments(entry_id));
         }
         finally
         {
-            support.close();
+            elog.close();
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public InputStream getAttachment(Object logId, String attachmentFileName)
             throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Why this in addition to listAttachments?
+        // What file name when it's all based on streams?
+        throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public LogEntry findLogEntry(Object logId) throws Exception
+    public LogEntry findLogEntry(final Object logId) throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        final long entry_id = getEntryID(logId);
+        final ELog elog = new ELog(url, user, password);
+        try
+        {
+            return new SNSLogEntry(entry_id, elog.getEntry(entry_id));
+        }
+        finally
+        {
+            elog.close();
+        }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Collection<LogEntry> findLogEntries(
             Map<String, String> findAttributeMap) throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Support locating entries based on time range, ...
+        // once the API is clearer
+        throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
     public LogEntry createLogEntry(final LogEntry entry) throws Exception
     {
@@ -156,16 +156,15 @@ public class SNSLogbookClient implements LogbookClient
         
         final String logbook = entry.getLogbooks().iterator().next().getName();
         
-        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        final ELog elog = new ELog(url, user, password);
         final long id;
-        final List<Attachment> attachments = new ArrayList<>();
         try
         {
-            id = support.createEntry(logbook, title, text);
+            id = elog.createEntry(logbook, title, text);
             
             // Add optional tags
             for (Tag tag : entry.getTags())
-                support.addTag(id, tag.getName());
+                elog.addCategory(id, tag.getName());
             
             // Add optional attachments
             for (Attachment attachment : entry.getAttachment())
@@ -173,14 +172,16 @@ public class SNSLogbookClient implements LogbookClient
                 final String name = attachment.getFileName();
                 final InputStream stream = attachment.getInputStream();
                 if (stream != null)
-                    attachments.add(support.addAttachment(id, name, name, stream));
+                    elog.addAttachment(id, name, name, stream);
             }
+            
+            // API requires returning the entry as actually written...
+            return findLogEntry(id);
         }
         finally
         {
-            support.close();
+            elog.close();
         }
-        return new SNSLogEntry(id, entry, attachments);
     }
 
     /** Split complete logbook text into title and content
@@ -208,33 +209,41 @@ public class SNSLogbookClient implements LogbookClient
         return new String[] { title, body };
     }
 
+    /** SNS Logbook cannot 'update'. Create new entry
+     *  @param entry New entry
+     *  @return New entry
+     *  @throws Exception on error
+     */
     @Override
     public LogEntry updateLogEntry(final LogEntry entry) throws Exception
     {
         return createLogEntry(entry);
     }
 
+    // Why this in addition to updateLogEntry?
     @Override
     public void updateLogEntries(final Collection<LogEntry> entires)
             throws Exception
     {
-        throw new Exception("Not supported by the SNS logbook. Create new entry");
+        for (LogEntry entry : entires)
+            updateLogEntry(entry);
     }
 
+    // Why this in addition to createLogEntry which already handles attachments?
     @Override
     public Attachment addAttachment(final Object logId, final InputStream stream, final String name)
             throws Exception
     {
         final long entry_id = getEntryID(logId);
         
-        final SNSLogbookSupport support = new SNSLogbookSupport(url, user, password);
+        final ELog elog = new ELog(url, user, password);
         try
         {
-            return support.addAttachment(entry_id, name, name, stream);
+            return Converter.convertAttachment(elog.addAttachment(entry_id, name, name, stream));
         }
         finally
         {
-            support.close();
+            elog.close();
         }
     }
 
