@@ -158,7 +158,7 @@ public class VImageDisplayDemo extends ViewPart {
 	private void createActions() {
 		// Create the actions
 		{
-			horizontalStretch = new Action("Horizontal Stretch") {
+			horizontalStretch = new Action("Horizontal Stretch") {
 			};
 			horizontalStretch.setChecked(true);
 			horizontalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchHorizontal.png"));
@@ -173,7 +173,7 @@ public class VImageDisplayDemo extends ViewPart {
 			});
 		}
 		{
-			verticalStretch = new Action("Vertical Stretch") {
+			verticalStretch = new Action("Vertical Stretch") {
 			};
 			verticalStretch.setChecked(true);
 			verticalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchVertical.png"));
