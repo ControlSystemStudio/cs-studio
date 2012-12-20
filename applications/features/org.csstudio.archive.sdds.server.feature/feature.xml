@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.cagateway.feature"
-      label="Feature"
-      version="1.0.0.qualifier">
+      id="org.csstudio.archive.sdds.server.feature"
+      label="SDDS Server Feature"
+      version="1.0.0.qualifier"
+      os="win32"
+      ws="win32"
+      arch="sparc,x86,x86_64">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,22 +19,19 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="org.eclipse.rcp"
-         version="0.0.0"/>
-
    <plugin
-         id="javax.servlet"
+         id="com.google.common"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.cagateway"
+         id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="javax.annotation"
@@ -41,21 +41,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.mail"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.runtime"
+         id="javax.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -69,6 +55,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.archive.sdds.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.sdds.server.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
          id="org.csstudio.data"
          download-size="0"
          install-size="0"
@@ -76,28 +76,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.desy.common.product.log4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
          id="org.csstudio.domain.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.domain.desy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.epics"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -146,20 +125,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.workspace"
          download-size="0"
          install-size="0"
@@ -188,6 +153,27 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.core.databinding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.databinding.observable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.databinding.property"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.core.expressions"
          download-size="0"
          install-size="0"
@@ -202,7 +188,23 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.filesystem.linux.x86"
+         id="org.eclipse.core.filesystem.solaris.sparc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem.win32.x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -224,7 +226,15 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.net.linux.x86"
+         id="org.eclipse.core.net.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.net.win32.x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -236,6 +246,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -411,20 +429,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.frameworkadmin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.frameworkadmin.equinox"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.p2.artifact.repository"
          download-size="0"
          install-size="0"
@@ -447,13 +451,6 @@
 
    <plugin
          id="org.eclipse.equinox.p2.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.garbagecollector"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -488,41 +485,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.p2.publisher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.publisher.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.eclipse.equinox.p2.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.touchpoint.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.touchpoint.natives"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.updatesite"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -550,14 +513,23 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.simpleconfigurator"
+         id="org.eclipse.equinox.security.win32.x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.simpleconfigurator.manipulator"
+         id="org.eclipse.equinox.security.win32.x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.simpleconfigurator"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -571,7 +543,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.jface"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jface.databinding"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -599,7 +585,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.swt.gtk.linux.x86"
+         id="org.eclipse.swt.gtk.solaris.sparc"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -607,7 +593,30 @@
          unpack="false"/>
 
    <plugin
-         id="org.epics.util"
+         id="org.eclipse.swt.win32.win32.x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.swt.win32.win32.x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.workbench"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -704,6 +713,13 @@
 
    <plugin
          id="org.remotercp.service.preferences"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.remotercp.service.provisioning"
          download-size="0"
          install-size="0"
          version="0.0.0"
