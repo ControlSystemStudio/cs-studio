@@ -215,15 +215,13 @@ public class ImageStackWidget extends Composite {
 	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
 	this.imageInputStreamsMap = new HashMap<String, byte[]>();
 	for (Entry<String, InputStream> test : imageInputStreamsMap.entrySet()) {
-	    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	    try {
-		byteArrayOutputStream.write(read2byteArray(test.getValue()));
+		this.imageInputStreamsMap.put(test.getKey(),
+			read2byteArray(test.getValue()));
 	    } catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	    }
-	    this.imageInputStreamsMap.put(test.getKey(),
-		    byteArrayOutputStream.toByteArray());
 	}
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
@@ -231,25 +229,23 @@ public class ImageStackWidget extends Composite {
 
     public void addImage(String imageName, InputStream imageInputStream) {
 	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
-	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	try {
-	    byteArrayOutputStream.write(read2byteArray(imageInputStream));
+	    this.imageInputStreamsMap.put(imageName,
+		    read2byteArray(imageInputStream));
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	this.imageInputStreamsMap.put(imageName,
-		byteArrayOutputStream.toByteArray());
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getImageFilenames() {
+    public List<String> getImageNames() {
 	return (List<String>) imageInputStreamsMap.keySet();
     }
 
-    public String getSelectedImageFile() {
+    public String getSelectedImageName() {
 	return selectedImageName;
     }
 
