@@ -26,7 +26,7 @@ public class ScanWebServer
         this.port = port;
         HttpService httpd = HttpServiceHelper.createHttpService(context, port);
         httpd.registerResources("/", "/webroot", null);
-        httpd.registerServlet("/submit", new Submit(), null, null);
+        httpd.registerServlet("/submit", new Submit(scan_server), null, null);
     }
 
     public void stop() throws Exception

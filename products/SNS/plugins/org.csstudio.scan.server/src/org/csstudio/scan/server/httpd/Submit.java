@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server.httpd;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -15,23 +16,58 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.csstudio.scan.server.ScanServer;
+
 /** Servlet for submitting a new scan
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Submit extends HttpServlet
 {
-    private static final long serialVersionUID = 1L;
+    final private static long serialVersionUID = 1L;
+    final private ScanServer scan_server;
+
+    public Submit(final ScanServer scan_server)
+    {
+        this.scan_server = scan_server;
+    }
 
     @Override
-    protected void doGet(final HttpServletRequest request,
+    protected void doPost(final HttpServletRequest request,
             final HttpServletResponse response)
             throws ServletException, IOException
     {
-        // TODO Get scan XML from request
-        // TODO Submit scan
-        // TODO return scan ID
+        // Require XML
+        final String format = request.getContentType();
+        if (! format.endsWith("/xml"))
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan");
+            return;
+        }
+
+        // Determine name of scan
+        String scan_name = request.getPathInfo();
+        if (scan_name == null)
+            scan_name = "Scan from " + request.getRemoteHost();
+        else
+        {
+            if (scan_name.startsWith("/"))
+                scan_name = scan_name.substring(1);
+        }
+        
+        // Read scan commands
+        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        StreamHelper.copy(request.getInputStream(), buf);
+        final String scan_commands = buf.toString();
+        
+        // Submit scan
+        final long scan_id = scan_server.submitScan(scan_name, scan_commands);
+        
+        // Return scan ID
+        response.setContentType("text/xml");
         final PrintWriter out = response.getWriter();
-        out.println("Welcome...");
+        out.print("<id>");
+        out.print(scan_id);
+        out.println("</id>");
     }
 }

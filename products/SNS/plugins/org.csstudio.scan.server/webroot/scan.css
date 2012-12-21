@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+body
+{
+    background-color: #CCC;
+    font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+    font-variant: normal;
+    font-style: normal;
+    color: black;
+}
+
+
+h1
+{
+    border-bottom-style: solid;
+}
+
+h2
+{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #A0A0A0;
+}
+
+
+dt
+{
+   color: #00A;
+   margin-top: 1ex;
+}
+
+dd
+{
+   text-indent: 0px;
+   margin-left: 1ex;
+}
