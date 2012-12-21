@@ -5,37 +5,27 @@
 <head>
 <link rel="stylesheet" type="text/css" href="scan.css">
 <script type="text/javascript" src="jquery-1.8.3.js" ></script>
-<script type="text/javascript" src="scans.js" ></script>
+<script type="text/javascript" src="submit.js" ></script>
 <title>Scan Server REST Interface</title>
 </head>
 
 <body>
-<h1>Scans</h1>
+<h1>Submit Scan</h1>
 
-<table id='scans'>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Created</th>
-      <th>State</th>
-      <th>Percentage</th>
-      <th>Runtime</th>
-      <th>Finish</th>
-      <th>Command</th>
-      <th>Error</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-
-<a href="/scans">Raw XML data</a>
+<form>
+<p>Name: <input type='text' name='name' value='Example'/></p>
+<p>Scan: <textarea class='scan' name='scan' rows='20'>
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+  <comment><text>Example scan submitted via REST interface</text></comment>
+</commands>
+</textarea></p>
+<p><button type='button' id='submit'>Submit</button></p>
+</form>
 
 <hr/>
 
 <a href="index.html">Back to main</a>
-
 
 </body>
 </html>

@@ -8,6 +8,7 @@
 package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -84,9 +85,13 @@ public class Scans extends HttpServlet
                 el.appendChild(doc.createTextNode(Integer.toString(info.getPercentage())));
                 scan.appendChild(el);
 
-                el = doc.createElement("finish");
-                el.appendChild(doc.createTextNode(Long.toString(info.getFinishTime().getTime())));
-                scan.appendChild(el);
+                final Date finish = info.getFinishTime();
+                if (finish != null)
+                {
+                    el = doc.createElement("finish");
+                    el.appendChild(doc.createTextNode(Long.toString(finish.getTime())));
+                    scan.appendChild(el);
+                }
                 
                 el = doc.createElement("command");
                 el.appendChild(doc.createTextNode(info.getCurrentCommand()));
