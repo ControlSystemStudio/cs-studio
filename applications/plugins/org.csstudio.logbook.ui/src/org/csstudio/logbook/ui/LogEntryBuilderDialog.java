@@ -37,12 +37,11 @@ public class LogEntryBuilderDialog extends Dialog {
 		gridLayout.marginWidth = 2;
 		gridLayout.marginHeight = 2;
 
-		LogEntryWidget logEntryWidget = new LogEntryWidget(container, SWT.NONE, true);
+		LogEntryWidget logEntryWidget = new LogEntryWidget(container, SWT.NONE, true, true);
 		GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1);
 		gd_logEntryWidget.heightHint = 450;
 		logEntryWidget.setLayoutData(gd_logEntryWidget);
-		logEntryWidget.setEditable(true);
 		if (this.logEntryBuilder != null) {
 			logEntryWidget.setLogEntry(logEntryBuilder.build());
 		}

@@ -5,6 +5,8 @@ import static edu.msu.nscl.olog.api.LogbookBuilder.logbook;
 import static edu.msu.nscl.olog.api.PropertyBuilder.property;
 import static edu.msu.nscl.olog.api.TagBuilder.tag;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,403 +38,410 @@ import edu.msu.nscl.olog.api.PropertyBuilder;
 
 public class OlogLogbookClient implements LogbookClient {
 
-	private final OlogClient reader;
-	private final OlogClient writer;
+    private final OlogClient reader;
+    private final OlogClient writer;
 
-	public OlogLogbookClient(OlogClient ologClient) {
-		this.reader = ologClient;
-		this.writer = ologClient;
-	}
+    public OlogLogbookClient(OlogClient ologClient) {
+	this.reader = ologClient;
+	this.writer = ologClient;
+    }
 
-	public OlogLogbookClient(OlogClient reader, OlogClient writer) {
-		this.reader = reader;
-		this.writer = writer;
-	}
+    public OlogLogbookClient(OlogClient reader, OlogClient writer) {
+	this.reader = reader;
+	this.writer = writer;
+    }
 
-	@Override
-	public Collection<Logbook> listLogbooks() throws Exception {
-		return Collections.unmodifiableCollection(Collections2.transform(
-				reader.listLogbooks(),
-				new Function<edu.msu.nscl.olog.api.Logbook, Logbook>() {
+    @Override
+    public Collection<Logbook> listLogbooks() throws Exception {
+	return Collections.unmodifiableCollection(Collections2.transform(
+		reader.listLogbooks(),
+		new Function<edu.msu.nscl.olog.api.Logbook, Logbook>() {
 
-					@Override
-					public Logbook apply(edu.msu.nscl.olog.api.Logbook input) {
-						return new OlogLogbook(input);
-					}
-				}));
-	}
+		    @Override
+		    public Logbook apply(edu.msu.nscl.olog.api.Logbook input) {
+			return new OlogLogbook(input);
+		    }
+		}));
+    }
 
-	@Override
-	public Collection<Tag> listTags() throws Exception {
-		return Collections.unmodifiableCollection(Collections2.transform(
-				reader.listTags(),
-				new Function<edu.msu.nscl.olog.api.Tag, Tag>() {
+    @Override
+    public Collection<Tag> listTags() throws Exception {
+	return Collections.unmodifiableCollection(Collections2.transform(
+		reader.listTags(),
+		new Function<edu.msu.nscl.olog.api.Tag, Tag>() {
 
-					@Override
-					public Tag apply(edu.msu.nscl.olog.api.Tag input) {
-						return new OlogTag(input);
-					}
-				}));
-	}
+		    @Override
+		    public Tag apply(edu.msu.nscl.olog.api.Tag input) {
+			return new OlogTag(input);
+		    }
+		}));
+    }
 
-	@Override
-	public Collection<Property> listProperties() throws Exception {
-		return Collections.unmodifiableCollection(Collections2.transform(
-				reader.listProperties(),
-				new Function<edu.msu.nscl.olog.api.Property, Property>() {
+    @Override
+    public Collection<Property> listProperties() throws Exception {
+	return Collections.unmodifiableCollection(Collections2.transform(
+		reader.listProperties(),
+		new Function<edu.msu.nscl.olog.api.Property, Property>() {
 
-					@Override
-					public Property apply(edu.msu.nscl.olog.api.Property input) {
-						return new OlogProperty(input);
-					}
-				}));
-	}
+		    @Override
+		    public Property apply(edu.msu.nscl.olog.api.Property input) {
+			return new OlogProperty(input);
+		    }
+		}));
+    }
 
-	@Override
-	public Collection<Attachment> listAttachments(final Object logId)
-			throws Exception {
-		return Collections.unmodifiableCollection(Collections2.transform(
-				reader.listAttachments((Long) logId),
-				new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
+    @Override
+    public Collection<Attachment> listAttachments(final Object logId)
+	    throws Exception {
+	return Collections.unmodifiableCollection(Collections2.transform(
+		reader.listAttachments((Long) logId),
+		new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
 
-					@Override
-					public Attachment apply(
-							edu.msu.nscl.olog.api.Attachment input) {
-						// TODO (shroffk) n/w call
-						return new OlogAttachment(input, getAttachment(logId,
-								input.getFileName()));
-					}
-				}));
-	}
-
-	@Override
-	public InputStream getAttachment(Object logId, String attachmentFileName) {
-		return reader.getAttachment((Long) logId, attachmentFileName);
-	}
-
-	@Override
-	public LogEntry findLogEntry(Object logId) throws Exception {
-		Log log = reader.getLog((Long) logId);
-		if (log != null) {
-			LogBuilder logBuilder = LogBuilder.log(log);
-			for (edu.msu.nscl.olog.api.Attachment attachments : reader
-					.listAttachments(log.getId())) {
-				logBuilder.attach(AttachmentBuilder.attachment(attachments));
+		    @Override
+		    public Attachment apply(
+			    edu.msu.nscl.olog.api.Attachment input) {
+			// TODO (shroffk) n/w call
+			try {
+			    return new OlogAttachment(input, getAttachment(logId,
+			    	input.getFileName()));
+			} catch (IOException e) {
 			}
-			return new OlogEntry(logBuilder.build());
-		}
-		return new OlogEntry(log);
+			return null;
+		    }
+		}));
+    }
+
+    @Override
+    public InputStream getAttachment(Object logId, String attachmentFileName) {
+	return reader.getAttachment((Long) logId, attachmentFileName);
+    }
+
+    @Override
+    public LogEntry findLogEntry(Object logId) throws Exception {
+	Log log = reader.getLog((Long) logId);
+	if (log != null) {
+	    LogBuilder logBuilder = LogBuilder.log(log);
+	    for (edu.msu.nscl.olog.api.Attachment attachments : reader
+		    .listAttachments(log.getId())) {
+		logBuilder.attach(AttachmentBuilder.attachment(attachments));
+	    }
+	    return new OlogEntry(logBuilder.build());
+	}
+	return new OlogEntry(log);
+    }
+
+    @Override
+    public Collection<LogEntry> findLogEntries(
+	    Map<String, String> findAttributeMap) throws Exception {
+	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
+	Collection<Log> logs = reader.findLogs(findAttributeMap);
+	for (Log log : logs) {
+	    logEntries.add(new OlogEntry(log));
+	}
+	return logEntries;
+    }
+
+    @Override
+    public LogEntry createLogEntry(LogEntry logEntry) throws Exception {
+	OlogEntry ologEntry = new OlogEntry(writer.set(LogBuilder(logEntry)));
+	// creates the log entry and then adds all the attachments
+	// TODO (shroffk) multiple network calls, one for each attachment, need
+	// to improve
+	for (Attachment attachment : logEntry.getAttachment()) {
+	    if (attachment.getInputStream() != null) {
+		addAttachment(ologEntry.getId(), attachment.getInputStream(),
+			attachment.getFileName());
+	    }
+	}
+	return ologEntry;
+    }
+
+    @Override
+    public LogEntry updateLogEntry(LogEntry logEntry) throws Exception {
+	return new OlogEntry(writer.update(LogBuilder(logEntry)));
+    }
+
+    @Override
+    public Attachment addAttachment(Object logId, InputStream attachment,
+	    String name) throws Exception {
+	try {
+	    File file = new File(name);
+	    OutputStream out = new FileOutputStream(file);
+	    int read = 0;
+	    byte[] bytes = new byte[1024];
+
+	    while ((read = attachment.read(bytes)) != -1) {
+		out.write(bytes, 0, read);
+	    }
+	    attachment.close();
+	    out.flush();
+	    out.close();
+	    edu.msu.nscl.olog.api.Attachment response;
+	    if (file != null) {
+		response = writer.add(file, (Long) logId);
+		file.delete();
+		return new OlogAttachment(response, getAttachment(logId,
+			response.getFileName()));
+	    }
+	} catch (IOException e) {
+	    throw new Exception(e);
+	}
+	return null;
+    }
+
+    @Override
+    public void updateLogEntries(Collection<LogEntry> logEntires)
+	    throws Exception {
+	Collection<LogBuilder> logbuilders = new ArrayList<LogBuilder>();
+	for (LogEntry logEntry : logEntires) {
+	    logbuilders.add(LogBuilder(logEntry));
+	}
+	writer.update(logbuilders);
+    }
+
+    /**
+     * A utility method to create a edu.msu.nscl.olog.api.LogBuilder from
+     * org.csstudio.logbook.LogEntry
+     * 
+     * @param logEntry
+     * @return
+     */
+    private LogBuilder LogBuilder(LogEntry logEntry) {
+	LogBuilder logBuilder = log().description(logEntry.getText()).level(
+		"Info");
+	for (Tag tag : logEntry.getTags())
+	    logBuilder.appendTag(tag(tag.getName(), tag.getState()));
+	for (Logbook logbook : logEntry.getLogbooks())
+	    logBuilder.appendToLogbook(logbook(logbook.getName()).owner(
+		    logbook.getOwner()));
+	for (Property property : logEntry.getProperties()) {
+	    PropertyBuilder propertyBuilder = property(property.getName());
+	    for (Entry<String, String> attribute : property.getAttributes()) {
+		propertyBuilder.attribute(attribute.getKey(),
+			attribute.getValue());
+	    }
+	    logBuilder.appendProperty(propertyBuilder);
+	}
+	return logBuilder;
+    }
+
+    public static class OlogProperty implements Property {
+	private final edu.msu.nscl.olog.api.Property property;
+
+	public OlogProperty(edu.msu.nscl.olog.api.Property property) {
+	    this.property = property;
 	}
 
 	@Override
-	public Collection<LogEntry> findLogEntries(
-			Map<String, String> findAttributeMap) throws Exception {
-		Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
-		Collection<Log> logs = reader.findLogs(findAttributeMap);
-		for (Log log : logs) {
-			logEntries.add(new OlogEntry(log));
-		}
-		return logEntries;
+	public String getName() {
+	    return property.getName();
 	}
 
 	@Override
-	public LogEntry createLogEntry(LogEntry logEntry) throws Exception {
-		OlogEntry ologEntry = new OlogEntry(writer.set(LogBuilder(logEntry)));
-		// creates the log entry and then adds all the attachments
-		// TODO (shroffk) multiple network calls, one for each attachment, need
-		// to improve
-		for (Attachment attachment : logEntry.getAttachment()) {
-			if (attachment.getInputStream() != null) {
-				addAttachment(ologEntry.getId(), attachment.getInputStream(),
-						new File(attachment.getFileName()).getName());
+	public Collection<String> getAttributeNames() {
+	    return property.getAttributes();
+	}
+
+	@Override
+	public Set<Entry<String, String>> getAttributes() {
+	    return property.getEntrySet();
+	}
+
+	@Override
+	public Collection<String> getAttributeValues() {
+	    return property.getAttributeValues();
+	}
+
+	@Override
+	public String getAttributeValue(String attributeName) {
+	    return property.getAttributeValue(attributeName);
+	}
+
+    }
+
+    private class OlogTag implements Tag {
+	private final edu.msu.nscl.olog.api.Tag tag;
+
+	public OlogTag(edu.msu.nscl.olog.api.Tag tag) {
+	    this.tag = tag;
+	}
+
+	@Override
+	public String getName() {
+	    return tag.getName();
+	}
+
+	@Override
+	public String getState() {
+	    return tag.getState();
+	}
+
+    }
+
+    private class OlogLogbook implements Logbook {
+
+	private final edu.msu.nscl.olog.api.Logbook logbook;
+
+	public OlogLogbook(edu.msu.nscl.olog.api.Logbook logbook) {
+	    this.logbook = logbook;
+	}
+
+	@Override
+	public String getName() {
+	    return logbook.getName();
+	}
+
+	@Override
+	public String getOwner() {
+	    return logbook.getOwner();
+	}
+
+    }
+
+    private class OlogAttachment implements Attachment {
+
+	private final edu.msu.nscl.olog.api.Attachment attachment;
+	private byte[] byteArray;
+
+	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
+		InputStream inputStream) throws IOException {
+	    this.attachment = attachment;
+	    byte[] buffer = new byte[8192];
+	    int bytesRead;
+	    ByteArrayOutputStream output = new ByteArrayOutputStream();
+	    while ((bytesRead = inputStream.read(buffer)) != -1) {
+		output.write(buffer, 0, bytesRead);
+	    }
+	    byteArray = output.toByteArray();
+	}
+
+	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment) {
+	    this.attachment = attachment;
+	}
+
+	@Override
+	public String getFileName() {
+	    return this.attachment.getFileName();
+	}
+
+	@Override
+	public String getContentType() {
+	    return this.attachment.getContentType();
+	}
+
+	@Override
+	public Boolean getThumbnail() {
+	    return this.attachment.getThumbnail();
+	}
+
+	@Override
+	public Long getFileSize() {
+	    return this.attachment.getFileSize();
+	}
+
+	@Override
+	public InputStream getInputStream() {
+	    return new ByteArrayInputStream(byteArray);
+	}
+
+    }
+
+    private class OlogEntry implements LogEntry {
+
+	private final edu.msu.nscl.olog.api.Log log;
+	// private final Collection<String> attachmentURIs;
+	private final Collection<Logbook> logbooks;
+	private final Collection<Tag> tags;
+	private final Collection<Property> properties;
+	private final Collection<Attachment> attachments;
+
+	public OlogEntry(edu.msu.nscl.olog.api.Log log) {
+	    this.log = log;
+	    this.logbooks = Collections2.transform(log.getLogbooks(),
+		    new Function<edu.msu.nscl.olog.api.Logbook, Logbook>() {
+
+			@Override
+			public Logbook apply(edu.msu.nscl.olog.api.Logbook input) {
+			    return new OlogLogbook(input);
 			}
-		}
-		return ologEntry;
+
+		    });
+	    this.tags = Collections2.transform(log.getTags(),
+		    new Function<edu.msu.nscl.olog.api.Tag, Tag>() {
+
+			@Override
+			public Tag apply(edu.msu.nscl.olog.api.Tag input) {
+			    return new OlogTag(input);
+			}
+		    });
+	    this.properties = Collections2.transform(log.getProperties(),
+		    new Function<edu.msu.nscl.olog.api.Property, Property>() {
+
+			@Override
+			public Property apply(
+				edu.msu.nscl.olog.api.Property input) {
+			    return new OlogProperty(input);
+			}
+		    });
+
+	    this.attachments = Collections2
+		    .transform(
+			    log.getAttachments(),
+			    new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
+
+				@Override
+				public Attachment apply(
+					edu.msu.nscl.olog.api.Attachment input) {
+				    return new OlogAttachment(input);
+				}
+			    });
 	}
 
 	@Override
-	public LogEntry updateLogEntry(LogEntry logEntry) throws Exception {
-		return new OlogEntry(writer.update(LogBuilder(logEntry)));
+	public String getText() {
+	    return log.getDescription();
 	}
 
 	@Override
-	public Attachment addAttachment(Object logId, InputStream attachment,
-			String name) throws Exception {
-		try {
-			File file = new File(name);
-			// file = File.createTempFile(name, null);
-			// write the inputStream to a FileOutputStream
-			OutputStream out = new FileOutputStream(file);
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			while ((read = attachment.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			attachment.close();
-			out.flush();
-			out.close();
-			edu.msu.nscl.olog.api.Attachment response;
-			if (file != null) {
-				response = writer.add(file, (Long) logId);
-				file.delete();
-				return new OlogAttachment(response, getAttachment(logId,
-						response.getFileName()));
-			}
-		} catch (IOException e) {
-			throw new Exception(e);
-		}
-		return null;
+	public String getOwner() {
+	    return log.getOwner();
 	}
 
 	@Override
-	public void updateLogEntries(Collection<LogEntry> logEntires)
-			throws Exception {
-		Collection<LogBuilder> logbuilders = new ArrayList<LogBuilder>();
-		for (LogEntry logEntry : logEntires) {
-			logbuilders.add(LogBuilder(logEntry));
-		}
-		writer.update(logbuilders);
+	public Date getCreateDate() {
+	    return log.getCreatedDate();
 	}
 
-	/**
-	 * A utility method to create a edu.msu.nscl.olog.api.LogBuilder from
-	 * org.csstudio.logbook.LogEntry
-	 * 
-	 * @param logEntry
-	 * @return
-	 */
-	private LogBuilder LogBuilder(LogEntry logEntry) {
-		LogBuilder logBuilder = log().description(logEntry.getText()).level(
-				"Info");
-		for (Tag tag : logEntry.getTags())
-			logBuilder.appendTag(tag(tag.getName(), tag.getState()));
-		for (Logbook logbook : logEntry.getLogbooks())
-			logBuilder.appendToLogbook(logbook(logbook.getName()).owner(
-					logbook.getOwner()));
-		for (Property property : logEntry.getProperties()) {
-			PropertyBuilder propertyBuilder = property(property.getName());
-			for (Entry<String, String> attribute : property.getAttributes()) {
-				propertyBuilder.attribute(attribute.getKey(),
-						attribute.getValue());
-			}
-			logBuilder.appendProperty(propertyBuilder);
-		}
-		return logBuilder;
+	@Override
+	public Object getId() {
+	    return log.getId();
 	}
 
-	public static class OlogProperty implements Property {
-		private final edu.msu.nscl.olog.api.Property property;
-
-		public OlogProperty(edu.msu.nscl.olog.api.Property property) {
-			this.property = property;
-		}
-
-		@Override
-		public String getName() {
-			return property.getName();
-		}
-
-		@Override
-		public Collection<String> getAttributeNames() {
-			return property.getAttributes();
-		}
-
-		@Override
-		public Set<Entry<String, String>> getAttributes() {
-			return property.getEntrySet();
-		}
-
-		@Override
-		public Collection<String> getAttributeValues() {
-			return property.getAttributeValues();
-		}
-
-		@Override
-		public String getAttributeValue(String attributeName) {
-			return property.getAttributeValue(attributeName);
-		}
-
+	@Override
+	public Date getModifiedDate() {
+	    return log.getModifiedDate();
 	}
 
-	private class OlogTag implements Tag {
-		private final edu.msu.nscl.olog.api.Tag tag;
-
-		public OlogTag(edu.msu.nscl.olog.api.Tag tag) {
-			this.tag = tag;
-		}
-
-		@Override
-		public String getName() {
-			return tag.getName();
-		}
-
-		@Override
-		public String getState() {
-			return tag.getState();
-		}
-
+	@Override
+	public Collection<Attachment> getAttachment() {
+	    return this.attachments;
 	}
 
-	private class OlogLogbook implements Logbook {
-
-		private final edu.msu.nscl.olog.api.Logbook logbook;
-
-		public OlogLogbook(edu.msu.nscl.olog.api.Logbook logbook) {
-			this.logbook = logbook;
-		}
-
-		@Override
-		public String getName() {
-			return logbook.getName();
-		}
-
-		@Override
-		public String getOwner() {
-			return logbook.getOwner();
-		}
-
+	@Override
+	public Collection<Tag> getTags() {
+	    return this.tags;
 	}
 
-	private class OlogAttachment implements Attachment {
-
-		private final edu.msu.nscl.olog.api.Attachment attachment;
-		private final InputStream inputStream;
-
-		public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
-				InputStream inputStream) {
-			this.attachment = attachment;
-			this.inputStream = inputStream;
-		}
-
-		public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment) {
-			this.attachment = attachment;
-			this.inputStream = null;
-		}
-
-		@Override
-		public String getFileName() {
-			return this.attachment.getFileName();
-		}
-
-		@Override
-		public String getContentType() {
-			return this.attachment.getContentType();
-		}
-
-		@Override
-		public Boolean getThumbnail() {
-			return this.attachment.getThumbnail();
-		}
-
-		@Override
-		public Long getFileSize() {
-			return this.attachment.getFileSize();
-		}
-
-		@Override
-		public InputStream getInputStream() {
-			return this.inputStream;
-		}
-
+	@Override
+	public Collection<Logbook> getLogbooks() {
+	    return this.logbooks;
 	}
 
-	private class OlogEntry implements LogEntry {
-
-		private final edu.msu.nscl.olog.api.Log log;
-		// private final Collection<String> attachmentURIs;
-		private final Collection<Logbook> logbooks;
-		private final Collection<Tag> tags;
-		private final Collection<Property> properties;
-		private final Collection<Attachment> attachments;
-
-		public OlogEntry(edu.msu.nscl.olog.api.Log log) {
-			this.log = log;
-			this.logbooks = Collections2.transform(log.getLogbooks(),
-					new Function<edu.msu.nscl.olog.api.Logbook, Logbook>() {
-
-						@Override
-						public Logbook apply(edu.msu.nscl.olog.api.Logbook input) {
-							return new OlogLogbook(input);
-						}
-
-					});
-			this.tags = Collections2.transform(log.getTags(),
-					new Function<edu.msu.nscl.olog.api.Tag, Tag>() {
-
-						@Override
-						public Tag apply(edu.msu.nscl.olog.api.Tag input) {
-							return new OlogTag(input);
-						}
-					});
-			this.properties = Collections2.transform(log.getProperties(),
-					new Function<edu.msu.nscl.olog.api.Property, Property>() {
-
-						@Override
-						public Property apply(
-								edu.msu.nscl.olog.api.Property input) {
-							return new OlogProperty(input);
-						}
-					});
-
-			this.attachments = Collections2
-					.transform(
-							log.getAttachments(),
-							new Function<edu.msu.nscl.olog.api.Attachment, Attachment>() {
-
-								@Override
-								public Attachment apply(
-										edu.msu.nscl.olog.api.Attachment input) {
-									return new OlogAttachment(input);
-								}
-							});
-		}
-
-		@Override
-		public String getText() {
-			return log.getDescription();
-		}
-
-		@Override
-		public String getOwner() {
-			return log.getOwner();
-		}
-
-		@Override
-		public Date getCreateDate() {
-			return log.getCreatedDate();
-		}
-
-		@Override
-		public Object getId() {
-			return log.getId();
-		}
-
-		@Override
-		public Date getModifiedDate() {
-			return log.getModifiedDate();
-		}
-
-		@Override
-		public Collection<Attachment> getAttachment() {
-			return this.attachments;
-		}
-
-		@Override
-		public Collection<Tag> getTags() {
-			return this.tags;
-		}
-
-		@Override
-		public Collection<Logbook> getLogbooks() {
-			return this.logbooks;
-		}
-
-		@Override
-		public Collection<Property> getProperties() {
-			return this.properties;
-		}
-
+	@Override
+	public Collection<Property> getProperties() {
+	    return this.properties;
 	}
+
+    }
 
 }

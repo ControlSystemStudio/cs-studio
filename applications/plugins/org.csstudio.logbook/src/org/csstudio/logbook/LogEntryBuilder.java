@@ -3,6 +3,7 @@
  */
 package org.csstudio.logbook;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -231,7 +232,12 @@ public class LogEntryBuilder {
 		public Collection<Attachment> getAttachment() {
 			Collection<Attachment> newAttachments = new ArrayList<Attachment>();
 			for (AttachmentBuilder attachmentBuilder : attachments) {
-				newAttachments.add(attachmentBuilder.build());
+				try {
+				    newAttachments.add(attachmentBuilder.build());
+				} catch (IOException e) {
+				    // TODO Auto-generated catch block
+				    e.printStackTrace();
+				}
 			}
 			return newAttachments;
 		}

@@ -33,15 +33,13 @@ public class CreateLogEntryView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FormLayout());
-		logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false);
+		logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, true);
 		FormData fd_logEntryWidget = new FormData();
 		fd_logEntryWidget.top = new FormAttachment(0, 1);
 		fd_logEntryWidget.left = new FormAttachment(0, 1);
 		fd_logEntryWidget.bottom = new FormAttachment(100, -1);
 		fd_logEntryWidget.right = new FormAttachment(100, -1);
 		logEntryWidget.setLayoutData(fd_logEntryWidget);
-		logEntryWidget.setEditable(true);
-
 	}
 
 	/*
