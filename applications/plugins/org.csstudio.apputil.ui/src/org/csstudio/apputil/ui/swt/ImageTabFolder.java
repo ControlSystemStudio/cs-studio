@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.ui.util.swt.ImagePreview;
+import org.csstudio.ui.util.widgets.ImagePreview;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
