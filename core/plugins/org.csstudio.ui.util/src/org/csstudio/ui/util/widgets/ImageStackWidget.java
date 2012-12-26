@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -67,10 +68,22 @@ public class ImageStackWidget extends Composite {
     private TableViewer tableViewer;
     private Map<String, byte[]> imageInputStreamsMap = new HashMap<String, byte[]>();
 
+    /**
+     * Adds a listener, notified a porperty has been changed.
+     * 
+     * @param listener
+     *            a new listener
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
     }
 
+    /**
+     * Removes a listener.
+     * 
+     * @param listener
+     *            listener to be removed
+     */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.removePropertyChangeListener(listener);
     }
@@ -166,9 +179,6 @@ public class ImageStackWidget extends Composite {
 				.toArray(
 					new String[imageInputStreamsMap
 						.keySet().size()]));
-			// tableViewer.setInput(imageInputStreamsMap.entrySet().toArray(new
-			// Entry<String,InputStream>[]));
-			// Set the Selected Image
 			if (imageInputStreamsMap.keySet().contains(
 				selectedImageName)) {
 			    imagePreview
@@ -210,45 +220,80 @@ public class ImageStackWidget extends Composite {
 	changeSupport.firePropertyChange("editable", oldValue, this.editable);
     }
 
-    public void setImageInputStream(
-	    Map<String, InputStream> imageInputStreamsMap) {
+    /**
+     * Set multiple Images to the widget, this will remove all existing images.
+     * In the imageInputStreamMap - the key defines the imageName and the value
+     * is an inputStream to the Image
+     * 
+     * @param imageInputStreamsMap
+     *            - a map of image names and image input streams
+     * @throws IOException
+     */
+    public void setImageInputStreamsMap(
+	    Map<String, InputStream> imageInputStreamsMap) throws IOException {
 	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
 	this.imageInputStreamsMap = new HashMap<String, byte[]>();
 	for (Entry<String, InputStream> test : imageInputStreamsMap.entrySet()) {
-	    try {
-		this.imageInputStreamsMap.put(test.getKey(),
-			read2byteArray(test.getValue()));
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
+	    this.imageInputStreamsMap.put(test.getKey(),
+		    read2byteArray(test.getValue()));
 	}
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
     }
 
-    public void addImage(String imageName, InputStream imageInputStream) {
-	Map<String, byte[]> oldValue = this.imageInputStreamsMap;
-	try {
-	    this.imageInputStreamsMap.put(imageName,
-		    read2byteArray(imageInputStream));
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+    /**
+     * Add a single Image to the stack
+     * 
+     * @param name
+     *            - the name to Identify the Image.
+     * @param imageInputStream
+     *            - an inputStream for the Image to be added.
+     * @throws IOException
+     */
+    public void addImage(String name, InputStream imageInputStream)
+	    throws IOException {
+	Map<String, byte[]> oldValue = new HashMap<String, byte[]>(
+		this.imageInputStreamsMap);
+	this.imageInputStreamsMap.put(name, read2byteArray(imageInputStream));
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<String> getImageNames() {
-	return (List<String>) imageInputStreamsMap.keySet();
+    /**
+     * Return an InputStream for the Image identified by name
+     * 
+     * @param name
+     *            - name of the Image
+     * @return InputStream - to the Image identified by name
+     */
+    public InputStream getImage(String name) {
+	return new ByteArrayInputStream(imageInputStreamsMap.get(name));
     }
 
+    /**
+     * get a set of all the image Names associated with the Images being
+     * displayed by this widget
+     * 
+     * @return Set of strings containing the names of all Images
+     */
+    public Set<String> getImageNames() {
+	return imageInputStreamsMap.keySet();
+    }
+
+    /**
+     * get the name of the current Image in focus
+     * 
+     * @return String imageName of the Image in focus
+     */
     public String getSelectedImageName() {
 	return selectedImageName;
     }
 
+    /**
+     * set the Image to be brought into focus using its imageName
+     * 
+     * @param selectedImageName
+     */
     public void setSelectedImageName(String selectedImageName) {
 	String oldValue = this.selectedImageName;
 	this.selectedImageName = selectedImageName;

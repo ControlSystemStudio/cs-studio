@@ -6,6 +6,7 @@ package org.csstudio.ui.util.widgets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +70,12 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 			e1.printStackTrace();
 		    }
 		}
-		imageStackWidget.setImageInputStream(imageMap);
+		try {
+		    imageStackWidget.setImageInputStreamsMap(imageMap);
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		}
 	    }
 	});
 	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -89,6 +95,9 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 			imageStackWidget.addImage(filename, new FileInputStream(
 			    filename));
 		    } catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		    } catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		    }
