@@ -31,13 +31,11 @@
       </menuContribution>
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any">
-         <menu
-               icon="icons/logbook-16.png"
-               id="org.csstudio.ui.menu.popup.logbook"
-               label="Logbook">
-            <separator
-                  name="main">
-            </separator>
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="icons/logentry-add-16.png"
+               label="%MakeLogEntry"
+               style="push">
             <visibleWhen>
                <with
                      variable="activeMenuSelection">
@@ -48,16 +46,6 @@
                   </iterate>
                </with>
             </visibleWhen>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.csstudio.ui.menu.popup.logbook">
-         <command
-               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
-               label="%MakeLogEntry"
-               style="push">
          </command>
       </menuContribution>
    </extension>
