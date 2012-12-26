@@ -106,7 +106,6 @@ public class LogEntryWidget extends Composite {
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
     private Button btnSubmit;
-    private Button btnSave;
     private Button btnAddLogbook;
     private Button btnAddTags;
     final private FormData empty;
@@ -277,24 +276,6 @@ public class LogEntryWidget extends Composite {
 	btnSubmit.setEnabled(false);
 	btnSubmit.setText("Submit");
 	btnSubmit.setEnabled(true);
-
-	btnSave = new Button(composite, SWT.NONE);
-	btnSave.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    saveLogEntryChangeset();
-		} catch (Exception ex) {
-		    setLastException(ex);
-		}
-	    }
-	});
-	FormData fd_btnSave = new FormData();
-	fd_btnSave.left = new FormAttachment(label_vertical, 2);
-	fd_btnSave.right = new FormAttachment(100, -5);
-	fd_btnSave.bottom = new FormAttachment(btnSubmit, -2);
-	btnSave.setLayoutData(fd_btnSave);
-	btnSave.setText("Save");
 
 	Label lblLogbooks = new Label(composite, SWT.NONE);
 	FormData fd_lblLogbooks = new FormData();
@@ -610,10 +591,8 @@ public class LogEntryWidget extends Composite {
 	    userCredentialWidget.setVisible(false);
 	}
 
-	// btnEnableEdit.setSelection(editable);
 	text.setEditable(editable);
 	textOwner.setEditable(editable);
-	btnSave.setEnabled(editable);
 	btnSubmit.setEnabled(editable);
 	btnAddLogbook.setVisible(editable);
 	btnAddTags.setVisible(editable);
