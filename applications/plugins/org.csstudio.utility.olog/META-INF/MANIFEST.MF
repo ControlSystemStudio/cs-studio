@@ -15,3 +15,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.olog
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides the common Olog client for CSS.
+Bundle-ActivationPolicy: lazy
