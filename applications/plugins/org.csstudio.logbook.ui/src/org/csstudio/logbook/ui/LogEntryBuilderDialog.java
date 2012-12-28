@@ -3,7 +3,6 @@
  */
 package org.csstudio.logbook.ui;
 
-import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
@@ -18,7 +17,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.csstudio.ui.util.widgets.ErrorBar;
 
 /**
  * @author shroffk
@@ -50,7 +48,8 @@ public class LogEntryBuilderDialog extends Dialog {
 	GridLayout gridLayout = (GridLayout) container.getLayout();
 	gridLayout.marginWidth = 2;
 	gridLayout.marginHeight = 2;
-	errorBar = new ErrorBar(parent, SWT.NONE);
+	errorBar = new ErrorBar(container, SWT.NONE);
+
 	try {
 	    authenticate = service.getBoolean("org.csstudio.logbook.ui",
 		    "Autenticate.user", true, null);
@@ -98,12 +97,12 @@ public class LogEntryBuilderDialog extends Dialog {
 		logbookClient = LogbookClientManager.getLogbookClientFactory()
 			.getClient();
 	    }
-	    LogEntry logEntry = logbookClient.createLogEntry(logEntryWidget
+	    logbookClient.createLogEntry(logEntryWidget
 		    .getLogEntryChangeset().getLogEntry());
+	    setReturnCode(OK);
+	    close();
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
-
-	super.okPressed();
     }
 }
