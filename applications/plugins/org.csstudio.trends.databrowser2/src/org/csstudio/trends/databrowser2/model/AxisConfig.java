@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Element;
@@ -176,7 +177,7 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
+		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, Preferences.useAutoScale(), false);
 	}
 
 	/**
@@ -403,7 +404,7 @@ public class AxisConfig
 		FontData fontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			fontData = new FontData(fontInfo);
+			fontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
 		}
 
 		fontInfo = DOMHelper.getSubelementString(node, Model.TAG_SCALE_FONT);
@@ -411,7 +412,7 @@ public class AxisConfig
 		FontData scaleFontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			scaleFontData = new FontData(fontInfo);
+			scaleFontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
 		}
 
 		final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN,

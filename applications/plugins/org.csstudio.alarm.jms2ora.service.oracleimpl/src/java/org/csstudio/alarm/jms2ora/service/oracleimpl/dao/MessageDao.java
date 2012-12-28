@@ -90,7 +90,7 @@ public class MessageDao implements IMessageArchiveDao {
         metaDataServiceTracker = new MetaDataReaderServiceTracker(Activator.getContext());
         metaDataServiceTracker.open();
         metaDataReaderService = (IMetaDataReader) metaDataServiceTracker.getService();
-        messageCol = metaDataReaderService.getMessageProperties();
+        messageCol = metaDataReaderService.getMessageMetaData();
     }
     
     private void logError(String msg) {
@@ -139,6 +139,7 @@ public class MessageDao implements IMessageArchiveDao {
         
         if ((messageId == -1) || (contentId == -1)) {
             logError("Cannot get the new ID: messageID = " + messageId + ", contentID = " + contentId);
+            connectionHandler.disconnect();
             return false;
         }
                 

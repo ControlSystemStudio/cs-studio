@@ -8,6 +8,11 @@
             id="org.csstudio.utility.recordproperty.recordpropertyaction"
             name="Record Property">
       </command>
+      <command
+            defaultHandler="org.csstudio.utility.recordproperty.PVpopupAction"
+            id="org.csstudio.utility.recordproperty.recordpropertypopupaction"
+            name="Record Propery Popup">
+      </command>
      </extension>
      <extension
                 point="org.eclipse.ui.menus">
@@ -16,6 +21,17 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.utility.recordproperty.recordpropertyaction"
+               icon="icons/icon3.gif"
+               label="Record Property"
+               style="push"
+               tooltip="Record Property">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.utility.recordproperty.recordpropertypopupaction"
                icon="icons/icon3.gif"
                label="Record Property"
                style="push"

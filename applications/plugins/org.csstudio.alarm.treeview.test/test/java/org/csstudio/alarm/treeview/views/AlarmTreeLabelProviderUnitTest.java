@@ -28,10 +28,12 @@ import java.util.Date;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeview.model.Alarm;
+import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeview.model.ProcessVariableNode;
+import org.csstudio.alarm.treeview.model.SubtreeNode;
 import org.csstudio.alarm.treeview.model.TreeNodeSource;
-import org.csstudio.alarm.treeview.views.AlarmTreeLabelProvider;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +50,10 @@ public class AlarmTreeLabelProviderUnitTest {
     private AlarmTreeLabelProvider _labelProvider; // object under test
     private ProcessVariableNode _node;
     
+	private SubtreeNode _subtreeNode;
+	private ProcessVariableNode _node0;
+	private ProcessVariableNode _node1;
+
     @Before
     public void setUp() {
         _labelProvider = new AlarmTreeLabelProvider();
@@ -61,68 +67,59 @@ public class AlarmTreeLabelProviderUnitTest {
     
     @Test
     public void testIconNamesAfterCreation() throws Exception {
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(1, iconNames.length);
-        Assert.assertEquals("grey", iconNames[0]);
+        checkIconNames(_node, "grey");
     }
     
     @Test
     public void testIconNamesNoAlarm() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(1, iconNames.length);
-        Assert.assertEquals("green", iconNames[0]);
+        checkIconNames(_node, "green");
     }
     
     @Test
     public void testIconNamesError() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.INVALID));
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(1, iconNames.length);
-        Assert.assertEquals("blue", iconNames[0]);
+        checkIconNames(_node, "blue");
     }
     
     @Test
     public void testIconNamesMinor() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(1, iconNames.length);
-        Assert.assertEquals("yellow", iconNames[0]);
+        checkIconNames(_node, "yellow");
     }
     
     @Test
     public void testIconNamesMajor() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MAJOR));
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(1, iconNames.length);
-        Assert.assertEquals("red", iconNames[0]);
+        checkIconNames(_node, "red");
+    }
+    
+    @Test
+    public void testIconNamesMinorAfterNoAlarm() throws Exception {
+        _node.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+        _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
+        checkIconNames(_node, "yellow");
+    }
+    
+    @Test
+    public void testIconNamesNoAlarmAfterMinor() throws Exception {
+    	_node.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
+    	_node.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+    	checkIconNames(_node, "yellow", "green");
     }
     
     @Test
     public void testIconNamesMinorAfterMajor() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MAJOR));
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(2, iconNames.length);
-        Assert.assertEquals("red", iconNames[0]);
-        Assert.assertEquals("yellow", iconNames[1]);
+        checkIconNames(_node, "red", "yellow");
     }
     
     @Test
     public void testIconNamesMajorAcknowledged() throws Exception {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MAJOR));
         _node.acknowledgeAlarm();
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(2, iconNames.length);
-        Assert.assertEquals("red", iconNames[0]);
-        Assert.assertEquals("checked", iconNames[1]);
+        checkIconNames(_node, "red", "checked");
     }
     
     @Test
@@ -130,12 +127,75 @@ public class AlarmTreeLabelProviderUnitTest {
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MAJOR));
         _node.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
         _node.acknowledgeAlarm();
-        String[] iconNames = _labelProvider.getIconNames(_node.getAlarmSeverity(),
-                                                         _node.getUnacknowledgedAlarmSeverity());
-        Assert.assertEquals(2, iconNames.length);
-        Assert.assertEquals("yellow", iconNames[0]);
-        Assert.assertEquals("checked", iconNames[1]);
+    	checkIconNames(_node, "yellow", "checked");
     }
+    
+    @Test
+	public void testIconNamesAggregatedNoAlarm() throws Exception {
+		createNodes();
+
+		_node0.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+		_node1.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+		checkIconNames(_subtreeNode, "green");
+	}
+
+    @Test
+    public void testIconNamesAggregatedNoAlarmAcknowledged() throws Exception {
+    	createNodes();
+    	
+    	_node0.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+    	_node1.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+    	_node0.acknowledgeAlarm();
+    	checkIconNames(_subtreeNode, "green");
+    }
+    
+    @Test
+    public void testIconNamesAggregatedMinorMajor() throws Exception {
+    	createNodes();
+    	
+    	_node0.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
+    	_node1.updateAlarm(createAlarm(EpicsAlarmSeverity.MAJOR));
+    	checkIconNames(_subtreeNode, "red");
+    }
+    
+    @Test
+    public void testIconNamesAggregatedMinorNoAlarm() throws Exception {
+    	createNodes();
+    	
+    	_node0.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
+    	_node1.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+    	checkIconNames(_subtreeNode, "yellow");
+    }
+    
+    @Test
+    public void testIconNamesAggregatedMinorNoAlarmAcknowledged() throws Exception {
+    	createNodes();
+    	
+    	_node0.updateAlarm(createAlarm(EpicsAlarmSeverity.MINOR));
+    	_node1.updateAlarm(createAlarm(EpicsAlarmSeverity.NO_ALARM));
+    	_node0.acknowledgeAlarm();
+    	checkIconNames(_subtreeNode, "yellow", "checked");
+    }
+    
+	private void checkIconNames(@Nonnull final IAlarmTreeNode node, @Nonnull final String ...strings ) {
+		String[] iconNames = _labelProvider.getIconNames(
+				node.getAlarmSeverity(),
+				node.getUnacknowledgedAlarmSeverity());
+		
+		Assert.assertEquals(strings.length, iconNames.length);
+		for (int i = 0; i < strings.length; i++) {
+			Assert.assertEquals(strings[i], iconNames[i]);
+		}
+	}
+    
+	private void createNodes() {
+		_subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmcfgConfiguration.COMPONENT,
+				TreeNodeSource.LDAP).build();
+		_node0 = new ProcessVariableNode.Builder("node 0", TreeNodeSource.LDAP).
+				setParent(_subtreeNode).build();
+		_node1 = new ProcessVariableNode.Builder("node 1", TreeNodeSource.LDAP).
+				setParent(_subtreeNode).build();
+	}
     
     @Nonnull
     private Alarm createAlarm(@Nonnull final EpicsAlarmSeverity severity) {

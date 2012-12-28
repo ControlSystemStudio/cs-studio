@@ -19,6 +19,7 @@
 - <a href="#annotate">Annotations</a>
 - <a href="#search">Search</a>
 - <a href="#export">Export</a>
+- <a href="#import">Import</a>
 - <a href="#inspect">Inspect Samples</a>
 - <a href="#preferences">Preferences</a>
 - <a href="#transition">Older Data Browser</a>
@@ -559,6 +560,46 @@ example
 workspace and also plot it.
 With Matlab releases older than R2006b you will have to edit the generated file 
 to suit your needs, for example use simply "plot(v);" to show the values.
+</p>
+
+
+<h2><a name=import>Data Import</a></h2>
+<p>
+There is basic support for importing data from data files.
+The data file is fundamentally treated like as archive data source.
+The data file must reside in the workspace, i.e. it must be visible in the
+file Navigator.
+</p>
+<p>
+A channel based on a data file can be added in two ways:
+</p>
+<ul>
+<li>'Drag' the file into a plot, or</li>
+<li>Select 'Import' from the plot context menu.</li>
+</ul>
+<p>
+The data file must only contain data for a single channel.
+The lines of this data file must match the following format:
+<pre>
+# YYYY-MM-DD HH:MM:SS.SSS   value
+2011-08-09 15:51:16.734     299.634000
+
+# or
+# YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value
+2012/12/06 07:38:05.764764346     26.6504 OK      OK
+</pre>
+<p>
+The time stamp and value may be separated by spaces or tab characters.
+Lines that do not match this format are ignored.
+</p>
+<p>
+One example of a suitable data file is the format that results from 'exporting'
+data for a single channel. 
+</p>
+<p>
+When saving a *.plt file that includes channels with imported data,
+the name of the data file is stored, not the actual sample data.
+The next time such a plot is loaded, data will again be imported from the file.
 </p>
 
 

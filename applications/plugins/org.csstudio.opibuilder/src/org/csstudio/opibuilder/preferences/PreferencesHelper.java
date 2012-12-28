@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
@@ -55,6 +56,8 @@ public class PreferencesHelper {
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
+	//The widgets that are hidden from palette.
+	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 	
 //WebOPI preferences
 	
@@ -213,6 +216,23 @@ public class PreferencesHelper {
     		result[i++]=ResourceUtil.getPathFromString(row);
     	}
     	return result;
+    }
+    
+    /**
+     * @return typeId of widgets that should be hidden from palette.
+     * @throws Exception
+     */
+    public static String[] getHiddenWidgets(){
+    	String rawString = getString(HIDDEN_WIDGETS);
+    	if(rawString == null || rawString.trim().isEmpty())
+    		return null;
+    	try {
+			return StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
+		} catch (Exception e) {
+			ErrorHandlerUtil.handleError("Failed to parse hidden_widgets preference", e);
+			return null;
+		}
+    	
     }
     
     /**Get python path preferences.

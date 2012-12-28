@@ -297,7 +297,7 @@ abstract public class ModelItem
         // but as a fall-back create missing axes
         final int axis_index = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
         while (model.getAxisCount() <= axis_index)
-            model.addAxis();
+            model.addAxis(display_name);
         axis = model.getAxis(axis_index);
         line_width = DOMHelper.getSubelementInt(node, Model.TAG_LINEWIDTH, line_width);
         rgb = Model.loadColorFromDocument(node);

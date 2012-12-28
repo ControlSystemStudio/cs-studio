@@ -22,6 +22,12 @@
             class="org.csstudio.domain.desy.ui.preferences.ControlSubnetPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.domain.desy.ui.statisticview.PreferenceInitializer">
+      </initializer>
+   </extension>
   <extension
         point="org.csstudio.remote.managementCommandResultReceivers">
      <receiver

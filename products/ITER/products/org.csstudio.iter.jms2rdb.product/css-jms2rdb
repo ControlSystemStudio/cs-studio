@@ -1,0 +1,41 @@
+#! /bin/bash
+#
+# Startup Script for CSS JMS2RDB
+#
+# chkconfig: - 91 9
+# description: Starts and stops CSS JMS2RDB
+#
+
+#+======================================================================
+# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css-jms2rdb/trunk/org.csstudio.jms2rdb/css-jms2rdb $
+# $Id: css-jms2rdb 28709 2012-06-25 17:20:25Z zagara $
+#
+# Project       : CODAC Core System
+#
+# Description   : Starts and stops CSS JMS2RDB
+#
+# Author(s)     : Cosylab
+#
+# Copyright (c) : 2010-2012 ITER Organization,
+#                 CS 90 046
+#                 13067 St. Paul-lez-Durance Cedex
+#                 France
+#
+# This file is part of ITER CODAC software.
+# For the terms and conditions of redistribution or use of this software
+# refer to the file ITER-LICENSE.TXT located in the top level directory
+# of the distribution package.
+#
+#-======================================================================
+
+. codacenv
+
+CONFIGURATION=()
+VARFILES=()
+
+unset REQUSER
+DAEMONS=(/usr/bin/jms2rdb)
+NAMES=("CSS JMS2RDB")
+ARGS=("$(printf "'%s' " "${@:2}")")
+
+. $CODAC_ROOT/bin/services/service-startup

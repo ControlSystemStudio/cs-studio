@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.css.app.feature"
+      label="CSS Apps Component"
+      version="1.0.0"
+      provider-name="ITER"
+      os="linux"
+      ws="gtk"
+      nl="en"
+      arch="x86_64">
+
+   <requires>
+      <import plugin="javax.annotation"/>
+      <import plugin="javax.mail"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.apache.lucene"/>
+      <import plugin="org.apache.lucene.analysis"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.archive.reader"/>
+      <import plugin="org.csstudio.auth"/>
+      <import plugin="org.csstudio.auth.ui"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.data"/>
+      <import plugin="org.csstudio.email"/>
+      <import plugin="org.csstudio.email.ui"/>
+      <import plugin="org.csstudio.iter.startuphelper"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.ldapAuthorization"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.logging.ui"/>
+      <import plugin="org.csstudio.openfile"/>
+      <import plugin="org.csstudio.opibuilder"/>
+      <import plugin="org.csstudio.opibuilder.widgets"/>
+      <import plugin="org.csstudio.platform.libs.jdbc"/>
+      <import plugin="org.csstudio.platform.libs.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb"/>
+      <import plugin="org.csstudio.startup"/>
+      <import plugin="org.csstudio.swt.widgets"/>
+      <import plugin="org.csstudio.swt.xygraph"/>
+      <import plugin="org.csstudio.trends.databrowser2"/>
+      <import plugin="org.csstudio.ui.menu"/>
+      <import plugin="org.csstudio.ui.menu.app"/>
+      <import plugin="org.csstudio.ui.util"/>
+      <import plugin="org.csstudio.utility.product"/>
+      <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.equinox.common"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="org.eclipse.equinox.preferences"/>
+      <import plugin="org.eclipse.equinox.security"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.osgi.util"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.hamcrest"/>
+      <import plugin="org.jdom"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.python"/>
+      <import plugin="org.slf4j"/>
+   </requires>
+
+   <plugin
+         id="javax.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
+   <plugin
+         id="org.csstudio.apputil.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata.clipboard"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.display.rdbtable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.passwordprovider"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.css.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ldapAuthorization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ldapAuthorization.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logbook"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.servicelocator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.swt.chart"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.trends.databrowser2.opiwidget"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pv.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.mockito"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.slf4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.apputil"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.httpd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -43,26 +43,55 @@ public class MkkDbExample {
 	                connection.prepareStatement(_pvStmt);
 	        
 	        for (IProcessVariableAddress pvAddress : _pvAdresses) {
-	        	String rawName = pvAddress.getRawName();
-	        	checkPvName.setString(1, rawName);
+	        	String comment = null;
+	        	String sdsPvName = pvAddress.getRawName();
+	        	String recordName = stripRawName(sdsPvName);
+	        	checkPvName.setString(1, recordName);
 	        	ResultSet query = checkPvName.executeQuery();
 	            if(query.next()) {
 	            	int pvCount = Integer.parseInt(query.getString(1));
 					if (pvCount == 0) {
-	            		System.out.println(rawName + "no pv");
+						LOG.trace(recordName + " not in DB");
 	            		result = ValidationResult.INVALID;
 	            	} else {
+	            		LOG.trace(recordName + " in DB");
 	            		result = ValidationResult.VALID;
-	            		System.out.println(rawName + pvCount);
 	            	}
 	            } else {
-	            	System.out.println(rawName + "error");
+	            	LOG.error("validation error for " + recordName);
 	            	result = ValidationResult.INVALID;
 	            }
-	            _callback.onValidate(pvAddress, result, null);
+				_callback.onValidate(pvAddress, result, comment );
 	        }
 		} catch (final Exception e) {
 			LOG.error("SQL Connection error ", e);
 		}
+	}
+
+	/**
+	 * Remove characteristic, type hint and field from raw name.
+	 * Otherwise the name does not match with DB result.
+	 * @param rawName
+	 * @return 
+	 */
+	private String stripRawName(String rawName) {
+		if (rawName.contains("[")) {
+			LOG.trace("remove characteristic from " + rawName);
+			String[] split = rawName.split("\\[");
+			rawName = split[0];
+		}
+		if (rawName.contains(",")) {
+			LOG.trace("remove type hint from " + rawName);
+			String[] split = rawName.split(",");
+			rawName = split[0];
+		}
+		if (rawName.contains(".")) {
+			LOG.trace("remove field from " + rawName);
+			String[] split = rawName.split("\\.");
+			if (split[1].length() == 4) {
+				rawName = split[0];
+			}
+		}
+		return rawName;
 	}
 }

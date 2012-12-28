@@ -27,9 +27,13 @@ import java.util.Date;
 public class ScanSampleFormatter
 {
 	/** Suggested time format */
-	final public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-	final private static DateFormat time_fmt = new SimpleDateFormat(TIME_FORMAT);
+	final public static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	final private static DateFormat date_format = new SimpleDateFormat(DATE_FORMAT);
 
+	final public static String TIME_FORMAT = "HH:mm:ss";
+	final private static DateFormat time_format = new SimpleDateFormat(TIME_FORMAT);
+
+	
 	/** Extract double from sample
 	 *  @param sample ScanSample
 	 *  @return Double or NaN if there is no number to extract
@@ -60,10 +64,26 @@ public class ScanSampleFormatter
 	/** @param timestamp {@link Date}
 	 *  @return Date in preferred text format
 	 */
-	public static synchronized String format(final Date timestamp)
+	public static String format(final Date timestamp)
 	{
 	    if (timestamp == null)
-	        return "null";
-    	return time_fmt.format(timestamp);
+	        return "?";
+	    synchronized (date_format)
+	    {
+	        return date_format.format(timestamp);
+	    }
 	}
+
+    /** @param timestamp {@link Date}
+     *  @return Time of the data in preferred text format
+     */
+    public static String formatTime(final Date timestamp)
+    {
+        if (timestamp == null)
+            return "?";
+        synchronized (time_format)
+        {
+            return time_format.format(timestamp);
+        }
+    }
 }

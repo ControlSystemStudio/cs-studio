@@ -189,10 +189,10 @@ public class WaveformView extends DataBrowserAwareView
         status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void setFocus()
-    {
+	/** {@inheritDoc} */
+	// Remove Override annotation for RAP
+	// @Override
+	public void setFocus() {
         pv_name.setFocus();
     }
 

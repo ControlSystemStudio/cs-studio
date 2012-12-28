@@ -110,6 +110,7 @@ org.csstudio.swt.xygraph/**
 org.csstudio.swt.xygraph.rcp/**
 org.csstudio.trends.databrowser2/**
 org.csstudio.trends.databrowser2.opiwidget/**
+org.csstudio.trends.databrowser2.rcp/**
 org.csstudio.ui.help/**
 org.csstudio.ui.menu/**
 org.csstudio.ui.menu.app/**

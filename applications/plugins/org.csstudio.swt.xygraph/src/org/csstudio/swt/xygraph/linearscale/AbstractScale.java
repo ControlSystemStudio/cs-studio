@@ -4,8 +4,11 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -48,6 +51,8 @@ public abstract class AbstractScale extends Figure{
 
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	//$NON-NLS-1$
     
+	private static final Map<String, Format> formatCache = new HashMap<String, Format>();
+	
     /** ticks label position */
     private LabelSide tickLableSide = LabelSide.Primary;   
 
@@ -85,7 +90,7 @@ public abstract class AbstractScale extends Figure{
     private boolean scaleLineVisible = true;
 
 	/** the pixels hint for major tick mark step */
-    private int majorTickMarkStepHint = 30;
+    private int majorTickMarkStepHint = 40;
     
     /** the pixels hint for minor tick mark step */
     private int minorTickMarkStepHint = 4;
@@ -97,6 +102,9 @@ public abstract class AbstractScale extends Figure{
     private boolean autoFormat = true;
 	
     private Range range = new Range(min, max);
+
+
+	private int formatPatternSize = 0;
     
     
     
@@ -126,31 +134,30 @@ public abstract class AbstractScale extends Figure{
               	if (autoFormat || formatPattern == null || formatPattern.equals("")
             			|| formatPattern.equals(default_decimal_format)
             			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
-            		formatPattern =  DEFAULT_DATE_FORMAT;     
             		double length = Math.abs(max - min);            		
 	                if (length <=5000 || timeUnit == Calendar.MILLISECOND) { //less than five second
-	                	formatPattern = "ss.SSS";//$NON-NLS-1$
+	                	internalSetFormatPattern("ss.SSS");//$NON-NLS-1$
 	                } else if (length <=1800000d || timeUnit == Calendar.SECOND) { //less than 30 min
-	                	formatPattern = "HH:mm:ss";//$NON-NLS-1$
+	                	internalSetFormatPattern("HH:mm:ss");//$NON-NLS-1$
 	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
-	                	formatPattern = "HH:mm";//$NON-NLS-1$
+	                	internalSetFormatPattern("HH:mm");//$NON-NLS-1$
 	                } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
-	                	formatPattern = "MM-dd\nHH:mm";//$NON-NLS-1$
+	                	internalSetFormatPattern("MM-dd\nHH:mm");//$NON-NLS-1$
 	                } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
-	                	formatPattern = "MM-dd";//$NON-NLS-1$
+	                	internalSetFormatPattern("MM-dd");//$NON-NLS-1$
 //	                } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
 //	                	formatPattern = "yyyy-MM-dd";//$NON-NLS-1$
 	                } else {		//more than a month
-	                	formatPattern = "yyyy-MM-dd"; //$NON-NLS-1$
+	                	internalSetFormatPattern("yyyy-MM-dd"); //$NON-NLS-1$
 	                } 
 	                autoFormat = true;
             	}
               	if(minOrMaxDate && autoFormat){
               			if(Math.abs(max - min)<5000)
               				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
-           			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj);
+           			return getFormat(DEFAULT_DATE_FORMAT, true).format(obj);
               	}
-            	return new SimpleDateFormat(formatPattern).format(obj);
+            	return getFormat(formatPattern, true).format(obj);
             }
             
             if (formatPattern == null || formatPattern.equals("")) {            	
@@ -158,13 +165,28 @@ public abstract class AbstractScale extends Figure{
             	autoFormat = true;
             }       
                                 
-            return new DecimalFormat(formatPattern).format(obj);
+            return getFormat(formatPattern, false).format(obj);
    }
+    
+    private Format getFormat(String pattern, boolean isDateFormat){
+    	Format result = formatCache.get(pattern);
+    	if(result == null){
+    		if(isDateFormat)
+    			result = new SimpleDateFormat(pattern);
+    		else
+    			result = new DecimalFormat(pattern);
+    		formatCache.put(pattern, result);
+    	}
+    	return result;
+    }
 	
 	/**
 	 * @return the majorTickMarkStepHint
 	 */
 	public int getMajorTickMarkStepHint() {
+		if(isDateEnabled()){
+			return Math.max(majorTickMarkStepHint, formatPatternSize);
+		}
 		return majorTickMarkStepHint;
 	}
 
@@ -266,13 +288,20 @@ public abstract class AbstractScale extends Figure{
  		} catch (IllegalArgumentException e){
  			throw e;
  		}
- 		
-        this.formatPattern = formatPattern;
-       
+		
+        internalSetFormatPattern(formatPattern);
         autoFormat = false;
         setDirty(true);
         revalidate();
         repaint();
+    }
+    
+    private void internalSetFormatPattern(String formatPattern){
+    	if(formatPattern.equals(this.formatPattern))
+    		return;
+    	this.formatPattern = formatPattern;
+    	if(isDateEnabled())
+    		formatPatternSize = TextUtilities.INSTANCE.getTextExtents(formatPattern, getFont()).width;
     }
 
 	/**
@@ -281,6 +310,8 @@ public abstract class AbstractScale extends Figure{
 	public String getFormatPattern() {
 		return formatPattern;
 	}
+	
+	
 	
 	@Override
 	public void setFont(Font f) {
