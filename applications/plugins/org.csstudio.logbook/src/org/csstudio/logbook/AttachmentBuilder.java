@@ -24,6 +24,8 @@ public class AttachmentBuilder {
     private Boolean thumbnail;
     private Long fileSize;
 
+    private byte[] byteArray;
+
     private AttachmentBuilder(String fileName) {
 	this.fileName = fileName;
     }
@@ -51,7 +53,13 @@ public class AttachmentBuilder {
 	attachmentBuilder.contentType = attachment.getContentType();
 	attachmentBuilder.thumbnail = attachment.getThumbnail();
 	attachmentBuilder.fileSize = attachment.getFileSize();
-	attachmentBuilder.inputStream = attachment.getInputStream();
+	try {
+	    attachmentBuilder.byteArray = read2byteArray(attachment
+		    .getInputStream());
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	return attachmentBuilder;
     }
 
@@ -77,7 +85,12 @@ public class AttachmentBuilder {
     }
 
     public AttachmentBuilder inputStream(InputStream inputStream) {
-	this.inputStream = inputStream;
+	try {
+	    this.byteArray = read2byteArray(inputStream);
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	return this;
     }
 
@@ -85,10 +98,10 @@ public class AttachmentBuilder {
      * Build an object implementing the Logbook.
      * 
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     Attachment build() throws IOException {
-	return new AttachmentImpl(inputStream, fileName, contentType,
+	return new AttachmentImpl(new ByteArrayInputStream(byteArray), fileName, contentType,
 		thumbnail, fileSize);
     }
 
@@ -107,15 +120,10 @@ public class AttachmentBuilder {
 	private byte[] byteArray;
 
 	public AttachmentImpl(InputStream inputStream, String fileName,
-		String contentType, Boolean thumbnail, Long fileSize) throws IOException {
+		String contentType, Boolean thumbnail, Long fileSize)
+		throws IOException {
 	    super();
-	    byte[] buffer = new byte[8192];
-	    int bytesRead;
-	    ByteArrayOutputStream output = new ByteArrayOutputStream();
-	    while ((bytesRead = inputStream.read(buffer)) != -1) {
-		output.write(buffer, 0, bytesRead);
-	    }
-	    byteArray = output.toByteArray();
+	    byteArray = read2byteArray(inputStream);
 	    this.fileName = fileName;
 	    this.contentType = contentType;
 	    this.thumbnail = thumbnail;
@@ -147,6 +155,16 @@ public class AttachmentBuilder {
 	    return fileSize;
 	}
 
+    }
+
+    private static byte[] read2byteArray(InputStream input) throws IOException {
+	byte[] buffer = new byte[8192];
+	int bytesRead;
+	ByteArrayOutputStream output = new ByteArrayOutputStream();
+	while ((bytesRead = input.read(buffer)) != -1) {
+	    output.write(buffer, 0, bytesRead);
+	}
+	return output.toByteArray();
     }
 
 }

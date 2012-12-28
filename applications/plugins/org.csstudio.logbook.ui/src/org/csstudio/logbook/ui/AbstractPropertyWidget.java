@@ -13,7 +13,7 @@ import org.csstudio.logbook.PropertyBuilder;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * An Abstract class which provideds the basic functionality expected from a
+ * An Abstract class which provides the basic functionality expected from a
  * Composite used to represent a logbook property
  * 
  * @author shroffk

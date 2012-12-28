@@ -501,7 +501,7 @@ public class LogEntryWidget extends Composite {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-			//    updateUI();
+			    // updateUI();
 			}
 		    });
 	    if (logbookClient == null) {
@@ -548,8 +548,8 @@ public class LogEntryWidget extends Composite {
     }
 
     private void saveLogEntryChangeset() throws Exception {
-	LogEntryBuilder logEntryBuilder = LogEntryBuilder
-		.logEntry(getLogEntryChangeset().getLogEntry())
+	LogEntry logEntry = getLogEntryChangeset().getLogEntry();
+	LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(logEntry)
 		.setText(text.getText()).owner(textOwner.getText());
 	Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
 	for (String tagName : tagList.getItems()) {
@@ -562,13 +562,20 @@ public class LogEntryWidget extends Composite {
 	}
 	logEntryBuilder.setLogbooks(newLogbooks);
 	Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
-	for (Attachment attachment : getLogEntryChangeset().getLogEntry()
-		.getAttachment()) {
-	    newAttachments
-		    .add(AttachmentBuilder.attachment(attachment)
-			    .inputStream(
-				    imageStackWidget.getImage(attachment
-					    .getFileName())));
+	for (AttachmentBuilder attachmentBuilder : newAttachments) {
+	    
+	}
+	for (Attachment attachment : logEntry.getAttachment()) {
+	    if (imageStackWidget.getImageNames().contains(
+		    attachment.getFileName())) {
+		newAttachments.add(AttachmentBuilder.attachment(attachment)
+			.inputStream(
+				imageStackWidget.getImage(attachment
+					.getFileName())));
+	    } else {
+		newAttachments.add(AttachmentBuilder.attachment(attachment));
+	    }
+
 	}
 	logEntryBuilder.setAttachments(newAttachments);
 	getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
