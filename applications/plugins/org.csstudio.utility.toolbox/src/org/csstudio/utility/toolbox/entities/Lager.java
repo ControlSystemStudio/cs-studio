@@ -13,7 +13,7 @@ import org.csstudio.utility.toolbox.framework.binding.TextValue;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Lager.FIND_ALL, query = "select l from Lager l order by l.name"),
-			@NamedQuery(name = Lager.FIND_BY_NAME, query = "select l from Lager l where l.name = ?") })
+			@NamedQuery(name = Lager.FIND_BY_NAME, query = "select l from Lager l where l.name = :name") })
 @Table(name = "lager")
 public class Lager extends BindingEntity implements Cloneable<Lager>, TextValue {
 

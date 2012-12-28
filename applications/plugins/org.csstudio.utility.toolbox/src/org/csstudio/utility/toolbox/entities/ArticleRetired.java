@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_ausgemustert")
 @NamedQueries({
-	@NamedQuery(name = ArticleRetired.FIND_RECORD, query = "from ArticleRetired a where a.artikelDatenId = ? order by id desc")}
+	@NamedQuery(name = ArticleRetired.FIND_RECORD, query = "from ArticleRetired a where a.artikelDatenId = :artikelDatenId order by id desc")}
 )
 @Entity
 public class ArticleRetired extends BindingEntity implements ArticleHistoryInfo  {

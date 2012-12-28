@@ -11,7 +11,7 @@ import org.csstudio.utility.toolbox.framework.binding.TextValue;
 
 @Table(name = "DEVICE")
 @NamedQueries({ @NamedQuery(name = Device.FIND_ALL, query = "select d from Device d order by d.keyword"),
-			@NamedQuery(name = Device.FIND_BY_NAME, query = "select d from Device d where d.keyword = ?") })
+			@NamedQuery(name = Device.FIND_BY_NAME, query = "select d from Device d where d.keyword = :keyword") })
 @Entity
 public class Device implements TextValue {
 

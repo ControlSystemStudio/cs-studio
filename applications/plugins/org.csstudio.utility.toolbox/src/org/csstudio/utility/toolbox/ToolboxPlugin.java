@@ -34,13 +34,13 @@ public class ToolboxPlugin extends AbstractUIPlugin {
 
 	@Override
     public void start(BundleContext context) throws Exception {
-	    super.start(context);
-		DependencyInjector.INSTANCE.startPersistService();
+	   super.start(context);
+	   IWorkbench workbench = PlatformUI.getWorkbench();
+      window = workbench.getActiveWorkbenchWindow();
+      display = window.getShell().getDisplay();
+	   DependencyInjector.INSTANCE.startPersistService();
 		EntityManagerWrapper emWrapper = DependencyInjector.INSTANCE.getInjector().getInstance(EntityManagerWrapper.class);
 		PersistenceContextClearer.PERSISTENCE_CONTEXT_CLEARER.setEm(emWrapper);
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		window = workbench.getActiveWorkbenchWindow();
-		display = window.getShell().getDisplay();
 	}
 
 	@Override

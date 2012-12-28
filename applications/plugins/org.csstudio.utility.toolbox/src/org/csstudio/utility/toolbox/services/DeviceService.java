@@ -27,7 +27,7 @@ public class DeviceService {
 	@ClearPersistenceContextOnReturn
 	public Option<Device> findByName(String name) {
 		TypedQuery<Device> query = em.createNamedQuery(Device.FIND_BY_NAME, Device.class);
-		query.setParameter(1, name);
+		query.setParameter("keyword", name);
 		List<Device> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Device>();

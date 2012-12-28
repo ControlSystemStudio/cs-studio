@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "Gebaeude")
 @NamedQueries({ @NamedQuery(name = Gebaeude.FIND_ALL, query = "select g from Gebaeude g order by g.name"),
-			@NamedQuery(name = Gebaeude.FIND_BY_NAME, query = "select g from Gebaeude g where name = ?") })
+			@NamedQuery(name = Gebaeude.FIND_BY_NAME, query = "select g from Gebaeude g where name = :name") })
 @Entity
 public class Gebaeude implements TextValue {
 

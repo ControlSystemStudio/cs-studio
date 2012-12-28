@@ -37,7 +37,7 @@ public class LagerService {
 	@ClearPersistenceContextOnReturn
 	public Option<Lager> findByName(String name) {
 		TypedQuery<Lager> query = em.createNamedQuery(Lager.FIND_BY_NAME, Lager.class);
-		query.setParameter(1, name);
+		query.setParameter("name", name);
 		List<Lager> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Lager>();

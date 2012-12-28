@@ -35,7 +35,7 @@ public class KeywordService {
 	@ClearPersistenceContextOnReturn
 	public Option<KeywordHardware> findByKeywordHardware(String keyword) {
 		TypedQuery<KeywordHardware> query = em.createNamedQuery(KeywordHardware.FIND_BY_KEYWORD, KeywordHardware.class);
-		query.setParameter(1, keyword);
+		query.setParameter("keyword", keyword);
 		List<KeywordHardware> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<KeywordHardware>();
@@ -46,7 +46,7 @@ public class KeywordService {
 	@ClearPersistenceContextOnReturn
 	public Option<KeywordSoftware> findByKeywordSoftware(String keyword) {
 		TypedQuery<KeywordSoftware> query = em.createNamedQuery(KeywordSoftware.FIND_BY_KEYWORD, KeywordSoftware.class);
-		query.setParameter(1, keyword);
+		query.setParameter("keyword", keyword);
 		List<KeywordSoftware> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<KeywordSoftware>();

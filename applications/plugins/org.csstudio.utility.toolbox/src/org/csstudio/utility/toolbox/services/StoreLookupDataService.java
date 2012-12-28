@@ -23,28 +23,28 @@ public class StoreLookupDataService {
 	@ClearPersistenceContextOnReturn
 	public List<LagerOrt> findAllLocations(String lagerName) {
 		TypedQuery<LagerOrt> query = em.createNamedQuery(LagerOrt.FIND_ALL, LagerOrt.class);
-		query.setParameter(1, lagerName);
+		query.setParameter("lagerName", lagerName);
 		return query.getResultList();		
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<LagerFach> findAllShelves(String lagerName) {
 		TypedQuery<LagerFach> query = em.createNamedQuery(LagerFach.FIND_ALL, LagerFach.class);
-		query.setParameter(1, lagerName);
+		query.setParameter("lagerName", lagerName);
 		return query.getResultList();		
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<LagerBox> findAllBox(String lagerName) {
 		TypedQuery<LagerBox> query = em.createNamedQuery(LagerBox.FIND_ALL, LagerBox.class);
-		query.setParameter(1, lagerName);
+		query.setParameter("lagerName", lagerName);
 		return query.getResultList();		
 	}
 
 	public Option<LagerOrt> findLocationByName(String lagerName, String boxName) {
 		TypedQuery<LagerOrt> query = em.createNamedQuery(LagerOrt.FIND_BY_NAME, LagerOrt.class);
-		query.setParameter(1, lagerName);
-		query.setParameter(2, boxName);
+		query.setParameter("lagerName", lagerName);
+		query.setParameter("name", boxName);
 		List<LagerOrt> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<LagerOrt>();
@@ -54,8 +54,8 @@ public class StoreLookupDataService {
 
 	public Option<LagerBox> findBoxByName(String lagerName, String boxName) {
 		TypedQuery<LagerBox> query = em.createNamedQuery(LagerBox.FIND_BY_NAME, LagerBox.class);
-		query.setParameter(1, lagerName);
-		query.setParameter(2, boxName);
+		query.setParameter("lagerName", lagerName);
+		query.setParameter("name", boxName);
 		List<LagerBox> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<LagerBox>();
@@ -65,8 +65,8 @@ public class StoreLookupDataService {
 
 	public Option<LagerFach> findShelfByName(String lagerName, String boxName) {
 		TypedQuery<LagerFach> query = em.createNamedQuery(LagerFach.FIND_BY_NAME, LagerFach.class);
-		query.setParameter(1, lagerName);
-		query.setParameter(2, boxName);
+		query.setParameter("lagerName", lagerName);
+		query.setParameter("name", boxName);
 		List<LagerFach> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<LagerFach>();
