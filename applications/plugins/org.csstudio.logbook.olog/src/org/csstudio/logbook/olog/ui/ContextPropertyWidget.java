@@ -77,9 +77,11 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 				    .attribute("FileName", file.getName())
 				    .attribute("FileDescription",
 					    textFileDescription.getText()));
-			    FileInputStream fileInputStream = new FileInputStream(file);
+			    FileInputStream fileInputStream = new FileInputStream(
+				    file);
 			    logEntryBuilder.attach(AttachmentBuilder
-				    .attachment(file.getName()).inputStream(fileInputStream));
+				    .attachment(file.getName()).inputStream(
+					    fileInputStream));
 			    getLogEntryChangeset().setLogEntryBuilder(
 				    logEntryBuilder);
 			} catch (FileNotFoundException e1) {
@@ -91,7 +93,8 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 		    // Restore Action
 		    LogEntry logEntry = getLogEntryChangeset().getLogEntry();
 		    for (Attachment attachment : logEntry.getAttachment()) {
-			if (attachment.getFileName().equals(textFileName.getText())) {
+			if (attachment.getFileName().equals(
+				textFileName.getText())) {
 			    try {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow()
@@ -193,7 +196,8 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	    String fileName = property.getAttributeValue("FileName");
 	    this.textFileName.setText(fileName);
 	    this.textFileDescription.setText(property
-		    .getAttributeValue("FileDescription"));
+		    .getAttributeValue("FileDescription") == null ? ""
+		    : property.getAttributeValue("FileDescription"));
 	}
     }
 }

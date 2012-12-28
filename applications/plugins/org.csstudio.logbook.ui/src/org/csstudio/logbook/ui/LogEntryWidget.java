@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,13 +100,8 @@ public class LogEntryWidget extends Composite {
     private List logbookList;
     private List tagList;
 
-    private final IPreferencesService service = Platform
-	    .getPreferencesService();
-    private boolean authenticate = true;
-
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
-    private Button btnSubmit;
     private Button btnAddLogbook;
     private Button btnAddTags;
     final private FormData empty;
@@ -121,7 +117,6 @@ public class LogEntryWidget extends Composite {
     private Label label_horizontal;
     private Composite composite;
     private ErrorBar errorBar;
-    private UserCredentialsWidget userCredentialWidget;
     private final boolean newWindow;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -145,10 +140,6 @@ public class LogEntryWidget extends Composite {
 	setLayout(gridLayout);
 
 	errorBar = new ErrorBar(this, SWT.NONE);
-
-	userCredentialWidget = new UserCredentialsWidget(this, SWT.NONE);
-	userCredentialWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-		true, false, 1, 1));
 
 	composite = new Composite(this, SWT.NONE);
 	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
@@ -238,44 +229,6 @@ public class LogEntryWidget extends Composite {
 	fd_textOwner.right = new FormAttachment(100, -5);
 	fd_textOwner.left = new FormAttachment(lblOwner, 2);
 	textOwner.setLayoutData(fd_textOwner);
-
-	btnSubmit = new Button(composite, SWT.NONE);
-	FormData fd_btnSubmit = new FormData();
-	fd_btnSubmit.left = new FormAttachment(label_vertical, 2);
-	fd_btnSubmit.right = new FormAttachment(100, -5);
-	fd_btnSubmit.bottom = new FormAttachment(100, -5);
-	btnSubmit.setLayoutData(fd_btnSubmit);
-	btnSubmit.addSelectionListener(new SelectionAdapter() {
-
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		// TODO if owner not the same as the preference one create a new
-		// client
-		try {
-		    LogbookClient logbookClient;
-		    if (authenticate) {
-			logbookClient = LogbookClientManager
-				.getLogbookClientFactory().getClient(
-					userCredentialWidget.getUsername(),
-					userCredentialWidget.getPassword());
-		    } else {
-			logbookClient = LogbookClientManager
-				.getLogbookClientFactory().getClient();
-		    }
-		    saveLogEntryChangeset();
-		    LogEntry logEntry = logbookClient
-			    .createLogEntry(logEntryChangeset.getLogEntry());
-		    setEditable(false);
-		    setLogEntry(logEntry);
-		} catch (Exception ex) {
-		    setLastException(ex);
-		}
-
-	    }
-	});
-	btnSubmit.setEnabled(false);
-	btnSubmit.setText("Submit");
-	btnSubmit.setEnabled(true);
 
 	Label lblLogbooks = new Label(composite, SWT.NONE);
 	FormData fd_lblLogbooks = new FormData();
@@ -452,8 +405,8 @@ public class LogEntryWidget extends Composite {
 	    public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case "editable":
-		    getLogEntryChangeset().setLogEntryBuilder(
-			    LogEntryBuilder.logEntry(getLogEntry()));
+		    // getLogEntryChangeset().setLogEntryBuilder(
+		    // LogEntryBuilder.logEntry(getLogEntry()));
 		    break;
 		case "logEntry":
 		    init();
@@ -471,12 +424,6 @@ public class LogEntryWidget extends Composite {
 
     private void init() {
 	try {
-	    try {
-		authenticate = service.getBoolean("org.csstudio.logbook.ui",
-			"Autenticate.user", true, null);
-	    } catch (Exception ex) {
-		setLastException(ex);
-	    }
 	    logEntryChangeset = new LogEntryChangeset();
 	    if (getLogEntry() != null) {
 		logEntryChangeset = new LogEntryChangeset();
@@ -548,7 +495,7 @@ public class LogEntryWidget extends Composite {
     }
 
     private void saveLogEntryChangeset() throws Exception {
-	LogEntry logEntry = getLogEntryChangeset().getLogEntry();
+	LogEntry logEntry = this.logEntryChangeset.getLogEntry();
 	LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(logEntry)
 		.setText(text.getText()).owner(textOwner.getText());
 	Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
@@ -563,7 +510,7 @@ public class LogEntryWidget extends Composite {
 	logEntryBuilder.setLogbooks(newLogbooks);
 	Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
 	for (AttachmentBuilder attachmentBuilder : newAttachments) {
-	    
+
 	}
 	for (Attachment attachment : logEntry.getAttachment()) {
 	    if (imageStackWidget.getImageNames().contains(
@@ -578,7 +525,7 @@ public class LogEntryWidget extends Composite {
 
 	}
 	logEntryBuilder.setAttachments(newAttachments);
-	getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
+	this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
     }
 
     private void updateUI() {
@@ -588,19 +535,9 @@ public class LogEntryWidget extends Composite {
 		cTabItem.dispose();
 	    }
 	}
-	if (authenticate) {
-	    GridData gd = (GridData) userCredentialWidget.getLayoutData();
-	    gd.exclude = !editable;
-	    userCredentialWidget.setVisible(editable);
-	} else {
-	    GridData gd = (GridData) userCredentialWidget.getLayoutData();
-	    gd.exclude = false;
-	    userCredentialWidget.setVisible(false);
-	}
 
 	text.setEditable(editable);
 	textOwner.setEditable(editable);
-	btnSubmit.setEnabled(editable);
 	btnAddLogbook.setVisible(editable);
 	btnAddTags.setVisible(editable);
 	// Attachment buttons need to be enabled/disabled
@@ -632,8 +569,9 @@ public class LogEntryWidget extends Composite {
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
-	    // textDate.setText(DateFormat.getDateInstance().format(
-	    // logEntry.getCreateDate()));
+	    textDate.setText(DateFormat.getDateInstance().format(
+		    logEntry.getCreateDate() == null ? System
+			    .currentTimeMillis() : logEntry.getCreateDate()));
 	    textOwner.setText(logEntry.getOwner() == null ? "" : logEntry
 		    .getOwner());
 	    java.util.List<String> logbookNames = LogEntryUtil
@@ -715,7 +653,7 @@ public class LogEntryWidget extends Composite {
 	}
     }
 
-    private void setLastException(Exception exception) {
+    public void setLastException(Exception exception) {
 	errorBar.setException(exception);
     }
 
@@ -739,7 +677,8 @@ public class LogEntryWidget extends Composite {
 	changeSupport.firePropertyChange("logEntry", oldValue, this.logEntry);
     }
 
-    public LogEntryChangeset getLogEntryChangeset() {
+    public LogEntryChangeset getLogEntryChangeset() throws Exception {
+	saveLogEntryChangeset();
 	return this.logEntryChangeset;
     }
 }
