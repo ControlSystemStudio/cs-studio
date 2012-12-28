@@ -14,7 +14,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /*
- * Version 1.0.RC2
+ * Version 1.0.RC3
  */
 public class ToolboxPlugin extends AbstractUIPlugin {
 
