@@ -1,10 +1,10 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.column;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.column;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vStringConstants;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vTable;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VTable;
+import org.epics.pvmanager.vtype.VTable;
 
 public class VTableDisplayDemo extends ViewPart {
 
