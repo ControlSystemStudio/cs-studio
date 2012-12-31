@@ -5,8 +5,10 @@ Bundle-SymbolicName: org.csstudio.utility.pvmanager.sim;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.sim.Activator
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
-Bundle-Description: Provides simulated channels to PVManager
+Bundle-Description: Provides simulated channels to pvManager
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager;bundle-version="0.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.epics.util;bundle-version="0.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
