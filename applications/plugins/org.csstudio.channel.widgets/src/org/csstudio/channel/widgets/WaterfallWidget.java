@@ -1,7 +1,7 @@
 package org.csstudio.channel.widgets;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
@@ -46,7 +46,7 @@ import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.vtype.VImage;
 import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;

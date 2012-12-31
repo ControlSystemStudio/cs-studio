@@ -62,7 +62,7 @@ import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.vtype.VDouble;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

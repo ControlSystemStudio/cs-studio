@@ -2,9 +2,9 @@ package org.csstudio.channel.widgets;
 
 import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.column;
-import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.column;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vStringConstants;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vTable;
 import static org.epics.util.time.TimeDuration.ofMillis;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
@@ -46,8 +46,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VTable;
-import org.epics.pvmanager.data.VTableColumn;
+import org.epics.pvmanager.vtype.VTable;
+import org.epics.pvmanager.vtype.VTableColumn;
 
 public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
 	ConfigurableWidget {
