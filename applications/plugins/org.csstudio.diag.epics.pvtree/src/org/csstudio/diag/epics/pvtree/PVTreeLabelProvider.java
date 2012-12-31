@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.vtype.AlarmSeverity;
 
 /** Label provider for PVTreeItem entries.
  *  @author Kay Kasemir
