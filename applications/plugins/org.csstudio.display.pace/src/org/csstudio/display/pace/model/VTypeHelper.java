@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pace.model;
 
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.vtype.VEnum;
+import org.epics.pvmanager.vtype.VNumber;
+import org.epics.pvmanager.vtype.VString;
+import org.epics.pvmanager.vtype.VType;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir

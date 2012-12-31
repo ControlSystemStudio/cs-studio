@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pace.model;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +22,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VType;
+import org.epics.pvmanager.vtype.VType;
 import org.epics.util.time.TimeDuration;
 
 /** One cell in the model.
