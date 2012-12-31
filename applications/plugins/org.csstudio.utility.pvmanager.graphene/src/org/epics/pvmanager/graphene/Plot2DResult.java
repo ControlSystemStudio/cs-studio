@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.vtype.VImage;
 
 /**
  *
