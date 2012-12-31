@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.pvmanager.vtype.ValueUtil;
 
 public class PVColumnLabelProvider extends ColumnLabelProvider {
 

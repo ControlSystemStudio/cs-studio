@@ -97,9 +97,9 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.SimpleValueFormat;
-import org.epics.pvmanager.data.ValueFormat;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.pvmanager.vtype.SimpleValueFormat;
+import org.epics.pvmanager.vtype.ValueFormat;
+import org.epics.pvmanager.vtype.ValueUtil;
 import org.epics.pvmanager.extra.DynamicGroup;
 import com.swtdesigner.TableViewerColumnSorter;
 
