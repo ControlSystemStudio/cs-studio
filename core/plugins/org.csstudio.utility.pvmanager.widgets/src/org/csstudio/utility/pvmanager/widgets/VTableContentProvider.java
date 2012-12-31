@@ -2,7 +2,7 @@ package org.csstudio.utility.pvmanager.widgets;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.epics.pvmanager.data.VTable;
+import org.epics.pvmanager.vtype.VTable;
 
 public class VTableContentProvider implements IStructuredContentProvider {
 	
