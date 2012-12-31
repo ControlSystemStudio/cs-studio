@@ -4,8 +4,6 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.VType;
 
 /**
  * An object representing the PVReader. It contains all elements that are common
