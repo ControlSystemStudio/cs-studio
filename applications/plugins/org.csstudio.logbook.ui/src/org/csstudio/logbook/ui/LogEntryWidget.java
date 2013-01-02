@@ -419,14 +419,12 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	init();
     }
 
     private void init() {
 	try {
 	    logEntryChangeset = new LogEntryChangeset();
 	    if (getLogEntry() != null) {
-		logEntryChangeset = new LogEntryChangeset();
 		LogEntryBuilder logEntryBuilder = LogEntryBuilder
 			.logEntry(getLogEntry());
 		// TODO temporary fix, in future releases the attachments will
@@ -450,25 +448,49 @@ public class LogEntryWidget extends Composite {
 			    // updateUI();
 			}
 		    });
-	    if (logbookClient == null) {
-		logbookClient = LogbookClientManager.getLogbookClientFactory()
-			.getClient();
-		logbookNames = Lists.transform(new ArrayList<Logbook>(
-			logbookClient.listLogbooks()),
-			new Function<Logbook, String>() {
-			    public String apply(Logbook input) {
-				return input.getName();
-			    };
-			});
-		tagNames = Lists.transform(
-			new ArrayList<Tag>(logbookClient.listTags()),
-			new Function<Tag, String>() {
-			    public String apply(Tag input) {
-				return input.getName();
-			    };
-			});
-		updateUI();
+	    if (isEditable()) {
+		Executors.newCachedThreadPool().execute(new Runnable() {
 
+		    @Override
+		    public void run() {
+			if (logbookClient == null) {
+			    try {
+				logbookClient = LogbookClientManager
+					.getLogbookClientFactory().getClient();
+				logbookNames = Lists.transform(
+					new ArrayList<Logbook>(logbookClient
+						.listLogbooks()),
+					new Function<Logbook, String>() {
+					    public String apply(Logbook input) {
+						return input.getName();
+					    };
+					});
+				tagNames = Lists.transform(new ArrayList<Tag>(
+					logbookClient.listTags()),
+					new Function<Tag, String>() {
+					    public String apply(Tag input) {
+						return input.getName();
+					    };
+					});
+				getDisplay().asyncExec(new Runnable() {
+
+				    @Override
+				    public void run() {
+					updateUI();
+				    }
+				});
+			    } catch (final Exception e) {
+				getDisplay().asyncExec(new Runnable() {
+
+				    @Override
+				    public void run() {
+					setLastException(e);
+				    }
+				});
+			    }
+			}
+		    }
+		});
 	    }
 
 	    // get the list of properties and extensions to handle these
@@ -539,12 +561,12 @@ public class LogEntryWidget extends Composite {
 
 	text.setEditable(editable);
 	textOwner.setEditable(editable);
-	btnAddLogbook.setVisible(editable);
-	btnAddTags.setVisible(editable);
 	// Attachment buttons need to be enabled/disabled
 	btnAddImage.setVisible(editable);
 	btnAddScreenshot.setVisible(editable);
 	btnCSSWindow.setVisible(editable);
+	btnAddLogbook.setVisible(editable);
+	btnAddTags.setVisible(editable);
 	if (!editable) {
 	    btnAddLogbook.setSize(btnAddLogbook.getSize().x, 0);
 	    btnAddTags.setSize(btnAddTags.getSize().x, 0);
@@ -556,7 +578,6 @@ public class LogEntryWidget extends Composite {
 	    fd.bottom = new FormAttachment(100, -2);
 	    imageStackWidget.setLayoutData(fd);
 	} else {
-	    System.out.println(btnAddLogbook.getSize().x + " " + SWT.DEFAULT);
 	    btnAddLogbook.setSize(btnAddLogbook.getSize().x, SWT.DEFAULT);
 	    btnAddTags.setSize(btnAddTags.getSize().x, SWT.DEFAULT);
 	    FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
@@ -567,6 +588,7 @@ public class LogEntryWidget extends Composite {
 	    fd.bottom = new FormAttachment(btnAddImage, -2);
 	    imageStackWidget.setLayoutData(fd);
 	}
+
 	LogEntry logEntry = logEntryChangeset.getLogEntry();
 	if (logEntry != null) {
 	    // Show the logEntry
@@ -618,7 +640,8 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	}
-	this.layout();
+
+	composite.layout();
     }
 
     @SuppressWarnings("nls")
