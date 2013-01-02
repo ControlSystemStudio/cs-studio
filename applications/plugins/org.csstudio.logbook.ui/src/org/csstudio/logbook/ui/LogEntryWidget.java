@@ -509,17 +509,16 @@ public class LogEntryWidget extends Composite {
 	}
 	logEntryBuilder.setLogbooks(newLogbooks);
 	Collection<AttachmentBuilder> newAttachments = new ArrayList<AttachmentBuilder>();
-	for (AttachmentBuilder attachmentBuilder : newAttachments) {
-
+	// Add the attachments from the ImageStackWidgets
+	for (String imageName : imageStackWidget.getImageNames()) {
+	    newAttachments.add(AttachmentBuilder.attachment(imageName)
+		    .inputStream(imageStackWidget.getImage(imageName)));
 	}
+	// Add all the remaining attachments which are not images and not being
+	// displayed in the ImageStackWidget
 	for (Attachment attachment : logEntry.getAttachment()) {
-	    if (imageStackWidget.getImageNames().contains(
+	    if (!imageStackWidget.getImageNames().contains(
 		    attachment.getFileName())) {
-		newAttachments.add(AttachmentBuilder.attachment(attachment)
-			.inputStream(
-				imageStackWidget.getImage(attachment
-					.getFileName())));
-	    } else {
 		newAttachments.add(AttachmentBuilder.attachment(attachment));
 	    }
 
