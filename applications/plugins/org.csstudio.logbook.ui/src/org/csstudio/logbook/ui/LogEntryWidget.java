@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -41,6 +44,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.KeyAdapter;
@@ -250,14 +254,9 @@ public class LogEntryWidget extends Composite {
 	    public void widgetSelected(SelectionEvent e) {
 		// Open a dialog which allows users to select logbooks
 		StringListSelectionDialog dialog = new StringListSelectionDialog(
-			parent.getShell(), logbookNames, LogEntryUtil
-				.getLogbookNames(logEntryChangeset
-					.getLogEntry()), "Add Logbooks");
+			parent.getShell(), logbookNames, Arrays
+				.asList(logbookList.getItems()), "Add Logbooks");
 		if (dialog.open() == IDialogConstants.OK_ID) {
-		    Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
-		    for (String logbookName : dialog.getSelectedValues()) {
-			newLogbooks.add(LogbookBuilder.logbook(logbookName));
-		    }
 		    logbookList.setItems(dialog.getSelectedValues().toArray(
 			    new String[dialog.getSelectedValues().size()]));
 		    logbookList.getParent().layout();
@@ -293,14 +292,9 @@ public class LogEntryWidget extends Composite {
 	    public void widgetSelected(SelectionEvent e) {
 		// Open a dialog which allows users to select tags
 		StringListSelectionDialog dialog = new StringListSelectionDialog(
-			parent.getShell(), tagNames, LogEntryUtil
-				.getTagNames(logEntryChangeset.getLogEntry()),
-			"Add Tags");
+			parent.getShell(), tagNames, Arrays.asList(tagList
+				.getItems()), "Add Tags");
 		if (dialog.open() == IDialogConstants.OK_ID) {
-		    Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
-		    for (String tagName : dialog.getSelectedValues()) {
-			newTags.add(TagBuilder.tag(tagName));
-		    }
 		    tagList.setItems(dialog.getSelectedValues().toArray(
 			    new String[dialog.getSelectedValues().size()]));
 		    tagList.getParent().layout();
@@ -411,6 +405,12 @@ public class LogEntryWidget extends Composite {
 		case "logEntry":
 		    init();
 		    break;
+		case "tagNames":
+		    init();
+		    break;
+		case "logbookNames":
+		    init();
+		    break;
 		case "logEntryBuilder":
 		    updateUI();
 		    break;
@@ -442,7 +442,6 @@ public class LogEntryWidget extends Composite {
 		logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 	    }
 	    logEntry = logEntryChangeset.getLogEntry();
-	    // savedLogEntryChangeset = logEntryChangeset;
 	    logEntryChangeset
 		    .addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -468,7 +467,10 @@ public class LogEntryWidget extends Composite {
 				return input.getName();
 			    };
 			});
+		updateUI();
+
 	    }
+
 	    // get the list of properties and extensions to handle these
 	    // properties.
 	    IConfigurationElement[] config = Platform.getExtensionRegistry()
@@ -554,6 +556,7 @@ public class LogEntryWidget extends Composite {
 	    fd.bottom = new FormAttachment(100, -2);
 	    imageStackWidget.setLayoutData(fd);
 	} else {
+	    System.out.println(btnAddLogbook.getSize().x + " " + SWT.DEFAULT);
 	    btnAddLogbook.setSize(btnAddLogbook.getSize().x, SWT.DEFAULT);
 	    btnAddTags.setSize(btnAddTags.getSize().x, SWT.DEFAULT);
 	    FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
@@ -679,5 +682,26 @@ public class LogEntryWidget extends Composite {
     public LogEntryChangeset getLogEntryChangeset() throws Exception {
 	saveLogEntryChangeset();
 	return this.logEntryChangeset;
+    }
+
+    public java.util.List<String> getLogbookNames() {
+	return logbookNames;
+    }
+
+    public void setLogbookNames(java.util.List<String> logbookNames) {
+	java.util.List<String> oldValue = this.logbookNames;
+	this.logbookNames = logbookNames;
+	changeSupport.firePropertyChange("logbookNames", oldValue,
+		this.logbookNames);
+    }
+
+    public java.util.List<String> getTagNames() {
+	return tagNames;
+    }
+
+    public void setTagNames(java.util.List<String> tagNames) {
+	java.util.List<String> oldValue = this.tagNames;
+	this.tagNames = tagNames;
+	changeSupport.firePropertyChange("tagNames", oldValue, this.tagNames);
     }
 }
