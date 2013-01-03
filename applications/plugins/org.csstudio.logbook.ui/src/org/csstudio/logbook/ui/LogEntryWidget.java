@@ -449,7 +449,7 @@ public class LogEntryWidget extends Composite {
 			}
 		    });
 	    if (isEditable()) {
-		Executors.newCachedThreadPool().execute(new Runnable() {
+		Runnable initialize = new Runnable() {
 
 		    @Override
 		    public void run() {
@@ -490,7 +490,9 @@ public class LogEntryWidget extends Composite {
 			    }
 			}
 		    }
-		});
+		};
+		Executors.newCachedThreadPool().execute(initialize);
+//		BusyIndicator.showWhile(getShell().getDisplay(), initialize);		
 	    }
 
 	    // get the list of properties and extensions to handle these
