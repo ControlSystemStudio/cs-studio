@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
 import org.epics.pvmanager.ReadFunction;
-import org.epics.pvmanager.vtype.VImage;
-import org.epics.pvmanager.vtype.VNumber;
-import org.epics.pvmanager.vtype.ValueUtil;
+import org.epics.vtype.VImage;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.ValueUtil;
 
 /**
  *

@@ -4,10 +4,10 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.pvmanager.vtype.VNumberArray;
-import org.epics.pvmanager.vtype.VNumber;
-import org.epics.pvmanager.vtype.VImage;
-import org.epics.pvmanager.vtype.ValueUtil;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VImage;
+import org.epics.vtype.ValueUtil;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
