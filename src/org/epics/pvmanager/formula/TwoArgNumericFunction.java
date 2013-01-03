@@ -9,9 +9,9 @@
 package org.epics.pvmanager.formula;
 
 import org.epics.pvmanager.ExpressionLanguage;
-import org.epics.pvmanager.vtype.VDouble;
-import org.epics.pvmanager.vtype.VNumber;
-import org.epics.pvmanager.vtype.ValueFactory;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.ValueFactory;
 import org.epics.util.time.Timestamp;
 
 

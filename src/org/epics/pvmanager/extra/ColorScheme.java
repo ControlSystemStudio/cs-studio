@@ -6,8 +6,8 @@ package org.epics.pvmanager.extra;
 
 import java.awt.Color;
 import java.util.Random;
-import org.epics.pvmanager.vtype.Display;
-import org.epics.pvmanager.vtype.ValueUtil;
+import org.epics.vtype.Display;
+import org.epics.vtype.ValueUtil;
 
 /**
  *

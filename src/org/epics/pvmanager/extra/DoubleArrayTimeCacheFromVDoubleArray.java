@@ -12,9 +12,9 @@ import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.epics.pvmanager.ReadFunction;
-import org.epics.pvmanager.vtype.Display;
-import org.epics.pvmanager.vtype.VDoubleArray;
-import org.epics.pvmanager.vtype.VNumberArray;
+import org.epics.vtype.Display;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VNumberArray;
 import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
