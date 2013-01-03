@@ -5,7 +5,7 @@
 package org.epics.pvmanager.extra;
 
 import java.util.List;
-import org.epics.pvmanager.vtype.Display;
+import org.epics.vtype.Display;
 import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 

@@ -6,8 +6,8 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Short;
-import org.epics.pvmanager.vtype.VShort;
-import org.epics.pvmanager.vtype.VTypeToString;
+import org.epics.vtype.VShort;
+import org.epics.vtype.VTypeToString;
 
 /**
  *

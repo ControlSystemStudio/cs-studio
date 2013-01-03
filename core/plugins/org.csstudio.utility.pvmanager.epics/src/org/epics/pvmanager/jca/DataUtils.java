@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.epics.pvmanager.vtype.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 import org.epics.util.time.Timestamp;
 
 /**

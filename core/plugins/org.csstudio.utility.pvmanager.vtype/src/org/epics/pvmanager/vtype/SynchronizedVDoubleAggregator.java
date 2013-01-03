@@ -4,6 +4,10 @@
  */
 package org.epics.pvmanager.vtype;
 
+import org.epics.vtype.Time;
+import org.epics.vtype.VMultiDouble;
+import org.epics.vtype.ValueFactory;
+import org.epics.vtype.VDouble;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

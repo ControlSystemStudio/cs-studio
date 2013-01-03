@@ -6,8 +6,8 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Double;
-import org.epics.pvmanager.vtype.VDoubleArray;
-import org.epics.pvmanager.vtype.VTypeToString;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VTypeToString;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;

@@ -11,7 +11,7 @@ import org.epics.pvmanager.ChannelHandlerWriteSubscription;
 import java.util.Collections;
 import java.util.List;
 import org.epics.pvmanager.*;
-import static org.epics.pvmanager.vtype.ValueFactory.*;
+import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 

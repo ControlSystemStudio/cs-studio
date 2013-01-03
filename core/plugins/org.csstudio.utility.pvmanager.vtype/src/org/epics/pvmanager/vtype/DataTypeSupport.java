@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager.vtype;
 
+import org.epics.vtype.VType;
 import org.epics.pvmanager.NotificationSupport;
 import org.epics.pvmanager.TypeSupport;
 

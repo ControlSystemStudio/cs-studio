@@ -6,7 +6,7 @@ package org.epics.pvmanager.sim;
 
 import java.text.NumberFormat;
 import javax.xml.bind.annotation.XmlAttribute;
-import org.epics.pvmanager.vtype.Display;
+import org.epics.vtype.Display;
 
 /**
  *

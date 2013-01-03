@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.epics.pvmanager.vtype.VImage;
+import org.epics.vtype.VImage;
 
 public class SWTUtil {
 	private SWTUtil() {

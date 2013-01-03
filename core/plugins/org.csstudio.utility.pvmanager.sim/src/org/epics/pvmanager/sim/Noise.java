@@ -5,8 +5,8 @@
 package org.epics.pvmanager.sim;
 
 import java.util.Random;
-import org.epics.pvmanager.vtype.VDouble;
-import static org.epics.pvmanager.vtype.ValueFactory.*;
+import org.epics.vtype.VDouble;
+import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.time.Timestamp;
 
 /**

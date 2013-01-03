@@ -4,6 +4,28 @@
  */
 package org.epics.pvmanager.vtype;
 
+import org.epics.vtype.VStatistics;
+import org.epics.vtype.Time;
+import org.epics.vtype.VMultiDouble;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VFloat;
+import org.epics.vtype.VTable;
+import org.epics.vtype.VFloatArray;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VStringArray;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VByteArray;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.ValueFormat;
+import org.epics.vtype.VByte;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VShort;
+import org.epics.vtype.VIntArray;
+import org.epics.vtype.VShortArray;
+import org.epics.vtype.ValueUtil;
+import org.epics.vtype.VType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +33,7 @@ import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.LatestValueCollector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.WriteFunction;
-import static org.epics.pvmanager.vtype.ValueFactory.*;
+import static org.epics.vtype.ValueFactory.*;
 import org.epics.pvmanager.expression.ChannelExpression;
 import org.epics.pvmanager.expression.ChannelExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpression;

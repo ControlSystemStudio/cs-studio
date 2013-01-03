@@ -4,10 +4,14 @@
  */
 package org.epics.pvmanager.vtype;
 
+import org.epics.vtype.Display;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.ValueFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.epics.pvmanager.ReadFunction;
-import static org.epics.pvmanager.vtype.ValueFactory.*;
+import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.array.ListDouble;
 import org.epics.util.time.Timestamp;
 

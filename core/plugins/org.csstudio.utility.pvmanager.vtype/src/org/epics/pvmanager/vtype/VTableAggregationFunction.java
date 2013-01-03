@@ -4,11 +4,18 @@
  */
 package org.epics.pvmanager.vtype;
 
+import org.epics.vtype.VString;
+import org.epics.vtype.ValueUtil;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VTable;
+import org.epics.vtype.Scalar;
+import org.epics.vtype.VDouble;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.epics.pvmanager.ReadFunction;
+import org.epics.vtype.ValueFactory;
 
 /**
  *
@@ -98,7 +105,7 @@ class VTableAggregationFunction implements ReadFunction<VTable> {
             values.add(array);
         }
         
-        return new IVTable(types, names, values);
+        return ValueFactory.newVTable(types, names, values);
     }
     
     private static interface ArrayAdder {

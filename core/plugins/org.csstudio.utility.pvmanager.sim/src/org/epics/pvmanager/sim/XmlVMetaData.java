@@ -5,9 +5,9 @@
 package org.epics.pvmanager.sim;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import org.epics.pvmanager.vtype.Alarm;
-import org.epics.pvmanager.vtype.AlarmSeverity;
-import org.epics.pvmanager.vtype.Time;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Time;
 
 /**
  *
