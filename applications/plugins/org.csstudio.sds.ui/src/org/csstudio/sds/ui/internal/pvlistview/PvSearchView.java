@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
 import org.csstudio.sds.ui.DisplayInfoService;
@@ -20,6 +21,7 @@ import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.csstudio.sds.ui.internal.pvlistview.preferences.PvSearchFolderPreferenceItem;
 import org.csstudio.sds.ui.internal.pvlistview.preferences.PvSearchFolderPreferenceService;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -141,6 +143,18 @@ public class PvSearchView extends ViewPart {
 				}
 			}
 		});
+
+		new ControlSystemDropTarget(searchTextfield, ProcessVariable.class,
+				String.class) {
+
+			@Override
+			public void handleDrop(Object item) {
+				if (item instanceof ProcessVariable) {
+					final ProcessVariable pvs = (ProcessVariable) item;
+					searchTextfield.setText((String) pvs.getName());
+				}
+			}
+		};
 
 		searchFoldersCheckbox = new Button(main, SWT.CHECK);
 		searchFoldersCheckbox.setText("Standard folders");
