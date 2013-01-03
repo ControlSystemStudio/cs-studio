@@ -749,6 +749,17 @@
                tooltip="Search for this Process Variable in other displays">
          </command>
       </menuContribution>
+       <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.sds.ui.showpvsearchview"
+               icon="icons/zoom_in.png"
+               label="PV Search"
+               style="push"
+               tooltip="Search for PV in displays">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -756,6 +767,11 @@
             defaultHandler="org.csstudio.sds.ui.internal.pvlistview.OpenPvInSearchViewAction"
             id="org.csstudio.sds.ui.pvsearchviewpopup"
             name="SearchCommand">
+      </command>
+      <command
+            defaultHandler="org.csstudio.sds.ui.internal.pvlistview.ShowPvSearchView"
+            id="org.csstudio.sds.ui.showpvsearchview"
+            name="PV Search View">
       </command>
    </extension>
 </plugin>
