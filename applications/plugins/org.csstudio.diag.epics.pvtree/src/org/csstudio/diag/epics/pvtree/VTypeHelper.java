@@ -9,13 +9,13 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.text.NumberFormat;
 
-import org.epics.pvmanager.vtype.Alarm;
-import org.epics.pvmanager.vtype.AlarmSeverity;
-import org.epics.pvmanager.vtype.VEnum;
-import org.epics.pvmanager.vtype.VNumber;
-import org.epics.pvmanager.vtype.VString;
-import org.epics.pvmanager.vtype.VType;
-import org.epics.pvmanager.vtype.ValueUtil;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Helper for {@link VType} gymnastics
  *  @author Kay Kasemir

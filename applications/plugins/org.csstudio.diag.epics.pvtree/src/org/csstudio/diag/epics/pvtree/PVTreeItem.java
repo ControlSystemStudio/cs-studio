@@ -19,8 +19,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.vtype.AlarmSeverity;
-import org.epics.pvmanager.vtype.VType;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 /** One item in the PV tree model.
  *  <p>
