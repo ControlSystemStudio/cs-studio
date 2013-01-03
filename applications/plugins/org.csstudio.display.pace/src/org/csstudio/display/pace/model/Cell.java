@@ -22,7 +22,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.vtype.VType;
+import org.epics.vtype.VType;
 import org.epics.util.time.TimeDuration;
 
 /** One cell in the model.
