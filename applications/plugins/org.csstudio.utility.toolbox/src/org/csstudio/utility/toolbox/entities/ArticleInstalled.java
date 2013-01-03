@@ -23,8 +23,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_eingebaut")
 @NamedQueries({
-	@NamedQuery(name = ArticleInstalled.FIND_RECORD, query = "from ArticleInstalled a where a.artikelDatenId = ? order by id desc"),
-	@NamedQuery(name = ArticleInstalled.FIND_INSTALLED_IN, query = "from ArticleInstalled a where a.eingebautInArtikel = ?")}
+	@NamedQuery(name = ArticleInstalled.FIND_RECORD, query = "from ArticleInstalled a where a.artikelDatenId = :artikelDatenId order by id desc"),
+	@NamedQuery(name = ArticleInstalled.FIND_INSTALLED_IN, query = "from ArticleInstalled a where a.eingebautInArtikel = :eingebautInArtikel")}
 )
 @Entity
 public class ArticleInstalled extends BindingEntity implements ArticleHistoryInfo {

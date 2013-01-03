@@ -14,7 +14,7 @@ import org.csstudio.utility.toolbox.framework.binding.TextValue;
 @Entity
 @Table(name = "loggroup")
 @NamedQueries({ @NamedQuery(name = LogGroup.FIND_ALL, query = "from LogGroup l order by l.groupName"),
-			@NamedQuery(name = LogGroup.FIND_BY_EMAIL, query = "from LogGroup l where groupEmail = ?") })
+			@NamedQuery(name = LogGroup.FIND_BY_EMAIL, query = "from LogGroup l where groupEmail = :groupEmail") })
 public class LogGroup implements TextValue {
 
 	public static final String FIND_ALL = "LogGroup.findAll";

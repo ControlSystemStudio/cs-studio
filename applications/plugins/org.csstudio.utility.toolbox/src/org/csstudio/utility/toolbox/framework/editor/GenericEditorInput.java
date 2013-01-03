@@ -24,6 +24,7 @@ import org.apache.commons.lang.Validate;
 import org.csstudio.utility.toolbox.AppLogger;
 import org.csstudio.utility.toolbox.common.Dialogs;
 import org.csstudio.utility.toolbox.common.Environment;
+import org.csstudio.utility.toolbox.entities.Firma;
 import org.csstudio.utility.toolbox.framework.annotations.InputLength;
 import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
@@ -153,9 +154,11 @@ public class GenericEditorInput<T extends BindingEntity> implements IEditorInput
 					// is only
 					// updated on an attached object.
 					try {
-						BeanUtils.setProperty(data.get(), "id", BeanUtils.getProperty(mergedObject, "id"));
+					   if (hasIdField(data.get())) {
+					      BeanUtils.setProperty(data.get(), "id", BeanUtils.getProperty(mergedObject, "id"));
+					   }
 					} catch (Exception e) {
-						e.printStackTrace();
+					   logger.logError(e);
 					}
 					if (!Environment.isTestMode()) {
 						em.flush();
@@ -179,6 +182,17 @@ public class GenericEditorInput<T extends BindingEntity> implements IEditorInput
 		}
 	}
 
+	private boolean hasIdField(Object object) {
+	   boolean found;
+	   try {
+	      object.getClass().getDeclaredField("id");
+	      found = true;
+	   } catch (NoSuchFieldException e) {
+	      found = false;
+	   }
+	   return found;
+	}
+	
 	public boolean isSaveSuccessful() {
 		return saveSuccessful;
 	}
@@ -307,9 +321,9 @@ public class GenericEditorInput<T extends BindingEntity> implements IEditorInput
 		return null;
 	}
 
-	public void processData(Func1Void<Some<T>> processData) {
+	public void processData(Func1Void<T> processData) {
 		if (data.hasValue()) {
-			processData.apply(new Some<T>(data.get()));
+			processData.apply(data.get());
 		}
 	}
 

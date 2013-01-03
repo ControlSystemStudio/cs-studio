@@ -20,7 +20,7 @@ import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_in_wartung")
-@NamedQueries({ @NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = ? order by id desc") })
+@NamedQueries({ @NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = :artikelDatenId order by id desc") })
 @Entity
 public class ArticleMaintenance extends BindingEntity implements ArticleHistoryInfo {
 

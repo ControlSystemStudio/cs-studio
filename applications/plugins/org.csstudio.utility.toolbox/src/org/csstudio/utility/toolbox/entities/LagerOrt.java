@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = LagerOrt.FIND_ALL, query = "from LagerOrt l where l.lagerName = ? order by l.name"),
-			@NamedQuery(name = LagerOrt.FIND_BY_NAME, query = "from LagerOrt l where l.lagerName = ? and name = ?") })
+@NamedQueries({ @NamedQuery(name = LagerOrt.FIND_ALL, query = "from LagerOrt l where l.lagerName = :lagerName order by l.name"),
+			@NamedQuery(name = LagerOrt.FIND_BY_NAME, query = "from LagerOrt l where l.lagerName = :lagerName and name = :name") })
 @Table(name = "lager_ort")
 public class LagerOrt implements TextValue {
 

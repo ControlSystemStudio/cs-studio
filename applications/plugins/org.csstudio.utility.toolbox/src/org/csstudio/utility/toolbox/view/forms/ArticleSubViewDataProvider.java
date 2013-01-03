@@ -217,7 +217,7 @@ public class ArticleSubViewDataProvider {
 		return merges;
 	}
 	
-	public void mergeStatusViewEntities() {
+	public void mergeEntities() {
 		for (BindingEntity bindingEntity : assignments.values()) {
 			BindingEntity mergedObject = em.merge(bindingEntity);
 			try {

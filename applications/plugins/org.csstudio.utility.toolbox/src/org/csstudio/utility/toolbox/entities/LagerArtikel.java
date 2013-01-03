@@ -26,8 +26,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @NamedQueries({
-			@NamedQuery(name = LagerArtikel.FIND_ALL, query = "from LagerArtikel where lagerName = ? and articleDescription.id = ?"),
-			@NamedQuery(name = LagerArtikel.FIND_BY_ID, query = "from LagerArtikel where id = ?") })
+			@NamedQuery(name = LagerArtikel.FIND_ALL, query = "from LagerArtikel where lagerName = :name and articleDescription.id = :id"),
+			@NamedQuery(name = LagerArtikel.FIND_BY_ID, query = "from LagerArtikel where id = :id") })
 @Table(name = "lager_artikel")
 public class LagerArtikel extends BindingEntity implements TextValue {
 

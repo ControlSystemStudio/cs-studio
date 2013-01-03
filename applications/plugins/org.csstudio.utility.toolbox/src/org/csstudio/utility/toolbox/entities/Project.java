@@ -12,7 +12,7 @@ import org.csstudio.utility.toolbox.framework.binding.TextValue;
 @Table(name = "PROJECT")
 @NamedQueries(
 			{ @NamedQuery(name = Project.FIND_ALL, query = "select p from Project p order by p.keyword") ,
-			 @NamedQuery(name = Project.FIND_BY_NAME, query = "select p from Project p where p.keyword = ?") 			
+			 @NamedQuery(name = Project.FIND_BY_NAME, query = "select p from Project p where p.keyword = :keyword") 			
 			})
 @Entity
 public class Project implements TextValue {

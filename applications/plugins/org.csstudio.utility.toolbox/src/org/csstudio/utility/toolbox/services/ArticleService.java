@@ -90,7 +90,7 @@ public class ArticleService {
 	@ClearPersistenceContextOnReturn
 	public List<Article> findAllArticleInGroup(BigDecimal gruppe) {
 		TypedQuery<Article> query = em.createNamedQuery(Article.FIND_IN_GROUP, Article.class);
-		query.setParameter(1, gruppe);
+		query.setParameter("gruppeArtikel", gruppe);
 		List<Article> articles = query.getResultList();
 		int index = 1;
 		for (Article article : articles) {
@@ -106,7 +106,7 @@ public class ArticleService {
 			return new None<Article>();
 		}
 		TypedQuery<Article> query = em.createNamedQuery(Article.FIND_BY_ID, Article.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("id", articleDatenId);
 		List<Article> articles = query.getResultList();
 		if (articles.isEmpty()) {
 			return new None<Article>();
@@ -141,14 +141,14 @@ public class ArticleService {
 	@ClearPersistenceContextOnReturn
 	public List<ArticleInstalled> findAllInstalledData(BigDecimal articleDatenId) {
 		TypedQuery<ArticleInstalled> query = em.createNamedQuery(Article.FIND_ALL_INSTALLED, ArticleInstalled.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<Article> findContains(BigDecimal articleDatenId) {
 		TypedQuery<ArticleInstalled> query = em.createNamedQuery(ArticleInstalled.FIND_INSTALLED_IN, ArticleInstalled.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("eingebautInArtikel", articleDatenId);
 		List<Article> installedArticle = new ArrayList<Article>();
 		for (ArticleInstalled articleInstalled : query.getResultList()) {
 			Option<Article> article = findById(articleInstalled.getArtikelDatenId());
@@ -165,14 +165,14 @@ public class ArticleService {
 			return new ArrayList<ArticleInstalled>();
 		}
 		TypedQuery<ArticleInstalled> query = em.createNamedQuery(ArticleInstalled.FIND_RECORD, ArticleInstalled.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<ArticleRetired> findArticleRetired(BigDecimal articleDatenId) {
 		TypedQuery<ArticleRetired> query = em.createNamedQuery(ArticleRetired.FIND_RECORD, ArticleRetired.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
@@ -180,21 +180,21 @@ public class ArticleService {
 	public List<ArticleMaintenance> findArticleMaintenance(BigDecimal articleDatenId) {
 		TypedQuery<ArticleMaintenance> query = em.createNamedQuery(ArticleMaintenance.FIND_RECORD,
 					ArticleMaintenance.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<ArticleInStore> findArticleInStore(BigDecimal articleDatenId) {
 		TypedQuery<ArticleInStore> query = em.createNamedQuery(ArticleInStore.FIND_RECORD, ArticleInStore.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public Option<ArticleInStore> findNewestEntryInStore(BigDecimal articleDatenId) {
 		TypedQuery<ArticleInStore> query = em.createNamedQuery(ArticleInStore.FIND_RECORD, ArticleInStore.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		List<ArticleInStore> articlesInStrore = query.getResultList();
 		if (articlesInStrore.isEmpty()) {
 			return new None<ArticleInStore>();
@@ -205,14 +205,14 @@ public class ArticleService {
 	@ClearPersistenceContextOnReturn
 	public List<ArticleRented> findArticleRented(BigDecimal articleDatenId) {
 		TypedQuery<ArticleRented> query = em.createNamedQuery(ArticleRented.FIND_RECORD, ArticleRented.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public List<ArticleDelivered> findArticleDelivered(BigDecimal articleDatenId) {
 		TypedQuery<ArticleDelivered> query = em.createNamedQuery(ArticleDelivered.FIND_RECORD, ArticleDelivered.class);
-		query.setParameter(1, articleDatenId);
+		query.setParameter("artikelDatenId", articleDatenId);
 		return query.getResultList();
 	}
 

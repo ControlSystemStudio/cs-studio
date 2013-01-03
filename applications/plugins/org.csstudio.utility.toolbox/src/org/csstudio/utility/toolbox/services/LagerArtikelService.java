@@ -60,15 +60,15 @@ public class LagerArtikelService {
 	@ClearPersistenceContextOnReturn
 	public List<LagerArtikel> findAll(String lagerName, BigDecimal articleDescriptionId) {
 		TypedQuery<LagerArtikel> query = em.createNamedQuery(LagerArtikel.FIND_ALL, LagerArtikel.class);
-		query.setParameter(1, lagerName);
-		query.setParameter(2, articleDescriptionId);
+		query.setParameter("name", lagerName);
+		query.setParameter("id", articleDescriptionId);
 		return query.getResultList();
 	}
 
 	@ClearPersistenceContextOnReturn
 	public Option<LagerArtikel> findById(String id) {
 		TypedQuery<LagerArtikel> query = em.createNamedQuery(LagerArtikel.FIND_BY_ID, LagerArtikel.class);
-		query.setParameter(1, id);
+		query.setParameter("id", id);
 		List<LagerArtikel> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<LagerArtikel>();

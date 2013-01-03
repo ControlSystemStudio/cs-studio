@@ -19,8 +19,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "Raum")
 @NamedQueries({
-			@NamedQuery(name = Raum.FIND_ALL, query = "select r from Raum r where r.gebaeudeId = ? order by r.name"),
-			@NamedQuery(name = Raum.FIND_BY_NAME_AND_GEBAUEDE_ID, query = "select r from Raum r where r.name = ? and r.gebaeudeId = ? ") })
+			@NamedQuery(name = Raum.FIND_ALL, query = "select r from Raum r where r.gebaeudeId = :gebaeudeId order by r.name"),
+			@NamedQuery(name = Raum.FIND_BY_NAME_AND_GEBAUEDE_ID, query = "select r from Raum r where r.name = :name and r.gebaeudeId = :gebaeudeId ") })
 @Entity
 public class Raum implements TextValue {
 

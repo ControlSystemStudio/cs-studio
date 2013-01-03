@@ -27,7 +27,7 @@ import org.csstudio.utility.toolbox.framework.validator.ValidDate;
 
 @Table(name = "BA")
 @NamedQueries({ @NamedQuery(name = Order.FIND_ALL, query = "from Order l order by l.nummer desc") ,
-	@NamedQuery(name = Order.FIND_BY_NUMMER, query = "from Order l where l.nummer = ?")})
+	@NamedQuery(name = Order.FIND_BY_NUMMER, query = "from Order l where l.nummer = :nummer")})
 @Entity
 public class Order extends BindingEntity implements TextValue, Cloneable<Order> {
 
@@ -309,10 +309,13 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 
 	@Override
 	public String getValue() {
-		return nummer.toString();
+	   return nummer.toString();
 	}
 
 	public String toString() {
+	  if (nummer == null) {
+	      return null;
+	   }
 		return nummer.toString();
 	}
 

@@ -5,7 +5,6 @@ import org.csstudio.utility.toolbox.entities.Lager;
 import org.csstudio.utility.toolbox.framework.controller.CrudController;
 import org.csstudio.utility.toolbox.framework.template.AbstractCrudEditorPartTemplate;
 import org.csstudio.utility.toolbox.func.Func1Void;
-import org.csstudio.utility.toolbox.func.Some;
 import org.csstudio.utility.toolbox.view.forms.StoreGuiForm;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -46,10 +45,10 @@ public class StoreEditorPart extends AbstractCrudEditorPartTemplate<Lager> imple
 		if (!getEditorInput().hasData()) {
 			throw new IllegalStateException("Data expected");
 		}
-		getEditorInput().processData(new Func1Void<Some<Lager>>() {
+		getEditorInput().processData(new Func1Void<Lager>() {
 			@Override
-			public void apply(Some<Lager> lager) {
-				Lager clone = lager.get().deepClone();
+			public void apply(Lager lager) {
+				Lager clone = lager.deepClone();
 				openStoreEditorAction.runWith(clone);
 			}
 		});
