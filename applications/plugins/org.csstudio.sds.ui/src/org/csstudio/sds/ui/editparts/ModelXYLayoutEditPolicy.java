@@ -589,6 +589,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return new Dimension(1, 1);
 	}
 	
+	//TODO (jhatje): is this the right way to get the relative position in AbstractConnectionEditPart?
 	public void getRelativePosition(Point p) {
 		translateFromAbsoluteToLayoutRelative(p);
 	}
