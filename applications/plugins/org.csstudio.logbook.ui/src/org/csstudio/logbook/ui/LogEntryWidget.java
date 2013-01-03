@@ -419,6 +419,13 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
+
+	try {
+	    logbookClient = LogbookClientManager.getLogbookClientFactory()
+		    .getClient();
+	} catch (Exception e1) {
+	    setLastException(e1);
+	}
     }
 
     private void init() {
@@ -429,7 +436,7 @@ public class LogEntryWidget extends Composite {
 			.logEntry(getLogEntry());
 		// TODO temporary fix, in future releases the attachments will
 		// be listed with the logEntry itself
-		if (logEntry.getId() != null) {
+		if (logEntry.getId() != null && logbookClient != null) {
 		    Collection<Attachment> attachments = logbookClient
 			    .listAttachments(logEntry.getId());
 		    for (Attachment attachment : attachments) {
@@ -453,10 +460,8 @@ public class LogEntryWidget extends Composite {
 
 		    @Override
 		    public void run() {
-			if (logbookClient == null) {
+			if (logbookClient != null) {
 			    try {
-				logbookClient = LogbookClientManager
-					.getLogbookClientFactory().getClient();
 				logbookNames = Lists.transform(
 					new ArrayList<Logbook>(logbookClient
 						.listLogbooks()),
@@ -492,7 +497,7 @@ public class LogEntryWidget extends Composite {
 		    }
 		};
 		Executors.newCachedThreadPool().execute(initialize);
-//		BusyIndicator.showWhile(getShell().getDisplay(), initialize);		
+		// BusyIndicator.showWhile(getShell().getDisplay(), initialize);
 	    }
 
 	    // get the list of properties and extensions to handle these
