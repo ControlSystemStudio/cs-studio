@@ -434,6 +434,7 @@ public class PVItem extends ModelItem implements PVListener {
         // In 'monitor' mode, add to live sample buffer
         if (_period <= 0) {
             samples.addLiveSample(value);
+            LOG.trace(pv.getName() + " : " + samples.getLiveSampleSize() + " live samples");
         }
     }
 
