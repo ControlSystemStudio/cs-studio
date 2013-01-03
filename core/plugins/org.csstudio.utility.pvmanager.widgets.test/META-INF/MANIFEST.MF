@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.jface;bundle-version="3.6.2",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.epics.util;bundle-version="0.1.0",
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0"
+ org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0",
+ org.epics.vtype;bundle-version="2.0.0"
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

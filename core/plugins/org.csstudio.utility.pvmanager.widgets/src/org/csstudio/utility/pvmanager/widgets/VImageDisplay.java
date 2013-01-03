@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.pvmanager.vtype.VImage;
+import org.epics.vtype.VImage;
 
 /**
  * Basic ui component that can display a VImage on screen.
