@@ -46,7 +46,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.vtype.VTable;
+import org.epics.vtype.VTable;
 import org.epics.pvmanager.vtype.VTableColumn;
 
 public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
