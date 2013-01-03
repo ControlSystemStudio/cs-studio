@@ -220,6 +220,8 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 					AbstractWidgetModel widgetModel = WidgetCreationUtil.createAndPreconfigureWidget(null, r.getDroppedProcessVariables());
 
 					if (widgetModel != null) {
+						ModelXYLayoutEditPolicy editPolicy = (ModelXYLayoutEditPolicy) getEditPolicy(EditPolicy.LAYOUT_ROLE);
+						editPolicy.getRelativePosition(r.getLocation());
 						widgetModel.setLocation(r.getLocation().x, r.getLocation().y);
 						widgetModel.setLayer(container.getLayerSupport().getActiveLayer().getId());
 						cmd.add(new AddWidgetCommand(container, widgetModel));

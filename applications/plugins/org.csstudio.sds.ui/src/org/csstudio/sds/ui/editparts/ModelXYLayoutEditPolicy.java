@@ -588,4 +588,8 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
 		return new Dimension(1, 1);
 	}
+	
+	public void getRelativePosition(Point p) {
+		translateFromAbsoluteToLayoutRelative(p);
+	}
 }
