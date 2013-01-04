@@ -12,10 +12,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -87,6 +89,7 @@ public class LogEntryBuilderDialog extends Dialog {
     protected void okPressed() {
 	// Create the logEntry
 	// Create logbook client
+	Cursor originalCursor = getShell().getCursor();
 	try {
 	    LogbookClient logbookClient;
 	    if (authenticate) {
@@ -97,11 +100,15 @@ public class LogEntryBuilderDialog extends Dialog {
 		logbookClient = LogbookClientManager.getLogbookClientFactory()
 			.getClient();
 	    }
-	    logbookClient.createLogEntry(logEntryWidget
-		    .getLogEntryChangeset().getLogEntry());
+
+	    getShell().setCursor(
+		    Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
+	    logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+	    getShell().setCursor(originalCursor);
 	    setReturnCode(OK);
 	    close();
 	} catch (Exception ex) {
+	    getShell().setCursor(originalCursor);
 	    errorBar.setException(ex);
 	}
     }
