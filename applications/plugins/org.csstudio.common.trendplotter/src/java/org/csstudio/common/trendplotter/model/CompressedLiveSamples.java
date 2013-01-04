@@ -21,7 +21,6 @@
  */
 package org.csstudio.common.trendplotter.model;
 
-import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
@@ -51,7 +50,7 @@ public class CompressedLiveSamples extends LiveSamples {
     private int newSamples=0;
     private final LiveSamplesCompressor _compressor;
     private final IIntervalProvider _intervalPovider;
-    private final int _securityCap;
+    private final int _securityCap; //lit. as _compressor.getNoUncompressed() and lit. as 
     private boolean _dynamicCompression;
 
     /**
@@ -80,23 +79,24 @@ public class CompressedLiveSamples extends LiveSamples {
         newSamples++;
         if (isCompressionDue(_samples)) {
             newSamples=0;
+            LOG.info("Samples size before Compress:  {}",_samples.size());
             final Interval interval = _intervalPovider.getTimeInterval();
             if (interval != null) {
                    _samples = compress(_samples, interval);
                 }
-             LOG.info("Samples Compressed:  new samples  {},  capacity ",_samples.size() ,getCapacity());
-             LOG.info("Samples Compressed: live sample {}, SecuritySmples {} ",_compressor.getNoUncompressed(),_securityCap);
-        }
+             LOG.info("Samples Compressed: new samples  {},  capacity       {}", _samples.size(), getCapacity());
+             LOG.info("Samples Compressed: live sample {},   SecuritySmples {} ",_compressor.getNoUncompressed(),_securityCap);
+       }
     }
 
     private boolean isCompressionDue(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples) {
-    
+        removeSamplesBeforeStart(samples,_intervalPovider.getTimeInterval().getStartMillis());
         return samples.size() >= Math.max(samples.getCapacity(), 2) && newSamples>_securityCap;
     }
     @Nonnull
     private LimitedArrayCircularQueue<PlotSample> reCompress(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                            @Nonnull final Interval interval) {
-            removeSamplesBeforeStart(samples, interval.getStartMillis());
+        
             return _compressor.reTransform(samples,getCapacity() );
     }
 
@@ -104,7 +104,11 @@ public class CompressedLiveSamples extends LiveSamples {
     private LimitedArrayCircularQueue<PlotSample> compress(@Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                            @Nonnull final Interval interval) {
             removeSamplesBeforeStart(samples, interval.getStartMillis());
-
+            if(samples.size()<getCapacity() ){
+                LOG.info("Samples do not compress ");
+                return samples;
+                
+            }
             if (_dynamicCompression) {
                 final Long[] windowsMS = determinePerfectWindowForCompressedSamples(getCapacity() - _compressor.getNoUncompressed(),
                                                                                     samples,
@@ -130,12 +134,13 @@ public class CompressedLiveSamples extends LiveSamples {
     private Long[] determinePerfectWindowForCompressedSamples(final int cap,
                                                               @Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                               final Interval intvl) {
-      //  final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(samples.size() - 1).getTime()).getMillis();
-        final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(cap - 1).getTime()).getMillis();
-        
-     //   final long startMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(0).getTime()).getMillis();
+        final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(cap+_securityCap- 1).getTime()).getMillis();
+        final long startMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(0).getTime()).getMillis();
+        final long realStartMillis = Math.min(startMillis, intvl.getStartMillis());
         final long realEndMillis = Math.min(endMillis, intvl.getEndMillis());
-        final long windowLengthMS = (int) ((realEndMillis - intvl.getStartMillis())/(cap-_securityCap)); // perfect
+        final long windowLengthMS = (int) ((realEndMillis - realStartMillis)/cap); // perfect
+      
+        LOG.info("Samples Compressed - windowLengthMS {} ",windowLengthMS);
         return new Long[] {windowLengthMS*4}; // double - and don't forget - min and max are 2 samples per window
     }
 
