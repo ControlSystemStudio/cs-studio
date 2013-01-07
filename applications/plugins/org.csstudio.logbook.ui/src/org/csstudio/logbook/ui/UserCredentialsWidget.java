@@ -29,7 +29,7 @@ public class UserCredentialsWidget extends Composite {
 	setLayout(new GridLayout(4, false));
 
 	lblUsername = new Label(this, SWT.NONE);
-	lblUsername.setText("UserName:");
+	lblUsername.setText("User Name:");
 
 	username = new Text(this, SWT.BORDER);
 	username.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
