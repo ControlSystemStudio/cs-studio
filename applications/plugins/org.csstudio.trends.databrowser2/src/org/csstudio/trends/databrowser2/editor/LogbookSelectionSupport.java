@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.csstudio.logbook.Attachment;
@@ -21,6 +22,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 
 /** Helper for supporting the logbook
  * 
@@ -84,19 +89,21 @@ public class LogbookSelectionSupport implements ISelectionProvider
      */
     private Attachment createImageAttachment() throws Exception
     {
-        // Ideally: Dump image into buffer, only provide input stream
-        //            final ImageLoader loader = new ImageLoader();
-        //            final Image image = graph.getImage();
-        //            loader.data = new ImageData[] { image.getImageData() };
-        //            image.dispose();
-        //            
-        //            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        //            loader.save(buf, SWT.IMAGE_PNG);
-        //            buf.close();
-
-        // Required: Actual file..
-        final String filename = new Screenshot(graph).getFilename();
+        // Dump image into buffer
+        ImageLoader loader = new ImageLoader();
+        Image image = graph.getImage();
+        loader.data = new ImageData[] { image.getImageData() };
+        image.dispose();
+        image = null;
         
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        loader.save(buf, SWT.IMAGE_PNG);
+        buf.close();
+        final byte[] image_bits = buf.toByteArray();
+        buf = null;
+        loader = null;
+        
+        // Attachment provides input stream
         return new Attachment()
         {
             @Override
@@ -110,7 +117,7 @@ public class LogbookSelectionSupport implements ISelectionProvider
             {
                 try
                 {
-                    return new FileInputStream(filename);
+                    return new ByteArrayInputStream(image_bits);
                 }
                 catch (Exception ex)
                 {
@@ -121,13 +128,13 @@ public class LogbookSelectionSupport implements ISelectionProvider
             @Override
             public Long getFileSize()
             {
-                return null;
+                return (long) image_bits.length;
             }
             
             @Override
             public String getFileName()
             {
-                return filename;
+                return "plot.png";
             }
             
             @Override
