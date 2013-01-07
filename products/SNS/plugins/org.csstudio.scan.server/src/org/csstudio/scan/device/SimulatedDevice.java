@@ -8,13 +8,12 @@
 package org.csstudio.scan.device;
 
 import org.csstudio.scan.server.SimulationInfo;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** Simulated device
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SimulatedDevice extends Device
 {
     private volatile VType value = ValueFactory.newVDouble(Double.NaN);

@@ -12,7 +12,7 @@ import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** Utilities for command implementations
  *

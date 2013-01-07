@@ -18,7 +18,7 @@ package org.csstudio.scan.device;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** Base interface for all devices
  *
