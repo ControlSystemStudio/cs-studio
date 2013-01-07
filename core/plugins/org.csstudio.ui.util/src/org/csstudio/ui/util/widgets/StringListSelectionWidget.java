@@ -19,6 +19,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 
 /**
  * A UI to display two lists of strings with button to move one or more selected
@@ -40,7 +44,7 @@ public class StringListSelectionWidget extends Composite {
 	setLayout(new FormLayout());
 
 	Composite composite = new Composite(this, SWT.CENTER);
-	
+
 	composite.setLayout(new GridLayout(1, false));
 
 	Button selectButton = new Button(composite, SWT.NONE);
@@ -129,9 +133,21 @@ public class StringListSelectionWidget extends Composite {
 	fd_composite.left = new FormAttachment(50, 100, -50);
 	fd_composite.top = new FormAttachment(50, 100, -60);
 	composite.setLayoutData(fd_composite);
-	
+
 	unselected = new org.eclipse.swt.widgets.List(this, SWT.BORDER
 		| SWT.V_SCROLL | SWT.MULTI);
+	unselected.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mouseDoubleClick(MouseEvent e) {
+		if (unselected.getSelectionCount() != 0) {
+		    List<String> newSelection = new ArrayList<String>(
+			    selectedValues);
+		    newSelection.addAll(Arrays.asList(unselected.getSelection()));
+		    setSelectedValues(newSelection);
+		    selected.setSelection(selectedValues.size() - 1);
+		}
+	    }
+	});
 	FormData fd_unselected = new FormData();
 	fd_unselected.right = new FormAttachment(composite, -5);
 	fd_unselected.bottom = new FormAttachment(100, -5);
@@ -141,6 +157,18 @@ public class StringListSelectionWidget extends Composite {
 
 	selected = new org.eclipse.swt.widgets.List(this, SWT.BORDER
 		| SWT.V_SCROLL | SWT.MULTI);
+	selected.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mouseDoubleClick(MouseEvent e) {
+		if (selected.getSelectionCount() != 0) {
+		    List<String> newSelection = new ArrayList<String>(
+			    selectedValues);
+		    newSelection.removeAll(Arrays.asList(selected
+			    .getSelection()));
+		    setSelectedValues(newSelection);
+		}
+	    }
+	});
 	FormData fd_selected = new FormData();
 	fd_selected.bottom = new FormAttachment(100, -5);
 	fd_selected.right = new FormAttachment(100, -5);
