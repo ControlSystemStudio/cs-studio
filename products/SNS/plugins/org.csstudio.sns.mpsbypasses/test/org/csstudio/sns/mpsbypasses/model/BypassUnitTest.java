@@ -11,7 +11,7 @@ import org.epics.pvmanager.loc.LocalDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-/** JUnit Plug-in test of the {@link Bypass}
+/** JUnit test of the {@link Bypass}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
