@@ -35,7 +35,7 @@ public class LogEntryBuilderDialog extends Dialog {
     private boolean authenticate = true;
     private ErrorBar errorBar;
 
-    protected LogEntryBuilderDialog(Shell parentShell,
+    public LogEntryBuilderDialog(Shell parentShell,
 	    LogEntryBuilder logEntryBuilder) {
 	super(parentShell);
 	setBlockOnOpen(false);
