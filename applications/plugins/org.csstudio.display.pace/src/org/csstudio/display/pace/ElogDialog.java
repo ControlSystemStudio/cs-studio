@@ -116,7 +116,7 @@ public abstract class ElogDialog extends Dialog
         }
         catch (Exception ex)
         {
-            ExceptionDetailsErrorDialog.openError(getShell(), Messages.EntryBody, ex);
+            ExceptionDetailsErrorDialog.openError(getShell(), Messages.SaveError, ex);
         }
         cmb_logbook.setText(logbook);
         
