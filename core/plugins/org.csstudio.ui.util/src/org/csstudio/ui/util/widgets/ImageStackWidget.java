@@ -49,6 +49,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * A widget to display a set of Images
@@ -89,81 +94,79 @@ public class ImageStackWidget extends Composite {
     }
 
     public ImageStackWidget(final Composite parent, int style) {
-	super(parent, style);
-	setLayout(new FormLayout());
-
-	tableViewer = new TableViewer(this, SWT.NONE);
-	table = tableViewer.getTable();
-	table.setBackground(SWTResourceManager
-		.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-	FormData fd_table = new FormData();
-	fd_table.top = new FormAttachment(0, 10);
-	fd_table.right = new FormAttachment(100, -10);
-	fd_table.bottom = new FormAttachment(100, -10);
-	fd_table.left = new FormAttachment(100, -124);
-	table.setLayoutData(fd_table);
-
-	TableViewerColumn tableViewerColumn = new TableViewerColumn(
-		tableViewer, SWT.NONE);
-	tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
-	    @Override
-	    public void update(ViewerCell cell) {
-		// TODO does not center
-		// TODO does not preserve aspect ratio
-		// use the OwnerDrawLabelProvider
-		String imageName = cell.getElement() == null ? "" : cell
-			.getElement().toString();
-		ImageData imageData = new ImageData(new ByteArrayInputStream(
-			imageInputStreamsMap.get(imageName)));
-		cell.setImage(new Image(getDisplay(), imageData
-			.scaledTo(90, 90)));
-	    }
-	});
-	TableColumn tblclmnImage = tableViewerColumn.getColumn();
-	tblclmnImage.setResizable(false);
-	tblclmnImage.setWidth(90);
-	tableViewer.setContentProvider(new IStructuredContentProvider() {
-
-	    @Override
-	    public void inputChanged(Viewer viewer, Object oldInput,
-		    Object newInput) {
-
-	    }
-
-	    @Override
-	    public void dispose() {
-
-	    }
-
-	    @Override
-	    public Object[] getElements(Object inputElement) {
-		return (Object[]) inputElement;
-	    }
-	});
-
-	tableViewer
-		.addSelectionChangedListener(new ISelectionChangedListener() {
-
-		    @Override
-		    public void selectionChanged(SelectionChangedEvent event) {
-			ISelection selection = event.getSelection();
-			if (selection != null
-				&& selection instanceof IStructuredSelection) {
-			    IStructuredSelection sel = (IStructuredSelection) selection;
-			    if (sel.size() == 1) {
-				setSelectedImageName((String) sel.iterator()
-					.next());
-			    }
-			}
-		    }
-		});
+	super(parent, SWT.NONE);
+	setLayout(new GridLayout(2, false));
 	imagePreview = new ImagePreview(this);
-	FormData fd_imagePreview = new FormData();
-	fd_imagePreview.right = new FormAttachment(table, -10);
-	fd_imagePreview.top = new FormAttachment(0, 10);
-	fd_imagePreview.left = new FormAttachment(0, 10);
-	fd_imagePreview.bottom = new FormAttachment(100, -10);
-	imagePreview.setLayoutData(fd_imagePreview);
+	imagePreview.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+	
+	Label lblImages = new Label(this, SWT.NONE);
+	lblImages.setText("Images:");
+	
+		tableViewer = new TableViewer(this, SWT.NONE);
+		table = tableViewer.getTable();
+		table.addMouseTrackListener(new MouseTrackAdapter() {
+			@Override
+			public void mouseHover(MouseEvent e) {
+			}
+		});
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		table.setBackground(SWTResourceManager
+			.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+		
+			TableViewerColumn tableViewerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+			tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
+			    @Override
+			    public void update(ViewerCell cell) {
+				// TODO does not center
+				// TODO does not preserve aspect ratio
+				// use the OwnerDrawLabelProvider
+				String imageName = cell.getElement() == null ? "" : cell
+					.getElement().toString();
+				ImageData imageData = new ImageData(new ByteArrayInputStream(
+					imageInputStreamsMap.get(imageName)));
+				cell.setImage(new Image(getDisplay(), imageData
+					.scaledTo(90, 90)));
+			    }
+			});
+			TableColumn tblclmnImage = tableViewerColumn.getColumn();
+			tblclmnImage.setResizable(false);
+			tblclmnImage.setWidth(90);
+			tableViewer.setContentProvider(new IStructuredContentProvider() {
+
+			    @Override
+			    public void inputChanged(Viewer viewer, Object oldInput,
+				    Object newInput) {
+
+			    }
+
+			    @Override
+			    public void dispose() {
+
+			    }
+
+			    @Override
+			    public Object[] getElements(Object inputElement) {
+				return (Object[]) inputElement;
+			    }
+			});
+			
+				tableViewer
+					.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+					    @Override
+					    public void selectionChanged(SelectionChangedEvent event) {
+						ISelection selection = event.getSelection();
+						if (selection != null
+							&& selection instanceof IStructuredSelection) {
+						    IStructuredSelection sel = (IStructuredSelection) selection;
+						    if (sel.size() == 1) {
+							setSelectedImageName((String) sel.iterator()
+								.next());
+						    }
+						}
+					    }
+					});
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
