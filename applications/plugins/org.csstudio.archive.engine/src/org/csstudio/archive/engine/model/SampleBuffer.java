@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** Buffer for the samples of one channel.
  *  <p>

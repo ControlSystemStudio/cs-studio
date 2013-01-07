@@ -8,9 +8,9 @@
 package org.csstudio.archive.engine.model;
 
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 /** Helper that does various unspeakable things to values.
  *  @author Kay Kasemir
