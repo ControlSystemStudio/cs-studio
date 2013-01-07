@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** One input to the formula: Model item that provides data, Variable name
  *  for use in the formula

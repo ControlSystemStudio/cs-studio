@@ -15,7 +15,7 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.DefaultVTypeFormat;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test of the {@link SpreadsheetIterator}

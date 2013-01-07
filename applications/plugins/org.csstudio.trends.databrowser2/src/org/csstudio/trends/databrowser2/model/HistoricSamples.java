@@ -9,8 +9,8 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.util.List;
 
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Holder for 'historic' samples.
  *  <p>

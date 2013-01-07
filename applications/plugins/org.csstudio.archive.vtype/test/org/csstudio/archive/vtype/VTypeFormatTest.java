@@ -14,11 +14,11 @@ import static org.csstudio.utility.test.HamcrestMatchers.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
-import org.epics.pvmanager.util.NumberFormats;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
+import org.epics.util.text.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.junit.Test;
 

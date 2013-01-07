@@ -9,10 +9,10 @@ package org.csstudio.archive.vtype;
 
 import java.util.List;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VString;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
 import org.epics.util.time.Timestamp;
 
 /** Archive-derived {@link VEnum} implementation

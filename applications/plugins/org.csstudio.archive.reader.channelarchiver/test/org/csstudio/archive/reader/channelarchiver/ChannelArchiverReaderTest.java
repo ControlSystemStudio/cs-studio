@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,9 +16,9 @@ import java.util.Arrays;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test of the ChannelArchiverReader

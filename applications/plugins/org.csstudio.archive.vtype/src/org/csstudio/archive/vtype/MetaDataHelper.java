@@ -10,8 +10,8 @@ package org.csstudio.archive.vtype;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Enum;
+import org.epics.vtype.Display;
+import org.epics.vtype.Enum;
 
 /** Helper for dealing with {@link Display}
  *  @author Kay Kasemir

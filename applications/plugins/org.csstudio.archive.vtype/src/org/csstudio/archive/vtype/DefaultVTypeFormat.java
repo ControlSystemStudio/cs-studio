@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
 
 /** Formatter for {@link VType} values that uses the default {@link Display} info
  *  @author Kay Kasemir

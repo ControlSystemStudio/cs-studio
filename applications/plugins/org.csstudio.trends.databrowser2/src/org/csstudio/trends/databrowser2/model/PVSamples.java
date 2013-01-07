@@ -14,9 +14,9 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser2.Messages;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Samples of a {@link PVItem}.
  *  <p>

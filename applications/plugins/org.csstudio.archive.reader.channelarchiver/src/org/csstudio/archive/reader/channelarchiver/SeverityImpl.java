@@ -7,12 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver;
 
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 
 /** Wrapper for {@link AlarmSeverity} that adds ChannelArchiver detail
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SeverityImpl
 {
 	final private AlarmSeverity severity;

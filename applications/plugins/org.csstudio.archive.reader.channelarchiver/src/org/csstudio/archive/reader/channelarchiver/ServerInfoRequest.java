@@ -12,7 +12,7 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 
 /** Handles the "archiver.info" request and its results.
  *  @author Kay Kasemir

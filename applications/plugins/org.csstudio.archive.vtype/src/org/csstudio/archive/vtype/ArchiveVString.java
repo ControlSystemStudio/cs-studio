@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VString;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VString;
 import org.epics.util.time.Timestamp;
 
 /** Archive-derived {@link VString} implementation

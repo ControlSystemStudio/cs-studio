@@ -9,12 +9,12 @@ package org.csstudio.trends.databrowser2.model;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.VStatistics;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Time;
+import org.epics.vtype.VStatistics;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** Data Sample from control system ({@link VType})
  *  with interface for XYGraph ({@link ISample})

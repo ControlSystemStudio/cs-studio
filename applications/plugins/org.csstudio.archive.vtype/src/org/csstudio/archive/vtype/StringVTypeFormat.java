@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 import org.epics.util.array.ListNumber;
 
 /** Formatter for {@link VType} values that uses strings for some numeric arrays
