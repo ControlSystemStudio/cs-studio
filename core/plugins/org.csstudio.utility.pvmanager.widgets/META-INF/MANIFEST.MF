@@ -7,11 +7,9 @@ Bundle-Activator: org.csstudio.utility.pvmanager.widgets.Activator
 Bundle-Description: Set of widgets implemented on top of PVManager
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager;bundle-version="[2.0.0,3.0.0)",
  org.csstudio.utility.pvmanager.ui;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0",
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.epics.vtype;bundle-version="2.0.0"
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.pvmanager.widgets
