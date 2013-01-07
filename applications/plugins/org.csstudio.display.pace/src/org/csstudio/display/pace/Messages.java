@@ -28,6 +28,9 @@ public class Messages extends NLS
     public static String InstanceLabelProvider_PVValueFormat;
     public static String InstanceLabelProvider_PVCommentTipFormat;
     public static String InstanceLabelProvider_ReadOnlyAppendix;
+    public static String Password;
+
+
     public static String Preferences_DefaultLogbook;
     public static String Preferences_Message;
     public static String PVWriteErrorFmt;
@@ -37,6 +40,15 @@ public class Messages extends NLS
     public static String SaveErrorFmt;
     public static String SaveIntro;
     public static String ELogTitleFmt;
+    public static String EntryBody;
+
+
+    public static String EntryTitle;
+
+
+    public static String Logbook;
+
+
     public static String SavePVInfoFmt;
     public static String SaveCommentInfoFmt;
     public static String SaveTitle;
@@ -48,6 +60,9 @@ public class Messages extends NLS
     public static String SetValue_TT;
     public static String SystemColumn;
     public static String UnknownValue;
+
+
+    public static String User;
 
     static
     {

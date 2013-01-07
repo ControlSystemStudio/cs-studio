@@ -11,3 +11,4 @@ Require-Bundle: org.junit4,
 Bundle-ClassPath: .
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.logbook.sns
