@@ -18,11 +18,11 @@ import java.io.PipedOutputStream;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Test;
 
-/** [Headless] JUnit Plug-in test of Model's XML config read/write
+/** JUnit test of Model's XML config read/write
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelReadWriteHeadlessTest
+public class ModelReadWriteUnitTest
 {
     @Test
     public void testModelReadWrite() throws Exception

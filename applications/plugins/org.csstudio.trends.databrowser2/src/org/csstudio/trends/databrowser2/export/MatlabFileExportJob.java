@@ -17,9 +17,9 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 import com.jmatio.io.MatFileIncrementalWriter;
 import com.jmatio.types.MLCell;

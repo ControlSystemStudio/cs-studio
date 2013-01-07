@@ -40,10 +40,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VStatistics;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VStatistics;
+import org.epics.vtype.VType;
 
 /** A View that shows all the current Model Samples in a list.
  *

@@ -14,9 +14,9 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 
 /** Data provider for the XYGraph that shows waveform elements of an IValue
  *  @author Kay Kasemir

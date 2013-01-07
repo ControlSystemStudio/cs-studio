@@ -343,27 +343,32 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
     public void pvChanged(final PVReaderEvent<List<VType>> event)
     {
         final PVReader<List<VType>> pv = event.getPvReader();
+        // Check for error
         final Exception error = pv.lastException();
         if (error != null)
-        {
             Activator.getLogger().log(Level.FINE, "PV " + pv.getName() + " error", error);
+
+        final List<VType> values = pv.getValue();
+        if (values == null)
+        {   // No current value
             current_value = null;
             // In 'monitor' mode, mark in live sample buffer
             if (period <= 0)
                 logDisconnected();
+            return;
         }
-        final List<VType> values = pv.getValue();
-        for (VType value : values)
-        {
-            // Cache most recent for 'scanned' operation
-            current_value = value;
-            // In 'monitor' mode, add to live sample buffer
-            if (period <= 0)
+        else
+            for (VType value : values)
             {
-                Activator.getLogger().log(Level.FINE, "PV {0} received {1}", new Object[] { getName(), value });
-                samples.addLiveSample(value);
+                // Cache most recent for 'scanned' operation
+                current_value = value;
+                // In 'monitor' mode, add to live sample buffer
+                if (period <= 0)
+                {
+                    Activator.getLogger().log(Level.FINE, "PV {0} received {1}", new Object[] { getName(), value });
+                    samples.addLiveSample(value);
+                }
             }
-        }
     }
 
     /** @param value Value to log with 'now' as time stamp */

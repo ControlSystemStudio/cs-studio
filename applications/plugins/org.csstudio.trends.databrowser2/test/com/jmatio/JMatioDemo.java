@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 import org.junit.Test;
 
 import com.jmatio.io.MatFileIncrementalWriter;

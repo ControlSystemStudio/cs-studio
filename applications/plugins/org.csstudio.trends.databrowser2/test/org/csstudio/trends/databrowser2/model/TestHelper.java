@@ -13,12 +13,12 @@ import java.util.logging.Logger;
 
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.pvmanager.loc.LocalDataSource;
 import org.epics.pvmanager.sim.SimulationDataSource;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** Unit-test helper for creating samples
  *  @author Kay Kasemir

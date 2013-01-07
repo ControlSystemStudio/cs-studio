@@ -10,7 +10,7 @@ package org.csstudio.trends.databrowser2.export;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 import org.junit.Test;
 
 /** JUnit test of the MatlabQualityHelper

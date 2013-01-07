@@ -7,9 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import static org.junit.Assert.*;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.closeTo;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +22,12 @@ import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VStatistics;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
-
-import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VStatistics;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 import org.junit.Before;
 import org.junit.Test;
 

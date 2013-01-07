@@ -17,10 +17,10 @@ import java.util.List;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 import org.junit.Test;
 
 /** JUnit test for PVSamples

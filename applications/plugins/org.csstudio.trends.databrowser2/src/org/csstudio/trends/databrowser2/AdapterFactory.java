@@ -12,7 +12,7 @@ import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** Adapt Data Browser model items to CSS PV
  *

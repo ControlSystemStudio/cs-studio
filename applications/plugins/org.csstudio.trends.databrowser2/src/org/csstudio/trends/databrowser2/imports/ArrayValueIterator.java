@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** {@link ValueIterator} for {@link List} of {@link IValue}
  *  @author Kay Kasemir

@@ -12,8 +12,8 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Iterator for the samples in a ModelItem, not fetching archived data
  *  @author Kay Kasemir
