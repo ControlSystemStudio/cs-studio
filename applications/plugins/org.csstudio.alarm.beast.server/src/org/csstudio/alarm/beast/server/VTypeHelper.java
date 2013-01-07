@@ -8,18 +8,19 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.Time;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Helper for handling {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class VTypeHelper
 {
     /** Read number from a {@link VType}

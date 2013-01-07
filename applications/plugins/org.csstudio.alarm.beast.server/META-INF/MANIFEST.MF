@@ -10,7 +10,11 @@ Require-Bundle: org.junit4,
  org.csstudio.logging;bundle-version="0.0.1",
  org.epics.util;bundle-version="0.1.0",
  org.csstudio.apputil;bundle-version="3.0.1",
+ org.epics.vtype;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
- org.csstudio.alarm.beast;bundle-version="3.2.0"
+ org.csstudio.alarm.beast;bundle-version="3.2.0",
+ org.csstudio.utility.pvmanager.loc;bundle-version="3.1.0";resolution:=optional,
+ org.csstudio.utility.pvmanager.epics;bundle-version="2.0.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
