@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * ValueIterator that reads data from kblogrd via the standard output.
