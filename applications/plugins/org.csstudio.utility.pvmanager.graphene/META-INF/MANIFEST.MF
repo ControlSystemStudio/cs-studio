@@ -6,8 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Require-Bundle: org.epics.graphene;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager;bundle-version="1.0.0",
- org.epics.util;bundle-version="0.1.0",
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.epics.vtype;bundle-version="2.0.0"
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
 Export-Package: org.epics.pvmanager.graphene
