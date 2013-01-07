@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.csstudio.alarm.beast.server.Matchers.atLeast;
+import static org.csstudio.utility.test.HamcrestMatchers.*;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 import static org.junit.Assert.assertThat;
@@ -88,7 +88,7 @@ public class FilterUnitTest implements FilterListener
             while (last_value != 3.0)
                 wait();
         }
-        assertThat(updates.get(), atLeast(1));
+        assertThat(updates.get(), greaterThanOrEqualTo(1));
         
         // May get update for this.. (2 or 3), or not
         x.write(4.0);
@@ -101,7 +101,7 @@ public class FilterUnitTest implements FilterListener
                 wait();
         }
         System.err.println("Received " + updates.get() + " updates");
-        assertThat(updates.get(), atLeast(2));
+        assertThat(updates.get(), greaterThanOrEqualTo(2));
         
         filter.stop();
     }
@@ -166,12 +166,12 @@ public class FilterUnitTest implements FilterListener
             System.err.println("Received value " + last_value);
         }
         System.err.println("Received " + updates.get() + " updates");
-        assertThat(updates.get(), atLeast(1));
+        assertThat(updates.get(), greaterThanOrEqualTo(1));
 
         final Timestamp end = Timestamp.now();
         final TimeDuration duration = end.durationFrom(start);
         System.err.println("Timeout was " + duration);
-        assertThat(duration.toSeconds(), atLeast(Filter.TIMEOUT_SECS * 0.8));
+        assertThat(duration.toSeconds(), greaterThanOrEqualTo(Filter.TIMEOUT_SECS * 0.8));
         
         filter.stop();
     }
