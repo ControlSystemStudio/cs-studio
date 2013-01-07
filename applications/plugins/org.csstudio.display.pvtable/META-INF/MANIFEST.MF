@@ -11,12 +11,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
  org.eclipse.ui.ide;bundle-version="3.7.0",
- org.csstudio.utility.test;bundle-version="1.0.0",
+ org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.csdata;bundle-version="3.0.0",
  org.epics.util;bundle-version="0.1.0",
  org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.loc;bundle-version="3.1.0";resolution:=optional,
+ org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
  org.csstudio.ui.util;bundle-version="3.0.0",
- org.csstudio.apputil
+ org.csstudio.apputil,
+ org.epics.vtype;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Basic PV snapshot/compare table

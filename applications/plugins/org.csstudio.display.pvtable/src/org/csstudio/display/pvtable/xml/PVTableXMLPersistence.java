@@ -20,8 +20,8 @@ import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

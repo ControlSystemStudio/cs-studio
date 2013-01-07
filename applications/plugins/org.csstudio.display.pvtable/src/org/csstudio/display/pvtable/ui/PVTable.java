@@ -49,8 +49,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 /** PV Table GUI
  *  @author Kay Kasemir

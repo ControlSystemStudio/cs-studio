@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.csstudio.display.pvtable.Preferences;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** A PV table model, i.e. list of {@link PVTableItem}s
  *
