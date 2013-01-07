@@ -76,6 +76,7 @@ public class HtmlReport
 
 		out.println("</body>");
 		out.println("</html>");
+		out.flush();
     }
 
 	/** Append tagged html content
