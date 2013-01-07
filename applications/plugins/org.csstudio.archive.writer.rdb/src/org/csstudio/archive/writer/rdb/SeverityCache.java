@@ -13,7 +13,7 @@ import java.util.Map;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.StringID;
 import org.csstudio.platform.utility.rdb.StringIDHelper;
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 
 /** Caching RDB interface to severity info.
  *  @author Kay Kasemir
