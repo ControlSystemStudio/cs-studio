@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A builder for a default implementation on the LogEntry interface
+ * A builder for a default implementation on the {@link LogEntry} interface
  * 
  * @author shroffk
  * 
@@ -34,61 +34,122 @@ public class LogEntryBuilder {
 	this.text = text;
     }
 
+    /**
+     * Create a constructor with the text _text_
+     * @param text - the initial text to create the builder with.
+     * @return LogEntryBuilder
+     */
     public static LogEntryBuilder withText(String text) {
 	return new LogEntryBuilder(text);
     }
 
+    /**
+     * Append the _text_ to the existing text in the builder
+     * @param text - the text to the appended
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder addText(String text) {
 	this.text = this.text.concat(text);
 	return this;
     }
 
+    /**
+     * Replace the existing text in the builder with _text_
+     * @param text
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder setText(String text) {
 	this.text = text;
 	return this;
     }
 
+    /**
+     * set the owner of this logEntry
+     * @param owner - name of the owner
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder owner(String owner) {
 	this.owner = owner;
 	return this;
     }
 
+    /**
+     * Append the tag described by _tagBuilder_ to the existing tagBuilders
+     * @param tagBuilder
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder addTag(TagBuilder tagBuilder) {
 	this.tags.add(tagBuilder);
 	return this;
     }
 
+    /**
+     * Set the list of tags to _tags_
+     * @param tags
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder setTags(Collection<TagBuilder> tags) {
 	this.tags = new ArrayList<TagBuilder>(tags);
 	return this;
     }
 
+    /**
+     * Append the property described by the _propertyBuilder_ to the existing properties
+     * @param propertyBuilder
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder addProperty(PropertyBuilder propertyBuilder) {
 	this.properties.add(propertyBuilder);
 	return this;
     }
 
+    /**
+     * Append the logbook described by _logbookBuilder_ to the existing logbooks
+     * @param logbookBuilder
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder addLogbook(LogbookBuilder logbookBuilder) {
 	this.logbooks.add(logbookBuilder);
 	return this;
     }
 
+    /**
+     * Set the list of logbooks to _logbooks_
+     * @param logbooks
+     * @return
+     */
     public LogEntryBuilder setLogbooks(Collection<LogbookBuilder> logbooks) {
 	this.logbooks = new ArrayList<LogbookBuilder>(logbooks);
 	return this;
     }
 
+    /**
+     * Append _attachment_ to the existing attachments
+     * @param attachment
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder attach(AttachmentBuilder attachment) {
 	this.attachments.add(attachment);
 	return this;
     }
 
+    /**
+     * Set the attachments to _attachments_
+     * 
+     * @param attachments
+     * @return LogEntryBuilder
+     */
     public LogEntryBuilder setAttachments(
 	    Collection<AttachmentBuilder> attachments) {
 	this.attachments = attachments;
 	return this;
     }
 
+    /**
+     * Create a logEntryBuilder initialized using the _logEntry_
+     * @param logEntry
+     * @return LogEntryBuilder
+     */
     public static LogEntryBuilder logEntry(LogEntry logEntry) {
 	LogEntryBuilder logEntryBuilder = new LogEntryBuilder(
 		logEntry.getText());
@@ -117,13 +178,17 @@ public class LogEntryBuilder {
 	return logEntryBuilder;
     }
 
+    /**
+     * Build LogEntry object using the parameters set in the builder
+     * @return LogEntry - a immutable instance of the {@link LogEntry}
+     */
     public LogEntry build() {
 	return new LogEntryImpl(id, text, owner, createdDate, modifiedDate,
 		tags, logbooks, properties, attachments);
     }
 
     /**
-     * A Default implementation of the LogEntry interface
+     * A Default implementation of the {@link LogEntry}
      * 
      * @author shroffk
      * 

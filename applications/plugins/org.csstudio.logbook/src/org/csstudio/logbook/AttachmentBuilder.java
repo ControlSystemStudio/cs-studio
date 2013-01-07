@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 /**
  * 
- * A builder for a default implementation of the Attachment interface.
+ * A builder for a default implementation of the {@link Attachment} interface.
  * 
  * @author shroffk
  * 
@@ -45,7 +45,7 @@ public class AttachmentBuilder {
      * as the given Attachment object
      * 
      * @param Attachment
-     * @return
+     * @return AttachmentBuilder
      */
     public static AttachmentBuilder attachment(Attachment attachment) {
 	AttachmentBuilder attachmentBuilder = new AttachmentBuilder(
@@ -67,23 +67,38 @@ public class AttachmentBuilder {
      * Set contentType
      * 
      * @param contentType
-     * @return
+     * @return AttachmentBuilder
      */
     public AttachmentBuilder contentType(String contentType) {
 	this.contentType = contentType;
 	return this;
     }
 
+    /**
+     * 
+     * @param fileSize
+     * @return
+     */
     public AttachmentBuilder fileSize(long fileSize) {
 	this.fileSize = fileSize;
 	return this;
     }
 
+    /**
+     * 
+     * @param thumbnail
+     * @return AttachmentBuilder
+     */
     public AttachmentBuilder thumbnail(boolean thumbnail) {
 	this.thumbnail = thumbnail;
 	return this;
     }
 
+    /**
+     * 
+     * @param inputStream - InputStream to the 
+     * @return AttachmentBuilder
+     */
     public AttachmentBuilder inputStream(InputStream inputStream) {
 	try {
 	    this.byteArray = read2byteArray(inputStream);
@@ -95,9 +110,9 @@ public class AttachmentBuilder {
     }
 
     /**
-     * Build an object implementing the Logbook.
+     * Build an object implementing the {@link Attachment}.
      * 
-     * @return
+     * @return Attachment - an immutable instance of an {@link Attachment}
      * @throws IOException
      */
     Attachment build() throws IOException {

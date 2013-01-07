@@ -44,8 +44,8 @@ public class LogEntryBuilderDialog extends Dialog {
     }
 
     @Override
-    protected Control createDialogArea(Composite parent) {
-	getShell().setText("Create LogEntry");
+    public Control createDialogArea(Composite parent) {
+	getShell().setText("Create Log Entry");
 	Composite container = (Composite) super.createDialogArea(parent);
 	GridLayout gridLayout = (GridLayout) container.getLayout();
 	gridLayout.marginWidth = 2;

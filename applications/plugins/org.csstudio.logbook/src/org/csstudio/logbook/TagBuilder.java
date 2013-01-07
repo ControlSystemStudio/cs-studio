@@ -7,7 +7,7 @@ package org.csstudio.logbook;
 
 /**
  *
- * A builder for a default implementation of the Tag interface.
+ * A builder for a default implementation of the {@link Tag}
  *
  * @author shroffk
  */
@@ -42,12 +42,12 @@ public class TagBuilder {
 			return this;
 		}
 
-		Tag build(){
+		public Tag build(){
 			return new TagImpl(name, state);
 		}
 
 		/**
-		 * A Default implementation for the Tag interface
+		 * A Default implementation for the {@link Tag}
 		 * @author shroffk
 		 *
 		 */

@@ -1,7 +1,7 @@
 package org.csstudio.logbook;
 
 /**
- * A builder for a default implementation of the Logbook interface.
+ * An Interface for defining Logbooks.
  * 
  * @author shroffk
  *
@@ -9,12 +9,12 @@ package org.csstudio.logbook;
 public interface Logbook {
 	
 	/**
-	 * @return String  
+	 * @return String - the name of this logbook
 	 */
 	public String getName();
 	
 	/**
-	 * @return
+	 * @return String - the owner of this logbook
 	 */
 	public String getOwner();
 

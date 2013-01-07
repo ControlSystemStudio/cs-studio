@@ -16,19 +16,20 @@ public interface Property {
 	/**
 	 * The unique name to identify the property
 	 * 
-	 * @return
+	 * @return String - property name
 	 */
 	public String getName();
 
 	/**
 	 * A set of all the attributes defined for this property
 	 * 
-	 * @return
+	 * @return Collection<String> - the list of attributes for this property
 	 */
 	public Collection<String> getAttributeNames();
 
 	/**
-	 * @return
+	 * 
+	 * @return Collection<String> - the attribute values 
 	 */
 	public Collection<String> getAttributeValues();
 
@@ -36,12 +37,12 @@ public interface Property {
 	 * Provides the value for the attribute _attributeName_
 	 * 
 	 * @param attributeName
-	 * @return
+	 * @return String - the attribute value for the attribute identified buy _attributeName_
 	 */
 	public String getAttributeValue(String attributeName);
 
 	/**
-	 * @return
+	 * @return All the attributes for this property 
 	 */
 	public Set<Entry<String, String>> getAttributes();
 

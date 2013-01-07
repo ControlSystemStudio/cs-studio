@@ -1,7 +1,7 @@
 package org.csstudio.logbook;
 
 /**
- * A builder for a default implementation of the Logbook interface.
+ * A builder for a default implementation of the {@link Logbook} interface.
  * 
  * @author shroffk
  * 
@@ -16,7 +16,8 @@ public class LogbookBuilder {
 	/**
 	 * Create a Builder for Logbook with the name _name_
 	 * 
-	 * @param name
+	 * @param name - name of the logbook
+	 * @return LogbookBuilder
 	 */
 	public static LogbookBuilder logbook(String name) {
 		LogbookBuilder logbookBuilder = new LogbookBuilder();
@@ -26,10 +27,10 @@ public class LogbookBuilder {
 
 	/**
 	 * Create a Builder object with parameters initialized with the same values
-	 * as the given Logbook object
+	 * as the given logbook object
 	 * 
 	 * @param logbook
-	 * @return
+	 * @return LogbookBuilder
 	 */
 	public static LogbookBuilder logbook(Logbook logbook) {
 		LogbookBuilder logbookBuilder = new LogbookBuilder();
@@ -42,7 +43,7 @@ public class LogbookBuilder {
 	 * Set owner
 	 * 
 	 * @param owner
-	 * @return
+	 * @return LogbookBuilder
 	 */
 	public LogbookBuilder owner(String owner) {
 		this.owner = owner;
@@ -50,16 +51,16 @@ public class LogbookBuilder {
 	}
 
 	/**
-	 * Build an object implementing the Logbook.
+	 * Build an object implementing the {@link Logbook}.
 	 * 
-	 * @return
+	 * @return Logbook - concerete immutable instance of a Logbook
 	 */
 	Logbook build() {
 		return new LogbookImpl(name, owner);
 	}
 
 	/**
-	 * A Default implementation of the Logbook interface
+	 * A Default implementation of the {@link Logbook} interface
 	 * @author shroffk
 	 *
 	 */

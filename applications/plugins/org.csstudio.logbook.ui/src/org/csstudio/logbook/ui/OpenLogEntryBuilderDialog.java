@@ -18,33 +18,30 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * 
  */
 public class OpenLogEntryBuilderDialog extends
-		AbstractAdaptedHandler<LogEntryBuilder> {
+	AbstractAdaptedHandler<LogEntryBuilder> {
 
-	public OpenLogEntryBuilderDialog() {
-		super(LogEntryBuilder.class);
-	}
+    public OpenLogEntryBuilderDialog() {
+	super(LogEntryBuilder.class);
+    }
 
-	@Override
-	protected void execute(List<LogEntryBuilder> data, ExecutionEvent event)
-			throws Exception {
-		final Shell shell = HandlerUtil.getActiveShell(event);
-		if (data == null || data.isEmpty()) {
-			LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
-					LogEntryBuilder.withText(""));
-			dialog.setBlockOnOpen(true);
-			if (dialog.open() == Window.OK) {
-				System.out.println("pressed OK");
-			}
-		}
-		if (data.size() == 1) {
-			LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
-					data.iterator().next());
-			dialog.setBlockOnOpen(true);
-			if (dialog.open() == Window.OK) {
-				System.out.println("pressed OK");
-			}
-		} else {
-			// Throw exception
-		}
+    @Override
+    protected void execute(List<LogEntryBuilder> data, ExecutionEvent event)
+	    throws Exception {
+	final Shell shell = HandlerUtil.getActiveShell(event);
+	if (data == null || data.isEmpty()) {
+	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
+		    LogEntryBuilder.withText(""));
+	    dialog.setBlockOnOpen(true);
+	    if (dialog.open() == Window.OK) {
+	    }
+	} else if (data.size() == 1) {
+	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
+		    data.iterator().next());
+	    dialog.setBlockOnOpen(true);
+	    if (dialog.open() == Window.OK) {
+	    }
+	} else {
+	    // Throw exception
 	}
+    }
 }

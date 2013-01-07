@@ -9,12 +9,12 @@ package org.csstudio.logbook;
 public interface Tag {
 
 	/**
-	 * @return
+	 * @return String - tag name
 	 */
 	public String getName();
 	
 	/**
-	 * @return
+	 * @return String - tag state
 	 */
 	public String getState();
 }
