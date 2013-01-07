@@ -63,7 +63,6 @@ public class ErrorBar extends Composite {
 		
 		errorLabel = new CLabel(this, SWT.NONE);
 		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_errorLabel.widthHint = 221;
 		errorLabel.setLayoutData(gd_errorLabel);
 		errorLabel.setCursor(handCursor);
 		errorLabel.addMouseListener(listener);
@@ -92,6 +91,7 @@ public class ErrorBar extends Composite {
 				errorLabel.setText(ex.getMessage());
 				GridData gd = (GridData) errorLabel.getLayoutData();
 				gd.exclude = false;
+				gd.widthHint = getParent().getSize().x;
 				errorLabel.setLayoutData(gd);
 				gd = (GridData) errorImage.getLayoutData();
 				gd.exclude = false;
