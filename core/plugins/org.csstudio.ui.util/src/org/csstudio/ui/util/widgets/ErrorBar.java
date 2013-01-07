@@ -91,7 +91,7 @@ public class ErrorBar extends Composite {
 				errorLabel.setText(ex.getMessage());
 				GridData gd = (GridData) errorLabel.getLayoutData();
 				gd.exclude = false;
-				gd.widthHint = getParent().getSize().x;
+				gd.widthHint = getParent().getSize().x - 30;
 				errorLabel.setLayoutData(gd);
 				gd = (GridData) errorImage.getLayoutData();
 				gd.exclude = false;
