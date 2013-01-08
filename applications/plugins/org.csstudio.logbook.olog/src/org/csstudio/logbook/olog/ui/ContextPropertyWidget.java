@@ -86,16 +86,19 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 				    logEntryBuilder);
 			} catch (FileNotFoundException e1) {
 			    // TODO Auto-generated catch block
-			    e1.printStackTrace();
+			} catch (IOException e1) {
+			    // TODO Auto-generated catch block
 			}
 		    }
 		} else {
 		    // Restore Action
-		    LogEntry logEntry = getLogEntryChangeset().getLogEntry();
-		    for (Attachment attachment : logEntry.getAttachment()) {
-			if (attachment.getFileName().equals(
-				textFileName.getText())) {
-			    try {
+		    try {
+			LogEntry logEntry = getLogEntryChangeset()
+				.getLogEntry();
+			for (Attachment attachment : logEntry.getAttachment()) {
+			    if (attachment.getFileName().equals(
+				    textFileName.getText())) {
+
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow()
 					.getActivePage();
@@ -113,14 +116,14 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 					desc.getId());
 				IFileUtil.getInstance().registerPart(part,
 					ifile);
-			    } catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			    } catch (PartInitException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			    }
 			}
+		    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		    } catch (PartInitException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		    }
 
 		}
@@ -190,8 +193,14 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	} else {
 	    btnRestore.setText("Restore");
 	}
-	Property property = LogEntryUtil.getProperty(getLogEntryChangeset()
-		.getLogEntry(), ContextPropertyWidget.property.getName());
+	Property property = null;
+	try {
+	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
+	    	.getLogEntry(), ContextPropertyWidget.property.getName());
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	if (property != null) {
 	    String fileName = property.getAttributeValue("FileName");
 	    this.textFileName.setText(fileName);

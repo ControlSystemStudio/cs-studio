@@ -3,7 +3,10 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.io.IOException;
+
 import org.csstudio.logbook.LogEntryBuilder;
+import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -33,6 +36,7 @@ public class LogEntryBuilderDialog extends Dialog {
     private final IPreferencesService service = Platform
 	    .getPreferencesService();
     private boolean authenticate = true;
+    private String defaultLogbook;
     private ErrorBar errorBar;
 
     public LogEntryBuilderDialog(Shell parentShell,
@@ -55,6 +59,8 @@ public class LogEntryBuilderDialog extends Dialog {
 	try {
 	    authenticate = service.getBoolean("org.csstudio.logbook.ui",
 		    "Autenticate.user", true, null);
+	    defaultLogbook = service.getString("org.csstudio.logbook.ui",
+		    "Default.logbook", "", null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
@@ -71,7 +77,12 @@ public class LogEntryBuilderDialog extends Dialog {
 	gd_logEntryWidget.heightHint = 450;
 	logEntryWidget.setLayoutData(gd_logEntryWidget);
 	if (this.logEntryBuilder != null) {
-	    logEntryWidget.setLogEntry(logEntryBuilder.build());
+	    try {
+		logEntryWidget.setLogEntry(logEntryBuilder.addLogbook(
+		    LogbookBuilder.logbook(defaultLogbook)).build());
+	    } catch (IOException e) {
+		errorBar.setException(e);
+	    }
 	}
 
 	return container;

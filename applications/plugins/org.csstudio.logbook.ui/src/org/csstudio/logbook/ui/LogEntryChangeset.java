@@ -5,6 +5,7 @@ package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
@@ -36,11 +37,11 @@ public class LogEntryChangeset {
 	logEntryBuilder = LogEntryBuilder.withText("");
     }
 
-    public LogEntryChangeset(LogEntry logEntry) {
+    public LogEntryChangeset(LogEntry logEntry) throws IOException {
 	logEntryBuilder = LogEntryBuilder.logEntry(logEntry);
     }
 
-    public LogEntry getLogEntry() {
+    public LogEntry getLogEntry() throws IOException {
 	return this.logEntryBuilder.build();
     }
 

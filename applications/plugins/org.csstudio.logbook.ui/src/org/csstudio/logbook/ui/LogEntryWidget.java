@@ -8,7 +8,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
@@ -33,20 +31,18 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
-import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.ImageStackWidget;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
@@ -68,13 +64,10 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 
 /**
  * @author shroffk
@@ -208,10 +201,15 @@ public class LogEntryWidget extends Composite {
 	text.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(FocusEvent e) {
-		LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			logEntryChangeset.getLogEntry())
-			.setText(text.getText());
-		logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+
+		try {
+		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+			    logEntryChangeset.getLogEntry()).setText(
+			    text.getText());
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
 	    }
 	});
 	text.addKeyListener(new KeyAdapter() {
@@ -240,20 +238,28 @@ public class LogEntryWidget extends Composite {
 	textOwner.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(FocusEvent e) {
-		LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			logEntryChangeset.getLogEntry()).owner(
-			textOwner.getText());
-		logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		try {
+		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+			    logEntryChangeset.getLogEntry()).owner(
+			    textOwner.getText());
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
 	    }
 	});
 	textOwner.addKeyListener(new KeyAdapter() {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		if (e.keyCode == SWT.CR) {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			    logEntryChangeset.getLogEntry()).owner(
-			    textOwner.getText());
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    try {
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry())
+				.owner(textOwner.getText());
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
 		}
 	    }
 	});
@@ -286,14 +292,18 @@ public class LogEntryWidget extends Composite {
 			parent.getShell(), logbookNames, Arrays
 				.asList(logbookList.getItems()), "Add Logbooks");
 		if (dialog.open() == IDialogConstants.OK_ID) {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder
-			    .logEntry(logEntryChangeset.getLogEntry());
-		    Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
-		    for (String logbookName : dialog.getSelectedValues()) {
-			newLogbooks.add(LogbookBuilder.logbook(logbookName));
+		    try {
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry());
+			Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
+			for (String logbookName : dialog.getSelectedValues()) {
+			    newLogbooks.add(LogbookBuilder.logbook(logbookName));
+			}
+			logEntryBuilder.setLogbooks(newLogbooks);
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
 		    }
-		    logEntryBuilder.setLogbooks(newLogbooks);
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		}
 	    }
 	});
@@ -329,14 +339,18 @@ public class LogEntryWidget extends Composite {
 			parent.getShell(), tagNames, Arrays.asList(tagList
 				.getItems()), "Add Tags");
 		if (dialog.open() == IDialogConstants.OK_ID) {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder
-			    .logEntry(logEntryChangeset.getLogEntry());
-		    Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
-		    for (String tagName : dialog.getSelectedValues()) {
-			newTags.add(TagBuilder.tag(tagName));
+		    try {
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry());
+			Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
+			for (String tagName : dialog.getSelectedValues()) {
+			    newTags.add(TagBuilder.tag(tagName));
+			}
+			logEntryBuilder.setTags(newTags);
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
 		    }
-		    logEntryBuilder.setTags(newTags);
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		}
 	    }
 	});
@@ -397,10 +411,14 @@ public class LogEntryWidget extends Composite {
 	btnAddScreenshot.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			logEntryChangeset.getLogEntry()).attach(
-			addScreenshot(true, newWindow));
-		logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		try {
+		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+			    logEntryChangeset.getLogEntry()).attach(
+			    addScreenshot(true, newWindow));
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
 	    }
 	});
 	FormData fd_btnAddScreenshot = new FormData();
@@ -414,10 +432,14 @@ public class LogEntryWidget extends Composite {
 	btnCSSWindow.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			logEntryChangeset.getLogEntry()).attach(
-			addScreenshot(false, newWindow));
-		logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		try {
+		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+			    logEntryChangeset.getLogEntry()).attach(
+			    addScreenshot(false, newWindow));
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
 	    }
 	});
 	FormData fd_btnCSSWindow = new FormData();
@@ -498,9 +520,10 @@ public class LogEntryWidget extends Composite {
 		    Runnable retriveAttachments = new Runnable() {
 			@Override
 			public void run() {
-			    LogEntryBuilder logEntryBuilder = LogEntryBuilder
-				    .logEntry(logEntryChangeset.getLogEntry());
 			    try {
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					.logEntry(logEntryChangeset
+						.getLogEntry());
 				for (Attachment attachment : logbookClient
 					.listAttachments(logEntry.getId())) {
 				    logEntryBuilder.attach(AttachmentBuilder
@@ -550,13 +573,7 @@ public class LogEntryWidget extends Composite {
 				    }
 				});
 			    } catch (final Exception e) {
-				getDisplay().asyncExec(new Runnable() {
-
-				    @Override
-				    public void run() {
-					setLastException(e);
-				    }
-				});
+				setLastException(e);
 			    }
 			}
 		    }
@@ -627,10 +644,16 @@ public class LogEntryWidget extends Composite {
 	    imageStackWidget.setLayoutData(fd);
 	}
 
-	LogEntry logEntry = this.logEntryChangeset.getLogEntry();
+	LogEntry logEntry = null;
+	try {
+	    logEntry = this.logEntryChangeset.getLogEntry();
+	} catch (IOException e1) {
+	    setLastException(e1);
+	}
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
+	    text.setSize(text.getSize().x, text.getLineCount()*text.getLineHeight());
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
@@ -719,8 +742,15 @@ public class LogEntryWidget extends Composite {
 	return null;
     }
 
-    public void setLastException(Exception exception) {
-	errorBar.setException(exception);
+    public void setLastException(final Exception exception) {
+	getDisplay().asyncExec(new Runnable() {
+
+	    @Override
+	    public void run() {
+		errorBar.setException(exception);
+	    }
+	});
+
     }
 
     public boolean isEditable() {
@@ -733,7 +763,7 @@ public class LogEntryWidget extends Composite {
 	changeSupport.firePropertyChange("editable", oldValue, this.editable);
     }
 
-    public LogEntry getLogEntry() {
+    public LogEntry getLogEntry() throws IOException {
 	return this.logEntryChangeset.getLogEntry();
     }
 

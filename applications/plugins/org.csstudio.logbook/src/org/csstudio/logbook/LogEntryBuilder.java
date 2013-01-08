@@ -36,7 +36,9 @@ public class LogEntryBuilder {
 
     /**
      * Create a constructor with the text _text_
-     * @param text - the initial text to create the builder with.
+     * 
+     * @param text
+     *            - the initial text to create the builder with.
      * @return LogEntryBuilder
      */
     public static LogEntryBuilder withText(String text) {
@@ -45,7 +47,9 @@ public class LogEntryBuilder {
 
     /**
      * Append the _text_ to the existing text in the builder
-     * @param text - the text to the appended
+     * 
+     * @param text
+     *            - the text to the appended
      * @return LogEntryBuilder
      */
     public LogEntryBuilder addText(String text) {
@@ -55,6 +59,7 @@ public class LogEntryBuilder {
 
     /**
      * Replace the existing text in the builder with _text_
+     * 
      * @param text
      * @return LogEntryBuilder
      */
@@ -65,7 +70,9 @@ public class LogEntryBuilder {
 
     /**
      * set the owner of this logEntry
-     * @param owner - name of the owner
+     * 
+     * @param owner
+     *            - name of the owner
      * @return LogEntryBuilder
      */
     public LogEntryBuilder owner(String owner) {
@@ -75,6 +82,7 @@ public class LogEntryBuilder {
 
     /**
      * Append the tag described by _tagBuilder_ to the existing tagBuilders
+     * 
      * @param tagBuilder
      * @return LogEntryBuilder
      */
@@ -85,6 +93,7 @@ public class LogEntryBuilder {
 
     /**
      * Set the list of tags to _tags_
+     * 
      * @param tags
      * @return LogEntryBuilder
      */
@@ -94,7 +103,9 @@ public class LogEntryBuilder {
     }
 
     /**
-     * Append the property described by the _propertyBuilder_ to the existing properties
+     * Append the property described by the _propertyBuilder_ to the existing
+     * properties
+     * 
      * @param propertyBuilder
      * @return LogEntryBuilder
      */
@@ -105,6 +116,7 @@ public class LogEntryBuilder {
 
     /**
      * Append the logbook described by _logbookBuilder_ to the existing logbooks
+     * 
      * @param logbookBuilder
      * @return LogEntryBuilder
      */
@@ -115,6 +127,7 @@ public class LogEntryBuilder {
 
     /**
      * Set the list of logbooks to _logbooks_
+     * 
      * @param logbooks
      * @return
      */
@@ -125,6 +138,7 @@ public class LogEntryBuilder {
 
     /**
      * Append _attachment_ to the existing attachments
+     * 
      * @param attachment
      * @return LogEntryBuilder
      */
@@ -147,10 +161,13 @@ public class LogEntryBuilder {
 
     /**
      * Create a logEntryBuilder initialized using the _logEntry_
+     * 
      * @param logEntry
      * @return LogEntryBuilder
+     * @throws IOException
      */
-    public static LogEntryBuilder logEntry(LogEntry logEntry) {
+    public static LogEntryBuilder logEntry(LogEntry logEntry)
+	    throws IOException {
 	LogEntryBuilder logEntryBuilder = new LogEntryBuilder(
 		logEntry.getText());
 	if (logEntry.getId() != null) {
@@ -180,9 +197,11 @@ public class LogEntryBuilder {
 
     /**
      * Build LogEntry object using the parameters set in the builder
+     * 
      * @return LogEntry - a immutable instance of the {@link LogEntry}
+     * @throws IOException 
      */
-    public LogEntry build() {
+    public LogEntry build() throws IOException {
 	return new LogEntryImpl(id, text, owner, createdDate, modifiedDate,
 		tags, logbooks, properties, attachments);
     }
@@ -215,13 +234,14 @@ public class LogEntryBuilder {
 	 * @param tags
 	 * @param logbooks
 	 * @param properties
+	 * @throws IOException 
 	 */
 	public LogEntryImpl(Object id, String text, String owner,
 		Date createdDate, Date modifiedDate,
 		Collection<TagBuilder> tags,
 		Collection<LogbookBuilder> logbooks,
 		Collection<PropertyBuilder> properties,
-		Collection<AttachmentBuilder> attachments) {
+		Collection<AttachmentBuilder> attachments) throws IOException {
 	    super();
 	    this.id = id;
 	    this.text = text;
@@ -252,12 +272,7 @@ public class LogEntryBuilder {
 
 	    Collection<Attachment> newAttachments = new ArrayList<Attachment>();
 	    for (AttachmentBuilder attachmentBuilder : attachments) {
-		try {
-		    newAttachments.add(attachmentBuilder.build());
-		} catch (IOException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
+		newAttachments.add(attachmentBuilder.build());
 	    }
 	    this.attachments = Collections
 		    .unmodifiableCollection(newAttachments);

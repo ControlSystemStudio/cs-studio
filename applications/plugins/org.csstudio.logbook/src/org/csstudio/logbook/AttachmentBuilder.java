@@ -18,7 +18,6 @@ import java.io.InputStream;
 public class AttachmentBuilder {
 
     // required
-    private InputStream inputStream;
     private String fileName;
     private String contentType;
     private Boolean thumbnail;
@@ -46,20 +45,16 @@ public class AttachmentBuilder {
      * 
      * @param Attachment
      * @return AttachmentBuilder
+     * @throws IOException 
      */
-    public static AttachmentBuilder attachment(Attachment attachment) {
+    public static AttachmentBuilder attachment(Attachment attachment) throws IOException {
 	AttachmentBuilder attachmentBuilder = new AttachmentBuilder(
 		attachment.getFileName());
 	attachmentBuilder.contentType = attachment.getContentType();
 	attachmentBuilder.thumbnail = attachment.getThumbnail();
 	attachmentBuilder.fileSize = attachment.getFileSize();
-	try {
-	    attachmentBuilder.byteArray = read2byteArray(attachment
-		    .getInputStream());
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	attachmentBuilder.byteArray = read2byteArray(attachment
+		.getInputStream());
 	return attachmentBuilder;
     }
 
@@ -75,9 +70,10 @@ public class AttachmentBuilder {
     }
 
     /**
+     * Set Filesize
      * 
      * @param fileSize
-     * @return
+     * @return AttachmentBuilder
      */
     public AttachmentBuilder fileSize(long fileSize) {
 	this.fileSize = fileSize;
@@ -99,17 +95,14 @@ public class AttachmentBuilder {
      * @param inputStream
      *            - InputStream to the
      * @return AttachmentBuilder
+     * @throws IOException
      */
-    public AttachmentBuilder inputStream(InputStream inputStream) {
-	try {
-	    this.byteArray = read2byteArray(inputStream);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+    public AttachmentBuilder inputStream(InputStream inputStream)
+	    throws IOException {
+	this.byteArray = read2byteArray(inputStream);
 	return this;
     }
-
+    
     /**
      * Build an object implementing the {@link Attachment}.
      * 

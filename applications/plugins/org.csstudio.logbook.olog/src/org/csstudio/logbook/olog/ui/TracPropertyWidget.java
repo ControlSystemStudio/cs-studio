@@ -2,6 +2,7 @@ package org.csstudio.logbook.olog.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Property;
@@ -23,114 +24,126 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 class TracPropertyWidget extends AbstractPropertyWidget {
-	private static final Property widgetProperty = PropertyBuilder
-			.property("Trac").attribute("TicketId").attribute("TicketURL")
-			.build();
+    private static final Property widgetProperty = PropertyBuilder
+	    .property("Trac").attribute("TicketId").attribute("TicketURL")
+	    .build();
 
-	private Text textId;
-	private Text textURL;
-	private Button btnAttach;
-	private Link link;
-	private Label lblAttached;
+    private Text textId;
+    private Text textURL;
+    private Button btnAttach;
+    private Link link;
+    private Label lblAttached;
 
-	public TracPropertyWidget(Composite parent, int style,
-			LogEntryChangeset logEntryChangeset) {
-		super(parent, style, logEntryChangeset);
-		setLayout(new FormLayout());
+    public TracPropertyWidget(Composite parent, int style,
+	    LogEntryChangeset logEntryChangeset) {
+	super(parent, style, logEntryChangeset);
+	setLayout(new FormLayout());
 
-		Label lblNewLabel = new Label(this, SWT.NONE);
-		FormData fd_lblNewLabel = new FormData();
-		// fd_lblNewLabel.right = new FormAttachment(100, -10);
-		fd_lblNewLabel.top = new FormAttachment(0, 10);
-		fd_lblNewLabel.left = new FormAttachment(0, 10);
-		lblNewLabel.setLayoutData(fd_lblNewLabel);
-		lblNewLabel.setText("Tickets:");
+	Label lblNewLabel = new Label(this, SWT.NONE);
+	FormData fd_lblNewLabel = new FormData();
+	// fd_lblNewLabel.right = new FormAttachment(100, -10);
+	fd_lblNewLabel.top = new FormAttachment(0, 10);
+	fd_lblNewLabel.left = new FormAttachment(0, 10);
+	lblNewLabel.setLayoutData(fd_lblNewLabel);
+	lblNewLabel.setText("Tickets:");
 
-		Label lblNewLabel_1 = new Label(this, SWT.NONE);
-		FormData fd_lblNewLabel_1 = new FormData();
-		fd_lblNewLabel_1.top = new FormAttachment(lblNewLabel, 6);
-		fd_lblNewLabel_1.left = new FormAttachment(0, 10);
-		lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
-		lblNewLabel_1.setText("Ticket Id: ");
+	Label lblNewLabel_1 = new Label(this, SWT.NONE);
+	FormData fd_lblNewLabel_1 = new FormData();
+	fd_lblNewLabel_1.top = new FormAttachment(lblNewLabel, 6);
+	fd_lblNewLabel_1.left = new FormAttachment(0, 10);
+	lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
+	lblNewLabel_1.setText("Ticket Id: ");
 
-		textId = new Text(this, SWT.BORDER);
-		FormData fd_textId = new FormData();
-		fd_textId.right = new FormAttachment(100, -10);
-		fd_textId.left = new FormAttachment(lblNewLabel_1, 6);
-		fd_textId.top = new FormAttachment(lblNewLabel, 6);
-		textId.setLayoutData(fd_textId);
+	textId = new Text(this, SWT.BORDER);
+	FormData fd_textId = new FormData();
+	fd_textId.right = new FormAttachment(100, -10);
+	fd_textId.left = new FormAttachment(lblNewLabel_1, 6);
+	fd_textId.top = new FormAttachment(lblNewLabel, 6);
+	textId.setLayoutData(fd_textId);
 
-		Label lblNewLabel_2 = new Label(this, SWT.NONE);
-		FormData fd_lblNewLabel_2 = new FormData();
-		fd_lblNewLabel_2.top = new FormAttachment(lblNewLabel_1, 25);
-		fd_lblNewLabel_2.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
-		lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
-		lblNewLabel_2.setText("URL: ");
+	Label lblNewLabel_2 = new Label(this, SWT.NONE);
+	FormData fd_lblNewLabel_2 = new FormData();
+	fd_lblNewLabel_2.top = new FormAttachment(lblNewLabel_1, 25);
+	fd_lblNewLabel_2.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+	lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
+	lblNewLabel_2.setText("URL: ");
 
-		textURL = new Text(this, SWT.BORDER);
-		FormData fd_textURL = new FormData();
-		fd_textURL.top = new FormAttachment(lblNewLabel_2, -3, SWT.TOP);
-		fd_textURL.left = new FormAttachment(textId, 0, SWT.LEFT);
-		fd_textURL.right = new FormAttachment(100, -10);
-		textURL.setLayoutData(fd_textURL);
+	textURL = new Text(this, SWT.BORDER);
+	FormData fd_textURL = new FormData();
+	fd_textURL.top = new FormAttachment(lblNewLabel_2, -3, SWT.TOP);
+	fd_textURL.left = new FormAttachment(textId, 0, SWT.LEFT);
+	fd_textURL.right = new FormAttachment(100, -10);
+	textURL.setLayoutData(fd_textURL);
 
-		btnAttach = new Button(this, SWT.NONE);
-		btnAttach.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// store the property
-				LogEntryBuilder logEntryBuilder = LogEntryBuilder
-						.logEntry(getLogEntryChangeset().getLogEntry());
-				logEntryBuilder.addProperty(PropertyBuilder
-						.property(widgetProperty)
-						.attribute("TicketId", textId.getText())
-						.attribute("TicketURL", textURL.getText()));
-				getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
-			}
-		});
-		FormData fd_btnApply = new FormData();
-		fd_btnApply.bottom = new FormAttachment(100, -10);
-		fd_btnApply.right = new FormAttachment(100, -10);
-		btnAttach.setLayoutData(fd_btnApply);
-		btnAttach.setText("Attach");
-
-		link = new Link(this, SWT.NONE);
-		FormData fd_link = new FormData();
-		fd_link.top = new FormAttachment(lblNewLabel_2, -3, SWT.TOP);
-		fd_link.left = new FormAttachment(textId, 0, SWT.LEFT);
-		fd_link.right = new FormAttachment(100, -10);
-		link.setLayoutData(fd_link);
-		link.setText("<a>www.google.com</a>");
-
-		lblAttached = new Label(this, SWT.NONE);
-		lblAttached.setFont(SWTResourceManager.getFont("Segoe UI", 9,
-				SWT.ITALIC));
-		FormData fd_lblNewLabel_3 = new FormData();
-		fd_lblNewLabel_3.top = new FormAttachment(lblNewLabel, 0, SWT.TOP);
-		fd_lblNewLabel_3.right = new FormAttachment(textId, 0, SWT.RIGHT);
-		lblAttached.setLayoutData(fd_lblNewLabel_3);
-		lblAttached.setText("attached");
-	}
-
-	@Override
-	public void updateUI() {
-		this.lblAttached.setVisible(!isEditable());
-		this.textId.setEditable(isEditable());
-		this.textURL.setVisible(isEditable());
-		this.link.setVisible(!isEditable());
-		Property property = LogEntryUtil.getProperty(getLogEntryChangeset()
-				.getLogEntry(), TracPropertyWidget.widgetProperty.getName());
-		if (property != null) {
-			this.textId
-					.setText(property.getAttributeValue("TicketId") == null ? ""
-							: property.getAttributeValue("TicketId"));
-			this.textURL
-					.setText(property.getAttributeValue("TicketURL") == null ? ""
-							: property.getAttributeValue("TicketURL"));
-			String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
-					: property.getAttributeValue("TicketURL");
-			this.link.setText("<a>" + ticketURL + "</a>");
+	btnAttach = new Button(this, SWT.NONE);
+	btnAttach.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		// store the property
+		LogEntryBuilder logEntryBuilder;
+		try {
+		    logEntryBuilder = LogEntryBuilder
+			    .logEntry(getLogEntryChangeset().getLogEntry());
+		    logEntryBuilder.addProperty(PropertyBuilder
+			    .property(widgetProperty)
+			    .attribute("TicketId", textId.getText())
+			    .attribute("TicketURL", textURL.getText()));
+		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
 		}
+	    }
+	});
+	FormData fd_btnApply = new FormData();
+	fd_btnApply.bottom = new FormAttachment(100, -10);
+	fd_btnApply.right = new FormAttachment(100, -10);
+	btnAttach.setLayoutData(fd_btnApply);
+	btnAttach.setText("Attach");
 
+	link = new Link(this, SWT.NONE);
+	FormData fd_link = new FormData();
+	fd_link.top = new FormAttachment(lblNewLabel_2, -3, SWT.TOP);
+	fd_link.left = new FormAttachment(textId, 0, SWT.LEFT);
+	fd_link.right = new FormAttachment(100, -10);
+	link.setLayoutData(fd_link);
+	link.setText("<a>www.google.com</a>");
+
+	lblAttached = new Label(this, SWT.NONE);
+	lblAttached.setFont(SWTResourceManager.getFont("Segoe UI", 9,
+		SWT.ITALIC));
+	FormData fd_lblNewLabel_3 = new FormData();
+	fd_lblNewLabel_3.top = new FormAttachment(lblNewLabel, 0, SWT.TOP);
+	fd_lblNewLabel_3.right = new FormAttachment(textId, 0, SWT.RIGHT);
+	lblAttached.setLayoutData(fd_lblNewLabel_3);
+	lblAttached.setText("attached");
+    }
+
+    @Override
+    public void updateUI() {
+	this.lblAttached.setVisible(!isEditable());
+	this.textId.setEditable(isEditable());
+	this.textURL.setVisible(isEditable());
+	this.link.setVisible(!isEditable());
+	Property property = null;
+	try {
+	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
+	    	.getLogEntry(), TracPropertyWidget.widgetProperty.getName());
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
+	if (property != null) {
+	    this.textId
+		    .setText(property.getAttributeValue("TicketId") == null ? ""
+			    : property.getAttributeValue("TicketId"));
+	    this.textURL
+		    .setText(property.getAttributeValue("TicketURL") == null ? ""
+			    : property.getAttributeValue("TicketURL"));
+	    String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
+		    : property.getAttributeValue("TicketURL");
+	    this.link.setText("<a>" + ticketURL + "</a>");
+	}
+
+    }
 }
