@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.export;
 
 import java.util.ArrayList;
 
-import org.csstudio.data.values.ISeverity;
+import org.epics.vtype.AlarmSeverity;
 
 /** Helper for turning IValue's Severity/Status into a numeric code
  *  for the Matlab Time Series "Quality"
@@ -32,11 +32,11 @@ public class MatlabQualityHelper
      *  @return
      */
     @SuppressWarnings("nls")
-    public int getQualityCode(final ISeverity severity, final String status)
+    public int getQualityCode(final AlarmSeverity severity, final String status)
     {
         // Turn severity/status into one "quality" string
         final String quality;
-        if (severity.isOK())
+        if (severity == AlarmSeverity.NONE)
             quality = severity.toString();
         else
             quality = severity.toString() + "/" + status;

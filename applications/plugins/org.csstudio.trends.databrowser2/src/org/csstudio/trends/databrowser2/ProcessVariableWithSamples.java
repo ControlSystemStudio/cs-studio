@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** Transfer object that can be used in object contributions
  *  and for drag-and-drop to interface the data browser to
@@ -24,13 +24,13 @@ public class ProcessVariableWithSamples implements Serializable
     private static final long serialVersionUID = 1L;
 
     final private ProcessVariable pv;
-    final IValue[] samples;
+    final VType[] samples;
 
     /** Initialize
      *  @param pv {@link ProcessVariable}
      *  @param samples Samples of type {@link IValue}
      */
-    public ProcessVariableWithSamples(final ProcessVariable pv, final IValue[] samples)
+    public ProcessVariableWithSamples(final ProcessVariable pv, final VType[] samples)
     {
         this.pv = pv;
         this.samples = samples;
@@ -41,7 +41,7 @@ public class ProcessVariableWithSamples implements Serializable
         return pv;
     }
 
-    public IValue[] getSamples()
+    public VType[] getSamples()
     {
         return samples;
     }

@@ -11,8 +11,7 @@ import java.util.Comparator;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
@@ -85,12 +84,12 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 				@Override
 				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
 				{
-					ITimestamp time1 = pv1.getTimestamp();
-					ITimestamp time2 = pv2.getTimestamp();
+				    Timestamp time1 = pv1.getTimestamp();
+					Timestamp time2 = pv2.getTimestamp();
 					if (time1 == null)
-						time1 = TimestampFactory.createTimestamp(0, 0);
+						time1 = Timestamp.of(0, 0);
 					if (time2 == null)
-						time2 = TimestampFactory.createTimestamp(0, 0);
+						time2 = Timestamp.of(0, 0);
 					final int cmp = time1.compareTo(time2);
 		            if (cmp != 0)
 		            	return cmp;

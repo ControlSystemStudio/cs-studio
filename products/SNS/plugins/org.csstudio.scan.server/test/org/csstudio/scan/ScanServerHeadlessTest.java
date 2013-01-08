@@ -88,8 +88,19 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
-            server.submitScan("My Test 1", commands.getXML());
-            long id = server.submitScan("My Test 2", commands.getXML());
+            long id = server.submitScan("My Test 1", commands.getXML());
+            // Poll 1st scan until it finishes
+            while (true)
+            {
+                final ScanInfo info = server.getScanInfo(id);
+                System.out.println("Poll: " + info + " @ " + info.getCurrentCommand());
+                if (info.getState() == ScanState.Finished)
+                    break;
+                Thread.sleep(100);
+            }
+
+            // Submit second scan
+            id = server.submitScan("My Test 2", commands.getXML());
 
             System.out.println("All Scans on server:");
             List<ScanInfo> infos = server.getScanInfos();
@@ -110,11 +121,11 @@ public class ScanServerHeadlessTest implements Runnable
             System.out.println("All Scans on server:");
             infos = server.getScanInfos();
             for (ScanInfo info : infos)
-            {
                 System.out.println(info);
-                assertEquals(ScanState.Finished, info.getState());
-            }
-
+            
+            // Check if scan that just finished shows up as such
+            assertEquals(ScanState.Finished, server.getScanInfo(id).getState());
+    
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
             new DeviceValueCondition(pv, Comparison.EQUALS, 5.0, 0.1, 0.0).await();
@@ -184,8 +195,8 @@ public class ScanServerHeadlessTest implements Runnable
             // Fetch data
             System.out.println("Logged data:");
             final ScanData data = server.getScanData(id);
-            System.out.println("Devices: " + data.getDevices());
             final List<String> devices = Arrays.asList(data.getDevices());
+            System.out.println("Devices: " + devices);
             assertTrue(devices.contains("xpos"));
             assertTrue(devices.contains("ypos"));
             assertTrue(devices.contains("readback"));
@@ -201,7 +212,7 @@ public class ScanServerHeadlessTest implements Runnable
     }
 
     /** JUnit test that runs server and client */
-    @Test(timeout=10000)
+    @Test(timeout=20000)
     public void runScanServer() throws Exception
     {
         final ScanServerImpl server = new ScanServerImpl();

@@ -11,16 +11,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** {@link ValueIterator} for {@link List} of {@link IValue}
  *  @author Kay Kasemir
  */
 public class ArrayValueIterator implements ValueIterator
 {
-    final private Iterator<IValue> iter;
+    final private Iterator<VType> iter;
 
-    public ArrayValueIterator(final List<IValue> values)
+    public ArrayValueIterator(final List<VType> values)
     {
         iter = values.iterator();
     }
@@ -32,7 +32,7 @@ public class ArrayValueIterator implements ValueIterator
     }
 
     @Override
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {
         return iter.next();
     }

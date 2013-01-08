@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
+ * Copyright (C) 2012 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.util.time;
@@ -143,6 +143,13 @@ public class TimestampFormat extends Format {
         return format((Object) Timestamp);
     }
     
+    /**
+     * Parses the source at the given position.
+     * 
+     * @param source text to parse
+     * @param pos the position
+     * @return the parsed timestamp
+     */
     public Timestamp parse(String source, ParsePosition pos) {
         if (nanoPattern)
             throw new UnsupportedOperationException("Not supporting parsing of nanosecond field.");

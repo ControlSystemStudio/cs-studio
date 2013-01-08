@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** Buffer for the samples of one channel.
  *  <p>
@@ -30,7 +30,7 @@ public class SampleBuffer
     final private String channel_name;
 
     /** The actual samples in a thread-save queue. */
-    final private RingBuffer<IValue> samples;
+    final private RingBuffer<VType> samples;
 
     /** Statistics */
     final private BufferStats stats = new BufferStats();
@@ -51,7 +51,7 @@ public class SampleBuffer
     SampleBuffer(final String channel_name, final int capacity)
     {
         this.channel_name = channel_name;
-        samples = new RingBuffer<IValue>(capacity);
+        samples = new RingBuffer<VType>(capacity);
     }
 
     /** @return channel name of this buffer */
@@ -92,7 +92,7 @@ public class SampleBuffer
 
     /** Add a sample to the queue, maybe dropping older samples */
     @SuppressWarnings("nls")
-    void add(final IValue value)
+    void add(final VType value)
     {
     	synchronized (samples)
         {
@@ -113,7 +113,7 @@ public class SampleBuffer
     }
 
     /** @return latest sample in queue or <code>null</code> if empty */
-    IValue remove()
+    VType remove()
     {
     	synchronized (samples)
         {

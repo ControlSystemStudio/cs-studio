@@ -28,6 +28,7 @@
    </vm>
 
    <plugins>
+      <plugin id="org.antlr.runtime"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
@@ -45,9 +46,11 @@
       <plugin id="org.csstudio.scan.log"/>
       <plugin id="org.csstudio.scan.log.derby"/>
       <plugin id="org.csstudio.scan.server"/>
-      <plugin id="org.csstudio.utility.pv"/>
-      <plugin id="org.csstudio.utility.pv.epics"/>
-      <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.utility.pvmanager"/>
+      <plugin id="org.csstudio.utility.pvmanager.epics"/>
+      <plugin id="org.csstudio.utility.pvmanager.loc"/>
+      <plugin id="org.csstudio.utility.pvmanager.sim"/>
+      <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -58,6 +61,7 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.epics.util"/>
+      <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>

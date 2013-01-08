@@ -15,7 +15,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.6.0",
  org.junit,
  org.csstudio.ui.util;bundle-version="0.0.1",
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.epics.util;bundle-version="0.1.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0",
+ org.epics.vtype;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL

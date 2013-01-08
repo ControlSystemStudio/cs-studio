@@ -9,7 +9,7 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * ArchiveReader for kblog
@@ -99,8 +99,8 @@ public class KBLogArchiveReader implements ArchiveReader {
 	}
 
 	@Override
-	public ValueIterator getRawValues(int key, String name, ITimestamp start,
-			ITimestamp end) throws UnknownChannelException, Exception {
+	public ValueIterator getRawValues(int key, String name, Timestamp start,
+			Timestamp end) throws UnknownChannelException, Exception {
 		String subArchiveName = archiveInfos[key-1].getName();
 		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(kblogrdPath, subArchiveName, name, start, end, 0, false);
 		
@@ -109,13 +109,13 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name,
-			ITimestamp start, ITimestamp end, int count)
+			Timestamp start, Timestamp end, int count)
 			throws UnknownChannelException, Exception {
 
 		if (count <= 0)
             throw new Exception("Count must be positive");
 
-		double diff = end.toDouble() - start.toDouble();
+		double diff = end.durationFrom(start).toSeconds();
 		if (diff <= 0)
 			throw new Exception("Difference of start time and end time must be greater than 0 second.");
 

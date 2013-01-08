@@ -4,29 +4,11 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.expression.ChannelExpressionList;
-import org.epics.pvmanager.expression.ChannelExpression;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
-import org.epics.pvmanager.expression.DesiredRateExpressionList;
-import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
-import org.epics.pvmanager.expression.WriteExpressionImpl;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.WriteExpression;
-import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.pvmanager.expression.SourceRateReadWriteExpression;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionList;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionListImpl;
-import org.epics.pvmanager.expression.SourceRateExpressionList;
-import org.epics.pvmanager.expression.SourceRateReadWriteExpressionList;
-import org.epics.pvmanager.expression.WriteExpressionList;
-import org.epics.util.time.TimeDuration;
+import org.epics.pvmanager.expression.*;
 
 /**
  * Operators to constructs expression of PVs that the {@link PVManager} will
@@ -72,9 +54,9 @@ public class ExpressionLanguage {
         if (value != null)
             clazz = value.getClass();
         @SuppressWarnings("unchecked")
-        ValueCache<T> cache = (ValueCache<T>) new ValueCache(clazz);
+        ValueCache<T> cache = (ValueCache<T>) new ValueCacheImpl(clazz);
         if (value != null)
-            cache.setValue(value);
+            cache.writeValue(value);
         return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, name);
     }
 
@@ -171,7 +153,7 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>>
             newValuesOf(SourceRateExpression<T> expression) {
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new QueueCollector<T>(expression.getFunction()),
+                new QueueCollector<T>(10),
                 expression.getName());
     }
 
@@ -186,40 +168,10 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>>
             newValuesOf(SourceRateExpression<T> expression, int maxValues) {
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new QueueCollector<T>(expression.getFunction(), maxValues),
+                new QueueCollector<T>(maxValues),
                 expression.getName());
     }
-
-    /**
-     * Returns all the values starting the latest value and older up to
-     * the time different given by the interval.
-     * 
-     * @param <T> type being read
-     * @param expression expression to read
-     * @param maxIntervalBetweenSamples maximum time difference between values
-     * @return a new expression
-     */
-    public static <T> DesiredRateExpression<List<T>>
-            timedCacheOf(SourceRateExpression<T> expression, TimeDuration maxIntervalBetweenSamples) {
-        return new DesiredRateExpressionImpl<List<T>>(expression,
-                new TimedCacheCollector<T>(expression.getFunction(), maxIntervalBetweenSamples),
-                expression.getName());
-    }
-
-    /**
-     * Returns all the values starting the latest value and older up to
-     * the time different given by the interval.
-     * 
-     * @param <T> type being read
-     * @param expression expression to read
-     * @param maxIntervalBetweenSamples maximum time difference between values
-     * @return a new expression
-     */
-    public static <T> DesiredRateExpression<List<T>>
-            timedCacheOf(SourceRateExpression<T> expression, org.epics.pvmanager.util.TimeDuration maxIntervalBetweenSamples) {
-        return timedCacheOf(expression, org.epics.pvmanager.util.TimeDuration.asTimeDuration(maxIntervalBetweenSamples));
-    }
-
+    
     /**
      * Expression that returns (only) the latest value computed
      * from a {@code SourceRateExpression}.
@@ -229,9 +181,8 @@ public class ExpressionLanguage {
      * @return a new expression
      */
     public static <T> DesiredRateExpression<T> latestValueOf(SourceRateExpression<T> expression) {
-        DesiredRateExpression<List<T>> queue = newValuesOf(expression, 1);
-        return new DesiredRateExpressionImpl<T>(queue,
-                new LastValueAggregator<T>((Collector<T>) queue.getFunction()),
+        return new DesiredRateExpressionImpl<T>(expression,
+                new LatestValueCollector<T>(),
                 expression.getName());
     }
 
@@ -329,11 +280,11 @@ public class ExpressionLanguage {
     public static <R, A> DesiredRateExpression<R> resultOf(final OneArgFunction<R, A> function,
             DesiredRateExpression<A> argExpression) {
         String name = function.getClass().getSimpleName() + "(" + argExpression.getName() + ")";
-        final Function<A> arg = argExpression.getFunction();
-        return new DesiredRateExpressionImpl<R>(argExpression, new Function<R>() {
+        final ReadFunction<A> arg = argExpression.getFunction();
+        return new DesiredRateExpressionImpl<R>(argExpression, new ReadFunction<R>() {
             @Override
-            public R getValue() {
-                return function.calculate(arg.getValue());
+            public R readValue() {
+                return function.calculate(arg.readValue());
             }
         }, name);
     }
@@ -369,16 +320,16 @@ public class ExpressionLanguage {
      */
     public static <R, A1, A2> DesiredRateExpression<R> resultOf(final TwoArgFunction<R, A1, A2> function,
             DesiredRateExpression<? extends A1> arg1Expression, DesiredRateExpression<? extends A2> arg2Expression, String name) {
-        final Function<? extends A1> arg1 = arg1Expression.getFunction();
-        final Function<? extends A2> arg2 = arg2Expression.getFunction();
+        final ReadFunction<? extends A1> arg1 = arg1Expression.getFunction();
+        final ReadFunction<? extends A2> arg2 = arg2Expression.getFunction();
         @SuppressWarnings("unchecked")
         DesiredRateExpressionList<? extends Object> argExpressions =
                 new DesiredRateExpressionListImpl<Object>().and(arg1Expression).and(arg2Expression);
         return new DesiredRateExpressionImpl<R>(argExpressions,
-                new Function<R>() {
+                new ReadFunction<R>() {
                     @Override
-                    public R getValue() {
-                        return function.calculate(arg1.getValue(), arg2.getValue());
+                    public R readValue() {
+                        return function.calculate(arg1.readValue(), arg2.readValue());
                     }
                 }, name);
     }
@@ -505,15 +456,15 @@ public class ExpressionLanguage {
     public static <T> DesiredRateExpression<List<T>> filterBy(final Filter<?> filter,
             DesiredRateExpression<List<T>> expression) {
         String name = expression.getName();
-        final Function<List<T>> arg = expression.getFunction();
+        final ReadFunction<List<T>> arg = expression.getFunction();
         return new DesiredRateExpressionImpl<List<T>>(expression,
-                new Function<List<T>>() {
+                new ReadFunction<List<T>>() {
 
                     private T previousValue;
 
                     @Override
-                    public List<T> getValue() {
-                        List<T> list = arg.getValue();
+                    public List<T> readValue() {
+                        List<T> list = arg.readValue();
                         List<T> newList = new ArrayList<T>();
                         for (T element : list) {
                             if (!filter.innerFilter(previousValue, element)) {
@@ -526,7 +477,7 @@ public class ExpressionLanguage {
                 }, name);
     }
     
-    // Static collections (no change after expression creation
+    // Static collections
 
     /**
      * Converts a list of expressions to an expression that returns the list of results.
@@ -537,89 +488,142 @@ public class ExpressionLanguage {
      */
     public static <T> DesiredRateExpression<List<T>> listOf(DesiredRateExpressionList<T> expressions) {
         // Calculate all the needed functions to combine
-        List<Function> functions = new ArrayList<Function>();
+        List<ReadFunction> functions = new ArrayList<ReadFunction>();
         for (DesiredRateExpression<T> expression : expressions.getDesiredRateExpressions()) {
             functions.add(expression.getFunction());
         }
 
         @SuppressWarnings("unchecked")
         DesiredRateExpression<List<T>> expression = new DesiredRateExpressionImpl<List<T>>(expressions,
-                (Function<List<T>>) (Function) new ListOfFunction(functions), null);
+                (ReadFunction<List<T>>) (ReadFunction) new ListOfFunction(functions), null);
         return expression;
     }
     
+    // Dynamic collections (change after expression creation)
+    
     /**
-     * Converts a list of expressions to an expression that returns the map from
-     * the name to the results.
+     * An empty map that can manage expressions of the given type.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
      * 
-     * @param <T> type being read
-     * @param expressions a list of expressions
+     * @param <R> the type of the values
+     * @param clazz the type of the values
      * @return an expression representing a map from name to results
      */
-    public static <T> DesiredRateExpression<Map<String, T>> mapOf(DesiredRateExpressionList<T> expressions) {
-        // Calculate all the needed functions to combine
-        List<String> names = new ArrayList<String>();
-        List<Function<T>> functions = new ArrayList<Function<T>>();
-        for (DesiredRateExpression<T> expression : expressions.getDesiredRateExpressions()) {
-            names.add(expression.getName());
-            functions.add(expression.getFunction());
-        }
-
-        @SuppressWarnings("unchecked")
-        DesiredRateExpression<Map<String, T>> expression = new DesiredRateExpressionImpl<Map<String, T>>(expressions,
-                new MapOfFunction(names, functions), null);
-        return expression;
+    public static <R> ReadMap<R> readMapOf(Class<R> clazz){
+        return new ReadMap<>();
     }
     
     /**
-     * Converts a list of expressions to an expression that returns the map from
-     * the name to the results.
+     * An empty map that can write expressions of the given type.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
      * 
-     * @param <T> type being read
-     * @param expressions a list of expressions
+     * @param <W> the type of the values
+     * @param clazz the type of the values
      * @return an expression representing a map from name to results
      */
-    public static <T> WriteExpression<Map<String, T>> mapOf(WriteExpressionList<T> expressions) {
-        // Calculate all the needed functions to combine
-        List<String> names = new ArrayList<String>();
-        List<WriteFunction<T>> functions = new ArrayList<WriteFunction<T>>();
-        for (WriteExpression<T> expression : expressions.getWriteExpressions()) {
-            names.add(expression.getName());
-            functions.add(expression.getWriteFunction());
-        }
-
-        @SuppressWarnings("unchecked")
-        WriteExpression<Map<String, T>> expression = new WriteExpressionImpl<Map<String, T>>(expressions,
-                new MapOfWriteFunction<T>(names, functions), null);
-        return expression;
-    }
-
-    /**
-     * Converts a list of expressions to an expression that returns the map from
-     * the name to the results.
-     * 
-     * @param <R> read payload
-     * @param <W> write payload
-     * @param expressions a list of expressions
-     * @return an expression representing a map from name to results
-     */
-    public static <R, W> DesiredRateReadWriteExpression<Map<String, R>, Map<String, W>> mapOf(DesiredRateReadWriteExpressionList<R, W> expressions) {
-        // Calculate all the needed functions to combine
-        List<String> names = new ArrayList<String>();
-        List<Function<R>> functions = new ArrayList<Function<R>>();
-        List<WriteFunction<W>> writefunctions = new ArrayList<WriteFunction<W>>();
-        for (DesiredRateReadWriteExpression<R, W> expression : expressions.getDesiredRateReadWriteExpressions()) {
-            names.add(expression.getName());
-            functions.add(expression.getFunction());
-            writefunctions.add(expression.getWriteFunction());
-        }
-        
-        DesiredRateExpression<Map<String, R>> readExpression = new DesiredRateExpressionImpl<Map<String, R>>(expressions,
-                new MapOfFunction<R>(names, functions), null);
-        WriteExpression<Map<String, W>> writeExpression = new WriteExpressionImpl<Map<String, W>>(expressions,
-                new MapOfWriteFunction<W>(names, writefunctions), null);
-        
-        return new DesiredRateReadWriteExpressionImpl<Map<String, R>, Map<String, W>>(readExpression, writeExpression);
+    public static <W> WriteMap<W> writeMapOf(Class<W> clazz){
+        return new WriteMap<>();
     }
     
+    /**
+     * An empty map that can read/write expressions of the given type.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
+     * 
+     * @param <R> the type of the values to read
+     * @param <W> the type of the values to write
+     * @param readClass the type of the values to read
+     * @param writeClass the type of the values to write
+     * @return an expression representing a map from name to results
+     */
+    public static <R, W> ReadWriteMap<R, W> mapOf(Class<R> readClass, Class<W> writeClass){
+        return new ReadWriteMap<>();
+    }
+    
+    /**
+     * An expression that returns a key/value map where the key is the
+     * expression name and the value is the expression value.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
+     * 
+     * @param <R> the type of the values
+     * @param expressions a list of expressions
+     * @return an expression representing a map from name to results
+     */
+    public static <R> ReadMap<R> mapOf(DesiredRateExpressionList<R> expressions){
+        return new ReadMap<R>().add(expressions);
+    }
+    
+    /**
+     * An expression that expects a key/value map where the key is the
+     * expression name and the value is the expression value.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
+     * 
+     * @param <W> the type of the values
+     * @param expressions a list of expressions
+     * @return an expression representing a map from name to results
+     */
+    public static <W> WriteMap<W> mapOf(WriteExpressionList<W> expressions){
+        return new WriteMap<W>().add(expressions);
+    }
+    
+    /**
+     * An expression that works on a key/value map where the key is the
+     * expression name and the value is the expression value.
+     * <p>
+     * The returned expression is dynamic, which means child expressions
+     * can be added or removed from the map.
+     * 
+     * @param <R> the type for the read values
+     * @param <W> the type for the write values
+     * @param expressions a list of expressions
+     * @return an expression representing a map from name to results
+     */
+    public static <R, W> ReadWriteMap<R, W> mapOf(DesiredRateReadWriteExpressionList<R, W> expressions){
+        return new ReadWriteMap<R, W>().add(expressions);
+    }
+    
+    // Collectors for external sources
+    
+    /**
+     * A queue of objects of the given class. By default, it holds at maximum
+     * 10 elements.
+     * <p>
+     * This can be used to create expressions where the source of the data is
+     * not just pvmanager data sources. One can add new values to a queue
+     * from any thread, and in response to any event, such as user input,
+     * updates from time consuming tasks or responses from services.
+     * 
+     * @param <R> the type to be kept in the queue
+     * @param clazz the type for the values to be kept in the queue
+     * @return a new queue
+     */
+    public static <R> Queue<R> queueOf(Class<R> clazz) {
+        return new Queue<>(10);
+    }
+    
+    /**
+     * A cache of objects of the given class. By default, it holds at maximum
+     * 10 elements.
+     * <p>
+     * This can be used to create expressions where the source of the data is
+     * not just pvmanager data sources. One can add new values to the cache
+     * from any thread, and in response to any event, such as user input,
+     * updates from time consuming tasks or responses from services.
+     * 
+     * @param <R> the type to be kept in the queue
+     * @param clazz the type for the values to be kept in the queue
+     * @return a new queue
+     */
+    public static <R> Cache<R> cacheOf(Class<R> clazz) {
+        return new Cache<>(10);
+    }
 }

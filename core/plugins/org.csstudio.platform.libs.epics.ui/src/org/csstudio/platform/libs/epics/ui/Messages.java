@@ -42,6 +42,14 @@ public class Messages extends NLS {
     public static String EpicsPreferencePage_MONITOR_VALUE;
     public static String EpicsPreferencePage_MONITOR_ARCHIVE;
     public static String EpicsPreferencePage_MONITOR_ALARM;
+    public static String EpicsPreferencePage_DBE_PROPERTY_SUPPORTED;
+    public static String EpicsPreferencePage_HONOR_ZERO_PRECISION;
+    public static String EpicsPreferencePage_RTYP_VALUE_ONLY;
+    public static String EpicsPreferencePage_VAR_ARRAY_SUPPORT;
+    public static String EpicsPreferencePage_VAR_ARRAY_SUPPORT_AUTO;
+    public static String EpicsPreferencePage_VAR_ARRAY_SUPPORT_ENABLED;
+    public static String EpicsPreferencePage_VAR_ARRAY_SUPPORT_DISABLED;
+    
 
 	static {
 		// initialize resource bundle

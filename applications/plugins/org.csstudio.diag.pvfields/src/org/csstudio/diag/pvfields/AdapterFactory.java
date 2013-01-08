@@ -8,10 +8,9 @@
 package org.csstudio.diag.pvfields;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.diag.pvfields.model.PVInfo;
 import org.eclipse.core.runtime.IAdapterFactory;
 
-/** Adapt {@link PVInfo} to CSS PV
+/** Adapt {@link PVField} to CSS PV
  *  @author Kay Kasemir
  */
 public class AdapterFactory implements IAdapterFactory
@@ -26,9 +25,9 @@ public class AdapterFactory implements IAdapterFactory
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
-        if (adaptableObject instanceof PVInfo)
+        if (adaptableObject instanceof PVField)
         {
-            final PVInfo info = (PVInfo) adaptableObject;
+            final PVField info = (PVField) adaptableObject;
             return new ProcessVariable(info.getName());
         }
         return null;

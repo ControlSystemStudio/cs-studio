@@ -21,7 +21,9 @@ import static org.junit.Assert.fail;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
@@ -33,7 +35,22 @@ public class DeviceValueConditionHeadlessTest
 {
     private PVDevice getDemoDevice() throws Exception
     {
-        return new PVDevice(new DeviceInfo("loc://my_pv", "demo", true, true));
+    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv", "demo", true, true));
+        
+        // Register listener that notifies device so test code can wait for a device update
+        device.addListener(new DeviceListener()
+        {
+			@Override
+			public void deviceChanged(final Device device) 
+			{
+				synchronized (device)
+				{
+					device.notifyAll();
+				}
+			}
+		});
+
+        return device;
     }
 
     @Test(timeout=5000)
@@ -43,6 +60,7 @@ public class DeviceValueConditionHeadlessTest
         final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
+        synchronized (device) { device.wait(500); }
 
         // Thread that ramps PV from 1 to 5
         final Thread ramp = new Thread(new Runnable()
@@ -80,6 +98,7 @@ public class DeviceValueConditionHeadlessTest
 
         System.out.println("Setting value to 2.3");
         device.write(Double.valueOf(2.3));
+        synchronized (device) { device.wait(500); }
 
         System.out.println("Checking for value that is already close to 2, i.e. possibly no updates");
         condition.setDesiredValue(2.0);
@@ -98,53 +117,66 @@ public class DeviceValueConditionHeadlessTest
         final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
+        synchronized (device) { device.wait(500); }
 
         // EQUALS
         {
             final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001, 0.0);
             assertFalse(equals.isConditionMet());
             device.write(2.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(equals.isConditionMet());
 
             equals.setDesiredValue(3.0);
             assertFalse(equals.isConditionMet());
             device.write(3.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(equals.isConditionMet());
         }
 
         // AT_LEAST
         {
             device.write(0.0);
+            synchronized (device) { device.wait(500); }
             final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0, 0.0);
             assertFalse(above.isConditionMet());
             device.write(1.0);
+            synchronized (device) { device.wait(500); }
             assertFalse(above.isConditionMet());
             device.write(2.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(above.isConditionMet()); // 2 >= 2
 
             above.setDesiredValue(3.0);
             assertFalse(above.isConditionMet());
             device.write(3.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(above.isConditionMet());
             device.write(4.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(above.isConditionMet());
         }
 
         // BELOW
         {
             device.write(4.0);
+            synchronized (device) { device.wait(500); }
             final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0, 0.0);
             assertFalse(below.isConditionMet());
             device.write(2.0);
+            synchronized (device) { device.wait(500); }
             assertFalse(below.isConditionMet()); // ! (2.0 < 2.0)
             device.write(1.8);
+            synchronized (device) { device.wait(500); }
             assertTrue(below.isConditionMet());
 
             below.setDesiredValue(1.5);
             assertFalse(below.isConditionMet());
             device.write(1.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(below.isConditionMet());
             device.write(-4.0);
+            synchronized (device) { device.wait(500); }
             assertTrue(below.isConditionMet());
         }
 
@@ -188,7 +220,7 @@ public class DeviceValueConditionHeadlessTest
         final DeviceValueCondition condition =
                 new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, 0.0);
         assertFalse(condition.isConditionMet());
-        System.out.println("Initial value: " + device.read());
+        System.out.println("Initial value: " + device.readDouble());
         condition.await();
         System.out.println("Value increased by 3!");
 
@@ -204,6 +236,11 @@ public class DeviceValueConditionHeadlessTest
         final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
+        do
+        {
+        	synchronized (device) { device.wait(100); }
+        }
+        while (device.readDouble() != 1.0);
 
         // Wait for 1 second, never happens
         DeviceValueCondition condition =

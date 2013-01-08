@@ -8,13 +8,14 @@ import java.util.concurrent.Executor;
 import org.epics.util.time.TimeDuration;
 
 /**
+ * Includes parameters that are common for both reader and write configuration.
  *
  * @author carcassi
  */
 class CommonConfiguration {
 
     Executor notificationExecutor;
-    DataSource source;
+    DataSource dataSource;
     TimeDuration timeout;
     String timeoutMessage;
 
@@ -28,7 +29,7 @@ class CommonConfiguration {
         if (dataSource == null) {
             throw new IllegalArgumentException("dataSource can't be null");
         }
-        source = dataSource;
+        this.dataSource = dataSource;
         return this;
     }
 
@@ -59,33 +60,18 @@ class CommonConfiguration {
         this.timeoutMessage = timeoutMessage;
         return this;
     }
-    
-    @Deprecated
-    public CommonConfiguration timeout(org.epics.pvmanager.util.TimeDuration timeout) {
-        if (this.timeout != null)
-            throw new IllegalStateException("Timeout already set");
-        this.timeout = org.epics.pvmanager.util.TimeDuration.asTimeDuration(timeout);
-        return this;
-    }
-    
-    @Deprecated
-    public CommonConfiguration timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
-        timeout(timeout);
-        this.timeoutMessage = timeoutMessage;
-        return this;
-    }
 
     void checkDataSourceAndThreadSwitch() {
         // Get defaults
-        if (source == null) {
-            source = PVManager.getDefaultDataSource();
+        if (dataSource == null) {
+            dataSource = PVManager.getDefaultDataSource();
         }
         if (notificationExecutor == null) {
             notificationExecutor = PVManager.getDefaultNotificationExecutor();
         }
 
         // Check that a data source has been specified
-        if (source == null) {
+        if (dataSource == null) {
             throw new IllegalStateException("You need to specify a source either "
                     + "using PVManager.setDefaultDataSource or by using "
                     + "read(...).from(dataSource).");

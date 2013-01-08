@@ -24,9 +24,9 @@ import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** RDB implementation (Oracle, MySQL, PostgreSQL) of {@link ArchiveConfig}
  *
@@ -596,7 +596,7 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final int id = result.getInt(1);
                 final SampleMode sample_mode =
                     getSampleMode(result.getInt(3), result.getDouble(4), result.getDouble(5));
-                final ITimestamp last_sample_time = getLastSampleTime(id);
+                final org.epics.util.time.Timestamp last_sample_time = getLastSampleTime(id);
                 channels.add(new RDBChannelConfig(id, result.getString(2),
                                                   sample_mode, last_sample_time));
             }
@@ -652,7 +652,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return Time stamp or <code>null</code> if not in archive, yet
      *  @throws Exception on RDB error
      */
-    private ITimestamp getLastSampleTime(final int channel_id) throws Exception
+    private org.epics.util.time.Timestamp getLastSampleTime(final int channel_id) throws Exception
     {
         // This statement has a surprisingly complex execution plan for partitioned
         // Oracle setups, so re-use it
@@ -667,7 +667,16 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final Timestamp stamp = result.getTimestamp(1);
                 if (stamp == null)
                     return null;
-                return TimestampFactory.fromSQLTimestamp(stamp);
+                
+                if (rdb.getDialect() != Dialect.Oracle)
+                {
+                    // For Oracle, the time stamp is indeed the last time.
+                    // For others, it's only the seconds, not the nanoseconds.
+                    // Since this time stamp is only used to avoid going back in time,
+                    // add a second to assert that we are _after_ the last sample
+                    stamp.setTime(stamp.getTime() + 1000);
+                }
+                return TimestampHelper.fromSQLTimestamp(stamp);
             }
         }
         finally

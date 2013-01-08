@@ -8,9 +8,8 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
 
 /** Alarm state combines an alarm severity with its message info,
  *  value that triggered this state, time when it happened.
@@ -25,7 +24,7 @@ public class AlarmState
     final private SeverityLevel severity;
     final private String message;
     final private String value;
-    final private ITimestamp time;
+    final private Timestamp time;
 
     /** Initialize
      *  @param severity Initial alarm severity
@@ -33,7 +32,7 @@ public class AlarmState
      */
     @SuppressWarnings("nls")
     public AlarmState(final SeverityLevel severity, final String message,
-            final String value, final ITimestamp time)
+            final String value, final Timestamp time)
     {
         if (severity == null || time == null)
             throw new Error("Null arguments");
@@ -48,7 +47,7 @@ public class AlarmState
      *  @param time Time to use for the 'OK' state
      *  @return AlarmState
      */
-    public static AlarmState createClearState(final String value, final ITimestamp time)
+    public static AlarmState createClearState(final String value, final Timestamp time)
     {
         return new AlarmState(SeverityLevel.OK,
                 SeverityLevel.OK.getDisplayName(),
@@ -60,7 +59,7 @@ public class AlarmState
      */
     public static AlarmState createClearState(final String value)
     {
-        return createClearState(value, TimestampFactory.now());
+        return createClearState(value, Timestamp.now());
     }
 
     /** Create an alarm state similar to current one but with updated severity
@@ -157,7 +156,7 @@ public class AlarmState
     }
 
     /** @return Time stamp */
-    public ITimestamp getTime()
+    public Timestamp getTime()
     {
         return time;
     }

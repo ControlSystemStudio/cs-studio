@@ -19,8 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.SetCommand;
@@ -49,6 +49,18 @@ public class LoopCommandHeadlessTest
         return context;
     }
 
+    private static void waitForValue(final Device device, final double value) throws Exception
+    {
+    	int tens = 0;
+    	while (device.readDouble() != value)
+    	{
+    		Thread.sleep(100);
+    		++tens;
+    		if (tens > 20)
+    			throw new TimeoutException();
+    	}
+    }
+    
     @Test(timeout=5000)
     public void testLoopCommand() throws Throwable
     {
@@ -58,7 +70,7 @@ public class LoopCommandHeadlessTest
         try
         {
             counter.write(2.0);
-            assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
+            waitForValue(counter, 2.0);
 
             final ScanCommandImpl<?> loop = new LoopCommandImpl(
                     new LoopCommand("counter", 1.0, 5.0, 1.0,
@@ -75,7 +87,7 @@ public class LoopCommandHeadlessTest
             // an individual command.
             final ExecutableScan scan = new ExecutableScan("test", devices);
             scan.execute(loop);
-            assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(5.0, counter.readDouble(), 0.1);
         }
         finally
         {
@@ -125,14 +137,15 @@ public class LoopCommandHeadlessTest
         {
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
-            assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
+            waitForValue(counter, 4.0);
+
             LoopCommandImpl loop = new LoopCommandImpl(
                 new LoopCommand("counter", 5.0, 1.0, -1.0,
                     new LogCommand("counter")));
             System.out.println(loop);
             final ExecutableScan scan = new ExecutableScan("test", devices);
             scan.execute(loop);
-            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(1.0, counter.readDouble(), 0.1);
 
             // Step 2: 1, 3, 5, 7, 9
             loop = new LoopCommandImpl(
@@ -140,7 +153,7 @@ public class LoopCommandHeadlessTest
                     new LogCommand("counter")));
             System.out.println(loop);
             scan.execute(loop);
-            assertEquals(9.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(9.0, counter.readDouble(), 0.1);
 
             // Down 3: 8, 5, 2
             loop = new LoopCommandImpl(
@@ -148,7 +161,7 @@ public class LoopCommandHeadlessTest
                     new LogCommand("counter")));
             System.out.println(loop);
             scan.execute(loop);
-            assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(2.0, counter.readDouble(), 0.1);
         }
         finally
         {
@@ -173,18 +186,19 @@ public class LoopCommandHeadlessTest
 
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
-            assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
+            waitForValue(counter, 4.0);
+            assertEquals(4.0, counter.readDouble(), 0.1);
             final ExecutableScan scan = new ExecutableScan("test", devices, loop);
             scan.execute(loop);
-            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(1.0, counter.readDouble(), 0.1);
 
             // On the next iteration, the loop toggles to an upward 1...5
             scan.execute(loop);
-            assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(5.0, counter.readDouble(), 0.1);
 
             // And then again down 5...1
             scan.execute(loop);
-            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+            assertEquals(1.0, counter.readDouble(), 0.1);
         }
         finally
         {

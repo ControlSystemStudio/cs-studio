@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VType support for archive
+Bundle-SymbolicName: org.csstudio.archive.vtype
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.epics.util;bundle-version="0.1.0";visibility:=reexport,
+ org.epics.vtype;bundle-version="2.0.0";visibility:=reexport,
+ org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional
+Export-Package: org.csstudio.archive.vtype

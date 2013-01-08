@@ -166,7 +166,6 @@ public class Messages extends NLS
     public static String OpenSearchView;
     public static String OpenPropertiesView;
     public static String OpenWaveformView;
-    public static String PlotSampleFmt;
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
     public static String Plot_ValueAxisNameFMT;
@@ -199,7 +198,6 @@ public class Messages extends NLS
     public static String SampleView_Item;
     public static String SampleView_MinMaxValueTT;
     public static String SampleView_NoPlot;
-    public static String SampleView_Quality;
     public static String SampleView_Refresh;
     public static String SampleView_RefreshTT;
     public static String SampleView_SelectItem;

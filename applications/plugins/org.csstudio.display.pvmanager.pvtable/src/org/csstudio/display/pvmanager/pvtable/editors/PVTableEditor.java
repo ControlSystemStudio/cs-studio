@@ -6,7 +6,7 @@ package org.csstudio.display.pvmanager.pvtable.editors;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.extra.ExpressionLanguage.group;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -95,10 +95,11 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.SimpleValueFormat;
-import org.epics.pvmanager.data.ValueFormat;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.vtype.SimpleValueFormat;
+import org.epics.vtype.ValueFormat;
+import org.epics.vtype.ValueUtil;
 import org.epics.pvmanager.extra.DynamicGroup;
 import com.swtdesigner.TableViewerColumnSorter;
 
@@ -151,11 +152,11 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 
 	private DynamicGroup group = group();
 	private PVReader<List<Object>> pv = PVManager.read(group)
-			.notifyOn(SWTUtil.swtThread()).every(hz(2));
-	private final PVReaderListener pvListener = new PVReaderListener() {
+			.notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(2));
+	private final PVReaderListener<List<Object>> pvListener = new PVReaderListener<List<Object>>() {
 
 		@Override
-		public void pvChanged() {
+		public void pvChanged(PVReaderEvent<List<Object>> event) {
 			PVTableModel model = (PVTableModel) tableViewer.getInput();
 			if (model != null) {
 				model.updateValues(pv.getValue(), group.lastExceptions());
@@ -592,7 +593,7 @@ public class PVTableEditor extends EditorPart implements ISelectionProvider {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
 					return null;
-				return ValueUtil.timeOf(item.getValue()).getTimeStamp().toString();
+				return ValueUtil.timeOf(item.getValue()).getTimestamp().toString();
 			}
 		});
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();

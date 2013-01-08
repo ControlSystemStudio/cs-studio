@@ -2,8 +2,7 @@ package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.util.TimeDuration.hz;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -45,19 +44,20 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
-import org.epics.pvmanager.WriteFailException;
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Enum;
-import org.epics.pvmanager.data.SimpleValueFormat;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.ValueFormat;
-import org.epics.pvmanager.data.ValueUtil;
-import org.epics.pvmanager.util.TimeStampFormat;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.Enum;
+import org.epics.vtype.SimpleValueFormat;
+import org.epics.vtype.Time;
+import org.epics.vtype.ValueFormat;
+import org.epics.vtype.ValueUtil;
+import org.epics.util.time.TimestampFormat;
 
 /**
  * Probe view.
@@ -109,7 +109,7 @@ public class PVManagerProbe extends ViewPart {
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 
 	/** Formatting used for the time text field */
-	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
+	private TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
@@ -456,7 +456,7 @@ public class PVManagerProbe extends ViewPart {
 						.append(display.getUpperDisplayLimit()).append(nl);
 			}
 
-			if (value instanceof org.epics.pvmanager.data.Enum) {
+			if (value instanceof org.epics.vtype.Enum) {
 				Enum enumValue = (Enum) value;
 				info.append(Messages.Probe_infoEnumMetadata).append(space)
 						.append(enumValue.getLabels().size()).append(space).append(Messages.Probe_infoLabels)
@@ -504,7 +504,7 @@ public class PVManagerProbe extends ViewPart {
 		setValue(null, null);
 		setTime(null);
 		setMeter(null, null);
-		setReadOnly(false);
+		setReadOnly(true);
 
 		// If name is blank, update status to waiting and quit
 		if ((pvName.getName() == null) || pvName.getName().trim().isEmpty()) {
@@ -520,35 +520,31 @@ public class PVManagerProbe extends ViewPart {
 
 		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.readAndWrite(channel(pvName.getName()))
-				.timeout(ms(5000), "No connection after 5s. Still trying...")
-				.notifyOn(swtThread()).asynchWriteAndReadEvery(hz(25));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				Object obj = pv.getValue();
-				setLastError(pv.lastException());
-				setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
-				setTime(ValueUtil.timeOf(obj));
-				setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
-				if (pv.isConnected()) {
-					setStatus(Messages.Probe_statusConnected);
-				} else {
-					setStatus(Messages.Probe_statusSearching);
-				}
-			}
-		});
+				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
+				.readListener(new PVReaderListener<Object>() {
+					@Override
+					public void pvChanged(PVReaderEvent<Object> event) {
+						Object obj = pv.getValue();
+						setLastError(pv.lastException());
+						setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
+						setTime(ValueUtil.timeOf(obj));
+						setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
+						if (pv.isConnected()) {
+							setStatus(Messages.Probe_statusConnected);
+						} else {
+							setStatus(Messages.Probe_statusSearching);
+						}
+					}
+				})
+				.writeListener(new PVWriterListener<Object>() {
+					@Override
+					public void pvChanged(PVWriterEvent<Object> event) {
+						Exception lastException = pv.lastWriteException();
+						setReadOnly(!pv.isWriteConnected());
+					}
+				})
+				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
 		
-		pv.addPVWriterListener(new PVWriterListener() {
-			
-			@Override
-			public void pvWritten() {
-				Exception lastException = pv.lastWriteException();
-				if (lastException instanceof WriteFailException) {
-					setReadOnly(true);
-				}
-			}
-		});
 		
 		this.PVName = pvName;
 
@@ -637,7 +633,7 @@ public class PVManagerProbe extends ViewPart {
 			return ""; //$NON-NLS-1$
 		} else {
 			return "[" + alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
-					+ alarm.getAlarmStatus() + "]";
+					+ alarm.getAlarmName() + "]";
 		}
 	}
 
@@ -650,7 +646,7 @@ public class PVManagerProbe extends ViewPart {
 		if (time == null) {
 			timestampField.setText(""); //$NON-NLS-1$
 		} else {
-			timestampField.setText(timeFormat.format(time.getTimeStamp()));
+			timestampField.setText(timeFormat.format(time.getTimestamp()));
 		}
 	}
 

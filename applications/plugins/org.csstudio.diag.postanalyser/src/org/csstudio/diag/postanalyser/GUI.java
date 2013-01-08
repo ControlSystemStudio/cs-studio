@@ -3,8 +3,7 @@ package org.csstudio.diag.postanalyser;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.diag.postanalyser.math.Filter;
 import org.csstudio.diag.postanalyser.model.Algorithm;
 import org.csstudio.diag.postanalyser.model.AlgorithmOutput;
@@ -53,6 +52,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.epics.util.time.Timestamp;
 
 /** User interface of the post analyzer.
  *  <p>
@@ -605,8 +605,8 @@ public class GUI implements ModelListener, AlgorithmJobListener
                     final ChartSample sample = samples.get(i);
                     if (time_axis)
                     {
-                        final ITimestamp time =
-                            TimestampFactory.fromDouble(sample.getX());
+                        final Timestamp time =
+                            TimestampHelper.fromMillisecs((long) sample.getX());
                         out.println(time.toString() + "\t" + sample.getY());
                     }
                     else

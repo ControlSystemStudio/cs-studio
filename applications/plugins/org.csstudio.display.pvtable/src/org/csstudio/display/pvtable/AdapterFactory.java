@@ -8,7 +8,7 @@
 package org.csstudio.display.pvtable;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.display.pvtable.model.PVListEntry;
+import org.csstudio.display.pvtable.model.PVTableItem;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /** Adapter from PV Table to CSS types
@@ -26,8 +26,8 @@ public class AdapterFactory implements IAdapterFactory
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
-        if (adaptableObject instanceof PVListEntry  &&  adapterType == ProcessVariable.class)
-            return new ProcessVariable(((PVListEntry)adaptableObject).getName());
+        if (adaptableObject instanceof PVTableItem  &&  adapterType == ProcessVariable.class)
+            return new ProcessVariable(((PVTableItem)adaptableObject).getName());
         return null;
     }
 }

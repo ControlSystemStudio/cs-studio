@@ -24,8 +24,9 @@ public abstract class ChannelHandler {
      * @param channelName the name of the channel this handler will be responsible of
      */
     public ChannelHandler(String channelName) {
-        if (channelName == null)
+        if (channelName == null) {
             throw new NullPointerException("Channel name cannot be null");
+        }
         this.channelName = channelName;
     }
     
@@ -49,24 +50,24 @@ public abstract class ChannelHandler {
     }
 
     /**
-     * Returns how many read or write PVs are open on
+     * Returns how many readers or writers are open on
      * this channel.
      * 
-     * @return the number of open read/writes
+     * @return the number of open readers and writers
      */
     public abstract int getUsageCounter();
     
     /**
-     * Returns how many read PVs are open on this channel.
+     * Returns how many readers are open on this channel.
      * 
-     * @return the number of open reads
+     * @return the number of open readers
      */
     public abstract int getReadUsageCounter();
     
     /**
-     * Returns how many write PVs are open on this channel.
+     * Returns how many writers are open on this channel.
      * 
-     * @return the number of open writes
+     * @return the number of open writers
      */
     public abstract int getWriteUsageCounter();
 
@@ -76,32 +77,32 @@ public abstract class ChannelHandler {
      * 
      * @param subscription the data required for a subscription
      */
-    protected abstract void addMonitor(ChannelHandlerReadSubscription subscription);
+    protected abstract void addReader(ChannelHandlerReadSubscription subscription);
 
     /**
      * Used by the data source to remove a read request.
      * 
-     * @param collector the collector that does not need to be notified anymore
+     * @param subscription the subscription to remove
      */
-    protected abstract void removeMonitor(Collector<?> collector);
+    protected abstract void removeReader(ChannelHandlerReadSubscription subscription);
 
     /**
      * Used by the data source to prepare the channel managed by this handler
      * for write.
      * 
-     * @param handler to be notified in case of errors
+     * @param subscription the data required for the subscription
      */
-    protected abstract void addWriter(WriteCache<?> cache, ExceptionHandler handler);
+    protected abstract void addWriter(ChannelHandlerWriteSubscription subscription);
 
     /**
      * Used by the data source to conclude writes to the channel managed by this handler.
      * 
-     * @param exceptionHandler to be notified in case of errors
+     * @param subscription the subscription to remove
      */
-    protected abstract void removeWrite(WriteCache<?> cache, ExceptionHandler exceptionHandler);
+    protected abstract void removeWrite(ChannelHandlerWriteSubscription subscription);
 
     /**
-     * Implements a write operation. Write the newValues to the channel
+     * Implements a write operation. Writes the newValues to the channel
      * and call the callback when done.
      * 
      * @param newValue new value to be written

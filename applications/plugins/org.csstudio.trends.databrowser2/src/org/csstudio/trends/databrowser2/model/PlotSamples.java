@@ -135,10 +135,8 @@ abstract public class PlotSamples implements IDataProvider
         final int n = getSize();
         final StringBuilder buf = new StringBuilder(n + " Plot Samples");
         if (n < 100)
-        {
             for (int i=0; i<n; ++i)
-                buf.append(String.format("\n%3d: ", i) + getSample(i).getValue());
-        }
+                buf.append(String.format("\n%3d: ", i)).append(getSample(i));
         return buf.toString();
     }
 }

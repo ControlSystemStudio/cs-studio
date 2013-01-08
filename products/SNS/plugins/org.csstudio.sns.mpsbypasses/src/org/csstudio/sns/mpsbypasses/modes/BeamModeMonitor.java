@@ -1,7 +1,8 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.vEnum;
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.ExpressionLanguage.listOf;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vEnum;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -9,8 +10,9 @@ import java.util.logging.Logger;
 
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VEnum;
+import org.epics.vtype.VEnum;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.util.time.TimeDuration;
@@ -56,11 +58,10 @@ public class BeamModeMonitor
 	    DesiredRateExpressionList<VEnum> channels = new DesiredRateExpressionListImpl<VEnum>();
 	    for (int i=0; i<modes.length; ++i)
 	        channels.and(latestValueOf(vEnum("ICS_MPS:RTDL_BmMd:" + modes[i].getSignal())));
-	    rtdl_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
-	    rtdl_reader.addPVReaderListener(new PVReaderListener()
+	    PVReaderListener<List<VEnum>> listener = new PVReaderListener<List<VEnum>>()
 	    {
 	        @Override
-	        public void pvChanged()
+	        public void pvChanged(final PVReaderEvent<List<VEnum>> event)
 	        {
 	            final BeamMode mode;
 	            final Exception error = rtdl_reader.lastException();
@@ -74,17 +75,17 @@ public class BeamModeMonitor
 	            logger.log(Level.FINE, "RTDL Mode: {0}", mode);
 	            updateModes(mode, switch_mode);
 	        }
-	    });
+	    };
+	    rtdl_reader = PVManager.read(listOf(channels)).readListener(listener).maxRate(TimeDuration.ofSeconds(1.0));
 
         // Handle 'Switch' PVs
 	    channels = new DesiredRateExpressionListImpl<VEnum>();
 	    for (int i=0; i<modes.length; ++i)
 	        channels.and(latestValueOf(vEnum("ICS_MPS:Switch_BmMd:" + modes[i].getSignal())));
-	    switch_reader = PVManager.read(listOf(channels)).maxRate(TimeDuration.ofSeconds(1.0));
-	    switch_reader.addPVReaderListener(new PVReaderListener()
+	    listener = new PVReaderListener<List<VEnum>>()
 	    {
 	        @Override
-	        public void pvChanged()
+	        public void pvChanged(final PVReaderEvent<List<VEnum>> event)
 	        {
 	            final BeamMode mode;
 	            final Exception error = switch_reader.lastException();
@@ -98,7 +99,8 @@ public class BeamModeMonitor
                 logger.log(Level.FINE, "Swtich Mode: {0}", mode);
                 updateModes(rtdl_mode, mode);
 	        }
-	    });
+	    };
+	    switch_reader = PVManager.read(listOf(channels)).readListener(listener).maxRate(TimeDuration.ofSeconds(1.0));
 	}
 
 	/** Determine which of the values indicates an active mode

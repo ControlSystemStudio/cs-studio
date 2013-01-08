@@ -9,13 +9,14 @@ package org.csstudio.trends.databrowser2.waveformview;
 
 import java.util.ArrayList;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.epics.util.array.ListNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 
 /** Data provider for the XYGraph that shows waveform elements of an IValue
  *  @author Kay Kasemir
@@ -25,15 +26,18 @@ public class WaveformValueDataProvider implements IDataProvider
     final private ArrayList<IDataProviderListener> listeners =
         new ArrayList<IDataProviderListener>();
 
-    private IValue value = null;
+    private ListNumber numbers = null;
 
     /** Update the waveform value.
      *  @param value New value
      *  Fires event to listeners (plot)
      */
-    public void setValue(final IValue value)
+    public void setValue(final VType value)
     {
-        this.value = value;
+        if (value instanceof VNumberArray)
+            numbers = ((VNumberArray) value).getData();
+        else
+            numbers = null;
         for (IDataProviderListener listener : listeners)
             listener.dataChanged(this);
     }
@@ -42,25 +46,21 @@ public class WaveformValueDataProvider implements IDataProvider
     @Override
     public int getSize()
     {
-        if (value == null)
-            return 0;
-        return ValueUtil.getSize(value);
+        return numbers.size();
     }
 
     /** {@inheritDoc} */
     @Override
     public ISample getSample(final int index)
     {
-        if (value.getSeverity().hasValue())
-            return new Sample(index, ValueUtil.getDouble(value, index));
-        return new Sample(index, Double.NaN);
+        return new Sample(index, numbers.getDouble(index));
     }
 
     /** {@inheritDoc} */
     @Override
     public Range getXDataMinMax()
     {
-        if (value == null)
+        if (numbers == null)
             return null;
         return new Range(0, getSize()-1);
     }
@@ -69,13 +69,13 @@ public class WaveformValueDataProvider implements IDataProvider
     @Override
     public Range getYDataMinMax()
     {
-        if (value == null)
+        if (numbers == null)
             return null;
         double min, max;
-        min = max = ValueUtil.getDouble(value);
+        min = max = numbers.getDouble(0);
         for (int i=getSize()-1; i>=1; --i)
         {
-            final double num = ValueUtil.getDouble(value, i);
+            final double num = numbers.getDouble(i);
             if (num < min)
                 min = num;
             if (num > max)

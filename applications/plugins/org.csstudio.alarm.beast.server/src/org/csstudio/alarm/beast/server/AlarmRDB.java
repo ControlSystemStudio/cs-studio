@@ -18,9 +18,8 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.TreeItem;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Alarm RDB Handler
@@ -221,9 +220,9 @@ public class AlarmRDB
                     final String value = result.getString(15);
 
                     final Timestamp time = result.getTimestamp(16);
-                    final ITimestamp timestamp = result.wasNull()
-                        ? TimestampFactory.now()
-                        : TimestampFactory.fromSQLTimestamp(time);
+                    final org.epics.util.time.Timestamp timestamp = result.wasNull()
+                        ? org.epics.util.time.Timestamp.now()
+                        : TimestampHelper.toEPICSTime(time);
 
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
 
@@ -286,7 +285,7 @@ public class AlarmRDB
      */
     public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
             String current_message, final SeverityLevel severity, String message,
-            final String value, final ITimestamp timestamp) throws Exception
+            final String value, final org.epics.util.time.Timestamp timestamp) throws Exception
     {
         // Message should not be empty because Oracle treats empty strings like null
         if (message == null  ||  message.isEmpty())
@@ -357,7 +356,7 @@ public class AlarmRDB
             updateStateStatement.setInt(3, severity_id);
             updateStateStatement.setInt(4, message_id);
             updateStateStatement.setString(5, value);
-            Timestamp sql_time = timestamp.toSQLTimestamp();
+            Timestamp sql_time = TimestampHelper.toSQLTime(timestamp);
             if (sql_time.getTime() == 0)
             {    // MySQL will throw Data Truncation exception on 0 time stamps
                 sql_time = new Timestamp(new Date().getTime());

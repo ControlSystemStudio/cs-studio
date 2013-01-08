@@ -20,11 +20,11 @@ import org.csstudio.alarm.beast.notifier.ActionID;
 import org.csstudio.alarm.beast.notifier.model.IActionProvider;
 import org.csstudio.alarm.beast.notifier.model.IActionValidator;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
-import org.csstudio.data.values.ITimestamp;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.epics.util.time.Timestamp;
 
 /**
  * Alarm Notifier utilities.
@@ -73,7 +73,7 @@ public class NotifierUtils {
         final SeverityLevel current_severity = pv.getCurrentSeverity();
         final String current_message = pv.getCurrentMessage();
         final String value = pv.getValue();
-        final ITimestamp timestamp = pv.getTimestamp();
+        final Timestamp timestamp = pv.getTimestamp();
         return new AlarmUpdateInfo(name, current_severity, current_message,
                 severity, status, value, timestamp);
     }

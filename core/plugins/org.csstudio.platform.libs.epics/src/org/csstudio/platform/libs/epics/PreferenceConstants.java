@@ -28,6 +28,7 @@ package org.csstudio.platform.libs.epics;
  *  
  *  @author Original author unknown
  *  @author Kay Kasemir
+ *  @author Gabriele Carcassi
  */
 @SuppressWarnings("nls")
 public class PreferenceConstants
@@ -40,9 +41,21 @@ public class PreferenceConstants
     
     /** List of IP addresses, separated by space */
     final public static String ADDR_LIST = "addr_list"; 
-    
+
     /** Add automatic IP entries? Values "true", "false" */
     final public static String AUTO_ADDR_LIST = "auto_addr_list";
+    
+    /** Should we use metadata update? Values "true", "false" */
+    final public static String DBE_PROPERTY_SUPPORTED = "dbe_property_supported";
+    
+    /** Honor zero precision? Values "true", "false" */
+    final public static String HONOR_ZERO_PRECISION = "honor_zero_precision";
+    
+    /** Should only request the value for RTYP fields? Values "true", "false" */
+    final public static String RTYP_VALUE_ONLY = "rtyp_value_only";
+    
+    /** Should we enable variable array support? Values "Auto", "Enabled", "Disabled" */
+    final public static String VAR_ARRAY_SUPPORT = "var_array_support";
     
     // See Channel Access docu for rest
     final public static String TIMEOUT = "conn_tmo";

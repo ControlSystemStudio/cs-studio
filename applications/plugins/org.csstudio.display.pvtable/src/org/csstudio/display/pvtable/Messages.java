@@ -13,51 +13,24 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.display.pvtable.messages"; //$NON-NLS-1$
 
-    public static String ConfigDlg_Description;
+    public static String Alarm;
+    public static String Delete;
+    public static String Delete_TT;
+    public static String EnterPositiveTolerance;
+    public static String EnterTolerance;
+    public static String NotSaved;
+    public static String NotSaved_TT;
+    public static String PV;
+    public static String Restore;
+    public static String Restore_TT;
+    public static String Saved;
+    public static String Snapshot;
+    public static String Snapshot_TT;
+    public static String Time;
+    public static String Tolerance;
+    public static String Tolerance_TT;
+    public static String Value;
 
-    public static String ConfigDlg_Title;
-
-    public static String ConfigDlg_Tolerance;
-
-    public static String ConfigDlg_Tolerance_TT;
-
-    public static String ConfigDlg_ToleranceError;
-
-    public static String ConfigDlg_UpdatePeriod;
-
-    public static String ConfigDlg_UpdatePeriod_TT;
-
-    public static String ConfigDlg_UpdatePeriodError;
-
-    public static String Editor_SaveTask;
-
-    public static String EmptyRowMarker;
-
-    public static String PVTable;
-
-    public static String StartStop_Start;
-
-    public static String StartStop_Start_TT;
-
-    public static String StartStop_Stop;
-
-    public static String StartStop_Stop_TT;
-
-    public static String TableCol_Name;
-
-    public static String TableCol_ReadbackPV;
-
-    public static String TableCol_ReadbackValue;
-
-    public static String TableCol_SavedReadbackValue;
-
-    public static String TableCol_SavedValue;
-
-    public static String TableCol_Sel;
-
-    public static String TableCol_Time;
-
-    public static String TableCol_Value;
     static
     {
         // initialize resource bundle

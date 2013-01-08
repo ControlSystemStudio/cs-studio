@@ -7,17 +7,23 @@
  ******************************************************************************/
 package org.csstudio.display.pace.model;
 
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.macros.MacroUtil;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.display.pace.Messages;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.vtype.VType;
+import org.epics.util.time.TimeDuration;
 
 /** One cell in the model.
  *  <p>
@@ -34,8 +40,10 @@ import org.csstudio.utility.pv.PVListener;
  *
  *   reviewed by Delphy 01/29/09
  */
-public class Cell implements PVListener
+public class Cell
 {
+    final private static Logger logger = Logger.getLogger(Cell.class.getName());
+
     /** Date format used for updating the last_date_pv */
     final private static DateFormat date_format =
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
@@ -51,7 +59,7 @@ public class Cell implements PVListener
     final private String pv_name;
 
     /** Control system PV for 'live' value */
-    final private PV pv;
+    private PV<VType, Object> pv;
 
     /** Most recent value received from PV */
     private volatile String current_value = null;
@@ -63,7 +71,8 @@ public class Cell implements PVListener
      *  the date of the change, and a comment.
      *  Either may be <code>null</code>
      */
-    private PV last_name_pv, last_date_pv, last_comment_pv;
+    private PV<VType, Object> last_name_pv, last_date_pv, last_comment_pv;
+    private volatile String last_name = null, last_date = null, last_comment = null;
 
     /** Initialize
      *  @param instance Instance (row) that holds this cell
@@ -71,42 +80,13 @@ public class Cell implements PVListener
      *  @param column   Column that holds this cell
      *                  and provides the macro-ized PV name
      *                  for all cells in the column
-     *  @throws Exception on error in macro substitution or PV creation
+     *  @throws Exception on error in macros
      */
     public Cell(final Instance instance, final Column column) throws Exception
     {
         this.instance = instance;
         this.column = column;
         pv_name = MacroUtil.replaceMacros(column.getPvWithMacros(), instance.getMacros());
-
-        //  Create the main PV and add listener
-        if (pv_name.length() <= 0)
-        	this.pv = null;
-        else
-        {
-	        this.pv = PVFactory.createPV(pv_name);
-	        pv.addListener(this);
-        }
-
-        // Create the optional comment pvs.
-        // No listener. Their value is fetched on demand.
-        String name=MacroUtil.replaceMacros(column.getNamePvWithMacros(), instance.getMacros());
-        if (name.length() <= 0)
-            last_name_pv = null;
-        else
-            last_name_pv = PVFactory.createPV(name);
-
-        name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
-        if (name.length() <= 0)
-            last_date_pv = null;
-        else
-            last_date_pv = PVFactory.createPV(name);
-
-        name = MacroUtil.replaceMacros(column.getCommentPvWithMacros(), instance.getMacros());
-        if (name.length() <= 0)
-            last_comment_pv = null;
-        else
-            last_comment_pv = PVFactory.createPV(name);
     }
 
     /** @return Instance (row) that contains this cell */
@@ -133,7 +113,7 @@ public class Cell implements PVListener
      */
     public boolean isPVWriteAllowed()
     {
-        return pv != null  &&  pv.isWriteAllowed();
+        return pv != null  && pv.isWriteConnected();
     }
 
     /** If the user entered a value, that's it.
@@ -200,18 +180,26 @@ public class Cell implements PVListener
             return;
         if (pv != null)
         {
-            original_pv_value = ValueUtil.getString(pv.getValue());
-        	pv.setValue(user_value);
+        	if (! isPVWriteAllowed())
+        		throw new Exception(pv.getName() + " is read-only");
+            original_pv_value = current_value;
+        	pv.write(user_value);
+        	// When PV is read-only, the pv.write() will already throw an
+        	// exception and the following is not reached.
+        	// Still, to be certain, check for errors once more:
+        	final Exception error = pv.lastWriteException();
+        	if (error != null)
+        		throw error;
         }
         if (last_name_pv != null)
         {
-            original_name_value = ValueUtil.getString(pv.getValue());
-            last_name_pv.setValue(user_name);
+            original_name_value = last_name;
+            last_name_pv.write(user_name);
         }
         if (last_date_pv != null)
         {
-            original_date_value = ValueUtil.getString(pv.getValue());
-            last_date_pv.setValue(date_format.format(new Date()));
+            original_date_value = last_date;
+            last_date_pv.write(date_format.format(new Date()));
         }
     }
 
@@ -221,11 +209,11 @@ public class Cell implements PVListener
     public void revertOriginalValue() throws Exception
     {
         if (pv != null  &&  original_pv_value != null)
-            pv.setValue(original_pv_value);
+            pv.write(original_pv_value);
         if (last_name_pv != null  &&  original_name_value != null)
-            last_name_pv.setValue(original_name_value);
+            last_name_pv.write(original_name_value);
         if (last_date_pv != null  &&  original_date_value != null)
-            last_date_pv.setValue(original_date_value);
+            last_date_pv.write(original_date_value);
     }
 
     /** Clear a user-specified value */
@@ -260,75 +248,150 @@ public class Cell implements PVListener
     /** @return User name for last change to the main PV */
     public String getLastUser()
     {
-        return getOptionalValue(last_name_pv);
+        return getOptionalValue(last_name);
     }
 
     /** @return Date of last change to the main PV */
     public String getLastDate()
     {
-        return getOptionalValue(last_date_pv);
+        return getOptionalValue(last_date);
     }
 
     /** @return Comment for last change to the main PV */
     public String getLastComment()
     {
-        return getOptionalValue(last_comment_pv);
+        return getOptionalValue(last_comment);
     }
 
     /** Get value of optional PV
      *  @param optional_pv PV to check, may be <code>null</code>
      *  @return Last value, never <code>null</code>
      */
-    private String getOptionalValue(final PV optional_pv)
+    private String getOptionalValue(final String string)
     {
-        if (optional_pv == null)
+        if (string == null  ||  string.isEmpty())
             return Messages.UnknownValue;
-        final IValue value = optional_pv.getValue();
-        if (value == null)
-            return Messages.UnknownValue;
-        return ValueUtil.getString(value);
+        return string;
     }
 
     /** Start the PV connection */
     public void start() throws Exception
     {
-    	if (pv != null)
-    		pv.start();
-        if (last_name_pv != null)
-            last_name_pv.start();
-        if (last_date_pv != null)
-            last_date_pv.start();
-        if (last_comment_pv != null)
-            last_comment_pv.start();
+        //  Create the main PV and add listener
+        if (pv_name.length() <= 0)
+            pv = null;
+        else
+        {
+        	final PVReaderListener<VType> read_listener = new PVReaderListener<VType>()
+            {
+                @Override
+                public void pvChanged(final PVReaderEvent<VType> event)
+                {
+                	final PVReader<VType> pv = event.getPvReader();
+                    final Exception error = pv.lastException();
+                    if (error != null)
+                    {
+                        logger.log(Level.WARNING, "PV Read error", error);
+                        current_value = null;
+                    }
+                    current_value = VTypeHelper.getString(pv.getValue());
+                    instance.getModel().fireCellUpdate(Cell.this);
+                }
+            };
+        	pv = PVManager.readAndWrite(vType(pv_name)).readListener(read_listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+        }
+
+        // Create the optional comment pvs.
+        String name=MacroUtil.replaceMacros(column.getNamePvWithMacros(), instance.getMacros());
+        if (name.length() <= 0)
+            last_name_pv = null;
+        else
+        {
+        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+			{
+				@Override
+				public void pvChanged(final PVReaderEvent<VType> event)
+				{
+                	final PVReader<VType> pv = event.getPvReader();
+                	final Exception error = pv.lastException();
+					if (error != null)
+					{
+						logger.log(Level.WARNING, "PV Read error", error);
+						last_name = null;
+					}
+					last_name = VTypeHelper.getString(pv.getValue());
+					instance.getModel().fireCellUpdate(Cell.this);
+				}
+			};
+			// No writeListener: Using SyncWrite, which will
+			// throw exceptions right away in saveUserValue()
+            last_name_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+        }
+        name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
+        if (name.length() <= 0)
+            last_date_pv = null;
+        else
+        {
+        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+            {
+                @Override
+				public void pvChanged(final PVReaderEvent<VType> event)
+                {
+                	final PVReader<VType> pv = event.getPvReader();
+                	final Exception error = pv.lastException();
+                    if (error != null)
+                    {
+                        logger.log(Level.WARNING, "PV Read error", error);
+                        last_date_pv = null;
+                    }
+                    last_date = VTypeHelper.getString(pv.getValue());
+                    instance.getModel().fireCellUpdate(Cell.this);
+                }
+            };
+            last_date_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+        }
+
+        name = MacroUtil.replaceMacros(column.getCommentPvWithMacros(), instance.getMacros());
+        if (name.length() <= 0)
+            last_comment_pv = null;
+        else
+        {
+        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+            {
+                @Override
+				public void pvChanged(final PVReaderEvent<VType> event)
+                {
+                	final PVReader<VType> pv = event.getPvReader();
+                	final Exception error = pv.lastException();
+                    if (error != null)
+                    {
+                        logger.log(Level.WARNING, "PV Read error", error);
+                        last_comment = null;
+                    }
+                    last_comment = VTypeHelper.getString(pv.getValue());
+                    instance.getModel().fireCellUpdate(Cell.this);
+                }
+            };
+            last_comment_pv = PVManager.readAndWrite(vType(name)).readListener(listener).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.5));
+        }
     }
 
     /** Stop the PV connection */
     public void stop()
     {
         if (last_comment_pv != null)
-            last_comment_pv.stop();
+            last_comment_pv.close();
         if (last_date_pv != null)
-            last_date_pv.stop();
+            last_date_pv.close();
         if (last_name_pv != null)
-            last_name_pv.stop();
+            last_name_pv.close();
         if (pv != null)
-        	pv.stop();
-    }
+        	pv.close();
 
-    // PVListener
-    @Override
-    public void pvDisconnected(final PV pv)
-    {
-        current_value = null;
-        instance.getModel().fireCellUpdate(this);
-    }
-
-    // PVListener
-    @Override
-    public void pvValueUpdate(final PV pv)
-    {
-        current_value = ValueUtil.getString(pv.getValue());
-        instance.getModel().fireCellUpdate(this);
+        last_comment_pv = null;
+        last_date_pv = null;
+        last_name_pv = null;
+        pv = null;
     }
 
     /** @return PV name */

@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.data.values.ITimestamp;
 import org.csstudio.logging.JMSLogMessage;
+import org.epics.util.time.Timestamp;
 
 /**
  * Snapshot of an {@link AlarmTreePV}.
@@ -36,7 +36,7 @@ public class PVSnapshot {
 	
     final private SeverityLevel current_severity, severity;
     final private String current_message, message, value;
-    final private ITimestamp timestamp;
+    final private Timestamp timestamp;
 	
     /**
      * Create {@link PVSnapshot} from an {@link AlarmTreePV}
@@ -57,7 +57,7 @@ public class PVSnapshot {
 		final SeverityLevel current_severity = pv.getCurrentSeverity();
 		final String current_message = pv.getCurrentMessage();
 		final String value = pv.getValue();
-		final ITimestamp timestamp = pv.getTimestamp();
+		final Timestamp timestamp = pv.getTimestamp();
 		
 		return new PVSnapshot(id, name, path, description, enabled, latching,
 				current_severity, current_message, severity, status, value,
@@ -75,7 +75,7 @@ public class PVSnapshot {
             final SeverityLevel severity, 
             final String message,
             final String value,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
 		this.id = id;
 		this.name = name;
@@ -164,7 +164,7 @@ public class PVSnapshot {
 	}
 
 	/** @return Time of alarm */
-	public ITimestamp getTimestamp() {
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 

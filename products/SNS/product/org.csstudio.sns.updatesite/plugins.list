@@ -26,6 +26,7 @@ org.csstudio.archive.reader.rdb.test/**
 org.csstudio.archive.writer/**
 org.csstudio.archive.writer.rdb/**
 org.csstudio.archive.writer.test/**
+org.csstudio.archive.vtype/**
 org.csstudio.auth/**
 org.csstudio.auth.ui/**
 org.csstudio.basic.epics.product/**
@@ -135,6 +136,7 @@ org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
+org.csstudio.utility.test/**
 org.csstudio.workspace/**
 org.epics.util/**
 org.hamcrest/**

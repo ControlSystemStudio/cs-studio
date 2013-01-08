@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.writer;
 
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** Interface for writing samples to an archive
  * 
@@ -35,7 +35,7 @@ public interface ArchiveWriter
 	 *          the data store, or the sample could not be added
 	 *          to the archive
 	 */
-	public void addSample(WriteChannel channel, IValue sample) throws Exception;
+	public void addSample(WriteChannel channel, VType sample) throws Exception;
 
 	/** Write all recently added samples to the archive.
 	 *

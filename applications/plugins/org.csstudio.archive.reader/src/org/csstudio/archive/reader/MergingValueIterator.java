@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.vtype.VType;
+import org.epics.util.time.Timestamp;
 
-/** Iterates several <code>ValueIterator</code> instances, merging
- *  the samples from them in time.
+/** Merge values from several <code>ValueIterator</code> based on time stamps
  *  @author Kay Kasemir
  */
 public class MergingValueIterator implements ValueIterator
@@ -20,24 +20,22 @@ public class MergingValueIterator implements ValueIterator
     final private ValueIterator iters[];
 
     /** The 'current' values of each <code>iter</code>. */
-    private IValue raw_data[];
+    private VType raw_data[];
 
-    private IValue value;
+    private VType value;
 
     /** Constructor.
      *  @param iters The 'base' iterators.
      *  @throws Exception on error in archive access
      */
-    public MergingValueIterator(ValueIterator iters[]) throws Exception
+    public MergingValueIterator(final ValueIterator... iters) throws Exception
     {
         this.iters = iters;
 
         // Get first sample from each base iterator
-        raw_data = new IValue[iters.length];
+        raw_data = new VType[iters.length];
         for (int i=0; i<iters.length; ++i)
-        {
             raw_data[i] = iters[i].hasNext() ? iters[i].next() :  null;
-        }
         fetchNext();
     }
 
@@ -47,14 +45,14 @@ public class MergingValueIterator implements ValueIterator
     private void fetchNext() throws Exception
     {
         // Find oldest time stamp
-        ITimestamp time = null;
+        Timestamp time = null;
         int index = -1;
         for (int i=0; i<raw_data.length; ++i)
         {
             if (raw_data[i] == null)
                 continue;
-            final ITimestamp sample_time = raw_data[i].getTime();
-            if (time == null  ||  sample_time.isLessThan(time))
+            final Timestamp sample_time = VTypeHelper.getTimestamp(raw_data[i]);
+            if (time == null  ||  sample_time.compareTo(time) < 0)
             {
                 time = sample_time;
                 index = i;
@@ -79,11 +77,11 @@ public class MergingValueIterator implements ValueIterator
 
     /** {@inheritDoc} */
     @Override
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {
         if (! hasNext())
             throw new IllegalStateException();
-        final IValue result = value;
+        final VType result = value;
         fetchNext();
         return result;
     }

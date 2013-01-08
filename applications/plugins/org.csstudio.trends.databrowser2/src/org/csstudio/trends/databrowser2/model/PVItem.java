@@ -7,6 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
+import static org.epics.util.time.TimeDuration.ofSeconds;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +20,18 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.vtype.VType;
 import org.w3c.dom.Element;
+
 
 /** Data Browser Model Item for 'live' PV.
  *  <p>
@@ -37,7 +44,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
-public class PVItem extends ModelItem implements PVListener
+public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
 {
     /** Historic and 'live' samples for this PV */
     final private PVSamples samples = new PVSamples();
@@ -47,10 +54,10 @@ public class PVItem extends ModelItem implements PVListener
         = new ArrayList<ArchiveDataSource>();
 
     /** Control system PV, set when running */
-    private PV pv = null;
+    private PVReader<List<VType>> pv = null;
 
     /** Most recently received value */
-    private volatile IValue current_value;
+    private volatile VType current_value;
 
     /** Scan period in seconds, &le;0 to 'monitor' */
     private double period;
@@ -289,10 +296,7 @@ public class PVItem extends ModelItem implements PVListener
         if (pv != null)
             throw new RuntimeException("Already started " + getName());
         this.scan_timer = timer;
-
-        pv = PVFactory.createPV(getResolvedName());
-        pv.addListener(this);
-        pv.start();
+        pv = PVManager.read(newValuesOf(vType(getResolvedName()))).timeout(ofSeconds(30.0)).readListener(this).maxRate(ofSeconds(0.1));
         // Log every received value?
         if (period <= 0.0)
             return;
@@ -302,8 +306,9 @@ public class PVItem extends ModelItem implements PVListener
             @Override
             public void run()
             {
-                Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), current_value });
-                logCurrentValue();
+                final VType value = current_value;
+                Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), value });
+                logValueAsNow(value);
             }
         };
         final long delay = (long) (period*1000);
@@ -321,8 +326,7 @@ public class PVItem extends ModelItem implements PVListener
             scanner.cancel();
             scanner = null;
         }
-        pv.removeListener(this);
-        pv.stop();
+        pv.close();
         pv = null;
     }
 
@@ -333,45 +337,48 @@ public class PVItem extends ModelItem implements PVListener
         return samples;
     }
 
-    // PVListener
-    @Override
-    public void pvDisconnected(final PV pv)
-    {
-        current_value = null;
-        // In 'monitor' mode, mark in live sample buffer
-        if (period <= 0)
-            logDisconnected();
-    }
-
-    // PVListener
-    @Override
+    /** {@inheritDoc} */
     @SuppressWarnings("nls")
-    public void pvValueUpdate(final PV pv)
+    @Override
+    public void pvChanged(final PVReaderEvent<List<VType>> event)
     {
-        final IValue value = pv.getValue();
-        // Cache most recent for 'scanned' operation
-        current_value = value;
-        // In 'monitor' mode, add to live sample buffer
-        if (period <= 0)
-        {
-            Activator.getLogger().log(Level.FINE, "PV {0} update {1}", new Object[] { getName(), value });
-            samples.addLiveSample(value);
-        }
-    }
+        final PVReader<List<VType>> pv = event.getPvReader();
+        // Check for error
+        final Exception error = pv.lastException();
+        if (error != null)
+            Activator.getLogger().log(Level.FINE, "PV " + pv.getName() + " error", error);
 
-    /** Add 'current' value to the live sample ring buffer,
-     *  using 'now' as time stamp.
-     */
-    private void logCurrentValue()
-    {
-        final IValue value = current_value;
-        if (value == null)
-        {
-            logDisconnected();
+        final List<VType> values = pv.getValue();
+        if (values == null)
+        {   // No current value
+            current_value = null;
+            // In 'monitor' mode, mark in live sample buffer
+            if (period <= 0)
+                logDisconnected();
             return;
         }
-        // Transform value to have 'now' as time stamp
-        samples.addLiveSample(ValueButcher.changeTimestampToNow(value));
+        else
+            for (VType value : values)
+            {
+                // Cache most recent for 'scanned' operation
+                current_value = value;
+                // In 'monitor' mode, add to live sample buffer
+                if (period <= 0)
+                {
+                    Activator.getLogger().log(Level.FINE, "PV {0} received {1}", new Object[] { getName(), value });
+                    samples.addLiveSample(value);
+                }
+            }
+    }
+
+    /** @param value Value to log with 'now' as time stamp */
+    private void logValueAsNow(final VType value)
+    {
+        if (value == null)
+            logDisconnected();
+        else
+            // Transform value to have 'now' as time stamp
+            samples.addLiveSample(VTypeHelper.transformTimestampToNow(value));
     }
 
     /** Add one(!) 'disconnected' sample */
@@ -383,9 +390,9 @@ public class PVItem extends ModelItem implements PVListener
             if (size > 0)
             {
                 final String last =
-                    samples.getSample(size - 1).getValue().getStatus();
+                    VTypeHelper.getMessage(samples.getSample(size - 1).getValue());
                 // Does last sample already have 'disconnected' status?
-                if (last != null && last.equals(Messages.Model_Disconnected))
+                if (Messages.Model_Disconnected.equals(last))
                     return;
             }
             samples.addLiveSample(new PlotSample(Messages.LiveData, Messages.Model_Disconnected));
@@ -397,7 +404,7 @@ public class PVItem extends ModelItem implements PVListener
      *  @param new_samples Historic data
      */
     synchronized public void mergeArchivedSamples(final String server_name,
-            final List<IValue> new_samples)
+            final List<VType> new_samples)
     {
         samples.mergeArchivedData(server_name, new_samples);
     }

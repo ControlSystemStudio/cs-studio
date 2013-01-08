@@ -7,26 +7,41 @@
  ******************************************************************************/
 package org.csstudio.archive.writer.rdb;
 
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.vtype.ArchiveVEnum;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVNumberArray;
+import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.writer.WriteChannel;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.epics.util.text.NumberFormats;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.ValueFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+//import org.junit.Ignore;
 
 /** JUnit test of the archive writer
+ * 
+ *  <p>Main purpose of these tests is to run in debugger, step-by-step,
+ *  so verify if correct RDB entries are made.
+ *  The sources don't include anything to check the raw RDB data.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class RDBArchiveWriterTest
 {
+	final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 	private RDBArchiveWriter writer = null;
 	private String name, array_name;
 
@@ -67,14 +82,15 @@ public class RDBArchiveWriterTest
 			return;
 		WriteChannel channel = writer.getChannel(name);
 		System.out.println(channel);
-		assertNotNull(channel);
-
+		assertThat(channel, not(nullValue()));
+		assertThat(name, equalTo(channel.getName()));
+		
 		if (array_name == null)
 			return;
 		channel = writer.getChannel(array_name);
 		System.out.println(channel);
-		assertNotNull(channel);
-
+		assertThat(channel, not(nullValue()));
+		assertThat(array_name, equalTo(channel.getName()));
 	}
 
 	@Test
@@ -84,14 +100,10 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double sample for channel " + name);
 		final WriteChannel channel = writer.getChannel(name);
-		final IValue sample;
-		sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
-				ValueFactory.createOKSeverity(), "OK",
-				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
-				IValue.Quality.Original,
-				new double[] { 3.14 });
-
-		writer.addSample(channel, sample);
+		// Write double
+		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
+		// .. double that could be int
+		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.00));
 		writer.flush();
 	}
 
@@ -102,14 +114,8 @@ public class RDBArchiveWriterTest
 			return;
 		System.out.println("Writing double array sample for channel " + array_name);
 		final WriteChannel channel = writer.getChannel(array_name);
-		final IValue sample;
-		sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
-				ValueFactory.createOKSeverity(), "OK",
-				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
-				IValue.Quality.Original,
-				new double[] { 3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-
-		writer.addSample(channel, sample);
+		writer.addSample(channel, new ArchiveVNumberArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
+				3.14, 6.28, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0));
 		writer.flush();
 	}
 
@@ -119,31 +125,17 @@ public class RDBArchiveWriterTest
 		if (writer == null)
 			return;
 		final WriteChannel channel = writer.getChannel(name);
-		IValue sample;
 
-		// This sets enumerated meta data
-		sample = ValueFactory.createEnumeratedValue(TimestampFactory.now(),
-			ValueFactory.createOKSeverity(), "OK",
-			ValueFactory.createEnumeratedMetaData(new String[] { "Hello", "Goodbye" }),
-			IValue.Quality.Original,
-			new int[] { 1 });
-		writer.addSample(channel, sample);
-
-		// This leaves the (enumerated) meta data untouched
-		sample = ValueFactory.createStringValue(TimestampFactory.now(),
-				ValueFactory.createOKSeverity(), "OK",
-				IValue.Quality.Original,
-				new String[] { "Hello" });
-		writer.addSample(channel, sample);
-
-		// Sets numeric meta data
-		sample = ValueFactory.createLongValue(TimestampFactory.now(),
-				ValueFactory.createOKSeverity(), "OK",
-				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
-				IValue.Quality.Original,
-				new long[] { 42 });
-		writer.addSample(channel, sample);
-
+		// Enum, sets enumerated meta data
+		writer.addSample(channel, new ArchiveVEnum(Timestamp.now(), AlarmSeverity.MINOR, "OK", Arrays.asList("Zero", "One"), 1));
+		writer.flush();
+		
+		// Writing string leaves the enumerated meta data untouched
+		writer.addSample(channel, new ArchiveVString(Timestamp.now(), AlarmSeverity.MAJOR, "OK", "Hello"));
+		writer.flush();
+		
+		// Integer, sets numeric meta data
+		writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.MINOR, "OK", display, 42));
 		writer.flush();
 	}
 
@@ -166,14 +158,14 @@ public class RDBArchiveWriterTest
 	 * but overall time is in RDB, not Java.
 	 *
 	 *
-	 * MySQL Test Results:
+	 * MySQL Test Results (same w/ original IValue and update to VType):
 	 *
 	 * iMac8,1    2.8GHz Intel Core 2 Duo, 4GB RAM
 	 *
 	 * Without rewriteBatchedStatements=true:  ~7000 samples/sec
 	 * With rewriteBatchedStatements=true   : ~21000 samples/sec
 	 */
- 	@Ignore
+ 	// @Ignore
 	@Test
 	public void testWriteSpeedDouble() throws Exception
 	{
@@ -182,30 +174,21 @@ public class RDBArchiveWriterTest
 
 		System.out.println("Write test: Adding samples to " + name + " for " + TEST_DURATION_SECS + " secs");
 		final WriteChannel channel = writer.getChannel(name);
-		final INumericMetaData meta =
-			ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u.");
 
 		long count = 0;
-		final BenchmarkTimer timer = new BenchmarkTimer();
 		final long start = System.currentTimeMillis();
 		final long end = start + TEST_DURATION_SECS*1000L;
 		do
 		{
 			++count;
-			final IValue sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
-				ValueFactory.createOKSeverity(), "OK",
-				meta,
-				IValue.Quality.Original,
-				new double[] { count });
-			writer.addSample(channel, sample);
+			writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
 			if (count % FLUSH_COUNT == 0)
 				writer.flush();
 		}
 		while (System.currentTimeMillis() < end);
 		writer.flush();
-		timer.stop();
 
-		System.out.println("Wrote " + count + " samples in " + timer);
-		System.out.println(count / timer.getSeconds() + " samples/sec");
+		System.out.println("Wrote " + count + " samples, i.e. "
+				         + ((double)count / TEST_DURATION_SECS) + " samples/sec.");
 	}
 }

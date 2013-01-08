@@ -11,19 +11,21 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oracle.jdbc.OracleTypes;
 
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.ArchiveVString;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.
@@ -36,7 +38,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     final private String stored_procedure;
 
     /** Values received from the stored procedure */
-    private IValue values[] = null;
+    private List<VType> values = null;
 
     /** Iteration index into <code>values</code>, points to what
      *  <code>next()</code> will return or -1
@@ -54,7 +56,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      */
     public StoredProcedureValueIterator(final RDBArchiveReader reader,
             final String stored_procedure,
-            final int channel_id, final ITimestamp start, final ITimestamp end,
+            final int channel_id, final Timestamp start, final Timestamp end,
             final int count) throws Exception
     {
         super(reader, channel_id);
@@ -68,7 +70,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      *  @param count Desired value count
      *  @throws Exception on error
      */
-    private void executeProcedure(final ITimestamp start, final ITimestamp end,
+    private void executeProcedure(final Timestamp start, final Timestamp end,
             final int count) throws Exception
     {
         final String sql;
@@ -97,8 +99,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         	if (dialect == RDBUtil.Dialect.MySQL)
         	{	 //MySQL
         		 statement.setInt(1, channel_id);
-                 statement.setTimestamp(2, start.toSQLTimestamp());
-                 statement.setTimestamp(3, end.toSQLTimestamp());
+                 statement.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
+                 statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
                  statement.setInt(4, count);
                  result = statement.executeQuery();
         	}
@@ -106,8 +108,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         	{	//ORACLE
         		statement.registerOutParameter(1, OracleTypes.CURSOR);
                 statement.setInt(2, channel_id);
-                statement.setTimestamp(3, start.toSQLTimestamp());
-                statement.setTimestamp(4, end.toSQLTimestamp());
+                statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(start));
+                statement.setTimestamp(4, TimestampHelper.toSQLTimestamp(end));
                 statement.setInt(5, count);
                 statement.setFetchDirection(ResultSet.FETCH_FORWARD);
                 statement.setFetchSize(1000);
@@ -125,7 +127,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             else
                 values = decodeSampleTable(result);
             // Initialize iterator for first value
-            if (values.length > 0)
+            if (values.size() > 0)
                 index = 0;
             // else: No data, leave as -1
         }
@@ -149,13 +151,9 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      *  @return IValue array of samples
      *  @throws Exception on error
      */
-    private IValue[] decodeOptimizedTable(final ResultSet result) throws Exception
+    private List<VType> decodeOptimizedTable(final ResultSet result) throws Exception
     {
-        final ArrayList<IValue> tmp_values = new ArrayList<IValue>();
-
-        // Need numeric meta data or nothing
-        final INumericMetaData meta = (this.meta instanceof INumericMetaData) ?
-                (INumericMetaData) this.meta : null;
+        final List<VType> values = new ArrayList<VType>();
 
         // Row with min/max/average data:
         // WB: 1, SMPL_TIME: 2010/01/22 21:07:18.772633666, SEVERITY_ID: null, STATUS_ID: null, MIN_VAL: 8.138729867823713E-8, MAX_VAL: 6.002717327646678E-7, AVG_VAL: 8.240168908036992E-8, STR_VAL: null, CNT: 3611
@@ -165,15 +163,15 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         while (result.next())
         {
             // Time stamp
-            final ITimestamp time = TimestampFactory.fromSQLTimestamp(result.getTimestamp(2));
+            final Timestamp time = TimestampHelper.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
-            ISeverity severity = reader.getSeverity(result.getInt(3));
+            AlarmSeverity severity = reader.getSeverity(result.getInt(3));
             final String status;
             if (result.wasNull())
             {
-                severity = ValueFactory.createOKSeverity();
-                status = severity.toString();
+                severity = AlarmSeverity.NONE;
+                status = "";
             }
             else
             {
@@ -182,28 +180,27 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             }
 
             // WB==-1 indicates a String sample
-            final IValue value;
+            final VType value;
             if (result.getInt(1) < 0)
-                value = ValueFactory.createStringValue(time, severity, status,
-                        IValue.Quality.Original, new String[] { result.getString(8) });
+                value = new ArchiveVString(time, severity, status, result.getString(8));
             else
             {   // Only one value within averaging bucket?
                 final int cnt = result.getInt(9);
-                if (cnt == 1)
-                    value = ValueFactory.createDoubleValue(time, severity,
-                            status, meta, IValue.Quality.Original,
-                            new double[] { result.getDouble(7) });
+                final double val_or_avg = result.getDouble(7);
+				if (cnt == 1)
+                    value = new ArchiveVNumber(time, severity, status, display, val_or_avg);
                 else // Decode min/max/average
-                    value = ValueFactory.createMinMaxDoubleValue(time, severity,
-                            status, meta, IValue.Quality.Interpolated,
-                            new double[] { result.getDouble(7) },
-                            result.getDouble(5),
-                            result.getDouble(6));
+                {
+                    final double min = result.getDouble(5);
+					final double max = result.getDouble(6);
+					final double stddev = 0.0; // not known
+					value = new ArchiveVStatistics(time, severity,
+                            status, display,
+                            val_or_avg, min, max, stddev, cnt);
+                }
             }
-            tmp_values.add(value);
+            values.add(value);
         }
-        // Convert to plain array
-        final IValue values[] = tmp_values.toArray(new IValue[tmp_values.size()]);
         return values;
     }
 
@@ -212,15 +209,15 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      *  @return IValue array of samples
      *  @throws Exception on error, including cancellation
      */
-    private IValue[] decodeSampleTable(final ResultSet result) throws Exception
+    private List<VType> decodeSampleTable(final ResultSet result) throws Exception
     {
-        final ArrayList<IValue> tmp_values = new ArrayList<IValue>();
+        final ArrayList<VType> values = new ArrayList<VType>();
         while (result.next())
         {
-            final IValue value = decodeSampleTableValue(result);
-            tmp_values.add(value);
+            final VType value = decodeSampleTableValue(result);
+            values.add(value);
         }
-        return tmp_values.toArray(new IValue[tmp_values.size()]);
+        return values;
     }
 
     /** {@inheritDoc} */
@@ -232,11 +229,11 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
 
     /** {@inheritDoc} */
     @Override
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {
-        final IValue result = values[index];
+        final VType result = values.get(index);
         ++index;
-        if (index >= values.length)
+        if (index >= values.size())
             index = -1;
         return result;
     }

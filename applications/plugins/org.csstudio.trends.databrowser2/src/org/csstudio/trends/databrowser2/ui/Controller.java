@@ -15,9 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.archive.reader.UnknownChannelException;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
@@ -49,6 +48,7 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.epics.util.time.Timestamp;
 
 /** Controller that interfaces the {@link Model} with the {@link Plot}:
  *  <ul>
@@ -203,8 +203,8 @@ public class Controller implements ArchiveFetchJobListener
                         return;
                     }
                 }
-                final ITimestamp start_time = TimestampFactory.fromMillisecs(start_ms);
-                final ITimestamp end_time = TimestampFactory.fromMillisecs(end_ms);
+                final Timestamp start_time = TimestampHelper.fromMillisecs(start_ms);
+                final Timestamp end_time = TimestampHelper.fromMillisecs(end_ms);
                 // Update model's time range
                 model.setTimerange(start_time, end_time);
                 // Controller's ModelListener will fetch new archived data
@@ -422,8 +422,8 @@ public class Controller implements ArchiveFetchJobListener
                 if (model.isScrollEnabled())
                     return; // no, scrolling will handle that
                 // Yes, since the time axis is currently 'fixed'
-                final long start_ms = (long) (model.getStartTime().toDouble()*1000);
-                final long end_ms = (long) (model.getEndTime().toDouble()*1000);
+                final long start_ms = TimestampHelper.toMillisecs(model.getStartTime());
+                final long end_ms = TimestampHelper.toMillisecs(model.getEndTime());
                 plot.setTimeRange(start_ms, end_ms);
             }
 
@@ -691,7 +691,7 @@ public class Controller implements ArchiveFetchJobListener
 				continue;
 			final Axis axis = yaxes.get(axis_index);
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
+        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
         			info.getValue());
 
         	//ADD Laurent PHILIPPE
@@ -740,8 +740,8 @@ public class Controller implements ArchiveFetchJobListener
      */
     private void getArchivedData()
     {
-        final ITimestamp start = model.getStartTime();
-        final ITimestamp end = model.getEndTime();
+        final Timestamp start = model.getStartTime();
+        final Timestamp end = model.getEndTime();
         for (int i=0; i<model.getItemCount(); ++i)
             getArchivedData(model.getItem(i), start, end);
     }
@@ -752,7 +752,7 @@ public class Controller implements ArchiveFetchJobListener
      *  @param end End time
      */
     private void getArchivedData(final ModelItem item,
-            final ITimestamp start, final ITimestamp end)
+            final Timestamp start, final Timestamp end)
     {
         // Only useful for PVItems with archive data source
         if (!(item instanceof PVItem))

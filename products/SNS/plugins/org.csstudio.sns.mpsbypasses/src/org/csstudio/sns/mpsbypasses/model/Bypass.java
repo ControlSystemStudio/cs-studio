@@ -1,16 +1,17 @@
 package org.csstudio.sns.mpsbypasses.model;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VType;
 import org.epics.util.time.TimeDuration;
 
 /** Info about one Bypass
@@ -145,39 +146,41 @@ public class Bypass
 		if (pv_basename == null)
 			return;
 
-        jumper_pv = PVManager.read(vType(pv_basename + "_sw_jump_status")).maxRate(TimeDuration.ofSeconds(0.5));
-        mask_pv = PVManager.read(vType(pv_basename + "_swmask")).maxRate(TimeDuration.ofSeconds(0.5));
-
-		jumper_pv.addPVReaderListener(new PVReaderListener()
+		PVReaderListener<VType> listener = new PVReaderListener<VType>()
         {
             @Override
-            public void pvChanged()
+            public void pvChanged(final PVReaderEvent<VType> event)
             {
-                final Exception error = jumper_pv.lastException();
+            	final PVReader<VType> pv = event.getPvReader();
+                final Exception error = pv.lastException();
                 if (error != null)
                 {
                     logger.log(Level.WARNING, "Jumper PV Error", error);
                     updateState(null, mask);
                 }
                 else
-                    updateState(jumper_pv.getValue(), mask);
+                    updateState(pv.getValue(), mask);
             }
-        });
-		mask_pv.addPVReaderListener(new PVReaderListener()
+        };
+		jumper_pv = PVManager.read(vType(pv_basename + "_sw_jump_status")).readListener(listener).maxRate(TimeDuration.ofSeconds(0.5));
+
+		listener = new PVReaderListener<VType>()
         {
             @Override
-            public void pvChanged()
+            public void pvChanged(PVReaderEvent<VType> event)
             {
-                final Exception error = mask_pv.lastException();
+            	final PVReader<VType> pv = event.getPvReader();
+                final Exception error = pv.lastException();
                 if (error != null)
                 {
                     logger.log(Level.WARNING, "Mask PV Error", error);
                     updateState(jumper, null);
                 }
                 else
-                    updateState(jumper, mask_pv.getValue());
+                    updateState(jumper, pv.getValue());
             }
-        });
+        };
+		mask_pv = PVManager.read(vType(pv_basename + "_swmask")).readListener(listener).maxRate(TimeDuration.ofSeconds(0.5));
 	}
 
 	/** Disconnect PVs */

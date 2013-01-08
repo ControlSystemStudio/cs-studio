@@ -18,11 +18,13 @@ import java.util.regex.Pattern;
 public class FunctionParser {
 
     static final Pattern doubleParameter = Pattern.compile("\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*");
+    static final Pattern stringParameter = Pattern.compile("\\s*(\".*?\")\\s*");
     static final Pattern commaSeparatedDoubles = Pattern.compile(doubleParameter + "(," + doubleParameter + ")*");
+    static final Pattern commaSeparatedStrings = Pattern.compile(stringParameter + "(," + stringParameter + ")*");
     static final Pattern functionAndParameter = Pattern.compile("(\\w+)(\\(((" + commaSeparatedDoubles + ")?)\\))?");
     static final Pattern functionAndStringParameter = Pattern.compile("(\\w+)(\\((\".*\")\\))?");
     static final Pattern pvNameAndParameter = Pattern.compile("([^\\(]+)(\\(((" + commaSeparatedDoubles + ")?)\\))?");
-    static final Pattern pvNameAndStringParameter = Pattern.compile("([^\\(]+)(\\((\".*\")\\))?");
+    static final Pattern pvNameAndStringParameter = Pattern.compile("([^\\(]+)(\\((" + commaSeparatedStrings + ")\\))?");
  
     /**
      * Parses a comma separated list of arguments and returns them as a list.
@@ -49,6 +51,18 @@ public class FunctionParser {
             String parameter = matcher.group();
             Double value = Double.parseDouble(parameter);
             parameters.add(value);
+        }
+
+        return parameters;
+    }
+    
+    private static List<Object> parseStringParameters(String string) {
+        // Parse parameters
+        Matcher matcher = stringParameter.matcher(string);
+        List<Object> parameters = new ArrayList<Object>();
+        while (matcher.find()) {
+            String parameter = matcher.group();
+            parameters.add(parameter.substring(1, parameter.length() - 1));
         }
 
         return parameters;
@@ -107,7 +121,9 @@ public class FunctionParser {
             List<Object> parameters = new ArrayList<Object>();
             parameters.add(matcher.group(1));
             String quotedString = matcher.group(3);
-            parameters.add(quotedString.substring(1, quotedString.length() - 1));
+            
+            parameters.addAll(parseStringParameters(quotedString));
+            //parameters.add(quotedString.substring(1, quotedString.length() - 1));
             return parameters;
         }
 

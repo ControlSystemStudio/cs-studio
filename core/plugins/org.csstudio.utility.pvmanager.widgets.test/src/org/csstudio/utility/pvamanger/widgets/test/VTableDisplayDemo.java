@@ -1,11 +1,11 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.column;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.column;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vStringConstants;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vTable;
+import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VTable;
+import org.epics.vtype.VTable;
 
 public class VTableDisplayDemo extends ViewPart {
 
@@ -49,14 +50,15 @@ public class VTableDisplayDemo extends ViewPart {
 		List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
 		pv = PVManager.read(vTable(column("Names", vStringConstants(names)),
 				column("Ramps", latestValueOf(vDoubles(ramps))),
-				column("Sines", latestValueOf(vDoubles(sines))))).notifyOn(SWTUtil.swtThread()).every(ms(250));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				table.setVTable(pv.getValue());
-			}
-		});
+				column("Sines", latestValueOf(vDoubles(sines)))))
+				.readListener(new PVReaderListener<VTable>() {
+					@Override
+					public void pvChanged(PVReaderEvent<VTable> event) {
+						table.setVTable(pv.getValue());
+					}
+				})
+				.notifyOn(SWTUtil.swtThread())
+				.maxRate(ofMillis(250));
 
 		//createActions();
 		//initializeToolBar();
