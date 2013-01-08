@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.6"?><target name="RAP" sequenceNumber="107">
+<?pde version="3.6"?><target name="RAP" sequenceNumber="113">
 <locations>
-<location path="/opt/codac/css/css/plugins" type="Directory"/>
 <location path="/home/ITER/dequidd/rap-runtime-1.5.1-R-20120917-1116" type="Directory"/>
-<location path="/home/ITER/dequidd/workspaces/css-dev/cs-studio-git/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
+<location path="/opt/codac/css/css/plugins" type="Directory"/>
+<location path="/home/ITER/dequidd/workspaces/css-dev/cs-studio/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
 </locations>
 <includeBundles>
 <plugin id="org.csstudio.debugging.rdbshell"/>

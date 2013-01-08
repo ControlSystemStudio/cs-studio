@@ -30,6 +30,9 @@
       <group path="page-content/bottom-left">
          <extension id="org.csstudio.alarm.beast.notifier" importance="medium"/>
       </group>
+      <group path="page-content/bottom-right">
+         <extension id="org.csstudio.display.pace" importance="medium"/>
+      </group>
    </page>
    <page id="samples">
       <group path="page-content/top-left">

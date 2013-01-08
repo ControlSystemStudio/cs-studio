@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-    <extensionContent id="org.csstudio.trends.databrowser" name="Databrowser" style="intro.css" path="firststeps/@">
+    <extensionContent id="org.csstudio.trends.databrowser" name="Databrowser" style="db_intro.css" path="firststeps/@">
         <group id="content-group" style-id="content-group">
         
             <!-- Links to Cheat Sheets require org.eclipse.platform,
