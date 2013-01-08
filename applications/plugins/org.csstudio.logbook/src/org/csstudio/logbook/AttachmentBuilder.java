@@ -96,7 +96,8 @@ public class AttachmentBuilder {
 
     /**
      * 
-     * @param inputStream - InputStream to the 
+     * @param inputStream
+     *            - InputStream to the
      * @return AttachmentBuilder
      */
     public AttachmentBuilder inputStream(InputStream inputStream) {
@@ -116,8 +117,8 @@ public class AttachmentBuilder {
      * @throws IOException
      */
     Attachment build() throws IOException {
-	return new AttachmentImpl(new ByteArrayInputStream(byteArray), fileName, contentType,
-		thumbnail, fileSize);
+	return new AttachmentImpl(byteArray, fileName, contentType, thumbnail,
+		fileSize);
     }
 
     /**
@@ -134,11 +135,11 @@ public class AttachmentBuilder {
 	private Long fileSize;
 	private byte[] byteArray;
 
-	public AttachmentImpl(InputStream inputStream, String fileName,
+	public AttachmentImpl(byte[] byteArray, String fileName,
 		String contentType, Boolean thumbnail, Long fileSize)
 		throws IOException {
 	    super();
-	    byteArray = read2byteArray(inputStream);
+	    this.byteArray = byteArray;
 	    this.fileName = fileName;
 	    this.contentType = contentType;
 	    this.thumbnail = thumbnail;
@@ -179,6 +180,7 @@ public class AttachmentBuilder {
 	while ((bytesRead = input.read(buffer)) != -1) {
 	    output.write(buffer, 0, bytesRead);
 	}
+	input.close();
 	return output.toByteArray();
     }
 
