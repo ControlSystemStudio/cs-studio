@@ -105,7 +105,7 @@ public class ImageStackWidget extends Composite {
 	Label lblImages = new Label(this, SWT.NONE);
 	lblImages.setText("Images:");
 		
-			tableViewer = new TableViewer(this, SWT.NONE);
+			tableViewer = new TableViewer(this, SWT.DOUBLE_BUFFERED);
 			table = tableViewer.getTable();
 			table.addMouseTrackListener(new MouseTrackAdapter() {
 				@Override

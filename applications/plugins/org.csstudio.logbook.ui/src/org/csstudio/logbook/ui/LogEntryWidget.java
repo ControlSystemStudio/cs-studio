@@ -138,7 +138,7 @@ public class LogEntryWidget extends Composite {
 
 	errorBar = new ErrorBar(this, SWT.NONE);
 
-	composite = new Composite(this, SWT.NONE);
+	composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
 	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 		1);
 	gd_composite.heightHint = 500;
@@ -192,12 +192,13 @@ public class LogEntryWidget extends Composite {
 	label_horizontal.setCursor(Display.getCurrent().getSystemCursor(
 		SWT.CURSOR_SIZENS));
 	FormData fd_label_horizontal = new FormData();
-	fd_label_horizontal.top = new FormAttachment(20);
+	fd_label_horizontal.top = new FormAttachment(20, 50);
 	fd_label_horizontal.right = new FormAttachment(label_vertical, 2);
 	fd_label_horizontal.left = new FormAttachment(0, 5);
 	label_horizontal.setLayoutData(fd_label_horizontal);
 
-	text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+	text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP
+		| SWT.DOUBLE_BUFFERED);
 	text.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(FocusEvent e) {
@@ -276,7 +277,8 @@ public class LogEntryWidget extends Composite {
 	lblLogbooks.setLayoutData(fd_lblLogbooks);
 	lblLogbooks.setText("Logbooks:");
 
-	logbookList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
+	logbookList = new List(composite, SWT.BORDER | SWT.V_SCROLL
+		| SWT.DOUBLE_BUFFERED);
 	FormData fd_logbookList = new FormData();
 	fd_logbookList.left = new FormAttachment(label_vertical, 2);
 	fd_logbookList.right = new FormAttachment(100, -5);
@@ -323,7 +325,8 @@ public class LogEntryWidget extends Composite {
 	lblTags.setLayoutData(fd_lblTags);
 	lblTags.setText("Tags:");
 
-	tagList = new List(composite, SWT.BORDER);
+	tagList = new List(composite, SWT.BORDER | SWT.V_SCROLL
+		| SWT.DOUBLE_BUFFERED);
 	FormData fd_tagList = new FormData();
 	fd_tagList.left = new FormAttachment(label_vertical, 2);
 	fd_tagList.top = new FormAttachment(lblTags, 2);
@@ -361,7 +364,7 @@ public class LogEntryWidget extends Composite {
 	fd_btnAddTags.right = new FormAttachment(100, -5);
 	btnAddTags.setLayoutData(fd_btnAddTags);
 
-	tabFolder = new CTabFolder(composite, SWT.BORDER);
+	tabFolder = new CTabFolder(composite, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 	FormData fd_tabFolder = new FormData();
 	fd_tabFolder.top = new FormAttachment(label_horizontal, 2);
 	fd_tabFolder.right = new FormAttachment(label_vertical, -2);
@@ -653,7 +656,10 @@ public class LogEntryWidget extends Composite {
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
-	    text.setSize(text.getSize().x, text.getLineCount()*text.getLineHeight());
+//	    FormData fd = (FormData) label_horizontal.getLayoutData();
+//	    fd.top = new FormAttachment(20,
+//		    60 + (text.getLineCount() * text.getLineHeight()));
+//	    label_horizontal.setLayoutData(fd);
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
@@ -700,7 +706,6 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	}
-
 	composite.layout();
     }
 
