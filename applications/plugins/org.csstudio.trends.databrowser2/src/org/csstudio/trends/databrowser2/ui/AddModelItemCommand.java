@@ -59,7 +59,9 @@ public class AddModelItemCommand implements IUndoableCommand
             else
                 item.useDefaultArchiveDataSources();
             axis.setName(item.getDisplayName());
+            axis.setVisible(true);
             item.setAxis(axis);
+            item.setColor(axis.getColor());
         }
         catch (Exception ex)
         {
@@ -92,7 +94,9 @@ public class AddModelItemCommand implements IUndoableCommand
         {
             item = new FormulaItem(formula_name, "0", new FormulaInput[0]); //$NON-NLS-1$
             axis.setName(item.getDisplayName());
+            axis.setVisible(true);
             item.setAxis(axis);
+            item.setColor(axis.getColor());
         }
         catch (Exception ex)
         {
