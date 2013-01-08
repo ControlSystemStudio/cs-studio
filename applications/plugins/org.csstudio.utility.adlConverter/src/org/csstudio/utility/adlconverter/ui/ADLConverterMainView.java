@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.ui;
 
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -35,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.adlconverter.Activator;
+import org.csstudio.utility.adlconverter.fpcreator.Creator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.DebugHelper;
@@ -222,6 +222,11 @@ public class ADLConverterMainView extends ViewPart {
 		rowData = new RowData(80, 25);
 		convertButton.setLayoutData(rowData);
 
+		final Button generateFpButton = new Button(buttonComposite, SWT.PUSH);
+		generateFpButton.setText("Faceplates");
+		rowData = new RowData(80, 25);
+		generateFpButton.setLayoutData(rowData);
+		
 		// Listener
 		openSourceButton.addSelectionListener(new SelectionAdapter() {
 
@@ -544,6 +549,16 @@ public class ADLConverterMainView extends ViewPart {
 				job.schedule();
 			}
 		});
+
+		generateFpButton.addSelectionListener(new SelectionAdapter() {
+		    
+		    @Override
+		    public void widgetSelected(final SelectionEvent e) {
+		        Creator.createDisplays();
+		    }
+		    
+		});
+		
 	}
 
 	private void makeMenu() {
