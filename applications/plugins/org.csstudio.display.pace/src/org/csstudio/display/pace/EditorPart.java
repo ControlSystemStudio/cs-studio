@@ -212,9 +212,22 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             try
             {
                 model.saveUserValues(System.getenv("user.name")); //$NON-NLS-1$
+                model.clearUserValues();
             }
             catch (Exception save_ex)
             {
+            	// On error, restore the original values
+                try
+                {
+                    model.revertOriginalValues();
+                }
+                catch (Exception ignore)
+                {
+                    // Since saving didn't work, restoral will also fail.
+                    // Hopefully those initial PVs that did get updated will
+                    // also be restored...
+                }
+                
                 MessageDialog.openError(shell, Messages.SaveError,
                         NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
             }

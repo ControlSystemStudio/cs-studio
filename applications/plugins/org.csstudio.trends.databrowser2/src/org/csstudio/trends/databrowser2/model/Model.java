@@ -542,6 +542,14 @@ public class Model
         // Notify listeners of removed item
         for (ModelListener listener : listeners)
             listener.itemRemoved(item);
+        		
+        // Remove axis if unused
+		AxisConfig axis = item.getAxis();
+		item.setAxis(null);
+		if (countActiveItemsOnAxis(axis) == 0) {
+			removeAxis(axis);
+	        fireAxisChangedEvent(null);
+		}
     }
 
     /** @return Period in seconds for scrolling or refreshing */

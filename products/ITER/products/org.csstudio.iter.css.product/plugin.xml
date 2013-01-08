@@ -106,31 +106,5 @@
             content="intro/samples.xml">
       </configExtension>
    </extension>
-   
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc/toc.xml"
-            primary="true">
-      </toc>
-      <toc
-            file="toc/tocreference.xml">
-      </toc>
-      <toc
-            file="toc/tocsamples.xml">
-      </toc>
-      <toc
-            file="toc/toctasks.xml">
-      </toc>
-      <toc
-            file="toc/tocconcepts.xml">
-      </toc>
-      <toc
-            file="toc/tocgettingstarted.xml">
-      </toc>
-      <toc
-            file="toc/tochardware.xml">
-      </toc>
-   </extension>
 
 </plugin>

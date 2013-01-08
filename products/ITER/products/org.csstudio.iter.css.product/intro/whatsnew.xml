@@ -4,7 +4,7 @@
 		<group id="content-group" style-id="content-group">
 			<link id="iterlogo" label="Latest Release of CODAC Core System" style-id="content-link"
 			      url="http://org.eclipse.ui.intro/openBrowser?url=file:///opt/codac/doc/html/rel-notes.html" >
-			  <text>Find out about the Latest Release on the ITER CODAC Core System web page</text>
+			  <text>Find out about the Latest Release on the ITER CODAC Core System web page.</text>
 			</link>
 		</group>
 	</extensionContent>

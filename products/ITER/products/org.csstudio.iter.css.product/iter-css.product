@@ -167,6 +167,7 @@ of the distribution package.
       <plugin id="org.csstudio.swt.xygraph.rcp" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
+      <plugin id="org.csstudio.trends.databrowser2.rcp"/>
       <plugin id="org.csstudio.ui.help"/>
       <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.ui.menu.app"/>
@@ -272,7 +273,6 @@ of the distribution package.
       <plugin id="org.eclipse.ui.views.properties.tabbed"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
-      <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
