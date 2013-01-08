@@ -10,14 +10,17 @@ package org.csstudio.display.pace;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.display.pace.gui.GUI;
 import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
-import org.csstudio.logbook.ILogbook;
-import org.csstudio.logbook.LogbookFactory;
+import org.csstudio.logbook.LogEntry;
+import org.csstudio.logbook.LogEntryBuilder;
+import org.csstudio.logbook.LogbookBuilder;
+import org.csstudio.logbook.LogbookClient;
+import org.csstudio.logbook.LogbookClientFactory;
+import org.csstudio.logbook.LogbookClientManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -34,8 +37,6 @@ import org.eclipse.ui.PartInitException;
 /** Eclipse EditorPart for the PACE Model and GUI
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *
- *      reviewed by Delphy 01/28/09
  */
 public class EditorPart extends org.eclipse.ui.part.EditorPart
     implements ModelListener
@@ -200,9 +201,10 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         // Ideally, we actually have ELog support.
         // But for sites without that, it displays a simple confirmation
         // dialog
+        final LogbookClientFactory log_client_factory;
         try
         {
-            LogbookFactory.getInstance();
+            log_client_factory = LogbookClientManager.getLogbookClientFactory();
         }
         catch (Exception ex)
         {
@@ -224,63 +226,55 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         try
         {
             final String title = NLS.bind(Messages.ELogTitleFmt, model.getTitle());
-            final ElogDialog dialog = new ElogDialog(shell,
-                    Messages.SaveTitle, title,
-                    changes.toString(), null)
+            final ElogDialog dialog = new ElogDialog(shell, Preferences.getDefaultLogbook(), title, changes)
             {
-                // Save changed values, make ELog entry
                 @Override
-                public void makeElogEntry(String logbook_name, String user,
-                        String password, String title, String body, String images[])
-                        throws Exception
+                public void save(final String user, final String password,
+                        final String logbook, final String title, final String body) throws Exception
                 {
                     // The whole elog-and-pv-update should be handled
                     // as a transaction that either succeeds or fails
                     // as a whole.
 
                     // Check if we can connect to the logbook (user, password)
-                    final ILogbook logbook = getLogbook_factory().connect(logbook_name, user, password);
+                    final LogbookClient client = log_client_factory.getClient(user, password);
                     try
-                    {
-                        try
-                        {   // Change PVs.
-                            model.saveUserValues(user);
-                        }
-                        catch (Exception ex)
-                        {   // At least some saves failed, to revert
-                            try
-                            {
-                                model.revertOriginalValues();
-                            }
-                            catch (Exception ignore)
-                            {
-                                // Since saving didn't work, restoral will also fail.
-                                // Hopefully those initial PVs that did get updated will
-                                // also be restored...
-                            }
-
-                            // Update error to be more specific, displayed by ELog dialog
-                            throw new Exception(NLS.bind(Messages.PVWriteErrorFmt, ex.getMessage()));
-                        }
-
-                        try
-                        {   // Then make elog entry.
-                            logbook.createEntry(title, body, images);
-                            model.clearUserValues();
-                        }
-                        catch (Exception ex)
-                        {   // On error, restore the original values
-                            model.revertOriginalValues();
-                            throw ex;
-                        }
+                    {   // Change PVs.
+                        model.saveUserValues(user);
                     }
-                    finally
-                    {
-                        logbook.close();
+                    catch (Exception ex)
+                    {   // At least some saves failed, to revert
+                        try
+                        {
+                            model.revertOriginalValues();
+                        }
+                        catch (Exception ignore)
+                        {
+                            // Since saving didn't work, restoral will also fail.
+                            // Hopefully those initial PVs that did get updated will
+                            // also be restored...
+                        }
+
+                        // Update error to be more specific, displayed by ELog dialog
+                        throw new Exception(NLS.bind(Messages.PVWriteErrorFmt, ex.getMessage()));
+                    }
+
+                    try
+                    {   // Then make elog entry.
+                        final LogEntry entry = LogEntryBuilder
+                                .withText(title + "\n" + body) //$NON-NLS-1$
+                                .addLogbook(LogbookBuilder.logbook(logbook))
+                                .build();
+                        client.createLogEntry(entry);
+                        model.clearUserValues();
+                    }
+                    catch (Exception ex)
+                    {   // On error, restore the original values
+                        model.revertOriginalValues();
+                        throw ex;
                     }
                 }
             };
-            dialog.setDefaultLogbook(Preferences.getDefaultLogbook());
             dialog.open();
         }
         catch (Exception ex)
