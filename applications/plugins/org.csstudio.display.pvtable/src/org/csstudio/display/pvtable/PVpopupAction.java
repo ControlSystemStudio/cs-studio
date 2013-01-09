@@ -8,7 +8,7 @@
 package org.csstudio.display.pvtable;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.display.pvtable.model.PVListModel;
+import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.ui.editor.PVTableEditor;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
@@ -23,17 +23,18 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class PVpopupAction extends AbstractHandler
 {
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         final PVTableEditor editor = PVTableEditor.createPVTableEditor();
         if (editor != null)
         {
-            final PVListModel model = editor.getModel();
-
+            final PVTableModel model = editor.getModel();
             final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
             final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
             for (ProcessVariable pv : pvs)
-                model.addPV(pv.getName());
+                model.addItem(pv.getName());
+            // Trigger refresh of the viewer
+            editor.getTableViewer().setInput(model);
         }
         return null;
     }

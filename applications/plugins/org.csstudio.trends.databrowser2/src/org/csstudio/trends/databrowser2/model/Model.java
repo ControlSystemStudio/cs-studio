@@ -25,14 +25,15 @@ import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -198,7 +199,7 @@ public class Model
     private double time_span = Preferences.getTimeSpan();
 
     /** End time of the data range */
-    private ITimestamp end_time = TimestampFactory.now();
+    private Timestamp end_time = Timestamp.now();
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
@@ -319,6 +320,18 @@ public class Model
                 return item;
         return null;
     }
+    
+    /** @param axis Axis to test
+     *  @return ModelItem linked to this axis count
+     */
+    public int countActiveItemsOnAxis(final AxisConfig axis)
+    {
+		int count = 0;
+		for (ModelItem item : items)
+			if (item.getAxis() == axis && item.isVisible())
+				count++;
+		return count;
+    }
 
     /** @return First unused axis (no items on axis),
      *          <code>null</code> if none found
@@ -334,13 +347,14 @@ public class Model
     /** Add value axis with default settings
      *  @return Newly added axis configuration
      */
-    public AxisConfig addAxis()
+    public AxisConfig addAxis(String name)
     {
-        final AxisConfig axis = new AxisConfig(
-                NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1));
-        axis.setColor(getNextItemColor());
-        addAxis(axis);
-        return axis;
+		if (name == null)
+			name = NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount() + 1);
+		final AxisConfig axis = new AxisConfig(name);
+		axis.setColor(getNextItemColor());
+		addAxis(axis);
+		return axis;
     }
 
     /** @param axis New axis to add */
@@ -485,7 +499,7 @@ public class Model
         if (item.getAxis() == null)
         {
             if (axes.size() == 0)
-                addAxis();
+                addAxis(item.getDisplayName());
             item.setAxis(axes.get(0));
         }
         // Check item axis
@@ -529,6 +543,14 @@ public class Model
         // Notify listeners of removed item
         for (ModelListener listener : listeners)
             listener.itemRemoved(item);
+        		
+        // Remove axis if unused
+		AxisConfig axis = item.getAxis();
+		item.setAxis(null);
+		if (countActiveItemsOnAxis(axis) == 0) {
+			removeAxis(axis);
+	        fireAxisChangedEvent(null);
+		}
     }
 
     /** @return Period in seconds for scrolling or refreshing */
@@ -590,9 +612,9 @@ public class Model
     /** @param start_time Start and ..
      *  @param end_time   end time of the range to display
      */
-    public void setTimerange(final ITimestamp start_time, final ITimestamp end_time)
+    public void setTimerange(final Timestamp start_time, final Timestamp end_time)
     {
-        final double new_span = end_time.toDouble() - start_time.toDouble();
+        final double new_span = end_time.durationFrom(start_time).toSeconds();
         if (new_span > 0)
         {
             synchronized (this)
@@ -626,18 +648,18 @@ public class Model
     /** @return Start time of the data range
      *  @see #isScrollEnabled()
      */
-    synchronized public ITimestamp getStartTime()
+    synchronized public Timestamp getStartTime()
     {
-        return TimestampFactory.fromDouble(getEndTime().toDouble() - time_span);
+        return getEndTime().minus(TimeDuration.ofSeconds(time_span));
     }
 
     /** @return End time of the data range
      *  @see #isScrollEnabled()
      */
-    synchronized public ITimestamp getEndTime()
+    synchronized public Timestamp getEndTime()
     {
         if (scroll_enabled)
-            end_time = TimestampFactory.now();
+            end_time = Timestamp.now();
         return end_time;
     }
 
@@ -897,12 +919,14 @@ public class Model
         }
 
         // Time axis config
-        XMLWriter.start(writer, 1, TAG_TIME_AXIS);
-        writer.println();
-        timeAxis.write(writer);
-        XMLWriter.end(writer, 1, TAG_TIME_AXIS);
-        writer.println();
-
+        if (timeAxis != null)
+        {
+            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+            writer.println();
+            timeAxis.write(writer);
+            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+            writer.println();
+        }
 
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
@@ -979,8 +1003,8 @@ public class Model
         if (start.length() > 0  &&  end.length() > 0)
         {
             final StartEndTimeParser times = new StartEndTimeParser(start, end);
-            setTimerange(TimestampFactory.fromCalendar(times.getStart()),
-                         TimestampFactory.fromCalendar(times.getEnd()));
+            setTimerange(TimestampHelper.fromCalendar(times.getStart()),
+                         TimestampHelper.fromCalendar(times.getEnd()));
         }
 
         RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);

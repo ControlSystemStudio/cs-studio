@@ -38,5 +38,4 @@ public abstract class ResourceUtilSSHelper {
 	public abstract boolean isExistingWorkspaceFile(IPath path);
 
 	public abstract Image getScreenShotImage(GraphicalViewer viewer);
-
 }

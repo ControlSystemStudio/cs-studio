@@ -5,11 +5,18 @@
 package org.epics.pvmanager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Implements support for basic standard java types.
+ * <p>
+ * For Number and String the immutable type support is used. For List and Map,
+ * we check whether any element need notification; if so, a copy is made.
  *
  * @author carcassi
  */
@@ -32,10 +39,7 @@ public class BasicTypeSupport {
 
         // Add support for lists
         addList();
-        
-        // Add support for maps
-        // TODO should actually return immutable maps?
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Map.class));
+        addMap();
         
         // Add support for numbers and strings
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Number.class));
@@ -45,44 +49,77 @@ public class BasicTypeSupport {
     }
 
     private static void addList() {
-        // TODO this is actually very broken:
-        // Clients can modify the list contents! (should return immutable list)
-        // PVManager is modifying the same list! (client will see dirty changes)
         TypeSupport.addTypeSupport(new NotificationSupport<List>(List.class) {
 
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public Notification<List> prepareNotification(List oldValue, final List newValue) {
-                // Initialize value if never initialized
-                if (oldValue == null) {
-                    oldValue = new ArrayList();
-                }
-
-                boolean notificationNeeded = false;
-
                 // Check all the elements in the list and use StandardTypeSupport
                 // to understand whether any needs notification.
                 // Notification is done only if at least one element needs notification.
-                for (int index = 0; index < newValue.size(); index++) {
-                    if (oldValue.size() <= index) {
-                        oldValue.add(null);
-                    }
-
+                boolean notificationNeeded = false;
+                
+                if (oldValue == null || (oldValue.size() != newValue.size())) {
+                    notificationNeeded = true;
+                }
+                
+                if (newValue.isEmpty()) {
+                    notificationNeeded = false;
+                }
+                
+                int index = 0;
+                while (notificationNeeded == false && index < newValue.size()) {
                     if (newValue.get(index) != null) {
                         Notification itemNotification = NotificationSupport.notification(oldValue.get(index), newValue.get(index));
                         if (itemNotification.isNotificationNeeded()) {
                             notificationNeeded = true;
-                            oldValue.set(index, itemNotification.getNewValue());
+                        }
+                    }
+                    index++;
+                }
+                
+                if (notificationNeeded) {
+                    return new Notification<>(true, (List) Collections.unmodifiableList(new ArrayList<Object>(newValue)));
+                } else {
+                    return new Notification<>(false, oldValue);
+                }
+            }
+        });
+    }
+
+    private static void addMap() {
+        TypeSupport.addTypeSupport(new NotificationSupport<Map>(Map.class) {
+
+            @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            public Notification<Map> prepareNotification(Map oldValue, final Map newValue) {
+                // Check all the elements in the map and use StandardTypeSupport
+                // to understand whether any needs notification.
+                // Notification is done only if at least one element needs notification.
+                boolean notificationNeeded = false;
+                
+                if (oldValue == null || (oldValue.size() != newValue.size())) {
+                    notificationNeeded = true;
+                }
+                
+                int index = 0;
+                Iterator<Map.Entry> iterator = newValue.entrySet().iterator();
+                while (notificationNeeded == false && iterator.hasNext()) {
+                    Entry entry = iterator.next();
+                    Object key = entry.getKey();
+                    if (entry.getValue() != null) {
+                        Notification itemNotification = NotificationSupport.notification(oldValue.get(key), entry.getValue());
+                        if (itemNotification.isNotificationNeeded()) {
+                            notificationNeeded = true;
                         }
                     }
                 }
-
-                // Shrink the list if more elements are there
-                while (oldValue.size() > newValue.size()) {
-                    oldValue.remove(oldValue.size() - 1);
+                
+                if (notificationNeeded) {
+                    return new Notification<>(true, (Map) Collections.unmodifiableMap(new HashMap<>(newValue)));
+                } else {
+                    return new Notification<>(false, oldValue);
                 }
-
-                return new Notification<List>(notificationNeeded, oldValue);
             }
         });
     }

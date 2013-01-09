@@ -49,14 +49,14 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Enum;
-import org.epics.pvmanager.data.SimpleValueFormat;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.ValueFormat;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.Enum;
+import org.epics.vtype.SimpleValueFormat;
+import org.epics.vtype.Time;
+import org.epics.vtype.ValueFormat;
+import org.epics.vtype.ValueUtil;
 import org.epics.util.time.TimestampFormat;
 
 /**
@@ -456,7 +456,7 @@ public class PVManagerProbe extends ViewPart {
 						.append(display.getUpperDisplayLimit()).append(nl);
 			}
 
-			if (value instanceof org.epics.pvmanager.data.Enum) {
+			if (value instanceof org.epics.vtype.Enum) {
 				Enum enumValue = (Enum) value;
 				info.append(Messages.Probe_infoEnumMetadata).append(space)
 						.append(enumValue.getLabels().size()).append(space).append(Messages.Probe_infoLabels)

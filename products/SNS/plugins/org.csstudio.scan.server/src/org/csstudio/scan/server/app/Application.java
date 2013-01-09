@@ -34,6 +34,7 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("nls")
 public class Application implements IApplication
 {
+    private static String bundle_version = "?";
     final private CountDownLatch run = new CountDownLatch(1);
 
     // It is important to keep a reference to the server implementation!!
@@ -42,7 +43,17 @@ public class Application implements IApplication
     // and then clients will get java.rmi.NoSuchObjectException
     // when they try to invoke methods in the server.
     private ScanServerImpl server;
+    
+    /** @return Bundle version info */
+    public static String getBundleVersion()
+    {
+        synchronized (Application.class)
+        {
+            return bundle_version;
+        }
+    }
 
+    /** {@inheritDoc} */
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -50,9 +61,14 @@ public class Application implements IApplication
     	try
     	{
 	        // Display config info
-	        final String version = (String)
-	            context.getBrandingBundle().getHeaders().get("Bundle-Version");
-	        log.info(context.getBrandingName() + " " + version);
+	        synchronized (Application.class)
+	        {
+	            final String version = (String)
+	                    context.getBrandingBundle().getHeaders().get("Bundle-Version");
+	            bundle_version = context.getBrandingName() + " " + version;
+	            log.info(bundle_version);
+	        }
+	        
 	        log.info("Beamline config   : " + ScanSystemPreferences.getBeamlineConfigPath());
 	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
 	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
@@ -86,6 +102,7 @@ public class Application implements IApplication
         return EXIT_OK;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void stop()
     {

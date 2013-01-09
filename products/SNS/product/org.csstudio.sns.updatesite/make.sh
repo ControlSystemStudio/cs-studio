@@ -21,7 +21,7 @@ echo Fetching sources
 $ANT get_sources
 
 PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
-FEATS="config_build_optional config_build_scan"
+FEATS="config_build_optional config_build_scan config_build_beamline_image"
 
 # Build products and features
 for PROD in $PRODS
@@ -85,7 +85,7 @@ then
     sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip  CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86_64.zip  $JRE_Win64
 
     ## SNS CSS
-    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip        CSS_$VERSION       apps/sns_css_$VERSION-macosx.cocoa.x86.zip
+    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip            CSS_$VERSION       apps/sns_css_$VERSION-macosx.cocoa.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip           CSS_$VERSION       apps/sns_css_$VERSION-linux.gtk.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip        CSS_$VERSION       apps/sns_css_$VERSION-linux.gtk.x86_64.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip         CSS_$VERSION       apps/sns_css_$VERSION-win32.win32.x86.zip

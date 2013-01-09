@@ -15,7 +15,7 @@ import org.osgi.service.http.NamespaceException;
  *  Otherwise it doesn't do anything useful.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({ "nls", "unused" })
 public class Activator extends Plugin
 {
     /** Set to >0 at compile time to include demo server */

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
-import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 /** Interface to archive data retrieval.
  *  <p>
@@ -137,7 +137,7 @@ public interface ArchiveReader
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(int key, String name,
-            ITimestamp start, ITimestamp end) throws UnknownChannelException, Exception;
+            Timestamp start, Timestamp end) throws UnknownChannelException, Exception;
 
     /** Read optimized samples from the archive.
      *  <p>
@@ -162,7 +162,7 @@ public interface ArchiveReader
      *  @throws Exception on error
      */
     public ValueIterator getOptimizedValues(int key, String name,
-        ITimestamp start, ITimestamp end, int count) throws UnknownChannelException, Exception;
+        Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception;
 
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,

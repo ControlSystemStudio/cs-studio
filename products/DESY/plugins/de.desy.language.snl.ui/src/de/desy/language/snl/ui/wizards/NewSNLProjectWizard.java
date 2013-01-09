@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
@@ -53,8 +52,8 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 		// this.selection = selection;
 		super.init(workbench, selection);
 		this.setWindowTitle("SNL Project Wizard"); //$NON-NLS-1$
-		this.setDefaultPageImageDescriptor(ImageDescriptor.createFromFile(
-				NewSNLProjectWizard.class, "newfolder_wiz.gif"));
+//		this.setDefaultPageImageDescriptor(ImageDescriptor.createFromFile(
+//				NewSNLProjectWizard.class, "newfolder_wiz.gif"));
 	}
 
 	/*

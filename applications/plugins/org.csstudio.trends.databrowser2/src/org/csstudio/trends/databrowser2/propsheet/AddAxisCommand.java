@@ -34,7 +34,7 @@ public class AddAxisCommand implements IUndoableCommand
     {
         this.model = model;
         operations_manager.addCommand(this);
-        axis = model.addAxis();
+		axis = model.addAxis((String) null);
     }
 
     /** @return AxisConfig that was added */

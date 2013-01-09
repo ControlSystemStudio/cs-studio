@@ -7,12 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
-
-import org.csstudio.display.pvtable.model.PVListModel;
-import org.csstudio.display.pvtable.ui.ConfigAction;
+import org.csstudio.display.pvtable.ui.PVTableAction;
 import org.csstudio.display.pvtable.ui.RestoreAction;
 import org.csstudio.display.pvtable.ui.SnapshotAction;
-import org.csstudio.display.pvtable.ui.StartStopAction;
+import org.csstudio.display.pvtable.ui.ToleranceAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
@@ -23,47 +21,38 @@ import org.eclipse.ui.part.EditorActionBarContributor;
 public class PVTableEditorActionBarContributor extends
         EditorActionBarContributor
 {
-    private ConfigAction config;
-    private StartStopAction start_stop;
-    private SnapshotAction snap;
-    private RestoreAction restore;
+    final private PVTableAction snap = new SnapshotAction(null);
+    final private PVTableAction restore = new RestoreAction(null);
+    final private PVTableAction tolerance = new ToleranceAction(null);
 
     /** Invoked once when the first PVTableEditor gets opened.
      *  Items stay in toolbar until the last PVTableEditor exits.
      */
     @Override
-    public void contributeToToolBar(IToolBarManager mgr)
+    public void contributeToToolBar(final IToolBarManager mgr)
     {
-        config = new ConfigAction(null);
-        start_stop = new StartStopAction(null);
-        snap = new SnapshotAction(null);
-        restore = new RestoreAction(null, null);
-        mgr.add(config);
-        mgr.add(start_stop);
         mgr.add(snap);
         mgr.add(restore);
+        mgr.add(tolerance);
     }
 
     /** @see org.eclipse.ui.part.EditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart) */
     @Override
-    public void setActiveEditor(IEditorPart target)
+    public void setActiveEditor(final IEditorPart target)
     {
-        PVTableEditor editor = (PVTableEditor) target;
-        PVListModel pv_list = editor.getModel();
-        config.setPVListModel(pv_list);
-        start_stop.setPVListModel(pv_list);
-        snap.setPVListModel(pv_list);
-        restore.setPVListModel(pv_list);
+        final PVTableEditor editor = (PVTableEditor) target;
+        snap.setViewer(editor.getTableViewer());
+        restore.setViewer(editor.getTableViewer());
+        tolerance.setViewer(editor.getTableViewer());
     }
 
     /** @see org.eclipse.ui.part.EditorActionBarContributor#dispose() */
     @Override
     public void dispose()
     {
-        config.setPVListModel(null);
-        start_stop.setPVListModel(null);
-        snap.setPVListModel(null);
-        restore.setPVListModel(null);
+        snap.setViewer(null);
+        restore.setViewer(null);
+        tolerance.setViewer(null);
         super.dispose();
     }
 }

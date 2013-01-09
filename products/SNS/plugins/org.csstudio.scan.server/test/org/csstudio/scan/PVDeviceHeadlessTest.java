@@ -21,7 +21,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.PVDevice;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link PVDevice}

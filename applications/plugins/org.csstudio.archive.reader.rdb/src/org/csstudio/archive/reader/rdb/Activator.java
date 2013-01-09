@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -33,5 +35,11 @@ public class Activator extends Plugin
     public static Activator getInstance()
     {
         return instance;
+    }
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+    	return Logger.getLogger(Activator.ID);
     }
 }

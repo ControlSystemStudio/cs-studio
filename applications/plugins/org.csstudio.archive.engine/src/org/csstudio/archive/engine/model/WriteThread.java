@@ -15,10 +15,9 @@ import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.ArchiveWriterFactory;
 import org.csstudio.archive.writer.WriteChannel;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.util.stats.Average;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
  *  to an <code>RDBArchiveServer</code>.
@@ -60,7 +59,7 @@ public class WriteThread implements Runnable
     private int batch_size = 500;
 
     /** Time of end of last write run */
-    private ITimestamp last_write_stamp = null;
+    private Timestamp last_write_stamp = null;
 
     /** Average number of values per write run */
     private Average write_count = new Average();
@@ -120,7 +119,7 @@ public class WriteThread implements Runnable
     }
 
     /** @return Timestamp of end of last write run */
-    public ITimestamp getLastWriteTime()
+    public Timestamp getLastWriteTime()
     {
         return last_write_stamp;
     }
@@ -182,7 +181,7 @@ public class WriteThread implements Runnable
                 // for a long time...
                 final long written = write();
                 timer.stop();
-                last_write_stamp = TimestampFactory.now();
+                last_write_stamp = Timestamp.now();
                 write_count.update(written);
                 write_time.update(timer.getSeconds());
                 // How much of the scheduled delay is left after write()?
@@ -253,7 +252,7 @@ public class WriteThread implements Runnable
             // Write samples for one channel
             final String name = buffer.getChannelName();
             final WriteChannel channel = writer.getChannel(name);
-            IValue sample = buffer.remove();
+            VType sample = buffer.remove();
             while (sample != null)
             {   // Write one value
                 writer.addSample(channel, sample);

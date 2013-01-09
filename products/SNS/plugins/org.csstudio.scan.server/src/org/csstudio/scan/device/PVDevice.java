@@ -16,7 +16,7 @@
 package org.csstudio.scan.device;
 
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 
 import java.util.logging.Level;
@@ -27,9 +27,9 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV

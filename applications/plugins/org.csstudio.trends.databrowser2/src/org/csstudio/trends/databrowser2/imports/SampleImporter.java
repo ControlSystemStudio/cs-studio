@@ -10,7 +10,7 @@ package org.csstudio.trends.databrowser2.imports;
 import java.io.InputStream;
 import java.util.List;
 
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** API for tool that imports data
  *
@@ -28,5 +28,5 @@ public interface SampleImporter
      *  @return Values
      *  @throws Exception on error
      */
-    public List<IValue> importValues(final InputStream input) throws Exception;
+    public List<VType> importValues(final InputStream input) throws Exception;
 }

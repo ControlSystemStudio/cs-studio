@@ -53,7 +53,8 @@ public class Preferences
                                ARCHIVES = "archives",
                                USE_DEFAULT_ARCHIVES = "use_default_archives",
                                PROMPT_FOR_ERRORS="prompt_for_errors",
-                               ARCHIVE_RESCALE = "archive_rescale";
+                               ARCHIVE_RESCALE = "archive_rescale",
+                               USE_AUTO_SCALE = "use_auto_scale";
 
     public static double getTimeSpan()
     {
@@ -151,6 +152,16 @@ public class Preferences
         if (prefs == null)
             return false;
         return prefs.getBoolean(Activator.PLUGIN_ID, USE_DEFAULT_ARCHIVES, false, null);
+    }
+    
+    /** @return <code>true</code> to use auto scale by default.
+     */
+    static public boolean useAutoScale()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, USE_AUTO_SCALE, false, null);
     }
 
     /** @return <code>true</code> to prompt for errors */

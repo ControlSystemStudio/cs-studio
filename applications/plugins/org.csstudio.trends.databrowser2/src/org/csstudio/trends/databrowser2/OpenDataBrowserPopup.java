@@ -84,7 +84,7 @@ public class OpenDataBrowserPopup extends AbstractHandler
         else
             item.addArchiveDataSource(archive);
         // Add item to new axes
-        item.setAxis(model.addAxis());
+        item.setAxis(model.addAxis(item.getDisplayName()));
         model.addItem(item);
     }
 }

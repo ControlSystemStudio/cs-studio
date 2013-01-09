@@ -30,6 +30,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.csstudio.iter.display.pace.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.csstudio.iter.display.pvtable.feature"
          version="0.0.0"/>
 

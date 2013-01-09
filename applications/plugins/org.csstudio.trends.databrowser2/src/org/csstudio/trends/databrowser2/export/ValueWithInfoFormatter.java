@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.export;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Format;
+import org.csstudio.archive.vtype.Style;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.vtype.VType;
 
 /** Format an IValue to show the value as well as the severity/status
  *  @author Kay Kasemir
@@ -20,9 +21,9 @@ public class ValueWithInfoFormatter extends ValueFormatter
      *  @param format Number format to use
      *  @param precision Precision
      */
-    public ValueWithInfoFormatter(final Format format, final int precision)
+    public ValueWithInfoFormatter(final Style style, final int precision)
     {
-        super(format, precision);
+        super(style, precision);
     }
 
     /** {@inheritDoc} */
@@ -35,13 +36,14 @@ public class ValueWithInfoFormatter extends ValueFormatter
 
     /** {@inheritDoc} */
     @Override
-    public String format(final IValue value)
+    public String format(final VType value)
     {
-        if (value == null)
+        if (Double.isNaN(VTypeHelper.toDouble(value)))
             return super.format(null) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;
         return super.format(value) + Messages.Export_Delimiter +
-            value.getSeverity() + Messages.Export_Delimiter + value.getStatus();
+            VTypeHelper.getSeverity(value) + Messages.Export_Delimiter +
+            VTypeHelper.getMessage(value);
     }
 }

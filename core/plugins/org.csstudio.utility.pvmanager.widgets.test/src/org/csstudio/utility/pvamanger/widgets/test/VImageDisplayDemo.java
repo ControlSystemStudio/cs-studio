@@ -1,6 +1,6 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.util.time.TimeDuration.ofHertz;
 
@@ -21,7 +21,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
+import org.epics.vtype.VImage;
 
 public class VImageDisplayDemo extends ViewPart {
 

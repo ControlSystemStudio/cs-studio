@@ -11,24 +11,25 @@ import java.util.Date;
 
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class VTypeHelper
 {
 	/** Format value as string
 	 *  @param value {@link VType}
 	 *  @return String representation
 	 */
-	final public static String toString(final VType value)
+    final public static String toString(final VType value)
 	{
 		if (value instanceof VNumber)
 			return ((VNumber)value).getValue().toString();

@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -66,6 +69,18 @@ public class Plugin extends AbstractUIPlugin
      */
     public static ImageDescriptor getImageDescriptor(String path)
     {
+    	if (plugin == null)
+    	{	// Support JUnit demo without plugin context
+    		final File pwd = new File(".");
+    		try
+    		{
+				return ImageDescriptor.createFromURL(new URL("file://" + pwd.getAbsolutePath() + "/" + path));
+			}
+    		catch (MalformedURLException e)
+    		{
+    			return null;
+			}
+    	}
         return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
     }
 }

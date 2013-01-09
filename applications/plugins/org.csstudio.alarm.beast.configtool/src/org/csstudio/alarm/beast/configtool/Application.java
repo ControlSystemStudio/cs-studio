@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.configtool;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.client.AlarmConfiguration;
@@ -18,7 +19,6 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.app.IApplication;
@@ -220,7 +220,7 @@ public class Application implements IApplication
             {
                 "Generated from ALH config file",
                 "File name: '" + filename + "'",
-                "Date     : " + TimestampFactory.now(),
+                "Date     : " + new Date(),
             });
             out.flush();
         }
@@ -277,7 +277,7 @@ public class Application implements IApplication
                     final PrintWriter out = new PrintWriter(file);
                     config.getAlarmTree().writeXML(out, new String[]
                     {
-                        "Alarm configuration snapshot " + TimestampFactory.now(),
+                        "Alarm configuration snapshot " + new Date(),
                         "URL : " + url,
                         "Root: " + root,
                     });

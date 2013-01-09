@@ -4,8 +4,6 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.VType;
 
 /**
  * An object representing the PVReader. It contains all elements that are common
@@ -26,7 +24,9 @@ import org.epics.pvmanager.data.VType;
 public interface PVReader<T> {
 
     /**
-     * Adds a listener to the value. This method is thread safe.
+     * Adds a listener to the value.
+     * <p>
+     * This method is thread-safe.
      *
      * @param listener a new listener
      */
@@ -34,7 +34,9 @@ public interface PVReader<T> {
 
     /**
      * Adds a listener to the value, which is notified only if the value is
-     * of a given type. This method is thread safe.
+     * of a given type.
+     * <p>
+     * This method is thread-safe.
      *
      * @param clazz type to filter notifications for
      * @param listener a new listener
@@ -46,22 +48,27 @@ public interface PVReader<T> {
     public void addPVReaderListener(final Class<?> clazz, final PVReaderListener listener);
 
     /**
-     * Removes a listener to the value. This method is thread safe.
+     * Removes a listener to the value.
+     * <p>
+     * This method is thread-safe.
      *
      * @param listener the old listener
      */
     public void removePVReaderListener(PVReaderListener<? super T> listener);
 
     /**
-     * Returns the name of the PVReader. This method is thread safe.
+     * Returns the name of the PVReader.
+     * <p>
+     * This method is thread safe.
      *
      * @return the value of name
      */
     public String getName();
 
     /**
-     * Returns the value of the PVReader. Not thread safe: can be safely accessed only
-     * as part of the {@link PVReaderListener}.
+     * Returns the value of the PVReader.
+     * <p>
+     * This method is thread-safe.
      *
      * @return the value of value
      */
@@ -85,6 +92,8 @@ public interface PVReader<T> {
     /**
      * Returns the last exception that was generated preparing the value
      * for this PVReader and clears it (subsequent call will return null).
+     * <p>
+     * This method is thread-safe.
      *
      * @return the last generated exception or null
      */
@@ -96,6 +105,8 @@ public interface PVReader<T> {
      * Note that since notifications may still be in flight, you may receive
      * notifications after setting the pause state to on. The paused flag on the
      * reader, though, is changed immediately.
+     * <p>
+     * This method is thread-safe.
      * 
      * @param paused whether the reader should be paused or not
      */
@@ -106,6 +117,8 @@ public interface PVReader<T> {
      * are skipped. While the channels remains open, and data is still being collected,
      * the computation after the collectors is suspended, which saves computation
      * resources.
+     * <p>
+     * This method is thread-safe.
      * 
      * @return true if it is paused
      */
@@ -125,6 +138,8 @@ public interface PVReader<T> {
      * as lists or maps of channels. This method does obviously not scale functionally
      * since, in an aggregate, it can't tell you which channel of the set
      * is connected or not.
+     * <p>
+     * This method is thread-safe.
      * 
      * @return true if reader is connected
      */

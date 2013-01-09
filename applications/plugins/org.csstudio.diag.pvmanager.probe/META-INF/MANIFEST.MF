@@ -8,13 +8,12 @@ Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.g
 Bundle-Description: Simple diagnostic utility to connect to any channel
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager,
  org.csstudio.utility.pvmanager.ui,
  org.csstudio.csdata;bundle-version="0.0.1",
  org.csstudio.ui.util;bundle-version="0.0.1",
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
  org.eclipse.help,
- org.epics.util;bundle-version="0.1.0"
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

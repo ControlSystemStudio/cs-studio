@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,60 +7,37 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver;
 
-import org.csstudio.data.values.ISeverity;
+import org.epics.vtype.AlarmSeverity;
 
-/** Implementation of the Severity interface for EPICS samples.
+/** Wrapper for {@link AlarmSeverity} that adds ChannelArchiver detail
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public class SeverityImpl implements ISeverity
+public class SeverityImpl
 {
-	private static final long serialVersionUID = 1L;
+	final private AlarmSeverity severity;
 	final private String text;
 	final private boolean has_value;
 	final private boolean txt_stat;
 
-	public SeverityImpl(final String text, final boolean has_value,
+	public SeverityImpl(final AlarmSeverity severity, final String text, final boolean has_value,
 	        final boolean txt_stat)
 	{
+		this.severity = severity;
 		this.text = text;
 		this.has_value = has_value;
 		this.txt_stat = txt_stat;
 	}
 
-	@Override
-    public String toString()
+    public AlarmSeverity getSeverity()
+	{
+		return severity;
+	}
+
+    public String getText()
 	{
 		return text;
 	}
-
-    @Override
-    public boolean isOK()
-    {
-        return text.length() == 0
-                || text.equals(ServerInfoRequest.NO_ALARM)
-                || text.equals("NO_ALARM");
-    }
-
-    @Override
-    public boolean isMinor()
-    {
-        return text.equals("MINOR");
-    }
-
-    @Override
-    public boolean isMajor()
-    {
-        return text.equals("MAJOR");
-    }
-
-    @Override
-    public boolean isInvalid()
-    {
-        return !hasValue() || text.equals("INVALID");
-    }
-
-	@Override
+    
     public boolean hasValue()
 	{
 		return has_value;

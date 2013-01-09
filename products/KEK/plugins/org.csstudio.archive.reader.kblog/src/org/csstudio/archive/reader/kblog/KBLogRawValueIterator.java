@@ -13,12 +13,12 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVNumberArray;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * ValueIterator that reads data from kblogrd via the standard output.
@@ -28,7 +28,7 @@ import org.csstudio.data.values.ValueFactory;
 public class KBLogRawValueIterator implements KBLogValueIterator {
 	private static final String charset = "US-ASCII";
 	
-	private IValue nextValue;
+	private VType nextValue;
 	private Object nextValueMutex; 
 	
 	private String pvName;
@@ -82,7 +82,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	 * @param str String to parse.
 	 * @return Obtained time stamp.
 	 */
-	private ITimestamp parseTimestamp(String str) {
+	private Timestamp parseTimestamp(String str) {
 		// Append "0" at the end so that the last part of string represents millisecond. 
 		String strTime = str + "0";
 		
@@ -94,13 +94,13 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 			long msFromEpoch = date.getTime();
 			long secFromEpoch = (long) Math.floor((double)msFromEpoch / 1000.0);
 			long msInSecond = msFromEpoch - secFromEpoch * 1000;
-			return TimestampFactory.createTimestamp(secFromEpoch, msInSecond*1000*1000);
+			return Timestamp.of(secFromEpoch, (int)(msInSecond*1000*1000));
 		} catch (ParseException ex) {
 			return null;
 		}
 	}
 
-	private IValue decodeNextValue() {
+	private VType decodeNextValue() {
 		synchronized (closedMutex) {
 			if (closed)
 				return null;
@@ -132,7 +132,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 				}
 				
 				// Parse time stamp.
-				ITimestamp time = parseTimestamp(strTime);
+				Timestamp time = parseTimestamp(strTime);
 				if (time == null) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
 							"Invalid timestamp in " + kblogrdPath + " (" + commandId + ") output: " + strTime);
@@ -154,57 +154,55 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 						boolean integer = false;
 						double doubleValue = 0;
 						long longValue = 0;
-						ISeverity severity = ValueFactory.createOKSeverity();
+						AlarmSeverity severity = AlarmSeverity.NONE;
 						String status = "";
 						
 						if (strValue.equals("Connected")) {
 							doubleValue = 0;
 							status = KBLogMessages.StatusConnected;
-							severity = KBLogSeverityInstances.connected;
+							severity = AlarmSeverity.NONE;
 						} else if (strValue.equals("Disconnected")) {
 							doubleValue = 0;
 							status = KBLogMessages.StatusDisconnected;
-							severity = KBLogSeverityInstances.disconnected;
+							severity = AlarmSeverity.UNDEFINED;
 						} else if (strValue.equals("INF")) {
 							// TODO this part is not tested
 							doubleValue = Double.POSITIVE_INFINITY;
 							status = KBLogMessages.StatusNormal;
-							severity = KBLogSeverityInstances.normal;
+							severity = AlarmSeverity.NONE;
 						} else if (strValue.equals("-INF")) {
 							// TODO this part is not tested
 							doubleValue = Double.NEGATIVE_INFINITY;
 							status = KBLogMessages.StatusNormal;
-							severity = KBLogSeverityInstances.normal;
+							severity = AlarmSeverity.NONE;
 						} else if (strValue.equals("NaN")) {
 							// TODO this part is not tested.
 							doubleValue = Double.NaN;
 							status = KBLogMessages.StatusNaN;
-							severity = KBLogSeverityInstances.nan;
+							severity = AlarmSeverity.UNDEFINED;
 						} else if (strValue.indexOf('.') >= 0) {
 							doubleValue = Double.parseDouble(strValue);
 							status = KBLogMessages.StatusNormal;
-							severity = KBLogSeverityInstances.normal;
+							severity = AlarmSeverity.NONE;
 						} else {
 							integer = true;
 							longValue = Long.parseLong(strValue);
 							status = KBLogMessages.StatusNormal;
-							severity = KBLogSeverityInstances.normal;
+							severity = AlarmSeverity.NONE;
 						}
 	
 						if (integer) {
-							return ValueFactory.createLongValue(time,
+							return new ArchiveVNumber(time,
 									severity,
 									status,
-									null,
-									Quality.Original,
-									new long[]{longValue});
+									ValueFactory.displayNone(),
+									longValue);
 						} else {
-							return ValueFactory.createDoubleValue(time,
+							return new ArchiveVNumber(time,
 									severity,
 									status,
-									null,
-									Quality.Original,
-									new double[]{doubleValue});
+									ValueFactory.displayNone(),
+									doubleValue);
 						}
 					} else {
 						// array
@@ -225,22 +223,20 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 							for (int i=0; i<strElements.length; i++) { 
 								longArray[i] = Long.parseLong(strElements[i]);
 							}
-							return ValueFactory.createLongValue(time,
-									KBLogSeverityInstances.normal,
-									KBLogMessages.StatusNormal,
-									null,
-									Quality.Original,
+							return new ArchiveVNumberArray(time,
+                                    AlarmSeverity.NONE,
+                                    KBLogMessages.StatusNormal,
+                                    ValueFactory.displayNone(),
 									longArray);
 						} else {
 							double[] doubleArray = new double[strElements.length];
 							for (int i=0; i<strElements.length; i++) { 
 								doubleArray[i] = Double.parseDouble(strElements[i]);
 							}
-							return ValueFactory.createDoubleValue(time,
-									KBLogSeverityInstances.normal,
+							return new ArchiveVNumberArray(time,
+									AlarmSeverity.NONE,
 									KBLogMessages.StatusNormal,
-									null,
-									Quality.Original,
+									ValueFactory.displayNone(),
 									doubleArray);
 						}
 					}
@@ -275,7 +271,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	}
 
 	@Override
-	public IValue next() throws Exception {
+	public VType next() throws Exception {
 		synchronized (initializedMutex) {
 			if (!initialized) {
 				nextValue = decodeNextValue();
@@ -284,7 +280,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 		}
 		
 		synchronized (nextValueMutex) {
-			IValue ret = nextValue;
+		    VType ret = nextValue;
 			nextValue = decodeNextValue();
 			
 			return ret;

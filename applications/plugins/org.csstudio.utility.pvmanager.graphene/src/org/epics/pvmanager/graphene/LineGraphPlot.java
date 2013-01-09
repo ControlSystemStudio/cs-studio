@@ -5,7 +5,7 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.LineGraphRendererUpdate;
-import org.epics.pvmanager.data.VImage;
+import org.epics.vtype.VImage;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 

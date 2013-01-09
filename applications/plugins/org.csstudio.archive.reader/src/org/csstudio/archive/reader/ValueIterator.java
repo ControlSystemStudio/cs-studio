@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** In principle this is like
  *  <code>Iterator&lt;Value&gt;</code>, but allows next() to
@@ -31,7 +31,7 @@ public interface ValueIterator
      *  @return the next element in the iteration.
      *  @exception on Error in archive access
      */
-    public IValue next() throws Exception;
+    public VType next() throws Exception;
 
     /** Must be called to release resources */
     public void close();

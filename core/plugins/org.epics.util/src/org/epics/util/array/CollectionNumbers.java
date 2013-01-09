@@ -1,5 +1,5 @@
-/*
- * Copyright 2011 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2012 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.util.array;
@@ -10,6 +10,10 @@ package org.epics.util.array;
  * @author carcassi
  */
 public class CollectionNumbers {
+    
+    private CollectionNumbers() {
+        // prevent instances
+    }
     
     /**
      * If available, return the array wrapped by the collection - USE WITH

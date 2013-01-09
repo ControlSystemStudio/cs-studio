@@ -1,8 +1,8 @@
 package org.csstudio.diag.postanalyser.math;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.diag.postanalyser.Messages;
+import org.epics.util.time.Timestamp;
 import org.teneighty.lm.CostFunction;
 import org.teneighty.lm.LevenbergMarquardt;
 
@@ -158,7 +158,7 @@ public class GaussFit extends Fit
     @Override
     public String toString()
     {
-        final ITimestamp time = TimestampFactory.fromDouble(center);
+        final Timestamp time = TimestampHelper.fromMillisecs((long)center);
         return String.format(Messages.GaussFit_Message,
             base, amp, time.toString(), sigma);
     }

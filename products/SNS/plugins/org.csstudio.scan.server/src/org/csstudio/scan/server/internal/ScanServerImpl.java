@@ -46,6 +46,7 @@ import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.SimulationContext;
 import org.csstudio.scan.server.SimulationResult;
+import org.csstudio.scan.server.app.Application;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -128,7 +129,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public ScanServerInfo getInfo() throws RemoteException
     {
-    	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
+        return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION + " (" + Application.getBundleVersion() + ")",
     			start_time,
     			ScanSystemPreferences.getBeamlineConfigPath(),
     			ScanSystemPreferences.getSimulationConfigPath());

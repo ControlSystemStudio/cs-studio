@@ -78,7 +78,7 @@ public class ScanServerInfo  extends MemoryInfo
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("Scan Server ").append(version).append("\n");
+        buf.append("Version: ").append(version).append("\n");
         buf.append("Started: ").append(ScanSampleFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
         buf.append("Simulation Configuration: ").append(simulation_config).append("\n");

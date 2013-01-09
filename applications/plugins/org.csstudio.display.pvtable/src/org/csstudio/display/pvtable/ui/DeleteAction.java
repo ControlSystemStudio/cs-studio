@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,52 +7,43 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.Iterator;
 
-import org.csstudio.display.pvtable.model.PVListEntry;
+import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.model.PVTableItem;
+import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 
-/** Remove selected entries in table from the model.
- *
+/** {@link Action} to delete entries from table
  *  @author Kay Kasemir
  */
-public class DeleteAction extends Action
+public class DeleteAction extends PVTableAction
 {
-    private PVTableViewerHelper helper;
-
-	public DeleteAction(PVTableViewerHelper helper)
-	{
-        this.helper = helper;
-		setText("Delete");
-		setToolTipText("Delete selected PV");
-		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
-		setDisabledImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
-		setEnabled(false);
-		// Conditionally enable this action
-		helper.getTableViewer().addSelectionChangedListener(
-				new ISelectionChangedListener()
-				{
-					@Override
-                    public void selectionChanged(SelectionChangedEvent event)
-					{
-						boolean anything = !event.getSelection().isEmpty();
-						setEnabled(anything);
-					}
-				});
-	}
-
-	@Override
-	public void run()
-	{
-        PVListEntry entries[] = helper.getSelectedEntries();
-		if (entries == null)
-			return;
-		for (int i = 0; i < entries.length; i++)
-			helper.getPVListModel().removeEntry(entries[i]);
-	}
+    public DeleteAction(final TableViewer viewer)
+    {
+        super(Messages.Delete, "icons/delete.gif", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.Delete_TT);
+    }
+    
+    public void run()
+    {
+        final PVTableModel model = (PVTableModel) viewer.getInput();
+        if (model == null)
+            return;
+        final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+        if (sel == null)
+            return;
+        
+        final Iterator<?> iterator = sel.iterator();
+        while (iterator.hasNext())
+        {
+            final PVTableItem item = (PVTableItem) iterator.next();
+            model.removeItem(item);
+        }
+        viewer.setSelection(null);
+        viewer.setItemCount(model.getItemCount() + 1);
+        viewer.refresh();
+    }
 }

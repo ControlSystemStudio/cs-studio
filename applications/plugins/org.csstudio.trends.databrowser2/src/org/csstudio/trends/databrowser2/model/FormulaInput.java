@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 /** One input to the formula: Model item that provides data, Variable name
  *  for use in the formula
@@ -46,11 +46,11 @@ public class FormulaInput
         return variable_name;
     }
 
-    /** Rest the sample iterator to the first sample
+    /** Reset the sample iterator to the first sample
      *  @see #next()
      *  @return First sample or <code>null</code>
      */
-    public IValue first()
+    public VType first()
     {
         if (item.getSamples().getSize() > 0)
             index = 0;
@@ -62,11 +62,11 @@ public class FormulaInput
     /** Iterate over the samples of the input's ModelItem
      *  @return Next value or <code>null</code>
      */
-    public IValue next()
+    public VType next()
     {
         if (index < 0)
             return null;
-        final IValue result;
+        final VType result;
         final PlotSamples samples = item.getSamples();
         synchronized (samples)
         {

@@ -8,26 +8,24 @@
 package org.csstudio.archive.writer.rdb;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.StringID;
 import org.csstudio.platform.utility.rdb.StringIDHelper;
+import org.epics.vtype.AlarmSeverity;
 
 /** Caching RDB interface to severity info.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SeverityCache
 {
-    /** Name used for default (empty) severities. */
-	private static final String DEFAULT_NAME = "OK";
-
     /** RDB Helper. */
     final private StringIDHelper helper;
 
     /** Cache that maps names to severities */
-    final private HashMap<String, Severity> cache_by_name =
-        new HashMap<String, Severity>();
+    final private Map<AlarmSeverity, Integer> cache_by_name =
+        new HashMap<AlarmSeverity, Integer>();
 
 	/** Constructor */
 	public SeverityCache(final RDBUtil rdb, final SQL sql)
@@ -43,51 +41,27 @@ public class SeverityCache
         cache_by_name.clear();
     }
 
-    /** Add Severity to cache */
-	public void memorize(final Severity severity)
-	{
-		cache_by_name.put(severity.getName(), severity);
-	}
-
-	/** Get severity by name.
-	 *  @param name severity name
-	 *  @return severity or <code>null</code>
-	 *  @throws Exception on error
-	 */
-	public Severity find(String name) throws Exception
-	{
-		if (name.length() == 0)
-			name = DEFAULT_NAME;
-		// Check cache
-		Severity severity = cache_by_name.get(name);
-		if (severity != null)
-			return severity;
-		final StringID found = helper.find(name);
-		if (found != null)
-		{
-        	severity = new Severity(found.getId(), found.getName());
-            memorize(severity);
-        }
-        // else: Nothing found
-        return severity;
-	}
-	
 	/** Find or create a severity by name.
-	 *  @param name Severity name
+	 *  @param alarmSeverity Severity name
 	 *  @return Severity
 	 *  @throws Exception on error
 	 */
-	public Severity findOrCreate(String name) throws Exception
+	public int findOrCreate(final AlarmSeverity severity) throws Exception
 	{
-    	if (name.length() == 0)
-    		name = DEFAULT_NAME;
-    	// Existing entry?
-        Severity severity = find(name);
-        if (severity != null)
-            return severity;
-        final StringID added = helper.add(name);        
-        severity = new Severity(added.getId(), added.getName());
-        memorize(severity);
-        return severity;
+		// Check cache
+		final Integer id = cache_by_name.get(severity);
+		if (id != null)
+			return id;
+		// Find and memorize
+		final StringID found = helper.find(severity.name());
+		if (found != null)
+		{
+			cache_by_name.put(severity, found.getId());
+			return found.getId();
+		}
+    	// New entry
+        final StringID added = helper.add(severity.name());
+        cache_by_name.put(severity, added.getId());
+        return added.getId();
 	}
 }

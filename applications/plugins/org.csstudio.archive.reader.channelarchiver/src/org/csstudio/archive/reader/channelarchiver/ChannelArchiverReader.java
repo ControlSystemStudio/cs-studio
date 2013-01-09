@@ -14,8 +14,8 @@ import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Main access point to the ChannelArchiver network data server.
  *  @author Kay Kasemir
@@ -156,7 +156,7 @@ public class ChannelArchiverReader implements ArchiveReader
             // else: Fall through...
         }
         // return the number as a string
-        return Integer.toString(status);
+        return severity.getText() + " " + Integer.toString(status);
     }
 
     /** Active request. Synchronize on this for access */
@@ -166,8 +166,8 @@ public class ChannelArchiverReader implements ArchiveReader
      *  @return Samples
      *  @throws Exception
      */
-    public IValue[] getSamples(final int key, final String name,
-            final ITimestamp start, final ITimestamp end,
+    public VType[] getSamples(final int key, final String name,
+            final Timestamp start, final Timestamp end,
             final boolean optimized, final int count) throws Exception
     {
     	final ValueRequest request;
@@ -178,7 +178,7 @@ public class ChannelArchiverReader implements ArchiveReader
             request = current_request;
         }
         request.read(xmlrpc);
-        final IValue result[] = request.getSamples();
+        final VType result[] = request.getSamples();
         synchronized (this)
         {
             current_request = null;
@@ -189,7 +189,7 @@ public class ChannelArchiverReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public ValueIterator getRawValues(final int key, final String name,
-            final ITimestamp start, final  ITimestamp end) throws Exception
+            final Timestamp start, final Timestamp end) throws Exception
     {
         return new ValueRequestIterator(this, key, name, start, end, false, 10);
     }
@@ -197,7 +197,7 @@ public class ChannelArchiverReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
-         final ITimestamp start, final ITimestamp end, final int count) throws Exception
+         final Timestamp start, final Timestamp end, final int count) throws Exception
     {
         return new ValueRequestIterator(this, key, name, start, end, true, count);
     }

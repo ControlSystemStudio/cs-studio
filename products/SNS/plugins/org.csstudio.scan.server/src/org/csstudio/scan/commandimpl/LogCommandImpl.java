@@ -24,7 +24,7 @@ import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** {@link ScanCommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir

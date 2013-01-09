@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.epics.vtype.AlarmSeverity;
 
 /** Handles the "archiver.info" request and its results.
  *  @author Kay Kasemir
@@ -78,13 +79,21 @@ final class ServerInfoRequest
 		for (Object sio : sevr_info)
 		{
 		    final Hashtable si = (Hashtable) sio;
-
-			String sevr_txt = (String)si.get("sevr");
+			final String txt = (String)si.get("sevr");
             // Patch "NO ALARM" into "OK"
-            if (sevr_txt.equals("NO_ALARM"))
-                sevr_txt = NO_ALARM;
+			AlarmSeverity severity;
+            if ("NO_ALARM".equals(txt)  ||  NO_ALARM.equals(txt))
+            	severity = AlarmSeverity.NONE;
+            else if ("MINOR".equals(txt))
+            	severity = AlarmSeverity.MINOR;
+            else if ("MAJOR".equals(txt))
+            	severity = AlarmSeverity.MAJOR;
+            else if ("MAJOR".equals(txt))
+            	severity = AlarmSeverity.INVALID;
+            else
+            	severity = AlarmSeverity.UNDEFINED;
 			severities.put((Integer) si.get("num"),
-					      new SeverityImpl(sevr_txt,
+					      new SeverityImpl(severity, txt,
 							              (Boolean)si.get("has_value"),
 							              (Boolean)si.get("txt_stat")
 							              ));
@@ -121,7 +130,7 @@ final class ServerInfoRequest
         final SeverityImpl sev = severities.get(Integer.valueOf(severity));
         if (sev != null)
             return sev;
-        return new SeverityImpl(
+        return new SeverityImpl(AlarmSeverity.UNDEFINED,
                         "<Severity " + severity + "?>",
                         false, false);
 	}

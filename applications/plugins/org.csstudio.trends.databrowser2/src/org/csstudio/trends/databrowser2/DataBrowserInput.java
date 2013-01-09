@@ -3,6 +3,9 @@ package org.csstudio.trends.databrowser2;
 import java.io.InputStream;
 
 import org.csstudio.trends.databrowser2.util.ResourceUtil;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
@@ -55,7 +58,18 @@ public class DataBrowserInput implements IDataBrowserInput {
 		return ResourceUtil.pathToInputStream(getPath(), false);
 	}
 
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter)
+	{
+	    // For 'Save' to work after 'SaveAs', the
+	    // input must adapt to IFile.
+	    // For details see DataBrowserEditor#doSave()
+	    if (adapter == IFile.class)
+	    {
+	        final IResource resource = ResourcesPlugin.getWorkspace().getRoot()
+                    .findMember(path, false);
+            if (resource != null  &&  resource instanceof IFile)
+                return resource;
+	    }
 		return null;
 	}
 
