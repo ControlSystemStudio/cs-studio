@@ -51,5 +51,5 @@ public interface DataSourceTypeAdapter<ConnectionPayload, MessagePayload> {
      * @param message the payload of each message
      * @return true if a new value was stored
      */
-    boolean updateCache(ValueCache cache, ConnectionPayload connection, MessagePayload message);
+    boolean updateCache(ValueCache<?> cache, ConnectionPayload connection, MessagePayload message);
 }

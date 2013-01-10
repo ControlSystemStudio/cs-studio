@@ -10,16 +10,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represent part of the write buffer that holds the value for one pv.
+ * Represent part of the write recipe that holds the value for one pv.
  *
  * @param <T> the payload type to be held in the cache
  * @author carcassi
  */
-public class WriteCache<T> extends WriteFunction<T> {
+public class WriteCache<T> implements WriteFunction<T> {
 
     /**
      * The value cached.
-     * Will be guarded by the overall write buffer is cache is part of.
+     * Will be guarded by the overall write recipe is cache is part of.
      */
     private T value;
     
@@ -63,7 +63,7 @@ public class WriteCache<T> extends WriteFunction<T> {
      * @param newValue the new value
      */
     @Override
-    public void setValue(T newValue) {
+    public void writeValue(T newValue) {
         this.value = newValue;
     }
 
@@ -78,7 +78,7 @@ public class WriteCache<T> extends WriteFunction<T> {
     }
 
     /**
-     * Returns all the channels in the same buffer that should be written
+     * Returns all the channels in the same recipe that should be written
      * before writing the channel for this cache.
      * 
      * @return a list of channel names
@@ -93,6 +93,8 @@ public class WriteCache<T> extends WriteFunction<T> {
      * @return the channel name
      */
     public String getChannelName() {
+        // TODO: to remove. The name should not be taken here because
+        // the datasource may redirect it
         return channelName;
     }
     

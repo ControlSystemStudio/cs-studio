@@ -4,9 +4,10 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.expression.WriteExpressionImpl;
-import org.epics.pvmanager.expression.WriteExpression;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
+import org.epics.pvmanager.expression.WriteExpression;
 import org.epics.pvmanager.util.Executors;
 import org.epics.util.time.TimeDuration;
 
@@ -31,47 +32,66 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout for write operation.
+     * <p>
+     * For more details, consult {@link #timeout(org.epics.util.time.TimeDuration, java.lang.String) }.
+     *
+     * @param timeout the duration of the timeout; can't be null
+     * @return this expression
+     */
     @Override
     public PVWriterConfiguration<T> timeout(TimeDuration timeout) {
         super.timeout(timeout);
         return this;
     }
 
+    /**
+     * Sets a timeout for write operations.
+     * <p>
+     * When a write operation lasts longer than the given timeout, a notification
+     * is sent with a {@link TimeoutException}. Note that, in the current implementation,
+     * the write is not cancelled and may still trigger a second notification.
+     * With a synch write, the method returns at the timeout expiration with
+     * the exception.
+     *
+     * @param timeout the duration of the timeout; can't be null
+     * @param timeoutMessage the message for the reported timeout
+     * @return this expression
+     */
     @Override
     public PVWriterConfiguration<T> timeout(TimeDuration timeout, String timeoutMessage) {
-        super.timeout(timeout, timeoutMessage);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVWriterConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
-        super.timeout(timeout);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVWriterConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
         super.timeout(timeout, timeoutMessage);
         return this;
     }
     
     private WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
+    private List<PVWriterListener<T>> writeListeners = new ArrayList<>();
 
     PVWriterConfiguration(WriteExpression<T> writeExpression) {
         this.writeExpression = writeExpression;
+    }
+    
+    /**
+     * Adds a listener notified for any writer event (write result, connection and errors).
+     * <p>
+     * Registering a listener here guarantees that no event is ever missed.
+     * 
+     * @param listener the listener to register
+     * @return this expression
+     */
+    public PVWriterConfiguration<T> writeListener(PVWriterListener<? extends T> listener) {
+        @SuppressWarnings("unchecked")
+        PVWriterListener<T> convertedListener = (PVWriterListener<T>) listener;
+        writeListeners.add(convertedListener);
+        return this;
     }
 
     /**
      * Forwards exception to the given exception handler. No thread switch
      * is done, so the handler is notified on the thread where the exception
      * was thrown.
-     * <p>
-     * Giving a custom exception handler will disable the default handler,
-     * so {@link PVWriter#lastWriteException() } is no longer set and no notification
-     * is done.
      *
      * @param exceptionHandler an exception handler
      * @return this
@@ -89,20 +109,22 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
 
         // Create PVReader and connect
         PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
-        WriteBuffer writeBuffer = writeExpression.createWriteBuffer();
-        if (exceptionHandler == null) {
-            exceptionHandler = ExceptionHandler.createDefaultExceptionHandler(pvWriter, notificationExecutor);
+        for (PVWriterListener<T> pVWriterListener : writeListeners) {
+            pvWriter.addPVWriterListener(pVWriterListener);
         }
-        WriteFunction<T> writeFunction =writeExpression.getWriteFunction();
+        WriteFunction<T> writeFunction = writeExpression.getWriteFunction();
 
-        try {
-            if (timeoutMessage == null)
-                timeoutMessage = "Write timeout";
-            pvWriter.setWriteDirector(new WriteDirector<T>(writeFunction, writeBuffer, source, PVManager.getAsyncWriteExecutor(), exceptionHandler,
-                    timeout, timeoutMessage));
-        } catch (Exception ex) {
-            exceptionHandler.handleException(ex);
-        }
+        
+        // TODO: we are ignoring the exception handler for now
+        
+        if (timeoutMessage == null)
+            timeoutMessage = "Write timeout";
+        PVWriterDirector<T> writerDirector = new PVWriterDirector<T>(pvWriter, writeFunction, dataSource, PVManager.getAsyncWriteExecutor(),
+                notificationExecutor, PVManager.getReadScannerExecutorService(), timeout, timeoutMessage);
+        writerDirector.connectExpression(writeExpression);
+        writerDirector.startScan(TimeDuration.ofMillis(100));
+        pvWriter.setWriteDirector(writerDirector);
+        
         return pvWriter;
     }
 

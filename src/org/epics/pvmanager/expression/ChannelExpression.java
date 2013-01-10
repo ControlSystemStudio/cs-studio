@@ -5,7 +5,7 @@
 package org.epics.pvmanager.expression;
 
 import java.util.Arrays;
-import org.epics.pvmanager.ValueCache;
+import org.epics.pvmanager.ValueCacheImpl;
 import org.epics.pvmanager.WriteCache;
 
 /**
@@ -40,7 +40,7 @@ public class ChannelExpression<R, W> extends SourceRateReadWriteExpressionImpl<R
      * @param writeClass type of the write payload
      */
     public ChannelExpression(Class<R> readClass, Class<W> writeClass) {
-        super(new SourceRateExpressionImpl<R>(new SourceRateExpressionListImpl<Object>(), new ValueCache<R>(readClass), "null"),
+        super(new SourceRateExpressionImpl<R>(new SourceRateExpressionListImpl<Object>(), new ValueCacheImpl<R>(readClass), "null"),
                 new WriteExpressionImpl<W>(new WriteExpressionListImpl<Object>(), new WriteCache<W>(), "null"));
     }
     

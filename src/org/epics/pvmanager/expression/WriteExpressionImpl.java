@@ -4,14 +4,12 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.WriteBufferBuilder;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.epics.pvmanager.WriteBuffer;
+import org.epics.pvmanager.PVWriterDirector;
 import org.epics.pvmanager.WriteCache;
 import org.epics.pvmanager.WriteFunction;
+import org.epics.pvmanager.WriteRecipeBuilder;
 
 /**
  * Implementation class for {@link WriteExpression}.
@@ -105,16 +103,13 @@ public class WriteExpressionImpl<W> extends WriteExpressionListImpl<W> implement
         return writeFunction;
     }
 
-    /**
-     * Creates a data recipe for the given expression.
-     *
-     * @return a data recipe
-     */
     @Override
-    public final WriteBuffer createWriteBuffer() {
-        WriteBufferBuilder buffer = new WriteBufferBuilder();
-        buffer.addCaches(writeCaches);
-        return buffer.build();
+    public void fillWriteRecipe(PVWriterDirector director, WriteRecipeBuilder builder) {
+        for (Map.Entry<String, WriteCache<?>> entry : writeCaches.entrySet()) {
+            String channelName = entry.getKey();
+            WriteCache<? extends Object> writeCache = entry.getValue();
+            builder.addChannel(channelName, writeCache);
+        }
     }
 
     @Override

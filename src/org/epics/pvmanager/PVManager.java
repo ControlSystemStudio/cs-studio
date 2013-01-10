@@ -4,14 +4,14 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.WriteExpression;
-import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.pvmanager.expression.SourceRateReadWriteExpression;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
+import org.epics.pvmanager.expression.SourceRateExpression;
+import org.epics.pvmanager.expression.SourceRateReadWriteExpression;
+import org.epics.pvmanager.expression.WriteExpression;
 
 /**
  * Entry point for the library, manages the defaults and allows to create
