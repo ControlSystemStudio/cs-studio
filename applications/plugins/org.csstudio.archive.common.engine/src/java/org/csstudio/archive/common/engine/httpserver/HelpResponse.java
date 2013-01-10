@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.domain.desy.epics.pvmanager.DesyTypeFactoryProvider;
 
 /**
  * TODO (bknerr) :
@@ -283,7 +282,9 @@ public class HelpResponse extends AbstractResponse {
                 "",
                 AddChannelResponse.PARAM_DATATYPE,
                 Messages.HTTP_NO,
-                "Java datatype of the channel, as such or as ArrayList<?> out of:\n" + DesyTypeFactoryProvider.getInstalledTargetTypes(),
+                // TODO (2012-10-26 jp adapted to new pvmanager)
+                // "Java datatype of the channel, as such or as ArrayList<?> out of:\n" + DesyTypeFactoryProvider.getInstalledTargetTypes(),
+                "Java datatype of the channel, as such or as ArrayList<?> out of: NOT IMPLEMENTED\n",
         });
         html.tableLine(new String[] {
                 "",

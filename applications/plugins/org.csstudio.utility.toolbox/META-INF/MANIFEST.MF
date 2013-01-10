@@ -24,10 +24,16 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.toolbox.common,
+ org.csstudio.utility.toolbox.entities,
  org.csstudio.utility.toolbox.framework,
  org.csstudio.utility.toolbox.framework.binding,
+ org.csstudio.utility.toolbox.framework.editor,
+ org.csstudio.utility.toolbox.framework.jpa,
  org.csstudio.utility.toolbox.framework.property,
+ org.csstudio.utility.toolbox.framework.searchterm,
  org.csstudio.utility.toolbox.framework.template,
  org.csstudio.utility.toolbox.func,
+ org.csstudio.utility.toolbox.guice,
+ org.csstudio.utility.toolbox.services,
  org.csstudio.utility.toolbox.view,
  org.csstudio.utility.toolbox.view.forms

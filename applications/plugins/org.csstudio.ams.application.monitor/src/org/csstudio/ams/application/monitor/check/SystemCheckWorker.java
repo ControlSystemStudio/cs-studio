@@ -56,7 +56,8 @@ public class SystemCheckWorker extends Thread {
     public SystemCheckWorker(ISessionService xmpp, String ws) {
         amsCheckProcessor = new AmsCheckProcessor("AmsSystemCheck", ws);
         long interval = AmsMonitorPreference.SMS_CHECK_INTERVAL.getValue();
-        smsCheckProcessor = new NewSmsCheckProcessor("SmsDeliveryWorkerCheck", ws, interval);
+        boolean blockCheck = AmsMonitorPreference.BLOCK_MODEM_CHECK.getValue();
+        smsCheckProcessor = new NewSmsCheckProcessor("SmsDeliveryWorkerCheck", ws, interval, blockCheck);
         xmppService = xmpp;
     }
     

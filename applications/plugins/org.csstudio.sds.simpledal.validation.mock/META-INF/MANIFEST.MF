@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ProcessVariableAddressValidationMock
+Bundle-SymbolicName: org.csstudio.sds.simpledal.validation.mock
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.sds.simpledal.validation.mock.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0"
+Require-Bundle: org.csstudio.platform.simpledal;bundle-version="1.0.0"

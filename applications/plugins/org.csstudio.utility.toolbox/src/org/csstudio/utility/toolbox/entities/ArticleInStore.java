@@ -16,13 +16,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_in_lager")
 @NamedQueries({
-	@NamedQuery(name = ArticleInStore.FIND_RECORD, query = "from ArticleInStore a where a.artikelDatenId = ? order by id desc")}
+	@NamedQuery(name = ArticleInStore.FIND_RECORD, query = "from ArticleInStore a where a.artikelDatenId = :artikelDatenId order by id desc")}
 )
 @Entity
 public class ArticleInStore  extends BindingEntity implements ArticleHistoryInfo {
@@ -131,7 +131,7 @@ public class ArticleInStore  extends BindingEntity implements ArticleHistoryInfo
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatusDescritpion() {
 		return "In Lager";
 	}
 	

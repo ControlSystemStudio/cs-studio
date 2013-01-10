@@ -69,7 +69,7 @@ public class ContainsDialog extends TitleAreaDialog {
 
 	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		createColumns(parent, viewer);
+		createColumns();
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -92,11 +92,11 @@ public class ContainsDialog extends TitleAreaDialog {
 	}
 
 	// This will create the columns for the table
-	private void createColumns(final Composite parent, final TableViewer viewer) {
+	private void createColumns() {
 		String[] titles = { "Internal-ID", "Description"};
 		int[] bounds = {100,500};
 
-		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
+		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0]);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -105,7 +105,7 @@ public class ContainsDialog extends TitleAreaDialog {
 			}
 		});
 
-		col = createTableViewerColumn(titles[1], bounds[1], 0);
+		col = createTableViewerColumn(titles[1], bounds[1]);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -117,7 +117,7 @@ public class ContainsDialog extends TitleAreaDialog {
 
 	}
 
-	private TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
+	private TableViewerColumn createTableViewerColumn(String title, int bound) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 		final TableColumn column = viewerColumn.getColumn();
 		column.setText(title);

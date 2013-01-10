@@ -87,6 +87,7 @@ public class AmsPreferenceKey
 
 	// external topics
 	public static final String P_JMS_EXT_TOPIC_ALARM = "jmsExternTopicAlarm";
+    public static final String P_JMS_EXT_TOPIC_ALARM_REINSERT = "jmsExternTopicAlarmReInsert";
 	public static final String P_JMS_EXT_TSUB_ALARM_FMR = "jmsExternTSubAlarmFmr";
 	public static final String P_JMS_EXT_TOPIC_COMMAND = "jmsExternTopicCommand";
 	public static final String P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD = "jmsExternTSubCmdFmrStartReload";

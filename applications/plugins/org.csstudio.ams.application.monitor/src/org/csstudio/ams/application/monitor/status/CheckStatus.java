@@ -45,7 +45,10 @@ public enum CheckStatus {
     ERROR,
     
     /** The last check has caused a restart of AMS */
-    RESTARTED;
+    RESTARTED,
+    
+    /** The restart of the AMS failed. */
+    RESTART_FAILD;
     
     public static CheckStatus getCheckStatusByName(String name) {
         CheckStatus result = CheckStatus.UNDEFINED;

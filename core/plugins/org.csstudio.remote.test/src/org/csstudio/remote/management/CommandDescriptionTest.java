@@ -27,9 +27,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.remote.management.CommandDescription;
-import org.csstudio.remote.management.CommandParameterDefinition;
-import org.csstudio.remote.management.CommandParameterType;
 import org.junit.Test;
 
 

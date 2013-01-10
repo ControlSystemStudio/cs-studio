@@ -52,7 +52,7 @@ import org.eclipse.core.runtime.Platform;
 public class ResultDispatcher {
 
 	private static final String EXTENSION_POINT_ID = 
-		"org.csstudio.platform.managementCommandResultReceivers";
+		"org.csstudio.remote.managementCommandResultReceivers";
 	
 	private final Map<String, IResultReceiver> _presetReceivers;
 	private final Map<String, IResultReceiver> _extensionReceivers;

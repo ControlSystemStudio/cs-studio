@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * @author Alexander Will
  *
  */
-public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {// implements IProcessVariableWithSamples {
+public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TextInputEditPart.class);
 
@@ -120,77 +120,9 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {// 
 		// entering a value is only allowed in run mode and when the widget is
 		// enabled
 		if ((type != null) && (type.equals(RequestConstants.REQ_OPEN) || type.equals(RequestConstants.REQ_DIRECT_EDIT))) {
-			// if (getExecutionMode() == ExecutionMode.RUN_MODE &&
-			// getCastedModel().isEnabled()) {
 			performDirectEdit();
-			// } else if(getExecutionMode() == ExecutionMode.EDIT_MODE){
-			// performEditTextValue();
-			// }
 		}
 	}
-
-	// private void performEditTextValue() {
-	// CellEditor cellEditor = createCellEditor2();
-	// locateCellEditor(cellEditor);
-	// cellEditor.activate();
-	// cellEditor.setFocus();
-	// }
-
-	// private CellEditor createCellEditor2() {
-	// final CellEditor result = new TextCellEditor((Composite) getViewer()
-	// .getControl());
-	//
-	// // init cell editor...
-	//		String currentValue = "N/A"; //$NON-NLS-1$
-	// WidgetProperty inputTextProperty = getWidgetModel().getProperty(
-	// TextInputModel.PROP_INPUT_TEXT);
-	//
-	// if (inputTextProperty != null) {
-	// currentValue = inputTextProperty.getPropertyValue().toString();
-	// }
-	//
-	// result.setValue(currentValue);
-	// final Text text = (Text) result.getControl();
-	// // input text
-	// text.addKeyListener(new KeyAdapter() {
-	// @Override
-	// public void keyPressed(final KeyEvent e) {
-	// if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-	// getWidgetModel().setPropertyValue(
-	// TextInputModel.PROP_INPUT_TEXT, text.getText());
-	// } else if (e.keyCode == SWT.ESC) {
-	// result.deactivate();
-	// }
-	// }
-	//
-	// });
-	// // get the chosen font
-	// FontData fontData = (FontData) getWidgetModel().getProperty(
-	// TextInputModel.PROP_FONT).getPropertyValue();
-	// Font font = CustomMediaFactory.getInstance().getFont(
-	// new FontData[] { fontData });
-	//
-	// // get the chosen foreground color
-	// Color foregroundColor = CustomMediaFactory.getInstance().getColor(
-	// getWidgetModel().getForegroundColor());
-	//
-	// // get the chosen background color
-	// RGB backgroundRgb = getWidgetModel().getBackgroundColor();
-	//
-	// int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
-	// int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
-	// int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
-	//
-	// Color backgroundColor = CustomMediaFactory.getInstance().getColor(
-	// new RGB(red, green, blue));
-	//
-	// text.setForeground(foregroundColor);
-	// text.setBackground(backgroundColor);
-	// text.setFont(font);
-	// text.selectAll();
-	//
-	// return result;
-	// }
 
 	/**
 	 * Open the cell editor for direct editing.
@@ -498,7 +430,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {// 
 			try {
 				value = Double.parseDouble(model.getInputText());
 			} catch (NumberFormatException e) {
-				// The interface IProcessVariableWithSamples doesn't define
+				// ProcessVariableWithSamples doesn't define
 				// what to do in case of error and there aren't any declared
 				// checked exceptions for this method. So, the best we can
 				// do is to rethrow an unchecked exception and hope that the

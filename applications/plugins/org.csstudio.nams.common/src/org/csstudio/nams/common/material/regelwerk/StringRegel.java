@@ -5,11 +5,9 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
@@ -23,8 +21,8 @@ public class StringRegel implements VersandRegel {
 
 	private static ILogger logger;
 
-	public static void staticInject(final ILogger logger) {
-		StringRegel.logger = logger;
+	public static void staticInject(final ILogger o) {
+		StringRegel.logger = o;
 	}
 
 	private final StringRegelOperator operator;
@@ -32,11 +30,14 @@ public class StringRegel implements VersandRegel {
 
 	private final MessageKeyEnum messageKey;
 
+	private final SimpleDateFormat amsDateFormat; 
+	
 	public StringRegel(final StringRegelOperator operator,
 			final MessageKeyEnum messageKey, final String compareString) {
 		this.operator = operator;
 		this.messageKey = messageKey;
 		this.compareString = compareString;
+		this.amsDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	}
 
 	/*
@@ -82,55 +83,80 @@ public class StringRegel implements VersandRegel {
 
 		try {
 			switch (this.operator) {
-			// text compare
-			case OPERATOR_TEXT_EQUAL:
-				istGueltig = this.wildcardStringCompare(value,
-						this.compareString);
-				break;
-			case OPERATOR_TEXT_NOT_EQUAL:
-				istGueltig = !this.wildcardStringCompare(value,
-						this.compareString);
-				break;
+			
+			    // text compare
+			    case OPERATOR_TEXT_EQUAL:
+			        istGueltig = this.wildcardStringCompare(value,
+					this.compareString);
+			        break;
+			    case OPERATOR_TEXT_NOT_EQUAL:
+			        istGueltig = !this.wildcardStringCompare(value,
+					this.compareString);
+			        break;
 
-			// numeric compare
-			case OPERATOR_NUMERIC_LT:
-				istGueltig = this.numericCompare(value, this.compareString) < 0;
-				break;
-			case OPERATOR_NUMERIC_LT_EQUAL:
-				istGueltig = this.numericCompare(value, this.compareString) <= 0;
-				break;
-			case OPERATOR_NUMERIC_EQUAL:
-				istGueltig = this.numericCompare(value, this.compareString) == 0;
-				break;
-			case OPERATOR_NUMERIC_GT_EQUAL:
-				istGueltig = this.numericCompare(value, this.compareString) >= 0;
-				break;
-			case OPERATOR_NUMERIC_GT:
-				istGueltig = this.numericCompare(value, this.compareString) > 0;
-				break;
-			case OPERATOR_NUMERIC_NOT_EQUAL:
-				istGueltig = this.numericCompare(value, this.compareString) != 0;
-				break;
+	            // numeric compare
+	            case OPERATOR_NUMERIC_LT:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) < 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
+	            case OPERATOR_NUMERIC_LT_EQUAL:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) <= 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
+	            case OPERATOR_NUMERIC_EQUAL:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) == 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
+	            case OPERATOR_NUMERIC_GT_EQUAL:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) >= 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
+	            case OPERATOR_NUMERIC_GT:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) > 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
+	            case OPERATOR_NUMERIC_NOT_EQUAL:
+	                if (!value.isEmpty()) {
+	                    istGueltig = this.numericCompare(value, this.compareString) != 0;
+	                } else {
+	                    istGueltig = false;
+	                }
+	                break;
 
-			// time compare
-			case OPERATOR_TIME_BEFORE:
-				istGueltig = this.timeCompare(value, this.compareString) < 0;
-				break;
-			case OPERATOR_TIME_BEFORE_EQUAL:
-				istGueltig = this.timeCompare(value, this.compareString) <= 0;
-				break;
-			case OPERATOR_TIME_EQUAL:
-				istGueltig = this.timeCompare(value, this.compareString) == 0;
-				break;
-			case OPERATOR_TIME_AFTER_EQUAL:
-				istGueltig = this.timeCompare(value, this.compareString) >= 0;
-				break;
-			case OPERATOR_TIME_AFTER:
-				istGueltig = this.timeCompare(value, this.compareString) > 0;
-				break;
-			case OPERATOR_TIME_NOT_EQUAL:
-				istGueltig = this.timeCompare(value, this.compareString) != 0;
-				break;
+    			// time compare
+    			case OPERATOR_TIME_BEFORE:
+    				istGueltig = this.timeCompare(value, this.compareString) < 0;
+    				break;
+    			case OPERATOR_TIME_BEFORE_EQUAL:
+    				istGueltig = this.timeCompare(value, this.compareString) <= 0;
+    				break;
+    			case OPERATOR_TIME_EQUAL:
+    				istGueltig = this.timeCompare(value, this.compareString) == 0;
+    				break;
+    			case OPERATOR_TIME_AFTER_EQUAL:
+    				istGueltig = this.timeCompare(value, this.compareString) >= 0;
+    				break;
+    			case OPERATOR_TIME_AFTER:
+    				istGueltig = this.timeCompare(value, this.compareString) > 0;
+    				break;
+    			case OPERATOR_TIME_NOT_EQUAL:
+    				istGueltig = this.timeCompare(value, this.compareString) != 0;
+    				break;
 			}
 		} catch (final Exception e) {
             if(StringRegel.logger != null) {
@@ -162,20 +188,23 @@ public class StringRegel implements VersandRegel {
 		return stringBuilder.toString();
 	}
 
-	private int numericCompare(final String value, final String compareString)
+	private int numericCompare(final String value, final String compare)
 			throws NumberFormatException {
 		final double dVal = Double.parseDouble(value);
-		final double dCompVal = Double.parseDouble(compareString);
+		final double dCompVal = Double.parseDouble(compare);
 
 		return Double.compare(dVal, dCompVal);
 	}
 
-	private int timeCompare(final String value, final String compareString)
+	private int timeCompare(final String value, final String compare)
 			throws ParseException {
-		final Date dateValue = DateFormat.getDateInstance(DateFormat.SHORT,
-				Locale.US).parse(value);
-		final Date dateCompValue = DateFormat.getDateInstance(DateFormat.SHORT,
-				Locale.US).parse(compareString);
+//		final Date dateValue = DateFormat.getDateInstance(DateFormat.SHORT,
+//				Locale.US).parse(value);
+//		final Date dateCompValue = DateFormat.getDateInstance(DateFormat.SHORT,
+//				Locale.US).parse(compare);
+
+	    final Date dateValue = amsDateFormat.parse(value);
+	    final Date dateCompValue = amsDateFormat.parse(compare);
 
 		return dateValue.compareTo(dateCompValue);
 	}

@@ -190,6 +190,13 @@
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.alarm.table.dataModel.BasicMessage"
+            class="org.csstudio.alarm.table.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.csstudio.desy.startuphelper.startupListener">
@@ -198,5 +205,27 @@
             id="org.csstudio.alarm.table.startupMessageLists"
             isHighPriority="False">
       </startupService>
+   </extension>
+      <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.alarm.table.archivepopup"
+               icon="icons/archiveTable.png"
+               label="Archive Table"
+               style="push"
+               tooltip="Archive Table">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.alarm.table.ArchivePopupAction"
+            id="org.csstudio.alarm.table.archivepopup"
+            name="Archive Table">
+      </command>
    </extension>
 </plugin>

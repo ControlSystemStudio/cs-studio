@@ -29,7 +29,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.csdata;bundle-version="3.1.0",
  org.csstudio.desy.startuphelper;bundle-version="1.0.0",
- org.csstudio.domain.common;bundle-version="1.0.0"
+ org.csstudio.domain.common;bundle-version="1.0.0",
+ org.eclipse.nebula.widgets.gallery;bundle-version="0.5.3",
+ org.ehcache;bundle-version="2.5.2"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  libaries/jl1.0.jar

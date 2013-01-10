@@ -59,6 +59,8 @@ public class SearchTerm {
 	public String asJpaTerm(String alias) {
 		if (searchTermType == SearchTermType.STRING) {
 			return "Upper(" + getPropertyPath(alias) + ") LIKE '%" + value.toUpperCase(Locale.getDefault()) + "%'";
+		} else if (searchTermType == SearchTermType.STRING_IGNORE_FIRST_CHAR) {
+				return "Upper(" + getPropertyPath(alias) + ") LIKE '_" + value.toUpperCase(Locale.getDefault()) + "'";
 		} else if (searchTermType == SearchTermType.STRING_SEARCH_EXACT) {
 			return getPropertyPath(alias) + operator + "'" + value + "'";
 		} else if (searchTermType == SearchTermType.DATE) {
@@ -83,15 +85,15 @@ public class SearchTerm {
 	private String buildDateTerm(String alias) {
 		String dateTerm = value.replace(" ", "");
 		if (dateTerm.startsWith(">")) {
-			return getPropertyPath(alias) + "> to_date('" + dateTerm.substring(1) + "', 'dd.mm.yyyy')";
+			return getPropertyPath(alias) + " > to_date('" + dateTerm.substring(1) + "', 'dd.mm.yyyy')";
 		} else if (dateTerm.startsWith("<")) {
-			return getPropertyPath(alias) + "< to_date('" + dateTerm.substring(1) + "', 'dd.mm.yyyy')";
+			return getPropertyPath(alias) + " < to_date('" + dateTerm.substring(1) + "', 'dd.mm.yyyy')";
 		} else if (dateTerm.contains(",")) {
 			String[] parts = dateTerm.split(",");
-			return "((" + getPropertyPath(alias) + ">= to_date('" + parts[0] + "', 'dd.mm.yyyy'))" + " and ("
-						+ getPropertyPath(alias) + "<= to_date('" + parts[1] + "', 'dd.mm.yyyy')))";
+			return "((" + getPropertyPath(alias) + " >= to_date('" + parts[0] + "', 'dd.mm.yyyy'))" + " and ("
+						+ getPropertyPath(alias) + " <= to_date('" + parts[1] + "', 'dd.mm.yyyy')))";
 		} else {
-			return getPropertyPath(alias) + "= to_date('" + dateTerm + "', 'dd.mm.yyyy')";
+			return getPropertyPath(alias) + " = to_date('" + dateTerm + "', 'dd.mm.yyyy')";
 		}
 	}
 

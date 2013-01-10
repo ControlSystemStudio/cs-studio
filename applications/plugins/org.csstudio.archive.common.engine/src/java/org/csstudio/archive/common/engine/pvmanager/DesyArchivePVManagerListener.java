@@ -77,7 +77,7 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
     private String _startInfo;
     @SuppressWarnings("unused")
     private String _stopInfo;
-
+    private volatile boolean _isConnected;
     private final PVReader<?> _reader;
     /**
      * Constructor.
@@ -111,7 +111,20 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
             final List<EpicsSystemVariable> sysVars = (List<EpicsSystemVariable>) _reader.getValue();
             if (_firstConnection && !sysVars.isEmpty()) {
                 handleOnConnectionInformation(_provider, sysVars.get(0), _channelId, _buffer.isConnected(), _startInfo);
+                _isConnected = _buffer.isConnected();
                 _firstConnection = false;
+            }
+            //test connectionsstatus of the Channel
+            if (!_firstConnection && _isConnected != _buffer.isConnected()) {
+                _isConnected = _buffer.isConnected();
+                handleOnConnectionInformation(_provider,
+                                              sysVars.get(0),
+                                              _channelId,
+                                              _isConnected,
+                                              _startInfo);
+                _buffer.start(_startInfo);
+                _buffer.persistChannelStatusInfo(_channelId, _isConnected, _startInfo);
+
             }
             for (final EpicsSystemVariable sysVar : sysVars) {
                 handleValueUpdateInformation(sysVar);
@@ -187,7 +200,9 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void handleValueUpdateInformation(@Nonnull final EpicsSystemVariable pv) {
-
+        if(pv==null) {
+            return;
+        }
         final ArchiveSample<V, T> sample = createSampleFromValue(pv, _channelId);
         if (sample == null || sample.getValue() == null) {
             return;

@@ -132,7 +132,7 @@ public class IocRequester {
             value = -1;
         }
 
-        return ((value == 6) || (value == 11));
+        return ((value == 6) || (value == 11) || (value == 0));
     }
     
     public boolean askSecondRedundantIoc(String iocName) {
@@ -150,6 +150,6 @@ public class IocRequester {
             value = -1;
         }
 
-        return ((value == 0) || (value == 11));
+        return ((value == 6) || (value == 11) || (value == 0));
     }
 }

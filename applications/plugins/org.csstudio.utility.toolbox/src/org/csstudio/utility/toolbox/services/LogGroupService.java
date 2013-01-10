@@ -28,7 +28,7 @@ public class LogGroupService {
 	
 	public Option<LogGroup> findByEmail(String email) {
 		TypedQuery<LogGroup> query = em.createNamedQuery(LogGroup.FIND_BY_EMAIL, LogGroup.class);
-		query.setParameter(1, email);
+		query.setParameter("groupEmail", email);
 		List<LogGroup> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<LogGroup>();

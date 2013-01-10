@@ -26,13 +26,17 @@ import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.desy.startuphelper.CSSPlatformInfo;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -95,8 +99,21 @@ public class AmsVerifyView extends LogView {
         addJmsTopicItems(logTableManagementComposite);
         addVerifyItems(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
-
+        
         initializeMessageTable();
+        
+        new ControlSystemDragSource(_tableViewer.getTable()) {
+        	
+        	@Override
+        	public Object getSelection() {
+        		final Object[] o = ((IStructuredSelection) _tableViewer.getSelection()).toArray();
+        		final ProcessVariable[] pv = new ProcessVariable[o.length];
+        		for (int i=0; i<pv.length; ++i) {
+        			pv[i] = new ProcessVariable(((BasicMessage) o[i]).getName());
+        		}
+        		return pv;
+        	}
+        };
     }
 
     /**

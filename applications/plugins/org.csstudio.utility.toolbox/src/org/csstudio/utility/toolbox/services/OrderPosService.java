@@ -20,7 +20,7 @@ public class OrderPosService implements OrderPosFinder {
 	@ClearPersistenceContextOnReturn
 	public List<OrderPos> findByGruppeArtikel(BigDecimal gruppeArtikel) {
 		TypedQuery<OrderPos> query = em.createNamedQuery(OrderPos.FIND_IN_ARTIKEL_DATEN_ID, OrderPos.class);
-		query.setParameter(1, gruppeArtikel);
+		query.setParameter("artikelDatenId", gruppeArtikel);
 		return query.getResultList();		
 	}
 	
@@ -28,7 +28,7 @@ public class OrderPosService implements OrderPosFinder {
 	@Override
 	public List<OrderPos> findByBaNr(BigDecimal baNr) {
 		TypedQuery<OrderPos> query = em.createNamedQuery(OrderPos.FIND_BY_BA_NR, OrderPos.class);
-		query.setParameter(1, baNr);
+		query.setParameter("baNr", baNr);
 		return query.getResultList();		
 	}
 }

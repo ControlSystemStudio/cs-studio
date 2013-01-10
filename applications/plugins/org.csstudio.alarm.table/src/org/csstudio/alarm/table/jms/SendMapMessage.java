@@ -30,8 +30,8 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
-import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
+import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

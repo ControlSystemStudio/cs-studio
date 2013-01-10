@@ -138,12 +138,10 @@ public class ComboBuilder extends AbstractControlWithLabelBuilder<ComboBuilder> 
 		// set flag if we use binding or not
 		combo.setData(BuilderConstant.NO_BINDING, Boolean.valueOf(isNoBinding()));
 
-		if (selectFirst) {
-			if (combo.getSelectionIndex() == -1) {
-				combo.select(0);
-			}
+		if ((selectFirst) && (combo.getSelectionIndex() == -1)) {
+			combo.select(0);
 		}
-		
+
 		getProperties().put(getProperty(), combo);
 		viewers.put(getProperty(), comboViewer);
 

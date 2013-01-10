@@ -19,37 +19,49 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table;
+package org.csstudio.alarm.table;
 
 import org.csstudio.alarm.table.ui.ArchiveView;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.AdapterUtil;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/** Handle activation of archive view the object contrib. Context menu.
- *  @author Jan Hatje
+/**
+ * Handle activation of archive view the object contrib. Context menu.
+ * 
+ * @author Jan Hatje
  */
-//TODO jhatje: implement new datatype
-//public class ArchivePopupAction extends ProcessVariablePopupAction {
-//
-//	/** @see org.csstudio.data.exchange.ProcessVariablePopupAction#handlePVs(]) */
-//	@Override
-//	public void handlePVs(IProcessVariable[] pv_names)
-//	    {
-//	        if (pv_names.length < 1)
-//	            return;
-//	        IWorkbench workbench = PlatformUI.getWorkbench();
-//	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-//	        IWorkbenchPage page = window.getActivePage();
-//	        try
-//	        {
-//	            ArchiveView view = (ArchiveView) page.showView(ArchiveView.ID);
-//	            view.readDBFromExternalCall(pv_names[0]);
-//	        }
-//	        catch (Exception e)
-//	        {
-////	            Plugin.logException("Cannot open PVTreeView" , e);
-//	        }
-//	 }
-//}
+public class ArchivePopupAction extends AbstractHandler {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ArchivePopupAction.class);
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		IWorkbenchPage page = window.getActivePage();
+		final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+		final ProcessVariable[] pvs = AdapterUtil.convert(selection,
+				ProcessVariable.class);
+		ArchiveView view;
+		try {
+			view = (ArchiveView) page.showView(ArchiveView.ID);
+			view.readDBFromExternalCall(pvs[0]);
+		} catch (PartInitException e) {
+			LOG.error("Error opening Archive Table: " + e.toString());
+		}
+		return null;
+	}
+}

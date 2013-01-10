@@ -15,12 +15,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_in_wartung")
-@NamedQueries({ @NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = ? order by id desc") })
+@NamedQueries({ @NamedQuery(name = ArticleMaintenance.FIND_RECORD, query = "from ArticleMaintenance a where a.artikelDatenId = :artikelDatenId order by id desc") })
 @Entity
 public class ArticleMaintenance extends BindingEntity implements ArticleHistoryInfo {
 
@@ -82,14 +82,17 @@ public class ArticleMaintenance extends BindingEntity implements ArticleHistoryI
 	@Size(max = 200)
 	private String sendEmailTo;
 
-	@Column(name = "status_vom")
-	private Date statusVom;
-
 	@Column(name = "start_request")
 	private Date startRequest;
 
 	@Column(name = "finish_request")
 	private Date finishRequest;
+
+	@Column(name = "status")
+	private String status;
+
+	@Column(name = "status_vom")
+	private Date statusVom;
 
 	@Transient
 	private String repair;
@@ -244,6 +247,14 @@ public class ArticleMaintenance extends BindingEntity implements ArticleHistoryI
 		this.descLong = descLong;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Date getStatusVom() {
 		return statusVom;
 	}
@@ -345,7 +356,7 @@ public class ArticleMaintenance extends BindingEntity implements ArticleHistoryI
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatusDescritpion() {
 		return "In Reparatur";
 	}
 }

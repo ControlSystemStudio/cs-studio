@@ -17,13 +17,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Table(name = "artikel_ausgeliehen")
 @NamedQueries({
-	@NamedQuery(name = ArticleRented.FIND_RECORD, query = "from ArticleRented a where a.artikelDatenId = ? order by id desc")}
+	@NamedQuery(name = ArticleRented.FIND_RECORD, query = "from ArticleRented a where a.artikelDatenId = :artikelDatenId order by id desc")}
 )
 @Entity
 public class ArticleRented  extends BindingEntity implements ArticleHistoryInfo {
@@ -152,7 +152,7 @@ public class ArticleRented  extends BindingEntity implements ArticleHistoryInfo 
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatusDescritpion() {
 		return "Ausgeliehen";
 	}
 

@@ -10,15 +10,21 @@ package org.csstudio.common.trendplotter.ui;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import org.csstudio.common.trendplotter.model.IArchiveDataSource;
+import org.csstudio.common.trendplotter.model.ArchiveDataSource;
+import org.csstudio.common.trendplotter.model.AxisConfig;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.PlotSampleArray;
 import org.csstudio.common.trendplotter.model.PlotSamples;
 import org.csstudio.common.trendplotter.model.TestSampleBuilder;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IValue;
+import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Trace.TraceType;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -74,10 +80,95 @@ public class PlotUiPluginTest
         }
 
         @Override
-        public void droppedPVName(final String name, final IArchiveDataSource archive)
-        {
-            System.out.println("PV Name dropped: " + name);
+        public void droppedPVName(ProcessVariable name, ArchiveDataSource archive) {
+            // TODO Auto-generated method stub
+            
         }
+
+        @Override
+        public void droppedFilename(String file_name) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void xyGraphConfigChanged(XYGraph newValue) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void removeAnnotationChanged(Annotation oldValue) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void addAnnotationChanged(Annotation newValue) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void backgroundColorChanged(Color newValue) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void timeAxisForegroundColorChanged(Color oldColor, Color newColor) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void valueAxisForegroundColorChanged(int index, Color oldColor, Color newColor) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void valueAxisTitleChanged(int index, String oldTitle, String newTitle) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale, boolean newAutoScale) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void traceNameChanged(int index, String oldName, String newName) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void traceYAxisChanged(int index, AxisConfig oldConfig, AxisConfig config) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void traceTypeChanged(int index, TraceType old, TraceType newTraceType) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void traceColorChanged(int index, Color old, Color newColor) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void valueAxisLogScaleChanged(int index, boolean old, boolean logScale) {
+            // TODO Auto-generated method stub
+            
+        }
+
     };
 
     private void createGUI(final Composite parent)

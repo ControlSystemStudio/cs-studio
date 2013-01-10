@@ -5,7 +5,6 @@ import org.csstudio.utility.toolbox.entities.Firma;
 import org.csstudio.utility.toolbox.framework.controller.CrudController;
 import org.csstudio.utility.toolbox.framework.template.AbstractCrudEditorPartTemplate;
 import org.csstudio.utility.toolbox.func.Func1Void;
-import org.csstudio.utility.toolbox.func.Some;
 import org.csstudio.utility.toolbox.view.forms.FirmaGuiForm;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -46,10 +45,10 @@ public class FirmaEditorPart extends AbstractCrudEditorPartTemplate<Firma> imple
 		if (!getEditorInput().hasData()) {
 			throw new IllegalStateException("Data expected");
 		}
-		getEditorInput().processData(new Func1Void<Some<Firma>>() {			
+		getEditorInput().processData(new Func1Void<Firma>() {			
 			@Override
-			public void apply(Some<Firma> firma) {
-				Firma clone = firma.get().deepClone();
+			public void apply(Firma firma) {
+				Firma clone = firma.deepClone();
 				openFirmaEditorAction.runWith(clone);
 			}
 		});

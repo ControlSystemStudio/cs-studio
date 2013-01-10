@@ -137,7 +137,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
         if (_source != null) {
-            final ChannelHandler<?> channelHandler = _source.getChannels().get(_name);
+            final ChannelHandler channelHandler = _source.getChannels().get(_name);
             return channelHandler != null && channelHandler.isConnected();
         }
         return false;

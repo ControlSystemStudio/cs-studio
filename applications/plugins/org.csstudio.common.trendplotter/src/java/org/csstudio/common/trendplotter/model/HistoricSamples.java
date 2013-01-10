@@ -79,6 +79,9 @@ public class HistoricSamples extends PlotSamples
      *  @see #computeVisibleSize()
      */
     private int visible_size = 0;
+    
+    /** Waveform index */
+    private int waveform_index = 0;
 
     /**
      * Indicates that the historic samples are invalid and should be deleted.
@@ -124,7 +127,9 @@ public class HistoricSamples extends PlotSamples
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize(sample_map.get(request_type));
-        have_new_samples = true;
+        synchronized (this) {
+            have_new_samples = true;
+        }
     }
 
     /** Update visible size */
@@ -401,5 +406,19 @@ public class HistoricSamples extends PlotSamples
             }
         }
         return historicSampleList;
+    }
+    
+    /** @param index Waveform index to show */
+    public synchronized void setWaveformIndex(int index)
+    {
+        waveform_index = index;
+        // change the index of all samples in this instance
+        Set<RequestType> keySet = sample_map.keySet();
+        for (RequestType requestType : keySet) {
+            PlotSample[] samples = sample_map.get(request_type);
+            for (PlotSample sample: samples) {
+                sample.setWaveformIndex(waveform_index);
+            }
+        }
     }
 }

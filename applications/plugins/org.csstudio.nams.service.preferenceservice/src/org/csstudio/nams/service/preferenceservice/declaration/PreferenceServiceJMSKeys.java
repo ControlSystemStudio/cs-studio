@@ -48,7 +48,13 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId
 	P_JMS_EXT_TOPIC_ALARM("jmsExternTopicAlarm", //$NON-NLS-1$
 			Messages.PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_ALARM_label),
 
-	/**
+    /**
+     * Alarm source topic for re-insert.
+     */
+    P_JMS_EXT_TOPIC_ALARM_REINSERT("jmsExternTopicAlarmReInsert", //$NON-NLS-1$
+            Messages.PreferenceServiceJMSKeys_P_JMS_EXT_TOPIC_ALARM_label),
+
+		            /**
 	 * Alarm source topic subscriber.
 	 */
 	P_JMS_EXT_TSUB_ALARM("jmsExternTSubAlarmFmr", //$NON-NLS-1$

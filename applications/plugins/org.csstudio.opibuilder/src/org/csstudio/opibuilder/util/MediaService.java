@@ -209,7 +209,7 @@ public final class MediaService {
 		} catch (Exception e) {
 			String message = "Failed to read color definition file.";
 			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message);
+			ConsoleService.getInstance().writeWarning(message);
 		}
 	}
 
@@ -266,7 +266,7 @@ public final class MediaService {
 		} catch (Exception e) {
 			String message = "Failed to read font definition file.";
 			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message);
+			ConsoleService.getInstance().writeWarning(message);
 		}
 
 		String osname = getOSName();

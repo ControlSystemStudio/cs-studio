@@ -37,9 +37,6 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguratio
  * @author Joerg Rathlev
  */
 public final class ProcessVariableNode extends AbstractAlarmTreeNode implements IAlarmProcessVariableNode {
-// TODO jhatje: implement new datatype
-	//	IProcessVariable  {
-
 
 	/**
 	 * The active alarm for this node.
@@ -150,17 +147,6 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode implements 
         _listener = listener;
     }
 
-
-    /**
-	 * {@inheritDoc}
-	 */
-//	@Override
-    @Nonnull
-	public String getTypeId() {
-		// TODO jhatje: implement new datatype
-//		return IProcessVariable.TYPE_ID;
-		return null;
-	}
 
 	/**
 	 * {@inheritDoc}

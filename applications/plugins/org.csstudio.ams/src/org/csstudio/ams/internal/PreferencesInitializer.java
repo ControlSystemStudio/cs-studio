@@ -142,6 +142,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 
         // external topics
         node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM, "ALARM");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM_REINSERT, "ALARM");
         node.put(AmsPreferenceKey.P_JMS_EXT_TSUB_ALARM_FMR, "SUB_AMS_FILTERMANAGER");
         node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_COMMAND, "COMMAND");
         node.put(AmsPreferenceKey.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD, "SUB_AMS_CMD_FMR_START_RELOAD");

@@ -137,6 +137,12 @@ public class Messages extends NLS
     public static String FormulaLabelEditTT;
     public static String HideTraceWarning;
     public static String HideTraceWarningDetail;
+    public static String ImportActionFileSelectorTitleFmt;
+    public static String ImportActionLabelFmt;
+    public static String ImportDialogMessage;
+    public static String ImportedChannelBaseName;
+    public static String ImportTitle;
+    public static String ImportTypeLbl;
     public static String Information;
     public static String InspectSamples;
     public static String InvalidScanPeriodError;
@@ -179,6 +185,7 @@ public class Messages extends NLS
     public static String PrefPage_TraceLineWidth;
     public static String PrefPage_UpdatePeriod;
     public static String PrintSnapshot;
+    public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
     public static String RegularExpression;
@@ -209,6 +216,7 @@ public class Messages extends NLS
     public static String SearchArchiveConfirmFmt;
     public static String SearchChannelFmt;
     public static String SearchPatternConfirmMessage;
+    public static String SearchPatternEmptyMessage;
     public static String Search_URL;
     public static String Search_URL_TT;
     public static String SearchPattern;
@@ -248,10 +256,13 @@ public class Messages extends NLS
     public static String URL;
     public static String URL_Lbl;
     public static String UseDefaultArchives;
+    public static String UseDefaultArchives_Label;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
     public static String WaveformAmplitude;
+    public static String WaveformIndexCol;
+    public static String WaveformIndexColTT;
     public static String WaveformIndex;
     public static String WaveformStatus;
     public static String WaveformTimeSelector;

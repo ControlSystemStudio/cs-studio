@@ -8,6 +8,8 @@ import org.csstudio.utility.toolbox.entities.Lager;
 import org.csstudio.utility.toolbox.entities.Raum;
 import org.csstudio.utility.toolbox.framework.template.AbstractGuiFormTemplate;
 import org.csstudio.utility.toolbox.services.GebaeudeService;
+import org.csstudio.utility.toolbox.services.LogGroupService;
+import org.csstudio.utility.toolbox.services.LogUserService;
 import org.csstudio.utility.toolbox.view.forms.listener.BuildingModifyListener;
 import org.csstudio.utility.toolbox.view.forms.listener.RoomFocusListener;
 import org.eclipse.jface.viewers.TableViewer;
@@ -27,6 +29,12 @@ public class StoreGuiForm extends AbstractGuiFormTemplate<Lager> {
 	
 	@Inject
 	private RoomFocusListener roomFocusListener;
+	
+	@Inject
+	private LogGroupService logGroupService;
+	
+	@Inject
+	private LogUserService logUserService;
 	
 	@Override
 	protected void createEditComposite(Composite composite) {
@@ -77,6 +85,11 @@ public class StoreGuiForm extends AbstractGuiFormTemplate<Lager> {
 
 		setFocusWidget(name);
 
+		wf.combo(composite, "responsiblePerson").label("User:").data(logUserService.findAll()).hint("wrap").build();
+
+		wf.combo(composite, "groupOwner").label("Group:").data(logGroupService.findAll()).hint("wrap").build();
+
+		
 		Text building = wf.text(composite, "inGebaeude").label("Building:").data(gebaeudeService.findAll()).build();
 
 		Text room = wf.text(composite, "inRaum").label("Room:").hint("wrap").data(new ArrayList<Raum>())

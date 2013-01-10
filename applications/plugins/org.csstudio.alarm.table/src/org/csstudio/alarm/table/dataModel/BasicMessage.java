@@ -46,8 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author jhatje
  *
  */
-//TODO jhatje: implement new datatype
-public class BasicMessage extends PlatformObject{// implements IProcessVariable {
+public class BasicMessage extends PlatformObject {
     
     /**
      * The properties of the message.
@@ -132,17 +131,9 @@ public class BasicMessage extends PlatformObject{// implements IProcessVariable 
         // .get(SEVERITY.getDefiningName()));
     }
 
-//    TODO jhatje: implement new datatype
-//    @Override
     @CheckForNull
     public String getName() {
         return this.getProperty(NAME.getDefiningName()); //$NON-NLS-1$
-    }
-//    
-//    @Override
-    public String getTypeId() {
-    	return null;
-//        return TYPE_ID;
     }
     
     public Map<String, String> getHashMap() {

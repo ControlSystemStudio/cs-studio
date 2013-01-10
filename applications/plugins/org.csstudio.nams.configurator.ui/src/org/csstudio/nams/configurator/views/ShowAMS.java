@@ -1,41 +1,26 @@
 
 package org.csstudio.nams.configurator.views;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
-public class ShowAMS implements IWorkbenchWindowActionDelegate {
+public class ShowAMS extends AbstractHandler {
 
-    /** A workbench window handle. */
-    private IWorkbenchWindow _window;
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-    @Override
-    public void dispose() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void init(IWorkbenchWindow window) {
-        _window = window;
-    }
-
-    @Override
-    public void run(IAction action) {
-        try {
-            PlatformUI.getWorkbench().showPerspective(
-                    "org.csstudio.nams.newconfigurator.perspective", _window);
-        } catch (WorkbenchException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void selectionChanged(IAction action, ISelection selection) {
-        // TODO Auto-generated method stub
-    }
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+	    try {
+	        workbench.showPerspective("org.csstudio.nams.newconfigurator.perspective", window);
+	    } catch (WorkbenchException e) {
+			e.printStackTrace();
+		}
+	    return null;
+	}
 }

@@ -8,7 +8,9 @@
 package org.csstudio.common.trendplotter.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
@@ -17,6 +19,7 @@ import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.common.trendplotter.propsheet.AddArchiveAction;
 import org.csstudio.common.trendplotter.ui.TableHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -96,9 +99,17 @@ public abstract class ArchiveListGUI {
             connectToArchiveServer(urls.getText());
         }
 
-        // Archive table: Allow dragging of archive data sources and PVs
-//        TODO jhatje: implement new datatype
-//        new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
+        // Archive table: Allow dragging of multiple archive data sources
+        new ControlSystemDragSource(archive_table.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final Object[] objs = ((IStructuredSelection)archive_table.getSelection()).toArray();
+                final ArchiveDataSource[] archives = Arrays.copyOf(objs, objs.length, ArchiveDataSource[].class);
+                return archives;
+            }
+        };
     }
 
     /** Set initial focus */
@@ -160,6 +171,14 @@ public abstract class ArchiveListGUI {
                 cell.setText(archive.getName());
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+            @Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+                return item1.getName().compareTo(item2.getName());
+            }
+        };
         col = TableHelper.createColumn(table_layout,
                                        archive_table,
                                        Messages.ArchiveDescription,
@@ -172,6 +191,14 @@ public abstract class ArchiveListGUI {
                 cell.setText(archive.getDescription());
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+            @Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+                return item1.getDescription().compareTo(item2.getDescription());
+            }
+        };
         col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveKey, 35, 5);
         col.setLabelProvider(new CellLabelProvider() {
             @Override
@@ -180,6 +207,14 @@ public abstract class ArchiveListGUI {
                 cell.setText(Integer.toString(archive.getKey()));
             }
         });
+        new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
+        {
+            @Override
+            public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
+            {
+                return item1.getKey() - item2.getKey();
+            }
+        };
         final Table table = archive_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);

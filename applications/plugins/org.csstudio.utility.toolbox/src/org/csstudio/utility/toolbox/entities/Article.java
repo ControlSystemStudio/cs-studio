@@ -25,17 +25,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.InputLength;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.annotations.Immutable;
 
 @Table(name = "artikel_daten")
 @NamedQueries({
-			@NamedQuery(name = Article.FIND_IN_GROUP, query = "from Article a where a.gruppeArtikel = ? order by a.id"),
-			@NamedQuery(name = Article.FIND_WITH_INTERN_ID, query = "from Article a where a.internId = ?"),
-			@NamedQuery(name = Article.FIND_BY_ID, query = "from Article a where a.id = ?"),
-			@NamedQuery(name = Article.FIND_ALL_INSTALLED, query = "from ArticleInstalled a where a.artikelDatenId = ? order by id") })
+			@NamedQuery(name = Article.FIND_IN_GROUP, query = "from Article a where a.gruppeArtikel = :gruppeArtikel order by a.id"),
+			@NamedQuery(name = Article.FIND_WITH_INTERN_ID, query = "from Article a where a.internId = :internId"),
+			@NamedQuery(name = Article.FIND_BY_ID, query = "from Article a where a.id = :id"),
+			@NamedQuery(name = Article.FIND_ALL_INSTALLED, query = "from ArticleInstalled a where a.artikelDatenId = :artikelDatenId order by id") })
 @Entity
 public class Article extends BindingEntity implements TextValue, Cloneable<Article> {
 
@@ -62,6 +63,7 @@ public class Article extends BindingEntity implements TextValue, Cloneable<Artic
 	private BigDecimal gruppeArtikel;
 
 	@Column(name = "inventar_nr")
+	@InputLength(10)
 	private BigDecimal inventarNr;
 
 	@Column(name = "gruppe")

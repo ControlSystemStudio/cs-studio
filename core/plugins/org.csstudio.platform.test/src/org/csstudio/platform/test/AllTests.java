@@ -7,10 +7,6 @@ import org.csstudio.platform.internal.model.ProcessVariableFactoryTest;
 import org.csstudio.platform.internal.model.ProcessVariableTest;
 import org.csstudio.platform.logging.CentralLoggerTest;
 import org.csstudio.platform.logging.JMSLogThreadTest;
-import org.csstudio.platform.management.CommandDescriptionTest;
-import org.csstudio.platform.management.CommandParameterDefinitionTest;
-import org.csstudio.platform.management.CommandParameterEnumValueTest;
-import org.csstudio.platform.management.CommandParametersTest;
 import org.csstudio.platform.util.StringUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -32,8 +28,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		CentralLoggerTest.class, ArchiveDataSourceFactoryTest.class,
 //		ValueTest.class,
 //		AbstractProcessVariableNameParserTest.class,
-		StringUtilTest.class, CommandDescriptionTest.class,
-		CommandParameterDefinitionTest.class,
-		CommandParameterEnumValueTest.class, CommandParametersTest.class})
+		StringUtilTest.class})
 public class AllTests {
 }

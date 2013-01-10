@@ -101,6 +101,18 @@ public class ModelListenerHeadlessTest
             System.out.println("Scrolling turned " + (scroll_enabled ? "on" : "off"));
             ++changes;
         }
+        
+        @Override
+        public void changedAnnotations() {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void changedXYGraphConfig() {
+            // TODO Auto-generated method stub
+
+        }
     };
 
     /** Test if listener is invoked as expected */
@@ -169,6 +181,10 @@ public class ModelListenerHeadlessTest
         item.setVisible(false);
         assertEquals(8, changes);
 
+        // Change waveform index
+        item.setWaveformIndex(1);
+        assertEquals(9, changes);
+
         // Remove
         assertEquals(0, removals);
         model.removeItem(item);
@@ -187,9 +203,9 @@ public class ModelListenerHeadlessTest
 
         // Change model some more
         model.setUpdatePeriod(10.0);
-        assertEquals(9, changes);
+        assertEquals(10, changes);
 
         model.setPlotBackground(new RGB(1,2,3));
-        assertEquals(10, changes);
+        assertEquals(11, changes);
     }
 }

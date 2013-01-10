@@ -11,6 +11,7 @@ import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.ArchiveRescale;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -31,7 +32,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(FieldEditorPreferencePage.GRID);
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.PLUGIN_ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.PLUGIN_ID));
         setMessage(Messages.PrefPage_Title);
     }
 
@@ -170,5 +171,11 @@ public class PreferencePage extends FieldEditorPreferencePage
                 new int[] { 100, 50, 500 },
                 new ArchiveDataSourceEditor(parent.getShell()));
         addField(archives);
+        
+        addField(new BooleanFieldEditor(Preferences.PROMPT_FOR_ERRORS,
+                                        Messages.PromptForErrors_Label, parent));
+
+        addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
+                                        Messages.UseDefaultArchives_Label, parent));
     }
 }

@@ -20,13 +20,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 
 @Table(name = "BA_POSITION")
 @NamedQueries({
-	@NamedQuery(name = OrderPos.FIND_IN_ARTIKEL_DATEN_ID, query = "from OrderPos o where o.artikelDatenId = ?"),
-	@NamedQuery(name = OrderPos.FIND_BY_BA_NR, query = "from OrderPos o where o.baNr = ?") })
+	@NamedQuery(name = OrderPos.FIND_IN_ARTIKEL_DATEN_ID, query = "from OrderPos o where o.artikelDatenId = :artikelDatenId"),
+	@NamedQuery(name = OrderPos.FIND_BY_BA_NR, query = "from OrderPos o where o.baNr = :baNr") })
 @Entity
 public class OrderPos extends BindingEntity implements Cloneable<OrderPos> {
 

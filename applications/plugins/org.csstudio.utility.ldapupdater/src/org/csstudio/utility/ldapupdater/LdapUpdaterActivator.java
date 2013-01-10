@@ -100,17 +100,12 @@ public class LdapUpdaterActivator implements BundleActivator {
         _genericServiceTracker =
             new GenericServiceTracker<ISessionService>(context, ISessionService.class);
         _genericServiceTracker.open();
-
-
         _servicesProvider =
             new LdapUpdaterServicesProvider(_ldapServiceTracker);
         final Injector injector = Guice.createInjector(new LdapUpdaterModule(_servicesProvider));
         _ldapUpdaterFileService = injector.getInstance(LdapUpdaterFileServiceImpl.class);
         _ldapUpdaterService = injector.getInstance(LdapUpdaterServiceImpl.class);
     }
-
-
-
 
     /**
      * {@inheritDoc}

@@ -40,12 +40,6 @@ public class PreferenceConstants {
     public static final String JMS_PRODUCER_URL = "jmsProducerUrl";
     public static final String JMS_TOPIC_NAMES = "jmsTopicNames";
     public static final String JMS_CONTEXT_FACTORY_CLASS = "contextFactoryClass";
-    public static final String DATABASE_URL = "databaseUrl";
-    public static final String DATABASE_USER = "databaseUser";
-    public static final String DATABASE_PASSWORD = "databasePassword";
-    public static final String STORAGE_DIRECTORY = "storageDirectory";
-    public static final String MESSAGE_DIRECTORY = "messageDirectory";
-    public static final String META_DATA_DIRECTORY = "metaDataDirectory";
     public static final String DISCARD_TYPES = "discardTypes";
     public static final String DISCARD_NAMES = "discardNames";
     public static final String DEFAULT_VALUE_PRECISION = "defaultValuePrecision";

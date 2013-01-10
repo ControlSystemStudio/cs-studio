@@ -164,4 +164,34 @@
          </action>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart"
+            class="org.csstudio.sds.components.ui.AdapterFactory">
+         <adapter
+               type="org.csstudio.sds.model.ProcessVariableWithSamples">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.sds.components.ui.internal.editparts.MenuButtonEditPart"
+            class="org.csstudio.sds.components.ui.AdapterFactory">
+         <adapter
+               type="org.csstudio.sds.model.ProcessVariableWithSamples">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart"
+            class="org.csstudio.sds.components.ui.AdapterFactory">
+         <adapter
+               type="org.csstudio.sds.model.ProcessVariableWithSamples">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>

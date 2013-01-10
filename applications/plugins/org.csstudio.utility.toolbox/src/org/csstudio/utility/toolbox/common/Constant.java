@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Display;
 
 public final class Constant {
 	
-	private Constant() {}
+	private Constant() {};
 	
     public static final String PLUGIN_ID = "org.csstudio.utility.toolbox";
     public static final String NAME = "Toolbox";
@@ -17,4 +17,5 @@ public final class Constant {
 		Device device = Display.getCurrent();
 		TEXT_PROPOSAL_INDICATOR_COLOR = new Color (device, 170, 225, 206);	
 	}
+
 }

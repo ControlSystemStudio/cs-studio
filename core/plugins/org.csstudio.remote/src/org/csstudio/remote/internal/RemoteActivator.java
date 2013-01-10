@@ -33,6 +33,10 @@ public class RemoteActivator extends Plugin {
 		super.start(context);
 		plugin = this;
         registerRemoteCommandService(context);
+        
+        // TODO (jp, 2012-10-09) remote uses o.c.utility.jms but does not initialize it properly
+        // you will notice this when o.c.remote is used without starting o.c.alarm.service - you will get NPE in o.c.utility.jms
+        // see activator of o.c.alarm.service for details
     }
     
     private void registerRemoteCommandService(@Nonnull final BundleContext bundleContext) {
