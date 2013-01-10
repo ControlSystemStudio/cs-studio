@@ -8,8 +8,9 @@
 package org.csstudio.archive.reader.channelarchiver;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** ValueIterator that runs subsequent ValuesRequests until
  *  reaching the end time.
@@ -23,12 +24,12 @@ public class ValueRequestIterator implements ValueIterator
     final private ChannelArchiverReader reader;
     final private int key;
     final private String name;
-    final private ITimestamp end;
+    final private Timestamp end;
     final private boolean optimized;
     final private int count;
 
     private int index;
-    private IValue samples[];
+    private VType samples[];
 
     /** Constructor for new value request.
      *  @param reader ChannelArchiverReader
@@ -40,9 +41,9 @@ public class ValueRequestIterator implements ValueIterator
      *  @param count Number of values
      * @throws Exception on error
      */
-    public ValueRequestIterator(ChannelArchiverReader reader,
-            int key, String name, ITimestamp start, ITimestamp end, boolean optimized,
-            int count) throws Exception
+    public ValueRequestIterator(final ChannelArchiverReader reader,
+    		final int key, final String name, final Timestamp start, final Timestamp end, final boolean optimized,
+    		final int count) throws Exception
     {
         this.reader = reader;
         this.key = key;
@@ -60,7 +61,7 @@ public class ValueRequestIterator implements ValueIterator
      *         (greater or equal to overall start time)
      *  @throws Exception on error
      */
-    private void fetch(final ITimestamp fetch_start) throws Exception
+    private void fetch(final Timestamp fetch_start) throws Exception
     {
         index = 0;
         samples = reader.getSamples(key, name, fetch_start, end, optimized, count);
@@ -78,15 +79,15 @@ public class ValueRequestIterator implements ValueIterator
 
     /** {@inheritDoc} */
     @Override
-    public IValue next() throws Exception
+    public VType next() throws Exception
     {
-        final IValue result = samples[index];
+        final VType result = samples[index];
         ++index;
         if (index < samples.length)
             return result;
 
         // Prepare next batch of samples
-        fetch(result.getTime());
+        fetch(VTypeHelper.getTimestamp(result));
         if (samples == null)
             return result;
 

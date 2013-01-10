@@ -20,13 +20,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** {@link SampleImporter} for Command (space, tab) separated value file of time, value
  *  @author Kay Kasemir
@@ -35,13 +35,11 @@ import org.csstudio.data.values.ValueFactory;
 public class CSVSampleImporter implements SampleImporter
 {
     final private Logger logger = Logger.getLogger(getClass().getName());
-    final private ISeverity ok = ValueFactory.createOKSeverity();
-    final private INumericMetaData meta_data =
-            ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, -1, "");
+    final private Display meta_data = ValueFactory.displayNone();
 
     /** {@inheritDoc} */
     @Override
-    public List<IValue> importValues(final InputStream input) throws Exception
+    public List<VType> importValues(final InputStream input) throws Exception
     {
         // To be reentrant, need per-call parsers
         final DateFormat date_parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -51,9 +49,10 @@ public class CSVSampleImporter implements SampleImporter
                 //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value  ignore
                 "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.eE]+)\\s*.*");
 
-        final List<IValue> values = new ArrayList<IValue>();
+        final List<VType> values = new ArrayList<VType>();
 
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        final BufferedReader reader =
+                new BufferedReader(new InputStreamReader(input));
         String line;
         while ((line = reader.readLine()) != null)
         {
@@ -77,10 +76,9 @@ public class CSVSampleImporter implements SampleImporter
             final Date date = date_parser.parse(date_text);
             final double number = Double.parseDouble(matcher.group(2));
             // Turn into IValue
-            final ITimestamp time = TimestampFactory.fromMillisecs(date.getTime());
-            final IDoubleValue value = ValueFactory.createDoubleValue(time,
-                    ok, ok.toString(), meta_data, IValue.Quality.Original,
-                    new double[] { number });
+            final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
+            final VType value = new ArchiveVNumber(time, AlarmSeverity.NONE, "",
+                    meta_data, number);
             values.add(value);
         }
         reader.close();

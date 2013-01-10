@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.writer;
 
-/** Interface for writing samples to a channel in the archive
+/** Interface for a channel to which samples can be written
  * 
+ *  @see ArchiveWriter
+ *  
  *  @author Kay Kasemir
  */
 public interface WriteChannel

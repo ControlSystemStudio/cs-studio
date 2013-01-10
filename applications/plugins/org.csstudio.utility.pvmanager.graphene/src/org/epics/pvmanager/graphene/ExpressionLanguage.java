@@ -10,9 +10,9 @@ import org.epics.pvmanager.BasicTypeSupport;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.NotificationSupport;
 import org.epics.pvmanager.TypeSupport;
-import org.epics.pvmanager.data.DataTypeSupport;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.vtype.DataTypeSupport;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.SourceRateExpression;
@@ -35,6 +35,10 @@ public class ExpressionLanguage {
     public static Histogram1DPlot histogramOf(SourceRateExpression<? extends VNumber> vDoubles) {
         DesiredRateExpression<? extends List<? extends VNumber>> queue = newValuesOf(vDoubles);
         return new Histogram1DPlot(queue, new Histogram1DFunction(queue.getFunction()), "histogram");
+    }
+
+    public static Histogram1DPlot histogramOf(DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
+        return new Histogram1DPlot(vDoubles, new Histogram1DFunction(vDoubles.getFunction()), "histogram");
     }
 
     public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {

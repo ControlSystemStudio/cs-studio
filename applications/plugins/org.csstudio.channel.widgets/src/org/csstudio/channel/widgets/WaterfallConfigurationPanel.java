@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * Popup dialog used by the waterfall widget to modify the WaterfallWidget.
@@ -189,7 +189,7 @@ public class WaterfallConfigurationPanel extends AbstractConfigurationComposite 
 	}
 	
 	public TimeDuration getResolution() {
-		return TimeDuration.ms(spPixelDuration.getSelection());
+		return TimeDuration.ofMillis(spPixelDuration.getSelection());
 	}
 	
 	public void setResolution(TimeDuration duration) {

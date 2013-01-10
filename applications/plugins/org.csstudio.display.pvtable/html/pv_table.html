@@ -1,25 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
-	<!-- meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" / -->
-	<title>Overview</title>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+<title>PV Table</title>
 </head>
+<body>
 
 <body>
 <h1>Overview</h1>
-The PV Table provides a tabular view of PV names and their current value.
-One can start and stop live value updates.
 <p>
-In addition, one can take a "snapshot" of current values, which gets saved
-when saving the PV table document.
-The PV table display indicates current values that differ from the "snapshot"
-values in red.
+The PV Table provides a tabular view of PV names and their current value with time stamp and alarm state.
 </p>
 <p>
-One can configure the update rate as well as the threshold for indicating
-differences between the current values and those from the snapshot.
+You can take a "snapshot" of current values, and the table will now highlight rows
+where the current value differs from the snapshot.
 </p>
+<p>
+The configuration (PV names, saved value) can be saved and later re-loaded.
+</p>
+
+<img src="pvtable.png"/>
+
+
+<h2>Adding and Removing PVs</h2>
+<p>
+Enter new PV names in last row of table, or 'drop' them via drag-and-drop into table.
+</p>
+<p>
+Delete PV names by changing their name to an empty name,
+or by selecting one or more PVs and deleting them via the context menu.
+</p>
+
+
+<h2>Tolerance</h2>
+<p>
+Values are highlighted when they differ from the saved snapshot value by a certain amount.
+The currently used tolerance is displayed in the tool-tip of a table row.
+This 'tolerance' value can be configured via the context menu of selected table rows.
+</p>
+
+
+<h1>History</h1>
+
+<h2>Version 3.2.0 - 2012-12-05</h2>
+<p>
+Ported to PVManager, including simpler GUI based on Kunal Schroff's pvmanager.pvtable,
+but still supporting snapshot/restore:
+</p>
+<ul>
+<li>No more need to start/stop, always updating current value.</li>
+<li>No more 'add' via context menu, simply enter new name to end of table.</li>
+<li>PV Names can be edited.</li>
+</ul>
+
+<h2>Original, ca. 2006</h2>
+<p>
+Started as a demo for something similar to XAL 'score'.
+</p>
+
 </body>
 </html>

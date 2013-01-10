@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * An instance of this class represents one "kblogrd" process
@@ -34,8 +34,8 @@ public class KBLogRDProcess {
 	private int commandId;
 	private boolean useAverage;
 	private int stepSecond;
-	private ITimestamp startTime;
-	private ITimestamp endTime;
+	private Timestamp startTime;
+	private Timestamp endTime;
 	private String kblogrdPath;
 	
 	/**
@@ -49,10 +49,10 @@ public class KBLogRDProcess {
 	 * @param stepSecond Interval of each data. Set this to 0 or less if you want to obtain all raw data in the specified range.
 	 * @param useAverage With this option, iterator for averaged values (and min/max values) will be returned when start() is called. (Note that this option will be ignored when stepSecond is 0 or less.)
 	 */
-	public KBLogRDProcess(String kblogrdPath, String subArchiveName, String name, ITimestamp start, ITimestamp end, int stepSecond, boolean useAverage) {
+	public KBLogRDProcess(String kblogrdPath, String subArchiveName, String name, Timestamp start, Timestamp end, int stepSecond, boolean useAverage) {
 		this.kblogrdPath = kblogrdPath;
-		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
-		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
+		String strStart = kblogrdTimeFormat.format(start.toDate());
+		String strEnd = kblogrdTimeFormat.format(end.toDate());
 		this.name = name;
 
 		// 1. If stepSecond is positive, and useAverage is false,

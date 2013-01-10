@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -54,7 +53,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 		final SimulatedDevice device = context.getDevice(command.getDeviceName());
 
 		// Get previous and desired values
-		final double original = ValueUtil.getDouble(device.read());
+		final double original = device.readDouble();
 		final double desired;
 		if (command.getValue() instanceof Number)
 			desired = ((Number) command.getValue()).doubleValue();

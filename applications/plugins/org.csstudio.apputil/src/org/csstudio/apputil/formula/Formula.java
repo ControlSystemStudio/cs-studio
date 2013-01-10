@@ -9,8 +9,6 @@ package org.csstudio.apputil.formula;
 
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.apputil.formula.node.AddNode;
 import org.csstudio.apputil.formula.node.AndNode;
@@ -175,13 +173,7 @@ public class Formula implements Node
     @Override
     public double eval()
     {
-        final double result = tree.eval();
-        if (Double.isInfinite(result) ||
-            Double.isNaN(result))
-            Logger.getLogger(getClass().getName()).log(Level.FINE,
-                   "Formula {0} resulted in {1}",
-                   new Object[] { formula, result });
-        return result;
+        return tree.eval();
     }
 
     /** {@inheritDoc} */

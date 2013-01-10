@@ -15,7 +15,8 @@ import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.epics.util.time.Timestamp;
 
 /** Export engine configuration as XML (to stdout)
  *  @author Kay Kasemir
@@ -44,7 +45,7 @@ public class XMLExport
 	            throw new Exception("Unknown engine '" + engine_name + "'");
 	        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
 	        out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
-	        out.println("     " + TimestampFactory.now().toString());
+	        out.println("     " + TimestampHelper.format(Timestamp.now()));
 	        out.println(" -->");
 	        dumpEngine(out, config, engine);
     	}

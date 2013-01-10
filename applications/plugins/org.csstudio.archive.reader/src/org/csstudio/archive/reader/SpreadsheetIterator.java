@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.epics.vtype.VType;
+import org.epics.util.time.Timestamp;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.
@@ -33,32 +34,31 @@ public class SpreadsheetIterator
      *  This is usually the 'next' value, stamped after <code>time</code>.
      *  @see #values
      */
-    private IValue raw_data[];
+    private VType raw_data[];
 
     /** The timestamp for the current spreadsheet 'line'. */
-    private ITimestamp time;
+    private Timestamp time;
 
     /** The values of the current spreadsheet 'line', or <code>null</code>. */
-    private IValue values[];
+    private VType values[];
 
     /** Constructor.
      *  @param iters The 'base' iterators.
      *  @throws Exception on error in archive access
      */
     @SuppressWarnings("nls")
-    public SpreadsheetIterator(ValueIterator iters[]) throws Exception
+    public SpreadsheetIterator(final ValueIterator... iters) throws Exception
     {
         this.iters = iters;
 
         // Get first sample from each base iterator
-        raw_data = new IValue[iters.length];
-        values = new IValue[iters.length];
+        raw_data = new VType[iters.length];
+        values = new VType[iters.length];
         for (int i=0; i<iters.length; ++i)
         {
             raw_data[i] = iters[i].hasNext()  ?  iters[i].next()  :  null;
             if (debug)
-                System.out.println("Initial " + i + ": "
-                             + (raw_data[i] == null ? "<null>" : raw_data[i]));
+                System.out.println("Initial " + i + ": " + VTypeHelper.toString(raw_data[i]));
         }
         getNextSpreadsheetLine();
     }
@@ -68,7 +68,9 @@ public class SpreadsheetIterator
      *  @see #next()
      */
     public boolean hasNext()
-    {   return values != null;  }
+    { 
+    	return values != null; 
+    }
 
     /** Get the time of the spreadsheet line.
      *  <p>
@@ -86,8 +88,10 @@ public class SpreadsheetIterator
      *    }
      *  </pre>
      *  @return The time stamp of the current spreadsheet 'line'. */
-    public ITimestamp getTime()
-    {   return time;  }
+    public Timestamp getTime()
+    {
+    	return time;
+    }
 
     /** Get the next set of values, and move iterator to the following line.
      *  <p>
@@ -105,11 +109,11 @@ public class SpreadsheetIterator
      *  @see #getTime()
      *  @see #hasNext()
      */
-    public IValue[] next() throws Exception
+    public VType[] next() throws Exception
     {
         assert hasNext();
         // Keep copy(!) of 'current' spreadsheet line
-        final IValue[] result = values.clone();
+        final VType[] result = values.clone();
         // Prepare next line
         getNextSpreadsheetLine();
         // return the copy
@@ -128,8 +132,8 @@ public class SpreadsheetIterator
         {
             if (raw_data[i] == null)
                 continue;
-            final ITimestamp sample_time = raw_data[i].getTime();
-            if (time == null  ||  sample_time.isLessThan(time))
+            final Timestamp sample_time = VTypeHelper.getTimestamp(raw_data[i]);
+            if (time == null  ||  sample_time.compareTo(time) < 0)
                 time = sample_time;
         }
         if (time == null)
@@ -150,7 +154,7 @@ public class SpreadsheetIterator
                 continue;
             }
             // Channel has data.
-            if (raw_data[i].getTime().isLessOrEqual(time))
+            if (VTypeHelper.getTimestamp(raw_data[i]).compareTo(time) <= 0)
             {   // 'raw_data' is still valid, so use it ....
                 values[i] = raw_data[i];
                 // and get next sample in preparation for next()

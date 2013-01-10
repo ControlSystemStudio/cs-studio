@@ -9,11 +9,11 @@ package org.csstudio.alarm.beast.client;
 
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.apputil.time.SecondsParser;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.ITimestamp.Format;
-import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /** Alarm tree 'leaf' that has time of alarm, tool tip info,
  *  CSS PV name
@@ -25,7 +25,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     private String description = ""; //$NON-NLS-1$
 
     /** Timestamp of last alarm update */
-    private ITimestamp timestamp = null;
+    private Timestamp timestamp = null;
 
     /** Initialize
      *  @param parent Parent item
@@ -68,7 +68,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     }
 
     /** @return Time stamp of last status/severity update */
-    public synchronized ITimestamp getTimestamp()
+    public synchronized Timestamp getTimestamp()
     {
         return timestamp;
     }
@@ -76,10 +76,12 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     /** @return Duration of current alarm state or empty text */
     public synchronized String getDuration()
     {
-        final ITimestamp now = TimestampFactory.now();
-        if (timestamp == null  ||  now.isLessThan(timestamp))
+        if (timestamp == null)
             return ""; //$NON-NLS-1$
-        return SecondsParser.formatSeconds(now.seconds() - timestamp.seconds());
+        final TimeDuration duration = Timestamp.now().durationFrom(timestamp);
+        if (duration.isNegative())
+            return ""; //$NON-NLS-1$
+        return SecondsParser.formatSeconds(duration.toSeconds());
     }
 
     /** @return Time stamp of last status/severity update as text */
@@ -87,7 +89,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     {
         if (timestamp == null)
             return ""; //$NON-NLS-1$
-        return timestamp.format(Format.DateTimeSeconds);
+        return TimestampHelper.format(timestamp);
     }
 
     /** Update status/message/time stamp and maximize
@@ -102,7 +104,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
      */
     protected synchronized boolean setAlarmState(final SeverityLevel current_severity,
             final SeverityLevel severity, final String message,
-            final ITimestamp timestamp)
+            final Timestamp timestamp)
     {
         if (! setAlarmState(current_severity, severity, message, this))
             return false;

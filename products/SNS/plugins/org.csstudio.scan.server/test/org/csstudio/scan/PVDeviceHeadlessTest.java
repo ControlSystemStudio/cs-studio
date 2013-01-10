@@ -21,6 +21,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.PVDevice;
+import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link PVDevice}
@@ -56,12 +57,14 @@ public class PVDeviceHeadlessTest implements DeviceListener
     {
         try
         {
-            System.out.println(device + " = " + device.read());
+            final VType value = device.read();
+			System.out.println(device + " = " + value);
+			if (value != null)
+				updates.countDown();
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-        updates.countDown();
     }
 }

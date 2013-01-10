@@ -8,14 +8,13 @@
 package org.csstudio.trends.databrowser2.archive;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -27,6 +26,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
+import org.epics.vtype.VType;
+import org.epics.util.time.Timestamp;
 
 /** Eclipse Job for fetching archived data.
  *  <p>
@@ -44,7 +45,7 @@ public class ArchiveFetchJob extends Job
     final private PVItem item;
 
     /** Start/End time */
-    final private ITimestamp start, end;
+    final private Timestamp start, end;
 
     /** Listener that's notified when (if) we completed OK */
     final private ArchiveFetchJobListener listener;
@@ -134,7 +135,7 @@ public class ArchiveFetchJob extends Job
                     else
                         value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
                     // Get samples into array
-                    final ArrayList<IValue> result = new ArrayList<IValue>();
+                    final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())
                         result.add(value_iter.next());
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
@@ -178,8 +179,8 @@ public class ArchiveFetchJob extends Job
      *  @param end
      *  @param listener
      */
-    public ArchiveFetchJob(PVItem item, final ITimestamp start,
-            final ITimestamp end, final ArchiveFetchJobListener listener)
+    public ArchiveFetchJob(PVItem item, final Timestamp start,
+            final Timestamp end, final ArchiveFetchJobListener listener)
     {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
                 new Object[] { item.getName(), start, end }));

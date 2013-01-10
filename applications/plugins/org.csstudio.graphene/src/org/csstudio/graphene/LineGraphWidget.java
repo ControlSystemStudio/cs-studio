@@ -1,9 +1,9 @@
 package org.csstudio.graphene;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.lineGraphOf;
-import static org.epics.pvmanager.util.TimeDuration.hz;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -26,8 +26,9 @@ import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraphRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
+import org.epics.vtype.VImage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 
@@ -149,19 +150,19 @@ public class LineGraphWidget extends Composite {
 		plot.update(new LineGraphRendererUpdate()
 				.imageWidth(imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y)
 				.interpolation(InterpolationScheme.LINEAR));
-		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread()).every(hz(50));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				setLastError(pv.lastException());
-				if (pv.getValue() != null) {
-					imageDisplay.setVImage(pv.getValue().getImage());
-				} else {
-					imageDisplay.setVImage(null);
-				}
-			}
-		});
+		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<Plot2DResult>() {
+					@Override
+					public void pvChanged(PVReaderEvent<Plot2DResult> event) {
+						setLastError(pv.lastException());
+						if (pv.getValue() != null) {
+							imageDisplay.setVImage(pv.getValue().getImage());
+						} else {
+							imageDisplay.setVImage(null);
+						}
+					}
+				})
+				.maxRate(ofHertz(50));
 	}
 	
 	private void changePlotSize(int newWidgth, int newHeight) {

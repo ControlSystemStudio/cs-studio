@@ -20,10 +20,12 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +38,9 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReaderTest
 {
-    final private static double TIMERANGE_SECONDS = 60*60*24*14;
+    final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
+    final private static TimeDuration WAVEFORM_TIMERANGE = TimeDuration.ofMinutes(20.0);
+    
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
@@ -45,7 +49,7 @@ public class RDBArchiveReaderTest
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
 	
     private RDBArchiveReader reader;
-	private String name, array_name;
+	private String proc, name, array_name;
 
     @Before
     public void connect() throws Exception
@@ -55,6 +59,9 @@ public class RDBArchiveReaderTest
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
 		final String schema = settings.getString("archive_rdb_schema");
+		proc = settings.getString("archive_rdb_stored_procedure");
+		if (proc == null)
+			proc = "";
 		name = settings.getString("archive_channel");
 		array_name = settings.getString("archive_array_channel");
 		if (url == null  ||  user == null  ||  password == null  ||  name == null)
@@ -68,7 +75,7 @@ public class RDBArchiveReaderTest
 			System.out.println("Running read test with BLOB");
 		else
 			System.out.println("Running read test with old array_val table");
-		reader = new RDBArchiveReader(url, user, password, schema, "", use_blob);
+		reader = new RDBArchiveReader(url, user, password, schema, proc, use_blob);
 		
 		assertEquals(use_blob, reader.useArrayBlob());
     }
@@ -145,8 +152,8 @@ public class RDBArchiveReaderTest
     	if (reader == null)
     		return;
         System.out.println("Raw samples for " + name + ":");
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
         
         final BenchmarkTimer timer = new BenchmarkTimer();
         final ValueIterator values = reader.getRawValues(0, name, start, end);
@@ -154,13 +161,13 @@ public class RDBArchiveReaderTest
         if (dump)
         {
         	int count = 0;
-            IMetaData meta = null;
+        	Display display = null;
             while (values.hasNext())
             {
-                IValue value = values.next();
+                VType value = values.next();
                 System.out.println(value);
-                if (meta == null)
-                    meta = value.getMetaData();
+                if (display == null)
+                	display = ValueUtil.displayOf(value);
                 ++count;
                 if (count > 10)
                 {
@@ -169,14 +176,14 @@ public class RDBArchiveReaderTest
                 }
             }
             values.close();
-            System.out.println("Meta data: " + meta);
+            System.out.println("Meta data: " + display);
         }
         else
         {
             int count = 0;
             while (values.hasNext())
             {
-            	final IValue value = values.next();
+            	final VType value = values.next();
                 // System.out.println(value);
                 assertNotNull(value);
                 ++count;
@@ -217,25 +224,21 @@ public class RDBArchiveReaderTest
         else
         	System.out.println(".. using non-BLOB array table");
         
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(WAVEFORM_TIMERANGE);
 
         // Cancel after 10 secs
         // scheduleCancellation(reader, 10.0);
         final ValueIterator values = reader.getRawValues(0, array_name, start, end);
-        IMetaData meta = null;
         while (values.hasNext())
         {
-            final IValue value = values.next();
+            final VType value = values.next();
             System.out.println(value);
-            if (meta == null)
-                meta = value.getMetaData();
         }
         values.close();
-        System.out.println("Meta data: " + meta);
     }
 
-    /** Get optimized data for scalar */
+    /** Get optimized data for scalar, using the client-side {@link AveragedValueIterator} */
     @Test
     public void testJavaOptimizedScalarData() throws Exception
     {
@@ -244,138 +247,47 @@ public class RDBArchiveReaderTest
         System.out.println("Optimized samples for " + name + ":");
         System.out.println("-- Java implementation --");
 
-        final ITimestamp end = TimestampFactory.now();
-        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-        final ValueIterator values = reader.getOptimizedValues(0, name, start, end, BUCKETS);
-        IMetaData meta = null;
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
+        
+        final ValueIterator raw = reader.getRawValues(0, name, start, end);
+        final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
+        System.out.println("Time range: "
+        		+ TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)
+        		+ ", " + BUCKETS + " bins, "
+        		+ "i.e. every " + seconds + " seconds");
+        final ValueIterator values = new AveragedValueIterator(raw, seconds);
         while (values.hasNext())
         {
-            IValue value = values.next();
+        	final VType value = values.next();
             System.out.println(value);
-            if (meta == null)
-                meta = value.getMetaData();
         }
         values.close();
-        System.out.println("Meta data: " + meta);
     }
-    
-//    /** Get optimized data for scalar */
-//    @Ignore
-//    @Test
-//    public void testStoredProcedureOptimizedScalarData() throws Exception
-//    {
-//        System.out.println("Optimized samples for " + SCALAR_NAME + ":");
-//        System.out.println("-- Based on stored procedure --");
-//        final ArchiveReader archive = new RDBArchiveReader(URL, USER, PASSWORD, STORED_PROCEDURE);
-//        try
-//        {
-//            System.out.println("Optimized samples for " + SCALAR_NAME + ":");
-//            // Recent samples
-////            final ITimestamp end = TimestampFactory.now();
-////            final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-//
-//            // Start time before, end after start of SNS Oracle data
-//            final ITimestamp start = TimestampFactory.fromMillisecs(parser.parse("2009/04/01").getTime());
-//            final ITimestamp end = TimestampFactory.fromMillisecs(parser.parse("2009/04/16").getTime());
-//
-//            final ValueIterator values = archive.getOptimizedValues(0, SCALAR_NAME, start, end, BUCKETS);
-//            IMetaData meta = null;
-//            while (values.hasNext())
-//            {
-//                IValue value = values.next();
-//                System.out.println(value);
-//                if (meta == null)
-//                    meta = value.getMetaData();
-//            }
-//            values.close();
-//            System.out.println("Meta data: " + meta);
-//        }
-//        finally
-//        {
-//            archive.close();
-//        }
-//    }
-//
-//    /** Directly call the stored procedure */
-//    @Test
-//    @Ignore
-//    public void testStoredProcedureDirectly() throws Exception
-//    {
-//        final ITimestamp end = TimestampFactory.now();
-//        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
-//
-//        RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, false);
-//
-//        // Get channel id
-//        final PreparedStatement stmt = rdb.getConnection().prepareStatement("SELECT channel_id FROM chan_arch.channel WHERE name=?");
-//        stmt.setString(1, SCALAR_NAME);
-//        ResultSet result = stmt.executeQuery();
-//        assertTrue(result.next());
-//        final int channel_id = result.getInt(1);
-//        System.out.println(SCALAR_NAME + " ID = " + channel_id);
-//        stmt.close();
-//
-//        // Call stored procedure
-//        // Jeff's
-////        CallableStatement statement = rdb.getConnection().prepareCall(
-////                 "begin ? := chan_arch_sns.sample_aggregation_pkg.get_brower_data(?, '01/28/2010 00:00:00:000000', '02/04/2010 00:00:00:000000', ?); end;");
-////        statement.registerOutParameter(1, OracleTypes.CURSOR);
-////        statement.setInt(2, channel_id);
-////        statement.setInt(3, BUCKETS);
-//
-//        // Mine
-//        CallableStatement statement = rdb.getConnection().prepareCall(
-//            "{ ? = call chan_arch_sns.archive_reader_pkg.get_browser_data(?, ?, ?, ?) }");
-//        statement.registerOutParameter(1, OracleTypes.CURSOR);
-//        statement.setInt(2, channel_id);
-//        statement.setTimestamp(3, start.toSQLTimestamp());
-//        statement.setTimestamp(4, end.toSQLTimestamp());
-//        statement.setInt(5, BUCKETS);
-//
-//        statement.setFetchSize(10000);
-//        final long bench_start = System.currentTimeMillis();
-//        statement.execute();
-//        result = (ResultSet) statement.getObject(1);
-//        final long bench_lap1 = System.currentTimeMillis();
-//        if (dump)
-//        {
-//            while (result.next())
-//            {
-//                final ResultSetMetaData meta = result.getMetaData();
-//                final int N = meta.getColumnCount();
-//                for (int i=1; i<=N; ++i)
-//                {
-//                    if (i > 1)
-//                        System.out.print(", ");
-//                    if (meta.getColumnName(i).equals("SMPL_TIME"))
-//                        System.out.print(meta.getColumnName(i) + ": " + TimestampFactory.fromSQLTimestamp(result.getTimestamp(i)));
-//                    else
-//                        System.out.print(meta.getColumnName(i) + ": " + result.getString(i));
-//                }
-//                System.out.println();
-//            }
-//        }
-//        else
-//        {
-//            int count = 0;
-//            while (result.next())
-//            {
-//                @SuppressWarnings("unused")
-//                double value = result.getDouble(4);
-//                ++count;
-//            }
-//            System.out.println(count + " samples");
-//        }
-//        final long bench_lap2 = System.currentTimeMillis();
-//        final double secs_query = (bench_lap1 - bench_start) / 1000.0;
-//        final double secs_total = (bench_lap2 - bench_start) / 1000.0;
-//        System.out.println("Query: " + secs_query);
-//        System.out.println("Total: " + secs_total);
-//
-//        statement.close();
-//        rdb.close();
-//    }
-//
+
+    /** Get optimized data for scalar, using the server-side {@link StoredProcedureValueIterator} */
+    @Test
+    public void testStoredProcedure() throws Exception
+    {
+    	if (reader == null)
+    		return;
+    	if (proc.isEmpty())
+    		System.out.println("No stored procedure available");
+    	final int channel_id = reader.getChannelID(name);
+        System.out.println("Optimized samples for " + name + " (" + channel_id + "):");
+        System.out.println("-- Stored procedure --");
+
+        final Timestamp end = Timestamp.now();
+        final Timestamp start = end.minus(TIMERANGE);
+		final ValueIterator values = new StoredProcedureValueIterator(reader, proc, channel_id, start, end, BUCKETS);
+        while (values.hasNext())
+        {
+        	final VType value = values.next();
+            System.out.println(value);
+        }
+        values.close();
+    }
+
 //    /** Directly call the stored procedure */
 //    @Test
 //    @Ignore

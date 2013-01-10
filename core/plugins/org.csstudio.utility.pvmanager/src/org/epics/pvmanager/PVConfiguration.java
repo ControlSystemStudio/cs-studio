@@ -39,6 +39,12 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout for both reader and writer.
+     *
+     * @param timeout duration of the timeout
+     * @return this expression
+     */
     @Override
     public PVConfiguration<R, W> timeout(TimeDuration timeout) {
         pvReaderConfiguration.timeout(timeout);
@@ -46,24 +52,15 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
         return this;
     }
 
+    /**
+     * Sets a timeout with the given message for both read and writer.
+     *
+     * @param timeout duration of the timeout
+     * @param timeoutMessage message for the timeout
+     * @return this expression
+     */
     @Override
     public PVConfiguration<R, W>  timeout(TimeDuration timeout, String timeoutMessage) {
-        pvReaderConfiguration.timeout(timeout, timeoutMessage);
-        pvWriterConfiguration.timeout(timeout, timeoutMessage);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVConfiguration<R, W> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
-        pvReaderConfiguration.timeout(timeout);
-        pvWriterConfiguration.timeout(timeout);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    public PVConfiguration<R, W>  timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
         pvReaderConfiguration.timeout(timeout, timeoutMessage);
         pvWriterConfiguration.timeout(timeout, timeoutMessage);
         return this;
@@ -80,6 +77,28 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
     public PVConfiguration<R, W>  timeout(TimeDuration timeout, String readMessage, String writeMessage) {
         pvReaderConfiguration.timeout(timeout, readMessage);
         pvWriterConfiguration.timeout(timeout, writeMessage);
+        return this;
+    }
+    
+    /**
+     * Adds a listener for the read events.
+     *
+     * @param listener the new listener
+     * @return this expression
+     */
+    public PVConfiguration<R, W>  readListener(PVReaderListener<? super R> listener) {
+        pvReaderConfiguration.readListener(listener);
+        return this;
+    }
+    
+    /**
+     * Adds a listener for the write events.
+     *
+     * @param listener the new listener
+     * @return this expression
+     */
+    public PVConfiguration<R, W>  writeListener(PVWriterListener<? extends W> listener) {
+        pvWriterConfiguration.writeListener(listener);
         return this;
     }
 
@@ -125,35 +144,9 @@ public class PVConfiguration<R, W> extends CommonConfiguration {
     public PV<R, W> asynchWriteAndMaxReadRate(TimeDuration period) {
         PVReader<R> pvReader = pvReaderConfiguration.maxRate(period);
         PVWriter<W> pvWriter = pvWriterConfiguration.async();
-        return new PV<R, W>(pvReader, pvWriter);
-    }
-    
-    /**
-     * Creates the pv such that writes are synchronous and read notifications
-     * comes at most at the rate specified.
-     * 
-     * @param period minimum time between read notifications
-     * @return a new PV
-     */
-    @Deprecated
-    public PV<R, W> synchWriteAndReadEvery(org.epics.pvmanager.util.TimeDuration period) {
-        PVReader<R> pvReader = pvReaderConfiguration.every(period);
-        PVWriter<W> pvWriter = pvWriterConfiguration.sync();
-        return new PV<R, W>(pvReader, pvWriter);
-    }
-    
-    /**
-     * Creates the pv such that writes are asynchronous and read notifications
-     * comes at most at the rate specified.
-     * 
-     * @param period minimum time between read notifications
-     * @return a new PV
-     */
-    @Deprecated
-    public PV<R, W> asynchWriteAndReadEvery(org.epics.pvmanager.util.TimeDuration period) {
-        PVReader<R> pvReader = pvReaderConfiguration.every(period);
-        PVWriter<W> pvWriter = pvWriterConfiguration.async();
-        return new PV<R, W>(pvReader, pvWriter);
+        PV<R, W> pv = new PV<R, W>(pvReader, pvWriter);
+        PVReaderImpl.implOf(pvReader).setReaderForNotification(pv);
+        return pv;
     }
     
 }

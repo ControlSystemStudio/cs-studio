@@ -11,13 +11,14 @@ import java.io.PrintStream;
 
 import org.csstudio.archive.reader.SpreadsheetIterator;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Ecipse Job for exporting data from Model to file
  *  @author Kay Kasemir
@@ -26,7 +27,7 @@ import org.eclipse.osgi.util.NLS;
 public class SpreadsheetExportJob extends PlainExportJob
 {
     public SpreadsheetExportJob(final  Model model,
-            final ITimestamp start, final ITimestamp end, final Source source,
+            final Timestamp start, final Timestamp end, final Source source,
             final int optimize_count, final ValueFormatter formatter,
             final String filename,
             final ExportErrorHandler error_handler)
@@ -60,11 +61,13 @@ public class SpreadsheetExportJob extends PlainExportJob
         final SpreadsheetIterator sheet = new SpreadsheetIterator(iters);
         // Dump the spreadsheet lines
         long line_count = 0;
+        
         while (sheet.hasNext()  &&  !monitor.isCanceled())
         {
-            final ITimestamp time = sheet.getTime();
-            final IValue line[] = sheet.next();
-            out.print(time);
+            final Timestamp time = sheet.getTime();
+            final VType line[] = sheet.next();
+            out.print(TimestampHelper.format(time));
+           
             for (int i=0; i<line.length; ++i)
                 out.print(Messages.Export_Delimiter + formatter.format(line[i]));
             out.println();

@@ -22,7 +22,7 @@ public final class NumberFormats {
 
     private static final Map<Integer, DecimalFormat> precisionFormat =
             new HashMap<Integer, DecimalFormat>();
-    private static Locale currentLocale = Locale.US;
+    private static Locale currentLocale = Locale.getDefault();
 
     /**
      * Returns a number format that formats a number with the given

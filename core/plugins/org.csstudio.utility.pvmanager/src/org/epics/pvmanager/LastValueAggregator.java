@@ -7,13 +7,13 @@ package org.epics.pvmanager;
 import java.util.List;
 
 /**
- * Returns the last value in the time slice.
+ * Returns the last value of the list.
  * 
  * @author carcassi
  */
 class LastValueAggregator<T> extends Aggregator<T, T> {
 
-    LastValueAggregator(Function<List<T>> collector) {
+    LastValueAggregator(ReadFunction<List<T>> collector) {
         super(collector);
     }
 

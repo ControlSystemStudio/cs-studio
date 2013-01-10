@@ -4,8 +4,9 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.WriteBuffer;
+import org.epics.pvmanager.PVWriterDirector;
 import org.epics.pvmanager.WriteFunction;
+import org.epics.pvmanager.WriteRecipeBuilder;
 
 /**
  * An expression to write.
@@ -32,11 +33,17 @@ public interface WriteExpression<W> extends WriteExpressionList<W> {
     public WriteFunction<W> getWriteFunction();
     
     /**
-     * The buffer that will contain the data to write.
+     * Prepares the recipe to connect the channels needed by this expression.
+     * <p>
+     * A dynamic expression, one for which the child expressions can change,
+     * can keep a reference to the director to connect/disconnect new child
+     * expressions.
      *
-     * @return the data buffer
+     * @param director the director for the reader
+     * @param builder the recipe to fill
      */
-    public WriteBuffer createWriteBuffer();
+    public void fillWriteRecipe(PVWriterDirector director, WriteRecipeBuilder builder);
+
     
     /**
      * The implementation of this expression.

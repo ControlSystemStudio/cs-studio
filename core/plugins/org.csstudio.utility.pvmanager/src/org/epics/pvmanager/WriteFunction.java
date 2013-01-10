@@ -11,13 +11,13 @@ package org.epics.pvmanager;
  * @param <A> argument type
  * @author carcassi
  */
-public abstract class WriteFunction<A> {
+public interface WriteFunction<A> {
 
     /**
      * Takes the value and consumes it.
      *
      * @param newValue a value
      */
-    public abstract void setValue(A newValue);
+    public void writeValue(A newValue);
     
 }

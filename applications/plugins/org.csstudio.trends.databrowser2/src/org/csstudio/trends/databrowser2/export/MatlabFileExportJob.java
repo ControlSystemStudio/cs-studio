@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 import com.jmatio.io.MatFileIncrementalWriter;
 import com.jmatio.types.MLCell;
@@ -35,8 +35,8 @@ public class MatlabFileExportJob extends ExportJob
 {
     final private String filename;
 
-    public MatlabFileExportJob(final Model model, final ITimestamp start,
-            final ITimestamp end, final Source source,
+    public MatlabFileExportJob(final Model model, final Timestamp start,
+            final Timestamp end, final Source source,
             final int optimize_count, final String filename,
             final ExportErrorHandler error_handler)
     {
@@ -60,15 +60,15 @@ public class MatlabFileExportJob extends ExportJob
             // Get data
             monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
             final ValueIterator iter = createValueIterator(item);
-            final List<ITimestamp> times = new ArrayList<ITimestamp>();
+            final List<Timestamp> times = new ArrayList<Timestamp>();
             final List<Double> values = new ArrayList<Double>();
-            final List<ISeverity> severities = new ArrayList<ISeverity>();
+            final List<AlarmSeverity> severities = new ArrayList<AlarmSeverity>();
             while (iter.hasNext()  &&  !monitor.isCanceled())
             {
-                final IValue value = iter.next();
-                times.add(value.getTime());
-                values.add(ValueUtil.getDouble(value));
-                severities.add(value.getSeverity());
+                final VType value = iter.next();
+                times.add(VTypeHelper.getTimestamp(value));
+                values.add(VTypeHelper.toDouble(value));
+                severities.add(VTypeHelper.getSeverity(value));
                 if (values.size() % PROGRESS_UPDATE_LINES == 0)
                     monitor.subTask(NLS.bind("{0}: Obtained {1} samples", item.getName(), values.size()));
             }
@@ -99,9 +99,9 @@ public class MatlabFileExportJob extends ExportJob
      *  @return {@link MLStructure}
      */
     private MLStructure createMLStruct(final int index, final String name,
-            final List<ITimestamp> times,
+            final List<Timestamp> times,
             final List<Double> values,
-            final List<ISeverity> severities)
+            final List<AlarmSeverity> severities)
     {
         final MLStructure struct = new MLStructure("channel" + index, new int[] { 1, 1 });
         final int N = values.size();

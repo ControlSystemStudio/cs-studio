@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.ITimestamp;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -57,8 +57,9 @@ public class PVSummary {
 		String message = pv.getMessage();
 		String value = pv.getValue();
 
-		String timestamp = pv.getTimestamp() == null ? "(no time)" : pv
-				.getTimestamp().format(ITimestamp.Format.DateTimeSeconds);
+		String timestamp = pv.getTimestamp() == null
+	        ? "(no time)"
+            : TimestampHelper.format(pv.getTimestamp());
 
 		return new PVSummary(description, name, current_severity, severity,
 				current_message, message, value, timestamp, prefix, isNLSMessage);

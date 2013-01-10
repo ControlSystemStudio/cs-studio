@@ -4,8 +4,9 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.DataRecipe;
-import org.epics.pvmanager.Function;
+import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.ReadRecipeBuilder;
 
 /**
  * An expression to read at the desired rate.
@@ -33,18 +34,23 @@ public interface DesiredRateExpression<R> extends DesiredRateExpressionList<R> {
     public String getName();
     
     /**
-     * The recipe for connect the channels for this expression.
+     * Prepares the recipe to connect the channels needed by this expression.
+     * <p>
+     * A dynamic expression, one for which the child expressions can change,
+     * can keep a reference to the director to connect/disconnect new child
+     * expressions.
      *
-     * @return a data recipe
+     * @param director the director for the reader
+     * @param builder the recipe to fill
      */
-    public DataRecipe getDataRecipe();
+    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder);
     
     /**
      * The function that calculates this expression.
      *
      * @return the expression function
      */
-    public Function<R> getFunction();
+    public ReadFunction<R> getFunction();
     
     /**
      * The implementation of this expression.

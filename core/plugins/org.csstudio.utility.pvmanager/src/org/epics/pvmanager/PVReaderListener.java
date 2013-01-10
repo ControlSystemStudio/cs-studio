@@ -10,13 +10,16 @@ package org.epics.pvmanager;
  * data structures, and therefore the data object is the same and would not
  * trigger a PropertyChangedEvent.
  *
+ * @param <T> the type of reader for the listener
  * @author carcassi
  */
-public interface PVReaderListener {
+public interface PVReaderListener<T> {
 
     /**
      * Notified when the value of the PV has changed.
+     * 
+     * @param event the reader event
      */
-    void pvChanged();
+    void pvChanged(PVReaderEvent<T> event);
 
 }

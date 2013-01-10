@@ -119,6 +119,7 @@ of the distribution package.
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.postanalyser"/>
       <plugin id="org.csstudio.diag.probe"/>
+      <plugin id="org.csstudio.display.pace"/>
       <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.display.rdbtable"/>
       <plugin id="org.csstudio.email"/>
@@ -302,6 +303,7 @@ of the distribution package.
       <feature id="org.csstudio.iter.alarm.beast.ui.feature" version="1.0.0"/>
       <feature id="org.csstudio.trends.databrowser2.feature" version="3.1.1.qualifier"/>
       <feature id="org.csstudio.iter.opibuilder.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.display.pace.feature" version="1.0.0"/>
       <feature id="org.csstudio.iter.css.util.feature" version="1.0.0"/>
    </features>
 

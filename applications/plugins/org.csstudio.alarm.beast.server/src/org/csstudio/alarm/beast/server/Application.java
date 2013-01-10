@@ -79,6 +79,8 @@ public class Application implements IApplication
             " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
         System.out.println("Configuration Root: " + config_name.get());
+        System.out.println("Database URL:       " + Preferences.getRDB_Url());
+        System.out.println("JMS URL:            " + Preferences.getJMS_URL());
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name.get()));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name.get()));

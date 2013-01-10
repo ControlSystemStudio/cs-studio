@@ -22,17 +22,22 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.vtype.MetaDataHelper;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.WriteChannel;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.epics.util.array.ListNumber;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
 
 /** ArchiveWriter implementation for RDB
  *  @author Kay Kasemir
@@ -44,9 +49,6 @@ public class RDBArchiveWriter implements ArchiveWriter
 {
     /** Status string for <code>Double.NaN</code> samples */
     final private static String NOT_A_NUMBER_STATUS = "NaN";
-
-    /** Severity string for <code>Double.NaN</code> samples */
-    final private static String NOT_A_NUMBER_SEVERITY = "INVALID";
 
     final private int SQL_TIMEOUT_SECS = RDBArchivePreferences.getSQLTimeoutSecs();
 
@@ -95,7 +97,7 @@ public class RDBArchiveWriter implements ArchiveWriter
 
     /** Copy of batched samples, used to display batch errors */
     private final List<RDBWriteChannel> batched_channel = new ArrayList<RDBWriteChannel>();
-    private final List<IValue> batched_samples = new ArrayList<IValue>();
+    private final List<VType> batched_samples = new ArrayList<VType>();
 
     /** Initialize from preferences.
      *  This constructor will be invoked when an {@link ArchiveWriter}
@@ -167,45 +169,52 @@ public class RDBArchiveWriter implements ArchiveWriter
     }
 
     @Override
-    public void addSample(final WriteChannel channel, final IValue sample) throws Exception
+    public void addSample(final WriteChannel channel, final VType sample) throws Exception
     {
         final RDBWriteChannel rdb_channel = (RDBWriteChannel) channel;
-        // Write meta data if it was never written or has changed
-        final IMetaData meta = sample.getMetaData();
-        if (meta != null  &&  !meta.equals(rdb_channel.getMetadata()))
-        {
-        	writeMetaData(rdb_channel, meta);
-            rdb.getConnection().commit();
-            rdb_channel.setMetaData(meta);
-        }
+        writeMetaData(rdb_channel, sample);
         batchSample(rdb_channel, sample);
         batched_channel.add(rdb_channel);
         batched_samples.add(sample);
     }
 
-    /** @param channel Channel for which to write the meta data
-     *  @param meta Meta data to write
+    /** Write meta data if it was never written or has changed
+     *  @param channel Channel for which to write the meta data
+     *  @param sample Sample that may have meta data to write
      */
-    private void writeMetaData(final RDBWriteChannel channel, final IMetaData meta) throws Exception
+    private void writeMetaData(final RDBWriteChannel channel, final VType sample) throws Exception
     {
-        // Note that Strings have no meta data. But we don't know at this point
-        // if it's really a string channel, or of this is just a special
-        // string value like "disconnected".
-        // In order to not delete any existing meta data,
-        // we just do nothing for strings
-        if (meta instanceof IEnumeratedMetaData)
+    	// Note that Strings have no meta data. But we don't know at this point
+    	// if it's really a string channel, or of this is just a special
+    	// string value like "disconnected".
+    	// In order to not delete any existing meta data,
+    	// we just do nothing for strings
+
+    	if (sample instanceof Display)
         {
+        	final Display display = (Display)sample;
+        	if (MetaDataHelper.equals(display, channel.getMetadata()))
+        		return;
+        	
+        	// Clear enumerated meta data, replace numeric
+        	EnumMetaDataHelper.delete(rdb, sql, channel);
+        	NumericMetaDataHelper.delete(rdb, sql, channel);
+        	NumericMetaDataHelper.insert(rdb, sql, channel, display);
+        	rdb.getConnection().commit();
+            channel.setMetaData(display);
+        }
+    	else if (sample instanceof VEnum)
+    	{
+    		final List<String> labels = ((VEnum)sample).getLabels();
+        	if (MetaDataHelper.equals(labels, channel.getMetadata()))
+        		return;
+
             // Clear numeric meta data, set enumerated in RDB
             NumericMetaDataHelper.delete(rdb, sql, channel);
             EnumMetaDataHelper.delete(rdb, sql, channel);
-            EnumMetaDataHelper.insert(rdb, sql, channel, (IEnumeratedMetaData) meta);
-        }
-        else if (meta instanceof INumericMetaData)
-        {
-            // Clear enumerated meta data, replace numeric
-            EnumMetaDataHelper.delete(rdb, sql, channel);
-            NumericMetaDataHelper.delete(rdb, sql, channel);
-            NumericMetaDataHelper.insert(rdb, sql, channel, (INumericMetaData) meta);
+            EnumMetaDataHelper.insert(rdb, sql, channel, labels);
+        	rdb.getConnection().commit();
+            channel.setMetaData(labels);
         }
     }
 
@@ -215,67 +224,58 @@ public class RDBArchiveWriter implements ArchiveWriter
      *  @param sample Sample to insert
      *  @throws Exception on error
      */
-    private void batchSample(final RDBWriteChannel channel, final IValue sample) throws Exception
+    private void batchSample(final RDBWriteChannel channel, final VType sample) throws Exception
     {
-        final Timestamp stamp = sample.getTime().toSQLTimestamp();
-        final Severity severity =
-                severities.findOrCreate(sample.getSeverity().toString());
-        final Status status = stati.findOrCreate(sample.getStatus());
+        final Timestamp stamp = TimestampHelper.toSQLTimestamp(VTypeHelper.getTimestamp(sample));
+        final int severity = severities.findOrCreate(VTypeHelper.getSeverity(sample));
+        final Status status = stati.findOrCreate(VTypeHelper.getMessage(sample));
 
         // Severity/status cache may enable auto-commit
         if (rdb.getConnection().getAutoCommit() == true)
         	rdb.getConnection().setAutoCommit(false);
 
-        if (sample instanceof IDoubleValue)
+        // Start with most likely cases and highest precision: Double, ...
+        // Then going down in precision to integers, finally strings...
+        if (sample instanceof VDouble)
+            batchDoubleSamples(channel, stamp, severity, status, ((VDouble)sample).getValue(), null);
+        else if (sample instanceof VNumber)
+        {	// Write as double or integer?
+        	final Number number = ((VNumber)sample).getValue();
+        	if (number instanceof Double)
+        		batchDoubleSamples(channel, stamp, severity, status, number.doubleValue(), null);
+        	else
+        		batchLongSample(channel, stamp, severity, status, number.longValue());
+        }
+        else if (sample instanceof VNumberArray)
         {
-            final double[] dbl = ((IDoubleValue)sample).getValues();
-            batchDoubleSamples(channel, stamp, severity, status, dbl);
+        	final ListNumber data = ((VNumberArray)sample).getData();
+            batchDoubleSamples(channel, stamp, severity, status, data.getDouble(0), data);
         }
-        else if (sample instanceof ILongValue)
-        {
-            final long[] num = ((ILongValue)sample).getValues();
-
-            // Handle arrays as double
-            // TODO Support Long arrays 'l' and Integer 'i'
-            if (num.length > 1)
-            {
-                final double[] dbl = new double[num.length];
-                for (int i=0; i<dbl.length; ++i)
-                    dbl[i] = num[i];
-                batchDoubleSamples(channel, stamp, severity, status, dbl);
-            }
-            else
-                batchLongSamples(channel, stamp, severity, status, num[0]);
-        }
-        else if (sample instanceof IEnumeratedValue)
-        {   // Enum handled just like (long) integer
-            final long num = ((IEnumeratedValue)sample).getValue();
-            batchLongSamples(channel, stamp, severity, status, num);
-        }
-        else
-        {   // Handle string and possible other types as strings
-            final String txt = sample.format();
-            batchTextSamples(channel, stamp, severity, status, txt);
-        }
+        else if (sample instanceof VEnum)
+            batchLongSample(channel, stamp, severity, status, ((VEnum)sample).getIndex());
+        else if (sample instanceof VString)
+            batchTextSamples(channel, stamp, severity, status, ((VString)sample).getValue());
+        else // Handle possible other types as strings
+            batchTextSamples(channel, stamp, severity, status, sample.toString());
     }
 
     /** Helper for batchSample: Add double sample(s) to batch. */
     private void batchDoubleSamples(final RDBWriteChannel channel,
-            final Timestamp stamp, final Severity severity,
-            final Status status, final double[] dbl) throws Exception
+            final Timestamp stamp, final int severity,
+            final Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (use_array_blob)
-            batchBlobbedDoubleSample(channel, stamp, severity, status, dbl);
+            batchBlobbedDoubleSample(channel, stamp, severity, status, dbl, additional);
         else
-            oldBatchDoubleSamples(channel, stamp, severity, status, dbl);
+            oldBatchDoubleSamples(channel, stamp, severity, status, dbl, additional);
     }
 
     /** Helper for batchSample: Add double sample(s) to batch, using
      *  blob to store array elements.
      */
     private void batchBlobbedDoubleSample(final RDBWriteChannel channel,
-            final Timestamp stamp, Severity severity,
-            Status status, final double[] dbl) throws Exception
+            final Timestamp stamp, int severity,
+            Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (insert_double_sample == null)
         {
@@ -286,16 +286,16 @@ public class RDBArchiveWriter implements ArchiveWriter
         }
         // Set scalar or 1st element of a waveform.
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
-        if (Double.isNaN(dbl[0]))
+        if (Double.isNaN(dbl))
         {
             insert_double_sample.setDouble(5, 0.0);
-            severity = severities.findOrCreate(NOT_A_NUMBER_SEVERITY);
+            severity = severities.findOrCreate(AlarmSeverity.UNDEFINED);
             status = stati.findOrCreate(NOT_A_NUMBER_STATUS);
         }
         else
-            insert_double_sample.setDouble(5, dbl[0]);
+            insert_double_sample.setDouble(5, dbl);
 
-        if (dbl.length <= 1)
+        if (additional == null)
         {    // No more array elements, only scalar
             switch (rdb.getDialect())
             {
@@ -319,10 +319,11 @@ public class RDBArchiveWriter implements ArchiveWriter
             final ByteArrayOutputStream bout = new ByteArrayOutputStream();
             final DataOutputStream dout = new DataOutputStream(bout);
             // Indicate 'Double' as data type
-            dout.writeInt(dbl.length);
+            final int N = additional.size();
+            dout.writeInt(N);
             // Write binary data for array elements
-            for (double d : dbl)
-                dout.writeDouble(d);
+            for (int i=0; i<N; ++i)
+                dout.writeDouble(additional.getDouble(i));
             dout.close();
             final byte[] asBytes = bout.toByteArray();
             if (rdb.getDialect() == Dialect.Oracle)
@@ -345,8 +346,8 @@ public class RDBArchiveWriter implements ArchiveWriter
      *  via the original array_val table
      */
     private void oldBatchDoubleSamples(final RDBWriteChannel channel,
-            final Timestamp stamp, final Severity severity,
-            final Status status, final double[] dbl) throws Exception
+            final Timestamp stamp, final int severity,
+            final Status status, final double dbl, final ListNumber additional) throws Exception
     {
         if (insert_double_sample == null)
         {
@@ -356,28 +357,29 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
-        if (Double.isNaN(dbl[0]))
+        if (Double.isNaN(dbl))
         {
             insert_double_sample.setDouble(5, 0.0);
             completeAndBatchInsert(insert_double_sample,
                     channel, stamp,
-                    severities.findOrCreate(NOT_A_NUMBER_SEVERITY),
+                    severities.findOrCreate(AlarmSeverity.UNDEFINED),
                     stati.findOrCreate(NOT_A_NUMBER_STATUS));
         }
         else
         {
-            insert_double_sample.setDouble(5, dbl[0]);
+            insert_double_sample.setDouble(5, dbl);
             completeAndBatchInsert(insert_double_sample, channel, stamp, severity, status);
         }
         ++batched_double_inserts;
         // More array elements?
-        if (dbl.length > 1)
+        if (additional != null)
         {
             if (insert_array_sample == null)
                 insert_array_sample =
                     rdb.getConnection().prepareStatement(
                         sql.sample_insert_double_array_element);
-            for (int i = 1; i < dbl.length; i++)
+            final int N = additional.size();
+            for (int i = 1; i < N; i++)
             {
                 insert_array_sample.setInt(1, channel.getId());
                 insert_array_sample.setTimestamp(2, stamp);
@@ -389,10 +391,10 @@ public class RDBArchiveWriter implements ArchiveWriter
                 // But we have to write it first to avoid index (key) errors
                 // with the array sample time stamp....
                 // Go back and update the main sample after the fact??
-                if (Double.isNaN(dbl[i]))
+                if (Double.isNaN(additional.getDouble(i)))
                     insert_array_sample.setDouble(4, 0.0);
                 else
-                    insert_array_sample.setDouble(4, dbl[i]);
+                    insert_array_sample.setDouble(4, additional.getDouble(i));
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_array_sample.setInt(5, stamp.getNanos());
@@ -404,8 +406,8 @@ public class RDBArchiveWriter implements ArchiveWriter
     }
 
     /** Helper for batchSample: Add long sample to batch.  */
-    private void batchLongSamples(final RDBWriteChannel channel,
-            final Timestamp stamp, final Severity severity,
+    private void batchLongSample(final RDBWriteChannel channel,
+            final Timestamp stamp, final int severity,
             final Status status, final long num) throws Exception
     {
         if (insert_long_sample == null)
@@ -422,7 +424,7 @@ public class RDBArchiveWriter implements ArchiveWriter
 
     /** Helper for batchSample: Add text sample to batch. */
     private void batchTextSamples(final RDBWriteChannel channel,
-            final Timestamp stamp, final Severity severity,
+            final Timestamp stamp, final int severity,
             final Status status, String txt) throws Exception
     {
         if (insert_txt_sample == null)
@@ -449,13 +451,13 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     private void completeAndBatchInsert(
             final PreparedStatement insert_xx, final RDBWriteChannel channel,
-            final Timestamp stamp, final Severity severity,
+            final Timestamp stamp, final int severity,
             final Status status) throws Exception
     {
         // Set the stuff that's common to each type
         insert_xx.setInt(1, channel.getId());
         insert_xx.setTimestamp(2, stamp);
-        insert_xx.setInt(3, severity.getId());
+        insert_xx.setInt(3, severity);
         insert_xx.setInt(4, status.getId());
         // MySQL nanosecs
         if (rdb.getDialect() == Dialect.MySQL  ||  rdb.getDialect() == Dialect.PostgreSQL)
@@ -575,85 +577,85 @@ public class RDBArchiveWriter implements ArchiveWriter
      *  @param channel
      *  @param sample
      */
-    private void attemptSingleInsert(final RDBWriteChannel channel, final IValue sample)
+    private void attemptSingleInsert(final RDBWriteChannel channel, final VType sample)
     {
         System.out.println("Individual insert of " + channel.getName() + " = " + sample.toString());
-        try
-        {
-            final Timestamp stamp = sample.getTime().toSQLTimestamp();
-            final Severity severity = severities.findOrCreate(sample.getSeverity().toString());
-            final Status status = stati.findOrCreate(sample.getStatus());
-            if (sample instanceof IDoubleValue)
-            {
-                final IDoubleValue dbl = (IDoubleValue) sample;
-                if (dbl.getValues().length > 1)
-                    throw new Exception("Not checking array samples");
-                if (Double.isNaN(dbl.getValue()))
-                    throw new Exception("Not checking NaN values");
-                insert_double_sample.setInt(1, channel.getId());
-                insert_double_sample.setTimestamp(2, stamp);
-                insert_double_sample.setInt(3, severity.getId());
-                insert_double_sample.setInt(4, status.getId());
-                insert_double_sample.setDouble(5, dbl.getValue());
-                //always false as we don't insert arrays in this function
-                insert_double_sample.setBoolean(6, false);
-                // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_double_sample.setInt(7, stamp.getNanos());
-                insert_double_sample.executeUpdate();
-            }
-            else if (sample instanceof ILongValue)
-            {
-                final ILongValue num = (ILongValue) sample;
-                if (num.getValues().length > 1)
-                    throw new Exception("Not checking array samples");
-                insert_long_sample.setInt(1, channel.getId());
-                insert_long_sample.setTimestamp(2, stamp);
-                insert_long_sample.setInt(3, severity.getId());
-                insert_long_sample.setInt(4, status.getId());
-                insert_long_sample.setLong(5, num.getValue());
-                insert_long_sample.setBoolean(6, false);
-                // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_long_sample.setInt(7, stamp.getNanos());
-                insert_long_sample.executeUpdate();
-            }
-            else if (sample instanceof IEnumeratedValue)
-            {   // Enum handled just like (long) integer
-                final IEnumeratedValue num = (IEnumeratedValue) sample;
-                if (num.getValues().length > 1)
-                    throw new Exception("Not checking array samples");
-                insert_long_sample.setInt(1, channel.getId());
-                insert_long_sample.setTimestamp(2, stamp);
-                insert_long_sample.setInt(3, severity.getId());
-                insert_long_sample.setInt(4, status.getId());
-                insert_long_sample.setLong(5, num.getValue());
-                insert_long_sample.setBoolean(6, false);
-                // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_long_sample.setInt(7, stamp.getNanos());
-                insert_long_sample.executeUpdate();
-            }
-            else
-            {   // Handle string and possible other types as strings
-                final String txt = sample.format();
-                insert_txt_sample.setInt(1, channel.getId());
-                insert_txt_sample.setTimestamp(2, stamp);
-                insert_txt_sample.setInt(3, severity.getId());
-                insert_txt_sample.setInt(4, status.getId());
-                insert_txt_sample.setString(5, txt);
-                insert_txt_sample.setBoolean(6, false);
-                // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_txt_sample.setInt(7, stamp.getNanos());
-                insert_txt_sample.executeUpdate();
-            }
-            rdb.getConnection().commit();
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Individual insert failed: " + ex.getMessage());
-        }
+//        try
+//        {
+//            final Timestamp stamp = TimestampHelper.toSQLTimestamp(VTypeHelper.getTimestamp(sample));
+//            final int severity = severities.findOrCreate(VTypeHelper.getSeverity(sample));
+//            final Status status = stati.findOrCreate(VTypeHelper.getMessage(sample));
+//            if (sample instanceof VNumber)
+//            {
+//                final IDoubleValue dbl = (IDoubleValue) sample;
+//                if (dbl.getValues().length > 1)
+//                    throw new Exception("Not checking array samples");
+//                if (Double.isNaN(dbl.getValue()))
+//                    throw new Exception("Not checking NaN values");
+//                insert_double_sample.setInt(1, channel.getId());
+//                insert_double_sample.setTimestamp(2, stamp);
+//                insert_double_sample.setInt(3, severity.getId());
+//                insert_double_sample.setInt(4, status.getId());
+//                insert_double_sample.setDouble(5, dbl.getValue());
+//                //always false as we don't insert arrays in this function
+//                insert_double_sample.setBoolean(6, false);
+//                // MySQL nanosecs
+//                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+//                    insert_double_sample.setInt(7, stamp.getNanos());
+//                insert_double_sample.executeUpdate();
+//            }
+//            else if (sample instanceof ILongValue)
+//            {
+//                final ILongValue num = (ILongValue) sample;
+//                if (num.getValues().length > 1)
+//                    throw new Exception("Not checking array samples");
+//                insert_long_sample.setInt(1, channel.getId());
+//                insert_long_sample.setTimestamp(2, stamp);
+//                insert_long_sample.setInt(3, severity.getId());
+//                insert_long_sample.setInt(4, status.getId());
+//                insert_long_sample.setLong(5, num.getValue());
+//                insert_long_sample.setBoolean(6, false);
+//                // MySQL nanosecs
+//                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+//                    insert_long_sample.setInt(7, stamp.getNanos());
+//                insert_long_sample.executeUpdate();
+//            }
+//            else if (sample instanceof IEnumeratedValue)
+//            {   // Enum handled just like (long) integer
+//                final IEnumeratedValue num = (IEnumeratedValue) sample;
+//                if (num.getValues().length > 1)
+//                    throw new Exception("Not checking array samples");
+//                insert_long_sample.setInt(1, channel.getId());
+//                insert_long_sample.setTimestamp(2, stamp);
+//                insert_long_sample.setInt(3, severity.getId());
+//                insert_long_sample.setInt(4, status.getId());
+//                insert_long_sample.setLong(5, num.getValue());
+//                insert_long_sample.setBoolean(6, false);
+//                // MySQL nanosecs
+//                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+//                    insert_long_sample.setInt(7, stamp.getNanos());
+//                insert_long_sample.executeUpdate();
+//            }
+//            else
+//            {   // Handle string and possible other types as strings
+//                final String txt = sample.format();
+//                insert_txt_sample.setInt(1, channel.getId());
+//                insert_txt_sample.setTimestamp(2, stamp);
+//                insert_txt_sample.setInt(3, severity.getId());
+//                insert_txt_sample.setInt(4, status.getId());
+//                insert_txt_sample.setString(5, txt);
+//                insert_txt_sample.setBoolean(6, false);
+//                // MySQL nanosecs
+//                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
+//                    insert_txt_sample.setInt(7, stamp.getNanos());
+//                insert_txt_sample.executeUpdate();
+//            }
+//            rdb.getConnection().commit();
+//        }
+//        catch (Exception ex)
+//        {
+//            System.out.println("Individual insert failed: " + ex.getMessage());
+//        }
     }
 
     /** {@inheritDoc} */

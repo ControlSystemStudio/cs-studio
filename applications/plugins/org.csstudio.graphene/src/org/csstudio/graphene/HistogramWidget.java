@@ -1,8 +1,8 @@
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.util.time.TimeDuration.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,8 +25,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.epics.graphene.Histogram1DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
+import org.epics.vtype.VImage;
 import org.epics.pvmanager.graphene.Histogram1DPlot;
 
 public class HistogramWidget extends Composite {
@@ -190,15 +191,15 @@ public class HistogramWidget extends Composite {
 		plot = histogramOf(vDouble(getProcessVariable().getName()));
 		plot.update(new Histogram1DRendererUpdate()
 				.imageWidth(imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y));
-		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread()).every(hz(50));
-		pv.addPVReaderListener(new PVReaderListener() {
-			
-			@Override
-			public void pvChanged() {
-				setLastError(pv.lastException());
-				imageDisplay.setVImage(pv.getValue());
-			}
-		});
+		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+				.readListener(new PVReaderListener<VImage>() {
+					@Override
+					public void pvChanged(PVReaderEvent<VImage> event) {
+						setLastError(pv.lastException());
+						imageDisplay.setVImage(pv.getValue());
+					}
+				})
+				.maxRate(ofHertz(50));
 	}
 	
 	private void changePlotSize(int newWidgth, int newHeight) {

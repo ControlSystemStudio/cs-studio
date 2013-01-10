@@ -2,8 +2,8 @@ package org.csstudio.diag.postanalyser;
 
 import java.util.logging.Level;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.csstudio.trends.databrowser2.ProcessVariableWithSamples;
@@ -14,6 +14,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Eclipse ViewPart for the post analyzer Model and GUI.
  *  @author Albert Kagarmanov
@@ -87,8 +89,8 @@ public final class View extends ViewPart
     {
         final String name = pv.getProcessVariable().getName();
 
-        // Convert the sequence of IValue into simple doubles
-        final IValue[] samples = pv.getSamples();
+        // Convert the sequence of VType into simple doubles
+        final VType[] samples = pv.getSamples();
         final int N = samples.length;
         double time[] = new double[N];
         double value[] = new double[N];
@@ -97,12 +99,13 @@ public final class View extends ViewPart
         int j = 0;
         for (int i = 0; i < N; ++i)
         {
-            final IValue v = samples[i];
-            final double dbl = ValueUtil.getDouble(v);
+            final VType v = samples[i];
+            final double dbl = VTypeHelper.toDouble(v);
             if (Double.isNaN(dbl) || Double.isInfinite(dbl))
                 continue;
             value[j] = dbl;
-            time[j] = v.getTime().toDouble();
+            final Timestamp stamp = VTypeHelper.getTimestamp(v);
+            time[j] = TimestampHelper.toMillisecs(stamp);
             ++j;
         }
         // Add as new channel to the model

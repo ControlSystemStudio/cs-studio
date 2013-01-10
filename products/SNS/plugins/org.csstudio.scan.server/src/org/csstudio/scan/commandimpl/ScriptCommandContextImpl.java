@@ -9,18 +9,20 @@ package org.csstudio.scan.commandimpl;
 
 import java.util.Date;
 
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.ndarray.NDArray;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Implementation of the {@link ScanScriptContext}
  *
@@ -84,14 +86,12 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     public Object read(final String device_name) throws Exception
     {
         final Device device = context.getDevice(device_name);
-        final IValue value = device.read();
-        if (value instanceof IStringValue)
-            return ValueUtil.getString(value);
-        // If array-type, return double[]
-        final double[] array = ValueUtil.getDoubleArray(value);
-        if (array.length == 1)
-        	return array[0];
-		return array;
+        final VType value = device.read();
+        if (value instanceof VNumber)
+            return ValueUtil.numericValueOf(value);
+        if (value instanceof VNumberArray)
+        	return VTypeHelper.toDoubles(value);
+        return VTypeHelper.toString(value);
     }
 
     /** {@inheritDoc} */

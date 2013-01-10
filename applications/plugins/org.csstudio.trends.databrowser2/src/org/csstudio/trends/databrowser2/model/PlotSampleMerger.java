@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 /** Helper for merging archived samples.
  *  <p>
@@ -34,10 +34,10 @@ public class PlotSampleMerger
         final int Na = add.length;
         // Both lists have at least one sample.
         // Determine start/end times.
-        ITimestamp old_start = old[0].getTime();
+        Timestamp old_start = old[0].getTime();
         // ITimestamp old_end = old[No-1].getTime();
-        ITimestamp add_start = add[0].getTime();
-        ITimestamp add_end = add[Na-1].getTime();
+        Timestamp add_start = add[0].getTime();
+        Timestamp add_end = add[Na-1].getTime();
 
         //        System.out.print("Have samples " + old_start.toString());
         //        System.out.print(" to " + old_end.toString());
@@ -48,7 +48,7 @@ public class PlotSampleMerger
 
         // Assume old samples are this:        +=============+
         // All new samples are before: +--...+
-        if (add_end.isLessThan(old_start))
+        if (add_end.compareTo(old_start) < 0)
         {
             final PlotSample result[] = new PlotSample[Na + No];
             System.arraycopy(add, 0, result, 0, Na);
@@ -57,7 +57,7 @@ public class PlotSampleMerger
         }
         //                               +=x===========+
         // before, maybe overlap    +---..................+
-        if (add_start.isLessOrEqual(old_start))
+        if (add_start.compareTo(old_start) <= 0)
         {
             // Result starts with 'new' samples. Then, how many 'old' samples?
             // Determine the first sample to use from the 'old'
@@ -77,7 +77,7 @@ public class PlotSampleMerger
         // New samples start             +===l=====r===+
         // within old time sample range      +-----+
         // or                                +---............--+
-        if (add_start.isGreaterOrEqual(old_start))
+        if (add_start.compareTo(old_start) >= 0)
         {
             // Determine the left/right indices of the section within 'old'.
             final int l = PlotSampleSearch.findSampleLessThan(old, add_start);

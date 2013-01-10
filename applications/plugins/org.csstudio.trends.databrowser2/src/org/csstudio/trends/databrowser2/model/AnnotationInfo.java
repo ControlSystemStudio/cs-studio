@@ -13,12 +13,12 @@ import java.util.Calendar;
 import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.util.time.Timestamp;
 import org.w3c.dom.Element;
 
 /** Information about a Plot Annotation
@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  */
 public class AnnotationInfo
 {
-	final private ITimestamp timestamp;
+	final private Timestamp timestamp;
 	final private double value;
 	final private int axis;
 	final private String title;
@@ -73,7 +73,7 @@ public class AnnotationInfo
 		return showPosition;
 	}
 
-	public AnnotationInfo(final ITimestamp timestamp, final double value, final int axis,
+	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
 			final String title, CursorLineStyle lineStyle, final boolean showName, final boolean showPosition, final FontData fontData, final RGB color)
     {
 
@@ -89,14 +89,14 @@ public class AnnotationInfo
 
     }
 
-	public AnnotationInfo(final ITimestamp timestamp, final double value, final int axis,
+	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
 			final String title)
     {
 		this(timestamp, value, axis, title, CursorLineStyle.NONE, false, false, null, null);
     }
 
 	/** @return Time stamp */
-	public ITimestamp getTimestamp()
+	public Timestamp getTimestamp()
 	{
 		return timestamp;
 	}
@@ -162,9 +162,9 @@ public class AnnotationInfo
      */
 	public static AnnotationInfo fromDocument(final Element node) throws Exception
     {
-        final String timetext = DOMHelper.getSubelementString(node, Model.TAG_TIME, TimestampFactory.now().toString());
+        final String timetext = DOMHelper.getSubelementString(node, Model.TAG_TIME, TimestampHelper.format(Timestamp.now()));
         final Calendar calendar = AbsoluteTimeParser.parse(timetext);
-        final ITimestamp timestamp = TimestampFactory.fromCalendar(calendar);
+        final Timestamp timestamp = Timestamp.of(calendar.getTime());
         final double value = DOMHelper.getSubelementDouble(node, Model.TAG_VALUE, 0.0);
         final int axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
 		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation"); //$NON-NLS-1$

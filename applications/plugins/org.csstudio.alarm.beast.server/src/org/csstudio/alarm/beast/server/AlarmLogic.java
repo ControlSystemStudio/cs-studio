@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.data.values.TimestampFactory;
+import org.epics.util.time.Timestamp;
 
 /** Alarm handling logic.
  *  <p>
@@ -29,7 +29,7 @@ import org.csstudio.data.values.TimestampFactory;
  *  control system connection.
  *
  *  @see AlarmPV
- *  @see AlarmLogicHeadlessTest
+ *  @see AlarmLogicUnitTest
  *  @author Kay Kasemir
  */
 public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
@@ -163,7 +163,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
                 current_state = AlarmState.createClearState(current_state.getValue());
                 alarm_state = new AlarmState(SeverityLevel.OK,
                         Messages.AlarmMessageDisabled, "", //$NON-NLS-1$
-                        TimestampFactory.now());
+                        Timestamp.now());
                 current = current_state;
                 alarm = alarm_state;
             }

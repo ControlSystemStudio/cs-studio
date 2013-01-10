@@ -54,20 +54,22 @@ public class DataBrowserInput implements IDataBrowserInput {
 		return path.toString();
 	}
 
-	public InputStream getInputStream() throws Exception {
+	public InputStream getInputStream() throws Exception{
 		return ResourceUtil.pathToInputStream(getPath(), false);
 	}
 
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		// For 'Save' to work after 'SaveAs', the
-		// input must adapt to IFile.
-		// For details see DataBrowserEditor#doSave()
-		if (adapter == IFile.class) {
-			final IResource resource = ResourcesPlugin.getWorkspace().getRoot()
-					.findMember(path, false);
-			if (resource != null && resource instanceof IFile)
-				return resource;
-		}
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter)
+	{
+	    // For 'Save' to work after 'SaveAs', the
+	    // input must adapt to IFile.
+	    // For details see DataBrowserEditor#doSave()
+	    if (adapter == IFile.class)
+	    {
+	        final IResource resource = ResourcesPlugin.getWorkspace().getRoot()
+                    .findMember(path, false);
+            if (resource != null  &&  resource instanceof IFile)
+                return resource;
+	    }
 		return null;
 	}
 
