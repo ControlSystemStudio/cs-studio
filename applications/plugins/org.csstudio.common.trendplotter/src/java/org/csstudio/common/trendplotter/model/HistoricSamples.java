@@ -36,6 +36,7 @@ import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.epics.vtype.VType;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +175,7 @@ public class HistoricSamples extends PlotSamples
     synchronized public void mergeArchivedData(final String channel_name,
                                                final ArchiveReader source,
                                                final RequestType requestType,
-                                               final List<IValue> result)
+                                               final List<VType> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
     {
@@ -185,7 +186,7 @@ public class HistoricSamples extends PlotSamples
         if (_histSamplesInvalid) {
             clear();
         }
-        // Turn IValues into PlotSamples
+        // Turn VType into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
         for (int i=0; i<new_samples.length; ++i) {
             new_samples[i] = new PlotSample(source.getServerName(), result.get(i));

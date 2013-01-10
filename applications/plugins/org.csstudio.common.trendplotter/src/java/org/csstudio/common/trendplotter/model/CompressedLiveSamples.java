@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.common.collection.LimitedArrayCircularQueue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.epics.util.time.Timestamp;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,8 +135,10 @@ public class CompressedLiveSamples extends LiveSamples {
     private Long[] determinePerfectWindowForCompressedSamples(final int cap,
                                                               @Nonnull final LimitedArrayCircularQueue<PlotSample> samples,
                                                               final Interval intvl) {
-        final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(cap+_securityCap- 1).getTime()).getMillis();
-        final long startMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(0).getTime()).getMillis();
+        Timestamp lastSampleTime = samples.get(cap+_securityCap- 1).getTime();
+        Timestamp firstSampleTime = samples.get(0).getTime();
+        final long endMillis = (long) ((lastSampleTime.getSec()*1e9 + lastSampleTime.getNanoSec())/1e6);
+        final long startMillis = (long) ((firstSampleTime.getSec()*1e9 + firstSampleTime.getNanoSec())/1e6);
         final long realStartMillis = Math.min(startMillis, intvl.getStartMillis());
         final long realEndMillis = Math.min(endMillis, intvl.getEndMillis());
         final long windowLengthMS = (int) ((realEndMillis - realStartMillis)/cap); // perfect
@@ -148,8 +151,9 @@ public class CompressedLiveSamples extends LiveSamples {
                                           @Nonnull final long startTimeInMS) {
         PlotSample next;
         while ((next = samples.peek()) != null) {
-            final TimeInstant time = BaseTypeConversionSupport.toTimeInstant(next.getTime());
-            if (time.getMillis() < startTimeInMS) {
+            Timestamp sampleTime = next.getTime();
+            final long sampleTimeMillis = (long) ((sampleTime.getSec()*1e9 + sampleTime.getNanoSec())/1e6);
+            if (sampleTimeMillis < startTimeInMS) {
                 samples.poll();
             } else {
                 break;

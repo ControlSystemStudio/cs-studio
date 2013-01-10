@@ -37,6 +37,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.VType;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -474,7 +475,7 @@ public class PVItem extends ModelItem implements PVListener {
      * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedSamples(final ArchiveReader reader,
-                                                  final List<IValue> result,
+                                                  final List<VType> result,
                                                   final RequestType requestType) throws OsgiServiceUnavailableException,
                                                                                 ArchiveServiceException {
         samples.mergeArchivedData(getName(), reader, requestType, result);

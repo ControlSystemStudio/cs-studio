@@ -21,6 +21,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.epics.vtype.VType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -252,7 +253,7 @@ public class PVSamples extends PlotSamples
     synchronized public void mergeArchivedData(final String channel_name,
                                                final ArchiveReader reader,
                                                final RequestType requestType,
-                                               final List<IValue> result)
+                                               final List<VType> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
     {

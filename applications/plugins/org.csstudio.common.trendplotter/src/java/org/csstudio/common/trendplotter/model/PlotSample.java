@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.INumericMetaData;
@@ -14,10 +15,14 @@ import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Time;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** Data Sample from control system (IValue)
  *  with interface for XYGraph (ISample)
@@ -25,11 +30,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class PlotSample implements ISample
 {
-    final public static INumericMetaData dummy_meta = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 1, "a.u."); //$NON-NLS-1$
-    final public static ISeverity ok_severity = ValueFactory.createOKSeverity();
-
     /** Value contained in this sample */
-    final private IValue value;
+    final private VType value;
 
     /** Source of the data */
     final private String source;
@@ -51,7 +53,7 @@ public class PlotSample implements ISample
      *  @param source Info about the source of this sample
      *  @param value
      */
-    public PlotSample(final String source, final IValue value)
+    public PlotSample(final String source, final VType value)
     {
         if (value == null) {
             throw new IllegalArgumentException("IValue is null for PlotSample");
@@ -66,9 +68,7 @@ public class PlotSample implements ISample
      */
     public PlotSample(final String source, final String info)
     {
-        this(source, ValueFactory.createDoubleValue(TimestampFactory.now(),
-                ValueFactory.createInvalidSeverity(), info, dummy_meta,
-                IValue.Quality.Original, new double[] { Double.NaN }));
+        this(source, ValueFactory.newVString(info, ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, info), ValueFactory.timeNow()));
         this.info = info;
     }
 
@@ -77,9 +77,7 @@ public class PlotSample implements ISample
     PlotSample(final double x, final double y)
     {
         this("Test",
-             ValueFactory.createDoubleValue(TimestampFactory.fromDouble(x),
-               ok_severity, ok_severity.toString(), dummy_meta,
-               IValue.Quality.Original, new double[] { y }));
+             ValueFactory.newVDouble(y, ValueFactory.newTime(Timestamp.of((long) x, 0))));
     }
 
     /** @return Waveform index */
@@ -101,15 +99,17 @@ public class PlotSample implements ISample
     }
 
     /** @return Control system value */
-    public IValue getValue()
+    public VType getValue()
     {
         return value;
     }
 
     /** @return Control system time stamp */
-    public ITimestamp getTime()
+    public Timestamp getTime()
     {
-        return value.getTime();
+        if (value instanceof Time)
+            return ((Time) value).getTimestamp();
+        return Timestamp.now();
     }
 
     /** Since the 'X' axis is used as a 'Time' axis, this
@@ -120,18 +120,15 @@ public class PlotSample implements ISample
     @Override
     public double getXValue()
     {
-        return value.getTime().toDouble()*1000.0;
+        final Timestamp time = getTime();
+        return time.getSec() * 1000.0 + time.getNanoSec() / 1e6;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
-            return ValueUtil.getDouble(value, waveform_index);
-        }
-        // No numeric value. Plot shows NaN as marker.
-        return Double.NaN;
+        return VTypeHelper.toDouble(value, waveform_index);
     }
 
     /** Get sample's info text.

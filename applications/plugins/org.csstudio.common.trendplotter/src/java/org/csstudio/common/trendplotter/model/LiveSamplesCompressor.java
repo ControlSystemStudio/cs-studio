@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.domain.common.collection.LimitedArrayCircularQueue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.epics.util.time.Timestamp;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -113,8 +114,11 @@ public class LiveSamplesCompressor {
             return samples;
         }
 
-        final long startMillis = BaseTypeConversionSupport.toTimeInstant(firstCompressionSample.getTime()).getMillis();
-        final long endMillis = BaseTypeConversionSupport.toTimeInstant(lastCompressionSample.getTime()).getMillis();
+        Timestamp firstSampleTime = firstCompressionSample.getTime();
+        final long startMillis = (long) ((firstSampleTime.getSec()*1e9 + firstSampleTime.getNanoSec())/1e6);
+        Timestamp lastSampleTime = lastCompressionSample.getTime();
+        final long endMillis = (long) ((lastSampleTime.getSec()*1e9 + lastSampleTime.getNanoSec())/1e6);
+
         final long compressionStageLength = (endMillis - startMillis + 1)/_windowLengthsMS.size();
 
         final List<PlotSample> targetList = Lists.newLinkedList();
@@ -145,8 +149,10 @@ public class LiveSamplesCompressor {
             return samples;
         }
         // ...or first sample lies already beyond the end of this compression stage
-        final TimeInstant first = BaseTypeConversionSupport.toTimeInstant(samples.element().getTime());
-        if (first.getMillis() > endOfCompressionMS) {
+        Timestamp firstSampleTime = samples.element().getTime();
+        final long firstSampleMillis = (long) ((firstSampleTime.getSec()*1e9 + firstSampleTime.getNanoSec())/1e6);
+
+        if (firstSampleMillis > endOfCompressionMS) {
             return samples;
         }
 
@@ -189,8 +195,11 @@ public class LiveSamplesCompressor {
         if (sample == null) {
             return false;
         }
-        final TimeInstant time = BaseTypeConversionSupport.toTimeInstant(sample.getTime());
-        return time.getMillis() <= nextWindowEnd;
+
+        Timestamp sampleTime = sample.getTime();
+        final long sampleTimeMillis = (long) ((sampleTime.getSec()*1e9 + sampleTime.getNanoSec())/1e6);
+        
+        return sampleTimeMillis <= nextWindowEnd;
     }
 
     @Nonnull
@@ -201,7 +210,7 @@ public class LiveSamplesCompressor {
         if (Double.compare(min.getYValue(), max.getYValue()) == 0) {
             result.add(min); // they feature the same value - so take just one (it's a min max compressor!)
             //System.out.println(min);
-        } else if (min.getTime().isLessThan(max.getTime())) {
+        } else if (min.getTime().compareTo(max.getTime()) == -1) {
             result.add(min);
             //System.out.println(min);
             result.add(max);
