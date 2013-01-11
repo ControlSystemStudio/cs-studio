@@ -134,11 +134,13 @@ org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
+org.csstudio.utility.pvmanager.vtype/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**
 org.csstudio.workspace/**
 org.epics.util/**
+org.epics.vtype/**
 org.hamcrest/**
 org.jdom/**
 org.junit-dep/**
