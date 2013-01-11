@@ -83,6 +83,21 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 			TextInputFigure textInput) {
 		String startPath = textInput.getStartPath();
 		String currentPath = textInput.getCurrentPath();
+		switch (textInput.getFileReturnPart()) {
+		case DIRECTORY:
+		case FULL_PATH:
+			currentPath = textInput.getText();
+			break;		
+		default:
+			if (currentPath == null) {
+				if (startPath == null)
+					currentPath = textInput.getText();
+				else
+					currentPath = startPath;
+			}
+			break;
+		}
+		
 		switch (textInput.getFileSource()) {
 		case WORKSPACE:
 			ResourceSelectionDialog dialog = 
@@ -92,10 +107,6 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 								null : new String[]{"*.*"}); //$NON-NLS-2$
 			if(currentPath != null)
 				dialog.setSelectedResource(new Path(currentPath));					 
-			else if(startPath != null && startPath.trim().length() > 0)
-				dialog.setSelectedResource(new Path(startPath));
-			else 
-				dialog.setSelectedResource(new Path(textInput.getText()));
 			if(dialog.open() == Window.OK){
 				IPath path = dialog.getSelectedResource();
 				currentPath = path.toPortableString();
@@ -113,6 +124,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 					break;
 				}
 				textInput.setText(fileString);
+				textInput.setCurrentPath(currentPath);
 				textInput.fireManualValueChange(textInput.getText());
 			}
 			break;
@@ -121,6 +133,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 			if(textInput.getFileReturnPart() == FileReturnPart.DIRECTORY){
 				 DirectoryDialog directoryDialog = new DirectoryDialog(
 						Display.getCurrent().getActiveShell());
+				 directoryDialog.setFilterPath(currentPath);
 				 fileString = directoryDialog.open();
 				
 			}else {
@@ -146,6 +159,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 					break;
 				}
 				textInput.setText(fileString);
+				textInput.setCurrentPath(currentPath);
 				textInput.fireManualValueChange(textInput.getText());
 			}
 	
