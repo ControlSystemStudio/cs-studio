@@ -21,6 +21,7 @@
 - <a href="#export">Export</a>
 - <a href="#import">Import</a>
 - <a href="#inspect">Inspect Samples</a>
+- <a href="#waveforms">Waveforms</a>
 - <a href="#preferences">Preferences</a>
 - <a href="#transition">Older Data Browser</a>
 - <a href="#history">History</a>
@@ -617,12 +618,50 @@ appears inconsitent.
 </p>
 
 
+<h2><a name=waveforms>Waveforms (Arrays)</a></h2>
+<p>
+Support for waveform (array) type channels is limited.
+The Data Browser will only display one array element of a waveform channel over time.
+By default this is the first array element of each waveform sample, array element zero.
+The array index can be changed via the "Index" 
+property of the channel in the <a href="#config">Properties Panel</a>.
+</p>
+<p>
+The context menu of the plot has an entry to open the "Inspect Waveform" view.
+It can display each waveform sample individually.
+</p>
+<p>
+The fundamental problem with waveform channels is that the channel data itself
+does not provide sufficient information:
+Is the array sample
+</p>
+<ul>
+<li>a readout of a fast device, where the time stamp identifies the time of the first
+    (or last) array element, and the other array elements were obtained at small, fixed
+    time intervals after (before) the sample's time stamp?
+    This type of waveform could be displayed in the main Data Browser plot over time,
+    but the time detail is not known from the channel data.
+</li>
+<li>a readout of for example a beam position monitor or histogram or
+    multi channel analyzer, where each array element represents the value
+    at a certain position, energy, ...?
+    To display this, one needs to know the "X Axis" information.
+</li>
+<li>other structured data that was encoded in a waveform,
+    because the underlying control system (EPICS Version 3)
+    does not support data types for images or structures?
+    To display this, the data encoding needs to be known. 
+</li>
+</ul>
+
 
 <h2><a name=preferences>Preference Settings</a></h2>
-Use the menu CSS/Preferences/CSS Applications/Trends/Data Browser
+<p>
+Use the menu Edit/Preferences/CSS Applications/Trends/Data Browser
 to change various settings including the default time range
 of a new plot, the number of 'Plot Bins' used by the
 Optimized request type. 
+</p>
 
 
 <a name=transition><h2>Transition from older Data Browser</a></h2>
