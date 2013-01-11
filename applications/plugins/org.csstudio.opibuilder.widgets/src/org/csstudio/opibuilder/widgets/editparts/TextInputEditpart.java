@@ -45,10 +45,10 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.epics.pvmanager.data.Array;
-import org.epics.pvmanager.data.Scalar;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumberArray;
+import org.epics.vtype.Array;
+import org.epics.vtype.Scalar;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumberArray;
 
 /**
  * The editpart for text input widget.)

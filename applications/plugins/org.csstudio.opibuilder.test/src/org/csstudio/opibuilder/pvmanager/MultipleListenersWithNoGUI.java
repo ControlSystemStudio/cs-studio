@@ -1,21 +1,17 @@
 package org.csstudio.opibuilder.pvmanager;
-import static org.epics.pvmanager.data.ExpressionLanguage.vNumber;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.loc.LocalDataSource;
 import org.epics.util.time.TimeDuration;
-
+import org.epics.vtype.VNumber;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 public class MultipleListenersWithNoGUI {
         private static Text textA;
         private static Text textB;

@@ -34,9 +34,8 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.epics.pvmanager.data.Array;
-import org.epics.pvmanager.data.VNumberArray;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.VNumberArray;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen

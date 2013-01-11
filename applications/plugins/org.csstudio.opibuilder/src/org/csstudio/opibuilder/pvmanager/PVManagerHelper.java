@@ -8,28 +8,28 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.datadefinition.DataType;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
-import org.epics.pvmanager.data.Array;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Scalar;
-import org.epics.pvmanager.data.VByte;
-import org.epics.pvmanager.data.VByteArray;
-import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.VDoubleArray;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VEnumArray;
-import org.epics.pvmanager.data.VFloat;
-import org.epics.pvmanager.data.VFloatArray;
-import org.epics.pvmanager.data.VInt;
-import org.epics.pvmanager.data.VIntArray;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VShort;
-import org.epics.pvmanager.data.VShortArray;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VStringArray;
-import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.CollectionNumbers;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.Array;
+import org.epics.vtype.Display;
+import org.epics.vtype.Scalar;
+import org.epics.vtype.VByte;
+import org.epics.vtype.VByteArray;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VEnumArray;
+import org.epics.vtype.VFloat;
+import org.epics.vtype.VFloatArray;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VIntArray;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VShort;
+import org.epics.vtype.VShortArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
+import org.epics.vtype.ValueUtil;
 
 /**
  * A helper for PVManager related operations which are not 

@@ -64,10 +64,10 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VString;
 import org.epics.util.array.CollectionNumbers;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
 
 /**
  * Editpart for array widget.

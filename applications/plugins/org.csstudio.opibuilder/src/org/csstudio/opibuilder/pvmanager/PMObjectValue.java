@@ -10,12 +10,12 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.datadefinition.NotImplementedException;
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.ValueUtil;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.Time;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.ValueUtil;
 
 /**A {@link IValue} that represents PVManager object value. The value is immutable.
  * @author Xihui Chen

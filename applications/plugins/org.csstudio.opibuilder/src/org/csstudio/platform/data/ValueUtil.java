@@ -60,7 +60,7 @@ public class ValueUtil
     public static double getDouble(final IValue value, final int index)
     {
     	if (value instanceof PMObjectValue){
-        	Double v = org.epics.pvmanager.data.ValueUtil.numericValueOf(
+        	Double v = org.epics.vtype.ValueUtil.numericValueOf(
         			((PMObjectValue)value).getLatestValue());
         	if(v==null)
         		return Double.NaN;
@@ -98,7 +98,7 @@ public class ValueUtil
     		double[] result = new double[allValues.size()];
     		int i=0;
     		for(Object obj : allValues){
-    			result[i++] = org.epics.pvmanager.data.ValueUtil.numericValueOf(obj);
+    			result[i++] = org.epics.vtype.ValueUtil.numericValueOf(obj);
     		}
     		return result;
     	}else
