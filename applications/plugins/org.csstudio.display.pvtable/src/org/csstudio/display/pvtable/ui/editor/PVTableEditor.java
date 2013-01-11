@@ -18,6 +18,7 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -84,7 +85,7 @@ public class PVTableEditor extends EditorPart
     {
         // "Site is incorrect" error results if the site is not set:
         setSite(site);
-        setInput(input);
+        setInput(new NoResourceEditorInput(input));
         final IFile file = getEditorInputFile();
         if (file != null)
         {
