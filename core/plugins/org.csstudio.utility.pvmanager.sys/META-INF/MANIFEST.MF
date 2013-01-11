@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sys DataSource
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.sys;singleton:=true
+Bundle-Version: 3.1.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.sys.Activator
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Provides system information to pvManager
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.epics.pvmanager.sys
