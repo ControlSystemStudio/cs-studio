@@ -16,7 +16,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
 	private StringFieldEditor urlField;
-	private StringFieldEditor jcrUrlField;
 	private BooleanFieldEditor useAuthenticationField;
 	private StringFieldEditor usernameField;
 	private PasswordFieldEditor passwordField;
@@ -41,9 +40,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		// no need to override checkstate
 		urlField.setEmptyStringAllowed(false);
 		addField(urlField);
-		jcrUrlField = new StringFieldEditor(PreferenceConstants.Olog_jcr_URL,
-				"Olog JCR URL:", getFieldEditorParent());
-		addField(jcrUrlField);
 		useAuthenticationField = new BooleanFieldEditor(
 				PreferenceConstants.Use_authentication, "use authentication",
 				getFieldEditorParent());
