@@ -21,19 +21,19 @@
  */
  package org.csstudio.platform.internal.ldapauthorization;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.platform.ldapAuthorization";
 
 	// The shared instance
-	private static AbstractCssPlugin plugin;
+	private static Plugin plugin;
 	
 	/**
 	 * The constructor
@@ -43,25 +43,22 @@ public class Activator extends AbstractCssPlugin {
 	}
 	
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 	}
 	
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 	
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
-
 	/**
 	 * Returns the shared instance
 	 *
 	 * @return the shared instance
 	 */
-	public static AbstractCssPlugin getDefault() {
+	public static Plugin getDefault() {
 		return plugin;
 	}
 

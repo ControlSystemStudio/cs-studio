@@ -9,8 +9,8 @@ package org.csstudio.archive.vtype;
 
 import java.text.NumberFormat;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
 import org.epics.util.time.Timestamp;
 
 /** Base of archive-derived {@link VType} implementations that include {@link Display}

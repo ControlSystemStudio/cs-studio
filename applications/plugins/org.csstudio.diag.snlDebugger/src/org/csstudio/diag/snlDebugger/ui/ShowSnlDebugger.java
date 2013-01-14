@@ -21,45 +21,29 @@
  */
 package org.csstudio.diag.snlDebugger.ui;
 
-import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.diag.snlDebugger.Activator;
-import org.csstudio.diag.snlDebugger.Messages;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ShowSnlDebugger implements IWorkbenchWindowActionDelegate {
+public class ShowSnlDebugger extends AbstractHandler {
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
+	    try {
+	        page.showView(Activator.PLUGIN_ID);
+	    } catch (final PartInitException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
-
-	public void init(final IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void run(final IAction action) {
-			final IWorkbench workbench = PlatformUI.getWorkbench();
-	        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        final IWorkbenchPage page = window.getActivePage();
-	        try {
-				page.showView(Activator.PLUGIN_ID);
-			} catch (final PartInitException e) {
-				Activator.logException(Messages.getString("ShowSnlDebugger.ExceptionPartInit"), e); //$NON-NLS-1$
-			}
-
-	}
-
-	public void selectionChanged(final IAction action, final ISelection selection) {
-	    action.setEnabled(SecurityFacade.getInstance().canExecute("iocAccesses", false));
-	}
-
-
 }

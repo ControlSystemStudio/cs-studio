@@ -99,6 +99,7 @@ public class AcknowledgeServiceImplUnitTest {
         assertThat(acknowledgedPvs, hasItems("myPV1", "myPV2", "myPV3"));
         
         _serviceUnderTest.announceAlarm("myPV2");
+        acknowledgedPvs = _serviceUnderTest.getAcknowledgedPvs();
         assertEquals(2, acknowledgedPvs.size());
         assertThat(acknowledgedPvs, hasItems("myPV1", "myPV3"));
     }

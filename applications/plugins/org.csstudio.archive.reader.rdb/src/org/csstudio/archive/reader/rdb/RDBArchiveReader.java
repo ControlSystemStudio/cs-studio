@@ -23,8 +23,8 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
 
 /** ArchiveReader for RDB data
  *  @author Kay Kasemir

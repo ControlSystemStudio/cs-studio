@@ -18,6 +18,7 @@ import org.junit.Test;
 /** JUnit test of the {@link AlarmStateHistory}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AlarmStateHistoryUnitTest
 {
     @Test

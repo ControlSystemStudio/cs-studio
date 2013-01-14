@@ -29,16 +29,20 @@ import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.ui.actions.LogTableViewActionFactory;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.servicelocator.ServiceLocator;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -114,6 +118,19 @@ public class AlarmView extends LogView {
         addRunningSinceGroup(logTableManagementComposite);
         
         initializeMessageTable();
+        
+        new ControlSystemDragSource(_tableViewer.getTable()) {
+        	
+        	@Override
+        	public Object getSelection() {
+        		final Object[] o = ((IStructuredSelection) _tableViewer.getSelection()).toArray();
+        		final ProcessVariable[] pv = new ProcessVariable[o.length];
+        		for (int i=0; i<pv.length; ++i) {
+        			pv[i] = new ProcessVariable(((BasicMessage) o[i]).getName());
+        		}
+        		return pv;
+        	}
+        };
     }
     
     /**

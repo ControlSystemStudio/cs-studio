@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RCP fragment of databrowser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2.rcp;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Davy Dequidt<davy,dequidt@iter.org> - ITER
+Bundle-Vendor: Davy Dequidt <davy.dequidt@iter.org> - ITER
 Fragment-Host: org.csstudio.trends.databrowser2;bundle-version="3.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0";visibility:=reexport,

@@ -55,6 +55,7 @@
     <pre class = "example_code">/BOY Examples/|C:\users\5hz\Desktop\|http://ics-srv-web2.sns.ornl.gov/opi/</pre></p>
       <p>Preference key: <code>opi_search_path</code></p></li>
     
+    <A NAME="topopis"></A>
     <li><b>Top OPIs: </b><p>The OPIs which will be listed in the "Top OPIs" drop down button. 
     To add macros input for the OPI, append "macroName=macroValue" to path and separate them by commas.
     To give a different menu text rather than using file name, append a macro "Alias=The Menu Name".
@@ -117,6 +118,14 @@ print "Hello, World"</pre>
     <p>The file in editing will be automatically saved before running it after you
     hit the run button or pressed <code>Ctrl+G</code>.</p>
     <p>Preference key: <code>auto_save</code></p>
+     </li>	
+     <li><b>Hidden Widgets</b>
+    <p>The widgets that should be hidden from palette. This entry has no GUI entry in
+    preference page because it is usually a site wide preference. For example:
+    <br><code>hidden_widgets=org.csstudio.opibuilder.widgets.ActionButton|org.csstudio.opibuilder.widgets.TextInput
+    </code>
+    </p>
+    <p>Preference key: <code>hidden_widgets</code></p>
      </li>	
 	</ul>
 	

@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager.expression;
 
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.QueueCollector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

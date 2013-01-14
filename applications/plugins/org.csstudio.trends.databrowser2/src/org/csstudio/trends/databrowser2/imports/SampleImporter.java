@@ -10,7 +10,7 @@ package org.csstudio.trends.databrowser2.imports;
 import java.io.InputStream;
 import java.util.List;
 
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** API for tool that imports data
  *

@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.export;
 
 import java.util.ArrayList;
 
-import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.vtype.AlarmSeverity;
 
 /** Helper for turning IValue's Severity/Status into a numeric code
  *  for the Matlab Time Series "Quality"

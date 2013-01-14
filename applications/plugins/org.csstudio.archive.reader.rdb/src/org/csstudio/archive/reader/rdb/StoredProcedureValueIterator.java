@@ -23,9 +23,9 @@ import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VType;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.

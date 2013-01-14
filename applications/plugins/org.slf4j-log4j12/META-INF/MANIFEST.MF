@@ -1,9 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Slf4j-log4j12
+Bundle-Name: Simple Logging Facade 4J to Log4J
 Bundle-SymbolicName: org.slf4j-log4j12
-Bundle-Version: 1.6.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 1.7.2
+Export-Package: org.slf4j.impl;version="1.7.2"
 Eclipse-RegisterBuddy: org.slf4j
-Require-Bundle: org.slf4j;bundle-version="1.6.1";visibility:=reexport,
- org.apache.log4j;bundle-version="1.2.16";visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
+Require-Bundle: org.slf4j;bundle-version="1.7.2",
+ org.apache.log4j;bundle-version="1.2.16"

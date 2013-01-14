@@ -8,7 +8,7 @@
 package org.csstudio.diag.pvfields.model;
 
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vType;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
@@ -30,7 +30,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** Data provider based on PVManager and assumptions about EPICS channels
  * 

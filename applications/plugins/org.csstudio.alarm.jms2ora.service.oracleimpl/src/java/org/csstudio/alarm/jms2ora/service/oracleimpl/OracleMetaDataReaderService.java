@@ -60,16 +60,16 @@ public class OracleMetaDataReaderService implements IMetaDataReader {
      * {@inheritDoc}
      */
     @Override
-    public Hashtable<String, Long> getMessageContentProperties() {
-        return metaDataDao.getMessageContentProperties();
+    public Hashtable<String, Long> getMsgPropertyTypeContent() {
+        return metaDataDao.getMsgPropertyTypeContent();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Hashtable<String, Integer> getMessageProperties() {
-        return metaDataDao.getMessageProperties();
+    public Hashtable<String, Integer> getMessageMetaData() {
+        return metaDataDao.getMessageMetaData();
     }
 
     /**

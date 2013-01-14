@@ -73,10 +73,8 @@ public class StoreArticleGuiFormActionHandler {
 		wf.setInput(P("box"), storeLookupDataService.findAllBox(lagerName));
 		if (!isSearchMode) {
 			Option<Lager> lager = lagerService.findByName(lagerName);
-			if (lager.hasValue()) {
-				if (StringUtils.isEmpty(wf.getText(P("id")))) {
-					wf.setText(P("id"), lager.get().getLagerPrefix());
-				}
+			if ((lager.hasValue() && StringUtils.isEmpty(wf.getText(P("id"))))) {
+				wf.setText(P("id"), lager.get().getLagerPrefix());
 			}
 		}
 	}

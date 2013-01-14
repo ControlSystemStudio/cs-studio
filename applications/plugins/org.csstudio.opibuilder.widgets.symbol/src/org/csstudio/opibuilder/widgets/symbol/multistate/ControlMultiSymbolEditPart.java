@@ -38,12 +38,11 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 		figure.addManualValueChangeListener(new IManualStringValueChangeListener() {
 			public void manualValueChanged(final String newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue.trim());
 				}
 			}
 		});
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME,
-				AbstractPVWidgetModel.PROP_PVVALUE);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return figure;
 	}
 	

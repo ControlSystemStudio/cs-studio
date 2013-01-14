@@ -19,15 +19,15 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @NamedQueries({
-			@NamedQuery(name = LagerArtikel.FIND_ALL, query = "from LagerArtikel where lagerName = ? and articleDescription.id = ?"),
-			@NamedQuery(name = LagerArtikel.FIND_BY_ID, query = "from LagerArtikel where id = ?") })
+			@NamedQuery(name = LagerArtikel.FIND_ALL, query = "from LagerArtikel where lagerName = :name and articleDescription.id = :id"),
+			@NamedQuery(name = LagerArtikel.FIND_BY_ID, query = "from LagerArtikel where id = :id") })
 @Table(name = "lager_artikel")
 public class LagerArtikel extends BindingEntity implements TextValue {
 

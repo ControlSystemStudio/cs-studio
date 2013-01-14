@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 import org.epics.util.time.Timestamp;
 
 /** Eclipse Job for fetching archived data.

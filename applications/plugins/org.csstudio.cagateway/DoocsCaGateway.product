@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DoocsCaGateway" id="org.csstudio.cagateway.DoocsCaGatewayProduct" application="org.csstudio.cagateway.CAGatewayApplication" useFeatures="false" includeLaunchers="true">
+<product name="DoocsCaGateway" id="org.csstudio.cagateway.DoocsCaGatewayProduct" application="org.csstudio.cagateway.CAGatewayApplication" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -27,6 +27,7 @@
       <plugin id="javax.annotation"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
+      <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.cagateway"/>
       <plugin id="org.csstudio.data"/>
@@ -39,6 +40,7 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
       <plugin id="org.csstudio.servicelocator"/>
+      <plugin id="org.csstudio.utility.jms"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
@@ -47,19 +49,13 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.net"/>
       <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.net.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.datashare"/>
@@ -101,6 +97,7 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
@@ -111,9 +108,7 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.epics.util"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
       <plugin id="org.jivesoftware.smack"/>
@@ -134,6 +129,10 @@
       <plugin id="org.slf4j"/>
       <plugin id="org.slf4j-log4j12"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.cagateway.feature" version="1.0.0.qualifier"/>
+   </features>
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />

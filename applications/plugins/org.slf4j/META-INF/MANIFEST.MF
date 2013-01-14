@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Simple Logging Facade 4J
 Bundle-SymbolicName: org.slf4j
-Bundle-Version: 1.6.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Bundle-Version: 1.7.2
 Eclipse-BuddyPolicy: registered
 Export-Package: org.slf4j,
  org.slf4j.helpers,
  org.slf4j.spi
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning

@@ -18,7 +18,7 @@ public enum  DependencyInjector {
 	}
 
 	public void startPersistService() {
-		persistService.start();
+      persistService.start();
 	}
 
 	public Injector getInjector() {

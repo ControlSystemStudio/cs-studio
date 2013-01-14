@@ -8,7 +8,7 @@
 package org.csstudio.common.trendplotter.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
+import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.common.trendplotter.Activator;
 import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.model.AxisConfig;
@@ -19,7 +19,6 @@ import org.csstudio.common.trendplotter.model.PVItem;
 import org.csstudio.common.trendplotter.model.RequestType;
 import org.csstudio.common.trendplotter.model.TraceType;
 import org.csstudio.common.trendplotter.ui.TableHelper;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,6 +29,7 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -39,14 +39,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
  *  @author Kay Kasemir
  */
-public class TraceTableHandler implements ILazyContentProvider
+public class TraceTableHandler implements IStructuredContentProvider
 {
     /** Prompt for the 'raw request' warning? */
     static boolean prompt_for_raw_data_request = true;
@@ -70,23 +67,20 @@ public class TraceTableHandler implements ILazyContentProvider
         public void changedTimerange() { /* Ignored */ }
 
         @Override
-        public void changedAxis(AxisConfig axis)
-        {
+        public void changedAxis(AxisConfig axis) {
             // In case an axis _name_ changed, this needs to be shown
             // in the "Axis" column.
             trace_table.refresh();
         }
 
         @Override
-        public void itemAdded(final ModelItem item)
-        {
+        public void itemAdded(final ModelItem item) {
             trace_table.cancelEditing();
-            trace_table.setItemCount(model.getItemCount());
+            trace_table.refresh();
         }
 
         @Override
-        public void itemRemoved(final ModelItem item)
-        {
+        public void itemRemoved(final ModelItem item) {
             // User will often click on an item,
             // which usually starts an editor, then press delete.
             // To get a clear table update, all of this seems to be required
@@ -97,21 +91,30 @@ public class TraceTableHandler implements ILazyContentProvider
         }
 
         @Override
-        public void changedItemVisibility(ModelItem item)
-        {   // Update the item's row in table
+        public void changedItemVisibility(ModelItem item) {   // Update the item's row in table
             changedItemLook(item);
         }
 
         @Override
-        public void changedItemLook(final ModelItem item)
-        {
+        public void changedItemLook(final ModelItem item) {
             trace_table.refresh(item);
         }
 
         @Override
         public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
+        
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
+        
+        @Override
+        public void changedAnnotations() {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void changedXYGraphConfig() {
+            // TODO Auto-generated method stub
+        }
     };
 
     /** Create table columns: Auto-sizable, with label provider and editor
@@ -144,6 +147,19 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.TraceVisibilityTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+            @Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+                final int v1 = item1.isVisible() ? 1 : 0;
+                final int v2 = item2.isVisible() ? 1 : 0;
+                final int cmp = v1 - v2;
+                if (cmp != 0)
+                    return cmp;
+                return item1.getName().compareTo(item2.getName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -192,6 +208,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.ItemNameTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+            @Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+                return item1.getName().compareTo(item2.getName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -469,6 +493,17 @@ public class TraceTableHandler implements ILazyContentProvider
                 return Messages.AxisTT;
             }
         });
+        new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
+        {
+            @Override
+            public int compare(final ModelItem item1, final ModelItem item2)
+            {
+                final int cmp = item1.getAxis().getName().compareTo(item2.getAxis().getName());
+                if (cmp != 0)
+                    return cmp;
+                return item1.getDisplayName().compareTo(item2.getDisplayName());
+            }
+        };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
@@ -544,6 +579,52 @@ public class TraceTableHandler implements ILazyContentProvider
         
         createAndAddRequestTypeColumn(table_layout, operations_manager, table_viewer, shell);
 
+        // Waveform Index Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.WaveformIndexCol, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getWaveformIndex()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.WaveformIndexColTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getWaveformIndex());
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int index;
+                try
+                {
+                    index = Integer.parseInt(value.toString().trim());
+                    if (index < 0)
+                        return;
+                }
+                catch (NumberFormatException ex)
+                {
+                    return;
+                }
+                
+                final ModelItem item = (ModelItem)element;
+                if (index != item.getWaveformIndex())
+                    new ChangeWaveformIndexCommand(operations_manager, item, index);
+            }
+        });
         //createAndAddShowDeadbandColumn(table_layout, operations_manager, table_viewer, shell);
         
         ColumnViewerToolTipSupport.enableFor(table_viewer);
@@ -713,13 +794,14 @@ public class TraceTableHandler implements ILazyContentProvider
         model.addListener(model_listener);
     }
 
-    /** Called by ILazyContentProvider to get the ModelItem for a table row
-     *  {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void updateElement(int index)
+    public Object[] getElements(final Object inputElement)
     {
-        trace_table.replace(model.getItem(index), index);
+        final ModelItem[] items = new ModelItem[model.getItemCount()];
+        for (int i=0; i<items.length; ++i)
+            items[i] = model.getItem(i);
+        return items;
     }
 
     /** {@inheritDoc} */

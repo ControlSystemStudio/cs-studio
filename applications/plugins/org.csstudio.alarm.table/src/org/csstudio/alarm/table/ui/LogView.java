@@ -33,6 +33,7 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.AlarmListener;
@@ -45,8 +46,11 @@ import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.actions.LogTableViewActionFactory;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -179,8 +183,19 @@ public class LogView extends ViewPart implements IConnectionHolder {
         // addMessageUpdateControl(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
-
         initializeMessageTable();
+        new ControlSystemDragSource(_tableViewer.getTable()) {
+        	
+        	@Override
+        	public Object getSelection() {
+        		final Object[] o = ((IStructuredSelection) _tableViewer.getSelection()).toArray();
+        		final ProcessVariable[] pv = new ProcessVariable[o.length];
+        		for (int i=0; i<pv.length; ++i) {
+        			pv[i] = new ProcessVariable(((BasicMessage) o[i]).getName());
+        		}
+        		return pv;
+        	}
+        };
     }
 
     /**

@@ -47,10 +47,13 @@ public class Preferences
                                PLOT_BINS = "plot_bins",
                                URLS = "urls",
                                ARCHIVES = "archives",
+                               USE_DEFAULT_ARCHIVES = "use_default_archives",
+                               PROMPT_FOR_ERRORS="prompt_for_errors",
                                ARCHIVE_RESCALE = "archive_rescale",
                                COMPR_HIST = "compress_historic_samples",
                                HIST_BUFFER = "historic_buffer_size",
-                               UNCOMP_LIVE_SAMPLES = "uncompressed_live_sample_size";
+                               UNCOMP_LIVE_SAMPLES = "uncompressed_live_sample_size",
+                               SECURITY_COMP_LIVE_SAMPLES="security_compressed_live_sample_size";
 
     public static double getTimeSpan()
     {
@@ -139,6 +142,26 @@ public class Preferences
         return archives.toArray(new ArchiveDataSource[archives.size()]);
     }
 
+    /** @return <code>true</code> to use default archives,
+     *          ignoring data sources from config file
+     */
+    static public boolean useDefaultArchives()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.PLUGIN_ID, USE_DEFAULT_ARCHIVES, false, null);
+    }
+
+    /** @return <code>true</code> to prompt for errors */
+    static public boolean doPromptForErrors()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.PLUGIN_ID, PROMPT_FOR_ERRORS, false, null);
+    }
+
     /** @return Archive rescale setting */
     static public ArchiveRescale getArchiveRescale()
     {
@@ -165,7 +188,13 @@ public class Preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getInt(Activator.PLUGIN_ID, UNCOMP_LIVE_SAMPLES, 400, null);
     }
-
+    /**
+     * @return
+     */
+    public static int getSecurityCompressedLiveSampleSize() {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Activator.PLUGIN_ID,  SECURITY_COMP_LIVE_SAMPLES, 100, null);
+    }
     /**
      * @return
      */

@@ -2,6 +2,32 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.common.trendplotter.model.PVItem"
+            class="org.csstudio.common.trendplotter.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.common.trendplotter.ProcessVariableWithSamples">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.common.trendplotter.model.ChannelInfo"
+            class="org.csstudio.common.trendplotter.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
@@ -59,25 +85,6 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global menu actions"
-            id="org.csstudio.trends.databrowser.actionSet"
-            label="%TrendPlotter"
-            visible="true">
-         <action
-               class="org.csstudio.common.trendplotter.NewDataBrowserAction"
-               icon="icons/new_databrowser.png"
-               id="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               label="%TrendPlotter"
-               menubarPath="css/trends/"
-               style="push"
-               toolbarPath="Normal/additions"
-               tooltip="%NewDatabrowserTT">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.common.trendplotter.Perspective"
@@ -85,33 +92,6 @@
             id="org.csstudio.trends.databrowser.Perspective"
             name="%TrendPlotter">
       </perspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.trends.popupactions"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="%CSS"
-               path="additions">
-            <groupMarker
-                  name="content">
-            </groupMarker>
-            <separator
-                  name="additions">
-            </separator>
-         </menu>
-         <action
-               class="org.csstudio.common.trendplotter.OpenDataBrowserPopupAction"
-               icon="icons/databrowser.png"
-               id="org.csstudio.trends.databrowser.OpenDataBrowserPopupAction"
-               label="%TrendPlotter"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopmenuTooltip">
-         </action>
-      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -156,5 +136,69 @@
             content="intro/firststeps.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.common.trendplotter.NewTrendHandler"
+            id="org.csstudio.common.trendplotter.newtrend"
+            name="New Trend">
+      </command>
+       <command
+            defaultHandler="org.csstudio.common.trendplotter.OpenTrendPopup"
+            id="org.csstudio.common.trendplotter.OpenTrendPopup"
+            name="Trendplotter">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+               <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="platform:/plugin/org.csstudio.csdata/icons/processVariable.png"
+               id="org.csstudio.common.trendplotter.popup.processvariablewithsamples"
+               label="%PVSampleMenu">
+            <visibleWhen>
+               <with variable="activeMenuSelection">
+                  <iterate>
+                     <adapt type="org.csstudio.common.trendplotter.ProcessVariableWithSamples"/>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.common.trendplotter.OpenTrendPopup"
+               icon="icons/new_databrowser.png"
+               label="%TrendPlotter"
+               style="push"
+               tooltip="Trend Plotter">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:trends">
+         <command
+               commandId="org.csstudio.common.trendplotter.newtrend"
+               icon="icons/new_databrowser.png"
+               label="%TrendPlotter"
+               style="push"
+               tooltip="Trend Plotter">
+         </command>
+      </menuContribution>
+   </extension>
+      <extension
+         point="org.csstudio.openfile.openDisplay">
+      <openDisplay
+            class="org.csstudio.common.trendplotter.OpenDisplayFile"
+            file_extension="plt,css-plt">
+      </openDisplay>
    </extension>
 </plugin>

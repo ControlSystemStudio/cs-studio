@@ -1,7 +1,7 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.vEnum;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vEnum;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -11,7 +11,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VEnum;
+import org.epics.vtype.VEnum;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.util.time.TimeDuration;

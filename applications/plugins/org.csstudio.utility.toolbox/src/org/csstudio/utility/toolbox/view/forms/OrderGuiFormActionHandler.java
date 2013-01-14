@@ -1,5 +1,7 @@
 package org.csstudio.utility.toolbox.view.forms;
 
+import static org.csstudio.utility.toolbox.framework.property.Property.P;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import org.csstudio.utility.toolbox.entities.ArticleDescription;
 import org.csstudio.utility.toolbox.entities.Firma;
 import org.csstudio.utility.toolbox.entities.Order;
 import org.csstudio.utility.toolbox.entities.OrderPos;
+import org.csstudio.utility.toolbox.framework.WidgetFactory;
 import org.csstudio.utility.toolbox.framework.celleditors.CustomDialogCellEditor;
 import org.csstudio.utility.toolbox.framework.controller.CrudController;
 import org.csstudio.utility.toolbox.framework.editor.GenericEditorInput;
@@ -30,6 +33,8 @@ public class OrderGuiFormActionHandler {
 
 	private GenericEditorInput<Order> editorInput;
 
+	private WidgetFactory<Order> wf;
+	
 	@Inject
 	private OpenFirmaSearchAction openFirmaSearchAction;
 
@@ -42,10 +47,11 @@ public class OrderGuiFormActionHandler {
 	@Inject
 	private OpenArticleDescriptionSearchAction openArticleDescriptionSearchAction;
 
-	public void init(boolean isSearchMode, GenericEditorInput<Order> editorInput) {
+	public void init(boolean isSearchMode, GenericEditorInput<Order> editorInput, WidgetFactory<Order> wf) {
 		Validate.notNull(editorInput, "editorInput must not be null");
 		this.isSearchMode = isSearchMode;
 		this.editorInput = editorInput;
+		this.wf = wf;
 	}
 
 	public void selectFirma(final Combo company) {
@@ -54,7 +60,7 @@ public class OrderGuiFormActionHandler {
 			public void apply(IStructuredSelection selection) {
 				if (selection != null) {
 					Firma firma = (Firma) selection.getFirstElement();
-					company.setText(firma.getName());
+					wf.setText(P("firmaName"), firma.getName());
 					goBackToCallingForm();
 				}
 			}

@@ -56,6 +56,7 @@
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.loc"/>
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
+      <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -69,6 +70,7 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.epics.util"/>
+      <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>

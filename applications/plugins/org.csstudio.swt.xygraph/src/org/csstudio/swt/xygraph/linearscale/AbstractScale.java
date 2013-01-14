@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.TextUtilities;
@@ -49,6 +51,8 @@ public abstract class AbstractScale extends Figure{
 
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	//$NON-NLS-1$
     
+	private static final Map<String, Format> formatCache = new HashMap<String, Format>();
+	
     /** ticks label position */
     private LabelSide tickLableSide = LabelSide.Primary;   
 
@@ -151,9 +155,9 @@ public abstract class AbstractScale extends Figure{
               	if(minOrMaxDate && autoFormat){
               			if(Math.abs(max - min)<5000)
               				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
-           			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj);
+           			return getFormat(DEFAULT_DATE_FORMAT, true).format(obj);
               	}
-            	return new SimpleDateFormat(formatPattern).format(obj);
+            	return getFormat(formatPattern, true).format(obj);
             }
             
             if (formatPattern == null || formatPattern.equals("")) {            	
@@ -161,8 +165,20 @@ public abstract class AbstractScale extends Figure{
             	autoFormat = true;
             }       
                                 
-            return new DecimalFormat(formatPattern).format(obj);
+            return getFormat(formatPattern, false).format(obj);
    }
+    
+    private Format getFormat(String pattern, boolean isDateFormat){
+    	Format result = formatCache.get(pattern);
+    	if(result == null){
+    		if(isDateFormat)
+    			result = new SimpleDateFormat(pattern);
+    		else
+    			result = new DecimalFormat(pattern);
+    		formatCache.put(pattern, result);
+    	}
+    	return result;
+    }
 	
 	/**
 	 * @return the majorTickMarkStepHint

@@ -27,7 +27,7 @@ public class GebaeudeService {
 	@ClearPersistenceContextOnReturn
 	public Option<Gebaeude> findByName(String name) {
 		TypedQuery<Gebaeude> query = em.createNamedQuery(Gebaeude.FIND_BY_NAME, Gebaeude.class);
-		query.setParameter(1, name);
+		query.setParameter("name", name);
 		List<Gebaeude> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Gebaeude>();

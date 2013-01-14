@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** User-selected style for formatting {@link VType}
  *  @author Kay Kasemir

@@ -1,8 +1,7 @@
-/*
- * Copyright 2011 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2012 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-
 /**
  * Set of classes to handle iteration and read-only references to
  * collections and arrays of primitives, without having to code for each

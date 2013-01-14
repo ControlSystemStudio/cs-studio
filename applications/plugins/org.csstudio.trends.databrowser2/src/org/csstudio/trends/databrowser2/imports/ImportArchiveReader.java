@@ -18,8 +18,8 @@ import org.csstudio.trends.databrowser2.Activator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Archive reader that imports data from a file
  *

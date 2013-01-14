@@ -23,6 +23,7 @@ import java.rmi.RemoteException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.jms.JMSException;
 
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAcknowledgeService;
@@ -35,7 +36,10 @@ import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDalImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJmsImpl;
 import org.csstudio.servicelocator.ServiceLocatorFactory;
-import org.eclipse.core.runtime.Plugin;
+import org.csstudio.utility.jms.JmsUtilityException;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -86,6 +90,7 @@ public class AlarmServiceActivator extends AbstractUIPlugin {
         
         registerAlarmConfigurationService(context);
         registerAcknowledgeService(context);
+        registerAtJmsService(context);
         
         // Provide implementation for alarm service
         final boolean isDAL = AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue();
@@ -127,7 +132,27 @@ public class AlarmServiceActivator extends AbstractUIPlugin {
         }
     }
     
-    private void registerAlarmConfigurationService(@Nonnull final BundleContext context) {
+    private void registerAtJmsService(BundleContext context) {
+		IPreferencesService prefs = Platform.getPreferencesService();
+    	
+		// TODO (jp  2012-10-09) strings are used to prevent dependency to outdated plugin
+		// we have to construct a new plugin providing prefs and ui to set them
+        String jmsUrl1 = prefs.getString("org.csstudio.platform.utility.jms", "receiverBrokerURL1", "", null);
+        String jmsUrl2 = prefs.getString("org.csstudio.platform.utility.jms", "receiverBrokerURL2", "", null);
+        String id = "AlarmService"; 
+        LOG.info("AlarmServiceActivator injecting receiver url 1 {}, receiver url 2 {} to SharedJmsConnections", jmsUrl1, jmsUrl2);
+    	SharedJmsConnections.staticInjectConsumerUrlAndClientId(jmsUrl1, jmsUrl2, id);
+    	// we still have to trigger the lazy creation of the receiver service
+    	try {
+            SharedJmsConnections.sharedReceiverConnections();
+        } catch (JMSException e) {
+            LOG.error("AlarmServiceActivator failed to start SharedJmsConnections", e);
+        } catch (JmsUtilityException e) {
+            LOG.error("AlarmServiceActivator failed to start SharedJmsConnections", e);
+        }
+	}
+
+	private void registerAlarmConfigurationService(@Nonnull final BundleContext context) {
         LOG.debug("Registering Alarm configuration service implementation");
         
         ServiceLocatorFactory

@@ -48,7 +48,7 @@ public class OrderSearchEditorPart extends AbstractSearchEditorPartTemplate<Orde
 		List<Order> orders = orderService.find(searchTerms, new OrderBy("nummer"));
 		setSearchPartName(orders.size());		
 		orderGuiForm.createSearchResultTableView(getTableViewProvider(), orders,
-					Property.createList("nummer", "firmaName", "beschreibung"));	
+					Property.createList("baNummer", "firmaName", "beschreibung"));	
 	}
 
 	@Override

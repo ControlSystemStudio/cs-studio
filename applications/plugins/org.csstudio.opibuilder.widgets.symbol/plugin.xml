@@ -50,13 +50,7 @@
             file="index.xml">
       </index>
    </extension>
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="intro/firststeps.xml"
-            configId="org.eclipse.ui.intro.universalConfig">
-      </configExtension>
-   </extension>
+
    <extension
          point="org.eclipse.help.toc">
       <toc

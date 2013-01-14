@@ -43,7 +43,7 @@ public class OrderService {
 	@ClearPersistenceContextOnReturn
 	public Option<Order> findByNummer(BigDecimal nummer) {
 		TypedQuery<Order> query = em.createNamedQuery(Order.FIND_BY_NUMMER, Order.class);
-		query.setParameter(1, nummer);
+		query.setParameter("nummer", nummer);
 		List<Order> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Order>();
@@ -65,6 +65,7 @@ public class OrderService {
 			}
 		}
 
+		
 		if (subQuerySearchTerms.isEmpty()) {
 			return findWithFilter(mainQuerySearchTerms, orderBy);
 		} else {

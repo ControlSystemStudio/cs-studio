@@ -12,21 +12,27 @@
             id="org.csstudio"
             name="CSS"/>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.snlDebugger.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.snlDebugger.ui.ShowSnlDebugger"
-               id="org.csstudio.diag.snlDebugger.action"
-               label="snlDebugger"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
+        <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.diag.snlDebugger.ui.ShowSnlDebugger"
+            id="org.csstudio.diag.snlDebugger.ui.showsnldebugger"
+            name="Show SNL Debugger">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.diag.snlDebugger.ui.showsnldebugger"
+               label="SNL Debugger"
+               style="push"
+               tooltip="SNL Debugger">
+         </command>
+      </menuContribution>
+      </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -55,6 +61,7 @@
             id="iocAccesses">
       </id>
    </extension>
+   
    <!--extension
          point="org.eclipse.ui.preferencePages">
       <page

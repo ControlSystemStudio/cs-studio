@@ -22,11 +22,11 @@ import java.util.regex.Pattern;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** {@link SampleImporter} for Command (space, tab) separated value file of time, value
  *  @author Kay Kasemir

@@ -21,6 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.apputil.ui;bundle-version="3.1.1",
  org.csstudio.data;bundle-version="3.1.0",
- org.csstudio.desy.startuphelper;bundle-version="1.0.0"
+ org.csstudio.desy.startuphelper;bundle-version="1.0.0",
+ org.csstudio.sds;bundle-version="1.3.0",
+ org.csstudio.csdata;bundle-version="3.1.0"
 Eclipse-LazyStart: true
 Bundle-Localization: plugin

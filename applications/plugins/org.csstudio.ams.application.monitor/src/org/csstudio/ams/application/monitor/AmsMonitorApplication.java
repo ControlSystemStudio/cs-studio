@@ -154,6 +154,7 @@ public class AmsMonitorApplication implements IApplication,
         try {
             service.connect(xmppUser, xmppPassword, xmppServer);
             xmppService = service;
+            LOG.info("XMPP connected.");
         } catch (Exception e) {
             LOG.warn("XMPP connection is not available: " + e.getMessage());
             xmppService = null;

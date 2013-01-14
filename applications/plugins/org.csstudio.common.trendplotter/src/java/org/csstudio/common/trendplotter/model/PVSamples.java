@@ -19,6 +19,7 @@ import org.csstudio.common.trendplotter.Messages;
 import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class PVSamples extends PlotSamples
 
     boolean show_deadband = false;
 
+    
     /**
      * Constructor.
      */
@@ -57,8 +59,10 @@ public class PVSamples extends PlotSamples
 
         final int liveSampleBufferSize = Preferences.getLiveSampleBufferSize(); // 5000
         final int uncompressedSamples = Preferences.getUncompressedLiveSampleSize();
+        final int securityCompressedSamples = Preferences.getSecurityCompressedLiveSampleSize();
         liveSamples = new CompressedLiveSamples(new LiveSamplesCompressor(uncompressedSamples),
                                                 liveSampleBufferSize,
+                                                securityCompressedSamples,
                                                 prov);
         liveSamples.setDynamicCompression(true);
         historicSamples = new HistoricSamples(request_type, prov, new LiveSamplesCompressor(0));
@@ -68,6 +72,47 @@ public class PVSamples extends PlotSamples
      */
     public PVSamples(@Nonnull final RequestType request_type) {
         this (request_type, null);
+    }
+
+    private ArrayList<IDataProviderListener> listeners = new ArrayList<IDataProviderListener>();
+    
+    /** {@inheritDoc} */
+    @Override
+    public void addDataProviderListener(IDataProviderListener listener)
+    {
+        synchronized (listeners)
+        {
+            listeners.add(listener);
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean removeDataProviderListener(IDataProviderListener listener)
+    {
+        synchronized (listeners)
+        {
+            return listeners.remove(listener);
+        }
+    }
+    
+    /** @param index Waveform index to show */
+    public void setWaveformIndex(int index)
+    {
+        liveSamples.setWaveformIndex(index);
+        historicSamples.setWaveformIndex(index);
+
+        synchronized (listeners)
+        {
+            for (IDataProviderListener listener : listeners)
+            {
+                // Notify listeners of the change of the waveform index
+                // mainly in order to update the position of snapped
+                // annotations. For more details, see the comment in
+                // Annotation.dataChanged(IDataProviderListener).
+                listener.dataChanged(this);
+            }
+        }
     }
 
     /** @return Maximum number of liveSamples samples in ring buffer */
@@ -230,7 +275,6 @@ public class PVSamples extends PlotSamples
      */
     synchronized public void addLiveSample(final PlotSample sample)
     {
-//        System.out.println("----------- live size: " + liveSamples.getSize() + " - " + historicSamples.getSize());
         liveSamples.add(sample);
         // History ends before the start of 'liveSamples' samples.
         // Adding a liveSamples sample might have moved the ring buffer,

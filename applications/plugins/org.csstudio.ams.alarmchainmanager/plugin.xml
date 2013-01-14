@@ -15,21 +15,26 @@
             name="AMS AlarmChainManager">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.ams.alarmchainmanager.ActionSet"
-            label="AMS AlarmChainManager"
-            visible="true">
-         <action
-               class="org.csstudio.ams.alarmchainmanager.actions.ShowViewAction"
+        <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.ams.alarmchainmanager.actions.ShowAlarmChain"
+            id="org.csstudio.ams.alarmchainmanager.showalarmchain"
+            name="Alarm Chain">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:configuration">
+         <command
+               commandId="org.csstudio.ams.alarmchainmanager.showalarmchain"
                icon="icons/ams.gif"
-               id="org.csstudio.ams.alarmchainmanager.ShowViewAction"
-               label="AMS AlarmChainManager"
-               menubarPath="css/configuration/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-
+               label="Alarm Chain"
+               style="push"
+               tooltip="Alarm Chain">
+         </command>
+      </menuContribution>
+      </extension>
 </plugin>

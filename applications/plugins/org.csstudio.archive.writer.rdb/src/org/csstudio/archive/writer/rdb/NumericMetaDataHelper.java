@@ -13,9 +13,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.NumberFormat;
 
-import org.epics.pvmanager.data.Display;
-
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.epics.vtype.Display;
 
 /** Helper for handling the numeric meta data table.
  *  @author Kay Kasemir

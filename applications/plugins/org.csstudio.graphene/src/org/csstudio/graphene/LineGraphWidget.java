@@ -1,7 +1,7 @@
 package org.csstudio.graphene;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.lineGraphOf;
 import static org.epics.util.time.TimeDuration.*;
 
@@ -28,7 +28,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
+import org.epics.vtype.VImage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 

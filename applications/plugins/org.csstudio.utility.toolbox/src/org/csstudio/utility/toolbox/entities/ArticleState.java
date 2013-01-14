@@ -6,8 +6,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.csstudio.utility.toolbox.framework.annotations.ReadOnly;
 import org.csstudio.utility.toolbox.framework.binding.TextValue;
-import org.csstudio.utility.toolbox.framework.jpa.ReadOnly;
 
 @Table(name = "artikel_status")
 @NamedQueries({ @NamedQuery(name = ArticleState.FIND_ALL, query = "from ArticleState s order by s.status") })

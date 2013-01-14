@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.Statistics;
-import org.epics.pvmanager.data.VStatistics;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.Statistics;
+import org.epics.vtype.VStatistics;
 import org.epics.util.time.Timestamp;
 
 /** Archive-derived {@link VStatistics} implementation

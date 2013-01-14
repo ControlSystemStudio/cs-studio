@@ -117,6 +117,8 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      */
     public MessageProcessor(long sleepingTime, int storageWaitTime, boolean log) throws ServiceNotAvailableException {
 
+        this.setUncaughtExceptionHandler(ThreadExceptionHandler.getInstance());
+        
         try {
             writerService = Jms2OraActivator.getDefault().getMessageWriterService();
             if (writerService.isServiceReady()) {
@@ -174,6 +176,27 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         archiveMessages.addAll(m);
     }
 
+    private int checkForDiskMessages() {
+        int written = 0;
+        if (persistenceService.getNumberOfMessageFiles() > 0) {
+            LOG.info("I've found some messages on disk.");
+            Vector<ArchiveMessage> old = persistenceService.readMessagesFromFile();
+            boolean success = writerService.writeMessage(old);
+            if (!success) {
+                LOG.warn("Could not store the message into the database. Try to re-write message(s) on disk.");
+                int result = persistenceService.writeMessages(old);
+                if (result == old.size()) {
+                    LOG.info("OK, messages written.");
+                } else {
+                    LOG.error("ERROR, ERROR, ERROR");
+                }
+            } else {
+                written = old.size();
+            }
+        }
+        return written;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -187,20 +210,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         LOG.info("Waiting for messages...");
 
         // First look for stored messages on disk
-        Vector<ArchiveMessage> old = persistenceService.readMessagesFromFile();
-        if (old.size() > 0) {
-            LOG.info("I've found some messages on disk.");
-            success = writerService.writeMessage(old);
-            if (!success) {
-                LOG.warn("Could not store the message into the database. Try to re-write message(s) on disk.");
-                int result = persistenceService.writeMessages(old);
-                if (result == old.size()) {
-                    LOG.info("OK, messages written.");
-                } else {
-                    LOG.error("ERROR, ERROR, ERROR");
-                }
-            }
-        }
+        checkForDiskMessages();
 
         while(running) {
             
@@ -222,6 +232,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                             LOG.error("Could not store the message on disk.");
                         }
                     } else {
+                        checkForDiskMessages();
                         collector.addStoredMessages(number);
                     }
                     

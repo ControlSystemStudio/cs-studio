@@ -67,6 +67,7 @@ org.csstudio.opibuilder.editor/**
 org.csstudio.opibuilder.examples/**
 org.csstudio.opibuilder.imagelib/**
 org.csstudio.opibuilder.rcp/**
+org.csstudio.opibuilder.pvmanager.util/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.rcp/**
 org.csstudio.opibuilder.widgets.symbol/**
@@ -133,11 +134,13 @@ org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
+org.csstudio.utility.pvmanager.vtype/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**
 org.csstudio.workspace/**
 org.epics.util/**
+org.epics.vtype/**
 org.hamcrest/**
 org.jdom/**
 org.junit-dep/**

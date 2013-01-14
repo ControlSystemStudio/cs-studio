@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
 import org.epics.util.time.Timestamp;
 
 /** Archive-derived {@link VNumber} implementation

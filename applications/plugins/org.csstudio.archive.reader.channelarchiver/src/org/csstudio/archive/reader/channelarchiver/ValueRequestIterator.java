@@ -9,8 +9,8 @@ package org.csstudio.archive.reader.channelarchiver;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** ValueIterator that runs subsequent ValuesRequests until
  *  reaching the end time.

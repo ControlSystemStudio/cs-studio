@@ -29,15 +29,15 @@ import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
 
 /** ArchiveWriter implementation for RDB
  *  @author Kay Kasemir

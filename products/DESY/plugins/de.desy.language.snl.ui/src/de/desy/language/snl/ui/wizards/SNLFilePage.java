@@ -27,7 +27,8 @@ public class SNLFilePage extends WizardNewFileCreationPage {
 
 	private Button subsectionCheckbox;
 
-	private String suffix = new String(".st");
+	private String defaultSuffix = new String(".st");
+	private String[] availableSuffixes = {".st", ".stt"};
 
 	private static int nameCounter = 1;
 
@@ -104,9 +105,18 @@ public class SNLFilePage extends WizardNewFileCreationPage {
 		String name = this.getFileName();
 		final int index = name.lastIndexOf(".");
 		if (index != -1) {
-			name = name.substring(0, index) + this.suffix;
+			boolean acceptable = false;
+			for (String suffix : availableSuffixes) {
+				if (suffix.equals(name.substring(index))) {
+					acceptable = true;
+					break;
+				}
+			}
+
+			if (!acceptable)
+				name = name.substring(0, index) + this.defaultSuffix;
 		} else {
-			name = name + this.suffix;
+			name = name + this.defaultSuffix;
 		}
 		this.setFileName(name);
 

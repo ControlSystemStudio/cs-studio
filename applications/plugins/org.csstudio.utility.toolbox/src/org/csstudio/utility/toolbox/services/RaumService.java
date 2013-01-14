@@ -23,15 +23,15 @@ public class RaumService {
 	@ClearPersistenceContextOnReturn
 	public List<Raum> findAll(BigDecimal gebauedeId) {
 		TypedQuery<Raum> query = em.createNamedQuery(Raum.FIND_ALL, Raum.class);
-		query.setParameter(1, gebauedeId);
+		query.setParameter("gebaeudeId", gebauedeId);
 		return query.getResultList();		
 	}
 	
 	@ClearPersistenceContextOnReturn
 	public Option<Raum> findByNameAndGebauedeId(String name, BigDecimal gebaeudeId) {
 		TypedQuery<Raum> query = em.createNamedQuery(Raum.FIND_BY_NAME_AND_GEBAUEDE_ID, Raum.class);
-		query.setParameter(1, name);
-		query.setParameter(2, gebaeudeId);
+		query.setParameter("name", name);
+		query.setParameter("gebaeudeId", gebaeudeId);
 		List<Raum> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Raum>();

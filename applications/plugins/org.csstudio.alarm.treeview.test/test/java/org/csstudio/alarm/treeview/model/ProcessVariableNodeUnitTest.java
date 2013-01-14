@@ -30,6 +30,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

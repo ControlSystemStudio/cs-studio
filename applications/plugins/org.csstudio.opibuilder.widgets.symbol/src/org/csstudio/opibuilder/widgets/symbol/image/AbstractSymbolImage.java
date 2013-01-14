@@ -220,18 +220,28 @@ public abstract class AbstractSymbolImage extends Figure {
 		}
 	}
 	
-	private void updateData() {
+	public void updateData() {
 		dispose();
 		if (workingWithSVG) generateSVGData();
 		else generateData();
 	}
 	
 	private void updateAreas() {
-		if (image == null)
+		if (originalImageData == null)
 			return;
+		
 		// Update dimensions
-		int imgWidth = image.getBounds().width;
-		int imgHeight = image.getBounds().height;
+		int imgWidth = 0, imgHeight = 0;
+		if (image != null) {
+			imgWidth = image.getBounds().width;
+			imgHeight = image.getBounds().height;
+		} else if (imageData != null) {
+			imgWidth = imageData.width;
+			imgHeight = imageData.height;
+		} else {
+			imgWidth = originalImageData.width;
+			imgHeight = originalImageData.height;
+		}
 		imgDimension = new Dimension(imgWidth, imgHeight);
 		
 		// Avoid negative number
@@ -445,11 +455,11 @@ public abstract class AbstractSymbolImage extends Figure {
 	}
 	
 	public void setPermutationMatrix(final PermutationMatrix permutationMatrix) {
+		this.oldPermutationMatrix = this.permutationMatrix;
+		this.permutationMatrix = permutationMatrix;
 		if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix)) 
 				|| permutationMatrix == null)
 			return;
-		this.oldPermutationMatrix = this.permutationMatrix;
-		this.permutationMatrix = permutationMatrix;
 		imageData = null;
 	}
 	

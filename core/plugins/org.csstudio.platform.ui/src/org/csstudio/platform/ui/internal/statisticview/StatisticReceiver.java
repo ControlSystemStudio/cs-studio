@@ -40,7 +40,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Joerg Rathlev
  */
 public class StatisticReceiver implements IResultReceiver {
-
 	/**
 	 * {@inheritDoc}
 	 */

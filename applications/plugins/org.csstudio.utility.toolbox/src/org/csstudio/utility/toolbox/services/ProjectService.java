@@ -27,7 +27,7 @@ public class ProjectService {
 	@ClearPersistenceContextOnReturn
 	public Option<Project> findByName(String name) {
 		TypedQuery<Project> query = em.createNamedQuery(Project.FIND_BY_NAME, Project.class);
-		query.setParameter(1, name);
+		query.setParameter("keyword", name);
 		List<Project> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return new None<Project>();

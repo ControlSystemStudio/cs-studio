@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VNumberArray;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VNumberArray;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayLong;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliveryProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="false" includeLaunchers="true">
+<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliveryProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -30,6 +30,7 @@
       <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
@@ -37,7 +38,6 @@
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
-      <plugin id="org.apache.tools.ant"/>
       <plugin id="org.csstudio.ams"/>
       <plugin id="org.csstudio.ams.application.deliverysystem"/>
       <plugin id="org.csstudio.ams.application.deliverysystem.log4j" fragment="true"/>
@@ -48,18 +48,16 @@
       <plugin id="org.csstudio.ams.delivery.voicemail"/>
       <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
-      <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.simpledal"/>
-      <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.ui.preferences"/>
+      <plugin id="org.csstudio.servicelocator"/>
       <plugin id="org.csstudio.utility.jms"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.workspace"/>
@@ -84,6 +82,7 @@
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.datashare"/>
@@ -170,6 +169,7 @@
       <plugin id="org.eclipse.update.core"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.epics.util"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
       <plugin id="org.jivesoftware.smack"/>
@@ -194,10 +194,14 @@
       <plugin id="org.slf4j-log4j12"/>
    </plugins>
 
+   <features>
+      <feature id="org.csstudio.ams.application.deliverysystem.feature" version="1.0.0.qualifier"/>
+   </features>
+
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />

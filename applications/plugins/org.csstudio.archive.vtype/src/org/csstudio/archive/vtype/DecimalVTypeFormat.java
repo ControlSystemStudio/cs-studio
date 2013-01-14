@@ -9,9 +9,9 @@ package org.csstudio.archive.vtype;
 
 import java.text.NumberFormat;
 
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.Display;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VType;
 
 /** Formatter for {@link VType} values that uses decimal formatting
  *  @author Kay Kasemir

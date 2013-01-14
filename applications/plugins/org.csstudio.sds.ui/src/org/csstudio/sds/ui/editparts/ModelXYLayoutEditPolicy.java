@@ -206,11 +206,39 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 */
 	@Override
 	protected Command getCreateCommand(final CreateRequest request) {
-		ContainerModel container = (ContainerModel) getHost().getModel();
-		Rectangle bounds = (Rectangle) getConstraintFor(request);
-		Command cmd = new CreateElementCommand(getHost().getViewer(), container, request, bounds);
+		Command result = null;
+		if (request.getNewObjectType().equals("List_AbstractWidgetModel")) {
+			CompoundCommand cmd = new CompoundCommand();
+			
+			// add all widgets
+			@SuppressWarnings("unchecked")
+			List<AbstractWidgetModel> widgetList = (List<AbstractWidgetModel>) request
+					.getNewObject();
+			
+			Point location = request.getLocation().getCopy();
+			
+			translateFromAbsoluteToLayoutRelative(location);
+			
+			for (AbstractWidgetModel abstractWidgetModel : widgetList) {
+				abstractWidgetModel.setLocation(abstractWidgetModel.getX() + location.x, abstractWidgetModel.getY() + location.y);
+			}
+			
+			cmd.add(new AddWidgetCommand((ContainerModel) getHost().getModel(),
+					widgetList));
 
-		return cmd;
+			// // select all widgets
+			 cmd.add(new
+			 SetSelectionCommand(getHost().getViewer(),
+			 widgetList));
+
+			result = cmd;
+		}
+		else {
+			ContainerModel container = (ContainerModel) getHost().getModel();
+			Rectangle bounds = (Rectangle) getConstraintFor(request);
+			result = new CreateElementCommand(getHost().getViewer(), container, request, bounds);
+		}
+		return result;
 	}
 	
 	/**
@@ -559,5 +587,10 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	@Override
 	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
 		return new Dimension(1, 1);
+	}
+	
+	//TODO (jhatje): is this the right way to get the relative position in AbstractConnectionEditPart?
+	public void getRelativePosition(Point p) {
+		translateFromAbsoluteToLayoutRelative(p);
 	}
 }

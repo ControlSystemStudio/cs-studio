@@ -13,7 +13,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.apputil;bundle-version="3.0.1",
  org.csstudio.utility.httpd;bundle-version="1.0.0",
  org.csstudio.archive.config;bundle-version="3.2.0",
- org.csstudio.archive.writer;bundle-version="3.2.0"
+ org.csstudio.archive.writer;bundle-version="3.2.0",
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.loc;bundle-version="3.1.0";resolution:=optional,
+ org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
+ org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

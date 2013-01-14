@@ -367,17 +367,17 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			extSession = extConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
-
-			// CHANGED BY: Markus Moeller, 25.05.2007
-			/*
-			 * extPublisherAlarm =
-			 * extSession.createProducer((Topic)extContext.lookup(
-			 * storeAct.getString(SampleService.P_JMS_EXT_TOPIC_ALARM)));
-			 */
-
+			
+			// TODO: ATTENTION!!!
+			// We have to get the topic for re-insert the alarm message from a different
+			// preference entry! AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM is not usable
+			// because it could be contain one OR MORE alarm topics (ALARM, SNL_LOG, ...).
+			// In case of re-insertion of an alarm chain message, it will be sent to ALL
+			// topics!!!! This will cause more message chains.
+			
 			extPublisherAlarm = extSession
 					.createProducer(extSession.createTopic(storeAct
-							.getString(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM)));
+							.getString(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM_REINSERT)));
 			if (extPublisherAlarm == null) {
 				Log.log(this, Log.FATAL, "could not create extPublisherAlarm");
 				return false;
@@ -919,7 +919,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 		}
 
 		HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
-				fa.getFilterActionTypeRef(), user, null, 0, 0, 0, topic);
+				fa.getFilterActionTypeRef(), user, null, -1, 0, 0, topic);
 		return ErrorState.STAT_OK.getStateNumber();
 	}
 
@@ -1002,7 +1002,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 			HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
 					fa.getFilterActionTypeRef(), aUser.getUser(),
-					userGroup.getUsergroup(), 0, 0, 0,
+					userGroup.getUsergroup(), -1, 0, 0,
 					TopicDAO.select(memoryCacheDb, fa.getReceiverRef()));
 			iOneSended = ErrorState.STAT_OK.getStateNumber();
 		}

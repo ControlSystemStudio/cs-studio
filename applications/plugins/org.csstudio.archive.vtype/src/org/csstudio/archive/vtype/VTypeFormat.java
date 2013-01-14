@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VStatistics;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.Display;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VStatistics;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
 import org.epics.util.array.ListNumber;
 
 /** Formatter for {@link VType} values

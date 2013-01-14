@@ -777,6 +777,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
                         .createCanonicalName(_channelName, _aliases);
             } catch (ChannelReferenceValidationException e) {
                 toprint = _channelName;
+                // TODO: Should this be logged properly?
                 e.printStackTrace();
             }
             TextPainter.drawText(gfx, toprint, _imgWidth / 2, _channelFont.getFontData()[0]

@@ -12,8 +12,8 @@ import java.sql.ResultSet;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** Value Iterator that reads from the SAMPLE table.
  *  @author Kay Kasemir

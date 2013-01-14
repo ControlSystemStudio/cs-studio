@@ -61,7 +61,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 					item.addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							runOPI(topOPIs, path);
+							runOPI(topOPIs.get(path), path);
 						}						
 					});
 				}
@@ -69,8 +69,8 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		return opiListMenu;
 	}
 
-	private void runOPI(final Map<IPath, MacrosInput> topOPIs, final IPath path) {
-		String position = topOPIs.get(path).getMacrosMap()
+	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
+		String position = macrosInput.getMacrosMap()
 				.get(TOP_OPI_POSITION_KEY);
 		if (position != null) {
 			Position pos = null;
@@ -81,12 +81,12 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 				}
 			}
 			if (pos != null) {
-				RunModeService.runOPIInView(path, null, topOPIs.get(path), pos);
+				RunModeService.runOPIInView(path, null, macrosInput, pos);
 				return;
 			}
 		}
 		RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
-				null, topOPIs.get(path));
+				null, macrosInput);
 	}
 	/**
 	 * @return the top OPIs from preference settings
@@ -129,7 +129,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		if(topOPIs != null && topOPIs.keySet().size() >= 1){
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
 			if(path != null){
-				runOPI(topOPIs, path);
+				runOPI(topOPIs.get(path), path);
 			}
 		}
 	}

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test of HistoricSamples

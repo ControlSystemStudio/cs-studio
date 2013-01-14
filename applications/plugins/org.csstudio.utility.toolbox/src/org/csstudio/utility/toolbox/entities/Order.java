@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.csstudio.utility.toolbox.framework.binding.BindingEntity;
@@ -26,7 +27,7 @@ import org.csstudio.utility.toolbox.framework.validator.ValidDate;
 
 @Table(name = "BA")
 @NamedQueries({ @NamedQuery(name = Order.FIND_ALL, query = "from Order l order by l.nummer desc") ,
-	@NamedQuery(name = Order.FIND_BY_NUMMER, query = "from Order l where l.nummer = ?")})
+	@NamedQuery(name = Order.FIND_BY_NUMMER, query = "from Order l where l.nummer = :nummer")})
 @Entity
 public class Order extends BindingEntity implements TextValue, Cloneable<Order> {
 
@@ -114,10 +115,8 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 	}
 
 	public List<OrderPos> getOrderPositions(OrderPosFinder orderPosFinder) {
-		if (orderPositions == null) {
-			if (nummer != null) {
-				orderPositions = orderPosFinder.findByBaNr(nummer);
-			}
+		if ((orderPositions == null)  && (nummer != null)) {
+			orderPositions = orderPosFinder.findByBaNr(nummer);
 		}
 		return orderPositions;
 	}
@@ -128,6 +127,16 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 
 	public BigDecimal getNummer() {
 		return nummer;
+	}
+
+	@Transient
+	// the first digit contains the baType, which we do not want to show
+	public String getBaNummer() {
+		String baNummer = nummer.toString();
+		if (StringUtils.isBlank(baNummer)) {
+			return "";
+		}
+		return baNummer.substring(1);
 	}
 
 	public void setNummer(BigDecimal nummer) {
@@ -300,10 +309,13 @@ public class Order extends BindingEntity implements TextValue, Cloneable<Order> 
 
 	@Override
 	public String getValue() {
-		return nummer.toString();
+	   return nummer.toString();
 	}
 
 	public String toString() {
+	  if (nummer == null) {
+	      return null;
+	   }
 		return nummer.toString();
 	}
 

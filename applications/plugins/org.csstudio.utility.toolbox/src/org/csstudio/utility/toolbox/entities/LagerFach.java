@@ -12,8 +12,8 @@ import org.csstudio.utility.toolbox.framework.binding.TextValue;
 
 @Entity
 @NamedQueries({
-			@NamedQuery(name = LagerFach.FIND_ALL, query = "from LagerFach l where l.lagerName = ? order by l.name"),
-			@NamedQuery(name = LagerFach.FIND_BY_NAME, query = "from LagerFach l where l.lagerName = ? and name = ?") })
+			@NamedQuery(name = LagerFach.FIND_ALL, query = "from LagerFach l where l.lagerName = :lagerName order by l.name"),
+			@NamedQuery(name = LagerFach.FIND_BY_NAME, query = "from LagerFach l where l.lagerName = :lagerName and name = :name") })
 @Table(name = "lager_fach")
 public class LagerFach implements TextValue {
 

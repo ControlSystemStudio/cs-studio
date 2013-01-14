@@ -136,7 +136,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // alarm is displayed.
             return new String[] {iconName};
         } else if (activeAlarmSeverity != EpicsAlarmSeverity.NO_ALARM &&
-                   unacknowledgedAlarmSeverity == EpicsAlarmSeverity.UNKNOWN) {
+                   hasUnackSeverityToDisplay(unacknowledgedAlarmSeverity)) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {
@@ -144,6 +144,12 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             return new String[] {iconName2, iconName};
         }
     }
+
+	private boolean hasUnackSeverityToDisplay(
+			final EpicsAlarmSeverity unacknowledgedAlarmSeverity) {
+		return (unacknowledgedAlarmSeverity == EpicsAlarmSeverity.UNKNOWN)
+				|| (unacknowledgedAlarmSeverity == EpicsAlarmSeverity.NO_ALARM);
+	}
 
     /**
      * Returns the icon for the given element.

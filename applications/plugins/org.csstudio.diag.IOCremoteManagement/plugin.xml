@@ -13,22 +13,6 @@
             name="CSS"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.IOCremoteManagement.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.IOCremoteManagement.ui.ShowIOCremoteManagement"
-               id="org.csstudio.diag.IOCremoteManagement.action"
-               icon="icons/mainLabel.png"
-               label="IOCremoteManagement"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.diag"
@@ -61,6 +45,28 @@
          </menu>
       </objectContribution>
    </extension>
+   <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.diag.IOCremoteManagement.ui.ShowIOCremoteManagement"
+            id="org.csstudio.diag.IOCremoteManagement.ui.showiocremotemanagement"
+            name="Show IOC Remote Management">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.diag.IOCremoteManagement.ui.showiocremotemanagement"
+               icon="icons/mainLabel.png"
+               label="IOC Remote Management"
+               style="push"
+               tooltip="IOC Remote Management">
+         </command>
+      </menuContribution>
+      </extension>
    <!--extension
          point="org.eclipse.ui.preferencePages">
       <page

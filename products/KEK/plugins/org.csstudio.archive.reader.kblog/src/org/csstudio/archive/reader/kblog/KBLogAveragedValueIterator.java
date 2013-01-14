@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * Averaging sample iterator for KBLog.

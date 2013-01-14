@@ -545,7 +545,7 @@ public class MainView extends ViewPart {
                 if (item instanceof ProcessVariable)
                 {
                     final ProcessVariable pvs = (ProcessVariable) item;
-                    	getSearchText().insert((String) pvs.getName());
+                    	getSearchText().setText((String) pvs.getName());
             }
 			}
 		};

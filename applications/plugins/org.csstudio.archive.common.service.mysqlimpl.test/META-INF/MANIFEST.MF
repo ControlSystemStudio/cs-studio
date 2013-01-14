@@ -10,5 +10,6 @@ Require-Bundle: javax.mail;bundle-version="1.4.4",
  org.csstudio.testsuite;bundle-version="1.0.0",
  org.junit;bundle-version="4.8.1",
  org.mockito;bundle-version="1.8.5",
- org.slf4j-log4j12;bundle-version="1.6.1"
+ org.slf4j-log4j12;bundle-version="1.6.1",
+ org.apache.log4j;bundle-version="1.2.16"
 Bundle-ClassPath: .

@@ -26,6 +26,7 @@ import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** RDB implementation (Oracle, MySQL, PostgreSQL) of {@link ArchiveConfig}
  *
@@ -666,6 +667,15 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final Timestamp stamp = result.getTimestamp(1);
                 if (stamp == null)
                     return null;
+                
+                if (rdb.getDialect() != Dialect.Oracle)
+                {
+                    // For Oracle, the time stamp is indeed the last time.
+                    // For others, it's only the seconds, not the nanoseconds.
+                    // Since this time stamp is only used to avoid going back in time,
+                    // add a second to assert that we are _after_ the last sample
+                    stamp.setTime(stamp.getTime() + 1000);
+                }
                 return TimestampHelper.fromSQLTimestamp(stamp);
             }
         }

@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.numjy;bundle-version="1.0.0",
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.log;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager;bundle-version="2.0.0"
+ org.epics.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.scan.device,
  org.csstudio.scan.server

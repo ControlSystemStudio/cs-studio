@@ -17,6 +17,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.csstudio.sds.ui.dialogs.SdsResourceSelectionDialog;
 
 public class RessourceSection extends AbstractTextSection<ResourceProperty, IPath> {
 
@@ -74,12 +75,22 @@ public class RessourceSection extends AbstractTextSection<ResourceProperty, IPat
 					fileExtensions = property.getFileExtensions();
 					path = property.getPropertyValue();
 				}
-				ResourceSelectionDialog dialog = new ResourceSelectionDialog(parent.getShell(), "Select a resource", fileExtensions);
-				dialog.setSelectedResource(path);
-				if (Window.OK == dialog.open()) {
-					if (dialog.getSelectedResource() != null) {
-						path = dialog.getSelectedResource();
+				// Special dialog for SDS display selection
+				if(fileExtensions.length == 1 && fileExtensions[0].equalsIgnoreCase("css-sds")) {
+					SdsResourceSelectionDialog sdsDialog = new SdsResourceSelectionDialog(parent.getShell());
+					if(Window.OK == sdsDialog.open()) {
+						path = sdsDialog.getSelectedPath();
 						applyPropertyChange(path);
+					}
+				}
+				else {
+					ResourceSelectionDialog dialog = new ResourceSelectionDialog(parent.getShell(), "Select a resource", fileExtensions);
+					dialog.setSelectedResource(path);
+					if (Window.OK == dialog.open()) {
+						if (dialog.getSelectedResource() != null) {
+							path = dialog.getSelectedResource();
+							applyPropertyChange(path);
+						}
 					}
 				}
 			}

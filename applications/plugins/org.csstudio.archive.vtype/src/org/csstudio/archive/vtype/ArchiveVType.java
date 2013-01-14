@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Time;
+import org.epics.vtype.VType;
 import org.epics.util.time.Timestamp;
 
 /** Base of archive-derived {@link VType} implementations

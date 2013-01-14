@@ -19,6 +19,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.commands.SetPropertyCommand;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.ITextFigure;
@@ -237,7 +238,8 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
             @Override
             public void keyPressed(final KeyEvent e) {
                 if ( (e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
-                    getWidgetModel().setPropertyValue(LabelModel.PROP_TEXTVALUE, text.getText());
+                    SetPropertyCommand setPropertyCommand = new SetPropertyCommand(getWidgetModel(), LabelModel.PROP_TEXTVALUE, text.getText());
+                    getViewer().getEditDomain().getCommandStack().execute(setPropertyCommand);
                 } else if (e.keyCode == SWT.ESC) {
                     result.deactivate();
                 }

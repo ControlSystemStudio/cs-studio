@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.RefreshOPIAction;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -163,10 +164,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
 			displayModel.setOpiRuntime(opiRuntime);
-		}		
+		}
 		
+		getActionRegistry().registerAction(new RefreshOPIAction(opiRuntime));
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
-
+		
 
 		// hide close button
 		hideCloseButton(site);
@@ -396,12 +398,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	private void addRunnerInputMacros(final IEditorInput input) {
 		MacrosInput macrosInput = ((IRunnerInput) input).getMacrosInput();
 		if (macrosInput != null) {
-			//RunnerInput has higher macro priority
-			MacrosInput displayMacros = displayModel.getMacrosInput();
-			displayMacros.getMacrosMap().putAll(
-					macrosInput.getMacrosMap());
+			macrosInput = macrosInput.getCopy();
+			macrosInput.getMacrosMap().putAll(
+					displayModel.getMacrosInput().getMacrosMap());
 			displayModel.setPropertyValue(
-					AbstractContainerModel.PROP_MACROS, displayMacros);
+					AbstractContainerModel.PROP_MACROS, macrosInput);		
 		}
 	}
 	

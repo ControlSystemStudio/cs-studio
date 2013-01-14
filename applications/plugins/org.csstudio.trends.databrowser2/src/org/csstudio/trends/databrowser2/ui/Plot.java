@@ -474,8 +474,10 @@ public class Plot
 			if (config.getScaleFontData() != null)
 				axis.setFont(XYGraphMediaFactory.getInstance().getFont(
 						config.getScaleFontData()));
-
-			axis.setForegroundColor(media_registry.getColor(config.getColor()));
+			
+			if(config.getColor() != null)
+				axis.setForegroundColor(media_registry.getColor(config
+						.getColor()));
 
 			// Ignore time axis range, it's updated by data browser
 			if (! axis.isDateEnabled())

@@ -264,7 +264,10 @@ public class ConfigReplicator implements AmsConstants {
 			MessageChainDAO.removeAll(hsqlDB);
 			HistoryDAO.removeAll(hsqlDB);
 
-			HistoryDAO.copyHistory(masterDB, hsqlDB);
+			// The following line causes a Memory-Exception, because the history table contains
+			// soooooo many data...
+			// HistoryDAO.copyHistory(masterDB, hsqlDB);
+			
 			MessageChainDAO.copyMessageChains(masterDB, hsqlDB);
 			MessageDAO.copyMessages(masterDB, hsqlDB);
 

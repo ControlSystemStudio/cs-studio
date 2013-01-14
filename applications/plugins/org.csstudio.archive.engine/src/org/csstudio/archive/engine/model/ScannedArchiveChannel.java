@@ -13,13 +13,13 @@ import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.data.Alarm;
-import org.epics.pvmanager.data.VEnum;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VString;
-import org.epics.pvmanager.data.VType;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
 
 /** An ArchiveChannel that stores value in a periodic scan.
  *  @author Kay Kasemir

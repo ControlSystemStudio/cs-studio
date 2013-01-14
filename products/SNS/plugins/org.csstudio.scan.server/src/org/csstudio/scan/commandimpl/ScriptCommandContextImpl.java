@@ -18,11 +18,11 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
-import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.data.VNumberArray;
-import org.epics.pvmanager.data.VType;
-import org.epics.pvmanager.data.ValueUtil;
 import org.epics.util.array.IteratorNumber;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Implementation of the {@link ScanScriptContext}
  *

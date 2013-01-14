@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+<extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.csstudio.trends.databrowser2.WorkbenchDataBrowserRuntimeEntryPoint"
+            id="org.csstudio.trends.databrowser2.workbenchDataBrowserRuntime"
+            path="/d">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.trends.databrowser2.perspectives.StandaloneRuntimePerspective"
+            fixed="true"
+            icon="icons/DataBrowserRunner.png"
+            id="org.csstudio.trends.databrowser2.standaloneRuntime"
+            name="Standalone Data Browser Runtime Perspective">
+      </perspective>
+   </extension>
+
+   
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            body="html/body.html"
+            defaultEntrypointId="org.csstudio.trends.databrowser2.workbenchDataBrowserRuntime"
+            favicon="icons/DataBrowserRunner.png"
+            id="org.csstudio.trends.databrowser2.branding.workbench"
+            servletName="d"
+            title="DataBrowser">
+      </branding>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/webdatabrowser/loading.gif"
+            base-name="html/loading.gif">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/"
+            class="org.csstudio.trends.databrowser2.RedirectServletFilter"
+            load-on-startup="true">
+      </filter>
+   </extension>
+</fragment>

@@ -106,7 +106,9 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 		setPropertyChangeHandler(LinkingContainerModel.PROP_RESOURCE, handler);
 
 		LinkingContainerModel m = (LinkingContainerModel) getContainerModel();
-		loadResource(m.getResource(), (LinkingContainerFigure) getFigure());
+		if(!m.isResourceLoaded()) {
+			loadResource(m.getResource(), (LinkingContainerFigure) getFigure());
+		}
 
 	}
 
@@ -212,6 +214,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 			while (it.hasNext()) {
 				_container.removeWidget(it.next());
 			}
+			_container.setResourceLoaded(false);
 
 			updateZoom();
 
@@ -292,6 +295,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 								_container
 										.setPrimarPv(tempModel.getPrimaryPV());
 
+								_container.setResourceLoaded(true);
 							}
 						});
 

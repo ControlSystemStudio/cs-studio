@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
-import org.epics.pvmanager.data.VType;
+import org.epics.vtype.VType;
 
 /** In principle this is like
  *  <code>Iterator&lt;Value&gt;</code>, but allows next() to

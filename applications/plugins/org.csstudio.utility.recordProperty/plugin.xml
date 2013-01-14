@@ -2,23 +2,43 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.recordProperty"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.recordproperty.RecordPropertyAction"
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.utility.recordproperty.RecordPropertyAction"
+            id="org.csstudio.utility.recordproperty.recordpropertyaction"
+            name="Record Property">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.recordproperty.PVpopupAction"
+            id="org.csstudio.utility.recordproperty.recordpropertypopupaction"
+            name="Record Propery Popup">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.recordproperty.recordpropertyaction"
                icon="icons/icon3.gif"
-               id="org.csstudio.utility.recordProperty"
-               label="RecordProperty"
-               menubarPath="css/utility/"
+               label="Record Property"
                style="push"
-               tooltip="RecordProperty">
-         </action>
-      </actionSet>
-   </extension>
+               tooltip="Record Property">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.utility.recordproperty.recordpropertypopupaction"
+               icon="icons/icon3.gif"
+               label="Record Property"
+               style="push"
+               tooltip="Record Property">
+         </command>
+      </menuContribution>
+      </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
