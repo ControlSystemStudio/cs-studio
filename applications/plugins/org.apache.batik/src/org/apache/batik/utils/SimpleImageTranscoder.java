@@ -154,12 +154,12 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			oldColor = color;
 		}
 		try {
-			if (canvasWidth >= 0) {
+			if (canvasWidth > 0) {
 				addTranscodingHint(ImageTranscoder.KEY_WIDTH, new Float(canvasWidth));
 			} else {
 				removeTranscodingHint(ImageTranscoder.KEY_WIDTH);
 			}
-			if (canvasHeight >= 0) {
+			if (canvasHeight > 0) {
 				addTranscodingHint(ImageTranscoder.KEY_HEIGHT, new Float(canvasHeight));
 			} else {
 				removeTranscodingHint(ImageTranscoder.KEY_HEIGHT);
