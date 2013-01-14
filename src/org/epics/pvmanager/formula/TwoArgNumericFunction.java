@@ -23,6 +23,9 @@ abstract class TwoArgNumericFunction implements ExpressionLanguage.TwoArgFunctio
 
     @Override
     public VDouble calculate(VNumber arg1, VNumber arg2) {
+        if (arg1 == null || arg2 == null) {
+            return null;
+        }
         return ValueFactory.newVDouble(calculate(arg1.getValue().doubleValue(), arg2.getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
     }
     
