@@ -9,9 +9,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.platform.libs.jersey,
  org.apache.jackrabbit,
- org.csstudio.auth
-Bundle-ActivationPolicy: lazy
+ org.csstudio.auth,
+ org.csstudio.logbook;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.olog
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides the common Olog client for CSS.
+Bundle-ActivationPolicy: lazy

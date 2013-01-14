@@ -47,7 +47,7 @@ public class Log implements Comparable<Log> {
 		Map<String, Attachment> newAttachments = new HashMap<String, Attachment>();
 		for (XmlAttachment attachment : log.getXmlAttachments()
 				.getAttachments()) {
-			newAttachments.put(attachment.getUri(), new Attachment(attachment));
+			newAttachments.put(attachment.getFileName(), new Attachment(attachment));
 		}
 		this.attachments = Collections.unmodifiableMap(newAttachments);
 		Map<String, Property> newProperties = new HashMap<String, Property>();
@@ -134,8 +134,11 @@ public class Log implements Comparable<Log> {
 		return logbooks.keySet();
 	}
 
-	// @deprecated not really deprecated, but javadoc doesn't have future
-	@Deprecated
+	/**
+	 * Get all the attachments associated with this log.
+	 * 	
+	 * @return
+	 */
 	public Collection<Attachment> getAttachments() {
 		return attachments.values();
 	}
