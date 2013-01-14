@@ -289,6 +289,16 @@ public class ExpressionLanguage {
     //
     
     /**
+     * A constant representing a string. Alarm will be none and timestamp now.
+     * 
+     * @param value the constant value
+     * @return a string expression
+     */
+    public static DesiredRateExpression<VString> vConst(String value) {
+        return constant(newVString(value, alarmNone(), timeNow()), value);
+    }
+    
+    /**
      * A constant representing a double. Alarm will be none, timestamp now
      * and no display information.
      * 
