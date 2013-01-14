@@ -182,7 +182,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
     private static final Set<JCATypeAdapter> converters;
     
-    static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
+    public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     
     static {
         Set<JCATypeAdapter> newFactories = new HashSet<JCATypeAdapter>();
