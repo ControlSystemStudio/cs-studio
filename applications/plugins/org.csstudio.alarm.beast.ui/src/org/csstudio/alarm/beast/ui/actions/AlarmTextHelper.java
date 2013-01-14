@@ -13,7 +13,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 
 /** Utility for turning list of alarms into text.
  * 
- *  <p>Used to send alarm info to email, elog, clipboard
+ *  <p>Used to send alarm info to email, clipboard
  *  @author Kay Kasemir
  */
 public class AlarmTextHelper
