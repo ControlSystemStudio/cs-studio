@@ -6,12 +6,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
-import org.csstudio.apputil.ui.elog.ElogDialog;
-import org.csstudio.logbook.ILogbook;
 import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -22,11 +19,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -117,70 +110,31 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 	}
 
 	@Override
-	public void makeElogEntry(String filePath) {
-	    final Shell shell = Display.getCurrent().getActiveShell();
+	public void makeElogEntry(final String text, final String filePath) {
+		Shell shell = Display.getDefault().getActiveShell();
 		if(!SendToElogAction.isElogAvailable()){
 			 MessageDialog.openError(shell, "Error", "No Elog support is available.");
 			 return;
 		}
 		 // Display dialog, create entry
         try
-        {	String systemFilePath;
-	            IPath path = ResourceUtil.getPathFromString(filePath);
-	            try {
-		            // try workspace
-		  			IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-		     					path, false);
-		        	if (r!= null && r instanceof IFile) {
-		            		systemFilePath = ((IFile)r).getLocation().toOSString();
-		            }else
-		            	throw new Exception();
-	           	} catch (Exception e) {
-	            	systemFilePath = filePath;
-	        }
-	        final String finalfilePath = systemFilePath;
-            final ElogDialog dialog =
-                new ElogDialog(shell, "Send To Logbook",
-                        "Elog Entry from BOY",
-                        "See attached image",
-                        finalfilePath)
-            {
-                @Override
-                public void makeElogEntry(final String logbook_name, final String user,
-                        final String password, final String title, final String body, final String images[])
-                        throws Exception
-                {
-                    final Job create = new Job("Creating log entry.")
-                    {
-						@Override
-						protected IStatus run(final IProgressMonitor monitor)
-						{
-							try
-							{
-							    final ILogbook logbook = getLogbook_factory()
-							            .connect(logbook_name, user, password);
-								logbook.createEntry(title, body, images);
-								logbook.close();
-							}
-							catch (final Exception ex)
-							{
-                                shell.getDisplay().asyncExec(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                    {
-                                        ExceptionDetailsErrorDialog.openError(shell, "Error", ex);
-                                    }
-                                });
-							}
-							return Status.OK_STATUS;
-						}
-					};
-					create.setUser(true);
-					create.schedule();
-                }
-            };
-            dialog.open();
+        {	String systemFilePath = null;
+			if (filePath != null) {
+				IPath path = ResourceUtil.getPathFromString(filePath);
+				try {
+					// try workspace
+					IResource r = ResourcesPlugin.getWorkspace().getRoot()
+							.findMember(path, false);
+					if (r != null && r instanceof IFile) {
+						systemFilePath = ((IFile) r).getLocation().toOSString();
+					} else
+						throw new Exception();
+				} catch (Exception e) {
+					systemFilePath = filePath;
+				}
+			}
+           
+	        SendToElogAction.makeLogEntry(text, systemFilePath, shell);            
         }
         catch (Exception ex)
         {
