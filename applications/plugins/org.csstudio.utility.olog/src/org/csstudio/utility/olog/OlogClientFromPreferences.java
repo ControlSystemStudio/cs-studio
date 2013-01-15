@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.jackrabbit.webdav.DavException;
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -278,7 +279,6 @@ public class OlogClientFromPreferences implements OlogClient {
 	@Override
 	public Attachment add(File local, Long logId) throws OlogException {
 		return client.add(local, logId);
-
 	}
 
 	/*
@@ -530,13 +530,13 @@ public class OlogClientFromPreferences implements OlogClient {
 
 	@Override
 	public Collection<Attachment> listAttachments(Long logId)
-			throws OlogException {
-		return client.listAttachments(logId);
+		throws OlogException {
+	    return client.listAttachments(logId);
 	}
 
 	@Override
-	public InputStream getAttachment(Long logId, String attachmentFileName) {
-		return client.getAttachment(logId, attachmentFileName);
+	public InputStream getAttachment(Long logId, Attachment attachment) {
+	    return client.getAttachment(logId, attachment);
 	}
 
 }

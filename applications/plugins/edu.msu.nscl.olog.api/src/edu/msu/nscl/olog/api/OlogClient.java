@@ -89,7 +89,8 @@ public interface OlogClient {
 	 */
 	public Collection<Attachment> listAttachments(Long logId) throws OlogException;
 
-	public InputStream getAttachment(Long logId, String attachmentFileName);
+
+	public InputStream getAttachment(Long logId, Attachment attachment);
 	
 	/**
 	 * return the complete property <tt>property</tt>

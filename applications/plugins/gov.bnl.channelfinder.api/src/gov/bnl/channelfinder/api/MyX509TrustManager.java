@@ -1,8 +1,8 @@
-/*
- * Copyright 2010 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-2012 Brookhaven National Laboratory
+ * Copyright (C) 2010-2012 Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
  * All rights reserved. Use is subject to license terms.
  */
-
 package gov.bnl.channelfinder.api;
 /**
  * Taken from http://java.sun.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html

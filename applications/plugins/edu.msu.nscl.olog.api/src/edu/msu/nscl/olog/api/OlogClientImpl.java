@@ -374,10 +374,10 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public InputStream getAttachment(final Long logId, String attachmentFileName) {
+	public InputStream getAttachment(final Long logId, Attachment attachment) {
 		try {
 			ClientResponse response = service.path("attachments")
-					.path(logId.toString()).path(attachmentFileName)
+					.path(logId.toString()).path(attachment.getFileName())
 					.get(ClientResponse.class);
 			return response.getEntity(InputStream.class);
 		} catch (Exception e) {
@@ -778,7 +778,6 @@ public class OlogClientImpl implements OlogClient {
 		form.bodyPart(new FileDataBodyPart("file", local));
 		XmlAttachment xmlAttachment = service.path("attachments")
 				.path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
-				.type(MediaType.MULTIPART_FORM_DATA_TYPE)
 				.accept(MediaType.APPLICATION_XML)
 				.post(XmlAttachment.class, form);
 

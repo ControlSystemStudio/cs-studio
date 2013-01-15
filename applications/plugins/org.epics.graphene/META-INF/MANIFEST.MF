@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Graphene library
 Bundle-SymbolicName: org.epics.graphene
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Bundle-Description: Graphene graphics library to create plots and manage dataset

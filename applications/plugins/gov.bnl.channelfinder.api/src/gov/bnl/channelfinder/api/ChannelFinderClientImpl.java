@@ -1,8 +1,8 @@
-/*
- * Copyright 2010 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-2012 Brookhaven National Laboratory
+ * Copyright (C) 2010-2012 Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
  * All rights reserved. Use is subject to license terms.
  */
-
 package gov.bnl.channelfinder.api;
 
 import gov.bnl.channelfinder.api.Channel.Builder;
@@ -107,7 +107,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 		 * Creates a {@link CFCBuilder} for a CF client to Default URL in the
 		 * channelfinder.properties.
 		 * 
-		 * @return
+		 * @return {@link CFCBuilder} 
 		 */
 		public static CFCBuilder serviceURL() {
 			return new CFCBuilder();
@@ -270,6 +270,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 		}
 		client.addFilter(new RawLoggingFilter(Logger
 				.getLogger(RawLoggingFilter.class.getName())));
+		client.setFollowRedirects(true);
 		service = client.resource(UriBuilder.fromUri(uri).build());
 		this.executor = executor;
 	}
@@ -960,8 +961,8 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 
 	}
 
-	static Map<String, String> buildSearchMap(String searchPattern) {
-		Hashtable<String, String> map = new Hashtable<String, String>();
+	static MultivaluedMap<String, String> buildSearchMap(String searchPattern) {
+		MultivaluedMap<String, String> map = new MultivaluedMapImpl();
 		searchPattern = searchPattern.replaceAll(", ", ",");
 		String[] words = searchPattern.split("\\s");
 		if (words.length <= 0) {
@@ -971,7 +972,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 				if (!words[index].contains("=")) {
 					// this is a name value
 					if (words[index] != null)
-						map.put("~name", words[index]);
+						map.add("~name", words[index]);
 				} else {
 					// this is a property or tag
 					String[] keyValue = words[index].split("=");
@@ -981,17 +982,19 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 						key = keyValue[0];
 						valuePattern = keyValue[1];
 						if (key.equalsIgnoreCase("Tags")) {
-							map.put("~tag", valuePattern.replace("||", ","));
-							// for (int i = 0; i < values.length; i++)
-							// map.put("~tag", values[i]);
-						} else if(!key.isEmpty()) {
-							map.put(key, valuePattern.replace("||", ","));
+							key = "~tag";
+						}
+						for (String value : valuePattern.replace("||", ",")
+								.split(",")) {
+							map.add(key, value);
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
-						if(e.getMessage().equals(String.valueOf(0))){
-							throw new IllegalArgumentException("= must be preceeded by a propertyName or 'Tags'.");
+						if (e.getMessage().equals(String.valueOf(0))) {
+							throw new IllegalArgumentException(
+									"= must be preceeded by a propertyName or keyword Tags.");
 						} else if (e.getMessage().equals(String.valueOf(1)))
-							throw new IllegalArgumentException("No pattern specified for property '" + key + "'.");
+							throw new IllegalArgumentException("key: '" + key
+									+ "' is specified with no pattern.");
 					}
 
 				}
@@ -1028,7 +1031,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 	/**
 	 * Delete the channel identified by <tt>channel</tt>
 	 * 
-	 * @param channel
+	 * @param channelName
 	 *            channel to be removed
 	 * @throws ChannelFinderException
 	 */
