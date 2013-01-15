@@ -138,9 +138,7 @@ public class Messages extends NLS
     public static String RenameItem;
     public static String RenameItemMsg;
     public static String RootElementFMT;
-    public static String SendToElogAction_ErrorFmt;
-    public static String SendToElogAction_InitialTitle;
-    public static String SendToElogAction_Message;
+    public static String SendToElogTitle;
     public static String ServerErrorFmt;
     public static String ServerTimeout;
     public static String StringTableEditor_AddRowText;

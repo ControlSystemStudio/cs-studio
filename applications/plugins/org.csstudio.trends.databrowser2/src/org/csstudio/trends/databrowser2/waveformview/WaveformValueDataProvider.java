@@ -46,7 +46,7 @@ public class WaveformValueDataProvider implements IDataProvider
     @Override
     public int getSize()
     {
-        return numbers.size();
+        return numbers == null ? 0 : numbers.size();
     }
 
     /** {@inheritDoc} */

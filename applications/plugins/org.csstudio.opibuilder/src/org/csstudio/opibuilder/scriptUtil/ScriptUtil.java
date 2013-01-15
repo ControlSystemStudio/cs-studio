@@ -82,19 +82,27 @@ public class ScriptUtil {
 		}
 	}
 	
-
-	/**
-	 * Pop up an Elog dialog to make an Elog entry.
+	
+	
+	/**{@link Deprecated} see {@link #makeLogbookEntry(String, String)}
+	 * @param filePath
+	 */
+	public final static void makeElogEntry(final String filePath) {
+		makeLogbookEntry("", filePath);
+	}
+	/**	 
+	 * Pop up a logbook dialog to make a logbook entry.
 	 * 
+	 * @param text text of the log entry.
 	 * @param filePath
 	 *            path of a file to attach or null. It could be either a local
 	 *            file system file path or a workspace file path. File types
 	 *            that the logbook support depend on implementation but should
 	 *            include *.gif, *.jpg: File will be attached as image.
 	 */
-	public final static void makeElogEntry(final String filePath) {
+	public final static void makeLogbookEntry(final String text, final String filePath) {
 		if (ScriptUtilSSHelper.getIMPL() != null)
-			ScriptUtilSSHelper.getIMPL().makeElogEntry(filePath);
+			ScriptUtilSSHelper.getIMPL().makeElogEntry(text, filePath);
 		else
 			throw new RuntimeException("This method is not implemented!");
 	}

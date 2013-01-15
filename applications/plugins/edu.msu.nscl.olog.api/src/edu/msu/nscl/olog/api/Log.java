@@ -1,5 +1,6 @@
 package edu.msu.nscl.olog.api;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -7,6 +8,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * @author Eric Berryman taken from shroffk
@@ -24,7 +32,7 @@ public class Log implements Comparable<Log> {
 	private final Map<String, Tag> tags;
 	private final Map<String, Logbook> logbooks;
 	private final Map<String, Attachment> attachments;
-	private final Map<String, Property> properties;
+	private final Multimap<String, Property> properties;
 
 	Log(XmlLog log) {
 		this.id = log.getId();
@@ -47,14 +55,14 @@ public class Log implements Comparable<Log> {
 		Map<String, Attachment> newAttachments = new HashMap<String, Attachment>();
 		for (XmlAttachment attachment : log.getXmlAttachments()
 				.getAttachments()) {
-			newAttachments.put(attachment.getUri(), new Attachment(attachment));
+			newAttachments.put(attachment.getFileName(), new Attachment(attachment));
 		}
 		this.attachments = Collections.unmodifiableMap(newAttachments);
-		Map<String, Property> newProperties = new HashMap<String, Property>();
+		Multimap<String, Property> newProperties = HashMultimap.create();
 		for (XmlProperty property : log.getXmlProperties()) {
 			newProperties.put(property.getName(), new Property(property));
 		}
-		this.properties = Collections.unmodifiableMap(newProperties);
+		this.properties = newProperties;
 
 	}
 
@@ -134,8 +142,11 @@ public class Log implements Comparable<Log> {
 		return logbooks.keySet();
 	}
 
-	// @deprecated not really deprecated, but javadoc doesn't have future
-	@Deprecated
+	/**
+	 * Get all the attachments associated with this log.
+	 * 	
+	 * @return
+	 */
 	public Collection<Attachment> getAttachments() {
 		return attachments.values();
 	}
@@ -166,7 +177,7 @@ public class Log implements Comparable<Log> {
 	 * @return {@link Property} with name propertyName else null if no such
 	 *         property exists on this log.
 	 */
-	public Property getProperty(String propertyName) {
+	public Collection<Property> getProperty(String propertyName) {
 		return properties.get(propertyName);
 	}
 

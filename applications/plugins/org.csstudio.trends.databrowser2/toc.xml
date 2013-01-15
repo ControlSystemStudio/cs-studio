@@ -13,6 +13,7 @@
         <topic label="Search" href="doc/databrowser.html#search"/>
         <topic label="Export" href="doc/databrowser.html#export"/>
         <topic label="Inspect Samples" href="doc/databrowser.html#inspect"/>
+        <topic label="Waveforms (Arrays)" href="doc/databrowser.html#waveforms"/>
         <topic label="Preferences" href="doc/databrowser.html#preferences"/>
         <topic label="Older Data Browser" href="doc/databrowser.html#transition"/>
         <topic label="History" href="doc/databrowser.html#history"/>

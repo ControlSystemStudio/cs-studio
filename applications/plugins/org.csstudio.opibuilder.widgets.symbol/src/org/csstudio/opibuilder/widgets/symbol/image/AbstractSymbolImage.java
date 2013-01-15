@@ -312,10 +312,12 @@ public abstract class AbstractSymbolImage extends Figure {
 		java.awt.Dimension dims = transcoder.getDocumentSize();
 		int imgWidth = dims.width;
 		int imgHeight = dims.height;
-		if(stretch) {
+		if (stretch) {
 			Rectangle bounds = getBounds().getCopy();
-			imgWidth = bounds.width;
-			imgHeight = bounds.height;
+			if (!bounds.equals(0, 0, 0, 0)) {
+				imgWidth = bounds.width;
+				imgHeight = bounds.height;
+			}
 		}
 		// Avoid negative number
 		topCrop = topCrop > imgHeight ? 0 : topCrop;

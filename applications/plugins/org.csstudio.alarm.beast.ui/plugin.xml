@@ -25,4 +25,14 @@
             name="%AlarmPrefPage">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.alarm.beast.client.AlarmTreeItem"
+            class="org.csstudio.alarm.beast.ui.ElogAdapter">
+         <adapter
+               type="org.csstudio.logbook.LogEntryBuilder">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>

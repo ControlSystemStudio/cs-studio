@@ -288,13 +288,27 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         if (getUsageCounter() == 0) {
             try {
                 disconnect();
-                lastMessage = null;
+                if (!saveMessageAfterDisconnect()) {
+                    lastMessage = null;
+                }
                 connectionPayload = null;
             } catch (RuntimeException ex) {
                 reportExceptionToAllReadersAndWriters(ex);
                 log.log(Level.WARNING, "Couldn't disconnect channel " + getChannelName(), ex);
            }
         }
+    }
+    
+    /**
+     * Signals whether the last message received after the disconnect should
+     * be kept so that it is available at reconnect.
+     * <p>
+     * By default, the message is discarded so that no memory is kept allocated.
+     * 
+     * @return true if the message should be kept
+     */
+    protected boolean saveMessageAfterDisconnect() {
+        return false;
     }
 
     /**
