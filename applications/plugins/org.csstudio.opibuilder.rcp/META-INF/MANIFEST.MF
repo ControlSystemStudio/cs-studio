@@ -12,4 +12,5 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0";visibility:=re
  org.csstudio.email.ui;bundle-version="1.0.0",
  org.csstudio.logbook;bundle-version="1.0.2",
  org.eclipse.ui.ide,
- org.csstudio.apputil.ui
+ org.csstudio.apputil.ui,
+ org.csstudio.logbook.ui;bundle-version="3.0.0"
