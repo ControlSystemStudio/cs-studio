@@ -5,10 +5,12 @@
 package org.epics.pvmanager.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.epics.util.array.ArrayDouble;
 
 /**
  * Utility class to parse variable names and create simulated signals.
@@ -61,7 +63,7 @@ public class FunctionParser {
         Matcher matcher = stringParameter.matcher(string);
         List<Object> parameters = new ArrayList<Object>();
         while (matcher.find()) {
-            String parameter = matcher.group();
+            String parameter = matcher.group(1);
             parameters.add(parameter.substring(1, parameter.length() - 1));
         }
 
@@ -128,5 +130,49 @@ public class FunctionParser {
         }
 
         return null;
+    }
+    
+    /**
+     * Parse a function that accepts a scalar value (number or string) or
+     * an array value (number or string).
+     * 
+     * @param string the string to be parsed
+     * @param errorMessage the error message
+     * @return the name of the function and the argument
+     */
+    public static List<Object> parseFunctionWithScalarOrArrayArguments(String string, String errorMessage) {
+        // Parse the channel name
+        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(string);
+        if (parsedTokens != null && parsedTokens.size() <= 2) {
+            return parsedTokens;
+        }
+        
+        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof Double) {
+            double[] data = new double[parsedTokens.size() - 1];
+            for (int i = 1; i < parsedTokens.size(); i++) {
+                Object value = parsedTokens.get(i);
+                if (value instanceof Double) {
+                    data[i-1] = (Double) value;
+                } else {
+                    throw new IllegalArgumentException(errorMessage);
+                }
+            }
+            return Arrays.asList(parsedTokens.get(0), new ArrayDouble(data));
+        }
+        
+        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof String) {
+            List<String> data = new ArrayList<>();
+            for (int i = 1; i < parsedTokens.size(); i++) {
+                Object value = parsedTokens.get(i);
+                if (value instanceof String) {
+                    data.add((String) value);
+                } else {
+                    throw new IllegalArgumentException(errorMessage);
+                }
+            }
+            return Arrays.asList(parsedTokens.get(0), data);
+        }
+        
+        throw new IllegalArgumentException(errorMessage);
     }
 }
