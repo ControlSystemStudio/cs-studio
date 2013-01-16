@@ -5,6 +5,7 @@
 package org.epics.vtype;
 
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.List;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.array.ArrayDouble;
@@ -480,5 +481,48 @@ public class ValueFactory {
      */
     public static VTable newVTable(List<Class<?>> types, List<String> names, List<Object> values) {
         return new IVTable(types, names, values);
+    }
+    
+    /**
+     * Takes a java objects and wraps it into a vType. All numbers are wrapped
+     * as VDouble. String is wrapped as VString. double[] and ListDouble are wrapped as
+     * VDoubleArray. A List of String is wrapped to a VStringArray. Alarms
+     * are alarmNone(), time are timeNow() and display are displayNone();
+     * 
+     * @param value the value to wrap
+     * @return the wrapped value
+     */
+    public static VType wrapValue(Object value) {
+        if (value instanceof Number) {
+            // Special support for numbers
+            return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
+                    displayNone());
+        } else if (value instanceof String) {
+            // Special support for strings
+            return newVString(((String) value),
+                    alarmNone(), timeNow());
+        } else if (value instanceof double[]) {
+            return newVDoubleArray(new ArrayDouble((double[]) value), alarmNone(), timeNow(), displayNone());
+        } else if (value instanceof ListDouble) {
+            return newVDoubleArray((ListDouble) value, alarmNone(), timeNow(), displayNone());
+        } else if (value instanceof List) {
+            boolean matches = true;
+            List list = (List) value;
+            for (Object object : list) {
+                if (!(object instanceof String)) {
+                    matches = false;
+                }
+            }
+            if (matches) {
+                @SuppressWarnings("unchecked")
+                List<String> newList = (List<String>) list;
+                return newVStringArray(Collections.unmodifiableList(newList), alarmNone(), timeNow());
+            } else {
+                throw new UnsupportedOperationException("Type " + value.getClass().getName() + " contains non Strings");
+            }
+        } else {
+            // TODO: need to implement all the other arrays
+            throw new UnsupportedOperationException("Type " + value.getClass().getName() + "  is not yet supported");
+        }
     }
 }

@@ -197,7 +197,7 @@ public abstract class DataSource {
                 log.log(Level.WARNING, "ChannelReadRecipe {0} was disconnected but was never connected. Ignoring it.", channelRecipe);
             } else {
                 String channelName = channelRecipe.getChannelName();
-                ChannelHandler channelHandler = usedChannels.get(channelName);
+                ChannelHandler channelHandler = channel(channelName);
                 // If the channel is not found, it means it was not found during
                 // connection and a proper notification was sent then. Silently
                 // ignore it.

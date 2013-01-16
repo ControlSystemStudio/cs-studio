@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
+import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.VImage;
 import org.epics.vtype.VNumber;
@@ -26,7 +27,7 @@ class Histogram1DFunction implements ReadFunction<VImage> {
     private Histogram1DRenderer renderer = new Histogram1DRenderer(300, 200);
     private VImage previousImage;
     private List<Histogram1DUpdate> histogramUpdates = Collections.synchronizedList(new ArrayList<Histogram1DUpdate>());
-    private List<Histogram1DRendererUpdate> rendererUpdates = Collections.synchronizedList(new ArrayList<Histogram1DRendererUpdate>());
+    private QueueCollector<Histogram1DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     public Histogram1DFunction(ReadFunction<? extends List<? extends VNumber>> argument) {
         this.argument = argument;
@@ -37,14 +38,14 @@ class Histogram1DFunction implements ReadFunction<VImage> {
         histogramUpdates.add(update);
     }
     
-    public void update(Histogram1DRendererUpdate update) {
-        // Already synchronized
-        rendererUpdates.add(update);
+    public QueueCollector<Histogram1DRendererUpdate> getUpdateQueue() {
+        return rendererUpdateQueue;
     }
 
     @Override
     public VImage readValue() {
         List<? extends VNumber> newData = argument.readValue();
+        List<Histogram1DRendererUpdate> rendererUpdates = rendererUpdateQueue.readValue();
         if (newData.isEmpty() && previousImage != null && histogramUpdates.isEmpty() && rendererUpdates.isEmpty())
             return previousImage;
         
@@ -65,11 +66,8 @@ class Histogram1DFunction implements ReadFunction<VImage> {
         histogram.update(new Histogram1DUpdate().recalculateFrom(dataset));
 
         // Process all renderer updates
-        synchronized(rendererUpdates) {
-            for (Histogram1DRendererUpdate rendererUpdate : rendererUpdates) {
-                renderer.update(rendererUpdate);
-            }
-            rendererUpdates.clear();
+        for (Histogram1DRendererUpdate rendererUpdate : rendererUpdates) {
+            renderer.update(rendererUpdate);
         }
         
         // If no size is set, don't calculate anything

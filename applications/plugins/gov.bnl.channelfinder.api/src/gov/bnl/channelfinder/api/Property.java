@@ -1,8 +1,8 @@
-/*
- * Copyright 2010 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-2012 Brookhaven National Laboratory
+ * Copyright (C) 2010-2012 Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
  * All rights reserved. Use is subject to license terms.
  */
-
 package gov.bnl.channelfinder.api;
 
 /**
@@ -10,7 +10,6 @@ package gov.bnl.channelfinder.api;
  * unique name, an owner and a value.
  * 
  * @author shroffk
- * 
  */
 public class Property {
 	private final String name;
@@ -26,9 +25,6 @@ public class Property {
 
 		/**
 		 * Builder class to aid in a construction of a {@link Property}.
-		 * 
-		 * @author shroffk
-		 * 
 		 */
 		public static Builder property(String name) {
 			Builder propertyBuilder = new Builder();

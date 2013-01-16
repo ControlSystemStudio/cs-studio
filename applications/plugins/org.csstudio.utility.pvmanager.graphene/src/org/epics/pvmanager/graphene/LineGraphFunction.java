@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
+import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 
 /**
@@ -30,7 +31,7 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
     private LineGraphRenderer renderer = new LineGraphRenderer();
     
     private VImage previousImage;
-    private final List<LineGraphRendererUpdate> rendererUpdates = Collections.synchronizedList(new ArrayList<LineGraphRendererUpdate>());
+    private final QueueCollector<LineGraphRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     public LineGraphFunction(ReadFunction<? extends VNumberArray> argument) {
         this.yArray = argument;
@@ -46,10 +47,9 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
         this.xIncrementSize = xIncrementSize;
         this.yArray = yArray;
     }
-    
-    public void update(LineGraphRendererUpdate update) {
-        // Already synchronized
-        rendererUpdates.add(update);
+
+    public QueueCollector<LineGraphRendererUpdate> getRendererUpdateQueue() {
+        return rendererUpdateQueue;
     }
 
     @Override
@@ -84,13 +84,10 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
             // Default to single array not rescaled
             dataset = org.epics.graphene.Point2DDatasets.lineData(newData.getData());
         }
-
         // Process all renderer updates
-        synchronized(rendererUpdates) {
-            for (LineGraphRendererUpdate rendererUpdate : rendererUpdates) {
-                renderer.update(rendererUpdate);
-            }
-            rendererUpdates.clear();
+        List<LineGraphRendererUpdate> updates = rendererUpdateQueue.readValue();
+        for (LineGraphRendererUpdate rendererUpdate : updates) {
+            renderer.update(rendererUpdate);
         }
         
         // If no size is set, don't calculate anything
