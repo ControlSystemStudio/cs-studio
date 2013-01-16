@@ -18,12 +18,14 @@ import gov.aps.jca.Channel;
  * @author carcassi
  */
 public class JCAConnectionPayload {
-    private JCADataSource jcaDataSource;
-    private Channel channel;
+    private final JCADataSource jcaDataSource;
+    private final Channel channel;
+    private final boolean connected;
 
     public JCAConnectionPayload(JCADataSource jcaDataSource, Channel channel) {
         this.jcaDataSource = jcaDataSource;
         this.channel = channel;
+        this.connected = channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 
     /**
@@ -50,7 +52,7 @@ public class JCAConnectionPayload {
      * @return ture if channel exists and is connected
      */
     public boolean isChannelConnected() {
-        return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
+        return connected;
     }
     
     /**
