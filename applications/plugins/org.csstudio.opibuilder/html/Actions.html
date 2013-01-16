@@ -31,7 +31,15 @@
       An undetached View can also be detached as standalone window floating on top by right clicking
       the view tab and click <code>Detached</code>. By clicking <code>Detached</code> again, you can
       put it back to the workbench window.</dd></dl></li>
-      <li><b>Write PV</b> <dl><dd>Write a PV.</dd></dl>
+      
+      <li><b>Write PV</b> 
+      <dl><dd>Write a PV. If the widget is a button, it is recommended to set the PV name in the "PV Name" 
+      property of the widget, and use $(pv_name) as PV Name of the action. This will allow the PV getting connected
+      on OPI startup instead of connecting to it on each write.
+      If <code>Confirm Message</code> is not empty, a confirm dialog will pop up before writing the new value to PV.
+          
+      </dd></dl>
+      
       </li>
       <li> <b>Execute Command</b> <dl><dd>
       Execute system command just as executing command from shell or command line on Windows.

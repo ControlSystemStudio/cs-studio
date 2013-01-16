@@ -1,41 +1,11 @@
-
-syntax: regexp
-\.cvsignore$
-\.gitignore$
-\.checkstyle$
-
-
-syntax: glob
-*.class
-CVS/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*CVS/
 .git/*
 
 *~
 *.swp
 *.orig
-bin/*
-classes/*
+bin/
+classes/
 build/build
 build/ext
 

@@ -15,11 +15,11 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
  */
 public class LineGraphPlot extends DesiredRateExpressionImpl<Plot2DResult> {
 
-    public LineGraphPlot(DesiredRateExpressionList<?> childExpressions, LineGraphFunction function, String defaultName) {
+    LineGraphPlot(DesiredRateExpressionList<?> childExpressions, LineGraphFunction function, String defaultName) {
         super(childExpressions, function, defaultName);
     }
     
     public void update(LineGraphRendererUpdate update) {
-        ((LineGraphFunction) getFunction()).update(update);
+        ((LineGraphFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
     }
 }

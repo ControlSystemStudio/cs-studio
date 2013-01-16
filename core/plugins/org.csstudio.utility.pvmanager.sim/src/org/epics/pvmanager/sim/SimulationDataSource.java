@@ -49,6 +49,10 @@ public final class SimulationDataSource extends DataSource {
     @Override
     @SuppressWarnings("unchecked")
     protected ChannelHandler createChannel(String channelName) {
+        if (channelName.startsWith("const(")) {
+            return new ConstantChannelHandler(channelName);
+        }
+        
         SimFunction<?> simFunction = (SimFunction<?>) NameParser.createFunction(channelName);
         return new SimulationChannelHandler(channelName, simFunction, exec);
     }
