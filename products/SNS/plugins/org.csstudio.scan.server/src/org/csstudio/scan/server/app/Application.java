@@ -22,10 +22,12 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /** RCP Application that runs the scan server
@@ -61,10 +63,11 @@ public class Application implements IApplication
     	try
     	{
 	        // Display config info
-	        synchronized (Application.class)
+	        final Bundle bundle = context.getBrandingBundle();
+            synchronized (Application.class)
 	        {
 	            final String version = (String)
-	                    context.getBrandingBundle().getHeaders().get("Bundle-Version");
+	                    bundle.getHeaders().get("Bundle-Version");
 	            bundle_version = context.getBrandingName() + " " + version;
 	            log.info(bundle_version);
 	        }
@@ -82,14 +85,17 @@ public class Application implements IApplication
 	        server.start();
 	        log.info("Scan Server running on ports " + port + " (RMI Registry) and " + (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface)");
 
+	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port + 2);
+	        
 	        // Register console commands
 	        ConsoleCommands commands = new ConsoleCommands(server);
-	        final BundleContext bundle_context = context.getBrandingBundle().getBundleContext();
+	        final BundleContext bundle_context = bundle.getBundleContext();
 	        bundle_context.registerService(CommandProvider.class.getName(), commands, null);
 
 	        // Keep running...
 	        run.await();
 
+	        httpd.stop();
 	        // Release commands
 	        commands = null;
     	}
