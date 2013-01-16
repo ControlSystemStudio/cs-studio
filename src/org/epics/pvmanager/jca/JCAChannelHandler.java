@@ -275,7 +275,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     public void disconnect() {
         try {
             // Close the channel
-            channel.destroy();
+            if (channel.getConnectionState() != Channel.ConnectionState.CLOSED) {
+                channel.destroy();
+            }
         } catch (CAException ex) {
             throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
