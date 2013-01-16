@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
+import org.csstudio.opibuilder.pvmanager.PVManagerPV;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.OPITimer;
@@ -35,12 +36,14 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
-	private final class WidgetPVListener implements PVListener{
+	private final class WidgetPVListener implements PVListener, PVWriterListener<Object>{
 		private String pvPropID;
 
 		public WidgetPVListener(String pvPropID) {
@@ -56,32 +59,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 			final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
 
 			//write access
-			if(controlPVPropId != null &&
-					controlPVPropId.equals(pvPropID) &&
-					pv.isWriteAllowed() != lastWriteAccess){
-				lastWriteAccess = pv.isWriteAllowed();
-				if(lastWriteAccess){
-					UIBundlingThread.getInstance().addRunnable(
-							editpart.getViewer().getControl().getDisplay(),new Runnable(){
-						public void run() {
-							if(editpart.getFigure().getCursor() == Cursors.NO)
-								editpart.getFigure().setCursor(savedCursor);
-							editpart.getFigure().setEnabled(widgetModel.isEnabled());	
-						}
-					});
-				}else{
-					UIBundlingThread.getInstance().addRunnable(
-							editpart.getViewer().getControl().getDisplay(),new Runnable(){
-						public void run() {
-							if(editpart.getFigure().getCursor() != Cursors.NO)
-								savedCursor = editpart.getFigure().getCursor();
-							editpart.getFigure().setEnabled(false);
-							editpart.getFigure().setCursor(Cursors.NO);							
-						}
-					});
-				}
-
-			}
+			if(! (pv instanceof PVManagerPV))
+				updateWritable(widgetModel, pvPropID);
+			
 			if (pv.getValue() != null) {
 				if (ignoreOldPVValue) {
 					widgetModel.getPVMap()
@@ -93,6 +73,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 							.setPropertyValue(pv.getValue());
 			}
 			
+		}
+
+		@Override
+		public void pvChanged(PVWriterEvent<Object> event) {
+			updateWritable(editpart.getWidgetModel(), pvPropID);
 		}
 	}
 	//invisible border for no_alarm state, this can prevent the widget from resizing
@@ -204,8 +189,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 								isAllValuesBuffered);
 						pvMap.put(sp.getPropertyID(), pv);
 						editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
-						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
+						WidgetPVListener pvListener = new WidgetPVListener(sp.getPropertyID());
 						pv.addListener(pvListener);
+						if(pv instanceof PVManagerPV){
+							((PVManagerPV)pv).addPVWriterListener(pvListener);
+						}
 						pvListenerMap.put(sp.getPropertyID(), pvListener);
 					} catch (Exception e) {
                         OPIBuilderPlugin.getLogger().log(Level.WARNING,
@@ -425,10 +413,13 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
 				}
 				try {
-					PV newPV = BOYPVFactory.createPV(newPVName);
+					PV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);
 					lastWriteAccess = true;
-					PVListener pvListener = new WidgetPVListener(pvNamePropID);
+					WidgetPVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);
+					if(newPV instanceof PVManagerPV){
+						((PVManagerPV)newPV).addPVWriterListener(pvListener);
+					}
 					pvMap.put(pvNamePropID, newPV);
 					editpart.addToConnectionHandler(newPVName, newPV);
 					pvListenerMap.put(pvNamePropID, pvListener);
@@ -620,6 +611,35 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 	public void setAllValuesBuffered(boolean isAllValuesBuffered) {
 		this.isAllValuesBuffered = isAllValuesBuffered;
+	}
+
+	private void updateWritable(final AbstractWidgetModel widgetModel, String pvPropID) {
+		if(controlPVPropId != null &&
+				controlPVPropId.equals(pvPropID) &&
+				pvMap.get(pvPropID).isWriteAllowed() != lastWriteAccess){
+			lastWriteAccess = pvMap.get(pvPropID).isWriteAllowed();
+			if(lastWriteAccess){
+				UIBundlingThread.getInstance().addRunnable(
+						editpart.getViewer().getControl().getDisplay(),new Runnable(){
+					public void run() {
+						if(editpart.getFigure().getCursor() == Cursors.NO)
+							editpart.getFigure().setCursor(savedCursor);
+						editpart.getFigure().setEnabled(widgetModel.isEnabled());	
+					}
+				});
+			}else{
+				UIBundlingThread.getInstance().addRunnable(
+						editpart.getViewer().getControl().getDisplay(),new Runnable(){
+					public void run() {
+						if(editpart.getFigure().getCursor() != Cursors.NO)
+							savedCursor = editpart.getFigure().getCursor();
+						editpart.getFigure().setEnabled(false);
+						editpart.getFigure().setCursor(Cursors.NO);							
+					}
+				});
+			}
+
+		}
 	}
 	
 }

@@ -2,9 +2,11 @@ package org.csstudio.opibuilder.pvmanager;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +22,6 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 
 /**A utility PV which uses PVManager as the connection layer. 
@@ -34,6 +35,7 @@ public class PVManagerPV implements PV {
 	final private String name;
 	final private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener<Object>> listenerMap;
+	private List<PVWriterListener<Object>> pvWriterListeners;
 	private ExceptionHandler exceptionHandler = new ExceptionHandler() {
 		@Override
 		public void handleException(Exception ex) {
@@ -52,7 +54,8 @@ public class PVManagerPV implements PV {
 		this.name = name;
 		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
-		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
+		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();	
+		pvWriterListeners = new LinkedList<>();
 	}
 
 	@Override
@@ -71,12 +74,13 @@ public class PVManagerPV implements PV {
 	
 			@Override
 			public void pvChanged(PVReaderEvent<Object> event) {
-				if (event.isConnectionChanged() && !pvReader.isConnected()) {
+				if (event != null && event.isConnectionChanged() 
+						&& !pvReader.isConnected()) {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
 				}
-
-				listener.pvValueUpdate(PVManagerPV.this);
+				if(event.isValueChanged())
+					listener.pvValueUpdate(PVManagerPV.this);
 			}
 		};
 		listenerMap.put(listener, pvReaderListener);
@@ -92,6 +96,21 @@ public class PVManagerPV implements PV {
 			}
 			
 			pvReader.addPVReaderListener(pvReaderListener);			
+		}
+	}
+	
+	public synchronized void addPVWriterListener(final PVWriterListener<Object> listener){
+		pvWriterListeners.add(listener);
+		if(pvWriter != null){
+			if(!pvWriter.isClosed()){
+				PMPV_THREAD.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						listener.pvChanged(null);
+					}
+				});
+			}
 		}
 	}
 
@@ -132,28 +151,20 @@ public class PVManagerPV implements PV {
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		} else {
-			pvReader = PVManager.read(channel(name)).notifyOn(PMPV_THREAD)
+			pvReader = PVManager.read(formula(name)).notifyOn(PMPV_THREAD)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		}
 		for(PVReaderListener<Object> pvReaderListener : listenerMap.values())
-			pvReader.addPVReaderListener(pvReaderListener);
+			pvReader.addPVReaderListener(pvReaderListener);		
 		
 		pvWriter = PVManager.write(channel(name)).notifyOn(PMPV_THREAD)
 				.routeExceptionsTo(exceptionHandler).async();
-		pvWriter.addPVWriterListener(new PVWriterListener<Object>() {
-
-			@Override
-			public void pvChanged(PVWriterEvent<Object> event) {
-				//give an update if write connection state changed
-				if(event.isConnectionChanged())
-					for(PVListener listener: listenerMap.keySet()){
-						listener.pvValueUpdate(PVManagerPV.this);
-					}
-			}
-		});		
-
 		
+		for(PVWriterListener<Object> pvWriterListener : pvWriterListeners){
+			pvWriter.addPVWriterListener(pvWriterListener);
+		}
+
 	}
 
 	public boolean isValueBuffered() {
@@ -236,7 +247,7 @@ public class PVManagerPV implements PV {
 	}
 	
 	private void checkIfPVStarted(){
-		if(pvReader == null || pvWriter == null)
+		if(pvReader == null)
 			throw new IllegalStateException("PVManagerPV is not started yet.");
 	}
 		
