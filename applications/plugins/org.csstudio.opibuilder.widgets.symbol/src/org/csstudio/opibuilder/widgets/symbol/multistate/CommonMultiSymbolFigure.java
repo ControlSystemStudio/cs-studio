@@ -125,7 +125,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		if (isEditMode() && symbolImage != null) {
 			list.add(symbolImage);
 		}
-		if (!isEditMode() && images == null && !images.isEmpty()) {
+		if (!isEditMode() && images != null && !images.isEmpty()) {
 			list = images.values();
 		}
 		return list;
@@ -499,8 +499,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		if (isLoadingImage())  return;
 		if (!isEditMode()) {
 			// if run mode & state does not changes => nothing change
-			if (currentState == null || currentState.equals(previousState))
-				return;
+//			if (currentState == null || currentState.equals(previousState))
+//				return;
 		}
 		Rectangle bounds = getBounds().getCopy();
 		ImageUtils.crop(bounds, this.getInsets());
