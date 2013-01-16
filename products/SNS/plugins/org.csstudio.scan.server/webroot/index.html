@@ -20,16 +20,36 @@
 <dd>XML with scans</dd>
 </dl>
 
+<h2>Scan Info</h2>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}</a></dd>
+<dt>Result</dt>
+<dd>XML with scan info</dd>
+</dl>
+
 <h2>Submit Scan</h2>
 <dl>
 <dt>Method</dt>
 <dd>POST</dd>
 <dt>URL</dt>
-<dd><a href="submit.html">/submit/name-of-scan-to-submit</a></dd>
+<dd><a href="submit.html">/scan/{name-of-new-scan}</a></dd>
 <dt>Message Body</dt>
 <dd>XML-formatted scan</dd>
 <dt>Result</dt>
 <dd>XML with scan ID, example: <code>&ltid>42&lt/id></code></dd>
+</dl>
+
+<h2>Abort Scan</h2>
+<dl>
+<dt>Method</dt>
+<dd>DELETE</dd>
+<dt>URL</dt>
+<dd>/scan/{id}</a></dd>
+<dt>Result</dt>
+<dd>HTTP OK or error</dd>
 </dl>
 
 </body>

@@ -185,6 +185,10 @@ public class ConsoleCommands implements CommandProvider
             // Dump data
             final ScanData data = server.getScanData(id);
             final ScanDataIterator sheet = new ScanDataIterator(data);
+            
+            for (String device : sheet.getDevices())
+                intp.print(device + "  ");
+            intp.println();
             while (sheet.hasNext())
             {
                 final ScanSample[] line = sheet.getSamples();

@@ -9,7 +9,7 @@ $(function()
         $.ajax(
         {
             type: 'POST',
-            url: '/submit/' + name,
+            url: '/scan/' + name,
             processData: false,
             contentType: 'text/xml',
             data: commands,
@@ -19,8 +19,8 @@ $(function()
             },
             success: function(xml)
             {
-                var id = +$(xml).find('id').text();
-                alert('Submitted: ' + id);
+                // var id = +$(xml).find('id').text();
+                // alert('Submitted: ' + id);
                 document.location = '/scans.html';
             }
         });

@@ -1,3 +1,24 @@
+
+function abortScan(id)
+{
+    if (! confirm("Abort scan with ID " + id + "?"))
+        return;
+    $.ajax(
+    {
+        type: "DELETE",
+        url: "/scan/" + id,
+        success: function()
+        {
+            location.reload();
+        },
+        error: function(xhr, status, error)
+        {
+            alert("Abort of scan failed: " + error);
+            location.reload();
+        }
+    });
+}
+
 // Invoke GET /scans, display result in table 
 $(function()
 {
@@ -14,16 +35,22 @@ $(function()
              
                 var row = $('<tr/>');
              
-                var item = scan.find('id').text();
-                row.append( $('<td/>').append(item));
+                var id = scan.find('id').text();
+                
+                var links = "<a href='scan/" + id + "'>" + id + "</a>";
+                links += " <a href='scan/" + id + "/commands'>(cmds)</a>";
+                links += "<a href='scan/" + id + "/data'>(data)</a>";
+                                row.append( $('<td/>').append(links));
              
-                item = scan.find('name').text();
+                var item = scan.find('name').text();
                 row.append( $('<td/>').append(item));
 
                 item = new Date(+scan.find('created').text()).toLocaleString()
                 row.append( $('<td/>').append(item));
 
                 item = scan.find('state').text();
+                if (item == 'Idle'  ||  item == 'Running')
+                    item += "<button onclick='abortScan(" + id + ")'>Abort</button>";
                 row.append( $('<td/>').append(item));
 
                 item = scan.find('percentage').text() + '%';

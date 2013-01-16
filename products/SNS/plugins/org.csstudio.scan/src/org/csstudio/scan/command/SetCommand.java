@@ -229,7 +229,7 @@ public class SetCommand extends ScanCommand
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
