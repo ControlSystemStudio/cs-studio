@@ -42,7 +42,11 @@ public class Ramp extends SimFunction<VDouble> {
         }
         this.min = min;
         this.max = max;
-        this.currentValue = min - step;
+        if (step >=0) {
+            this.currentValue = min - step;
+        } else {
+            this.currentValue = max - step;
+        }
         this.step = step;
         range = max - min;
         lastValue = newVDouble(currentValue, alarmNone(), newTime(Timestamp.now()),
@@ -74,6 +78,9 @@ public class Ramp extends SimFunction<VDouble> {
         currentValue = currentValue + step;
         if (currentValue > max) {
             currentValue = min;
+        }
+        if (currentValue < min) {
+            currentValue = max;
         }
 
         return newValue(currentValue, lastValue);

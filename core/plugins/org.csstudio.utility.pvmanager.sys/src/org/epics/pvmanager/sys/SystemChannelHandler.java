@@ -89,4 +89,10 @@ abstract class SystemChannelHandler extends MultiplexedChannelHandler<Object, Ob
     public boolean isConnected(Object connection) {
         return taskFuture != null;
     }
+
+    @Override
+    protected boolean saveMessageAfterDisconnect() {
+        return true;
+    }
+    
 }

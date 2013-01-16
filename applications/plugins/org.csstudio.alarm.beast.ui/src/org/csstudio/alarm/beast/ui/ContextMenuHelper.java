@@ -24,8 +24,6 @@ import org.csstudio.alarm.beast.ui.actions.DurationAction;
 import org.csstudio.alarm.beast.ui.actions.GuidanceAction;
 import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
 import org.csstudio.alarm.beast.ui.actions.SendEMailAction;
-import org.csstudio.alarm.beast.ui.actions.SendToElogAction;
-import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.email.EMailSender;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.Viewer;
@@ -110,8 +108,6 @@ public class ContextMenuHelper
         {
         	manager.add(new CopyToClipboardAction(alarm_pvs));
         	// TODO Copy to clipboard
-        	if (SendToElogActionHelper.isElogAvailable())
-                manager.add(new SendToElogAction(shell, alarm_pvs));
         	if (EMailSender.isEmailSupported())
         		manager.add(new SendEMailAction(shell, alarm_pvs));
         }

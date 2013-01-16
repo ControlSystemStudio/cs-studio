@@ -41,6 +41,10 @@ abstract class SimFunction<T> extends Simulation<T> {
             throw new IllegalArgumentException("Interval must be greater than zero (was " + secondsBeetwenSamples + ")");
         }
 
+        if (secondsBeetwenSamples < 0.000001) {
+            throw new IllegalArgumentException("Interval must be greater than 0.000001 - no faster than 100KHz (was " + secondsBeetwenSamples + ")");
+        }
+
         timeBetweenSamples = TimeDuration.ofNanos((long) (secondsBeetwenSamples * 1000000000));
     }
 

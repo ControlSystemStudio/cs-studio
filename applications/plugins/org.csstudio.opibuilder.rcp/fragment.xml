@@ -8,4 +8,14 @@
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
    </extension>
+<extension
+      point="org.eclipse.core.runtime.adapters">
+   <factory
+         adaptableType="org.csstudio.opibuilder.rcp.Factory1"
+         class="org.csstudio.opibuilder.rcp.AdapterFactory1">
+      <adapter
+            type="org.csstudio.opibuilder.rcp.Adapter1">
+      </adapter>
+   </factory>
+</extension>
 </fragment>

@@ -55,12 +55,7 @@ public class OlogLogbook implements ILogbook {
 					org.csstudio.utility.olog.Activator.PLUGIN_ID,
 					PreferenceConstants.Olog_URL,
 					"https://localhost:8181/Olog/resources", null);
-			String jcrURI = prefs.getString(
-					org.csstudio.utility.olog.Activator.PLUGIN_ID,
-					PreferenceConstants.Olog_jcr_URL,
-					"http://localhost:8080/Olog/repository/olog", null);
-			client = OlogClientBuilder.serviceURL(url).jcrURI(jcrURI)
-					.withHTTPAuthentication(true).username(user)
+			client = OlogClientBuilder.serviceURL(url).withHTTPAuthentication(true).username(user)
 					.password(password).create();
 		}
 		LogbookName = logbookName;

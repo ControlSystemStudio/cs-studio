@@ -31,6 +31,7 @@ public class XmlLog {
     private String level;
     private String md5Entry;
     private String md5Recent;
+    private Long tableId;
     private Date createdDate;
     private Date modifiedDate;
 //    private String subject;
@@ -272,7 +273,25 @@ public class XmlLog {
     public void setMD5Entry(String md5entry) {
         this.md5Entry = md5entry;
     }
+    
+    /**
+     * Getter for Table id.
+     *
+     * @return table id
+     */
+    public Long getTableId() {
+        return tableId;
+    }
 
+    /**
+     * Setter for Table id.
+     *
+     * @param Table id to set
+     */
+    public void setTableId(Long tableId) {
+        this.tableId = tableId;
+    }
+    
     /**
      * Getter for log's XmlProperties.
      *

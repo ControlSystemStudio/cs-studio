@@ -1,12 +1,12 @@
 package edu.msu.nscl.olog.api;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.jackrabbit.webdav.DavException;
 
 /**
  * 
@@ -87,9 +87,11 @@ public interface OlogClient {
 	 * @return attachments collection object
 	 * @throws OlogException
 	 */
-	public Collection<String> getAttachments(Long logId) throws OlogException,
-			DavException;
+	public Collection<Attachment> listAttachments(Long logId) throws OlogException;
 
+
+	public InputStream getAttachment(Long logId, Attachment attachment);
+	
 	/**
 	 * return the complete property <tt>property</tt>
 	 * 
@@ -282,7 +284,7 @@ public interface OlogClient {
 	 * @param local
 	 * @throws OlogException
 	 */
-	public void add(File local, Long logId) throws OlogException;
+	public Attachment add(File local, Long logId) throws OlogException;
 
 	/**
 	 * 
@@ -485,5 +487,6 @@ public interface OlogClient {
 	 * @throws OlogException
 	 */
 	public void delete(String fileName, Long logId) throws OlogException;
+
 
 }

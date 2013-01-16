@@ -102,6 +102,22 @@ public class ValueUtil {
     }
     
     /**
+     * Checks whether the display limits are non-null and non-NaN.
+     * 
+     * @param display a display
+     * @return true if the display limits have actual values
+     */
+    public static boolean displayHasValidDisplayLimits(Display display) {
+        if (display.getLowerDisplayLimit() == null || display.getLowerDisplayLimit().isNaN()) {
+            return false;
+        }
+        if (display.getUpperDisplayLimit() == null || display.getUpperDisplayLimit().isNaN()) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
      * Extracts the numericValueOf the object and normalizes according
      * to the display range.
      * 

@@ -17,7 +17,7 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
  */
 public class Histogram1DPlot extends DesiredRateExpressionImpl<VImage> {
 
-    public Histogram1DPlot(DesiredRateExpressionList<?> childExpressions, Histogram1DFunction function, String defaultName) {
+    Histogram1DPlot(DesiredRateExpressionList<?> childExpressions, Histogram1DFunction function, String defaultName) {
         super(childExpressions, function, defaultName);
     }
     
@@ -26,6 +26,6 @@ public class Histogram1DPlot extends DesiredRateExpressionImpl<VImage> {
     }
     
     public void update(Histogram1DRendererUpdate update) {
-        ((Histogram1DFunction) getFunction()).update(update);
+        ((Histogram1DFunction) getFunction()).getUpdateQueue().writeValue(update);
     }
 }

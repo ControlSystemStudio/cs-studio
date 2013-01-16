@@ -18,7 +18,6 @@ Require-Bundle: org.junit4,
  org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional;visibility:=reexport,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional;visibility:=reexport
 Export-Package: org.csstudio.apputil.ui.dialog,
- org.csstudio.apputil.ui.elog,
  org.csstudio.apputil.ui.formula,
  org.csstudio.apputil.ui.swt,
  org.csstudio.apputil.ui.time,

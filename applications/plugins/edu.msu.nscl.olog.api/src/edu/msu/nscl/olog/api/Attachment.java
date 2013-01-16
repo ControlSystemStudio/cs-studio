@@ -2,35 +2,37 @@
 
 package edu.msu.nscl.olog.api;
 
-
-import javax.activation.DataHandler;
-
 /**
  *
  * @author Eric Berryman
- * @deprecated
  */
-@Deprecated public class Attachment {
+public class Attachment {
 	private final String fileName;
-        private final String Uri;
-        private final DataHandler fileContent;
+        private final String contentType;
+        private final Boolean thumbnail;
+        private final Long fileSize;
 
 	Attachment(XmlAttachment xml) {
 		this.fileName = xml.getFileName();
-		this.Uri = xml.getUri();
-                this.fileContent = xml.getFileContent();
+		this.contentType = xml.getContentType();
+                this.thumbnail = xml.getThumbnail();
+                this.fileSize = xml.getFileSize();
 	}
 
 	public String getFileName() {
 		return fileName;
 	}
 
-	public String getUri() {
-		return Uri;
+	public String getContentType() {
+		return contentType;
 	}
 
-        public DataHandler getFileContent() {
-                return fileContent;
+        public Boolean getThumbnail() {
+                return thumbnail;
+        }
+        
+        public Long getFileSize() {
+                return fileSize;
         }
 
 	/* (non-Javadoc)
@@ -40,7 +42,7 @@ import javax.activation.DataHandler;
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((Uri == null) ? 0 : Uri.hashCode());
+		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
 		return result;
 	}
 
@@ -56,10 +58,10 @@ import javax.activation.DataHandler;
 		if (!(obj instanceof Attachment))
 			return false;
 		Attachment other = (Attachment) obj;
-		if (Uri == null) {
-			if (other.Uri != null)
+		if (fileName == null) {
+			if (other.fileName != null)
 				return false;
-		} else if (!Uri.equals(other.Uri))
+		} else if (!fileName.equals(other.fileName))
 			return false;
 		return true;
 	}
