@@ -37,6 +37,7 @@
       <import plugin="org.csstudio.utility.speech"/>
       <import plugin="org.csstudio.workspace"/>
       <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.compare.core"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filebuffers"/>
@@ -62,6 +63,7 @@
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.epics.util"/>
       <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
    </requires>

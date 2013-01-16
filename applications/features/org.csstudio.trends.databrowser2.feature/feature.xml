@@ -58,7 +58,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.trends.databrowser2" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.csstudio.data" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
@@ -71,7 +71,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.trends.databrowser2" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
    </requires>
 

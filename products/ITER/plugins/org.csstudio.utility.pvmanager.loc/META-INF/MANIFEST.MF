@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Loc DataSource
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.loc;singleton:=true
+Bundle-Version: 3.1.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.loc.Activator
+Bundle-Description: Provides local variable DataSource to pvManager
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.epics.util;bundle-version="0.2.0",
+ org.epics.vtype;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Export-Package: org.epics.pvmanager.loc
