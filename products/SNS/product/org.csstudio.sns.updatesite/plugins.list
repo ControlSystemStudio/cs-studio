@@ -1,3 +1,4 @@
+com.google.common/**
 javax.mail/**
 org.antlr.runtime/**
 org.apache.batik/**
