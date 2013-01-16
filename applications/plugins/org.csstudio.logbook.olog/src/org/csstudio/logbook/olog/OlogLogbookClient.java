@@ -102,8 +102,8 @@ public class OlogLogbookClient implements LogbookClient {
 			    edu.msu.nscl.olog.api.Attachment input) {
 			// TODO (shroffk) n/w call
 			try {
-			    return new OlogAttachment(input, getAttachment(logId,
-			    	input.getFileName()));
+			    return new OlogAttachment(input, getAttachment(
+				    logId, input.getFileName()));
 			} catch (IOException e) {
 			}
 			return null;
