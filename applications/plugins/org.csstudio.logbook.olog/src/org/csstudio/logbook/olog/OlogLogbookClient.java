@@ -102,8 +102,8 @@ public class OlogLogbookClient implements LogbookClient {
 			    edu.msu.nscl.olog.api.Attachment input) {
 			// TODO (shroffk) n/w call
 			try {
-			    return new OlogAttachment(input, getAttachment(logId,
-			    	input.getFileName()));
+			    return new OlogAttachment(input, getAttachment(
+				    logId, input.getFileName()));
 			} catch (IOException e) {
 			}
 			return null;
@@ -131,10 +131,9 @@ public class OlogLogbookClient implements LogbookClient {
     }
 
     @Override
-    public Collection<LogEntry> findLogEntries(
-	    Map<String, String> findAttributeMap) throws Exception {
-	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
-	Collection<Log> logs = reader.findLogs(findAttributeMap);
+    public Collection<LogEntry> findLogEntries(String search) throws Exception {
+	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();	
+	Collection<Log> logs = reader.findLogsBySearch(search);
 	for (Log log : logs) {
 	    logEntries.add(new OlogEntry(log));
 	}

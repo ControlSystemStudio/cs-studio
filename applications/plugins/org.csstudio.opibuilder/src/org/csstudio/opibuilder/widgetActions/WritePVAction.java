@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -33,6 +34,7 @@ public class WritePVAction extends AbstractWidgetAction {
 	public static final String PROP_PVNAME = "pv_name";//$NON-NLS-1$
 	public static final String PROP_VALUE = "value";//$NON-NLS-1$
 	public static final String PROP_TIMEOUT = "timeout";//$NON-NLS-1$
+	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
 	
 	@Override
 	protected void configureProperties() {
@@ -42,6 +44,8 @@ public class WritePVAction extends AbstractWidgetAction {
 				WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_TIMEOUT, "Timeout (second)", 
 				WidgetPropertyCategory.Basic, 10, 1, 3600));
+		addProperty(new StringProperty(PROP_CONFIRM_MESSAGE, "Confirm Message",
+				WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -61,8 +65,18 @@ public class WritePVAction extends AbstractWidgetAction {
 		return (Integer)getPropertyValue(PROP_TIMEOUT);
 	}
 	
+	public String getConfirmMessage(){
+		return (String)getPropertyValue(PROP_CONFIRM_MESSAGE);
+	}
+	
 	@Override
 	public void run() {
+		
+		if(!getConfirmMessage().isEmpty())
+			if(!GUIUtil.openConfirmDialog("PV Name: " + getPVName() +
+					"\nNew Value: "+ getValue()+ "\n\n"+
+					getConfirmMessage()))
+				return;
 		
 		//If it has the same nave as widget PV name, use it.
 		if(getWidgetModel() instanceof IPVWidgetModel){

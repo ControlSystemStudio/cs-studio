@@ -133,8 +133,7 @@ public class SNSLogbookClient implements LogbookClient
 
     /** {@inheritDoc} */
     @Override
-    public Collection<LogEntry> findLogEntries(
-            Map<String, String> findAttributeMap) throws Exception
+    public Collection<LogEntry> findLogEntries(String search) throws Exception
     {
         // TODO Support locating entries based on time range, ...
         // once the API is clearer
