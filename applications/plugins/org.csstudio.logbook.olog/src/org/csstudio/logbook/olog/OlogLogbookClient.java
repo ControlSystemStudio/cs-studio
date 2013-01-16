@@ -131,10 +131,9 @@ public class OlogLogbookClient implements LogbookClient {
     }
 
     @Override
-    public Collection<LogEntry> findLogEntries(
-	    Map<String, String> findAttributeMap) throws Exception {
-	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
-	Collection<Log> logs = reader.findLogs(findAttributeMap);
+    public Collection<LogEntry> findLogEntries(String search) throws Exception {
+	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();	
+	Collection<Log> logs = reader.findLogsBySearch(search);
 	for (Log log : logs) {
 	    logEntries.add(new OlogEntry(log));
 	}
