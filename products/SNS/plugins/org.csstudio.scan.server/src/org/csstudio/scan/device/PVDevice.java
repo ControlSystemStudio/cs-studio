@@ -27,7 +27,6 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.util.array.ListByte;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
@@ -101,22 +100,13 @@ public class PVDevice extends Device
 						if (TREAD_BYTES_AS_STRING  &&
 						    value instanceof VByteArray)
 						{
+						    is_byte_array = true;
 						    final VByteArray barray = (VByteArray) value;
-						    final ListByte data = barray.getData();
-						    final byte[] bytes = new byte[data.size()];
-						    for (int i=0; i<bytes.length; ++i)
-						        bytes[i] = data.getByte(i);
-						    final String text;
-						    if (bytes[bytes.length-1] == 0)
-						        text = new String(bytes, 0, bytes.length-1);
-						    else
-						        text = new String(bytes);
-						    value = ValueFactory.newVString(text, (Alarm)barray, (Time)barray);
+						    value = ValueFactory.newVString(
+					            ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
 
 						    Logger.getLogger(getClass().getName()).log(Level.FINER,
 	                              "PV BYTE[] converted to {0}", value);
-
-						    is_byte_array = true;
 						}
 					}
 				}
@@ -171,7 +161,7 @@ public class PVDevice extends Device
     public void write(Object value) throws Exception
     {
 	    if (is_byte_array  &&  value instanceof String)
-	        value = ((String)value).getBytes();
+	        value = ByteHelper.toBytes((String) value);
 	    synchronized (this)
 		{
 			pv.write(value);
