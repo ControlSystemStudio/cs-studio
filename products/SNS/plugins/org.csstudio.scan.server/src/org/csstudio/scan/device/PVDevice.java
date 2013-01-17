@@ -27,7 +27,11 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.util.array.ListByte;
+import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Time;
+import org.epics.vtype.VByteArray;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
@@ -38,9 +42,17 @@ import org.epics.vtype.ValueFactory;
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
+    /** 'compile time' option to treat byte arrays as string */
+    final private static boolean TREAD_BYTES_AS_STRING = true;
+    
 	/** Value that is used to identify a disconnected PV */
 	final private static VType DISCONNECTED =
 			ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.INVALID, "Disconnected"), ValueFactory.timeNow());
+	
+	/** Is the underlying PV type a BYTE[]?
+	 *  @see #TREAD_BYTES_AS_STRING
+	 */
+	private boolean is_byte_array = false;
 	
 	/** Most recent value of the PV
 	 *  SYNC on this
@@ -80,8 +92,32 @@ public class PVDevice extends Device
 					else
 					{
 						value = pv.getValue();
+						Logger.getLogger(getClass().getName()).log(Level.FINER,
+					        "PV {0} received {1}", new Object[] { getInfo().getName(), value });
+						
 						if (value == null)
 							value = DISCONNECTED;
+						
+						if (TREAD_BYTES_AS_STRING  &&
+						    value instanceof VByteArray)
+						{
+						    final VByteArray barray = (VByteArray) value;
+						    final ListByte data = barray.getData();
+						    final byte[] bytes = new byte[data.size()];
+						    for (int i=0; i<bytes.length; ++i)
+						        bytes[i] = data.getByte(i);
+						    final String text;
+						    if (bytes[bytes.length-1] == 0)
+						        text = new String(bytes, 0, bytes.length-1);
+						    else
+						        text = new String(bytes);
+						    value = ValueFactory.newVString(text, (Alarm)barray, (Time)barray);
+
+						    Logger.getLogger(getClass().getName()).log(Level.FINER,
+	                              "PV BYTE[] converted to {0}", value);
+
+						    is_byte_array = true;
+						}
 					}
 				}
 				fireDeviceUpdate();
@@ -127,11 +163,16 @@ public class PVDevice extends Device
 		return current;
     }
 
-	/** {@inheritDoc} */
+	/** Write value to device, with special handling of EPICS BYTE[] as String 
+     *  @param value Value to write (Double, String)
+     *  @throws Exception on error: Cannot write, ...
+     */
 	@Override
-    public void write(final Object value) throws Exception
+    public void write(Object value) throws Exception
     {
-		synchronized (this)
+	    if (is_byte_array  &&  value instanceof String)
+	        value = ((String)value).getBytes();
+	    synchronized (this)
 		{
 			pv.write(value);
 		}
