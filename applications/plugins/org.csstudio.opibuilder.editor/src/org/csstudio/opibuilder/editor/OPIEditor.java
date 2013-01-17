@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.editparts.WidgetTreeEditpartFactory;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
@@ -69,6 +71,7 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -95,6 +98,7 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.SelectionManager;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
@@ -166,6 +170,7 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.PageBook;
@@ -641,6 +646,56 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			if(helpContextProvider == null)
 				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
 			return helpContextProvider;
+		} else if (type.equals(IGotoMarker.class)) {
+			return new IGotoMarker() {
+				@Override
+				public void gotoMarker(IMarker marker) {
+					try {
+						Integer charStart = (Integer) marker.getAttribute("charStart");
+						if (charStart == null) {
+							return;
+						}
+						String wuid = XMLUtil.findClosestWidgetUid(getInputStream(), charStart);
+						if (wuid == null) {
+							return;
+						}
+						// Get the closest widget to charStart position
+						AbstractWidgetModel widget = getDisplayModel().getWidgetFromWUID(wuid);
+						if (widget == null) {
+							return;
+						}
+						// Get the widget editPart 
+						Object obj = getGraphicalViewer().getEditPartRegistry().get(widget);
+						if (obj != null && obj instanceof AbstractBaseEditPart) {
+							EditPart widgetEditPart = (AbstractBaseEditPart) obj;
+							
+							// Reveal the widget
+							getGraphicalViewer().reveal(widgetEditPart);
+							
+							// Find the closest selectable part
+							while (widgetEditPart!=null && !widgetEditPart.isSelectable()) {
+								widgetEditPart = widgetEditPart.getParent();
+							}
+							if(widgetEditPart!=null) {
+								// Select the widget in OPI
+								SelectionManager selectionManager = getGraphicalViewer().getSelectionManager();
+								selectionManager.deselectAll();
+								selectionManager.appendSelection(widgetEditPart);
+							}
+						}
+					} catch (IOException e) {
+						MessageDialog.openError(getSite().getShell(),
+								"IO Error", e.getMessage());
+						OPIBuilderPlugin.getLogger().log(Level.WARNING,
+								"File open error", e); //$NON-NLS-1$
+					} catch (CoreException e) {
+						MessageDialog.openError(getSite().getShell(),
+								"Core Error", e.getMessage());
+						OPIBuilderPlugin.getLogger().log(Level.WARNING,
+								"File open error", e); //$NON-NLS-1$
+					}
+				}
+			};
 		}
 		return super.getAdapter(type);
 	}
