@@ -95,7 +95,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
             @Override
             public int match(ValueCache<?> cache, JCAConnectionPayload connPayload) {
-                if (!longStringPattern.matcher(connPayload.getChannel().getName()).matches()) {
+                if (!connPayload.isLongString()) {
                     return 0;
                 }
                 
@@ -140,7 +140,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
             @Override
             public int match(ValueCache<?> cache, JCAConnectionPayload connPayload) {
-                if (longStringPattern.matcher(connPayload.getChannel().getName()).matches()) {
+                if (connPayload.isLongString()) {
                     return 0;
                 }
                 
@@ -181,8 +181,6 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
         };
 
     private static final Set<JCATypeAdapter> converters;
-    
-    public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     
     static {
         Set<JCATypeAdapter> newFactories = new HashSet<JCATypeAdapter>();
