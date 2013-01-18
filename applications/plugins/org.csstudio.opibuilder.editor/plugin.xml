@@ -9,7 +9,8 @@
             extensions="opi"
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.OPIEditor"
-            name="OPI Editor">
+            name="OPI Editor"
+            matchingStrategy="org.csstudio.opibuilder.editor.OPIEditorMatcher">
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"

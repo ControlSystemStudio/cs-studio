@@ -12,7 +12,8 @@
             extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
-            name="OPI Runtime">
+            name="OPI Runtime"
+            matchingStrategy="org.csstudio.opibuilder.runmode.OPIRunnerMatcher">
       </editor>
    </extension>
    <extension
