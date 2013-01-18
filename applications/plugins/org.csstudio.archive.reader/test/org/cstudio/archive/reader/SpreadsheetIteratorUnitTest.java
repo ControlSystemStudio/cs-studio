@@ -47,8 +47,8 @@ public class SpreadsheetIteratorUnitTest
     private String runSheetTest(final int time_lag) throws Exception
     {
         System.out.println("SpreadsheetIterator");
-        final DemoDataIterator iter1 = new DemoDataIterator("A");
-        final DemoDataIterator iter2 = new DemoDataIterator("B", time_lag);
+        final DemoDataIterator iter1 = DemoDataIterator.forStrings("A");
+        final DemoDataIterator iter2 = DemoDataIterator.forStrings("B", time_lag);
         final SpreadsheetIterator sheet = new SpreadsheetIterator(
                 new ValueIterator[] { iter1, iter2 });
         final StringBuilder result = new StringBuilder();

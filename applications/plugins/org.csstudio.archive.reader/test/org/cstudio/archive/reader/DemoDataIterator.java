@@ -16,36 +16,41 @@ import org.epics.util.time.Timestamp;
 /** Value iterator that produces demo samples 1 ... 10
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class DemoDataIterator implements ValueIterator
 {
-    final private String name;
-    final private int start_time;
+    final private VType[] values;
     private int i = 0;
     private boolean open = true;
 
-    public DemoDataIterator(final String name, final int start_time)
+    public static DemoDataIterator forStrings(final String name, final int start_time)
     {
-        this.name = name;
-        this.start_time = start_time;
+        final VType[] values = new VType[10];
+        for (int i=0; i<10; ++i)
+            values[i] = new ArchiveVString(Timestamp.of(start_time + i + 1, 0), AlarmSeverity.NONE, "OK", name + " " + (i + 1));
+        return new DemoDataIterator(values);
     }
 
-    public DemoDataIterator(final String name)
+    public static DemoDataIterator forStrings(final String name)
     {
-        this(name, 0);
+        return forStrings(name, 0);
     }
-
+    
+    public DemoDataIterator(final VType[] values)
+    {
+        this.values = values;
+    }
 
     @Override
     public boolean hasNext()
     {
-        return i < 10;
+        return i < values.length;
     }
 
     @Override
     public VType next() throws Exception
     {
-        ++i;
-        return new ArchiveVString(Timestamp.of(start_time + i, 0), AlarmSeverity.NONE, "OK", name + " " + i);
+        return values[i++];
     }
 
     @Override
