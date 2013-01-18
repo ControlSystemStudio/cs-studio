@@ -22,6 +22,7 @@ import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
 import org.epics.util.array.CollectionNumbers;
@@ -46,37 +47,53 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
     private static final int LARGE_ARRAY = 100000;
     private final JCADataSource jcaDataSource;
+    private final String jcaChannelName;
     private volatile Channel channel;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
-    private boolean putCallback = false;
-    private boolean longString = false;
+    private final boolean putCallback;
+    private final boolean longString;
     
     public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
-    private final static Pattern hasOptions = Pattern.compile(".* \\{.*\\}");
+    private final static Pattern hasOptions = Pattern.compile("(.*) (\\{.*\\})");
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
         this.jcaDataSource = jcaDataSource;
-        if (longStringPattern.matcher(channelName).matches()) {
-            longString = true;
-        }
-        parseParameters();
-    }
-    
-    private void parseParameters() {
-        if (hasOptions.matcher(getChannelName()).matches()) {
-            if (getChannelName().endsWith("{\"putCallback\":true}")) {
-                putCallback = true;
-            } else if (getChannelName().endsWith("{\"putCallback\":false}")) {
-                putCallback = false;
-            } else if (getChannelName().endsWith("{\"longString\":true}")) {
-                longString = true;
-            } else if (getChannelName().endsWith("{\"longString\":false}")) {
-                longString = false;
-            } else {
-                throw new IllegalArgumentException("Option not recognized for " + getChannelName());
+        
+        boolean longStringName = longStringPattern.matcher(channelName).matches();
+        
+        // Parse parameters
+        // Done here so that they can be immutable
+        Matcher matcher = hasOptions.matcher(getChannelName());
+        if (matcher.matches()) {
+            jcaChannelName = matcher.group(1);
+            String clientOptions = matcher.group(2);
+            // TODO: Hack, this should have a real JSON parser
+            switch (clientOptions) {
+                case "{\"putCallback\":true}":
+                    putCallback = true;
+                    longString = longStringName;
+                    break;
+                case "{\"putCallback\":false}":
+                    putCallback = false;
+                    longString = longStringName;
+                    break;
+                case "{\"longString\":true}":
+                    putCallback = false;
+                    longString = true;
+                    break;
+                case "{\"longString\":false}":
+                    putCallback = false;
+                    longString = false;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Option not recognized for " + getChannelName());
             }
+        } else {
+            longString = longStringName;
+            putCallback = false;
+            jcaChannelName = channelName;
         }
     }
 
@@ -107,6 +124,15 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     public JCADataSource getJcaDataSource() {
         return jcaDataSource;
     }
+ 
+    /**
+     * The name used for the actual connection.
+     * 
+     * @return the name of the ca channel
+     */
+    public String getJcaChannelName() {
+        return jcaChannelName;
+    }
     
     @Override
     protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, JCAConnectionPayload connPayload) {
@@ -119,9 +145,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
 	    if (largeArray) {
-                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, Channel.PRIORITY_MIN);
+                channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, Channel.PRIORITY_MIN);
 	    } else {
-                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
+                channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
             needsMonitor = true;
         } catch (CAException ex) {
@@ -143,7 +169,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         };
         if (newValue instanceof String) {
             if (isLongString()) {
-                channel.put(newValue.toString().getBytes(), listener);
+                channel.put(toBytes(newValue.toString()), listener);
             } else {
                 channel.put(newValue.toString(), listener);
             }
@@ -182,7 +208,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         
         if (newValue instanceof String) {
             if (isLongString()) {
-                channel.put(newValue.toString().getBytes());
+                channel.put(toBytes(newValue.toString()));
             } else {
                 channel.put(newValue.toString());
             }
@@ -412,5 +438,36 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         }
         
         throw new IllegalArgumentException("Unsupported type " + type);
+    }
+    
+    /**
+     * Converts a String into byte array.
+     * 
+     * @param text the string to be converted
+     * @return byte array, always including '\0' termination
+     */
+    static byte[] toBytes(final String text) {
+        // TODO: it's unclear what encoding is used and how
+        
+        // Write string as byte array WITH '\0' TERMINATION!
+        final byte[] bytes = new byte[text.length() + 1];
+        System.arraycopy(text.getBytes(), 0, bytes, 0, text.length());
+        bytes[text.length()] = '\0';
+        return bytes;
+    }
+    
+    /**
+     * Converts a byte array into a String. It
+     * 
+     * @param data the array to be converted
+     * @return the string
+     */
+    static String toString(byte[] data) {
+        int index = 0;
+        while (index < data.length && data[index] != '\0') {
+            index++;
+        }
+        
+        return new String(data, 0, index);
     }
 }
