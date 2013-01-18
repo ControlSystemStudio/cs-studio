@@ -177,9 +177,10 @@ public class JythonSupport
 	 *  @param class_name Name of the Jython class,
 	 *                    must be in package (file) using lower case of class name
 	 *  @return Java object for instance of Jython class
+	 *  @throws Exception on error
 	 */
     @SuppressWarnings("unchecked")
-    public <T> T loadClass(final Class<T> type, final String class_name)
+    public <T> T loadClass(final Class<T> type, final String class_name) throws Exception
 	{
 		// Get package name
 		final String pack_name = class_name.toLowerCase();
@@ -190,9 +191,18 @@ public class JythonSupport
 		// Display path
 		//interpreter.exec("import sys");
         //interpreter.exec("print 'Jython Path: ', sys.path");
-
-    	// Import class into Jython
-		interpreter.exec("from " + pack_name +  " import " + class_name);
+		try
+		{
+        	// Import class into Jython
+    		interpreter.exec("from " + pack_name +  " import " + class_name);
+		}
+		catch (PyException ex)
+		{
+	        Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                "Error loading Jython class {0} from {1}",
+                new Object[] { class_name, pack_name });
+		    throw new Exception("Error loading Jython class " + class_name + ":" + getExceptionMessage(ex), ex);
+		}
 		// Create Java reference
         final PyObject py_class = interpreter.get(class_name);
         final PyObject py_object = py_class.__call__();
