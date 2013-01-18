@@ -137,33 +137,77 @@ public class DOMHelper
      *  @param default_value Result in case sub-element isn't found.
      *
      *  @return Returns number found in the sub-element.
+     *  @throws Exception when nothing found
      */
     public static final double getSubelementDouble(
-           final Element element, final String element_name, final double default_value)
+           final Element element, final String element_name, final double default_value)  throws Exception
     {
         final String s = getSubelementString(element, element_name, "");
         if (s.length() < 1)
             return default_value;
-        return Double.parseDouble(s);
+        try
+        {
+            return Double.parseDouble(s);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new Exception("Missing numeric value for '" + element_name + "'");
+        }
     }
 
+    /** Locate a sub-element tagged 'name', return its value as String if it's quoted
+     *  "like a string", or as a number if it's just a number.
+     *
+     *  <p>Will only go one level down, not search the whole tree.
+     *
+     *  @param element Element where to start looking. May be null.
+     *  @param element_name Name of sub-element to locate.
+     *
+     *  @return Returns number or string (quotes removed) found in the sub-element.
+     *  @throws Exception when nothing found
+     */
+    public static final Object getSubelementStringOrDouble(
+          final Element element, final String element_name) throws Exception
+    {
+        final String text = getSubelementString(element, element_name, "");
+        if (text.length() < 1)
+            throw new Exception("Missing value for '" + element_name + "'");
+        if (text.startsWith("\"")  &&  text.endsWith("\""))
+            return text.substring(1, text.length()-1);
+        try
+        {
+            return Double.parseDouble(text);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new Exception("Missing numeric value for '" + element_name + "'");
+        }
+    }
+    
     /** Locate a sub-element tagged 'name', return its integer value.
-    *
-    *  <p>Will only go one level down, not search the whole tree.
-    *
-    *  @param element Element where to start looking. May be null.
-    *  @param element_name Name of sub-element to locate.
-    *  @param default_value Result in case sub-element isn't found.
-    *
-    *  @return Returns number found in the sub-element.
-    */
-   public static final int getSubelementInt(
-          final Element element, final String element_name, final int default_value)
-   {
-       final String s = getSubelementString(element, element_name, "");
-       if (s.length() < 1)
-           return default_value;
-       return Integer.parseInt(s);
-   }
-
+     *
+     *  <p>Will only go one level down, not search the whole tree.
+     *
+     *  @param element Element where to start looking. May be null.
+     *  @param element_name Name of sub-element to locate.
+     *  @param default_value Result in case sub-element isn't found.
+     *
+     *  @return Returns number found in the sub-element.
+     *  @throws Exception when nothing found
+     */
+    public static final int getSubelementInt(
+          final Element element, final String element_name, final int default_value)  throws Exception
+    {
+        final String s = getSubelementString(element, element_name, "");
+        if (s.length() < 1)
+            return default_value;
+        try
+        {
+            return Integer.parseInt(s);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new Exception("Missing numeric value for '" + element_name + "'");
+        }
+    }
 }

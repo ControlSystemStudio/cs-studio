@@ -197,7 +197,10 @@ public class SetCommand extends ScanCommand
         writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
-        out.println("<value>" + value + "</value>");
+        if (value instanceof String)
+            out.println("<value>\"" + value + "\"</value>");
+        else
+            out.println("<value>" + value + "</value>");
         if (! readback.isEmpty())
         {
             writeIndent(out, level+1);
@@ -228,7 +231,7 @@ public class SetCommand extends ScanCommand
     {
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
-        setValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
+        setValue(DOMHelper.getSubelementStringOrDouble(element, ScanCommandProperty.TAG_VALUE));
         setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
@@ -260,7 +263,11 @@ public class SetCommand extends ScanCommand
 	public String toString()
 	{
 	    final StringBuilder buf = new StringBuilder();
-	    buf.append("Set '").append(device_name).append("' = ").append(value);
+	    buf.append("Set '").append(device_name).append("' = ");
+	    if (value instanceof String)
+	        buf.append('"').append(value).append('"');
+	    else
+	        buf.append(value);
 	    appendConditionDetail(buf);
 	    return buf.toString();
 	}
