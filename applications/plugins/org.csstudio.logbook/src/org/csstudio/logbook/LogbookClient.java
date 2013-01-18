@@ -69,14 +69,14 @@ public interface LogbookClient {
 	public LogEntry findLogEntry(Object logId) throws Exception;
 
 	/**
-	 * Find all the logentries with match the search criteria specified in the
-	 * <tt>findAttributeMap</tt>
+	 * Find all the logentries with match the search criteria specified by the
+	 * <tt>search</tt> string
 	 * 
 	 * @return a collection of LogEntry
 	 * @throws Exception
 	 */
 	public Collection<LogEntry> findLogEntries(
-			Map<String, String> findAttributeMap) throws Exception;
+			String search) throws Exception;
 
 	/**
 	 * Create the logEntry <tt>logEntry</tt>

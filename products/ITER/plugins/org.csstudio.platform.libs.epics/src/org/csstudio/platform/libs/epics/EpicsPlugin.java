@@ -49,6 +49,11 @@ public class EpicsPlugin extends Plugin
 
     /** Use CAJ or JNI ? */
     private boolean use_pure_java;
+    
+	private boolean dbe_property_supported;
+	private boolean honor_zero_precision;
+	private boolean rtyp_value_only;
+	private Boolean var_array_supported;
 
     /** How should subscriptions be established? */
     public enum MonitorMask
@@ -107,8 +112,28 @@ public class EpicsPlugin extends Plugin
     /** @return Mask used to create CA monitors (subscriptions) */
     public MonitorMask getMonitorMask()
     {   return monitor_mask; }
+    
+    /** @return whether metadata updates are enabled */
+    public boolean isDbePropertySupported() {
+		return dbe_property_supported;
+	}
 
-    /** @return Returns the shared instance. */
+    /** @return whether zero precision in numeric metadata should be honored */
+	public boolean isHonorZeroPrecision() {
+		return honor_zero_precision;
+	}
+
+	/** @return whether one should request value only for RTYP fields */ 
+	public boolean isRtypValueOnly() {
+		return rtyp_value_only;
+	}
+
+	/** @return whether variable array should be supported */
+	public Boolean getVarArraySupported() {
+		return var_array_supported;
+	}
+
+	/** @return Returns the shared instance. */
     public static EpicsPlugin getDefault()
     {   return plugin;    }
 
@@ -200,6 +225,22 @@ public class EpicsPlugin extends Plugin
             monitor_mask = MonitorMask.valueOf(
                 prefs.getString(ID, PreferenceConstants.MONITOR, "VALUE", null));
 
+        	dbe_property_supported =
+                    prefs.getBoolean(ID, PreferenceConstants.DBE_PROPERTY_SUPPORTED, false, null);
+        	honor_zero_precision = 
+                    prefs.getBoolean(ID, PreferenceConstants.HONOR_ZERO_PRECISION, true, null);
+        	rtyp_value_only =
+        			prefs.getBoolean(ID, PreferenceConstants.RTYP_VALUE_ONLY, false, null);
+        	String varArraySupported = 
+        			prefs.getString(ID, PreferenceConstants.VAR_ARRAY_SUPPORT, "Auto", null);
+        	var_array_supported = null;
+        	if ("Enabled".equals(varArraySupported)) {
+        		var_array_supported = true;
+        	}
+        	if ("Disabled".equals(varArraySupported)) {
+        		var_array_supported = false;
+        	}
+            
             /*
              * selects common Executor in EPICSPlug (if true) for all PropertyProxyImpls or
              * (if false) individual Executors for every PropertyProxyImpl

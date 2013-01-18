@@ -16,6 +16,7 @@
       <import plugin="org.csstudio.archive.config"/>
       <import plugin="org.csstudio.archive.config.rdb"/>
       <import plugin="org.csstudio.archive.rdb"/>
+      <import plugin="org.csstudio.archive.vtype"/>
       <import plugin="org.csstudio.auth"/>
       <import plugin="org.csstudio.data"/>
       <import plugin="org.csstudio.java"/>
@@ -24,7 +25,6 @@
       <import plugin="org.csstudio.platform.libs.jms"/>
       <import plugin="org.csstudio.platform.utility.rdb"/>
       <import plugin="org.csstudio.workspace"/>
-      <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filebuffers"/>
@@ -46,6 +46,9 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
+      <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
    </requires>
 
@@ -72,6 +75,13 @@
 
    <plugin
          id="org.csstudio.archive.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.vtype"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -10,6 +10,7 @@
       arch="x86_64">
 
    <requires>
+      <import plugin="com.google.common"/>
       <import plugin="javax.annotation"/>
       <import plugin="org.apache.jasper"/>
       <import plugin="org.apache.log4j"/>
@@ -20,6 +21,7 @@
       <import plugin="org.csstudio.csdata"/>
       <import plugin="org.csstudio.data"/>
       <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.logbook.ui"/>
       <import plugin="org.csstudio.logging"/>
       <import plugin="org.csstudio.openfile"/>
       <import plugin="org.csstudio.platform"/>
@@ -36,8 +38,12 @@
       <import plugin="org.csstudio.ui.preferences"/>
       <import plugin="org.csstudio.ui.util"/>
       <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
+      <import plugin="org.csstudio.utility.jms"/>
       <import plugin="org.csstudio.workspace"/>
       <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.compare.core"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filebuffers"/>
@@ -73,11 +79,27 @@
       <import plugin="org.eclipse.update.configurator"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.update.ui"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
       <import plugin="org.jdom"/>
       <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
       <import plugin="org.slf4j"/>
    </requires>
+
+   <plugin
+         id="com.google.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.csstudio.auth.ui"
@@ -88,6 +110,13 @@
 
    <plugin
          id="org.csstudio.logging.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logbook.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -298,6 +327,12 @@
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.utility.jms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
          id="org.csstudio.utility.pv.epics"
          download-size="0"
          install-size="0"
@@ -306,6 +341,77 @@
 
    <plugin
          id="org.csstudio.utility.pv.simu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+logbo
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.extra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.loc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.vtype"
          download-size="0"
          install-size="0"
          version="0.0.0"
