@@ -50,12 +50,17 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
     private boolean putCallback = false;
+    private boolean longString = false;
     
+    public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     private final static Pattern hasOptions = Pattern.compile(".* \\{.*\\}");
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
         this.jcaDataSource = jcaDataSource;
+        if (longStringPattern.matcher(channelName).matches()) {
+            longString = true;
+        }
         parseParameters();
     }
     
@@ -65,16 +70,44 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 putCallback = true;
             } else if (getChannelName().endsWith("{\"putCallback\":false}")) {
                 putCallback = false;
+            } else if (getChannelName().endsWith("{\"longString\":true}")) {
+                longString = true;
+            } else if (getChannelName().endsWith("{\"longString\":false}")) {
+                longString = false;
             } else {
                 throw new IllegalArgumentException("Option not recognized for " + getChannelName());
             }
         }
     }
 
+    /**
+     * Whether this channel should be written using a put callback.
+     * 
+     * @return true if a put callback should be used
+     */
     public boolean isPutCallback() {
         return putCallback;
     }
- 
+
+    /**
+     * Return whether this channel should be treated as a long string,
+     * meaning a BYTE[] that really represents an encoded string.
+     * 
+     * @return true if the channel should be handled as a long string
+     */
+    public boolean isLongString() {
+        return longString;
+    }
+
+    /**
+     * The datasource this channel refers to.
+     * 
+     * @return a jca data source
+     */
+    public JCADataSource getJcaDataSource() {
+        return jcaDataSource;
+    }
+    
     @Override
     protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, JCAConnectionPayload connPayload) {
         return jcaDataSource.getTypeSupport().find(cache, connPayload);
@@ -109,7 +142,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             }
         };
         if (newValue instanceof String) {
-            channel.put(newValue.toString(), listener);
+            if (isLongString()) {
+                channel.put(newValue.toString().getBytes(), listener);
+            } else {
+                channel.put(newValue.toString(), listener);
+            }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue, listener);
         } else if (newValue instanceof short[]) {
@@ -144,7 +181,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         }
         
         if (newValue instanceof String) {
-            if (JCAVTypeAdapterSet.longStringPattern.matcher(getChannelName()).matches()) {
+            if (isLongString()) {
                 channel.put(newValue.toString().getBytes());
             } else {
                 channel.put(newValue.toString());
@@ -245,7 +282,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                         }
 
                         // Setup monitors on connection
-                        processConnection(new JCAConnectionPayload(jcaDataSource, channel));
+                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
                         if (ev.isConnected()) {
                             setup(channel);
                         }
@@ -321,6 +358,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 properties.put("Read access", channel.getReadAccess());
                 properties.put("Write access", channel.getWriteAccess());
             }
+            properties.put("isLongString", isLongString());
+            properties.put("isPutCallback", isPutCallback());
         }
         return properties;
     }
