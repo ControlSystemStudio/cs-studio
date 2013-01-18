@@ -229,17 +229,6 @@ public class SampleView extends DataBrowserAwareView
                 cell.setText(sample.getSource());
             }
         });
-        // Data Quality column
-        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Quality, 90, 10);
-        col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(sample.getValue().getQuality().toString());
-            }
-        });
         ColumnViewerToolTipSupport.enableFor(sample_table);
         
         // Be ignorant of any change of the current model after this view

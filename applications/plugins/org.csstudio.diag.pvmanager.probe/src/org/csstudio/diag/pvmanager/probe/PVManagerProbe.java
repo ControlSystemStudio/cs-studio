@@ -504,6 +504,7 @@ public class PVManagerProbe extends ViewPart {
 		setValue(null, null);
 		setTime(null);
 		setMeter(null, null);
+		setLastError(null);
 		setReadOnly(true);
 
 		// If name is blank, update status to waiting and quit
@@ -588,13 +589,20 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 
+	private Exception lastError = null;
+	
 	/**
 	 * Displays the last error in the status.
 	 * 
 	 * @param ex an exception
 	 */
 	private void setLastError(Exception ex) {
+		// If a timeout comes after an error, ignore it
+		if (ex instanceof TimeoutException && lastError != null) {
+			return;
+		}
 		errorBar.setException(ex);
+		lastError = ex;
 	}
 
 	/**
@@ -657,7 +665,7 @@ public class PVManagerProbe extends ViewPart {
 	 * @param display the display information
 	 */
 	private void setMeter(Double value, Display display) {
-		if (value == null || display == null) {
+		if (value == null || display == null || !ValueUtil.displayHasValidDisplayLimits(display)) {
 			meter.setEnabled(false);
 			// meter.setValue(0.0);
 		} else if (display.getUpperDisplayLimit() <= display

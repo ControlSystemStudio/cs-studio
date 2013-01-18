@@ -68,6 +68,8 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.workbench" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
@@ -75,8 +77,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.antlr.runtime" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
@@ -90,9 +91,9 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.6" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.3.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -451,6 +452,27 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.common"
          download-size="0"
          install-size="0"
          version="0.0.0"

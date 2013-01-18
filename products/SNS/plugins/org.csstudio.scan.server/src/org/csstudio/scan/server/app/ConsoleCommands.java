@@ -144,6 +144,31 @@ public class ConsoleCommands implements CommandProvider
     }
 
 
+    /** 'commands' command */
+    public Object _commands(final CommandInterpreter intp)
+    {
+        final String arg = intp.nextArgument();
+        if (arg == null)
+        {
+            intp.println("Syntax:");
+            intp.println("   commands  ID-of-scan");
+            return null;
+        }
+        try
+        {
+            final long id = Long.parseLong(arg.trim());
+            // Dump scan commands
+            intp.print(server.getScanCommands(id));
+            intp.println();
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
     {
@@ -160,6 +185,10 @@ public class ConsoleCommands implements CommandProvider
             // Dump data
             final ScanData data = server.getScanData(id);
             final ScanDataIterator sheet = new ScanDataIterator(data);
+            
+            for (String device : sheet.getDevices())
+                intp.print(device + "  ");
+            intp.println();
             while (sheet.hasNext())
             {
                 final ScanSample[] line = sheet.getSamples();

@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.persistence;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +55,8 @@ public class XMLUtil {
 	public static String XMLATTR_PROPID = "id"; //$NON-NLS-1$
 	public static String XMLATTR_VERSION = "version"; //$NON-NLS-1$
 
-
+	public static String XMLTAG_WIDGET_UID = AbstractWidgetModel.PROP_WIDGET_UID; //$NON-NLS-1$
+	
 	/**Flatten a widget to XML element.
 	 * @param widgetModel model of the widget
 	 * @return the XML element
@@ -300,6 +303,94 @@ public class XMLUtil {
 		}
 
 		return 0;
+	}
+	
+	/**
+	 * Return the wuid of the closest widget to offset char position in input stream
+	 * @param in the OPI file input stream
+	 * @param offset the character offset
+	 * @return String wuid
+	 * @throws IOException
+	 */
+	public static String findClosestWidgetUid(InputStream in, int offset)
+			throws IOException {
+		if (in == null) {
+			return null;
+		}
+		StringBuffer out = new StringBuffer();
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		char[] buf = new char[1024];
+		for (int len = br.read(buf); len>0; len = br.read(buf)) {
+			out.append(buf, 0, len);
+		}
+		br.close();
+		if (offset + XMLUtil.XMLTAG_WIDGET.length() + 2 >= out.length()) {
+			// The offset position is too close to the end of file
+			// No widget will be found
+			return null;
+		}
+		int widgetElementStart = offset;
+		while (widgetElementStart >= 0
+				&& !matchXMLTag(out, widgetElementStart, XMLUtil.XMLTAG_WIDGET)) {
+			widgetElementStart--;
+		}
+		if (widgetElementStart > 0) {
+			// corresponding widget element found
+			int wuidAttrStart = widgetElementStart + 1;
+			// looking for <wuid> before a <widget> or </widget
+			String xmlEndTagWidget = "/" + XMLUtil.XMLTAG_WIDGET;
+			while (!matchXMLTag(out, wuidAttrStart, XMLUtil.XMLTAG_WIDGET_UID)
+					&& !matchXMLTag(out, wuidAttrStart, XMLUtil.XMLTAG_WIDGET)
+					&& !matchXMLTag(out, wuidAttrStart, xmlEndTagWidget)) {
+				wuidAttrStart++;
+			}
+			if (matchXMLTag(out, wuidAttrStart, XMLUtil.XMLTAG_WIDGET_UID)) {
+				//  <wuid> found
+				wuidAttrStart = out.indexOf(">", wuidAttrStart);
+				if (wuidAttrStart >= 0) {
+					wuidAttrStart++;
+					if (wuidAttrStart < out.length()) {
+						int wuidAttrEnd = out.indexOf("</" + XMLTAG_WIDGET_UID,
+								wuidAttrStart);
+						if (wuidAttrEnd >= 0) {
+							return out.substring(wuidAttrStart, wuidAttrEnd);
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Return true if the string starting at offset in sb matches with xmlTag.
+	 * @param sb StringBuffer
+	 * @param offset int
+	 * @param xmlTag String The XML tag name to check without '&lt;' and '&gt;'
+	 * @return
+	 */
+	private static boolean matchXMLTag(StringBuffer sb, int offset,
+			String xmlTag) {
+		if (offset >= sb.length()) {
+			return false;
+		}
+		if (sb.charAt(offset) != '<') {
+			return false;
+		}
+		int indexOfSpace = sb.indexOf(" ", offset);
+		int indexOfGt = sb.indexOf(">", offset);
+		int indexOfEndTag = Integer.MAX_VALUE;
+		if (indexOfSpace >= 0) {
+			indexOfEndTag = indexOfSpace;
+		}
+		if (indexOfGt >= 0 && indexOfGt < indexOfEndTag) {
+			indexOfEndTag = indexOfGt;
+		}
+		if (indexOfEndTag == Integer.MAX_VALUE) {
+			return false;
+		}
+		String potentialTag = sb.substring(offset + 1, indexOfEndTag);
+		return potentialTag.equals(xmlTag);
 	}
 
 }

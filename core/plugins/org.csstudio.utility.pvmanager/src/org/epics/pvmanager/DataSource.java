@@ -197,7 +197,7 @@ public abstract class DataSource {
                 log.log(Level.WARNING, "ChannelReadRecipe {0} was disconnected but was never connected. Ignoring it.", channelRecipe);
             } else {
                 String channelName = channelRecipe.getChannelName();
-                ChannelHandler channelHandler = usedChannels.get(channelName);
+                ChannelHandler channelHandler = channel(channelName);
                 // If the channel is not found, it means it was not found during
                 // connection and a proper notification was sent then. Silently
                 // ignore it.
@@ -339,29 +339,33 @@ public abstract class DataSource {
             private void scheduleNext() {
                 for (Map.Entry<ChannelHandler, Object> entry : planner.nextChannels().entrySet()) {
                     final String channelName = entry.getKey().getChannelName();
-                    entry.getKey().write(entry.getValue(), new ChannelWriteCallback() {
+                    try {
+                        entry.getKey().write(entry.getValue(), new ChannelWriteCallback() {
 
-                        AtomicInteger counter = new AtomicInteger();
+                            AtomicInteger counter = new AtomicInteger();
 
-                        @Override
-                        public void channelWritten(Exception ex) {
-                            planner.removeChannel(channelName);
-                            
-                            // If there was an error, notify the exception
-                            // and don't schedule anything else
-                            if (ex != null) {
-                                exceptionHandler.handleException(ex);
-                                return;
+                            @Override
+                            public void channelWritten(Exception ex) {
+                                planner.removeChannel(channelName);
+
+                                // If there was an error, notify the exception
+                                // and don't schedule anything else
+                                if (ex != null) {
+                                    exceptionHandler.handleException(ex);
+                                    return;
+                                }
+
+                                // Notify only when the last channel was written
+                                if (planner.isDone()) {
+                                    callback.run();
+                                } else {
+                                    scheduleNext();
+                                }
                             }
-                            
-                            // Notify only when the last channel was written
-                            if (planner.isDone()) {
-                                callback.run();
-                            } else {
-                                scheduleNext();
-                            }
-                        }
-                    });
+                        });
+                    } catch (RuntimeException ex) {
+                        exceptionHandler.handleException(ex);
+                    }
                 }
             }
 

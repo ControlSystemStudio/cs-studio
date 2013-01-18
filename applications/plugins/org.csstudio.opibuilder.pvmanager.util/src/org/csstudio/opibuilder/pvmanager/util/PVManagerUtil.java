@@ -1,13 +1,13 @@
 package org.csstudio.opibuilder.pvmanager.util;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubleArray;
+import static org.epics.util.time.TimeDuration.ofMillis;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.data.VDoubleArray;
+import org.epics.vtype.VDoubleArray;
 
 public class PVManagerUtil {
 	
@@ -15,11 +15,9 @@ public class PVManagerUtil {
 		
 		PVReader<VDoubleArray> pvReader;
 		if(inUIThread)
-			pvReader= PVManager.read(
-				vDoubleArrayOf(channel(pvName))).notifyOn(SWTUtil.swtThread()).every(ms(ms));
+			pvReader= PVManager.read(vDoubleArray(pvName)).notifyOn(SWTUtil.swtThread()).maxRate(ofMillis(ms));
 		else
-			pvReader= PVManager.read(
-				vDoubleArrayOf(channel(pvName))).every(ms(ms));
+			pvReader= PVManager.read(vDoubleArray(pvName)).maxRate(ofMillis(ms));
 		return pvReader;
 		
 	}
@@ -28,12 +26,9 @@ public class PVManagerUtil {
 
 		PVReader<Object> pvReader;
 		if(inUIThread)
-			pvReader= PVManager.read(channel(pvName)).notifyOn(SWTUtil.swtThread()).every(ms(ms));
+			pvReader= PVManager.read(channel(pvName)).notifyOn(SWTUtil.swtThread()).maxRate(ofMillis(ms));
 		else
-			pvReader= PVManager.read(channel(pvName)).every(ms(ms));
+			pvReader= PVManager.read(channel(pvName)).maxRate(ofMillis(ms));
 		return pvReader;
-		
-		
 	}
-
 }

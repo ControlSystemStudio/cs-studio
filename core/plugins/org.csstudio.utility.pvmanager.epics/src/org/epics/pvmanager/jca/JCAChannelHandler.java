@@ -144,7 +144,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         }
         
         if (newValue instanceof String) {
-            channel.put(newValue.toString());
+            if (JCAVTypeAdapterSet.longStringPattern.matcher(getChannelName()).matches()) {
+                channel.put(newValue.toString().getBytes());
+            } else {
+                channel.put(newValue.toString());
+            }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue);
         } else if (newValue instanceof short[]) {
@@ -271,7 +275,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     public void disconnect() {
         try {
             // Close the channel
-            channel.destroy();
+            if (channel.getConnectionState() != Channel.ConnectionState.CLOSED) {
+                channel.destroy();
+            }
         } catch (CAException ex) {
             throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
