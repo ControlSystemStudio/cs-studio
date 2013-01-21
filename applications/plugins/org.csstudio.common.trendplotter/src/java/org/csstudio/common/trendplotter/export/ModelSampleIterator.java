@@ -16,7 +16,8 @@ import org.csstudio.data.values.IValue;
 /** Iterator for the samples in a ModelItem, not fetching archived data
  *  @author Kay Kasemir
  */
-public class ModelSampleIterator implements ValueIterator
+//TODO (jhatje): implement vType
+public class ModelSampleIterator// implements ValueIterator
 {
     /** Samples from which to return values from 'start' to 'end' */
     final private PlotSamples samples;
@@ -105,14 +106,12 @@ public class ModelSampleIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean hasNext()
     {
         return index >= 0;
     }
 
     /** {@inheritDoc} */
-    @Override
     public IValue next() throws Exception
     {
         if (index < 0)
@@ -135,7 +134,6 @@ public class ModelSampleIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
-    @Override
     public void close()
     {
         // NOP

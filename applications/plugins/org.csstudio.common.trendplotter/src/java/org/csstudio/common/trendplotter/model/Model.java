@@ -33,6 +33,8 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,6 +51,9 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class Model
 {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Model.class);
+
     /** File extension for data browser config files.
      *  plugin.xml registers the editor for this file extension
      */
@@ -266,6 +271,7 @@ public class Model
     /** @param listener Listener to remove */
     public void removeListener(final ModelListener listener)
     {
+        LOG.debug("remove listener");
         listeners.remove(listener);
     }
 
@@ -727,6 +733,7 @@ public class Model
     /** Stop all items: Disconnect PVs, ... */
     public void stop()
     {
+        LOG.debug("Stop model");
         if (!is_running)
             throw new RuntimeException("Model wasn't started");
         is_running = false;

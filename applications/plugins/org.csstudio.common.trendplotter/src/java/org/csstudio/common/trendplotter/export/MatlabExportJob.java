@@ -73,7 +73,8 @@ public class MatlabExportJob extends ExportJob
             out.println("clear q;");
             while (values.hasNext()  &&  !monitor.isCanceled())
             {
-                final IValue value = values.next();
+                //TODO (jhatje): implement vType
+                final IValue value = null;//values.next();
                 ++line_count;
                 // t(1)='2010/03/15 13:30:10.123';
                 out.println("t{" + line_count + "}='" +

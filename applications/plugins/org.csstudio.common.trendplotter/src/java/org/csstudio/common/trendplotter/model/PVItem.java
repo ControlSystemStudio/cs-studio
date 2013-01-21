@@ -368,6 +368,7 @@ public class PVItem extends ModelItem implements PVListener {
     /** Disconnect from control system PV, stop scanning, ... */
     @SuppressWarnings("nls")
     public void stop() {
+        LOG.debug("Stop PVItem: {}", pv.getName());
         if (pv == null) {
             throw new RuntimeException("Not running " + getName());
         }

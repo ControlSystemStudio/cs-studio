@@ -6,6 +6,7 @@ import java.util.List;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
+import org.epics.vtype.VType;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiReductionMethod;
@@ -50,13 +51,14 @@ public abstract class AapiValueIterator implements ValueIterator {
 	}
 
 	@Override
-	public IValue next() throws Exception {
+	public VType next() throws Exception {
 //		System.out.println(">>>>> AapiValueIterator.next");
 		if (_result.size() > 0) {
 			IValue val = _result.remove(0);
 //			IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
 //			System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
-			return val;
+			//TODO (jhatje): implement vType
+			return null;
 		}
 //		System.out.println(">>>>> AapiValueIterator.next return null");
 		return null;
