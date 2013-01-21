@@ -1,8 +1,0 @@
-var description = "Timer Script";
-var counter = 0;
-
-function execute() {
-	counter = counter +1;
-	Packages.java.lang.System.out.println("TimerScript: executed ("+counter+" times)");
-	return counter;
-}
