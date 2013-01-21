@@ -4,7 +4,7 @@
  */
 
 /**
- * Support for Epics 3 data source.
+ * Support for Epics 3 data source (<a href="doc-files/jca-datasource.html">channel syntax</a>).
  * <p>
  * The {@link org.epics.pvmanager.jca.JCADataSource} uses the {@link org.epics.pvmanager.MultiplexedChannelHandler}. The
  * connection payload used is the JCA Channel class directly. The payload for
