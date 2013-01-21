@@ -67,7 +67,8 @@ public class PlainExportJob extends ExportJob
             long line_count = 0;
             while (values.hasNext()  &&  !monitor.isCanceled())
             {
-                final IValue value = values.next();
+                //TODO (jhatje): implement vType
+                final IValue value = null;//values.next();
                 out.println(value.getTime() + Messages.Export_Delimiter + formatter.format(value));
                 ++line_count;
                 if (++line_count % PROGRESS_UPDATE_LINES == 0)

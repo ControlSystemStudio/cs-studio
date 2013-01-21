@@ -20,13 +20,14 @@ import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.PVItem;
 import org.csstudio.common.trendplotter.model.RequestType;
 import org.csstudio.common.trendplotter.preferences.Preferences;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ public class ArchiveFetchJob extends Job
     final private PVItem item;
 
     /** Start/End time */
-    final private Timestamp start, end;
+    final private ITimestamp start, end;
 
     /** Listener that's notified when (if) we completed OK */
     final private ArchiveFetchJobListener listener;
@@ -108,7 +109,7 @@ public class ArchiveFetchJob extends Job
         @Override
         public void run()
         {
-            Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this); //$NON-NLS-1$
+            LOG.info("start archive fetch ");
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
             for (int i=0; i<archives.length && !cancelled; ++i)
@@ -132,22 +133,24 @@ public class ArchiveFetchJob extends Job
                     {
                         reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
-
-                    final ValueIterator value_iter;
+                    //TODO (jhatje): implement vType
+                    final ValueIterator value_iter = null;
                     final RequestType currentRequestType = item.getRequestType();
 
                     if (currentRequestType == RequestType.RAW) {
-                        value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+//                        value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
                     }
                     else {
-                        value_iter = reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
+//                        value_iter = reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
                     }
                     // Get samples into array
-                    final ArrayList<VType> result = new ArrayList<VType>();
+                    final ArrayList<IValue> result = new ArrayList<IValue>();
                     
                     while (value_iter.hasNext()) {
-                        final VType next = value_iter.next();
-                        result.add(next);
+//                        final IValue next = value_iter.next();
+//                        LOG.trace(url + " - val: " + ((IDoubleValue)next).getValue() + " time: " + next.getTime());
+//                        System.out.println("----- " + url + " - val: " + ((IDoubleValue)next).getValue() + " time: " + next.getTime());
+//                        result.add(next);
                     }
                     LOG.debug(result.size() + " samples from source " + url);
                     item.mergeArchivedSamples(reader, result, currentRequestType);
@@ -194,8 +197,8 @@ public class ArchiveFetchJob extends Job
      *  @param end
      *  @param listener
      */
-    public ArchiveFetchJob(final PVItem item, final Timestamp start,
-            final Timestamp end, final ArchiveFetchJobListener listener)
+    public ArchiveFetchJob(final PVItem item, final ITimestamp start,
+            final ITimestamp end, final ArchiveFetchJobListener listener)
     {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
                 new Object[] { item.getName(), start, end }));

@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.common.trendplotter.Activator;
@@ -369,8 +368,6 @@ public class DataBrowserEditor extends EditorPart
                 Messages.OpenDataBrowserPerspective,
                 Perspective.ID));
         mm.add(new Separator());
-        if (SendToElogActionHelper.isElogAvailable())
-            mm.add(new SendToElogAction(shell, plot.getXYGraph()));
         if (EMailSender.isEmailSupported())
             mm.add(new SendEMailAction(shell, plot.getXYGraph()));
         mm.add(new PrintAction(shell, plot.getXYGraph()));
