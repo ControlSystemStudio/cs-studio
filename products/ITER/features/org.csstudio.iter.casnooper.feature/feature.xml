@@ -15,9 +15,9 @@
       <import plugin="org.apache.lucene.analysis"/>
       <import plugin="org.csstudio.platform.libs.epics"/>
       <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
       <import plugin="org.csstudio.remote"/>
       <import plugin="org.csstudio.servicelocator"/>
+      <import plugin="org.csstudio.utility.jms"/>
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>

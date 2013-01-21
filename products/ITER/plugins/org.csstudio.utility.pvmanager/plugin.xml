@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.csstudio.utility.pvmanager.datasource" name="PVManager DataSource" schema="schema/org.csstudio.utility.pvmanager.datasource.exsd"/>
+
+</plugin>

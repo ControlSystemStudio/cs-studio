@@ -22,6 +22,7 @@ import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
 import org.epics.util.array.CollectionNumbers;
@@ -46,35 +47,93 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
     private static final int LARGE_ARRAY = 100000;
     private final JCADataSource jcaDataSource;
+    private final String jcaChannelName;
     private volatile Channel channel;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
-    private boolean putCallback = false;
+    private final boolean putCallback;
+    private final boolean longString;
     
-    private final static Pattern hasOptions = Pattern.compile(".* \\{.*\\}");
+    public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
+    private final static Pattern hasOptions = Pattern.compile("(.*) (\\{.*\\})");
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
         this.jcaDataSource = jcaDataSource;
-        parseParameters();
-    }
-    
-    private void parseParameters() {
-        if (hasOptions.matcher(getChannelName()).matches()) {
-            if (getChannelName().endsWith("{\"putCallback\":true}")) {
-                putCallback = true;
-            } else if (getChannelName().endsWith("{\"putCallback\":false}")) {
-                putCallback = false;
-            } else {
-                throw new IllegalArgumentException("Option not recognized for " + getChannelName());
+        
+        boolean longStringName = longStringPattern.matcher(channelName).matches();
+        
+        // Parse parameters
+        // Done here so that they can be immutable
+        Matcher matcher = hasOptions.matcher(getChannelName());
+        if (matcher.matches()) {
+            jcaChannelName = matcher.group(1);
+            String clientOptions = matcher.group(2);
+            // TODO: Hack, this should have a real JSON parser
+            switch (clientOptions) {
+                case "{\"putCallback\":true}":
+                    putCallback = true;
+                    longString = longStringName;
+                    break;
+                case "{\"putCallback\":false}":
+                    putCallback = false;
+                    longString = longStringName;
+                    break;
+                case "{\"longString\":true}":
+                    putCallback = false;
+                    longString = true;
+                    break;
+                case "{\"longString\":false}":
+                    putCallback = false;
+                    longString = false;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Option not recognized for " + getChannelName());
             }
+        } else {
+            longString = longStringName;
+            putCallback = false;
+            jcaChannelName = channelName;
         }
     }
 
+    /**
+     * Whether this channel should be written using a put callback.
+     * 
+     * @return true if a put callback should be used
+     */
     public boolean isPutCallback() {
         return putCallback;
     }
+
+    /**
+     * Return whether this channel should be treated as a long string,
+     * meaning a BYTE[] that really represents an encoded string.
+     * 
+     * @return true if the channel should be handled as a long string
+     */
+    public boolean isLongString() {
+        return longString;
+    }
+
+    /**
+     * The datasource this channel refers to.
+     * 
+     * @return a jca data source
+     */
+    public JCADataSource getJcaDataSource() {
+        return jcaDataSource;
+    }
  
+    /**
+     * The name used for the actual connection.
+     * 
+     * @return the name of the ca channel
+     */
+    public String getJcaChannelName() {
+        return jcaChannelName;
+    }
+    
     @Override
     protected JCATypeAdapter findTypeAdapter(ValueCache<?> cache, JCAConnectionPayload connPayload) {
         return jcaDataSource.getTypeSupport().find(cache, connPayload);
@@ -86,9 +145,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
 	    if (largeArray) {
-                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, Channel.PRIORITY_MIN);
+                channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, Channel.PRIORITY_MIN);
 	    } else {
-                channel = jcaDataSource.getContext().createChannel(getChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
+                channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
             needsMonitor = true;
         } catch (CAException ex) {
@@ -109,7 +168,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             }
         };
         if (newValue instanceof String) {
-            channel.put(newValue.toString(), listener);
+            if (isLongString()) {
+                channel.put(toBytes(newValue.toString()), listener);
+            } else {
+                channel.put(newValue.toString(), listener);
+            }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue, listener);
         } else if (newValue instanceof short[]) {
@@ -144,8 +207,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         }
         
         if (newValue instanceof String) {
-            if (JCAVTypeAdapterSet.longStringPattern.matcher(getChannelName()).matches()) {
-                channel.put(newValue.toString().getBytes());
+            if (isLongString()) {
+                channel.put(toBytes(newValue.toString()));
             } else {
                 channel.put(newValue.toString());
             }
@@ -245,7 +308,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                         }
 
                         // Setup monitors on connection
-                        processConnection(new JCAConnectionPayload(jcaDataSource, channel));
+                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
                         if (ev.isConnected()) {
                             setup(channel);
                         }
@@ -321,6 +384,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 properties.put("Read access", channel.getReadAccess());
                 properties.put("Write access", channel.getWriteAccess());
             }
+            properties.put("isLongString", isLongString());
+            properties.put("isPutCallback", isPutCallback());
         }
         return properties;
     }
@@ -373,5 +438,36 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         }
         
         throw new IllegalArgumentException("Unsupported type " + type);
+    }
+    
+    /**
+     * Converts a String into byte array.
+     * 
+     * @param text the string to be converted
+     * @return byte array, always including '\0' termination
+     */
+    static byte[] toBytes(final String text) {
+        // TODO: it's unclear what encoding is used and how
+        
+        // Write string as byte array WITH '\0' TERMINATION!
+        final byte[] bytes = new byte[text.length() + 1];
+        System.arraycopy(text.getBytes(), 0, bytes, 0, text.length());
+        bytes[text.length()] = '\0';
+        return bytes;
+    }
+    
+    /**
+     * Converts a byte array into a String. It
+     * 
+     * @param data the array to be converted
+     * @return the string
+     */
+    static String toString(byte[] data) {
+        int index = 0;
+        while (index < data.length && data[index] != '\0') {
+            index++;
+        }
+        
+        return new String(data, 0, index);
     }
 }

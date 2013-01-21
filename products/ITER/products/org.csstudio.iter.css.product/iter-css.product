@@ -183,6 +183,7 @@ of the distribution package.
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
       <plugin id="org.csstudio.utility.pv.ui"/>
+      <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.speech"/>
       <plugin id="org.csstudio.utility.sysmon"/>
       <plugin id="org.csstudio.workspace"/>
@@ -301,7 +302,7 @@ of the distribution package.
       <feature id="org.csstudio.iter.css.app.feature" version="1.0.0"/>
       <feature id="org.csstudio.iter.email.feature" version="1.0.0"/>
       <feature id="org.csstudio.iter.alarm.beast.ui.feature" version="1.0.0"/>
-      <feature id="org.csstudio.trends.databrowser2.feature" version="3.1.1.qualifier"/>
+      <feature id="org.csstudio.trends.databrowser2.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.iter.opibuilder.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.iter.display.pace.feature" version="1.0.0"/>
       <feature id="org.csstudio.iter.css.util.feature" version="1.0.0"/>

@@ -21,11 +21,13 @@ public class JCAConnectionPayload {
     private final JCADataSource jcaDataSource;
     private final Channel channel;
     private final boolean connected;
+    private final boolean longString;
 
-    public JCAConnectionPayload(JCADataSource jcaDataSource, Channel channel) {
-        this.jcaDataSource = jcaDataSource;
+    public JCAConnectionPayload(JCAChannelHandler channleHandler, Channel channel) {
+        this.jcaDataSource = channleHandler.getJcaDataSource();
         this.channel = channel;
         this.connected = channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
+        this.longString = channleHandler.isLongString();
     }
 
     /**
@@ -62,6 +64,15 @@ public class JCAConnectionPayload {
      */
     public boolean isWriteConnected() {
         return isChannelConnected() && channel.getWriteAccess();
+    }
+
+    /**
+     * Whether the message payload should be handled as a long string.
+     * 
+     * @return true if long string support should be used
+     */
+    public boolean isLongString() {
+        return longString;
     }
     
 }

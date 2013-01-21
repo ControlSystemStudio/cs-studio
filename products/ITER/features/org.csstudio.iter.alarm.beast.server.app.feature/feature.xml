@@ -20,12 +20,16 @@
       <import plugin="org.csstudio.data"/>
       <import plugin="org.csstudio.java"/>
       <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.platform.libs.epics"/>
       <import plugin="org.csstudio.platform.libs.jdbc"/>
       <import plugin="org.csstudio.platform.libs.jms"/>
       <import plugin="org.csstudio.platform.utility.jms"/>
       <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.csstudio.utility.pv"/>
       <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.utility.pvmanager.epics"/>
+      <import plugin="org.csstudio.utility.pvmanager.loc"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>
@@ -48,6 +52,9 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
+      <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
    </requires>
 

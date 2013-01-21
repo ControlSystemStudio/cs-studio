@@ -90,4 +90,13 @@ abstract class SimFunction<T> extends Simulation<T> {
         return newVDouble(value, newTime(Timestamp.now()), oldValue);
     }
 
+    /**
+     * Returns the time between each sample.
+     * 
+     * @return a time duration
+     */
+    public TimeDuration getTimeBetweenSamples() {
+        return timeBetweenSamples;
+    }
+    
 }

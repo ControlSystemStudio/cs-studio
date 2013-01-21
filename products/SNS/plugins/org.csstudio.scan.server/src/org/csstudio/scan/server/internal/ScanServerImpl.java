@@ -18,6 +18,7 @@ package org.csstudio.scan.server.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.rmi.registry.LocateRegistry;
@@ -88,6 +89,19 @@ public class ScanServerImpl implements ScanServer
             throw new Exception("Already started");
 
         scan_engine.start(true);
+        
+        // RMI replies to clients with this address.
+        // If /etc/hosts defines that as 127.0.0.1,
+        // remote(!) clients will connect to 127.0.0.1,
+        // and then people will be unhappy and waste hours
+        // looking for the problem.
+        final String localhost = InetAddress.getLocalHost().getHostAddress();
+        if ("127.0.0.1".equals(localhost))
+        {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                "This host's local address is set to " + localhost + "\n" +
+                "Remote clients will not be able to connect until it is configured to a real IP address");
+        }
 
         try
         {

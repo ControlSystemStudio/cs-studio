@@ -55,6 +55,9 @@ class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T
     @Override
     public void connect() {
         simulation.lastTime = Timestamp.now();
+        if (simulation instanceof SimFunction) {
+            simulation.lastTime = simulation.lastTime.minus(((SimFunction<?>) simulation).getTimeBetweenSamples());
+        }
         taskFuture = exec.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MILLISECONDS);
         processConnection(simulation);
     }

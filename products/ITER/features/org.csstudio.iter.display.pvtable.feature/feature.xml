@@ -20,6 +20,8 @@
       <import plugin="org.csstudio.logbook"/>
       <import plugin="org.csstudio.ui.util"/>
       <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filebuffers"/>
@@ -42,6 +44,8 @@
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
       <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
    </requires>
