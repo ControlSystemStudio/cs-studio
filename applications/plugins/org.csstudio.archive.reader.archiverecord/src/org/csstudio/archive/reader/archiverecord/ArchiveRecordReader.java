@@ -5,6 +5,7 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 public class ArchiveRecordReader implements ArchiveReader {
 
@@ -52,20 +53,6 @@ public class ArchiveRecordReader implements ArchiveReader {
 		return null;
 	}
 
-	@Override
-	public ValueIterator getRawValues(int key, String name, ITimestamp start,
-			ITimestamp end) throws UnknownChannelException, Exception {
-		ArchiveRecordsValueIterator valueIterator = new ArchiveRecordsValueIterator(name, start, end);
-		valueIterator.getData();
-		return valueIterator;
-	}
-
-	@Override
-	public ValueIterator getOptimizedValues(int key, String name,
-			ITimestamp start, ITimestamp end, int count)
-			throws UnknownChannelException, Exception {
-		return getRawValues(key, name, start, end);
-	}
 
 	@Override
 	public void cancel() {
@@ -76,6 +63,35 @@ public class ArchiveRecordReader implements ArchiveReader {
 	public void close() {
 		// TODO Auto-generated method stub
 
+	}
+	//TODO (jhatje): implement vType
+//	@Override
+//	public ValueIterator getRawValues(int key, String name, ITimestamp start,
+//			ITimestamp end) throws UnknownChannelException, Exception {
+//		ArchiveRecordsValueIterator valueIterator = new ArchiveRecordsValueIterator(name, start, end);
+//		valueIterator.getData();
+//		return valueIterator;
+//	}
+//	
+//	@Override
+//	public ValueIterator getOptimizedValues(int key, String name,
+//			ITimestamp start, ITimestamp end, int count)
+//					throws UnknownChannelException, Exception {
+//		return getRawValues(key, name, start, end);
+//	}
+	@Override
+	public ValueIterator getRawValues(int key, String name, Timestamp start,
+			Timestamp end) throws UnknownChannelException, Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ValueIterator getOptimizedValues(int key, String name,
+			Timestamp start, Timestamp end, int count)
+			throws UnknownChannelException, Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

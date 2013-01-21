@@ -37,7 +37,6 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
-import org.csstudio.archive.reader.Severity;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
@@ -48,6 +47,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.epics.vtype.VType;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
 
@@ -227,7 +227,7 @@ public class EquidistantTimeBinsIterator extends AbstractValueIterator {
      */
     @Override
     @Nonnull
-    public IValue next() throws Exception {
+    public VType next() throws Exception {
         if (_noSamples || _currentWindow > _numOfWindows) {
             throw new NoSuchElementException();
         }
@@ -243,7 +243,9 @@ public class EquidistantTimeBinsIterator extends AbstractValueIterator {
         final IValue iVal = createMinMaxDoubleValue(curWindowEnd, _metaData, _agg);
 
         _currentWindow++;
-        return iVal;
+        //TODO (jhatje): implement vType
+        return null;
+//        return iVal;
     }
 
     @Nonnull
@@ -255,11 +257,13 @@ public class EquidistantTimeBinsIterator extends AbstractValueIterator {
         final Double max = agg.getMax();
 
         if (avg != null && min != null && max != null) {
-            return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
-                                                        new Severity("OK"), null, metaData, IValue.Quality.Interpolated,
-                                                        new double[]{avg.doubleValue()},
-                                                        min.doubleValue(),
-                                                        max.doubleValue());
+            //TODO (jhatje): implement vType
+            return null;
+//            return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
+//                                                        new Severity("OK"), null, metaData, IValue.Quality.Interpolated,
+//                                                        new double[]{avg.doubleValue()},
+//                                                        min.doubleValue(),
+//                                                        max.doubleValue());
         }
         throw new Exception("Creation of MinMaxDoubleValue failed. " + SampleMinMaxAggregator.class.getName() + " returned null values.");
     }

@@ -29,6 +29,7 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.epics.vtype.VType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +71,13 @@ public class DesyArchiveValueIterator<V extends Serializable> extends AbstractVa
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    public IValue next() throws Exception {
+    public VType next() throws Exception {
         final IValue value = ARCH_SAMPLE_2_IVALUE_FUNC.apply(getIterator().next());
         if (value == null) {
             throw new TypeSupportException("Sample could not be converted to " + IValue.class.getName() + " type.", null);
         }
-        return value;
+        //TODO (jhatje): implement vType
+        return null;
+//        return value;
     }
 }
