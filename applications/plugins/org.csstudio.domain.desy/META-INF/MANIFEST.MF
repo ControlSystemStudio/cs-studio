@@ -15,7 +15,10 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.slf4j;bundle-version="1.6.1",
  org.joda.time;bundle-version="1.6.2",
  org.csstudio.data;bundle-version="3.0.0",
- org.junit;bundle-version="4.8.1"
+ org.junit;bundle-version="4.8.1",
+ org.epics.util;bundle-version="0.3.0",
+ org.csstudio.platform.libs.epics;bundle-version="3.1.1",
+ org.antlr.runtime;bundle-version="3.4.0"
 Export-Package: org.csstudio.domain.desy,
  org.csstudio.domain.desy.alarm,
  org.csstudio.domain.desy.calc,
