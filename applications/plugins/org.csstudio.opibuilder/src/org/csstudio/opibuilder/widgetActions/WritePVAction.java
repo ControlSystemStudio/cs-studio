@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterEvent;
@@ -174,8 +175,10 @@ public class WritePVAction extends AbstractWidgetAction {
 							}
 						}).sync();
 		try {
-			latch.await(getTimeout(), TimeUnit.SECONDS);
-			pvWriter.write(text);
+			if(latch.await(getTimeout(), TimeUnit.SECONDS))
+				pvWriter.write(text);
+			else
+				throw new Exception(NLS.bind("Failed to connect to the PV in {0} seconds.", getTimeout()));
 		} catch (Exception e) {
 			popErrorDialog(e);
 		}finally{
