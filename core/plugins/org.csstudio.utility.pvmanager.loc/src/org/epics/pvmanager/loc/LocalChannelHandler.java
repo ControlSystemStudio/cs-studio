@@ -100,6 +100,14 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
+            // If the string can be parse to a number, to it
+            if (newValue instanceof String) {
+                String value = (String) newValue;
+                try {
+                    newValue = Double.valueOf(value);
+                } catch (NumberFormatException ex) {
+                }
+            }
             newValue = wrapValue(newValue);
             processMessage(newValue);
             callback.channelWritten(null);
