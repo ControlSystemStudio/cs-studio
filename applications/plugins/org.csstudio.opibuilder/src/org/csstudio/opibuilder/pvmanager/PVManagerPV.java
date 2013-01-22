@@ -79,7 +79,7 @@ public class PVManagerPV implements PV {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
 				}
-				if(event.isValueChanged())
+				if(event == null || event.isValueChanged())
 					listener.pvValueUpdate(PVManagerPV.this);
 			}
 		};
@@ -89,7 +89,7 @@ public class PVManagerPV implements PV {
 			if(!pvReader.isClosed() && pvReader.isConnected() && !pvReader.isPaused()){
 				PMPV_THREAD.execute(new Runnable() {						
 						@Override
-						public void run() {
+						public void run() {							
 							pvReaderListener.pvChanged(null);
 						}
 					});

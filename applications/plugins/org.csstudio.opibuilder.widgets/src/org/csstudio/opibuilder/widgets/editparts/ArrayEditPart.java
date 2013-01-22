@@ -687,9 +687,18 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 					@Override
 					public void propertyChange(PropertyChangeEvent evt) {
 						updatePropSheet();
-						registerLoadPVDataTypeListener();
 					}
 				});
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				registerLoadPVDataTypeListener();
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ArrayModel.PROP_PVNAME, handler);
 
 		getWidgetModel().getProperty(ArrayModel.PROP_DATA_TYPE).addPropertyChangeListener(
 				new PropertyChangeListener() {
