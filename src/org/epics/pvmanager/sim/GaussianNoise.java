@@ -18,7 +18,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
-public class Gaussian extends SimFunction<VDouble> {
+public class GaussianNoise extends SimFunction<VDouble> {
 
     private Random rand = new Random();
     private double average;
@@ -29,7 +29,7 @@ public class Gaussian extends SimFunction<VDouble> {
      * Creates a signal with a normal distribution (average zero and
      * standard deviation one), updating every 100ms (10Hz).
      */
-    public Gaussian() {
+    public GaussianNoise() {
         this(0.0, 1.0, 0.1);
     }
 
@@ -41,7 +41,7 @@ public class Gaussian extends SimFunction<VDouble> {
      * @param stdDev standard deviation of the gaussian distribution
      * @param interval time between samples in seconds
      */
-    public Gaussian(Double average, Double stdDev, Double interval) {
+    public GaussianNoise(Double average, Double stdDev, Double interval) {
         super(interval, VDouble.class);
         if (interval <= 0.0) {
             throw new IllegalArgumentException("Interval must be greater than zero (was " + interval + ")");
