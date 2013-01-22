@@ -140,7 +140,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             if (! (val2 instanceof VNumberArray))
                 return false;
             final ListNumber n1 = ((VNumberArray) val1).getData();
-            final ListNumber n2 = ((VNumberArray) val1).getData();
+            final ListNumber n2 = ((VNumberArray) val2).getData();
             final int N = n1.size();
             if (n2.size() != N)
             	return false;
