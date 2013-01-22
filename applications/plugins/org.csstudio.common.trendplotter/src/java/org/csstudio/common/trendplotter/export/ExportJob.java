@@ -186,7 +186,8 @@ abstract public class ExportJob extends Job
     protected ValueIterator createValueIterator(final ModelItem item) throws Exception
     {
         if (source == Source.PLOT || !(item instanceof PVItem))
-            return new ModelSampleIterator(item, start, end);
+            //TODO (jhatje): implement vType
+            return null;//new ModelSampleIterator(item, start, end);
 
         // Start ValueIterator for each sub-archive
         final ArchiveDataSource archives[] = ((PVItem)item).getArchiveDataSources();
@@ -197,11 +198,12 @@ abstract public class ExportJob extends Job
             final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archives[i].getUrl());
             archive_readers.add(reader);
             // Create ValueIterator
-            if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_count > 1)
-                iters[i] = reader.getOptimizedValues(archives[i].getKey(),
-                        item.getName(), start, end, optimize_count);
-            else
-                iters[i] = reader.getRawValues(archives[i].getKey(), item.getName(), start, end);
+            //TODO (jhatje): implement vType
+//            if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_count > 1)
+//                iters[i] = reader.getOptimizedValues(archives[i].getKey(),
+//                        item.getName(), start, end, optimize_count);
+//            else
+//                iters[i] = reader.getRawValues(archives[i].getKey(), item.getName(), start, end);
         }
         // Return a merging iterator
         return new MergingValueIterator(iters);

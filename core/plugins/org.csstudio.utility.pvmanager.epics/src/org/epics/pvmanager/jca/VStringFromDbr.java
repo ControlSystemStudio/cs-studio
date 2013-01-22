@@ -24,11 +24,7 @@ class VStringFromDbr extends VMetadata<DBR_TIME_String> implements VString {
     }
     
     private static DBR_TIME_String convert(DBR_TIME_Byte dbrValue) {
-        int stringEnd = 0;
-        while (dbrValue.getByteValue()[stringEnd] != 0) {
-            stringEnd++;
-        }
-        DBR_TIME_String converted = new DBR_TIME_String(new String[] {new String(dbrValue.getByteValue(), 0, stringEnd)});
+        DBR_TIME_String converted = new DBR_TIME_String(new String[] {JCAChannelHandler.toString(dbrValue.getByteValue())});
         converted.setTimeStamp(dbrValue.getTimeStamp());
         converted.setStatus(dbrValue.getStatus());
         converted.setSeverity(dbrValue.getSeverity());

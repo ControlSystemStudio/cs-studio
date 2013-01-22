@@ -8,11 +8,10 @@
 package org.csstudio.common.trendplotter.ui;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.common.trendplotter.Activator;
@@ -25,6 +24,7 @@ import org.csstudio.common.trendplotter.model.AnnotationInfo;
 import org.csstudio.common.trendplotter.model.ArchiveDataSource;
 import org.csstudio.common.trendplotter.model.ArchiveRescale;
 import org.csstudio.common.trendplotter.model.AxisConfig;
+import org.csstudio.common.trendplotter.model.HistoricSamples;
 import org.csstudio.common.trendplotter.model.Model;
 import org.csstudio.common.trendplotter.model.ModelItem;
 import org.csstudio.common.trendplotter.model.ModelListener;
@@ -49,6 +49,8 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Controller that interfaces the {@link Model} with the {@link Plot}:
  *  <ul>
@@ -61,6 +63,8 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class Controller implements ArchiveFetchJobListener
 {
+    private static final Logger LOG = LoggerFactory.getLogger(Controller.class);
+
     /** Optional shell used to track shell state */
     final private Shell shell;
 
@@ -624,7 +628,7 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 catch (Throwable ex)
                 {
-                    Activator.getLogger().log(Level.WARNING, "Error in Plot refresh timer", ex); //$NON-NLS-1$
+                    LOG.warn("Error in Plot refresh timer", ex); //$NON-NLS-1$
                 }
             }
         };
@@ -847,10 +851,8 @@ public class Controller implements ArchiveFetchJobListener
             });
         }
         else if (error instanceof UnknownChannelException)
-            Logger.getLogger(getClass().getName()).log(Level.FINE,
-                        "No archived data for " + job.getPVItem().getDisplayName(), error);
+            LOG.warn("No archived data for " + job.getPVItem().getDisplayName());
         else
-            Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                    "No archived data for " + job.getPVItem().getDisplayName(), error);
+            LOG.warn("No archived data for " + job.getPVItem().getDisplayName());
     }
 }

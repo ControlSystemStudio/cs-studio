@@ -3,5 +3,6 @@
 
 <toc link_to="../org.csstudio.ui.help/tocCore.xml#core" label="PV Manager">
     <topic label="Process Variables"  href="html/pvs.html">
+       <anchor id="pvsyntax"/>
 	</topic>
 </toc>

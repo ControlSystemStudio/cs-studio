@@ -23,7 +23,7 @@ public class DemoValueIteratorUnitTest
     public void testDemoDataIterator() throws Exception
     {
         System.out.println("DemoDataIterator");
-        final ValueIterator iter = new DemoDataIterator("Demo");
+        final ValueIterator iter = DemoDataIterator.forStrings("Demo");
         int count = 0;
         while (iter.hasNext())
         {

@@ -105,6 +105,7 @@ abstract public class VTypeFormat
             final Display display = (Display) stats;
             format(stats.getAverage(), display, buf);
             buf.append(" [").append(stats.getMin()).append(" ... ").append(stats.getMax());
+            buf.append(", ").append(stats.getNSamples()).append(" samples");
             final Double dev = stats.getStdDev();
             if (dev > 0)
                 buf.append(", dev ").append(dev);
