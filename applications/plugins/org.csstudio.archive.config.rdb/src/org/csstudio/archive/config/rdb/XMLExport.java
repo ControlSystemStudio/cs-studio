@@ -70,11 +70,11 @@ public class XMLExport
         out.println("    <name>" + group.getName() + "</name>");
         final ChannelConfig[] channels = config.getChannels(group);
         for (ChannelConfig channel : channels)
-            dumpChannel(out, channel);
+            dumpChannel(out, channel, group.getEnablingChannel());
         out.println("  </group>");
     }
 
-    private void dumpChannel(final PrintStream out, final ChannelConfig channel)
+    private void dumpChannel(final PrintStream out, final ChannelConfig channel, final String enablingChannel)
     {
         out.print("      <channel>");
         out.print("<name>" + channel.getName() + "</name>");
@@ -89,6 +89,9 @@ public class XMLExport
         }
         else
             out.print("<scan/>");
+        if (channel.getName().equals(enablingChannel)) {
+            out.print("<enable/>");
+        }
         out.println("</channel>");
     }
 }
