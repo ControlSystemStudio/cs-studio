@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-98641ad:138805fb287:-8000</wuid>
-  <boy_version>3.1.1.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>905</height>
@@ -77,6 +77,8 @@
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
+    <minimum_tab_height>10</minimum_tab_height>
+    <active_tab>0</active_tab>
     <tab_1_title>Native Widgets/Others</tab_1_title>
     <border_style>0</border_style>
     <wuid>66d1507f:138820a85e5:-6be7</wuid>
@@ -90,6 +92,7 @@
     <tab_0_foreground_color>
       <color red="0" green="0" blue="0" />
     </tab_0_foreground_color>
+    <tab_0_enabled>true</tab_0_enabled>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -98,9 +101,11 @@
     <x>2</x>
     <visible>true</visible>
     <scripts />
+    <tab_1_enabled>true</tab_1_enabled>
     <height>822</height>
+    <horizontal_tabs>true</horizontal_tabs>
     <tab_1_font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </tab_1_font>
     <tab_1_foreground_color>
       <color red="0" green="0" blue="0" />
@@ -124,7 +129,7 @@
     </scale_options>
     <tab_0_icon_path></tab_0_icon_path>
     <tab_0_font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </tab_0_font>
     <rules />
     <tab_count>2</tab_count>
@@ -133,7 +138,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>66d1507f:138820a85e5:-6be6</wuid>
       <scripts />
       <height>791</height>
@@ -145,16 +150,16 @@
       </scale_options>
       <transparent>true</transparent>
       <show_scrollbar>true</show_scrollbar>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <widget_type>Grouping Container</widget_type>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>1022</width>
       <border_style>0</border_style>
@@ -164,10 +169,10 @@
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <tooltip></tooltip>
+      <actions hook="false" hook_all="false" />
       <x>1</x>
+      <tooltip></tooltip>
       <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -184,16 +189,16 @@
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
-        <background_color>
-          <color name="Gray Background" red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color name="Gray Background" red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
         </font>
         <width>1011</width>
         <border_style>14</border_style>
@@ -203,10 +208,10 @@
         <border_color>
           <color red="191" green="191" blue="191" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>11</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>4</x>
+        <tooltip></tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
           <crop_right>0</crop_right>
           <crop_left>0</crop_left>
@@ -231,14 +236,27 @@
           <widget_type>Image</widget_type>
           <enabled>true</enabled>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <no_animation>false</no_animation>
+          <flip_horizontal>false</flip_horizontal>
+          <permutation_matrix>
+            <row>
+              <col>1.0</col>
+              <col>0.0</col>
+            </row>
+            <row>
+              <col>0.0</col>
+              <col>1.0</col>
+            </row>
+          </permutation_matrix>
           <crop_top>0</crop_top>
           <border_style>0</border_style>
           <rules />
+          <flip_vertical>false</flip_vertical>
           <crop_bottom>0</crop_bottom>
+          <degree>0</degree>
           <border_width>1</border_width>
           <image_file>pictures/fish.gif</image_file>
           <border_color>
@@ -270,9 +288,9 @@
             <keep_wh_ratio>true</keep_wh_ratio>
           </scale_options>
           <points>
-            <point x="172" y="33" />
-            <point x="172" y="111" />
-            <point x="263" y="51" />
+            <point x="164" y="31" />
+            <point x="164" y="109" />
+            <point x="255" y="49" />
           </points>
           <transparent>false</transparent>
           <pv_name>sim://noise</pv_name>
@@ -286,7 +304,7 @@
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <line_style>0</line_style>
@@ -333,7 +351,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>100</width>
           <line_style>0</line_style>
@@ -399,7 +417,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>77</width>
           <line_style>0</line_style>
@@ -430,6 +448,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e98</wuid>
@@ -460,10 +479,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>102</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -484,6 +504,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e8e</wuid>
@@ -514,10 +535,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -538,6 +560,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e84</wuid>
@@ -568,10 +591,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -624,7 +648,7 @@ $(pv_value)</tooltip>
           </fg_gradient_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>49</width>
           <line_style>0</line_style>
@@ -656,6 +680,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e62</wuid>
@@ -686,10 +711,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -744,7 +770,7 @@ $(pv_value)</tooltip>
           </fg_gradient_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>53</width>
           <line_style>0</line_style>
@@ -808,7 +834,7 @@ $(pv_value)</tooltip>
           </fg_gradient_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>55</width>
           <line_style>0</line_style>
@@ -840,6 +866,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e23</wuid>
@@ -870,10 +897,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>87</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -894,6 +922,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7dec</wuid>
@@ -924,10 +953,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -948,6 +978,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7c63</wuid>
@@ -982,6 +1013,7 @@ $(pv_value)</tooltip>
           </font>
           <width>116</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -1013,16 +1045,16 @@ $(pv_value)</tooltip>
           </scale_options>
           <transparent>false</transparent>
           <show_scrollbar>false</show_scrollbar>
-          <background_color>
-            <color red="240" green="240" blue="240" />
-          </background_color>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
-          <widget_type>Grouping Container</widget_type>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>131</width>
           <border_style>0</border_style>
@@ -1032,10 +1064,10 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <actions hook="false" hook_all="false" />
           <y>34</y>
-          <tooltip></tooltip>
+          <actions hook="false" hook_all="false" />
           <x>710</x>
+          <tooltip></tooltip>
           <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
@@ -1143,7 +1175,7 @@ $(pv_value)</tooltip>
             <enabled>true</enabled>
             <text>Default</text>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>131</width>
             <border_style>0</border_style>
@@ -1165,6 +1197,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7e5c</wuid>
@@ -1194,10 +1227,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -1221,6 +1255,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7eea</wuid>
@@ -1251,10 +1286,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>70</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -1287,16 +1323,16 @@ $(pv_value)</tooltip>
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
-        <background_color>
-          <color name="Gray Background" red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color name="Gray Background" red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
         </font>
         <width>1011</width>
         <border_style>14</border_style>
@@ -1306,10 +1342,10 @@ $(pv_value)</tooltip>
         <border_color>
           <color red="191" green="191" blue="191" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>186</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>4</x>
+        <tooltip></tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1396,7 +1432,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>0</precision>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>100</width>
           <border_style>0</border_style>
@@ -1433,7 +1469,7 @@ $(pv_value)</tooltip>
           <widget_type>Meter</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>162</width>
           <show_lolo>true</show_lolo>
@@ -1458,17 +1494,17 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>true</keep_wh_ratio>
           </scale_options>
+          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
           <color_hi>
             <color red="255" green="255" blue="0" />
           </color_hi>
-          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>80.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <ramp_gradient>true</ramp_gradient>
@@ -1511,7 +1547,7 @@ $(pv_value)</tooltip>
           <widget_type>Gauge</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>128</width>
           <show_lolo>true</show_lolo>
@@ -1537,17 +1573,17 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>true</keep_wh_ratio>
           </scale_options>
+          <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
           <color_hi>
             <color red="255" green="255" blue="0" />
           </color_hi>
-          <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
           <foreground_color>
             <color red="255" green="255" blue="255" />
           </foreground_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>80.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <ramp_gradient>true</ramp_gradient>
@@ -1593,7 +1629,7 @@ $(pv_value)</tooltip>
           <widget_type>Thermometer</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <show_lolo>true</show_lolo>
@@ -1620,17 +1656,17 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
+          <pv_name>sim://ramp(0.1,100,1,0.1)</pv_name>
           <color_hi>
             <color red="255" green="128" blue="0" />
           </color_hi>
-          <pv_name>sim://ramp(0.1,100,1,0.1)</pv_name>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>80.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <color_lolo>
@@ -1676,7 +1712,7 @@ $(pv_value)</tooltip>
           <widget_type>Tank</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>154</width>
           <show_lolo>true</show_lolo>
@@ -1702,17 +1738,17 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
+          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
           <color_hi>
             <color red="255" green="128" blue="0" />
           </color_hi>
-          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>80.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <color_lolo>
@@ -1756,7 +1792,7 @@ $(pv_value)</tooltip>
           <widget_type>Progress Bar</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>160</width>
           <show_lolo>true</show_lolo>
@@ -1783,10 +1819,10 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
+          <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
           <color_hi>
             <color red="255" green="128" blue="0" />
           </color_hi>
-          <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
           <origin_ignored>true</origin_ignored>
           <foreground_color>
             <color red="0" green="0" blue="0" />
@@ -1795,7 +1831,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>70.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <origin>0.0</origin>
@@ -1824,6 +1860,8 @@ $(pv_value)</tooltip>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
+          <minimum_tab_height>10</minimum_tab_height>
+          <active_tab>0</active_tab>
           <tab_1_title>Intensity Graph</tab_1_title>
           <border_style>0</border_style>
           <wuid>-98641ad:138805fb287:-7feb</wuid>
@@ -1837,6 +1875,7 @@ $(pv_value)</tooltip>
           <tab_0_foreground_color>
             <color red="0" green="0" blue="0" />
           </tab_0_foreground_color>
+          <tab_0_enabled>true</tab_0_enabled>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
@@ -1845,9 +1884,11 @@ $(pv_value)</tooltip>
           <x>575</x>
           <visible>true</visible>
           <scripts />
+          <tab_1_enabled>true</tab_1_enabled>
           <height>304</height>
+          <horizontal_tabs>true</horizontal_tabs>
           <tab_1_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </tab_1_font>
           <tab_1_foreground_color>
             <color red="0" green="0" blue="0" />
@@ -1871,7 +1912,7 @@ $(pv_value)</tooltip>
           </scale_options>
           <tab_0_icon_path></tab_0_icon_path>
           <tab_0_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </tab_0_font>
           <rules />
           <tab_count>2</tab_count>
@@ -1880,7 +1921,7 @@ $(pv_value)</tooltip>
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
-            <visible>true</visible>
+            <visible>false</visible>
             <wuid>-98641ad:138805fb287:-7fea</wuid>
             <scripts />
             <height>273</height>
@@ -1892,16 +1933,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>422</width>
             <border_style>0</border_style>
@@ -1911,10 +1952,10 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="0" green="128" blue="255" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>1</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>1</x>
+            <tooltip></tooltip>
             <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
               <trace_1_visible>true</trace_1_visible>
               <trace_1_trace_type>3</trace_1_trace_type>
@@ -1974,7 +2015,7 @@ $(pv_value)</tooltip>
               <axis_1_axis_title>Amplitude</axis_1_axis_title>
               <axis_0_maximum>100.0</axis_0_maximum>
               <axis_0_scale_font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </axis_0_scale_font>
               <trace_1_y_pv_value />
               <axis_0_time_format>8</axis_0_time_format>
@@ -2016,14 +2057,14 @@ $(pv_value)</tooltip>
               <trace_1_x_axis_index>0</trace_1_x_axis_index>
               <trace_0_y_axis_index>1</trace_0_y_axis_index>
               <axis_1_scale_font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </axis_1_scale_font>
               <border_style>0</border_style>
               <plot_area_background_color>
                 <color red="255" green="255" blue="255" />
               </plot_area_background_color>
               <title>XY Graph</title>
-              <trace_1_y_pv>sim://noise(0,100,100,0.2)</trace_1_y_pv>
+              <trace_1_y_pv>sim://noise(0,100,0.2)</trace_1_y_pv>
               <pv_name></pv_name>
               <axis_1_minimum>0.0</axis_1_minimum>
               <trace_0_visible>true</trace_0_visible>
@@ -2060,7 +2101,7 @@ $(pv_value)</tooltip>
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
-            <visible>false</visible>
+            <visible>true</visible>
             <wuid>-98641ad:138805fb287:-7fe8</wuid>
             <scripts />
             <height>273</height>
@@ -2072,16 +2113,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>422</width>
             <border_style>0</border_style>
@@ -2091,33 +2132,36 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="0" green="128" blue="255" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>1</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>1</x>
+            <tooltip></tooltip>
             <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <y_axis_scale_font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </y_axis_scale_font>
               <visible>true</visible>
+              <rgb_mode>false</rgb_mode>
               <x_axis_axis_title>X Axis</x_axis_axis_title>
               <scripts>
                 <path pathString="scripts/SetIntensityGraphData.js" checkConnect="true" sfe="false" seoe="false">
-                  <pv trig="true">const://name(1)</pv>
-                  <pv trig="true">const://name2(1)</pv>
+                  <pv trig="true">1</pv>
+                  <pv trig="false">1</pv>
                 </path>
               </scripts>
               <height>259</height>
               <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+              <single_line_profiling>false</single_line_profiling>
               <y_axis_maximum>100.0</y_axis_maximum>
               <background_color>
                 <color red="240" green="240" blue="240" />
               </background_color>
+              <color_depth>0</color_depth>
               <enabled>true</enabled>
               <widget_type>Intensity Graph</widget_type>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </font>
               <width>405</width>
               <color_map>
@@ -2128,6 +2172,9 @@ $(pv_value)</tooltip>
               <border_style>0</border_style>
               <vertical_profile_y_pv_name></vertical_profile_y_pv_name>
               <x_axis_minimum>0.0</x_axis_minimum>
+              <roi_color>
+                <color red="0" green="255" blue="255" />
+              </roi_color>
               <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
               <pv_value />
               <crop_bottom>0</crop_bottom>
@@ -2162,7 +2209,7 @@ $(pv_value)</tooltip>
                 <keep_wh_ratio>true</keep_wh_ratio>
               </scale_options>
               <x_axis_scale_font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </x_axis_scale_font>
               <y_axis_axis_color>
                 <color red="0" green="0" blue="0" />
@@ -2201,6 +2248,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7aaf</wuid>
@@ -2231,10 +2279,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>59</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2280,7 +2329,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>48</width>
           <border_style>0</border_style>
@@ -2305,6 +2354,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7a54</wuid>
@@ -2335,10 +2385,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>112</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2359,6 +2410,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6f27</wuid>
@@ -2389,10 +2441,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>103</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2441,7 +2494,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>0</precision>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>100</width>
           <border_style>0</border_style>
@@ -2464,6 +2517,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6ee1</wuid>
@@ -2494,10 +2548,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>136</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2518,6 +2573,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6ed7</wuid>
@@ -2548,10 +2604,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>94</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2601,7 +2658,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <numBits>8</numBits>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>136</width>
           <border_style>0</border_style>
@@ -2626,25 +2683,35 @@ $(pv_value)</tooltip>
           <scripts />
           <height>40</height>
           <data_type>0</data_type>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <show_boolean_label>true</show_boolean_label>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <off_label>OFF</off_label>
           <background_color>
             <color red="255" green="255" blue="205" />
           </background_color>
-          <off_label>OFF</off_label>
-          <widget_type>Boolean Symbol Monitor</widget_type>
           <enabled>true</enabled>
+          <widget_type>Boolean Symbol Monitor</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
+          <permutation_matrix>
+            <row>
+              <col>1.0</col>
+              <col>0.0</col>
+            </row>
+            <row>
+              <col>0.0</col>
+              <col>1.0</col>
+            </row>
+          </permutation_matrix>
           <width>40</width>
           <border_style>0</border_style>
-          <pv_value />
           <flip_vertical>false</flip_vertical>
-          <bit>0</bit>
+          <pv_value />
           <crop_bottom>0</crop_bottom>
-          <border_width>1</border_width>
+          <bit>0</bit>
           <on_label>ON</on_label>
+          <border_width>1</border_width>
           <image_file>pictures/SymbolLibrary/SVG/PL General.svg</image_file>
           <crop_right>0</crop_right>
           <crop_left>0</crop_left>
@@ -2653,8 +2720,8 @@ $(pv_value)</tooltip>
           <on_color>
             <color red="0" green="255" blue="0" />
           </on_color>
-          <name>Boolean Symbol Monitor</name>
           <stretch_to_fit>true</stretch_to_fit>
+          <name>Boolean Symbol Monitor</name>
           <scale_options>
             <width_scalable>true</width_scalable>
             <height_scalable>true</height_scalable>
@@ -2670,23 +2737,23 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <flip_horizontal>false</flip_horizontal>
           <crop_top>0</crop_top>
-          <image_disposition>1234</image_disposition>
           <rules />
           <degree>0</degree>
           <border_color>
             <color red="215" green="215" blue="215" />
           </border_color>
-          <actions hook="false" hook_all="false" />
           <y>31</y>
+          <actions hook="false" hook_all="false" />
+          <x>317</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-          <x>317</x>
         </widget>
         <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6cbc</wuid>
@@ -2717,10 +2784,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>135</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2741,6 +2809,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6c9a</wuid>
@@ -2771,10 +2840,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>122</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2795,6 +2865,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6c88</wuid>
@@ -2825,10 +2896,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>89</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2849,6 +2921,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-68aa</wuid>
@@ -2883,6 +2956,7 @@ $(pv_value)</tooltip>
           </font>
           <width>116</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -2903,6 +2977,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6cf4</wuid>
@@ -2932,10 +3007,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>111</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -2959,6 +3035,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-7a66</wuid>
@@ -2988,10 +3065,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>111</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -3027,16 +3105,16 @@ $(pv_value)</tooltip>
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
-        <background_color>
-          <color name="Gray Background" red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color name="Gray Background" red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
         </font>
         <width>1011</width>
         <border_style>14</border_style>
@@ -3046,10 +3124,10 @@ $(pv_value)</tooltip>
         <border_color>
           <color red="191" green="191" blue="191" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>518</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>4</x>
+        <tooltip></tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -3076,7 +3154,7 @@ $(pv_value)</tooltip>
           <increment>1.0</increment>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>169</width>
           <show_lolo>true</show_lolo>
@@ -3102,17 +3180,17 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>true</keep_wh_ratio>
           </scale_options>
+          <pv_name>loc://k1</pv_name>
           <color_hi>
             <color red="255" green="255" blue="0" />
           </color_hi>
-          <pv_name>loc://k1</pv_name>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>80.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <ramp_gradient>true</ramp_gradient>
@@ -3191,6 +3269,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-669e</wuid>
@@ -3221,10 +3300,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -3298,6 +3378,7 @@ $(pv_value)</tooltip>
               <pv_name>loc://test</pv_name>
               <value>100</value>
               <timeout>10</timeout>
+              <confirm_message></confirm_message>
               <description></description>
             </action>
           </actions>
@@ -3310,6 +3391,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6658</wuid>
@@ -3340,10 +3422,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>112</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -3364,6 +3447,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6642</wuid>
@@ -3394,10 +3478,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -3416,47 +3501,48 @@ $(pv_value)</tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
-          <minimum>-1.7976931348623157E308</minimum>
           <vertical_alignment>1</vertical_alignment>
-          <show_units>false</show_units>
           <multiline_input>false</multiline_input>
-          <wuid>5ec8b324:13880ba2d91:-663e</wuid>
           <auto_size>false</auto_size>
-          <rotation_angle>0.0</rotation_angle>
           <scripts />
           <height>27</height>
-          <name>Text Input_2</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <precision_from_pv>false</precision_from_pv>
+          <background_color>
+            <color red="255" green="255" blue="255" />
+          </background_color>
+          <widget_type>Text Input</widget_type>
+          <enabled>true</enabled>
+          <text></text>
+          <font>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>158</width>
+          <border_style>3</border_style>
+          <pv_value />
+          <border_width>1</border_width>
+          <maximum>1.7976931348623157E308</maximum>
+          <minimum>-1.7976931348623157E308</minimum>
+          <show_units>false</show_units>
+          <wuid>5ec8b324:13880ba2d91:-663e</wuid>
+          <rotation_angle>0.0</rotation_angle>
+          <name>Text Input_2</name>
           <scale_options>
             <width_scalable>true</width_scalable>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
           <format_type>0</format_type>
-          <precision_from_pv>false</precision_from_pv>
           <transparent>false</transparent>
           <selector_type>0</selector_type>
           <pv_name>loc://test</pv_name>
-          <background_color>
-            <color red="255" green="255" blue="255" />
-          </background_color>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
-          <widget_type>Text Input</widget_type>
-          <enabled>true</enabled>
-          <text></text>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>0</precision>
-          <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-          </font>
-          <width>158</width>
-          <border_style>3</border_style>
+          <confirm_message></confirm_message>
           <rules />
-          <pv_value />
-          <border_width>1</border_width>
-          <maximum>1.7976931348623157E308</maximum>
           <limits_from_pv>false</limits_from_pv>
           <border_color>
             <color red="0" green="128" blue="255" />
@@ -3471,48 +3557,49 @@ $(pv_value)</tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
-          <minimum>-1.7976931348623157E308</minimum>
           <vertical_alignment>1</vertical_alignment>
-          <show_units>false</show_units>
           <multiline_input>false</multiline_input>
-          <wuid>5ec8b324:13880ba2d91:-65e5</wuid>
           <auto_size>false</auto_size>
-          <rotation_angle>0.0</rotation_angle>
           <scripts />
           <height>27</height>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <precision_from_pv>false</precision_from_pv>
+          <background_color>
+            <color red="255" green="255" blue="255" />
+          </background_color>
+          <widget_type>Text Input</widget_type>
+          <enabled>true</enabled>
+          <text>2011-05-02 10:56:00</text>
+          <font>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>158</width>
+          <border_style>3</border_style>
+          <pv_value />
+          <border_width>1</border_width>
+          <maximum>1.7976931348623157E308</maximum>
+          <minimum>-1.7976931348623157E308</minimum>
+          <show_units>false</show_units>
+          <wuid>5ec8b324:13880ba2d91:-65e5</wuid>
+          <rotation_angle>0.0</rotation_angle>
           <datetime_format>yyyy-MM-dd HH:mm:ss</datetime_format>
           <name>Text Input_4</name>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <scale_options>
             <width_scalable>true</width_scalable>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
           <format_type>0</format_type>
-          <precision_from_pv>false</precision_from_pv>
           <transparent>false</transparent>
           <selector_type>2</selector_type>
           <pv_name>loc://test</pv_name>
-          <background_color>
-            <color red="255" green="255" blue="255" />
-          </background_color>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
-          <widget_type>Text Input</widget_type>
-          <enabled>true</enabled>
-          <text>2011-05-02 10:56:00</text>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>3</precision>
-          <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-          </font>
-          <width>158</width>
-          <border_style>3</border_style>
+          <confirm_message></confirm_message>
           <rules />
-          <pv_value />
-          <border_width>1</border_width>
-          <maximum>1.7976931348623157E308</maximum>
           <limits_from_pv>false</limits_from_pv>
           <border_color>
             <color red="0" green="128" blue="255" />
@@ -3556,7 +3643,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>0</precision>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <border_style>3</border_style>
@@ -3608,7 +3695,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <precision>2</precision>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>92</width>
           <border_style>3</border_style>
@@ -3633,6 +3720,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6549</wuid>
@@ -3663,10 +3751,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -3708,7 +3797,7 @@ $(pv_value)</tooltip>
           <widget_type>Scaled Slider</widget_type>
           <show_minor_ticks>true</show_minor_ticks>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>178</width>
           <show_lolo>true</show_lolo>
@@ -3735,10 +3824,10 @@ $(pv_value)</tooltip>
             <height_scalable>true</height_scalable>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
+          <pv_name>loc://k1</pv_name>
           <color_hi>
             <color red="255" green="128" blue="0" />
           </color_hi>
-          <pv_name>loc://k1</pv_name>
           <foreground_color>
             <color red="0" green="0" blue="0" />
           </foreground_color>
@@ -3746,7 +3835,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <level_hi>70.0</level_hi>
           <scale_font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </scale_font>
           <level_hihi>90.0</level_hihi>
           <color_lolo>
@@ -3771,6 +3860,7 @@ $(pv_value)</tooltip>
         </widget>
         <widget typeId="org.csstudio.opibuilder.widgets.ThumbWheel" version="1.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
+          <show_buttons>true</show_buttons>
           <visible>true</visible>
           <minimum>0.0</minimum>
           <wuid>5ec8b324:13880ba2d91:-6434</wuid>
@@ -3808,6 +3898,9 @@ $(pv_value)</tooltip>
           <pv_value />
           <border_width>1</border_width>
           <maximum>100.0</maximum>
+          <focusedFrameColor>
+            <color red="0" green="0" blue="255" />
+          </focusedFrameColor>
           <limits_from_pv>false</limits_from_pv>
           <border_color>
             <color red="0" green="128" blue="255" />
@@ -3847,7 +3940,7 @@ $(pv_value)</tooltip>
           <step_increment>2.0</step_increment>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>143</width>
           <border_style>0</border_style>
@@ -3871,6 +3964,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6414</wuid>
@@ -3901,10 +3995,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>99</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4075,7 +4170,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>73</width>
           <border_style>0</border_style>
@@ -4124,7 +4219,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>100</width>
           <border_style>0</border_style>
@@ -4147,6 +4242,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6402</wuid>
@@ -4177,10 +4273,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>116</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4202,7 +4299,7 @@ $(pv_value)</tooltip>
           <password></password>
           <auto_size>true</auto_size>
           <scripts />
-          <height>40</height>
+          <height>71</height>
           <data_type>0</data_type>
           <show_boolean_label>true</show_boolean_label>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -4214,9 +4311,19 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <widget_type>Boolean Symbol Control</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
-          <width>75</width>
+          <width>36</width>
+          <permutation_matrix>
+            <row>
+              <col>6.123233995736766E-17</col>
+              <col>-1.0</col>
+            </row>
+            <row>
+              <col>1.0</col>
+              <col>6.123233995736766E-17</col>
+            </row>
+          </permutation_matrix>
           <push_action_index>0</push_action_index>
           <border_style>0</border_style>
           <pv_value />
@@ -4233,8 +4340,8 @@ $(pv_value)</tooltip>
           <on_color>
             <color red="0" green="255" blue="0" />
           </on_color>
-          <stretch_to_fit>false</stretch_to_fit>
           <name>Boolean Symbol Control</name>
+          <stretch_to_fit>false</stretch_to_fit>
           <scale_options>
             <width_scalable>true</width_scalable>
             <height_scalable>true</height_scalable>
@@ -4250,7 +4357,6 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <flip_horizontal>false</flip_horizontal>
           <crop_top>0</crop_top>
-          <image_disposition>4123</image_disposition>
           <confirm_message>Are your sure you want to do this?</confirm_message>
           <rules>
             <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -4296,7 +4402,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>100</width>
           <border_style>0</border_style>
@@ -4346,7 +4452,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>89</width>
           <border_style>0</border_style>
@@ -4377,6 +4483,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-62bb</wuid>
@@ -4407,10 +4514,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>116</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4431,6 +4539,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-62ad</wuid>
@@ -4461,10 +4570,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>102</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4485,6 +4595,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-62a3</wuid>
@@ -4515,10 +4626,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>133</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4566,7 +4678,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>30</width>
           <border_style>0</border_style>
@@ -4595,6 +4707,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-61fc</wuid>
@@ -4625,10 +4738,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>127</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4649,6 +4763,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-61e8</wuid>
@@ -4679,10 +4794,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>82</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4703,6 +4819,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5be4</wuid>
@@ -4737,6 +4854,7 @@ $(pv_value)</tooltip>
           </font>
           <width>116</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -4757,6 +4875,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6224</wuid>
@@ -4786,10 +4905,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>109</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -4813,6 +4933,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-6212</wuid>
@@ -4842,10 +4963,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>111</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -4869,6 +4991,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>true</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-61f2</wuid>
@@ -4898,10 +5021,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>93</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <show_h_scroll>false</show_h_scroll>
@@ -4926,7 +5050,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>66d1507f:138820a85e5:-6bdb</wuid>
       <scripts />
       <height>791</height>
@@ -4938,16 +5062,16 @@ $(pv_value)</tooltip>
       </scale_options>
       <transparent>true</transparent>
       <show_scrollbar>true</show_scrollbar>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <widget_type>Grouping Container</widget_type>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>1022</width>
       <border_style>0</border_style>
@@ -4957,10 +5081,10 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <tooltip></tooltip>
+      <actions hook="false" hook_all="false" />
       <x>1</x>
+      <tooltip></tooltip>
       <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -4977,16 +5101,16 @@ $(pv_value)</tooltip>
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
-        <background_color>
-          <color name="Gray Background" red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color name="Gray Background" red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
         </font>
         <width>1011</width>
         <border_style>14</border_style>
@@ -4996,10 +5120,10 @@ $(pv_value)</tooltip>
         <border_color>
           <color red="191" green="191" blue="191" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>14</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>7</x>
+        <tooltip></tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
@@ -5067,7 +5191,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <text>Click Me!</text>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>151</width>
           <border_style>0</border_style>
@@ -5099,6 +5223,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5b12</wuid>
@@ -5129,10 +5254,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>108</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5153,6 +5279,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5b02</wuid>
@@ -5183,10 +5310,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>102</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5207,6 +5335,7 @@ $(pv_value)</tooltip>
           <read_only>false</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>true</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5a96</wuid>
@@ -5237,10 +5366,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>108</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5261,6 +5391,7 @@ $(pv_value)</tooltip>
           <read_only>false</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>true</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5a95</wuid>
@@ -5291,10 +5422,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>108</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5315,6 +5447,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5a91</wuid>
@@ -5345,10 +5478,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5394,10 +5528,12 @@ $(pv_value)</tooltip>
           <widget_type>Table</widget_type>
           <enabled>true</enabled>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>627</width>
           <border_style>0</border_style>
+          <editable>false</editable>
+          <rules />
           <column_headers>
             <row>
               <col>PV Name</col>
@@ -5420,8 +5556,6 @@ $(pv_value)</tooltip>
               <col>60</col>
             </row>
           </column_headers>
-          <editable>false</editable>
-          <rules />
           <border_width>1</border_width>
           <border_color>
             <color red="0" green="128" blue="255" />
@@ -5472,6 +5606,7 @@ tooltip.</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5938</wuid>
@@ -5502,10 +5637,11 @@ tooltip.</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5526,6 +5662,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-5451</wuid>
@@ -5556,10 +5693,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>179</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5580,6 +5718,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-50e1</wuid>
@@ -5614,6 +5753,7 @@ $(pv_value)</tooltip>
           </font>
           <width>160</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5646,16 +5786,16 @@ $(pv_value)</tooltip>
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
-        <background_color>
-          <color name="Gray Background" red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color name="Gray Background" red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
         </font>
         <width>1011</width>
         <border_style>14</border_style>
@@ -5665,10 +5805,10 @@ $(pv_value)</tooltip>
         <border_color>
           <color red="191" green="191" blue="191" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>304</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>7</x>
+        <tooltip></tooltip>
         <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <macros>
@@ -5698,7 +5838,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>311</width>
           <border_style>0</border_style>
@@ -5738,7 +5878,7 @@ $(pv_value)</tooltip>
             <widget_type>Progress Bar</widget_type>
             <show_minor_ticks>true</show_minor_ticks>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>15</width>
             <show_lolo>true</show_lolo>
@@ -5761,14 +5901,14 @@ $(pv_value)</tooltip>
             </color_lo>
             <name>Progress Bar</name>
             <scale_options>
-              <width_scalable>true</width_scalable>
-              <height_scalable>true</height_scalable>
+              <width_scalable>false</width_scalable>
+              <height_scalable>false</height_scalable>
               <keep_wh_ratio>false</keep_wh_ratio>
             </scale_options>
+            <pv_name></pv_name>
             <color_hi>
               <color red="255" green="128" blue="0" />
             </color_hi>
-            <pv_name></pv_name>
             <origin_ignored>true</origin_ignored>
             <foreground_color>
               <color red="0" green="0" blue="0" />
@@ -5777,7 +5917,7 @@ $(pv_value)</tooltip>
             <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
             <level_hi>80.0</level_hi>
             <scale_font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </scale_font>
             <level_hihi>90.0</level_hihi>
             <origin>0.0</origin>
@@ -5832,7 +5972,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>172</width>
           <border_style>0</border_style>
@@ -5853,47 +5993,48 @@ $(pv_value)</tooltip>
           <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
             <border_alarm_sensitive>false</border_alarm_sensitive>
             <visible>true</visible>
-            <minimum>-1.7976931348623157E308</minimum>
             <vertical_alignment>1</vertical_alignment>
-            <show_units>true</show_units>
             <multiline_input>false</multiline_input>
-            <wuid>307ab5bb:1389aa3731f:-7da4</wuid>
             <auto_size>false</auto_size>
-            <rotation_angle>0.0</rotation_angle>
             <scripts />
             <height>20</height>
-            <name>Text Input</name>
             <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-            <scale_options>
-              <width_scalable>true</width_scalable>
-              <height_scalable>true</height_scalable>
-              <keep_wh_ratio>false</keep_wh_ratio>
-            </scale_options>
-            <format_type>0</format_type>
             <precision_from_pv>true</precision_from_pv>
-            <transparent>false</transparent>
-            <selector_type>0</selector_type>
-            <pv_name></pv_name>
             <background_color>
               <color red="255" green="255" blue="255" />
             </background_color>
-            <foreground_color>
-              <color red="0" green="0" blue="0" />
-            </foreground_color>
             <widget_type>Text Input</widget_type>
             <enabled>true</enabled>
             <text></text>
-            <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-            <precision>0</precision>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>100</width>
             <border_style>3</border_style>
-            <rules />
             <pv_value />
             <border_width>1</border_width>
             <maximum>1.7976931348623157E308</maximum>
+            <minimum>-1.7976931348623157E308</minimum>
+            <show_units>true</show_units>
+            <wuid>307ab5bb:1389aa3731f:-7da4</wuid>
+            <rotation_angle>0.0</rotation_angle>
+            <name>Text Input</name>
+            <scale_options>
+              <width_scalable>false</width_scalable>
+              <height_scalable>false</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <format_type>0</format_type>
+            <transparent>false</transparent>
+            <selector_type>0</selector_type>
+            <pv_name></pv_name>
+            <foreground_color>
+              <color red="0" green="0" blue="0" />
+            </foreground_color>
+            <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+            <precision>0</precision>
+            <confirm_message></confirm_message>
+            <rules />
             <limits_from_pv>false</limits_from_pv>
             <border_color>
               <color red="0" green="128" blue="255" />
@@ -5911,6 +6052,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-4edc</wuid>
@@ -5945,6 +6087,7 @@ $(pv_value)</tooltip>
           </font>
           <width>160</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -5965,6 +6108,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>66d1507f:138820a85e5:-3c11</wuid>
@@ -5995,10 +6139,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>80</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -6042,14 +6187,14 @@ $(pv_value)</tooltip>
           <widget_type>Sash Container</widget_type>
           <enabled>true</enabled>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>597</width>
           <sash_position>0.26916802610114193</sash_position>
           <border_style>5</border_style>
           <rules />
-          <horizontal>true</horizontal>
           <border_width>1</border_width>
+          <horizontal>true</horizontal>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
@@ -6073,16 +6218,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>158</width>
             <border_style>0</border_style>
@@ -6092,10 +6237,10 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="0" green="128" blue="255" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>0</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>0</x>
+            <tooltip></tooltip>
             <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <visible>true</visible>
@@ -6117,7 +6262,7 @@ $(pv_value)</tooltip>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </font>
               <width>133</width>
               <border_style>0</border_style>
@@ -6136,6 +6281,7 @@ $(pv_value)</tooltip>
                   <pv_name>$(pv_name)</pv_name>
                   <value>1_1_Start_Up.opi</value>
                   <timeout>10</timeout>
+                  <confirm_message></confirm_message>
                   <description>Start Up</description>
                 </action>
               </actions>
@@ -6164,7 +6310,7 @@ $(pv_value)</tooltip>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </font>
               <width>133</width>
               <border_style>0</border_style>
@@ -6183,6 +6329,7 @@ $(pv_value)</tooltip>
                   <pv_name>$(pv_name)</pv_name>
                   <value>widgets/4_6_Array.opi</value>
                   <timeout>10</timeout>
+                  <confirm_message></confirm_message>
                   <description>Array</description>
                 </action>
               </actions>
@@ -6211,7 +6358,7 @@ $(pv_value)</tooltip>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </font>
               <width>133</width>
               <border_style>0</border_style>
@@ -6230,6 +6377,7 @@ $(pv_value)</tooltip>
                   <pv_name>$(pv_name)</pv_name>
                   <value>widgets/6_2_NativeText.opi</value>
                   <timeout>10</timeout>
+                  <confirm_message></confirm_message>
                   <description>Native Text</description>
                 </action>
               </actions>
@@ -6254,16 +6402,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
             </font>
             <width>432</width>
             <border_style>0</border_style>
@@ -6273,10 +6421,10 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="0" green="128" blue="255" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>0</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>160</x>
+            <tooltip></tooltip>
             <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
@@ -6294,17 +6442,17 @@ $(pv_value)</tooltip>
                 <keep_wh_ratio>false</keep_wh_ratio>
               </scale_options>
               <opi_file></opi_file>
-              <background_color>
-                <color red="240" green="240" blue="240" />
-              </background_color>
               <foreground_color>
                 <color red="192" green="192" blue="192" />
               </foreground_color>
+              <background_color>
+                <color red="240" green="240" blue="240" />
+              </background_color>
               <group_name></group_name>
-              <widget_type>Linking Container</widget_type>
               <enabled>true</enabled>
+              <widget_type>Linking Container</widget_type>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
               </font>
               <width>432</width>
               <border_style>0</border_style>
@@ -6320,10 +6468,10 @@ $(pv_value)</tooltip>
               <border_color>
                 <color red="0" green="128" blue="255" />
               </border_color>
-              <actions hook="false" hook_all="false" />
               <y>0</y>
-              <tooltip></tooltip>
+              <actions hook="false" hook_all="false" />
               <x>0</x>
+              <tooltip></tooltip>
             </widget>
           </widget>
         </widget>
@@ -6332,6 +6480,7 @@ $(pv_value)</tooltip>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>5ec8b324:13880ba2d91:-561d</wuid>
@@ -6362,10 +6511,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>183</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -6398,17 +6548,17 @@ $(pv_value)</tooltip>
             <keep_wh_ratio>true</keep_wh_ratio>
           </scale_options>
           <opi_file>widgets/1_1_Rectangle_Ellipse.opi</opi_file>
-          <background_color>
-            <color red="240" green="240" blue="240" />
-          </background_color>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <group_name></group_name>
-          <widget_type>Linking Container</widget_type>
           <enabled>true</enabled>
+          <widget_type>Linking Container</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>183</width>
           <border_style>3</border_style>
@@ -6417,16 +6567,17 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="255" green="0" blue="0" />
           </border_color>
-          <actions hook="false" hook_all="false" />
           <y>31</y>
-          <tooltip></tooltip>
+          <actions hook="false" hook_all="false" />
           <x>203</x>
+          <tooltip></tooltip>
         </widget>
         <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
+          <next_focus>0</next_focus>
           <show_units>false</show_units>
           <multiline_input>false</multiline_input>
           <wuid>307ab5bb:1389aa3731f:-7280</wuid>
@@ -6457,10 +6608,11 @@ $(pv_value)</tooltip>
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
           </font>
           <width>143</width>
           <border_style>0</border_style>
+          <confirm_message></confirm_message>
           <rules />
           <pv_value />
           <maximum>1.7976931348623157E308</maximum>
@@ -6500,7 +6652,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>175</width>
     <border_style>0</border_style>
@@ -6546,16 +6698,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -6565,6 +6717,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>9</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/openHelp.js</path>
@@ -6573,9 +6726,8 @@ $(pv_value)</tooltip>
         <description>Open Help</description>
       </action>
     </actions>
-    <y>9</y>
-    <tooltip></tooltip>
     <x>804</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -6653,7 +6805,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -6696,14 +6848,27 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
+      <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <crop_top>0</crop_top>
       <border_style>0</border_style>
       <rules />
+      <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
+      <degree>0</degree>
       <border_width>1</border_width>
       <image_file>pictures/onlineHelp.gif</image_file>
       <border_color>

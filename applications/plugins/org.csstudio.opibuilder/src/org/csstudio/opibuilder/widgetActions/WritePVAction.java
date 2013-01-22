@@ -10,6 +10,8 @@ package org.csstudio.opibuilder.widgetActions;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 
 import java.util.Calendar;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
@@ -28,9 +30,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 import org.epics.util.time.TimeDuration;
 
 /**
@@ -160,19 +163,25 @@ public class WritePVAction extends AbstractWidgetAction {
 	}
 
 	private IStatus writePVManagerPV(){
-		ExceptionHandler exceptionHandler = new ExceptionHandler() {
-			@Override
-			public void handleException(Exception ex) {
-				ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
-			}
-		};
 		String text = getValue().trim();
+		final CountDownLatch latch = new CountDownLatch(1);
 		PVWriter<Object> pvWriter = PVManager.write(channel(getPVName()))
-				.routeExceptionsTo(exceptionHandler).
-				timeout(TimeDuration.ofSeconds(getTimeout())).sync();
-		pvWriter.write(text);
-		
-		
+				.timeout(TimeDuration.ofSeconds(getTimeout())).writeListener(
+						new PVWriterListener<Object>() {
+							@Override
+							public void pvChanged(PVWriterEvent<Object> event) {
+								latch.countDown();
+							}
+						}).sync();
+		try {
+			latch.await(getTimeout(), TimeUnit.SECONDS);
+			pvWriter.write(text);
+		} catch (Exception e) {
+			popErrorDialog(e);
+		}finally{
+			pvWriter.close();
+		}
+				
 		return Status.OK_STATUS;
 	}
 	
@@ -204,7 +213,8 @@ public class WritePVAction extends AbstractWidgetAction {
 						.getDisplay(), new Runnable() {
 					public void run() {
 						String message = "Failed to write PV:" + getPVName()
-								+ "\n" + e.getMessage();
+								+ "\n" + 
+								(e.getCause() != null? e.getCause().getMessage():e.getMessage());
 						ErrorHandlerUtil.handleError(message, e, true, true);
 						// ConsoleService.getInstance().writeError(message);
 					}
