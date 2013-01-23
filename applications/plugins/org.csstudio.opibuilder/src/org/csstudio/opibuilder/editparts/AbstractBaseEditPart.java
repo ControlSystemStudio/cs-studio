@@ -170,7 +170,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 				}
 
 				// script and rules execution
-				pvMap.clear();
 				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();
 				scriptDataList = new ArrayList<ScriptData>(
 						scriptsInput.getScriptList());
@@ -302,8 +301,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 				for (ScriptData scriptData : scriptDataList) {
 					ScriptService.getInstance().unRegisterScript(scriptData);
 				}
-				for (PV pv : pvMap.values())
-					pv.stop();
+				for (Object pv : pvMap.values().toArray()){
+					((PV) pv).stop();
+				}
 			}
 			propertyListenerMap.clear();
 			// propertyListenerMap = null;

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
@@ -45,6 +46,7 @@ public class PVManagerPV implements PV {
 	private volatile PVReader<?> pvReader;
 	private volatile PVWriter<Object> pvWriter;
 	private int updateDuration;
+	private AtomicBoolean startFlag = new AtomicBoolean(false);
 	/**Construct a PVManger PV.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
@@ -126,7 +128,7 @@ public class PVManagerPV implements PV {
 
 	@Override
 	public void start() throws Exception {		
-		if (pvReader == null) {
+		if (!startFlag.getAndSet(true)) {
 			PMPV_THREAD.execute(new Runnable() {
 				
 				@Override
@@ -134,7 +136,7 @@ public class PVManagerPV implements PV {
 					internalStart();
 				}
 			});
-		} else
+		} else if(pvReader != null)
 			pvReader.setPaused(false);
 	}
 
