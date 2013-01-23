@@ -42,8 +42,8 @@ public class PVManagerPV implements PV {
 			ErrorHandlerUtil.handleError("Error from PVManager: ", ex);
 		}
 	};
-	private PVReader<?> pvReader;
-	private PVWriter<Object> pvWriter;
+	private volatile PVReader<?> pvReader;
+	private volatile PVWriter<Object> pvWriter;
 	private int updateDuration;
 	/**Construct a PVManger PV.
 	 * @param name name of the pv.
@@ -125,7 +125,7 @@ public class PVManagerPV implements PV {
 
 
 	@Override
-	public synchronized void start() throws Exception {		
+	public void start() throws Exception {		
 		if (pvReader == null) {
 			PMPV_THREAD.execute(new Runnable() {
 				
@@ -172,21 +172,21 @@ public class PVManagerPV implements PV {
 	}
 	
 	@Override
-	public synchronized boolean isRunning() {
+	public boolean isRunning() {
 		if(pvReader == null) 
 			return false;
 		return !pvReader.isClosed() && !pvReader.isPaused();
 	}
 
 	@Override
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		if(pvReader == null) 
 			return false;
 		return pvReader.isConnected() && pvReader.getValue() != null;
 	}
 
 	@Override
-	public synchronized boolean isWriteAllowed() {
+	public boolean isWriteAllowed() {
 		if(pvWriter == null) 
 			return false;
 		return pvWriter.isWriteConnected();
@@ -194,7 +194,7 @@ public class PVManagerPV implements PV {
 
 	
 	@Override
-	public synchronized String getStateInfo() {
+	public String getStateInfo() {
 		checkIfPVStarted();
 		StringBuilder stateInfo = new StringBuilder();
 		if (pvReader.isConnected()) {
@@ -219,7 +219,7 @@ public class PVManagerPV implements PV {
 	 * @see org.csstudio.utility.pv.PV#stop()
 	 */
 	@Override
-	public synchronized void stop() {
+	public void stop() {
 		if(pvReader != null)
 			pvReader.close();
 		if(pvWriter != null)
@@ -230,7 +230,8 @@ public class PVManagerPV implements PV {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized IValue getValue() {
+	//This method should not be synchronized because it may cause deadlock.
+	public IValue getValue() {  
 		checkIfPVStarted();
 		if(pvReader.getValue() != null){
 			if(!valueBuffered || 
