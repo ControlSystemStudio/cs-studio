@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Local DataSource</title>
+    </head>
+
+    <body>
+        <h1>Local DataSource</h1>
+        
+        <h2>PV syntax</h2>
+        The standard prefix for the datasource is <code>loc://</code> which can be omitted if configured as the default datasource.
+        <p>
+        'Local' pvs are transient that exist in the current program instance. They
+        can be used to communicate between between different components
+        of the application. The syntax to create a local pv is:
+        <table border=1>
+            <tr><th>Syntax</th><th>Description</th></tr>
+            <tr><td><code>loc://pvname</code></td><td>Creates a pv with 0 for an initial value</td></tr>
+            <tr><td><code>loc://pvname(number)</code></td><td>Creates a pv with an initial numeric value</td></tr>
+            <tr><td><code>loc://pvname("string")</code></td><td>Creates a pv with an initial text value</td></tr>
+            <tr><td><code>loc://pvname(number, number, number, ...)</code></td><td>Creates a pv with an initial numeric array value</td></tr>
+            <tr><td><code>loc://pvname("string", "string", "string", ...)</code></td><td>Creates a pv with an initial string array value</td></tr>
+        </table>
+        <p>
+        The same pv can be open multiple times; the last initialization value winds.
+        At this moment, local pvs do not have a type.
+        
+    </body>
+</html>
