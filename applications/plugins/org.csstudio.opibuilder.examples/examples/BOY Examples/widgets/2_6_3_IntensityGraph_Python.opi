@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-3c43</wuid>
-  <boy_version>3.1.1.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -173,14 +173,14 @@ with Python script</text>
         <pv trig="true">1</pv>
       </path>
       <path pathString="../scripts/addROI.py" checkConnect="true" sfe="false" seoe="false">
-        <pv trig="true">const://name(ROI1)</pv>
+        <pv trig="true">sim://const("ROI1")</pv>
         <pv trig="false">loc://$(DID)_ROI1_X</pv>
         <pv trig="false">loc://$(DID)_ROI1_Y</pv>
         <pv trig="false">loc://$(DID)_ROI1_W(50)</pv>
         <pv trig="false">loc://$(DID)_ROI1_H(50)</pv>
       </path>
       <path pathString="../scripts/addROI.py" checkConnect="true" sfe="false" seoe="false">
-        <pv trig="true">const://name(ROI2)</pv>
+        <pv trig="true">sim://const("ROI2")</pv>
         <pv trig="false">loc://$(DID)_ROI2_X</pv>
         <pv trig="false">loc://$(DID)_ROI2_Y</pv>
         <pv trig="false">loc://$(DID)_ROI2_W(50)</pv>
@@ -191,14 +191,14 @@ with Python script</text>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <single_line_profiling>true</single_line_profiling>
     <y_axis_maximum>100.0</y_axis_maximum>
-    <color_depth>0</color_depth>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <color_depth>0</color_depth>
     <enabled>true</enabled>
     <widget_type>Intensity Graph</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>371</width>
     <color_map>
@@ -719,7 +719,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
@@ -767,7 +767,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Back</text>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>
@@ -810,16 +810,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>153</width>
     <border_style>13</border_style>
@@ -829,10 +829,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>224</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>639</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -1033,7 +1033,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1089,7 +1089,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1145,7 +1145,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1201,7 +1201,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1253,7 +1253,7 @@ display.getWidget("IntensityGraph").getFigure().setROIVisible("ROI1", PVUtil.get
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1288,16 +1288,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>153</width>
     <border_style>13</border_style>
@@ -1307,10 +1307,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>390</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>639</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -1511,7 +1511,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1567,7 +1567,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1623,7 +1623,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1679,7 +1679,7 @@ $(pv_value)</tooltip>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1731,7 +1731,7 @@ display.getWidget("IntensityGraph").getFigure().setROIVisible("ROI2", PVUtil.get
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>

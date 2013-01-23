@@ -22,6 +22,23 @@
 <A NAME="nextversion"></A>
 <h2>Next Version</h2>
 <ul>
+    <li>Using <a href="http://pvmanager.sourceforge.net/">PVManager</a> as the default PV communication layer.
+    PVManager has lots of advantages such as better array PV performance, maximum updating rate throttling, formula support and so on.
+    With PVManager, there are few differences with Utility PV on local and simulation PV syntax:
+    <ul>
+       <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
+       <li>Initial string value must be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
+       <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
+       <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
+    </ul> 
+    For more syntax details, please see CSS online help -> CSS Core -> Process Variables.  
+    Because this is the first version of BOY that supports PVManager, it may has compatibility issue or other bugs. If your existing OPI doesn't work
+    correctly with PVManager, you can switch back to use Utility PV from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
+    </li>
+ 	<li>Support searching OPI by text. Double click a search result entry will open the OPI file and 
+ 	select the widget (Only works if the default editor of the OPI file is OPI editor). (Contributed by ITER)
+ 	<p><img src="img/OPISearch.png"></p>
+ 	</li>
 	<li>Support launching an OPI from command line in dedicated position using "Position" macro.
 	</li> 
 	<li>Add Confirm Dialog option to Write PV Action.</li>
