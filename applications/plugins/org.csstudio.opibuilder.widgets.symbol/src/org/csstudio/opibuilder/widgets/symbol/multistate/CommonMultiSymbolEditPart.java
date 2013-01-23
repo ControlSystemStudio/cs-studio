@@ -113,6 +113,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	
 	@Override
 	public void doActivate() {
+		super.doActivate();
 		registerLoadItemsListener();
 	}
 
