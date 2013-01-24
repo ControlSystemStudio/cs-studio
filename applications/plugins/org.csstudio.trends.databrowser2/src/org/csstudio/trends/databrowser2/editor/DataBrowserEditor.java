@@ -48,6 +48,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -55,12 +56,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -98,11 +102,17 @@ public class DataBrowserEditor extends EditorPart
     /** GUI for the plot */
     private Plot plot;
 
+    /** Action that opens the property view
+     *  May be <code>null</code>
+     */
+    private Action open_properties;
+
     /** Controller that links model and plot */
     private Controller controller = null;
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
+
 
     /** Create data browser editor
      *  @param input Input for editor, must be data browser config file
@@ -330,6 +340,19 @@ public class DataBrowserEditor extends EditorPart
         });
 
         createContextMenu(plot_box);
+        
+        // Offer access to property panel via double-click on plot
+        if (open_properties != null)
+        {
+            plot_box.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseDoubleClick(final MouseEvent e)
+                {
+                    open_properties.run();
+                }
+            });
+        }
     }
 
     /** Create context menu */
@@ -353,11 +376,14 @@ public class DataBrowserEditor extends EditorPart
             ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
-		if (!Activator.isRAP()) {
+		final boolean is_rap = Activator.isRAP();
+        if (!is_rap)
+		{
 			mm.add(new Separator());
-			mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-					Messages.OpenPropertiesView, activator
-							.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
+			open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
+	                    Messages.OpenPropertiesView, activator
+	                            .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+			mm.add(open_properties); 
 			mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
 					activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
@@ -365,7 +391,8 @@ public class DataBrowserEditor extends EditorPart
 		}
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
-		if (!Activator.isRAP()) {
+		if (!is_rap)
+		{
 			mm.add(new OpenViewAction(WaveformView.ID,
 					Messages.OpenWaveformView, activator
 							.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
@@ -492,7 +519,7 @@ public class DataBrowserEditor extends EditorPart
     {
     	// TODO RAP and RCP
 		if (Activator.isRAP()) {
-                throw new RuntimeException("Not yet implemented for web version.");
+                throw new RuntimeException("Not yet implemented for web version."); //$NON-NLS-1$
 		}
         final SaveAsDialog dlg = new SaveAsDialog(getSite().getShell());
         dlg.setBlockOnOpen(true);
