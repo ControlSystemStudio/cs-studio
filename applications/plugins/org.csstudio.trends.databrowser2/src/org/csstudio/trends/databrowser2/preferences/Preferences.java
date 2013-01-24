@@ -42,19 +42,16 @@ public class Preferences
     /** Preference tags.
      *  For explanation of the settings see preferences.ini
      */
-    final public static String TIME_SPAN = "time_span",
-                               SCAN_PERIOD = "scan_period",
-                               BUFFER_SIZE = "live_buffer_size",
-                               UPDATE_PERIOD = "update_period",
-                               LINE_WIDTH = "line_width",
-                               ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
-                               PLOT_BINS = "plot_bins",
-                               URLS = "urls",
-                               ARCHIVES = "archives",
-                               USE_DEFAULT_ARCHIVES = "use_default_archives",
-                               PROMPT_FOR_ERRORS="prompt_for_errors",
-                               ARCHIVE_RESCALE = "archive_rescale",
-                               USE_AUTO_SCALE = "use_auto_scale";
+	final public static String TIME_SPAN = "time_span",
+			SCAN_PERIOD = "scan_period", BUFFER_SIZE = "live_buffer_size",
+			UPDATE_PERIOD = "update_period", LINE_WIDTH = "line_width",
+			ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
+			PLOT_BINS = "plot_bins", URLS = "urls", ARCHIVES = "archives",
+			USE_DEFAULT_ARCHIVES = "use_default_archives",
+			PROMPT_FOR_ERRORS = "prompt_for_errors",
+			ARCHIVE_RESCALE = "archive_rescale",
+			USE_AUTO_SCALE = "use_auto_scale",
+			EMAIL_DEFAULT_SENDER = "email_default_sender";
 
     public static double getTimeSpan()
     {
@@ -201,5 +198,12 @@ public class Preferences
 		if (pltRepo == null || pltRepo.trim().isEmpty())
 			return null;
 		return ResourceUtil.getPathFromString(pltRepo);
+	}
+	
+	public static String getEmailDefaultSender() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return null;
+		return prefs.getString(Activator.PLUGIN_ID, EMAIL_DEFAULT_SENDER, null, null);
 	}
 }

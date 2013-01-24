@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.editor;
 import org.csstudio.email.ui.AbstractSendEMailAction;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -26,9 +27,9 @@ public class SendEMailAction extends AbstractSendEMailAction
      */
     public SendEMailAction(final Shell shell, final XYGraph graph)
     {
-        super(shell, Messages.EMailDefaultSender,
-              Messages.LogentryDefaultTitle,
-              Messages.LogentryDefaultBody);
+		super(shell, Preferences.getEmailDefaultSender(),
+				Messages.LogentryDefaultTitle, 
+				Messages.LogentryDefaultBody);
         this.graph = graph;
     }
     
