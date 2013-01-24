@@ -230,6 +230,22 @@ public class SampleView extends DataBrowserAwareView
                 cell.setText(sample.getSource());
             }
         });
+        // Data Quality column
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Quality, 90, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final PlotSample sample = (PlotSample) cell.getElement();
+                final VType value = sample.getValue();
+                if (value instanceof VStatistics) {
+                    cell.setText(Messages.SampleView_Quality_Interpolated);
+        		} else { 
+                    cell.setText(Messages.SampleView_Quality_Original);
+        		}
+            }
+        });
         ColumnViewerToolTipSupport.enableFor(sample_table);
         
         // Be ignorant of any change of the current model after this view
