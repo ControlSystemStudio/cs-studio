@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.email.ui.AbstractSendEMailAction;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.gef.GraphicalViewer;
@@ -26,7 +27,7 @@ public class SendEMailAction extends AbstractSendEMailAction
      */
     public SendEMailAction(final IOPIRuntime part)
     {
-        super(part.getSite().getShell(), "opi@css",
+        super(part.getSite().getShell(), PreferencesHelper.getDefaultEmailSender(),
               part.getDisplayModel().getName(),
               "See attached OPI screenshot");
         opiRuntime = part;

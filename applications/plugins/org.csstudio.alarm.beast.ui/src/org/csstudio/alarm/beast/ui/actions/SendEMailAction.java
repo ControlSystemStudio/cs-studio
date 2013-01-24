@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.Preferences;
 import org.csstudio.email.ui.AbstractSendEMailAction;
 import org.eclipse.swt.widgets.Shell;
 
@@ -27,7 +28,8 @@ public class SendEMailAction extends AbstractSendEMailAction
 	 */
 	public SendEMailAction(final Shell shell, final List<AlarmTreeLeaf> alarms)
     {
-		super(shell, Messages.DefaultEMailSender, Messages.DefaultEMailTitle);
+		super(shell, Preferences.getDefaultEmailSender(),
+				Messages.DefaultEMailTitle);
 		this.alarms = alarms;
     }
 

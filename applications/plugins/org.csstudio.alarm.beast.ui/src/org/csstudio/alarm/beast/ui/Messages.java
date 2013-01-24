@@ -85,7 +85,6 @@ public class Messages extends NLS
 	public static String CopyToClipboard;
     public static String CurrentAlarmsFmt;
     public static String DefaultEMailBodyStart;
-	public static String DefaultEMailSender;
 	public static String DefaultEMailTitle;
 	public static String Detail;
 	public static String Delay;
