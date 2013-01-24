@@ -16,10 +16,19 @@ public enum Source
 {
     /** Use data from plot */
     PLOT(Messages.ExportSource_Plot),
+
     /** Fetch raw archive data */
     RAW_ARCHIVE(Messages.ExportSource_RawArchive),
-    /** Get optimized (reduced) archive data */
-    OPTIMIZED_ARCHIVE(Messages.ExportSource_OptimizedArchive);
+    
+    /** Get optimized (reduced) archive data.
+     *  Optimization parameter: Number of desired samples.
+     */
+    OPTIMIZED_ARCHIVE(Messages.ExportSource_OptimizedArchive),
+    
+    /** Linear interpolation
+     *  Optimization parameter: Seconds between interpolation points.
+     */
+    LINEAR_INTERPOLATION(Messages.ExportSource_Linear);
     
     final private String name;
     

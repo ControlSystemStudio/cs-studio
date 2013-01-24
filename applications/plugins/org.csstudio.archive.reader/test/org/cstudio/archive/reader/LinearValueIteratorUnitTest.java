@@ -33,13 +33,13 @@ import org.junit.Test;
 public class LinearValueIteratorUnitTest
 {
     /** Create test value */
-    private VType testValue(final int secs, final double value, final AlarmSeverity severity, final String message)
+    private VType testValue(final long secs, final double value, final AlarmSeverity severity, final String message)
     {
-        return new ArchiveVNumber(Timestamp.of((long)secs, 0), severity, message, ValueFactory.displayNone(), value);
+        return new ArchiveVNumber(Timestamp.of(secs, 0), severity, message, ValueFactory.displayNone(), value);
     }
     
     /** Create test value */
-    private VType testValue(final int secs, final double value)
+    private VType testValue(final long secs, final double value)
     {
         if (Double.isNaN(value)  ||  Double.isInfinite(value))
             return testValue(secs, value, AlarmSeverity.INVALID, "NaN");
@@ -211,8 +211,7 @@ public class LinearValueIteratorUnitTest
         assertThat(linear.hasNext(), equalTo(false));
         
         linear.close();
-    }
-    
+    }    
     
     /** Have 'archive off' interruption, interpolation jumps over it */
     @Test
@@ -270,4 +269,49 @@ public class LinearValueIteratorUnitTest
         
         linear.close();
     }
+
+    /** Sparse input data */
+    @Test
+    public void testSparse() throws Exception
+    {
+        final long ten_min = TimeDuration.ofMinutes(10).getSec();
+        final VType[] data = new VType[]
+        {
+            testValue( 0*ten_min + 5, 0.0),
+            // Interp at 10 minutes
+            testValue( 1*ten_min + 5, 1.0),
+            // Interp at 20 min
+            testValue(10*ten_min + 5, 2.0),
+            // Jump to 11 * 10min
+            testValue(20*ten_min + 5, 2.0),
+        };
+        final ValueIterator raw = new DemoDataIterator(data);
+        
+        final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofMinutes(10));
+
+        // Interp at 10 minutes
+        assertThat(linear.hasNext(), equalTo(true));
+        VType value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(ten_min));
+
+        // Interp at 20 min
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(2*ten_min));
+        
+        // Jump to 11 * 10min
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(11*ten_min));
+        
+        // Dump the rest
+        while (linear.hasNext())
+            System.out.println(linear.next());
+        
+        linear.close();
+    }
+
 }
