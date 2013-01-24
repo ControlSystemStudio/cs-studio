@@ -69,6 +69,7 @@ public class PreferencesHelper {
 	private static final char ITEM_SEPARATOR = ','; 
 	private static final char MACRO_SEPARATOR = '='; 
 	
+	final public static String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
 
 
 	 /** @param preferenceName Preference identifier
@@ -373,6 +374,14 @@ public class PreferencesHelper {
     	if(sPath == null)
     		return opiPath;
     	return sPath;		
+	}
+	
+	public static String getDefaultEmailSender() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return null;
+		return prefs.getString(OPIBuilderPlugin.PLUGIN_ID,
+				DEFAULT_EMAIL_SENDER, null, null);
 	}
 
 }
