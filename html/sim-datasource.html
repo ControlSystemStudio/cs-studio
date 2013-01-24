@@ -52,8 +52,16 @@
                 <br/> The default is equivalent to <code>sim://noise(-5, 5, 1, 1)</code>. </td>
             </tr>
             <tr>
-                <td><code>sine://strings</code><br/>
-                    <code>sine://strings(timeStep)</code></td>
+                <td><code>sim://sine</code><br/>
+                    <code>sim://sine(minValue, maxValue, timeStep)</code><br/>
+                    <code>sim://sine(minValue, maxValue, samplePerCycle, timeStep)</code></td>
+                <td>A sine wave between the minValue and maxValue divided into samplePerCycle samples in each period, updating every
+                timeStep.
+                <br/> The default is equivalent to <code>sim://noise(-5, 5, 10, 1)</code>. </td>
+            </tr>
+            <tr>
+                <td><code>sim://strings</code><br/>
+                    <code>sim://strings(timeStep)</code></td>
                 <td>A string generated every timeStamp. 
                     <br/> The default is equivalent to <code>sim://strings(0.1)</code>. </td>
             </tr>
