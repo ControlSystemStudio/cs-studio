@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.sampleview;
 
 import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
@@ -141,7 +142,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(sample.getTime().toString());
+                cell.setText(TimestampHelper.format(sample.getTime()));
             }
         });
         // Value column
@@ -227,6 +228,22 @@ public class SampleView extends DataBrowserAwareView
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
                 cell.setText(sample.getSource());
+            }
+        });
+        // Data Quality column
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Quality, 90, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final PlotSample sample = (PlotSample) cell.getElement();
+                final VType value = sample.getValue();
+                if (value instanceof VStatistics) {
+                    cell.setText(Messages.SampleView_Quality_Interpolated);
+        		} else { 
+                    cell.setText(Messages.SampleView_Quality_Original);
+        		}
             }
         });
         ColumnViewerToolTipSupport.enableFor(sample_table);

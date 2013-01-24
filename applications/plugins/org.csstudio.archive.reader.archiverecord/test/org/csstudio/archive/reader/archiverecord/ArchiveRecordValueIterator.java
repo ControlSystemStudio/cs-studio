@@ -21,9 +21,10 @@ public class ArchiveRecordValueIterator {
 		ITimestamp start = TimestampFactory.createTimestamp(1262875070, 0);
 		ITimestamp end = TimestampFactory.createTimestamp(1262875270, 0);
 		ArchiveRecordReader reader = new ArchiveRecordReader("archiveRecord://");
-		ValueIterator valueIterator = reader.getRawValues(0, 
-				"krykWeather:vWindBoe_ai", start, end);
-		assertNotNull(valueIterator);
+		//TDOD (jhatje): implement vType
+//		ValueIterator valueIterator = reader.getRawValues(0, 
+//				"krykWeather:vWindBoe_ai", start, end);
+//		assertNotNull(valueIterator);
 //		printoutRaw(rawValues);
 	}
 

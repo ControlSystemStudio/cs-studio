@@ -5,6 +5,7 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
+import org.epics.util.time.Timestamp;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiException;
@@ -72,24 +73,6 @@ public class AapiArchiveReader implements ArchiveReader {
 		return null;
 	}
 
-	@Override
-	public ValueIterator getRawValues(int key, String name, ITimestamp start,
-			ITimestamp end) throws UnknownChannelException, Exception {
-		AapiValueIterator valueIterator = new RawAapiValueIterator(_aapiClient, key, name,
-				start, end);
-		valueIterator.getData();
-		return valueIterator;
-	}
-
-	@Override
-	public ValueIterator getOptimizedValues(int key, String name,
-			ITimestamp start, ITimestamp end, int count)
-			throws UnknownChannelException, Exception {
-		AapiValueIterator valueIterator = new MinMaxAapiValueIterator(_aapiClient, key, name,
-				start, end, count);
-		valueIterator.getData();
-		return valueIterator;
-	}
 
 	@Override
 	public void cancel() {
@@ -120,5 +103,41 @@ public class AapiArchiveReader implements ArchiveReader {
 		_host = hostAndPort[0];
 		_port = Integer.parseInt(hostAndPort[1]);
 		return new AapiClient(_host, _port);
+	}
+
+	//TODO (jhatje): implement vType
+//	@Override
+//	public ValueIterator getRawValues(int key, String name, ITimestamp start,
+//			ITimestamp end) throws UnknownChannelException, Exception {
+//		AapiValueIterator valueIterator = new RawAapiValueIterator(_aapiClient, key, name,
+//				start, end);
+//		valueIterator.getData();
+//		return valueIterator;
+//	}
+//	
+//	@Override
+//	public ValueIterator getOptimizedValues(int key, String name,
+//			ITimestamp start, ITimestamp end, int count)
+//					throws UnknownChannelException, Exception {
+//		AapiValueIterator valueIterator = new MinMaxAapiValueIterator(_aapiClient, key, name,
+//				start, end, count);
+//		valueIterator.getData();
+//		return valueIterator;
+//	}
+
+	@Override
+	public ValueIterator getRawValues(int key, String name, Timestamp start,
+			Timestamp end) throws UnknownChannelException, Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ValueIterator getOptimizedValues(int key, String name,
+			Timestamp start, Timestamp end, int count)
+			throws UnknownChannelException, Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

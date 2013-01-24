@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.common.collection.LimitedArrayCircularQueue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,7 @@ public class CompressedLiveSamples extends LiveSamples {
             final Interval interval = _intervalPovider.getTimeInterval();
             if (interval != null) {
                    _samples = compress(_samples, interval);
+             LOG.info("Samples Compressed Timewindow interval: start {},  end   {}", interval.getStart(), interval.getEnd());
                 }
              LOG.info("Samples Compressed: new samples  {},  capacity       {}", _samples.size(), getCapacity());
              LOG.info("Samples Compressed: live sample {},   SecuritySmples {} ",_compressor.getNoUncompressed(),_securityCap);
@@ -136,10 +138,10 @@ public class CompressedLiveSamples extends LiveSamples {
                                                               final Interval intvl) {
         final long endMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(cap+_securityCap- 1).getTime()).getMillis();
         final long startMillis = BaseTypeConversionSupport.toTimeInstant(samples.get(0).getTime()).getMillis();
-        final long realStartMillis = Math.min(startMillis, intvl.getStartMillis());
+        final long realStartMillis =startMillis< intvl.getStartMillis()?intvl.getStartMillis(): startMillis;
         final long realEndMillis = Math.min(endMillis, intvl.getEndMillis());
-        final long windowLengthMS = (int) ((realEndMillis - realStartMillis)/cap); // perfect
-      
+        final long windowLengthMS = (long) ((realEndMillis - realStartMillis)/cap); // perfect
+        LOG.info("Samples Compressed TimeInterval: start {},  end   {}", new DateTime(realStartMillis) ,  new DateTime(realEndMillis));
         LOG.info("Samples Compressed - windowLengthMS {} ",windowLengthMS);
         return new Long[] {windowLengthMS*4}; // double - and don't forget - min and max are 2 samples per window
     }

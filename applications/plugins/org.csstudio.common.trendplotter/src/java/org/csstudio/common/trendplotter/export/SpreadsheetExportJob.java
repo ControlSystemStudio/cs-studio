@@ -65,8 +65,9 @@ public class SpreadsheetExportJob extends PlainExportJob
         String value;
         while (sheet.hasNext()  &&  !monitor.isCanceled())
         {
-            final ITimestamp time = sheet.getTime();
-            final IValue line[] = sheet.next();
+            //TODO (jhatje): implement vType
+            final ITimestamp time = null;//sheet.getTime();
+            final IValue line[] = null;//sheet.next();
             out.print(time);
             for (int i=0; i<line.length; ++i) {
                 value = formatter.format(line[i]);
