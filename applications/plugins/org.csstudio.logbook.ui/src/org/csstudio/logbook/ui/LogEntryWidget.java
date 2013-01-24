@@ -499,21 +499,6 @@ public class LogEntryWidget extends Composite {
     private void init() {
 	try {
 	    logEntryChangeset = new LogEntryChangeset();
-	    logEntryChangeset
-		    .addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-			    getDisplay().asyncExec(new Runnable() {
-
-				@Override
-				public void run() {
-				    updateUI();
-				}
-			    });
-			}
-		    });
-
 	    if (logEntry != null) {
 		LogEntryBuilder logEntryBuilder = LogEntryBuilder
 			.logEntry(logEntry);
@@ -606,7 +591,20 @@ public class LogEntryWidget extends Composite {
 	    // Display exception and disable editing.
 	    setLastException(ex);
 	}
-	updateUI();
+	logEntryChangeset
+		.addPropertyChangeListener(new PropertyChangeListener() {
+
+		    @Override
+		    public void propertyChange(PropertyChangeEvent evt) {
+			getDisplay().asyncExec(new Runnable() {
+
+			    @Override
+			    public void run() {
+				updateUI();
+			    }
+			});
+		    }
+		});
     }
 
     private void updateUI() {
@@ -656,10 +654,10 @@ public class LogEntryWidget extends Composite {
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
-//	    FormData fd = (FormData) label_horizontal.getLayoutData();
-//	    fd.top = new FormAttachment(20,
-//		    60 + (text.getLineCount() * text.getLineHeight()));
-//	    label_horizontal.setLayoutData(fd);
+	    // FormData fd = (FormData) label_horizontal.getLayoutData();
+	    // fd.top = new FormAttachment(20,
+	    // 60 + (text.getLineCount() * text.getLineHeight()));
+	    // label_horizontal.setLayoutData(fd);
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));

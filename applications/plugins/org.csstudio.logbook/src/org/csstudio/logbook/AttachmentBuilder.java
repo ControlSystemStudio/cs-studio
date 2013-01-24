@@ -45,16 +45,17 @@ public class AttachmentBuilder {
      * 
      * @param Attachment
      * @return AttachmentBuilder
-     * @throws IOException 
+     * @throws IOException
      */
-    public static AttachmentBuilder attachment(Attachment attachment) throws IOException {
+    public static AttachmentBuilder attachment(Attachment attachment)
+	    throws IOException {
 	AttachmentBuilder attachmentBuilder = new AttachmentBuilder(
 		attachment.getFileName());
 	attachmentBuilder.contentType = attachment.getContentType();
 	attachmentBuilder.thumbnail = attachment.getThumbnail();
 	attachmentBuilder.fileSize = attachment.getFileSize();
-	attachmentBuilder.byteArray = read2byteArray(attachment
-		.getInputStream());
+	attachmentBuilder.byteArray = attachment.getInputStream() == null ? null
+		: read2byteArray(attachment.getInputStream());
 	return attachmentBuilder;
     }
 
@@ -102,7 +103,7 @@ public class AttachmentBuilder {
 	this.byteArray = read2byteArray(inputStream);
 	return this;
     }
-    
+
     /**
      * Build an object implementing the {@link Attachment}.
      * 
