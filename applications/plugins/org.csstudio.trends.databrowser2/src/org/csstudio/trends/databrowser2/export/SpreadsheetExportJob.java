@@ -28,11 +28,11 @@ public class SpreadsheetExportJob extends PlainExportJob
 {
     public SpreadsheetExportJob(final  Model model,
             final Timestamp start, final Timestamp end, final Source source,
-            final int optimize_count, final ValueFormatter formatter,
+            final int optimize_parameter, final ValueFormatter formatter,
             final String filename,
             final ExportErrorHandler error_handler)
     {
-        super(model, start, end, source, optimize_count, formatter, filename, error_handler);
+        super(model, start, end, source, optimize_parameter, formatter, filename, error_handler);
     }
 
     /** {@inheritDoc} */

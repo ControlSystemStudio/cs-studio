@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -37,10 +38,10 @@ public class MatlabFileExportJob extends ExportJob
 
     public MatlabFileExportJob(final Model model, final Timestamp start,
             final Timestamp end, final Source source,
-            final int optimize_count, final String filename,
+            final int optimize_parameter, final String filename,
             final ExportErrorHandler error_handler)
     {
-        super("", model, start, end, source, optimize_count, null, error_handler);
+        super("", model, start, end, source, optimize_parameter, null, error_handler);
         this.filename = filename;
     }
 
@@ -111,7 +112,7 @@ public class MatlabFileExportJob extends ExportJob
         final MLCell severity = new MLCell(null, dims);
         for (int i=0; i<N; ++i)
         {
-            setCellText(time, i, times.get(i).toString());
+            setCellText(time, i, TimestampHelper.format(times.get(i)));
             value.set(values.get(i), i);
             setCellText(severity, i, severities.get(i).toString());
         }

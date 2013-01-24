@@ -28,10 +28,10 @@ public class MatlabScriptExportJob extends ExportJob
 {
     public MatlabScriptExportJob(final Model model, final Timestamp start,
             final Timestamp end, final Source source,
-            final int optimize_count, final String filename,
+            final int optimize_parameter, final String filename,
             final ExportErrorHandler error_handler)
     {
-        super("% ", model, start, end, source, optimize_count, filename, error_handler);
+        super("% ", model, start, end, source, optimize_parameter, filename, error_handler);
     }
 
     /** {@inheritDoc} */
