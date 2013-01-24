@@ -21,7 +21,6 @@
       <import plugin="org.csstudio.csdata"/>
       <import plugin="org.csstudio.data"/>
       <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.logbook.ui"/>
       <import plugin="org.csstudio.logging"/>
       <import plugin="org.csstudio.openfile"/>
       <import plugin="org.csstudio.platform"/>
@@ -110,13 +109,6 @@
 
    <plugin
          id="org.csstudio.logging.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.logbook.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
