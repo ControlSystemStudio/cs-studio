@@ -202,9 +202,6 @@ public class Messages extends NLS
     public static String SampleView_RefreshTT;
     public static String SampleView_SelectItem;
     public static String SampleView_Source;
-	public static String SampleView_Quality;
-	public static String SampleView_Quality_Interpolated;
-	public static String SampleView_Quality_Original;
     public static String Save;
     public static String ScanPeriod;
     public static String ScanPeriodChangeErrorFmt;
