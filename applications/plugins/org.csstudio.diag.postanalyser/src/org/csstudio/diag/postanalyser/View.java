@@ -105,7 +105,7 @@ public final class View extends ViewPart
                 continue;
             value[j] = dbl;
             final Timestamp stamp = VTypeHelper.getTimestamp(v);
-            time[j] = TimestampHelper.toMillisecs(stamp);
+            time[j] = TimestampHelper.toMillisecs(stamp) / 1000.0;
             ++j;
         }
         // Add as new channel to the model
