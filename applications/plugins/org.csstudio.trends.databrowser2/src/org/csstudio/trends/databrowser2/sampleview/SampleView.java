@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.sampleview;
 
 import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
@@ -141,7 +142,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(sample.getTime().toString());
+                cell.setText(TimestampHelper.format(sample.getTime()));
             }
         });
         // Value column
