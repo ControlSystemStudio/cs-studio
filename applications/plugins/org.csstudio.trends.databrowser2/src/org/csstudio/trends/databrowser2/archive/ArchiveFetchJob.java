@@ -15,6 +15,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -243,6 +244,6 @@ public class ArchiveFetchJob extends Job
     @Override
     public String toString()
     {
-        return "ArchiveFetchJob " + start + " ... " + end + " for " + item.getName();
+        return "ArchiveFetchJob " + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end) + " for " + item.getName();
     }
 }
