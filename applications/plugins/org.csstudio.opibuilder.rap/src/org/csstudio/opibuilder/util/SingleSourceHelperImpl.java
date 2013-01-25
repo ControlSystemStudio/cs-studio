@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.rap.core.DisplayManager;
 import org.csstudio.rap.core.preferences.ServerScope;
+import org.csstudio.rap.core.security.SecurityService;
 import org.csstudio.webopi.WebOPIConstants;
 import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
@@ -171,5 +172,11 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 	protected void iRapOpenWebPage(String hyperLink) {
 		ExternalBrowser.open("_blank", hyperLink, SWT.NONE);
 	}
+	
+	@Override
+	protected boolean iRapAuthenticate(Display display) {
+		return SecurityService.authenticate(display);
+	}
+	
 
 }

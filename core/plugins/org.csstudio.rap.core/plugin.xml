@@ -16,5 +16,14 @@
               parameter="debug">
         </entrypoint>
      </extension>
+     <extension
+           id="defaultLoginModule"
+           name="Default Login Module"
+           point="org.eclipse.equinox.security.loginModule">
+        <loginModule
+              class="org.csstudio.rap.core.security.DefaultLoginModule"
+              description="Default Login Module">
+        </loginModule>
+     </extension>
 
 </plugin>

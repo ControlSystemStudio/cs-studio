@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.security.auth.login.FailedLoginException;
+
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -25,6 +27,7 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.osgi.util.NLS;
@@ -149,12 +152,25 @@ public class XMLUtil {
 
 	/**Fill the DisplayModel from an OPI file inputstream
 	 * @param inputStream the inputstream will be closed in this method before return.
-	 * @param displayModel
+	 * @param displayModel. The {@link DisplayModel} to be filled.
 	 * @param display the display in UI Thread.
 	 * @throws Exception
 	 */
 	public static void fillDisplayModelFromInputStream(
 			final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
+		if(display == null){
+			display = Display.getCurrent();
+		}
+		if (OPIBuilderPlugin.isRAP() && displayModel.getOpiFilePath() != null &&				
+				displayModel.getOpiFilePath().toString().contains(
+				"http://ics-srv-web2.sns.ornl.gov/ade/css/Share/SNS_CCR_Screens")) {
+				if(!SingleSourceHelper.rapAuthenticate(display)){
+					inputStream.close();
+					throw new FailedLoginException();
+				}
+		}
+	   
+		
 		SAXBuilder saxBuilder = new SAXBuilder();
 		Document doc = saxBuilder.build(inputStream);
 		Element root = doc.getRootElement();
@@ -220,7 +236,7 @@ public class XMLUtil {
 			if(displayModel != null)
 				rootWidgetModel =displayModel;
 			else
-				rootWidgetModel = new DisplayModel();
+				rootWidgetModel = new DisplayModel(null);
 		}else if(element.getName().equals(XMLTAG_WIDGET)){
 			String typeId = element.getAttributeValue(XMLATTR_TYPEID);
 			WidgetDescriptor desc = WidgetsService.getInstance().getWidgetDescriptor(typeId);
