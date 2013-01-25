@@ -1,0 +1,72 @@
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>75</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>40</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>../SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/JF Fuse Switch Off.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>

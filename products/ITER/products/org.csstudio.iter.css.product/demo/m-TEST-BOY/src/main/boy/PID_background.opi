@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <wuid>-14a921ec:134b2495e46:-7f53</wuid>
+  <boy_version>3.1.4.codac_core_4_0b4</boy_version>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>1024</height>
+  <name></name>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color name="IO Background" red="255" green="255" blue="205" />
+  </background_color>
+  <foreground_color>
+    <color name="IO Grid" red="215" green="215" blue="215" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>1280</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>5</grid_space>
+  <auto_scale_widgets>
+    <auto_scale_widgets>false</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false" />
+  <y>0</y>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <crop_right>0</crop_right>
+    <crop_left>0</crop_left>
+    <visible>true</visible>
+    <wuid>-30fe2d0f:13afe81b50e:-7f99</wuid>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>971</height>
+    <name>Image Template</name>
+    <stretch_to_fit>false</stretch_to_fit>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <background_color>
+      <color name="IO Background" red="255" green="255" blue="205" />
+    </background_color>
+    <foreground_color>
+      <color name="IO Foreground" red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Image</widget_type>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+    </font>
+    <width>1073</width>
+    <no_animation>false</no_animation>
+    <flip_horizontal>false</flip_horizontal>
+    <permutation_matrix>
+      <row>
+        <col>1.0</col>
+        <col>0.0</col>
+      </row>
+      <row>
+        <col>0.0</col>
+        <col>1.0</col>
+      </row>
+    </permutation_matrix>
+    <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules />
+    <flip_vertical>false</flip_vertical>
+    <crop_bottom>0</crop_bottom>
+    <degree>0</degree>
+    <border_width>2</border_width>
+    <image_file>PID.png</image_file>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>0</y>
+    <tooltip></tooltip>
+    <x>0</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+    <level_lo>20.0</level_lo>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <color_fillbackground>
+      <color name="IO PV OFF" red="77" green="77" blue="77" />
+    </color_fillbackground>
+    <color_hihi>
+      <color name="Major" red="255" green="0" blue="0" />
+    </color_hihi>
+    <show_lo>true</show_lo>
+    <scripts />
+    <height>311</height>
+    <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <background_color>
+      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Progress Bar</widget_type>
+    <show_minor_ticks>true</show_minor_ticks>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+    </font>
+    <width>80</width>
+    <show_lolo>true</show_lolo>
+    <border_style>5</border_style>
+    <effect_3d>true</effect_3d>
+    <pv_value />
+    <show_markers>true</show_markers>
+    <show_hi>true</show_hi>
+    <maximum>100.0</maximum>
+    <border_width>2</border_width>
+    <horizontal>false</horizontal>
+    <log_scale>false</log_scale>
+    <minimum>0.0</minimum>
+    <wuid>-30fe2d0f:13afe81b50e:-7f73</wuid>
+    <show_hihi>true</show_hihi>
+    <scale_format></scale_format>
+    <show_scale>true</show_scale>
+    <color_lo>
+      <color name="Minor" red="255" green="255" blue="0" />
+    </color_lo>
+    <name>Progress Bar Template</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+    <color_hi>
+      <color name="Minor" red="255" green="255" blue="0" />
+    </color_hi>
+    <origin_ignored>true</origin_ignored>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+    </foreground_color>
+    <show_label>true</show_label>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <level_hi>80.0</level_hi>
+    <scale_font>
+      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+    </scale_font>
+    <level_hihi>90.0</level_hihi>
+    <origin>0.0</origin>
+    <color_lolo>
+      <color name="Major" red="255" green="0" blue="0" />
+    </color_lolo>
+    <fill_color>
+      <color name="IO PV ON" red="0" green="0" blue="225" />
+    </fill_color>
+    <rules>
+      <rule name="BorderRule" prop_id="border_style" out_exp="false">
+        <exp bool_exp="pv0==1">
+          <value>9</value>
+        </exp>
+        <pv trig="true">$(pv_name).SIMM</pv>
+      </rule>
+    </rules>
+    <value_label_format></value_label_format>
+    <transparent_background>true</transparent_background>
+    <limits_from_pv>true</limits_from_pv>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <level_lolo>10.0</level_lolo>
+    <y>415</y>
+    <actions hook="false" hook_all="false" />
+    <x>415</x>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <indicator_mode>false</indicator_mode>
+  </widget>
+</display>

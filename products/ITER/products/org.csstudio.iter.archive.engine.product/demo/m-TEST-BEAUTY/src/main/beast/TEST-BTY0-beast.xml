@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!-- 
+  Alarm configuration
+  Root: CODAC_AlarmHandler
+  WARNING: This is an automatically generated file. PLEASE DO NOT MODIFY.
+-->
+
+ <config name="CODAC_AlarmHandler" >
+     <component name="TEST-BTY0" >
+         <component name="TEST-BTY0" >
+             <pv name="TEST-BTY0:AI1" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:AI2" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:AI3" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:ARCHIVE" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:BI" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:LONGIN" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:MBBI" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:RAMP1" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:RAMP2" >
+                 <latching >true</latching>
+</pv>
+
+             <pv name="TEST-BTY0:WAVEFORM" >
+                 <latching >true</latching>
+</pv>
+
+             <component name="TEST-BTY0-SYSM" >
+                 <pv name="TEST-BTY0-SYSM:H0-SYSHLTS" >
+                     <latching >true</latching>
+</pv>
+
+                 <pv name="TEST-BTY0-SYSM:H0CORE-IOCHLTS" >
+                     <latching >true</latching>
+</pv>
+
+                 <pv name="TEST-BTY0-SYSM:H0SYSM-IOCHLTS" >
+                     <latching >true</latching>
+</pv>
+</component>
+</component>
+</component>
+</config>

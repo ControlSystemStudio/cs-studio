@@ -1,0 +1,47 @@
+record(bi, TEST-BOY1:BIx$(IOC)$(COUNT))
+{
+	field(PINI, "YES")
+	field(OSV, "NO_ALARM")
+	field(ONAM, "ON")
+	field(INP, "TEST-BOY1:RNDM-BIx$(IOC)$(COUNT)")
+	field(SCAN, "$(SCAN)")
+	field(ZSV, "MAJOR")
+	field(ZNAM, "OFF")
+	field(DESC, "Control Station ON/OFF")
+}
+
+record(mbbi, TEST-BOY1:MBBIx$(IOC)$(COUNT))
+{
+	field(ZRSV, "MAJOR")
+	field(THST, "Initialising")
+	field(ONST, "NotReady")
+	field(TWVL, "2")
+	field(INP, "TEST-BOY1:RNDM-MBBIx$(IOC)$(COUNT)")
+	field(DESC, "Switch State")
+	field(TWSV, "NO_ALARM")
+	field(THVL, "3")
+	field(ZRVL, "0")
+	field(TWST, "Ready")
+	field(THSV, "NO_ALARM")
+	field(ONSV, "MINOR")
+	field(ONVL, "1")
+	field(SCAN, "$(SCAN)")
+	field(ZRST, "Off")
+}
+
+record(calc, TEST-BOY1:RNDM-BIx$(IOC)$(COUNT))
+{
+	field(CALC, "2*RNDM")
+	field(SCAN, "$(SCAN)")
+	field(DESC, "Random bi")
+	field(EGU, "TBD")
+}
+
+record(calc, TEST-BOY1:RNDM-MBBIx$(IOC)$(COUNT))
+{
+	field(DESC, "Random mbbi")
+	field(SCAN, "$(SCAN)")
+	field(EGU, "TBD")
+	field(CALC, "3*RNDM")
+}
+
