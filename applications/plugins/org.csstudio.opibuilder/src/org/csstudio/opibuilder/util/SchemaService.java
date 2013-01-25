@@ -77,7 +77,7 @@ public final class SchemaService {
 		try {
 			InputStream inputStream = ResourceUtil.pathToInputStream(
 					schemaOPI, false);
-			DisplayModel displayModel = new DisplayModel();
+			DisplayModel displayModel = new DisplayModel(schemaOPI);
 			XMLUtil.fillDisplayModelFromInputStream(inputStream,
 					displayModel, Display.getDefault());
 			schemaWidgetsMap.put(displayModel.getTypeID(), displayModel);
