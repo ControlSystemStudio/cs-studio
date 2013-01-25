@@ -1,0 +1,25 @@
+file "$(TOP)/db/rndm_v1.template" {
+
+pattern
+{
+	IOC
+}
+ 	
+	
+{
+	"A"
+}
+	
+{
+	"B"
+}
+	
+{
+	"C"
+}
+	
+{
+	"D"
+}
+	
+}

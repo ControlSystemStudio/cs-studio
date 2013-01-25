@@ -1,0 +1,18 @@
+record(calc, "TEST-BOY1:RNDMx$(IOC)$(COUNT)")
+{
+	field(DESC, "Random double")
+    field(CALC, "RNDM*10")
+    field(EGU,  ".")
+    field(PREC, "0")
+    field(HOPR, "10")
+    field(LOPR, "0")
+    field(HIHI, "9")
+    field(HHSV, "MAJOR")
+    field(HIGH, "8")
+    field(HSV, "MINOR")
+    field(LOW, "2")
+    field(LSV, "MINOR")
+    field(LOLO, "1")
+    field(LLSV, "MAJOR")
+	field(SCAN, "$(SCAN)")
+}

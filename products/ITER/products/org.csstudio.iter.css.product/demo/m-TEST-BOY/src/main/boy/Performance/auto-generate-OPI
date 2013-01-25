@@ -1,0 +1,32 @@
+#!/bin/bash
+echo "start"
+outputFile=$1
+ioc=TEST-BOY1:rndm$2x
+count=$3
+x=0
+y=25
+h=$4
+w=$5
+xtotal=1280
+ytotal=1024
+#
+echo "A"
+pwd
+ls
+cat ./basic_OPI_layout > $1
+echo "x"
+#
+while [[ $x -lt $xtotal && $y -lt $ytotal ]]
+do	
+	awk -f generic-filter xposition=$x yposition=$y width=$w height=$h pv=$ioc$count $6 >> $1
+	x=$(($x+$w))
+	if [ $x -ge $xtotal ]; then 
+		x=0
+		y=$(($y+$h))
+	fi
+	count=$[$count+1]
+echo $x $xtotal $y $ytotal $count TEST-BOY1:rndm$ioc$count
+done
+#
+echo "D"
+echo "</display>" >> $1
