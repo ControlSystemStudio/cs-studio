@@ -15,6 +15,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -182,12 +183,13 @@ public class ArchiveFetchJob extends Job
     public ArchiveFetchJob(PVItem item, final Timestamp start,
             final Timestamp end, final ArchiveFetchJobListener listener)
     {
-        super(NLS.bind(Messages.ArchiveFetchJobFmt,
-                new Object[] { item.getName(), start, end }));
-        this.item = item;
-        this.start = start;
-        this.end = end;
-        this.listener = listener;
+		super(NLS.bind(Messages.ArchiveFetchJobFmt,
+				new Object[] { item.getName(), TimestampHelper.format(start),
+						TimestampHelper.format(end) }));
+		this.item = item;
+		this.start = start;
+		this.end = end;
+		this.listener = listener;
     }
 
     /** @return PVItem for which this job was created */
@@ -243,6 +245,6 @@ public class ArchiveFetchJob extends Job
     @Override
     public String toString()
     {
-        return "ArchiveFetchJob " + start + " ... " + end + " for " + item.getName();
+        return "ArchiveFetchJob " + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end) + " for " + item.getName();
     }
 }
