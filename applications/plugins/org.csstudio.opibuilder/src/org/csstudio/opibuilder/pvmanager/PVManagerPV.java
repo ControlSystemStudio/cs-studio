@@ -133,7 +133,11 @@ public class PVManagerPV implements PV {
 				
 				@Override
 				public void run() {
-					internalStart();
+					try {
+						internalStart();
+					} catch (Exception e) {
+						ErrorHandlerUtil.handleError("Failed to start PV " + getName(), e);
+					}
 				}
 			});
 		} else if(pvReader != null)

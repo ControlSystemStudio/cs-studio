@@ -291,7 +291,7 @@ public class PVManagerHelper{
 				else{
 					NumberFormat numberFormat = formatCacheMap.get(precision);
 					if(numberFormat == null){
-						numberFormat = NumberFormat.getInstance();
+						numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
 						numberFormat.setMinimumFractionDigits(0);
 						numberFormat.setMaximumFractionDigits(precision);
 						formatCacheMap.put(precision, numberFormat);
