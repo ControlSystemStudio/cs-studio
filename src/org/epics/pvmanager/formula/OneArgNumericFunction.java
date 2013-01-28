@@ -15,16 +15,16 @@ import org.epics.vtype.ValueFactory;
  *
  * @author carcassi
  */
-abstract class TwoArgNumericFunction implements ExpressionLanguage.TwoArgFunction<VDouble, VNumber, VNumber>  {
+abstract class OneArgNumericFunction implements ExpressionLanguage.OneArgFunction<VDouble, VNumber>  {
 
     @Override
-    public VDouble calculate(VNumber arg1, VNumber arg2) {
-        if (arg1 == null || arg2 == null) {
+    public VDouble calculate(VNumber arg) {
+        if (arg == null) {
             return null;
         }
-        return ValueFactory.newVDouble(calculate(arg1.getValue().doubleValue(), arg2.getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
+        return ValueFactory.newVDouble(calculate(arg.getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
     }
     
-    abstract double calculate(double arg1, double arg2);
+    abstract double calculate(double arg);
     
 }
