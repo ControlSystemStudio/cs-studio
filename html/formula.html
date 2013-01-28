@@ -67,17 +67,33 @@ log          : the pv called log</pre>
                     <code>- expr: negation</code><br/>
                     <code>expr * expr: multiplication</code><br/>
                     <code>expr / expr: division</code><br/>
-                    <code>expr % expr: modulo</code></td>
+                    <code>expr % expr: modulo</code><br/>
+                    <code>expr ^ expr: power</code><br/>
+                    <code>expr ** expr: power</code></td>
                 <td>Standard algebraic operator between expressions are supported. </td>
             </tr>
             <tr>
                 <td><code>Numeric functions</code><br/>
                     <code>abs(expr): absolute value</code><br/>
                     <code>acos(expr): arc cosine</code><br/>
+                    <code>asin(expr): arc sine</code><br/>
+                    <code>atan(expr): arc tangent</code><br/>
+                    <code>cbrt(expr): cubic root</code><br/>
+                    <code>ceil(expr): round up</code><br/>
+                    <code>cos(expr): cosine</code><br/>
+                    <code>cosh(expr): hyperbolic cosine</code><br/>
+                    <code>exp(expr): exponential</code><br/>
+                    <code>floor(expr): round down</code><br/>
                     <code>log(expr): natural logarithm</code><br/>
+                    <code>log10(expr): base 10 logarithm</code><br/>
+                    <code>signum(expr): sign function</code><br/>
                     <code>sin(expr): sine</code><br/>
+                    <code>sinh(expr): hyperbolic sine</code><br/>
                     <code>sqrt(expr): square root</code></td>
-                <td>Some common numeric functions are also supported. TODO finish the list.</td>
+                    <code>tan(expr): tangent</code></td>
+                    <code>tanh(expr): hyperbolic tangent</code></td>
+                <td>Some common numeric functions are also supported. For implementation details
+                    refer to the corresponding <a href=""http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html">java.lang.Math method</a>.</td>
             </tr>
         </table>
 
