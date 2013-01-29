@@ -25,5 +25,41 @@
               description="Default Login Module">
         </loginModule>
      </extension>
+     <extension
+           id="LdapLoginModule"
+           name="Standard LDAP Login Module"
+           point="org.eclipse.equinox.security.loginModule">
+        <loginModule
+              class="com.sun.security.auth.module.LdapLoginModule"
+              description="Standard LDAP Login Module">
+        </loginModule>
+     </extension>
+     <extension
+           id="JndiLoginModule"
+           name="Standard JndiLoginModule"
+           point="org.eclipse.equinox.security.loginModule">
+        <loginModule
+              class="com.sun.security.auth.module.JndiLoginModule"
+              description="Standard Jndi Login Module">
+        </loginModule>
+     </extension>
+     <extension
+           id="LDAPBindLoginModule"
+           name="Simplified LDAP login module"
+           point="org.eclipse.equinox.security.loginModule">
+        <loginModule
+              class="org.csstudio.rap.core.security.LDAPBindLoginModule"
+              description="Simplified LDAP login module">
+        </loginModule>
+     </extension>
+     <extension
+           id="Krb5LoginModule"
+           name="Kerberos login module"
+           point="org.eclipse.equinox.security.loginModule">
+        <loginModule
+              class="com.sun.security.auth.module.Krb5LoginModule"
+              description="Kerberos login module">
+        </loginModule>
+     </extension>
 
 </plugin>
