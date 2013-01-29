@@ -116,6 +116,9 @@ public class LogEntryWidget extends Composite {
     private ErrorBar errorBar;
     private final boolean newWindow;
 
+    private final String[] supportedImageTypes = new String[] { "*.png",
+	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
     }
@@ -387,7 +390,7 @@ public class LogEntryWidget extends Composite {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
-		dlg.setFilterExtensions(new String[] { "*.png" }); //$NON-NLS-1$
+		dlg.setFilterExtensions(supportedImageTypes); //$NON-NLS-1$
 		dlg.setFilterNames(new String[] { "PNG Image" }); //$NON-NLS-1$
 		final String filename = dlg.open();
 		if (filename != null) {
@@ -654,10 +657,6 @@ public class LogEntryWidget extends Composite {
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
-	    // FormData fd = (FormData) label_horizontal.getLayoutData();
-	    // fd.top = new FormAttachment(20,
-	    // 60 + (text.getLineCount() * text.getLineHeight()));
-	    // label_horizontal.setLayoutData(fd);
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
@@ -672,9 +671,15 @@ public class LogEntryWidget extends Composite {
 	    tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    for (Attachment attachment : logEntry.getAttachment()) {
-		if (attachment.getFileName().endsWith(".png"))
+		if (Arrays.asList(supportedImageTypes).contains(
+			"*"
+				+ attachment.getFileName().substring(
+					attachment.getFileName().lastIndexOf(
+						"."),
+					attachment.getFileName().length()))) {
 		    imageInputStreamsMap.put(attachment.getFileName(),
 			    attachment.getInputStream());
+		}
 	    }
 	    try {
 		imageStackWidget.setImageInputStreamsMap(imageInputStreamsMap);
