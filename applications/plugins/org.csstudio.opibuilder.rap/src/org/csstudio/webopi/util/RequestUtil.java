@@ -14,10 +14,12 @@ import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.rap.core.security.SecurityService;
 import org.csstudio.webopi.WebOPIConstants;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.rwt.RWT;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Utility for request related functions.
@@ -45,6 +47,13 @@ public class RequestUtil {
 	public static RunnerInput getOPIPathFromRequest(){
 		HttpServletRequest request = RWT.getRequest();
 		String opiPath = request.getParameter(WebOPIConstants.OPI_PARAMETER ); //$NON-NLS-1$
+		if(opiPath == null){
+			String referer = request.getHeader("Referer"); //$NON-NLS-1$
+			if(referer != null && referer.contains("?opi=")){ //$NON-NLS-1$
+				int i = referer.indexOf("?opi=")+5; //$NON-NLS-1$
+				opiPath=referer.substring(i);
+			}
+		}
 		IPath path = null;
 		if(opiPath != null && !opiPath.isEmpty()){
 			try {
@@ -102,6 +111,18 @@ public class RequestUtil {
 		}
 		
 		return null;
+	}
+	
+	/**Try to login.
+	 * @param display
+	 */
+	public static void login(Display display) {
+		if (PreferencesHelper.isWholeSiteSecured()) {
+			if (!SecurityService.authenticate(display)){
+				display.dispose();
+				throw new RuntimeException("Failed to login.");
+			}
+		}
 	}
 
 }

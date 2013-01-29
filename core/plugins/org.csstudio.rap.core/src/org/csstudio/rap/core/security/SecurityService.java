@@ -7,16 +7,13 @@
  ******************************************************************************/
 package org.csstudio.rap.core.security;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.security.auth.login.LoginException;
+
 import org.csstudio.rap.core.RAPCorePlugin;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.auth.ILoginContext;
 import org.eclipse.equinox.security.auth.LoginContextFactory;
@@ -31,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SecurityService {
 
-	private static final String LOGGEDIN_KEY = "org.csstudio.rap.core.loggedin"; //$NON-NLS-1$
+	private static final String SECURECONTEXT_KEY = "org.csstudio.rap.core.secureContext"; //$NON-NLS-1$
 
 	/**
 	 * Authenticate user with the registered login module. This method must be
@@ -64,6 +61,7 @@ public class SecurityService {
 				try {
 					secureContext.login();
 					loggedIn.set(true);
+					display.setData(SECURECONTEXT_KEY, secureContext);
 				} catch (Exception exception) {
 					Throwable cause = exception.getCause();
 					if (cause != null
@@ -92,12 +90,8 @@ public class SecurityService {
 			runnable.run();
 
 		try {
-			latch.await();
-			if (loggedIn.get()) {
-				display.setData(LOGGEDIN_KEY, true);
-				return true;
-			} else
-				return false;
+			latch.await();						
+			return loggedIn.get();			
 		} catch (InterruptedException e) {
 			return false;
 		}
@@ -108,36 +102,15 @@ public class SecurityService {
 	 * @return true if the session has logged in.
 	 */
 	public static boolean isLoggedIn(Display display) {
-		if(display != null && display.getData(LOGGEDIN_KEY)!=null)
+		if(display != null && display.getData(SECURECONTEXT_KEY)!=null)
 			return true;
 		return false;
 	}
 	
-	/**
-	 * Shows JFace ErrorDialog but improved by constructing full stack trace in
-	 * detail area.
-	 */
-	public static void openErrorDialogWithStackTrace(String title, String msg, Throwable t) {
-
-	    StringWriter sw = new StringWriter();
-	    PrintWriter pw = new PrintWriter(sw);
-	    t.printStackTrace(pw);
-
-	    final String trace = sw.toString(); // stack trace as a string
-
-	    // Temp holder of child statuses
-	    List<Status> childStatuses = new ArrayList<>();
-
-	    // Split output by OS-independend new-line
-	    for (String line : trace.split(System.getProperty("line.separator"))) {
-	        // build & add status
-	        childStatuses.add(new Status(IStatus.ERROR, RAPCorePlugin.PLUGIN_ID, line));
-	    }
-
-	    MultiStatus ms = new MultiStatus(RAPCorePlugin.PLUGIN_ID, IStatus.ERROR,
-	            childStatuses.toArray(new Status[] {}), // convert to array of statuses
-	            t.getLocalizedMessage(), t);
-
-	    ErrorDialog.openError(null, title, msg, ms);
+	public static void logout(Display display) throws LoginException{
+		if(display != null && display.getData(SECURECONTEXT_KEY)!=null)
+			((ILoginContext)display.getData(SECURECONTEXT_KEY)).logout();
 	}
+	
+
 }
