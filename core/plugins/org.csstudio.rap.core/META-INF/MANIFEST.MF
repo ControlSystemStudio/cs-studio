@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.rap.core.RAPCorePlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui;bundle-version="1.4.0",
- org.eclipse.equinox.security;bundle-version="1.1.1"
+ org.eclipse.equinox.security;bundle-version="1.1.1",
+ org.csstudio.java;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS

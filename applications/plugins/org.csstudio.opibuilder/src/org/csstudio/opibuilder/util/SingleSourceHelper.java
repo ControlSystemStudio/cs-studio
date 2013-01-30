@@ -161,6 +161,15 @@ public abstract class SingleSourceHelper {
 			return IMPL.iRapAuthenticate(display);
 		return false;		
 	}
-
+		
 	protected abstract boolean iRapAuthenticate(Display display);
+	
+	public static boolean rapIsLoggedIn(Display display){
+		if(IMPL != null)
+			return IMPL.iRapIsLoggedIn(display);
+		return false;		
+	}
+
+	protected abstract boolean iRapIsLoggedIn(Display display);
+	
 }

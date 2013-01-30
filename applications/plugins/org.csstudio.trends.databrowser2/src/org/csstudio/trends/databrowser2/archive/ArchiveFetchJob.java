@@ -183,12 +183,13 @@ public class ArchiveFetchJob extends Job
     public ArchiveFetchJob(PVItem item, final Timestamp start,
             final Timestamp end, final ArchiveFetchJobListener listener)
     {
-        super(NLS.bind(Messages.ArchiveFetchJobFmt,
-                new Object[] { item.getName(), start, end }));
-        this.item = item;
-        this.start = start;
-        this.end = end;
-        this.listener = listener;
+		super(NLS.bind(Messages.ArchiveFetchJobFmt,
+				new Object[] { item.getName(), TimestampHelper.format(start),
+						TimestampHelper.format(end) }));
+		this.item = item;
+		this.start = start;
+		this.end = end;
+		this.listener = listener;
     }
 
     /** @return PVItem for which this job was created */

@@ -10,6 +10,9 @@ package org.csstudio.rap.core.security;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.security.auth.login.LoginException;
+
+import org.csstudio.rap.core.RAPCorePlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.auth.ILoginContext;
@@ -24,6 +27,8 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public class SecurityService {
+
+	private static final String SECURECONTEXT_KEY = "org.csstudio.rap.core.secureContext"; //$NON-NLS-1$
 
 	/**
 	 * Authenticate user with the registered login module. This method must be
@@ -41,7 +46,7 @@ public class SecurityService {
 			throw new NullPointerException("display is null");
 		final CountDownLatch latch = new CountDownLatch(1);
 		final AtomicBoolean loggedIn = new AtomicBoolean(false);
-
+		
 		Runnable runnable = new Runnable() {
 
 			@Override
@@ -51,22 +56,26 @@ public class SecurityService {
 				// the name and URL doesn't matter.
 				ILoginContext secureContext = LoginContextFactory
 						.createContext(
-								"css_rap", null, new CSSRAPCallbackHandler(display)); //$NON-NLS-1$
+								"css_rap", null, new LoginDialogCallbackHandler(display)); //$NON-NLS-1$
 
 				try {
 					secureContext.login();
 					loggedIn.set(true);
+					display.setData(SECURECONTEXT_KEY, secureContext);
 				} catch (Exception exception) {
 					Throwable cause = exception.getCause();
 					if (cause != null
 							&& cause.getCause() instanceof ThreadDeath) {
 						throw (ThreadDeath) cause.getCause();
 					}
+
+					Throwable t = exception;
+					if(cause !=null)
+						t = cause;
 					IStatus status = new Status(IStatus.ERROR,
-							"org.csstudio.opibuilder.rap", "Login failed",
-							exception);
+							RAPCorePlugin.PLUGIN_ID, t.getMessage(), t);
 					ErrorDialog
-							.openError(null, "Error", "Login failed", status);
+							.openError(null, "Login Failed", "Login failed.", status);
 				} finally {
 					latch.countDown();
 				}
@@ -81,10 +90,27 @@ public class SecurityService {
 			runnable.run();
 
 		try {
-			latch.await();
-			return loggedIn.get();
+			latch.await();						
+			return loggedIn.get();			
 		} catch (InterruptedException e) {
 			return false;
 		}
 	}
+
+	/**Check if a session has logged in.
+	 * @param display display of the session.
+	 * @return true if the session has logged in.
+	 */
+	public static boolean isLoggedIn(Display display) {
+		if(display != null && display.getData(SECURECONTEXT_KEY)!=null)
+			return true;
+		return false;
+	}
+	
+	public static void logout(Display display) throws LoginException{
+		if(display != null && display.getData(SECURECONTEXT_KEY)!=null)
+			((ILoginContext)display.getData(SECURECONTEXT_KEY)).logout();
+	}
+	
+
 }

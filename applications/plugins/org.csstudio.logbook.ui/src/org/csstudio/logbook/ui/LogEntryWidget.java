@@ -515,11 +515,12 @@ public class LogEntryWidget extends Composite {
 				LogEntryBuilder logEntryBuilder = LogEntryBuilder
 					.logEntry(logEntryChangeset
 						.getLogEntry());
+				Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
 				for (Attachment attachment : logbookClient
 					.listAttachments(logEntry.getId())) {
-				    logEntryBuilder.attach(AttachmentBuilder
-					    .attachment(attachment));
+				    attachments.add(AttachmentBuilder.attachment(attachment));
 				}
+				logEntryBuilder.setAttachments(attachments);
 				logEntryChangeset
 					.setLogEntryBuilder(logEntryBuilder);
 			    } catch (Exception ex) {

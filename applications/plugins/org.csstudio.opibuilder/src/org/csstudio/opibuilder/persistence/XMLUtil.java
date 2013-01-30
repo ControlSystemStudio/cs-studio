@@ -25,11 +25,13 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
@@ -161,15 +163,17 @@ public class XMLUtil {
 		if(display == null){
 			display = Display.getCurrent();
 		}
-		if (OPIBuilderPlugin.isRAP() && displayModel.getOpiFilePath() != null &&				
-				displayModel.getOpiFilePath().toString().contains(
-				"http://ics-srv-web2.sns.ornl.gov/ade/css/Share/SNS_CCR_Screens")) {
-				if(!SingleSourceHelper.rapAuthenticate(display)){
+		IPath opiPath = displayModel.getOpiFilePath();
+		if (OPIBuilderPlugin.isRAP() && opiPath != null
+				&& !SingleSourceHelper.rapIsLoggedIn(display)) {
+			String securedPath = PreferencesHelper.getSecuredOpiDirectory();
+			if (securedPath != null && opiPath.toString().startsWith(securedPath)) {
+				if (!SingleSourceHelper.rapAuthenticate(display)) {
 					inputStream.close();
 					throw new FailedLoginException();
 				}
+			}
 		}
-	   
 		
 		SAXBuilder saxBuilder = new SAXBuilder();
 		Document doc = saxBuilder.build(inputStream);

@@ -197,4 +197,14 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		
 	}
 
+	@Override
+	protected boolean iRapAuthenticate(Display display) {
+		return false;
+	}
+
+	@Override
+	protected boolean iRapIsLoggedIn(Display display) {
+		return false;
+	}
+
 }

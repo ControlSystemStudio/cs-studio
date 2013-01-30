@@ -178,5 +178,9 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 		return SecurityService.authenticate(display);
 	}
 	
+	@Override
+	protected boolean iRapIsLoggedIn(Display display) {
+		return SecurityService.isLoggedIn(display);
+	}
 
 }

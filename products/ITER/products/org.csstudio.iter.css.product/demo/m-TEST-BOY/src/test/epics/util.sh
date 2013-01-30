@@ -8,7 +8,7 @@
 #
 # Author        : Cosylab
 #
-# Copyright (c) : 2010-2012 ITER Organization,
+# Copyright (c) : 2010-2013 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France
