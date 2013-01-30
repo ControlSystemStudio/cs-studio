@@ -300,7 +300,7 @@ public class OlogLogbookClient implements LogbookClient {
     private class OlogAttachment implements Attachment {
 
 	private final edu.msu.nscl.olog.api.Attachment attachment;
-	private byte[] byteArray;
+	private byte[] byteArray = new byte[]{};
 
 	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
 		InputStream inputStream) throws IOException {
@@ -312,6 +312,8 @@ public class OlogLogbookClient implements LogbookClient {
 		output.write(buffer, 0, bytesRead);
 	    }
 	    byteArray = output.toByteArray();
+	    inputStream.close();
+	    output.close();
 	}
 
 	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment) {

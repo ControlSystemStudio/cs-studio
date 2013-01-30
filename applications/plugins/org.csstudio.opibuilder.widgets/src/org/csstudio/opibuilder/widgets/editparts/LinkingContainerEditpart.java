@@ -153,8 +153,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					}
 				}
 			}
-			final DisplayModel tempDisplayModel = new DisplayModel();
-			tempDisplayModel.setOpiFilePath(path);
+			final DisplayModel tempDisplayModel = new DisplayModel(path);
 			tempDisplayModel.setViewer((GraphicalViewer) getViewer());
 			tempDisplayModel.setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
 			//This need to be executed after GUI created.

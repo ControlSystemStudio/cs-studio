@@ -149,4 +149,27 @@ public abstract class SingleSourceHelper {
 	}
 
 	protected abstract void iRapOpenWebPage(String hyperLink);
+	
+	/**Authenticate user with the registered login module. This method must be called
+	 * in UI thread.
+	 * @param display display of the session.
+	 * @param retry the allowed number of retries.
+	 * @return true if login successfully.
+	 */
+	public static boolean rapAuthenticate(Display display){
+		if(IMPL != null)
+			return IMPL.iRapAuthenticate(display);
+		return false;		
+	}
+		
+	protected abstract boolean iRapAuthenticate(Display display);
+	
+	public static boolean rapIsLoggedIn(Display display){
+		if(IMPL != null)
+			return IMPL.iRapIsLoggedIn(display);
+		return false;		
+	}
+
+	protected abstract boolean iRapIsLoggedIn(Display display);
+	
 }

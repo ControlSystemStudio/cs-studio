@@ -68,6 +68,9 @@ public class PreferencesHelper {
 //WebOPI preferences
 	
 	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
+	public static final String SECURE_WHOLE_SITE = "secure_whole_site"; //$NON-NLS-1$	
+	public static final String SECURED_OPI_DIRECTORY = "secured_opi_directory"; //$NON-NLS-1$
+	
 	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
 	public static final String MOBILE_STARTUP_OPI = "mobile_startup_opi"; //$NON-NLS-1$
 	
@@ -75,6 +78,7 @@ public class PreferencesHelper {
 	private static final char ITEM_SEPARATOR = ','; 
 	private static final char MACRO_SEPARATOR = '='; 
 	
+	final public static String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
 
 
 	 /** @param preferenceName Preference identifier
@@ -86,7 +90,6 @@ public class PreferencesHelper {
         return service.getString(OPIBuilderPlugin.PLUGIN_ID, preferenceName, null, null);
     }
 
-
     /**Get the color file path from preference store.
      * @return the color file path. null if not specified.
      */
@@ -95,8 +98,7 @@ public class PreferencesHelper {
     	if(colorFilePath == null || colorFilePath.trim().isEmpty())
     		return null;
     	return getAbsolutePathOnRepo(colorFilePath);
-    }
-
+    }  
 
     /**Get the font file path from preference store.
      * @return the color file path. null if not specified.
@@ -387,5 +389,31 @@ public class PreferencesHelper {
     		return opiPath;
     	return sPath;		
 	}
+	
+	public static String getDefaultEmailSender() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return null;
+		return prefs.getString(OPIBuilderPlugin.PLUGIN_ID,
+				DEFAULT_EMAIL_SENDER, null, null);
+	}
+	
+    /**
+     * @return the opi directory that needs to be secured. null if not configured.
+     */
+    public static String getSecuredOpiDirectory(){
+    	String s = getString(SECURED_OPI_DIRECTORY);
+    	if(s == null || s.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(s).toString();
+    }
+    
+    /**
+     * @return true if whole site is secured.
+     */
+    public static boolean isWholeSiteSecured(){
+      	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SECURE_WHOLE_SITE, false, null);
+    }
 
 }

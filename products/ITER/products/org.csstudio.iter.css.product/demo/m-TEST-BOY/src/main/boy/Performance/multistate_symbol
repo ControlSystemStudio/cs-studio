@@ -1,0 +1,70 @@
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <on_color>
+          <color name="IO PV ON" red="0" green="0" blue="225" />
+        </on_color>
+        <height>75</height>
+        <name>Multistate Symbol Image Monitor Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <stretch_to_fit>false</stretch_to_fit>
+        <show_boolean_label>true</show_boolean_label>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO PV OFF" red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,3,1,1)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Multistate Symbol Image Monitor</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>41</width>
+        <flip_horizontal>false</flip_horizontal>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <border_style>0</border_style>
+        <crop_top>0</crop_top>
+        <rules>
+        </rules>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <degree>0</degree>
+        <items />
+        <border_width>2</border_width>
+        <image_file>../SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 0.svg</image_file>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <items_from_pv>true</items_from_pv>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>

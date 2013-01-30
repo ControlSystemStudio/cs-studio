@@ -30,11 +30,11 @@ public class PlainExportJob extends ExportJob
 
     public PlainExportJob(final Model model,
             final Timestamp start, final Timestamp end, final Source source,
-            final int optimize_count, final ValueFormatter formatter,
+            final double optimize_parameter, final ValueFormatter formatter,
             final String filename,
             final ExportErrorHandler error_handler)
     {
-        super("# ", model, start, end, source, optimize_count, filename, error_handler);
+        super("# ", model, start, end, source, optimize_parameter, filename, error_handler);
         this.formatter = formatter;
     }
 

@@ -7,16 +7,21 @@
  ******************************************************************************/
 package org.cstudio.archive.reader;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.csstudio.utility.test.HamcrestMatchers.notANumber;
 import static org.junit.Assert.assertThat;
 
 import org.csstudio.archive.reader.LinearValueIterator;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 import org.junit.Test;
@@ -28,9 +33,18 @@ import org.junit.Test;
 public class LinearValueIteratorUnitTest
 {
     /** Create test value */
-    private VType testValue(final int secs, final double value)
+    private VType testValue(final long secs, final double value, final AlarmSeverity severity, final String message)
     {
-        return new ArchiveVNumber(Timestamp.of((long)secs, 0), AlarmSeverity.NONE, "peachy", ValueFactory.displayNone(), value);
+        return new ArchiveVNumber(Timestamp.of(secs, 0), severity, message, ValueFactory.displayNone(), value);
+    }
+    
+    /** Create test value */
+    private VType testValue(final long secs, final double value)
+    {
+        if (Double.isNaN(value)  ||  Double.isInfinite(value))
+            return testValue(secs, value, AlarmSeverity.INVALID, "NaN");
+        else
+            return testValue(secs, value, AlarmSeverity.NONE, "peachy");
     }
     
     /** Have some samples, ask for linear values in between */
@@ -134,4 +148,170 @@ public class LinearValueIteratorUnitTest
         
         linear.close();
     }
+
+    /** Invalid/NaN/.. which cannot be interpolated */
+    @Test
+    public void testInvalids() throws Exception
+    {
+        final VType[] data = new VType[]
+        {
+            testValue( 5, 0.5),
+            // Linr.  10, 1.0
+            testValue(15, 1.5),
+            // Bad number, ..
+            testValue(16, Double.NaN),
+            // but then a good number just
+            // before the next interpolation time stamp
+            testValue(18, 1.8),
+            // Linr.  20, 2.0, but the alarm indicates NaN
+            testValue(25, 2.5),
+
+            // Bad number, ..
+            testValue(27, Double.NaN),
+            // Would be 30, 3.0, but there was a NaN
+            testValue(35, 3.5),
+        };
+        final ValueIterator raw = new DemoDataIterator(data);
+        
+        final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
+
+        // Linr.  10, 1.0
+        assertThat(linear.hasNext(), equalTo(true));
+        VType value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.NONE));
+
+        // Linr.  20, 2.0, with alarm
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), equalTo(2.0));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
+        assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
+        assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));
+
+        // Would be 30, 3.0, but there was a NaN
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), is(notANumber()));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(30l));
+        assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
+        assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));
+        
+        // End of interpolation, final value as-is
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), equalTo(3.5));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(35l));
+
+        assertThat(linear.hasNext(), equalTo(false));
+        
+        linear.close();
+    }    
+    
+    /** Have 'archive off' interruption, interpolation jumps over it */
+    @Test
+    public void testInterruption() throws Exception
+    {
+        final VType[] data = new VType[]
+        {
+            testValue( 5, 0.5),
+            // UNDEFINED values within interpolation interval
+            testValue( 6, 99.5, AlarmSeverity.UNDEFINED, "Disconnected"),
+            // but returns to normal, so ignored
+            testValue( 7, 0.7),
+            // Linr.  10, 1.0
+            testValue(15, 1.5),
+            
+            testValue(18, 1.5, AlarmSeverity.UNDEFINED, "Write_Error"),
+            new ArchiveVString(Timestamp.of(17L, 0), AlarmSeverity.UNDEFINED, "Archive_Off", "Turned off"),
+            // Reported with time stamp 20, UNDEFINED, Archive_Off
+
+            // .. nothing for a long time, then archive back on
+            // Linr. 100, 10.0
+            testValue(95, 9.5),
+            testValue(105, 10.5),
+        };
+        final ValueIterator raw = new DemoDataIterator(data);
+        
+        final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
+
+        // Linr.  10, 1.0
+        assertThat(linear.hasNext(), equalTo(true));
+        VType value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        
+        // Want to see the last UNDEFINED value in interval
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
+        assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.UNDEFINED));
+        assertThat(VTypeHelper.getMessage(value), equalTo("Archive_Off"));
+        assertThat(value, instanceOf(VString.class));
+
+        // Resume interpolation after gap, Linr. 100, 10.0
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.toDouble(value), equalTo(10.0));
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(100l));
+        
+        // Dump the rest
+        while (linear.hasNext())
+            System.out.println(linear.next());
+        
+        linear.close();
+    }
+
+    /** Sparse input data */
+    @Test
+    public void testSparse() throws Exception
+    {
+        final long ten_min = TimeDuration.ofMinutes(10).getSec();
+        final VType[] data = new VType[]
+        {
+            testValue( 0*ten_min + 5, 0.0),
+            // Interp at 10 minutes
+            testValue( 1*ten_min + 5, 1.0),
+            // Interp at 20 min
+            testValue(10*ten_min + 5, 2.0),
+            // Jump to 11 * 10min
+            testValue(20*ten_min + 5, 2.0),
+        };
+        final ValueIterator raw = new DemoDataIterator(data);
+        
+        final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofMinutes(10));
+
+        // Interp at 10 minutes
+        assertThat(linear.hasNext(), equalTo(true));
+        VType value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(ten_min));
+
+        // Interp at 20 min
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(2*ten_min));
+        
+        // Jump to 11 * 10min
+        assertThat(linear.hasNext(), equalTo(true));
+        value = linear.next();
+        System.out.println(value);
+        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(11*ten_min));
+        
+        // Dump the rest
+        while (linear.hasNext())
+            System.out.println(linear.next());
+        
+        linear.close();
+    }
+
 }

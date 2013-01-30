@@ -73,7 +73,6 @@ public class Messages extends NLS
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
-    public static String EMailDefaultSender;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -83,6 +82,8 @@ public class Messages extends NLS
     public static String Export_NoValueMarker;
     public static String ExportBrowse;
     public static String ExportBrowseTT;
+    public static String ExportDefaultLinearInterpolation;
+    public static String ExportDefaultLinearInterpolationTT;
     public static String ExportDefaultOptimization;
     public static String ExportDefaultDigits;
     public static String ExportDefaultFilename;
@@ -100,6 +101,7 @@ public class Messages extends NLS
     public static String ExportGroupFormat;
     public static String ExportGroupOutput;
     public static String ExportGroupSource;
+    public static String ExportLinearIntervalError;
     public static String ExportMatlabFilenameError;
     public static String ExportMinMaxCol;
     public static String ExportMinMaxColTT;
@@ -107,6 +109,8 @@ public class Messages extends NLS
     public static String ExportOptimizationTT;
     public static String ExportPlotStartEnd;
     public static String ExportPlotStartEndTT;
+    public static String ExportSource_Linear;
+    public static String ExportSource_LinearTT;
     public static String ExportSource_OptimizedArchive;
     public static String ExportSource_OptimizedArchiveTT;
     public static String ExportSource;

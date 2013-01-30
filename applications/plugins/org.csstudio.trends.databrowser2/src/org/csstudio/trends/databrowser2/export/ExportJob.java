@@ -10,8 +10,10 @@ package org.csstudio.trends.databrowser2.export;
 import java.io.PrintStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.LinearValueIterator;
 import org.csstudio.archive.reader.MergingValueIterator;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -24,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 
 /** Base for Eclipse Job for exporting data from Model to file
@@ -37,7 +40,7 @@ abstract public class ExportJob extends Job
     final protected Model model;
     final protected Timestamp start, end;
     final protected Source source;
-    final protected int optimize_count;
+    final protected double optimize_parameter;
     final protected String filename;
     final protected ExportErrorHandler error_handler;
     /** Active readers, used to cancel and close them */
@@ -84,7 +87,7 @@ abstract public class ExportJob extends Job
      *  @param start Start time
      *  @param end End time
      *  @param source Where to get samples
-     *  @param optimize_count Used by optimized source
+     *  @param optimize_parameter Used by optimized source
      *  @param filename Name of file to create
      *                  or <code>null</code> if <code>performExport</code>
      *                  handles the file
@@ -92,7 +95,7 @@ abstract public class ExportJob extends Job
      */
     public ExportJob(final String comment, final Model model,
         final Timestamp start, final Timestamp end, final Source source,
-        final int optimize_count,
+        final double optimize_parameter,
         final String filename,
         final ExportErrorHandler error_handler)
     {
@@ -102,7 +105,7 @@ abstract public class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
-        this.optimize_count = optimize_count;
+        this.optimize_parameter = optimize_parameter;
         this.filename = filename;
         this.error_handler = error_handler;
     }
@@ -155,7 +158,9 @@ abstract public class ExportJob extends Job
         out.println(comment + "End Time   : " + TimestampHelper.format(end));
         out.println(comment + "Source     : " + source.toString());
         if (source == Source.OPTIMIZED_ARCHIVE)
-            out.println(comment + "Desired Value Count: " + optimize_count);
+            out.println(comment + "Desired Value Count: " + optimize_parameter);
+        else if (source == Source.LINEAR_INTERPOLATION)
+            out.println(comment + "Interpolation Interval: " + SecondsParser.formatSeconds(optimize_parameter));
     }
 
     /** Perform the data export
@@ -207,11 +212,15 @@ abstract public class ExportJob extends Job
             final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archives[i].getUrl());
             archive_readers.add(reader);
             // Create ValueIterator
-            if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_count > 1)
+            if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
                 iters[i] = reader.getOptimizedValues(archives[i].getKey(),
-                        item.getName(), start, end, optimize_count);
+                        item.getName(), start, end, (int)optimize_parameter);
             else
+            {
                 iters[i] = reader.getRawValues(archives[i].getKey(), item.getName(), start, end);
+                if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
+                    iters[i] = new LinearValueIterator(iters[i], TimeDuration.ofSeconds(optimize_parameter));
+            }
         }
         // Return a merging iterator
         return new MergingValueIterator(iters);

@@ -8,11 +8,12 @@
 package org.csstudio.opibuilder.actions;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookClientManager;
-import org.csstudio.logbook.ui.LogEntryBuilderDialog;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -21,8 +22,11 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * Action to send image of plot to logbook.
@@ -31,8 +35,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SendToElogAction extends Action {
 	final private IOPIRuntime opiRuntime;
+	
 	public static final String ID = "org.csstudio.opibuilder.actions.sendToElog";
-
+	
+	public static final String OPEN_LOGENTRY_BUILDER_DIALOG_ID = "org.csstudio.logbook.ui.OpenLogEntryBuilderDialog";
+	
 	/**
 	 * Initialize
 	 * 
@@ -93,17 +100,24 @@ public class SendToElogAction extends Action {
 	 */
 	public static void makeLogEntry(final String text, final String filename,
 			final Shell shell) {
-		LogEntryBuilderDialog dialog = null;
 		try {
 			LogEntryBuilder log = LogEntryBuilder.withText(text);
 			if (filename != null) {
 				log.attach(AttachmentBuilder.attachment(filename).inputStream(
 						new FileInputStream(filename)));
 			}
-			dialog = new LogEntryBuilderDialog(shell, log);
-			dialog.setBlockOnOpen(true);
-			if (dialog.open() == Window.OK) {
-			}
+			
+			//get the command from plugin.xml
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			
+			List<LogEntryBuilder> logList = new ArrayList<LogEntryBuilder>();
+			logList.add(log);
+			Event event = new Event();
+			event.data = logList;
+			// execute the command
+			IHandlerService handlerService = (IHandlerService) window
+					.getService(IHandlerService.class);
+			handlerService.executeCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID, event);
 		} catch (Exception e) {
 			MessageDialog.openError(null, "Logbook Error",
 					"Failed to make logbook entry: \n" + e.getMessage());
@@ -114,6 +128,12 @@ public class SendToElogAction extends Action {
 		try {
 			if (LogbookClientManager.getLogbookClientFactory() == null)
 				return false;
+			
+			// Check if logbook UI is available
+			if (Class.forName("org.csstudio.logbook.ui.LogEntryBuilderDialog") == null) {
+				return false;
+			}
+			
 			return true;
 		} catch (Exception e) {
 			return false;

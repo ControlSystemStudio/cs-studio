@@ -1,0 +1,4694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <wuid>-14a921ec:134b2495e46:-7f53</wuid>
+  <boy_version>3.1.4.codac_core_4_0b4</boy_version>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>1600</height>
+  <name></name>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color red="255" green="255" blue="205" />
+  </background_color>
+  <foreground_color>
+    <color red="215" green="215" blue="215" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>2200</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>5</grid_space>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false" />
+  <y>0</y>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <wuid>-71cbd6b4:136f458e571:-7dc5</wuid>
+    <scripts />
+    <height>277</height>
+    <name>Symbol Monitors SVG</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="255" green="255" blue="205" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <font>
+      <fontdata fontName="Sans" height="10" style="0" />
+    </font>
+    <width>301</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>true</lock_children>
+    <border_width>2</border_width>
+    <border_color>
+      <color red="215" green="215" blue="215" />
+    </border_color>
+    <y>5</y>
+    <actions hook="false" hook_all="false" />
+    <x>5</x>
+    <tooltip></tooltip>
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="0" green="32" blue="92" />
+      </line_color>
+      <wuid>736330a5:136ef967e53:-782b</wuid>
+      <bg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </bg_gradient_color>
+      <scripts />
+      <height>276</height>
+      <anti_alias>true</anti_alias>
+      <corner_height>16</corner_height>
+      <name>Rounded Rectangle Template</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>false</transparent>
+      <pv_name></pv_name>
+      <corner_width>16</corner_width>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="205" green="216" blue="192" />
+      </foreground_color>
+      <widget_type>Rounded Rectangle</widget_type>
+      <enabled>true</enabled>
+      <fg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </fg_gradient_color>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>300</width>
+      <line_style>0</line_style>
+      <border_style>0</border_style>
+      <rules />
+      <pv_value />
+      <border_width>2</border_width>
+      <line_width>1</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+      <gradient>false</gradient>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>18</height>
+      <name>Label Template</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="32" blue="92" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>false</enabled>
+      <text>Symbol Monitors - SVG format</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="1" />
+      </font>
+      <width>249</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <wrap_words>true</wrap_words>
+      <tooltip></tooltip>
+      <x>5</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7d15</wuid>
+      <scripts />
+      <height>76</height>
+      <name>Controls Grouping Container_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>196</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Multi Image Symbol
+animated on ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>136</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>12</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <visible>true</visible>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7e2d</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <on_color>
+          <color name="IO PV ON" red="0" green="0" blue="225" />
+        </on_color>
+        <height>75</height>
+        <name>Multistate Symbol Image Monitor Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <stretch_to_fit>false</stretch_to_fit>
+        <show_boolean_label>true</show_boolean_label>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO PV OFF" red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,3,1,1)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Multistate Symbol Image Monitor</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>41</width>
+        <flip_horizontal>false</flip_horizontal>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <border_style>0</border_style>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <degree>0</degree>
+        <items />
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 0.svg</image_file>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <items_from_pv>true</items_from_pv>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7cc9</wuid>
+      <scripts />
+      <height>76</height>
+      <name>Controls Grouping Container_5</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>193</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>90</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>75</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>40</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/JF Fuse Switch Off.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>ON/OFF Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>24</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7571538b:13c42f42c06:-7f5f</wuid>
+      <scripts />
+      <height>75</height>
+      <name>Panel 2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>274</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>18</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>75</height>
+        <data_type>0</data_type>
+        <show_boolean_label>false</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>75</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/SVG/Electrical/Rotating_Machines/GM Direct.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7cda</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>199</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>40</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>40</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/SVG/Fluid/Pumps/PL General.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>17</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Single Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>24</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <wuid>-330a7b34:1387ba5f1f6:-7922</wuid>
+    <scripts />
+    <height>277</height>
+    <name>Symbol Monitors PNG</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="217" green="193" blue="223" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <font>
+      <fontdata fontName="Sans" height="10" style="0" />
+    </font>
+    <width>301</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>true</lock_children>
+    <border_width>2</border_width>
+    <border_color>
+      <color red="215" green="215" blue="215" />
+    </border_color>
+    <y>290</y>
+    <actions hook="false" hook_all="false" />
+    <x>5</x>
+    <tooltip></tooltip>
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="0" green="32" blue="92" />
+      </line_color>
+      <wuid>736330a5:136ef967e53:-782b</wuid>
+      <bg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </bg_gradient_color>
+      <scripts />
+      <height>276</height>
+      <anti_alias>true</anti_alias>
+      <corner_height>16</corner_height>
+      <name>Rounded Rectangle Template</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>false</transparent>
+      <pv_name></pv_name>
+      <corner_width>16</corner_width>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="217" green="193" blue="223" />
+      </foreground_color>
+      <widget_type>Rounded Rectangle</widget_type>
+      <enabled>true</enabled>
+      <fg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </fg_gradient_color>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>300</width>
+      <line_style>0</line_style>
+      <border_style>0</border_style>
+      <rules />
+      <pv_value />
+      <border_width>2</border_width>
+      <line_width>1</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+      <gradient>false</gradient>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>18</height>
+      <name>Label Template</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="32" blue="92" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>false</enabled>
+      <text>Symbol Monitors - PNG format</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="1" />
+      </font>
+      <width>250</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <wrap_words>true</wrap_words>
+      <tooltip></tooltip>
+      <x>5</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7d15</wuid>
+      <scripts />
+      <height>75</height>
+      <name>Controls Grouping Container_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>227</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Multi Image Symbol
+animated on ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>136</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>10</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>90</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <visible>true</visible>
+        <wuid>67c6f068:1390f0c2d4a:-7d95</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <on_color>
+          <color name="IO PV ON" red="0" green="0" blue="225" />
+        </on_color>
+        <height>74</height>
+        <name>Multistate Symbol Image Monitor Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <stretch_to_fit>false</stretch_to_fit>
+        <show_boolean_label>true</show_boolean_label>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO PV OFF" red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,3,1,1)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Multistate Symbol Image Monitor</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>40</width>
+        <flip_horizontal>false</flip_horizontal>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <border_style>0</border_style>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <degree>0</degree>
+        <items />
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 0.png</image_file>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <items_from_pv>true</items_from_pv>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7571538b:13c42f42c06:-7f5d</wuid>
+      <scripts />
+      <height>74</height>
+      <name>Panel 2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>276</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>20</y>
+      <actions hook="false" hook_all="false" />
+      <x>13</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>39</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>39</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/PNG/Fluid/Pumps/PL General.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7f46</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>18</y>
+        <actions hook="false" hook_all="false" />
+        <x>237</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>74</height>
+        <data_type>0</data_type>
+        <show_boolean_label>false</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>74</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Rotating_Machines/GM Direct.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Single Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>24</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>95</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7571538b:13c42f42c06:-7f5b</wuid>
+      <scripts />
+      <height>74</height>
+      <name>Panel 2_1</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>271</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>98</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>74</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>39</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/JF Fuse Switch Off.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7f3a</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>232</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>74</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>40</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>1</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/JS Combined Disconnector and Earthing Switch Off.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>sim://ramp(0,10,1,1)</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>ON/OFF Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>22</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>90</x>
+      </widget>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <wuid>-330a7b34:1387ba5f1f6:-7809</wuid>
+    <scripts />
+    <height>277</height>
+    <name>Symbol Controls SVG</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="217" green="193" blue="223" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <font>
+      <fontdata fontName="Sans" height="10" style="0" />
+    </font>
+    <width>301</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>true</lock_children>
+    <border_width>2</border_width>
+    <border_color>
+      <color red="215" green="215" blue="215" />
+    </border_color>
+    <y>6</y>
+    <actions hook="false" hook_all="false" />
+    <x>315</x>
+    <tooltip></tooltip>
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="0" green="32" blue="92" />
+      </line_color>
+      <wuid>736330a5:136ef967e53:-782b</wuid>
+      <bg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </bg_gradient_color>
+      <scripts />
+      <height>276</height>
+      <anti_alias>true</anti_alias>
+      <corner_height>16</corner_height>
+      <name>Rounded Rectangle Template</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>false</transparent>
+      <pv_name></pv_name>
+      <corner_width>16</corner_width>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="217" green="193" blue="223" />
+      </foreground_color>
+      <widget_type>Rounded Rectangle</widget_type>
+      <enabled>true</enabled>
+      <fg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </fg_gradient_color>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>300</width>
+      <line_style>0</line_style>
+      <border_style>0</border_style>
+      <rules />
+      <pv_value />
+      <border_width>2</border_width>
+      <line_width>1</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+      <gradient>false</gradient>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>18</height>
+      <name>Label Template</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="32" blue="92" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>false</enabled>
+      <text>Symbol Controls - SVG format</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="1" />
+      </font>
+      <width>245</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <wrap_words>true</wrap_words>
+      <tooltip></tooltip>
+      <x>5</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7d15</wuid>
+      <scripts />
+      <height>76</height>
+      <name>Controls Grouping Container_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>251</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>false</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Multi Image Symbol
+animated on ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>136</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>12</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>75</height>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Multistate Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>40</width>
+        <border_style>0</border_style>
+        <push_action_index>0</push_action_index>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <items />
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 3-Positions Switch 0.svg</image_file>
+        <items_from_pv>true</items_from_pv>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-761c</wuid>
+        <boolean_label_position>0</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Multistate Symbol Image Control</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://choice("1")</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>false</show_confirm_dialog>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>-68c915ee:13c42a069eb:-7693</wuid>
+        <scripts />
+        <height>27</height>
+        <name>Combo Box Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>false</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>loc://choice("A0")</pv_name>
+        <background_color>
+          <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+        </background_color>
+        <foreground_color>
+          <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+        </foreground_color>
+        <widget_type>Combo Box</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+        </font>
+        <width>120</width>
+        <border_style>6</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <items>
+          <s>A0</s>
+          <s>B0</s>
+          <s>C0</s>
+        </items>
+        <border_width>2</border_width>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <items_from_pv>false</items_from_pv>
+        <actions hook="false" hook_all="false" />
+        <y>48</y>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>130</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7cc9</wuid>
+      <scripts />
+      <height>76</height>
+      <name>Controls Grouping Container_5</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>182</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>90</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>ON/OFF Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>30</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>75</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>40</width>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/SVG/Electrical/Miscellaneous/Closing Push-Button Off.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-76bd</wuid>
+        <boolean_label_position>6</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>6</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-330a7b34:1387ba5f1f6:-7a87</wuid>
+      <scripts />
+      <height>63</height>
+      <name>Controls Grouping Container</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>182</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>24</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Single Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>18</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>59</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>62</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>49</width>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/SVG/Fluid/Actuators/AT Single-Acting Diaphragm Actuator.svg</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-775a</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <wuid>-330a7b34:1387ba5f1f6:-757a</wuid>
+    <scripts />
+    <height>277</height>
+    <name>Symbol Controls PNG</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="217" green="193" blue="223" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <font>
+      <fontdata fontName="Sans" height="10" style="0" />
+    </font>
+    <width>301</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>true</lock_children>
+    <border_width>2</border_width>
+    <border_color>
+      <color red="215" green="215" blue="215" />
+    </border_color>
+    <y>290</y>
+    <actions hook="false" hook_all="false" />
+    <x>315</x>
+    <tooltip></tooltip>
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="0" green="32" blue="92" />
+      </line_color>
+      <wuid>736330a5:136ef967e53:-782b</wuid>
+      <bg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </bg_gradient_color>
+      <scripts />
+      <height>276</height>
+      <anti_alias>true</anti_alias>
+      <corner_height>16</corner_height>
+      <name>Rounded Rectangle Template</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>false</transparent>
+      <pv_name></pv_name>
+      <corner_width>16</corner_width>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="205" green="216" blue="192" />
+      </foreground_color>
+      <widget_type>Rounded Rectangle</widget_type>
+      <enabled>true</enabled>
+      <fg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </fg_gradient_color>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>300</width>
+      <line_style>0</line_style>
+      <border_style>0</border_style>
+      <rules />
+      <pv_value />
+      <border_width>2</border_width>
+      <line_width>1</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+      <gradient>false</gradient>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>18</height>
+      <name>Label Template</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="32" blue="92" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>false</enabled>
+      <text>Symbol Controls - PNG format</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="1" />
+      </font>
+      <width>246</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <wrap_words>true</wrap_words>
+      <tooltip></tooltip>
+      <x>5</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-71cbd6b4:136f458e571:-7d15</wuid>
+      <scripts />
+      <height>75</height>
+      <name>Controls Grouping Container_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>256</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Multi Image Symbol
+animated on ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>136</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>10</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>80</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>74</height>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Multistate Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>39</width>
+        <border_style>0</border_style>
+        <push_action_index>0</push_action_index>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <items />
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/SM 3-Positions Switch 0.png</image_file>
+        <items_from_pv>true</items_from_pv>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-761c</wuid>
+        <boolean_label_position>0</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Multistate Symbol Image Control</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://choice("1")</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>false</show_confirm_dialog>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>-68c915ee:13c42a069eb:-7822</wuid>
+        <scripts />
+        <height>27</height>
+        <name>Combo Box Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>false</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>loc://choice("C0")</pv_name>
+        <background_color>
+          <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+        </background_color>
+        <foreground_color>
+          <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+        </foreground_color>
+        <widget_type>Combo Box</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+        </font>
+        <width>120</width>
+        <border_style>6</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <items>
+          <s>A0</s>
+          <s>B0</s>
+          <s>C0</s>
+        </items>
+        <border_width>2</border_width>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <items_from_pv>false</items_from_pv>
+        <actions hook="false" hook_all="false" />
+        <y>47</y>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>135</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7571538b:13c42f42c06:-7f59</wuid>
+      <scripts />
+      <height>61</height>
+      <name>Panel 2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>270</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>23</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>61</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>48</width>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Fluid/Actuators/AT Single-Acting Diaphragm Actuator.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7ef3</wuid>
+        <boolean_label_position>3</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>222</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Single Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>17</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>80</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>28</height>
+        <data_type>0</data_type>
+        <show_boolean_label>false</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>28</width>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/XT Thermal Effect.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-775a</wuid>
+        <boolean_label_position>1</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>17</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7571538b:13c42f42c06:-7f57</wuid>
+      <scripts />
+      <height>74</height>
+      <name>Panel 2_1</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>265</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>91</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>74</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>39</width>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Miscellaneous/Closing Push-Button Off.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-1bfa89e6:1390b5dc0b5:-7eef</wuid>
+        <boolean_label_position>6</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template_1</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>0</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>226</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>26</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>ON/OFF Image Symbol
+animated in ON/OFF color</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>133</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>27</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>80</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <password></password>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>39</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <released_action_index>0</released_action_index>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Control</widget_type>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>73</width>
+        <permutation_matrix>
+          <row>
+            <col>6.123233995736766E-17</col>
+            <col>-1.0</col>
+          </row>
+          <row>
+            <col>1.0</col>
+            <col>6.123233995736766E-17</col>
+          </row>
+        </permutation_matrix>
+        <push_action_index>0</push_action_index>
+        <border_style>0</border_style>
+        <pv_value />
+        <flip_vertical>false</flip_vertical>
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>SymbolLibrary/PNG/Electrical/Miscellaneous/Closing Push-Button Off.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-330a7b34:1387ba5f1f6:-76bd</wuid>
+        <boolean_label_position>6</boolean_label_position>
+        <on_color>
+          <color red="0" green="0" blue="255" />
+        </on_color>
+        <name>Boolean Symbol Image Control Template</name>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color red="77" green="77" blue="77" />
+        </off_color>
+        <pv_name>loc://bool</pv_name>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <confirm_message>Are your sure you want to do this?</confirm_message>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <show_confirm_dialog>1</show_confirm_dialog>
+        <toggle_button>true</toggle_button>
+        <degree>90</degree>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <y>22</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <wuid>-68c915ee:13c42a069eb:-7491</wuid>
+    <scripts />
+    <height>561</height>
+    <name>Boolean Image Indicator</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <foreground_color>
+      <color name="IO Background" red="255" green="255" blue="205" />
+    </foreground_color>
+    <background_color>
+      <color name="IO Background" red="255" green="255" blue="205" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>300</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>true</lock_children>
+    <border_width>1</border_width>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <y>6</y>
+    <actions hook="false" hook_all="false" />
+    <x>630</x>
+    <tooltip></tooltip>
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="0" green="32" blue="92" />
+      </line_color>
+      <wuid>-68c915ee:13c42a069eb:-7a4b</wuid>
+      <bg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </bg_gradient_color>
+      <scripts />
+      <height>561</height>
+      <anti_alias>true</anti_alias>
+      <corner_height>16</corner_height>
+      <name>Rounded Rectangle Template</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <alpha>255</alpha>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>false</transparent>
+      <pv_name></pv_name>
+      <corner_width>16</corner_width>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color name="IO STM Background" red="227" green="218" blue="179" />
+      </foreground_color>
+      <widget_type>Rounded Rectangle</widget_type>
+      <enabled>true</enabled>
+      <fg_gradient_color>
+        <color red="255" green="255" blue="255" />
+      </fg_gradient_color>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Sans" height="10" style="0" />
+      </font>
+      <width>300</width>
+      <line_style>0</line_style>
+      <border_style>0</border_style>
+      <rules />
+      <pv_value />
+      <border_width>2</border_width>
+      <line_width>1</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+      <gradient>false</gradient>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <wuid>-68c915ee:13c42a069eb:-7a4f</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>18</height>
+      <name>Label Template</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="205" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="32" blue="92" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>false</enabled>
+      <text>Symbol versus Indicator</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="1" />
+      </font>
+      <width>199</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="215" green="215" blue="215" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <wrap_words>true</wrap_words>
+      <tooltip></tooltip>
+      <x>15</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-75a3</wuid>
+      <scripts />
+      <height>51</height>
+      <name>Panel 2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>192</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>26</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>48</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>48</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>pictures/lightOn.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>72525355:13905519b96:-70e7</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color red="255" green="165" blue="0" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO Grid" red="215" green="215" blue="215" />
+        </off_color>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-7a3f</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Boolean Symbol Image</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>118</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>19</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-759e</wuid>
+      <scripts />
+      <height>52</height>
+      <name>Panel 2_1</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>199</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>77</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>72525355:13905519b96:-6e84</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <height>52</height>
+        <data_type>0</data_type>
+        <name>Image Boolean Indicator Template</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <show_boolean_label>true</show_boolean_label>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <off_label>OFF</off_label>
+        <widget_type>Image Boolean Indicator</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>52</width>
+        <border_style>0</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <bit>-1</bit>
+        <border_width>2</border_width>
+        <on_label>ON</on_label>
+        <off_image>pictures/lightOff.png</off_image>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <on_image>pictures/lightOn.png</on_image>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-7a37</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_2</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Image Boolean Indicator</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>125</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>19</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7599</wuid>
+      <scripts />
+      <height>51</height>
+      <name>Panel 2_2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>192</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>129</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>48</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>46</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>pictures/OnButton.png</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>72525355:13905519b96:-707b</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color name="IO OK" red="0" green="255" blue="0" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template_1</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO Grid" red="215" green="215" blue="215" />
+        </off_color>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-7993</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_3</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Boolean Symbol Image</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>118</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>19</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7594</wuid>
+      <scripts />
+      <height>52</height>
+      <name>Panel 2_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>199</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>180</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>72525355:13905519b96:-6e3e</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <height>52</height>
+        <data_type>0</data_type>
+        <name>Image Boolean Indicator Template_1</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <show_boolean_label>true</show_boolean_label>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <off_label>OFF</off_label>
+        <widget_type>Image Boolean Indicator</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>51</width>
+        <border_style>0</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <bit>-1</bit>
+        <border_width>2</border_width>
+        <on_label>ON</on_label>
+        <off_image>pictures/OffButton.png</off_image>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <on_image>pictures/OnButton.png</on_image>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-798f</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_4</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Image Boolean Indicator</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>125</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>19</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-758f</wuid>
+      <scripts />
+      <height>67</height>
+      <name>Panel 2_4</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>192</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>232</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>64</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>64</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>pictures/pump_off.gif</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>72525355:13905519b96:-6f58</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color name="IO LTM State" red="171" green="154" blue="192" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template_2</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="IO Trace 1" red="79" green="129" blue="189" />
+        </off_color>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-78ea</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_5</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Boolean Symbol Image</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>118</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>27</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-758a</wuid>
+      <scripts />
+      <height>68</height>
+      <name>Panel 2_5</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>199</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>299</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>72525355:13905519b96:-6dbc</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <height>68</height>
+        <data_type>0</data_type>
+        <name>Image Boolean Indicator Template_2</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <show_boolean_label>true</show_boolean_label>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <off_label>OFF</off_label>
+        <widget_type>Image Boolean Indicator</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>68</width>
+        <border_style>0</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <bit>-1</bit>
+        <border_width>2</border_width>
+        <on_label>ON</on_label>
+        <off_image>pictures/pump_off.gif</off_image>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <on_image>pictures/pump_on.gif</on_image>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-78e9</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_6</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Image Boolean Indicator</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>125</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>27</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>74</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7585</wuid>
+      <scripts />
+      <height>49</height>
+      <name>Panel 2_6</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>188</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>367</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>46</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>41</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>pictures/valve_off.gif</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-68c915ee:13c42a069eb:-7617</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color name="IO OK" red="0" green="255" blue="0" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template_6</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="Major" red="255" green="0" blue="0" />
+        </off_color>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-760c</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_7</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Boolean Symbol Image</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>118</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>18</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>70</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7580</wuid>
+      <scripts />
+      <height>50</height>
+      <name>Panel 2_7</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>195</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>416</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>-68c915ee:13c42a069eb:-7613</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <height>50</height>
+        <data_type>0</data_type>
+        <name>Image Boolean Indicator Template_3</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <show_boolean_label>true</show_boolean_label>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <off_label>OFF</off_label>
+        <widget_type>Image Boolean Indicator</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>45</width>
+        <border_style>0</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <bit>-1</bit>
+        <border_width>2</border_width>
+        <on_label>ON</on_label>
+        <off_image>pictures/valve_off.gif</off_image>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <on_image>pictures/valve_on.gif</on_image>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-760b</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_8</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Image Boolean Indicator</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>125</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>18</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>70</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7577</wuid>
+      <scripts />
+      <height>41</height>
+      <name>Panel 2_8</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>189</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>466</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>37</height>
+        <data_type>0</data_type>
+        <show_boolean_label>true</show_boolean_label>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <off_label>OFF</off_label>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Boolean Symbol Image Monitor</widget_type>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <permutation_matrix>
+          <row>
+            <col>1.0</col>
+            <col>0.0</col>
+          </row>
+          <row>
+            <col>0.0</col>
+            <col>1.0</col>
+          </row>
+        </permutation_matrix>
+        <width>43</width>
+        <border_style>0</border_style>
+        <flip_vertical>false</flip_vertical>
+        <pv_value />
+        <crop_bottom>0</crop_bottom>
+        <bit>0</bit>
+        <on_label>ON</on_label>
+        <border_width>2</border_width>
+        <image_file>pictures/reset_switch_on.gif</image_file>
+        <crop_right>0</crop_right>
+        <crop_left>0</crop_left>
+        <wuid>-68c915ee:13c42a069eb:-7617</wuid>
+        <boolean_label_position>5</boolean_label_position>
+        <on_color>
+          <color name="IO OK" red="0" green="255" blue="0" />
+        </on_color>
+        <stretch_to_fit>false</stretch_to_fit>
+        <name>Boolean Symbol Image Monitor Template_6</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <off_color>
+          <color name="Major" red="255" green="0" blue="0" />
+        </off_color>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <flip_horizontal>false</flip_horizontal>
+        <crop_top>0</crop_top>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <degree>0</degree>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-760c</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_7</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Boolean Symbol Image</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>118</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>18</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>70</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-68c915ee:13c42a069eb:-7576</wuid>
+      <scripts />
+      <height>42</height>
+      <name>Panel 2_9</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <foreground_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </foreground_color>
+      <background_color>
+        <color name="IO Background" red="255" green="255" blue="205" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>196</width>
+      <border_style>0</border_style>
+      <rules />
+      <lock_children>true</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <y>507</y>
+      <actions hook="false" hook_all="false" />
+      <x>26</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <wuid>-68c915ee:13c42a069eb:-7613</wuid>
+        <auto_size>true</auto_size>
+        <boolean_label_position>5</boolean_label_position>
+        <scripts />
+        <height>41</height>
+        <data_type>0</data_type>
+        <name>Image Boolean Indicator Template_3</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <show_boolean_label>true</show_boolean_label>
+        <stretch_to_fit>false</stretch_to_fit>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+        </foreground_color>
+        <off_label>OFF</off_label>
+        <widget_type>Image Boolean Indicator</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>47</width>
+        <border_style>0</border_style>
+        <rules>
+          <rule name="BorderRule" prop_id="border_style" out_exp="false">
+            <exp bool_exp="pv0==1">
+              <value>9</value>
+            </exp>
+            <pv trig="true">$(pv_name).SIMM</pv>
+          </rule>
+        </rules>
+        <pv_value />
+        <bit>-1</bit>
+        <border_width>2</border_width>
+        <on_label>ON</on_label>
+        <off_image>pictures/reset_switch_off.gif</off_image>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <on_image>pictures/switch_on.gif</on_image>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <wuid>-68c915ee:13c42a069eb:-760b</wuid>
+        <auto_size>true</auto_size>
+        <scripts />
+        <height>13</height>
+        <name>Label Template_8</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>false</show_scrollbar>
+        <background_color>
+          <color red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="32" blue="92" />
+        </foreground_color>
+        <widget_type>Label</widget_type>
+        <enabled>false</enabled>
+        <text>Image Boolean Indicator</text>
+        <font>
+          <fontdata fontName="Sans" height="10" style="0" />
+        </font>
+        <width>125</width>
+        <border_style>0</border_style>
+        <rules />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="215" green="215" blue="215" />
+        </border_color>
+        <horizontal_alignment>0</horizontal_alignment>
+        <actions hook="false" hook_all="false" />
+        <y>18</y>
+        <wrap_words>true</wrap_words>
+        <tooltip></tooltip>
+        <x>70</x>
+      </widget>
+    </widget>
+  </widget>
+</display>

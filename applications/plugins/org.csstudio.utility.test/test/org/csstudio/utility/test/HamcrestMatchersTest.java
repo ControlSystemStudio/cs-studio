@@ -35,8 +35,8 @@ public class HamcrestMatchersTest
             assertThat(ex.getMessage(), containsString("Freddy"));
         }
     }
-    
-    
+
+
    @Test
     public void testEqualTo()
     {
@@ -55,8 +55,8 @@ public class HamcrestMatchersTest
             assertThat(ex.getMessage(), containsString("1.0 +- 0.5"));
         }
     }
-   
-   
+
+
     @Test
     public void testAtLeast()
     {
@@ -75,4 +75,13 @@ public class HamcrestMatchersTest
             assertThat(ex.getMessage(), containsString("2"));
         }
     }
+
+
+    @Test
+    public void testNaN()
+    {
+        assertThat(2.0 * Double.NaN, is(notANumber()));
+        assertThat(2.0 * 4, is(not(notANumber())));
+    }
+
 }

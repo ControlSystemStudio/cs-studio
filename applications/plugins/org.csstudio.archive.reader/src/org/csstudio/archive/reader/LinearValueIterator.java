@@ -21,8 +21,32 @@ import org.epics.vtype.VType;
  * 
  *  <p>Reads from an underlying value iterator and returns
  *  linearly interpolated values.
+ *  
+ *  <p>Interpolation will 'maximize' the severity of samples
+ *  received from the base iterator within an interpolation
+ *  period.
+ *  
+ *  <p>Fundamentally, values are interpolated numerically,
+ *  allowing <code>NaN</code> to simply result in not-a-number
+ *  interpolation values, meaning:
+ *  A sample with value 3.0 but INVALID alarm severity will be
+ *  treated as 3.0. The INVALID severity will be included in the
+ *  maximized severity of the interpolated samples, but it does not
+ *  affect the numeric output.
+ *  
+ *  <p>An exception is made for UNDEFINED values.
+ *  If the last base sample before an interpolation point
+ *  is UNDEFINED, that interpolation point will be undefined
+ *  as well.
+ *  This way a few UNDEFINED samples within an interpolation period
+ *  are mostly ignored as long as there is a valid sample just
+ *  before and after the exact interpolation point.
+ *  But if the last sample before the interpolation point is UNDEFINED,
+ *  so will be the interpolation point.
+ *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LinearValueIterator implements ValueIterator
 {
     /** Base iterator */
@@ -83,14 +107,19 @@ public class LinearValueIterator implements ValueIterator
         if (base_value == null)
             return null;
         
-        // TODO: Check invalid samples
-        // NaN from VTypeHelper.toDouble? AlarmSeverity?
-        
         // Have one, initial value
         final StatisticsAccumulator accumulator = new StatisticsAccumulator();
         Timestamp t0, t1 = VTypeHelper.getTimestamp(base_value);
         double v0, v1 = VTypeHelper.toDouble(base_value);
+        AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
         accumulator.add(v1);
+    
+        // Most severe alarm
+        AlarmSeverity max_severity = severity;
+        String max_status = VTypeHelper.getMessage(base_value);
+        
+        // Track the last undefined sample
+        VType last_undefined = null;
         
         // Look for values until end of current interpolation bin
         final Timestamp end_of_bin = TimestampHelper.roundUp(t1, interval);
@@ -99,6 +128,12 @@ public class LinearValueIterator implements ValueIterator
             // Track previous value
             t0 = t1;
             v0 = v1;
+
+            // Note most recent undefined sample
+            if (severity == AlarmSeverity.UNDEFINED)
+                last_undefined = base_value;
+            else
+                last_undefined = null;
             
             // Reached end of input data?
             if (!base.hasNext())
@@ -112,10 +147,21 @@ public class LinearValueIterator implements ValueIterator
             base_value = base.next();
             t1 = VTypeHelper.getTimestamp(base_value);
             v1 = VTypeHelper.toDouble(base_value);
+            // 'Maximize' the severity and track the most
+            // recent status message for that severity level
+            severity = VTypeHelper.getSeverity(base_value);
+            if (severity.compareTo(max_severity) >= 0)
+            {
+                max_severity = severity;
+                max_status = VTypeHelper.getMessage(base_value);
+            }
             accumulator.add(v1);
         }
         while (t1.compareTo(end_of_bin) < 0);
-        
+
+        if (last_undefined != null)
+            return VTypeHelper.transformTimestamp(last_undefined, end_of_bin);
+
         if (accumulator.getNSamples() >= 2)
         {   // Found at least one value in this bin
             // t0, v0 are before, t1, v1 at-or-after end_of_bin
@@ -127,14 +173,12 @@ public class LinearValueIterator implements ValueIterator
             else
                 interpol = (v0 + v1)/2; // Use average?
             
-            final AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
-            final String status = VTypeHelper.getMessage(base_value);
-            return new ArchiveVStatistics(end_of_bin, severity, status, (Display) base_value,
+            return new ArchiveVStatistics(end_of_bin, max_severity, max_status, (Display) base_value,
                 interpol, accumulator.getMin(), accumulator.getMax(), accumulator.getStdDev(), accumulator.getNSamples());
         }
-        else
-        {   // Have nothing in this bin
-            throw new Exception("Not handled");
-        }
+        
+        // Have nothing in this bin
+        // TODO Check this case
+        throw new Exception("Not handled");
     }
 }
