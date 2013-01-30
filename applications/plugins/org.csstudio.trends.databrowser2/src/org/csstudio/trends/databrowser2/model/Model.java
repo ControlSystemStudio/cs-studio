@@ -671,7 +671,7 @@ public class Model
         if (scroll_enabled)
             return new RelativeTime(-time_span).toString();
         else
-            return getStartTime().toString();
+            return TimestampHelper.format(getStartTime());
     }
 
     /** @return String representation of end time. While scrolling, this is
@@ -682,7 +682,7 @@ public class Model
         if (scroll_enabled)
             return RelativeTime.NOW;
         else
-            return end_time.toString();
+            return TimestampHelper.format(end_time);
     }
 
     /** @return Background color */
