@@ -70,8 +70,10 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	}
 
 	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
-		String position = macrosInput.getMacrosMap()
-				.get(TOP_OPI_POSITION_KEY);
+		String position = null;
+		if (macrosInput != null) {
+			position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+		}
 		if (position != null) {
 			Position pos = null;
 			for (Position p : Position.values()) {
