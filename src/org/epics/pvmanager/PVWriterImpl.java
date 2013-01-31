@@ -31,6 +31,16 @@ class PVWriterImpl<T> implements PVWriter<T> {
     // Thread-safe, no need to synchronize
     private List<PVWriterListener<T>> pvWriterListeners = new CopyOnWriteArrayList<>();
     
+    // Atomocity in the callback is guaranteed by how the PVWriterDirector
+    //     prepares the PVWriter before the notification
+    
+    // Thread-safety is guaranteed by the following rule:
+    //  - any variable declared after the locked should be read or written
+    //    only while holding the lock
+    // Potential deadlocks or livelocks are prevented by the following rule:
+    //  - never call outside this object, except for something small and understood,
+    //    while holding the lock
+    
     private final Object lock = new Object();
     // guarded by lock
     private boolean closed = false;
