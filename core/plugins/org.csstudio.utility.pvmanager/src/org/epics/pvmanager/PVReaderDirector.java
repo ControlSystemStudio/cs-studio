@@ -249,6 +249,15 @@ public class PVReaderDirector<T> {
                     // Proceed with notification only if PVReader was not garbage
                     // collected
                     if (pv != null) {
+                        
+                        // Atomicity guaranteed by:
+                        //  - all the modification on the PVReader
+                        //    are done here, on the same thread where the listeners will be called.
+                        //    This means the callbacks are guaranteed to run after all
+                        //    changes are done
+                        //  - notificationInFlight guarantees that no other notification
+                        //    will run while one notification is running. This means
+                        //    the next event is serialized after the end of this one.
                         pv.setConnected(connected);
                         if (lastException != null) {
                             pv.setLastException(lastException);
