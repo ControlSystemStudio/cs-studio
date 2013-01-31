@@ -46,9 +46,13 @@ public class ConnectionHandler {
 	 */
 	private boolean connected;	
 
+	/**
+	 * The origin tooltip property value.
+	 */
+	private String originTooltip;
 	
 	/**
-	 * The original tool tip when is was connected.
+	 * The previous tool tip when is was connected.
 	 */
 	private String preTooltip;	
 	
@@ -71,6 +75,7 @@ public class ConnectionHandler {
 		this.display = editpart.getViewer().getControl().getDisplay();
 		pvMap = new HashMap<String, PV>();
 		preTooltip = widgetModel.getRawTooltip();
+		originTooltip = preTooltip;
 		connected = true;
 	}
 	
@@ -103,9 +108,12 @@ public class ConnectionHandler {
 				sb.append(entry.getKey() + " is disconnected.\n");
 			}
 		}		
-		if(sb.length()>0)
+		if(sb.length()>0){
 			sb.append("------------------------------\n");
-		widgetModel.setTooltip(sb.toString() + preTooltip);
+			widgetModel.setTooltip(sb.toString() + preTooltip);
+		}else
+			widgetModel.setTooltip(originTooltip);
+		
 	}
 	
 	/**Mark a widget as disconnected.

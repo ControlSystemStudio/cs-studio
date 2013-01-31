@@ -19,6 +19,7 @@ import org.csstudio.data.values.IValue;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.epics.util.time.Timestamp;
 
 /** Archive reader that imports data from a file
  *
@@ -82,29 +83,42 @@ public class ImportArchiveReader implements ArchiveReader
     {
         return getNamesByPattern(0, null);
     }
-
+    //TODO (jhatje): implement vType
+//    @Override
+//    public ValueIterator getRawValues(final int key, final String name, final ITimestamp start,
+//            final ITimestamp end) throws UnknownChannelException, Exception
+//    {
+//        if (values == null)
+//        {
+//            // Locate file
+//            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+//            final InputStream input = file.getContents();
+//            // Import data
+//            values = importer.importValues(input );
+//        }
+//        return new ArrayValueIterator(values);
+//    }
+//
+//    @Override
+//    public ValueIterator getOptimizedValues(int key, String name,
+//            ITimestamp start, ITimestamp end, int count)
+//            throws UnknownChannelException, Exception
+//    {
+//        // No optimization. Fall back to raw data.
+//        return getRawValues(key, name, start, end);
+//    }
     @Override
-    public ValueIterator getRawValues(final int key, final String name, final ITimestamp start,
-            final ITimestamp end) throws UnknownChannelException, Exception
-    {
-        if (values == null)
-        {
-            // Locate file
-            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-            final InputStream input = file.getContents();
-            // Import data
-            values = importer.importValues(input );
-        }
-        return new ArrayValueIterator(values);
+    public ValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException,
+    Exception {
+        // TODO Auto-generated method stub
+        return null;
     }
-
+    
     @Override
-    public ValueIterator getOptimizedValues(int key, String name,
-            ITimestamp start, ITimestamp end, int count)
-            throws UnknownChannelException, Exception
-    {
-        // No optimization. Fall back to raw data.
-        return getRawValues(key, name, start, end);
+    public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException,
+    Exception {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -118,4 +132,5 @@ public class ImportArchiveReader implements ArchiveReader
     {
         // NOP
     }
+
 }

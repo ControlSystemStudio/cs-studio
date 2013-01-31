@@ -160,7 +160,8 @@ public class ScanInfoModel
                 }
                 catch (Exception ex)
                 {
-                    // Ignore
+                    Logger.getLogger(ScanInfoModel.class.getName()).
+                        log(Level.FINE, "Cannot connect to Scan Server", ex);
                 }
                 while (poller != null)
                 {

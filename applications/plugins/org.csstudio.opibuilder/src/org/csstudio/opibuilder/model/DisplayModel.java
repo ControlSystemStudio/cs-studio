@@ -94,11 +94,25 @@ public class DisplayModel extends AbstractContainerModel {
 	private int displayID;
 	
 	private boolean FreshRateEnabled= false;
+	
+	/**
+	 * Create a Display Model which is the root model for an OPI.
+	 * Only use this constructor if this model doesn't relate to
+	 * any real opi file. Otherwise, please use {@link #DisplayModel(IPath)}.
+	 */
+	public DisplayModel(){
+		this(null);
+	}
 
-	public DisplayModel() {
+	/**Create a Display Model which is the root model for an OPI.
+	 * @param opiFilePath path of the OPI. It can only be null if this model doesn't relate to
+	 * any real opi file.
+	 */
+	public DisplayModel(IPath opiFilePath) {
 		super();
 		setLocation(-1, -1);
 		setSize(800, 600);
+		setOpiFilePath(opiFilePath);
 	}
 
 	@Override

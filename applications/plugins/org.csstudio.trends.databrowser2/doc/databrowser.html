@@ -412,7 +412,13 @@ Use the "Export Samples" panel to write data into files suitable for spreadsheet
 programs or Matlab.
 </p>
 
-<h3>Options</h3>
+<h3>Time Range</h3>
+<p>
+By default, the export will use the time range from the plot, but 
+you can export data for a different time range.
+</p>
+
+<h3>Source Options</h3>
 <p>
 By default, the export will use the time range from the plot but fetch raw data from
 the archive, not the optimized, reduced min/max/average data that is displayed in the plot. 
@@ -420,7 +426,40 @@ You can modify the time range of the export to differ from the range of the plot
 select to export either the exact data that is displayed in the plot, or request optimized
 data with a different number of "bins" from the archive.
 </p>
-<p>The format of the exported file defaults to a spreadsheet suitable for import into
+
+<ul>
+<li>"Plot":
+    The exact samples currently displayed in the plot
+    will be exported.
+</li>
+<li>"Raw Archived Data":
+    The exported data will contain data that is requested from
+    the archive without modifications.
+</li>
+<li>"Optimized Archived Data":
+    To reduce the number of exported samples, optimized data
+    is requested from the archive.
+    You specify the number of desired samples, and the
+    export will then request roughly this number of averaged samples
+    from the archive data source.
+    <br/>
+    For example, when requesting 800 optimized samples,
+    the start..end time range is split into 800 "bins".
+    The the minimum, maximum and average value
+    of the raw samples within each bin is then exported.
+</li>
+<li>"Linear Interpolation":
+    As an alternative way to reduce the number of exported samples,
+    the exported samples are computed via linear interpolation
+    from the raw data.
+    You specify the interpolation interval in hours, minutes and seconds,
+    for example 00:10:00 to obtain one sample every 10 minutes.
+</li>
+</ul>
+
+<h3>Format Options</h3>
+<p>
+The format of the exported file defaults to a spreadsheet suitable for import into
 most spreadsheet programs.
 You can modify these settings:
 </p>

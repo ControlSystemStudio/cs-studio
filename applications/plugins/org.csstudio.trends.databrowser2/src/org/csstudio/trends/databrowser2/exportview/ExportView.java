@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.exportview;
 import java.io.File;
 
 import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.apputil.ui.time.StartEndDialog;
@@ -68,7 +69,9 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     private Button export;
     private Button source_raw;
     private Button source_opt;
+    private Button source_lin;
     private Text optimize;
+    private Text linear;
     private Button type_matlab;
     private Button tabular;
     private Button min_max_col;
@@ -90,7 +93,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         // * Samples To Export *
         // Start:  ___start_______________________________________________________________ [select]
         // End  :  ___end_________________________________________________________________ [x] Use start/end time of Plot
-        // Source: ( ) Plot  (*) Raw Archived Data  ( ) Averaged Archived Data  __time__   {ghost}
+        // Source: ( ) Plot  (*) Raw Archived Data  ( ) Averaged Archived Data  __time__  ( ) Linear __linear__ {ghost}
 
         // * Format *
         // (*) Spreadsheet ( ) Matlab
@@ -104,7 +107,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         Group group = new Group(parent, 0);
         group.setText(Messages.ExportGroupSource);
         group.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        GridLayout layout = new GridLayout(6, false);
+        GridLayout layout = new GridLayout(8, false);
         group.setLayout(layout);
 
         // Start:  ___start____________________________________________________ [select]
@@ -185,6 +188,18 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         // Enable only when using optimized export
         optimize.setEnabled(source_opt.getSelection());
 
+        source_lin = new Button(group, SWT.RADIO);
+        source_lin.setText(Messages.ExportSource_Linear);
+        source_lin.setToolTipText(Messages.ExportSource_LinearTT);
+        source_lin.setLayoutData(new GridData());
+        
+        linear = new Text(group, SWT.BORDER);
+        linear.setText(Messages.ExportDefaultLinearInterpolation);
+        linear.setToolTipText(Messages.ExportDefaultLinearInterpolationTT);
+        linear.setLayoutData(new GridData());
+        // Enable only when using linear interpolation
+        linear.setEnabled(source_lin.getSelection());
+        
         source_plot.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -208,12 +223,26 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 final boolean use_optimized = source_opt.getSelection();
                 optimize.setEnabled(use_optimized);
+                linear.setEnabled(!use_optimized);
                 min_max_col.setEnabled(minMaxAllowed());
                 if (use_optimized)
                     optimize.setFocus();
             }
         });
-
+        source_lin.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final boolean use_linear = source_lin.getSelection();
+                optimize.setEnabled(!use_linear);
+                linear.setEnabled(use_linear);
+                min_max_col.setEnabled(minMaxAllowed());
+                if (use_linear)
+                    linear.setFocus();
+            }
+        });
+        
         // Ghost label to fill the last column
         l = new Label(group, 0);
         l.setLayoutData(new GridData());
@@ -477,7 +506,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
 
         // Determine source: Plot, archive, ...
         final Source source;
-        int optimize_count = -1;
+        int optimize_parameter = -1;
         if (source_raw.getSelection())
             source = Source.RAW_ARCHIVE;
         else if (source_opt.getSelection())
@@ -485,13 +514,29 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             source = Source.OPTIMIZED_ARCHIVE;
             try
             {
-                optimize_count = Integer.parseInt(optimize.getText());
+                optimize_parameter = Integer.parseInt(optimize.getText());
             }
             catch (Exception ex)
             {
                 MessageDialog.openError(optimize.getShell(), Messages.Error,
                       Messages.ExportOptimizeCountError);
                 return;
+            }
+        }
+        else if (source_lin.getSelection())
+        {
+            source = Source.LINEAR_INTERPOLATION;
+            try
+            {
+                optimize_parameter = (int) (SecondsParser.parseSeconds(linear.getText()) + 0.5);
+                if (optimize_parameter < 1)
+                    optimize_parameter = 1;
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.openError(linear.getShell(), Messages.Error,
+                        Messages.ExportLinearIntervalError);
+                  return;
             }
         }
         else
@@ -519,10 +564,10 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
 
             if (filename.endsWith(".m")) //$NON-NLS-1$
                 export = new MatlabScriptExportJob(model, start_time, end_time, source,
-                        optimize_count, filename, this);
+                        optimize_parameter, filename, this);
             else if (filename.endsWith(".mat")) //$NON-NLS-1$
                 export = new MatlabFileExportJob(model, start_time, end_time, source,
-                        optimize_count, filename, this);
+                        optimize_parameter, filename, this);
             else
             {
                 MessageDialog.openError(type_matlab.getShell(), Messages.Error,
@@ -563,10 +608,10 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             formatter.useMinMaxColumn(minMaxAllowed() && min_max_col.getSelection());
             if (tabular.getSelection())
                 export = new SpreadsheetExportJob(model, start_time, end_time, source,
-                        optimize_count, formatter, filename, this);
+                        optimize_parameter, formatter, filename, this);
             else
                 export = new PlainExportJob(model, start_time, end_time, source,
-                        optimize_count, formatter, filename, this);
+                        optimize_parameter, formatter, filename, this);
         }
         export.schedule();
     }

@@ -7,6 +7,11 @@ package org.epics.vtype;
 /**
  * Severity of an alarm.
  * <p>
+ * Values are provided in order of increasing severity, so you can rely on
+ * {@link #ordinal() } and {@link #compareTo(java.lang.Enum) } for comparison
+ * and ordering. In case additional AlarmSeverity values are added in the future,
+ * which is very unlikely, they will be added in order as well.
+ * <p>
  * One should always bear in mind that the alarm severity of the IOC is set on
  * the record, and not on the individual channel. If  one is not connecting
  * to the value field of the record, the severity does not reflect the state

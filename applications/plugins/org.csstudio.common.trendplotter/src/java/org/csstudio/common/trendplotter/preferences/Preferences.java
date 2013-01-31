@@ -200,7 +200,7 @@ public class Preferences
      */
     public static int getHistSampleBuffer() {
         final IPreferencesService prefs = Platform.getPreferencesService();
-        return prefs.getInt(Activator.PLUGIN_ID, HIST_BUFFER, 800, null);
+        return prefs.getInt(Activator.PLUGIN_ID, HIST_BUFFER, 2000, null);
     }
 
     /**

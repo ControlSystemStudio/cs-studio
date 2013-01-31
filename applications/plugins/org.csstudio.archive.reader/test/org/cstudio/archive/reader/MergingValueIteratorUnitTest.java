@@ -28,8 +28,8 @@ public class MergingValueIteratorUnitTest
     public void testMergingValueIterator() throws Exception
     {
         System.out.println("MergingValueIterator");
-        final DemoDataIterator iter1 = new DemoDataIterator("A");
-        final DemoDataIterator iter2 = new DemoDataIterator("B");
+        final DemoDataIterator iter1 = DemoDataIterator.forStrings("A");
+        final DemoDataIterator iter2 = DemoDataIterator.forStrings("B");
         final ValueIterator merge = new MergingValueIterator(iter1, iter2);
         int count = 0;
         final StringBuilder result = new StringBuilder();

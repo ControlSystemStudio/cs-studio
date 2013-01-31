@@ -119,8 +119,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		if (viewer != null) {
 			SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
 		}
-		displayModel = new DisplayModel();
-		displayModel.setOpiFilePath(getOPIFilePath());
+		displayModel = new DisplayModel(getOPIFilePath());
 		displayModel.setDisplayID(displayID);
 		displayModelFilled = false;
 		InputStream inputStream = null;

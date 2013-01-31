@@ -26,10 +26,10 @@ public class AapiArchiveReaderTest {
 	public void testGetRawData() throws UnknownChannelException, Exception {
 		ITimestamp start = TimestampFactory.createTimestamp(1267350000, 0);
 		ITimestamp end = TimestampFactory.createTimestamp(1267355000, 0);
-		ValueIterator rawValues = _aapiArchiveReader.getRawValues(
-				0, "krykWeather:vWindBoe_ai", start, end);
-		assertNotNull(rawValues);
-		printoutRaw(rawValues);
+//		ValueIterator rawValues = _aapiArchiveReader.getRawValues(
+//				0, "krykWeather:vWindBoe_ai", start, end);
+//		assertNotNull(rawValues);
+//		printoutRaw(rawValues);
 	}
 
 	private void printoutRaw(ValueIterator rawValues) {
@@ -41,10 +41,10 @@ public class AapiArchiveReaderTest {
 	public void testGetMinMaxData() throws UnknownChannelException, Exception {
 		ITimestamp start = TimestampFactory.createTimestamp(1267350000, 0);
 		ITimestamp end = TimestampFactory.createTimestamp(1267355000, 0);
-		ValueIterator optimizedValues = _aapiArchiveReader.getOptimizedValues(
-				0, "krykWeather:vWindBoe_ai", start, end, 10);
-		assertNotNull(optimizedValues);
-		printoutMinMax(optimizedValues);
+//		ValueIterator optimizedValues = _aapiArchiveReader.getOptimizedValues(
+//				0, "krykWeather:vWindBoe_ai", start, end, 10);
+//		assertNotNull(optimizedValues);
+//		printoutMinMax(optimizedValues);
 	}
 
 	private void printoutMinMax(ValueIterator optimizedValues) throws Exception {

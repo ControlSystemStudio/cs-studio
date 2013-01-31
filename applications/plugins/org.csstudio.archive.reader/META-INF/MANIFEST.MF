@@ -4,9 +4,9 @@ Bundle-Name: Archive API3 (VType)
 Bundle-SymbolicName: org.csstudio.archive.reader;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Require-Bundle: org.junit4,
- org.eclipse.core.runtime,
- org.csstudio.archive.vtype;bundle-version="1.0.0";visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.archive.vtype;bundle-version="1.0.0";visibility:=reexport,
+ org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.archive.reader

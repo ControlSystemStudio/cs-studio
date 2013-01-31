@@ -10,6 +10,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.epics.vtype.VType;
 
 public class ArchiveRecordsValueIterator implements ValueIterator {
 
@@ -36,9 +37,11 @@ public class ArchiveRecordsValueIterator implements ValueIterator {
 	}
 
 	@Override
-	public IValue next() throws Exception {
+	public VType next() throws Exception {
 		if (_result.size() > 0) {
-			return _result.remove(0);
+			//TODO (jhatje): implement vType
+			return null;
+//			return _result.remove(0);
 		}
 		return null;
 	}

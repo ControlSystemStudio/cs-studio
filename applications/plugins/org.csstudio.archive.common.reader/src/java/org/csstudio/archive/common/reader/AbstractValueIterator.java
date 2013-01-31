@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.epics.vtype.VType;
 
 /**
  * Abstract super class for value iterators talking to the DESY archive service interface.
@@ -98,7 +98,7 @@ public abstract class AbstractValueIterator implements ValueIterator {
      */
     @Override
     @Nonnull
-    public abstract IValue next() throws Exception;
+    public abstract VType next() throws Exception;
 
     /**
      * {@inheritDoc}

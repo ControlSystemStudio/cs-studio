@@ -78,13 +78,14 @@ then the first step would be installing Tomcat server.</p>
  Below is an css_rap.ini example, you can make corresponding modifications for your site. </p>
  
 <pre class="example_code">
-#EPICS configuration
+#---------------EPICS configuration-----------------------
 org.csstudio.platform.libs.epics/auto_addr_list=false
 org.csstudio.platform.libs.epics/use_pure_java=true
 org.csstudio.platform.libs.epics/addr_list=127.0.0.1 192.168.1.2
 org.csstudio.platform.libs.epics/max_array_bytes=160000
 
-#WebOPI configuration
+
+#---------------WebOPI configuration----------------------
 org.csstudio.opibuilder/opi_repository=C:/path/BOY Examples/
 org.csstudio.opibuilder/startup_opi=main.opi
 org.csstudio.opibuilder/mobile_startup_opi=mobile.opi
@@ -92,7 +93,32 @@ org.csstudio.opibuilder/color_file=color.def
 org.csstudio.opibuilder/font_file=font.def
 org.csstudio.opibuilder/top_opis=http://www.xxx.com/xxx/Site/main.opi
 org.csstudio.opibuilder/opi_gui_refresh_cycle=200
-org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"</pre>
+org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"
+
+#True if needs authentication for the whole webopi site. It is false by default.
+#org.csstudio.opibuilder/secure_whole_site=true
+
+#The opi directory that needs authentication to access any opi under it.
+#It can be absolute local directory path, an URL path or relative path to opi_repository.
+org.csstudio.opibuilder/secured_opi_directory=/any/path
+
+#-----------------Core Configuration---------------------
+#Extension id of the login module. It supports following login modules:
+#org.csstudio.rap.core.defaultLoginModule, see org.csstudio.rap.core.security.DefaultLoginModule
+#org.csstudio.rap.core.LdapLoginModule, see com.sun.security.auth.module.LdapLoginModule
+#org.csstudio.rap.core.JndiLoginModule, see com.sun.security.auth.module.JndiLoginModule
+#org.csstudio.rap.core.LDAPBindLoginModule, see org.csstudio.rap.core.security.LDAPBindLoginModule
+#org.csstudio.rap.core.Krb5LoginModule, see com.sun.security.auth.module.Krb5LoginModule
+#You can also define your own login module by extending extension point org.eclipse.equinox.security.loginModule
+#The default login module is org.csstudio.rap.core.defaultLoginModule if nothing is specified.
+#org.csstudio.rap.core/login_module_extension_id = org.csstudio.rap.core.LDAPBindLoginModule
+
+# Options for the login module, format:
+# optionName1=value1, optionName2="value 2", optionName3="another value"
+# For example, the options for default login module:
+org.csstudio.rap.core/login_module_options = username=css, password="rap rock"
+
+</pre>
 
 <p>In above example, EPICS configuration items are same as in CSS. Most items in WebOPI configuration
 are same as in BOY, but there are some additional items:</p> 

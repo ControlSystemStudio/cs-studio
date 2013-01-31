@@ -65,7 +65,6 @@ public class HamcrestMatchers
             }
         };
     }
-    
 
     /** @param threshold Desired minimum value
      *  @return {@link Matcher}
@@ -92,8 +91,7 @@ public class HamcrestMatchers
             }
         };
     }
-    
-    
+
     /** @param threshold Desired minimum value
      *  @return {@link Matcher}
      */
@@ -120,7 +118,6 @@ public class HamcrestMatchers
         };
     }
 
-
     /** @param threshold Desired maximum value
      *  @return {@link Matcher}
      */
@@ -146,8 +143,7 @@ public class HamcrestMatchers
             }
         };
     }
-    
-    
+
     /** @param threshold Desired maximum value
      *  @return {@link Matcher}
      */
@@ -169,6 +165,27 @@ public class HamcrestMatchers
                     final double dbl = ((Number)value).doubleValue();
                     return dbl < threshold.doubleValue();
                 }
+                return false;
+            }
+        };
+    }
+
+    /** @return {@link Matcher} that asserts Not-a-number */
+    public static Matcher<Double> notANumber()
+    {
+        return new BaseMatcher<Double>()
+        {
+            @Override
+            public void describeTo(final Description desc)
+            {
+                desc.appendText("not a number");
+            }
+            
+            @Override
+            public boolean matches(final Object value)
+            {
+                if (value instanceof Double)
+                    return Double.isNaN((Double)value);
                 return false;
             }
         };

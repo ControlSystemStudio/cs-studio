@@ -2,17 +2,13 @@
  * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.epics.pvmanager.formula;
 
 import org.epics.pvmanager.ExpressionLanguage;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.ValueFactory;
-import org.epics.util.time.Timestamp;
 
 
 /**

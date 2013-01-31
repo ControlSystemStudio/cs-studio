@@ -73,55 +73,55 @@ public class ArchiverTest {
     @Test
     public void testOptimizedData() throws Exception {
 
-        int i = 0;
-        final ValueIterator desyArchiverValues = _desyArchiveReader.getOptimizedValues(1, _pvItem.getName(), _start, _end, 15);
-        LOG.info("Desy Archiver Optimized:");
-        while (desyArchiverValues.hasNext()) {
-            i++;
-            final IValue value = desyArchiverValues.next();
-            final IMinMaxDoubleValue minMaxValue = (IMinMaxDoubleValue) value;
-            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value) + " [     " + minMaxValue.getMinimum()
-                     + "   ...    " + minMaxValue.getMaximum() + "   ]");
-//            LOG.info("value " + i + ": " + value.getTime().toCalendar().getTime().toString() + " - " + ValueUtil.getDouble(value));
-        }
-
-        final ValueIterator channelArchiverValues = _channelArchiveReader.getOptimizedValues(1, _pvItem.getName(), _start, _end, 15);
-        i = 0;
-        LOG.info("Channel Archiver Optimized:");
-        while (channelArchiverValues.hasNext()) {
-            i++;
-            final IValue value = channelArchiverValues.next();
-            final double double1 = ValueUtil.getDouble(value);
-            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + double1);
-        }
-    }
-
-    @Test
-    public void testRawData() throws Exception {
-
-        final ValueIterator channelArchiverValues = _channelArchiveReader.getRawValues(1, _pvItem.getName(), _start, _end);
-        int i = 0;
-        LOG.info("Channel Archiver Raw:");
-        while (channelArchiverValues.hasNext()) {
-            i++;
-            final IValue value = channelArchiverValues.next();
-            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value));
-        }
-
-        i = 0;
-        final ValueIterator desyArchiverValues = _desyArchiveReader.getRawValues(1, _pvItem.getName(), _start, _end);
-        LOG.info("Desy Archiver Raw:");
-        while (desyArchiverValues.hasNext()) {
-            i++;
-            try {
-
-                final IValue value = desyArchiverValues.next();
-            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value));
-            } catch (final Exception e) {
-                LOG.info(e.getMessage());
-                LOG.info(e.toString());
-            }
-        }
-
+//        int i = 0;
+//        final ValueIterator desyArchiverValues = _desyArchiveReader.getOptimizedValues(1, _pvItem.getName(), _start, _end, 15);
+//        LOG.info("Desy Archiver Optimized:");
+//        while (desyArchiverValues.hasNext()) {
+//            i++;
+//            final IValue value = desyArchiverValues.next();
+//            final IMinMaxDoubleValue minMaxValue = (IMinMaxDoubleValue) value;
+//            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value) + " [     " + minMaxValue.getMinimum()
+//                     + "   ...    " + minMaxValue.getMaximum() + "   ]");
+////            LOG.info("value " + i + ": " + value.getTime().toCalendar().getTime().toString() + " - " + ValueUtil.getDouble(value));
+//        }
+//
+//        final ValueIterator channelArchiverValues = _channelArchiveReader.getOptimizedValues(1, _pvItem.getName(), _start, _end, 15);
+//        i = 0;
+//        LOG.info("Channel Archiver Optimized:");
+//        while (channelArchiverValues.hasNext()) {
+//            i++;
+//            final IValue value = channelArchiverValues.next();
+//            final double double1 = ValueUtil.getDouble(value);
+//            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + double1);
+//        }
+//    }
+//
+//    @Test
+//    public void testRawData() throws Exception {
+//
+//        final ValueIterator channelArchiverValues = _channelArchiveReader.getRawValues(1, _pvItem.getName(), _start, _end);
+//        int i = 0;
+//        LOG.info("Channel Archiver Raw:");
+//        while (channelArchiverValues.hasNext()) {
+//            i++;
+//            final IValue value = channelArchiverValues.next();
+//            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value));
+//        }
+//
+//        i = 0;
+//        final ValueIterator desyArchiverValues = _desyArchiveReader.getRawValues(1, _pvItem.getName(), _start, _end);
+//        LOG.info("Desy Archiver Raw:");
+//        while (desyArchiverValues.hasNext()) {
+//            i++;
+//            try {
+//
+//                final IValue value = desyArchiverValues.next();
+//            LOG.info("value " + i + ": " + value.getTime().seconds() + " - " + ValueUtil.getDouble(value));
+//            } catch (final Exception e) {
+//                LOG.info(e.getMessage());
+//                LOG.info(e.toString());
+//            }
+//        }
+//
     }
 }
