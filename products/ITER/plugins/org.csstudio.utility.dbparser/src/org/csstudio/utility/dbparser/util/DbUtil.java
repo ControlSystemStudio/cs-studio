@@ -45,6 +45,7 @@ public class DbUtil {
 		for (String line = br.readLine(); line != null; line = br.readLine())
 			out.append(line);
 		br.close();
+		out.append("\n"); // to avoid EOF issues
 		return out.toString();
 	}
 }

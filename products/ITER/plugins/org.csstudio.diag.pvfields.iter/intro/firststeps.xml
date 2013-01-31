@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+    <extensionContent id="org.csstudio.diag.pvfields.iter" name="CSS" style="css/style.css" path="firststeps/@">
+        <group id="content-group" style-id="content-group">
+            <link id="pvfields" label="PV Fields Viewer" style-id="content-link"
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.diag.pvfields/html/index.html" >
+				<text>
+				  PV Fields Viewer allow you to see original/current value of selected PV's fields.
+                </text>
+            </link>
+        </group>
+    </extensionContent>
+</introContent>

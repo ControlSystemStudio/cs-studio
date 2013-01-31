@@ -6,4 +6,11 @@
             class="org.csstudio.diag.pvfields.iter.ITERDataProvider"
             name="ITER RDB Data"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/firststeps.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+   </extension>
 </plugin>
