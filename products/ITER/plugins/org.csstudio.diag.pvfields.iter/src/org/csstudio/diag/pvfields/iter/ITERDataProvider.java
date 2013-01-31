@@ -32,9 +32,8 @@ public class ITERDataProvider implements DataProvider {
 		final Map<String, String> properties = new HashMap<String, String>();
 		final List<PVField> fields = new ArrayList<PVField>();
 
-		List<Record> records = DBContextValueHolder.get().findRecord("^" + name + "$");
-		if (records != null && !records.isEmpty()) {
-			//TODO: display alert if more than 1
+		List<Record> records = DBContextValueHolder.get().findRecord(name);
+		if (records != null && records.size() == 1) {
 			Record rec = records.get(0); // we take first
 			if (rec != null) {
 				properties.put("Record Name", rec.getName());
@@ -43,6 +42,18 @@ public class ITERDataProvider implements DataProvider {
 				for (Field f : rec.getFields())
 					fields.add(new PVField(name + "." + f.getType(), f.getValue()));
 			}
+		} else if (records != null && records.size() > 1) {
+			StringBuilder sb = new StringBuilder();
+			for (Record rec : records) {
+				sb.append("\t");
+				sb.append(rec.getName());
+				sb.append(": ");
+				sb.append(rec.getFile().getFullPath());
+				sb.append("\n");
+			}
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+					"{0} matches more than 1 PV:\n {1}",
+					new Object[] { name, sb });
 		}
 		final PVInfo info = new PVInfo(properties, fields);
 		Logger.getLogger(getClass().getName()).log(Level.FINE,

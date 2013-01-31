@@ -36,20 +36,19 @@ public class StringUtil {
     }
     
     private static String substitution(String escapedToken) {
-        switch (escapedToken) {
-            case "\\\"":
+        if ("\\\"".equals(escapedToken)) {
                 return "\"";
-            case "\\\\":
+        } else if ("\\\\".equals(escapedToken)) {
                 return "\\\\";
-            case "\\\'":
+        } else if ("\\\'".equals(escapedToken)) {
                 return "\'";
-            case "\\r":
+        } else if ("\\r".equals(escapedToken)) {
                 return "\r";
-            case "\\n":
+        } else if ("\\n".equals(escapedToken)) {
                 return "\n";
-            case "\\b":
+        } else if ("\\b".equals(escapedToken)) {
                 return "\b";
-            case "\\t":
+        } else if ("\\t".equals(escapedToken)) {
                 return "\t";
         }
         if (escapedToken.startsWith("\\u")) {

@@ -72,6 +72,9 @@ public class StartupLauncher implements IStartup {
 								DBContextValueHolder.get().removeFile((IFile) resource);
 							} else {
 								if (resource.getName().endsWith(".db")) {
+									if (delta.getKind() == IResourceDelta.CHANGED
+											|| delta.getKind() == IResourceDelta.CONTENT)
+										DBContextValueHolder.get().removeFile((IFile) resource);
 									try {
 										parseDB((IFile) resource);
 									} catch (Exception e) {

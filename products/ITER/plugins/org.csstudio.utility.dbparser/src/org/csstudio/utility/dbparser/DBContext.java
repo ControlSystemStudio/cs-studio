@@ -35,13 +35,15 @@ public class DBContext implements Serializable {
 		records = new HashMap<String, List<Record>>();
 	}
 
-	public List<Record> findRecord(String pattern) {
+	public List<Record> findRecord(String name) {
 		List<Record> result = new ArrayList<Record>();
-		Pattern p = Pattern.compile(pattern);
-		for (String name : records.keySet()) {
+		for (String rec : records.keySet()) {
+			// replace macro by .*
+			final String regexp = rec.replaceAll("\\$\\([a-zA-Z0-9]+\\)", ".*");
+			Pattern p = Pattern.compile(regexp);
 			Matcher m = p.matcher(name);
 			if (m.matches())
-				result.addAll(records.get(name));
+				result.addAll(records.get(rec));
 		}
 		return result;
 	}
