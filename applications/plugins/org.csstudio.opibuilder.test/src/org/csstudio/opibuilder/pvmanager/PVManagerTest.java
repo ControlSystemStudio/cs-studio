@@ -6,6 +6,7 @@ import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -28,13 +29,14 @@ public class PVManagerTest {
 	
 	String pvName = //"css:sine";
 			//"css:count";
-			"loc://test";
+//			"loc://test";
 			//"css:setpoint";
 			//"Ring_Diag:VFM:image"; 
 			//"Ring_IDmp:Foil_Plunge:Psn";
 			//"css:sensor";
-			//"sim://noise";
+			"sim://ramp(0,100,1,0.1)";
 			//"CG1D:Cam:Cam1:AcquireTime";
+//			"readback";
 	@BeforeClass
 	public static void setUp() throws Exception {
 
@@ -45,31 +47,65 @@ public class PVManagerTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Ignore
+	class PV{
+		private PVReader<Object> reader;
+
+		public PV(PVReader<Object> reader) {
+			this.reader = reader;
+		}
+		
+		//This synchronization will cause deadlock!!!
+		public synchronized Object getValue(){
+			return reader.getValue();
+		}	
+		
+	}
+	
 	@Test
 	public void testPVReader() throws InterruptedException {
 
+			final PVReader<Object> reader = PVManager.read(channel(pvName)).maxRate(
+				ofMillis(100));
 		
-		final PVReader<List<Object>> reader = PVManager.read(newValuesOf(channel(pvName))).maxRate(
-				ofMillis(1000));
+			final PV pv = new PV(reader);
+		
 
-		reader.addPVReaderListener(new PVReaderListener() {
+		reader.addPVReaderListener(new PVReaderListener<Object>() {
             public void pvChanged(PVReaderEvent event) {
 				// Do something with each value
-				Object newValue = reader.getValue();
-				System.out.println(newValue);
-				Exception ex = reader.lastException();
-				if(ex != null)
-					System.out.println(ex);
-				updates ++;
+//				Object newValue = reader.getValue();
+//				System.out.println(newValue);
+//				Exception ex = reader.lastException();
+//				if(ex != null)
+//					System.out.println(ex);
+//				updates ++;
+            	System.out.println(Thread.currentThread().getName() + ": "+ pv.getValue());
+				
 			}
 		});
+		
+		Thread thread2 = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true){
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println("thread2: "+pv.getValue());
+				}
+			}
+		}, "thread2");
+		thread2.start();
+		
 		while(updates < 10){
 			Thread.sleep(100);
 		}
 		reader.close();
 	}
-
+@Ignore
 	@Test
 	public void testPVReadAndWrite() throws InterruptedException{
 		final Display display = new Display ();
