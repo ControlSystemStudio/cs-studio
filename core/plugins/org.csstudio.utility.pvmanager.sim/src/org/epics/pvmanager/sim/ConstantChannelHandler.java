@@ -37,6 +37,11 @@ class ConstantChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
+    protected boolean saveMessageAfterDisconnect() {
+        return true;
+    }
+
+    @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         throw new UnsupportedOperationException("Can't write to simulation channel.");
     }
