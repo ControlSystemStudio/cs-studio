@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>TEST-BEAST</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.iter.codac.maven.editor.nature.CodacNature</nature>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src/main/boy/SymbolLibrary</name>
+			<type>2</type>
+			<locationURI>CODAC_OPI/boy/SymbolLibrary</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>CODAC_OPI</name>
+			<value>file:/opt/codac/opi</value>
+		</variable>
+	</variableList>
+</projectDescription>
