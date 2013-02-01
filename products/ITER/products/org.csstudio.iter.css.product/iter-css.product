@@ -126,7 +126,6 @@ of the distribution package.
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.iter.css.product"/>
       <plugin id="org.csstudio.iter.passwordprovider"/>
-      <plugin id="org.csstudio.iter.startuphelper"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.ldapAuthorization"/>
       <plugin id="org.csstudio.ldapAuthorization.ui"/>
@@ -143,7 +142,6 @@ of the distribution package.
       <plugin id="org.csstudio.opibuilder.widgets"/>
       <plugin id="org.csstudio.opibuilder.widgets.rcp" fragment="true"/>
       <plugin id="org.csstudio.opibuilder.widgets.symbol"/>
-      <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.jaasAuthentication.ui"/>
       <plugin id="org.csstudio.platform.libs.easymock"/>
@@ -153,7 +151,6 @@ of the distribution package.
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>

@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?><psic:IandCProject xmlns:psic="http://www.iter.org/CODAC/PlantSystemIandC/2012" xmlns:pbs="http://www.iter.org/CODAC/PBS/2012" xmlns:epics="http://www.iter.org/CODAC/EPICS/2012" xmlns:beast="http://www.iter.org/CODAC/BEAST/2012" xmlns:ps="http://www.iter.org/CODAC/PlantSystem/2012" xmlns:adm="http://www.iter.org/CODAC/Admin/2012" xmlns:icp="http://www.iter.org/CODAC/ICP/2012" xmlns:linux="http://www.iter.org/CODAC/Linux/2011" xmlns:codac="http://www.iter.org/CODAC/CODACSystem/2012" xmlns:ns10="http://www.iter.org/CODAC/BEAUTY/2012" xmlns:ns11="http://www.iter.org/CODAC/BOY/2012" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="TEST-BEAST" XMLFormatVersion="4.0.0" CODACVersion="4.0.0" version="1" createdAt="2013-01-29T14:14:20.444Z" modifiedAt="2013-01-29T14:14:20.532Z" createdBy="utzeln" modifiedBy="utzeln" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2012 ../xsd/PlantSystemIandC.xsd">
+    <psic:CBS version="20130130">
+        <psic:node name="TEST" description="Sandbox for testing purposes">
+            <psic:ext>
+                <psic:PBS/>
+            </psic:ext>
+            <psic:node name="BST0" description="">
+                <psic:ext>
+                    <psic:PSIC>TEST-BST0</psic:PSIC>
+                </psic:ext>
+            </psic:node>
+        </psic:node>
+    </psic:CBS>
+    <ps:plantSystems>
+        <ps:plantSystem ID="45" name="CODAC" createdAt="2013-01-22T10:49:24.166Z" modifiedAt="2013-01-22T10:49:24.166Z">
+            <ps:parts>
+                <ps:part name="PSH000" TTT="PSH" createdAt="2013-01-22T10:51:28.953Z" modifiedAt="2013-01-22T10:51:28.953Z"/>
+            </ps:parts>
+            <ps:signals/>
+            <ps:cubicles/>
+        </ps:plantSystem>
+    </ps:plantSystems>
+    <psic:subsystems>
+        <psic:subsystem name="TEST" CBS="TEST">
+            <psic:variables/>
+            <psic:plantSystemIandCs>
+                <psic:plantSystemIandC ID="TEST-BST0" name="" createdAt="2013-01-22T10:49:45.184Z" modifiedAt="2013-01-22T10:49:45.184Z">
+                    <psic:plantControlSystem/>
+                    <psic:PSH index="0" name="PSH000" TTT="PSH" createdAt="2013-01-22T10:51:28.953Z" modifiedAt="2013-01-22T10:51:28.953Z">
+                        <epics:IOC name="psh-idx-core"/>
+                        <epics:IOC name="psh-idx-plc"/>
+                        <epics:IOC name="psh-idx-sys"/>
+                    </psic:PSH>
+                    <psic:variables>
+                        <psic:variable name="TEST-BST0:HIGH-CHECK" description="Force ON pump?" createdAt="2013-01-29T14:18:19.793Z" modifiedAt="2013-01-29T14:18:19.793Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:HIGH-CHECK</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:HIGH-CHECK" type="calcout" createdAt="2013-01-29T14:18:19.793Z" modifiedAt="2013-01-29T14:18:19.793Z">
+    <psic:EPICSField name="CALC" value="A"/>
+    <psic:EPICSField name="DOPT" value="Use OCAL"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:HIGH-SWITCH CP MS"/>
+    <psic:EPICSField name="OCAL" value="1"/>
+    <psic:EPICSField name="OOPT" value="Transition To Non-zero"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:PUMP PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:HIGH-SWITCH" description="Tank High level" createdAt="2013-01-29T14:18:19.187Z" modifiedAt="2013-01-30T07:58:12.653Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>true</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:HIGH-SWITCH</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:HIGH-SWITCH" type="bi" createdAt="2013-01-29T14:18:19.187Z" modifiedAt="2013-01-30T07:58:12.653Z">
+    <psic:EPICSField name="INP" value="0"/>
+    <psic:EPICSField name="ONAM" value="Wet"/>
+    <psic:EPICSField name="OSV" value="MAJOR"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="ZNAM" value="Dry"/>
+    <psic:EPICSField name="ZSV" value="NO_ALARM"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                            <psic:BEASTAttributes>
+<beast:pv name="TEST-BST0:HIGH-SWITCH">
+    <beast:description>Whenever the HIGH switch gets wet, the pump will be forced ON</beast:description>
+    <beast:enabled>true</beast:enabled>
+    <beast:latching>true</beast:latching>
+    <beast:annunciating>true</beast:annunciating>
+    <beast:guidance>
+        <beast:title>In the event that the MID switch has failed</beast:title>
+        <beast:details>The tank level has continued to increase and has reached the HIGH level generating a MAJOR alarm</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Consequence of deviation</beast:title>
+        <beast:details>The MID switch fails to operate: defective switch, blocked switch or damaged wiring.
+As a consequence the pump remaining dormant, the tank will overflow, causing inconvenience and damage to property.</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Corrective action</beast:title>
+        <beast:details>Reset the MID Switch (if needed)</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Time for response</beast:title>
+        <beast:details>The tank will overflow if the pump fails to be forced ON in 10 minutes</beast:details>
+    </beast:guidance>
+    <beast:display>
+        <beast:title>Pump Control System</beast:title>
+        <beast:details>/m-TEST-BEAST/src/main/boy/demo.opi</beast:details>
+    </beast:display>
+    <beast:display>
+        <beast:title>Archived Tank Level Plot</beast:title>
+        <beast:details>file:/m-TEST-BEAST/src/main/databrowser/tank-level.plt</beast:details>
+    </beast:display>
+    <beast:command>
+        <beast:title>Reset the MID Switch</beast:title>
+        <beast:details>caput TEST-BST0:MID-SWITCH-FAIL OFF</beast:details>
+    </beast:command>
+    <beast:automated_action>
+        <beast:title>Contact Maintenance Service</beast:title>
+        <beast:details>mailto:someone@iter.org,someone_else@iter.org?subject=*MID Switch fails to maintain the tank level&amp;body=*{0} alarm - Tank Switch is {1}</beast:details>
+        <beast:delay>5</beast:delay>
+    </beast:automated_action>
+</beast:pv>
+                            </psic:BEASTAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:IOC-TIME" description="IOC Current Date and Time" createdAt="2013-01-29T14:18:21.009Z" modifiedAt="2013-01-29T14:18:21.009Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>string</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:IOC-TIME</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:IOC-TIME" type="stringin" createdAt="2013-01-29T14:18:21.009Z" modifiedAt="2013-01-29T14:18:21.009Z">
+    <psic:EPICSField name="DTYP" value="Soft Timestamp"/>
+    <psic:EPICSField name="INP" value="@%d/%m/%Y %H:%M:%S"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:LOW-CHECK" description="Force OFF pump?" createdAt="2013-01-29T14:18:19.915Z" modifiedAt="2013-01-29T14:18:19.915Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:LOW-CHECK</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:LOW-CHECK" type="calcout" createdAt="2013-01-29T14:18:19.915Z" modifiedAt="2013-01-29T14:18:19.915Z">
+    <psic:EPICSField name="CALC" value="A"/>
+    <psic:EPICSField name="DOPT" value="Use OCAL"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:LOW-SWITCH CP MS"/>
+    <psic:EPICSField name="OCAL" value="0"/>
+    <psic:EPICSField name="OOPT" value="Transition To Zero"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:PUMP PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:LOW-SWITCH" description="Tank Low level" createdAt="2013-01-29T14:18:19.296Z" modifiedAt="2013-01-30T07:58:22.106Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>true</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:LOW-SWITCH</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:LOW-SWITCH" type="bi" createdAt="2013-01-29T14:18:19.296Z" modifiedAt="2013-01-30T07:58:22.106Z">
+    <psic:EPICSField name="INP" value="0"/>
+    <psic:EPICSField name="ONAM" value="Wet"/>
+    <psic:EPICSField name="OSV" value="NO_ALARM"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="ZNAM" value="Dry"/>
+    <psic:EPICSField name="ZSV" value="MAJOR"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                            <psic:BEASTAttributes>
+<beast:pv name="TEST-BST0:LOW-SWITCH">
+    <beast:description>Whenever the LOW switch becomes dry, the pump will be forced OFF</beast:description>
+    <beast:enabled>true</beast:enabled>
+    <beast:latching>true</beast:latching>
+    <beast:annunciating>true</beast:annunciating>
+    <beast:guidance>
+        <beast:title>In the event that the MID switch has failed</beast:title>
+        <beast:details>The tank level has continued to decrease and has reached the LOW level generating a MAJOR alarm</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Consequence of deviation</beast:title>
+        <beast:details>The MID switch fails. The outcome is simple, the pump will drain the tank until it is empty, whereupon it will try to pump air indefinitely and burn out.
+Unfortunately, every time a MID switch fails for too long, a new pump may have to be installed</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Corrective action</beast:title>
+        <beast:details>Change the MID Switch and check if the pump has already burned out</beast:details>
+    </beast:guidance>
+    <beast:guidance>
+        <beast:title>Time for response</beast:title>
+        <beast:details>The pump will burn out in 30 minutes</beast:details>
+    </beast:guidance>
+    <beast:display>
+        <beast:title>Pump Control System</beast:title>
+        <beast:details>/m-TEST-BEAST/src/main/boy/demo.opi</beast:details>
+    </beast:display>
+    <beast:display>
+        <beast:title>Archived Tank Level Plot</beast:title>
+        <beast:details>file:/m-TEST-BEAST/src/main/databrowser/tank-level.plt</beast:details>
+    </beast:display>
+    <beast:command>
+        <beast:title>Reset the MID Switch</beast:title>
+        <beast:details>caput TEST-BST0:MID-SWITCH-FAIL OFF</beast:details>
+    </beast:command>
+    <beast:automated_action>
+        <beast:title>Contact Maintenance Service</beast:title>
+        <beast:details>mailto:someone@iter.org</beast:details>
+        <beast:delay>0</beast:delay>
+    </beast:automated_action>
+</beast:pv>
+                            </psic:BEASTAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:MID-CHECK" description="Start pump?" createdAt="2013-01-29T14:18:19.525Z" modifiedAt="2013-01-29T14:18:19.525Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:MID-CHECK</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:MID-CHECK" type="calcout" createdAt="2013-01-29T14:18:19.525Z" modifiedAt="2013-01-29T14:18:19.525Z">
+    <psic:EPICSField name="CALC" value="A"/>
+    <psic:EPICSField name="DOPT" value="Use OCAL"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:MID-SWITCH CP MS"/>
+    <psic:EPICSField name="OCAL" value="1"/>
+    <psic:EPICSField name="OOPT" value="Transition To Non-zero"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:PUMP PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:MID-SWITCH" description="Tank Mid level" createdAt="2013-01-29T14:18:18.971Z" modifiedAt="2013-01-30T07:55:47.982Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:MID-SWITCH</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:MID-SWITCH" type="bi" createdAt="2013-01-29T14:18:18.971Z" modifiedAt="2013-01-30T07:55:47.982Z">
+    <psic:EPICSField name="INP" value="0"/>
+    <psic:EPICSField name="ONAM" value="Wet"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="ZNAM" value="Dry"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:MID-SWITCH-FAIL" description="Failure of MID switch" createdAt="2013-01-29T14:18:20.516Z" modifiedAt="2013-01-30T07:56:03.929Z">
+                            <psic:direction>configuration</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>persistent</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:MID-SWITCH-FAIL</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:MID-SWITCH-FAIL" type="bo" createdAt="2013-01-29T14:18:20.516Z" modifiedAt="2013-01-30T07:56:03.929Z">
+    <psic:EPICSField name="DOL" value="0"/>
+    <psic:EPICSField name="ONAM" value="ON"/>
+    <psic:EPICSField name="OSV" value="MAJOR"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="ZNAM" value="OFF"/>
+    <psic:EPICSField name="ZSV" value="NO_ALARM"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:MID-TIMER" description="Timer of 25 seconds" createdAt="2013-01-29T14:18:20.619Z" modifiedAt="2013-01-29T14:18:20.619Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:defaultValue>0</psic:defaultValue>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:MID-TIMER</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:MID-TIMER" type="calc" createdAt="2013-01-29T14:18:20.619Z" modifiedAt="2013-01-29T14:18:20.619Z">
+    <psic:EPICSField name="CALC" value="A &lt;= 25 ? A+1:0"/>
+    <psic:EPICSField name="DISV" value="0"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:MID-TIMER"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="SDIS" value="TEST-BST0:TIMER-START"/>
+    <psic:EPICSField name="VAL" value="0"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:PUMP" description="Pump ON/OFF" createdAt="2013-01-29T14:18:19.425Z" modifiedAt="2013-01-30T07:56:20.476Z">
+                            <psic:direction>configuration</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>persistent</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:PUMP</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:PUMP" type="bo" createdAt="2013-01-29T14:18:19.425Z" modifiedAt="2013-01-30T07:56:20.476Z">
+    <psic:EPICSField name="DOL" value="0"/>
+    <psic:EPICSField name="IVOA" value="Set output to IVOV"/>
+    <psic:EPICSField name="IVOV" value="0"/>
+    <psic:EPICSField name="ONAM" value="ON"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="SCAN" value="1 second"/>
+    <psic:EPICSField name="ZNAM" value="OFF"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-HIGH" description="High Level?" createdAt="2013-01-29T14:18:20.817Z" modifiedAt="2013-01-29T14:18:20.817Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-HIGH</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-HIGH" type="calcout" createdAt="2013-01-29T14:18:20.817Z" modifiedAt="2013-01-29T14:18:20.817Z">
+    <psic:EPICSField name="CALC" value="A &gt; B"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TANK-LEVEL CP MS"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:TANK-LEVEL.HIGH"/>
+    <psic:EPICSField name="OOPT" value="On Change"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:HIGH-SWITCH PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-INTERLOCK" description="Tank Interlock" createdAt="2013-01-29T14:18:20.205Z" modifiedAt="2013-01-30T07:57:12.860Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>1.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-INTERLOCK</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-INTERLOCK" type="calcout" createdAt="2013-01-29T14:18:20.205Z" modifiedAt="2013-01-30T07:57:12.860Z">
+    <psic:EPICSField name="CALC" value="(A &gt;= B-5 || A &lt;= C+5) &amp;&amp; !D"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TANK-LEVEL CP MS"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:TANK-LEVEL.HOPR"/>
+    <psic:EPICSField name="INPC" value="TEST-BST0:TANK-LEVEL.LOPR"/>
+    <psic:EPICSField name="INPD" value="TEST-BST0:TANK-MODE CP"/>
+    <psic:EPICSField name="IVOA" value="Set output to IVOV"/>
+    <psic:EPICSField name="IVOV" value="1"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-LEVEL" description="Tank level with ADEL" createdAt="2013-01-29T14:18:20.070Z" modifiedAt="2013-01-30T07:56:35.550Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:defaultValue>35</psic:defaultValue>
+                            <psic:archivingInfo enabled="true">
+<psic:samplingMode>monitor</psic:samplingMode>
+<psic:samplingFrequency>2.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-LEVEL</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-LEVEL" type="calc" createdAt="2013-01-29T14:18:20.070Z" modifiedAt="2013-01-30T07:56:35.550Z">
+    <psic:EPICSField name="ADEL" value="10"/>
+    <psic:EPICSField name="CALC" value="(!B &amp;&amp; !C)?A+2*RNDM:A-2*RNDM"/>
+    <psic:EPICSField name="DISV" value="1"/>
+    <psic:EPICSField name="EGU" value="m3"/>
+    <psic:EPICSField name="HHSV" value="MAJOR"/>
+    <psic:EPICSField name="HIGH" value="80"/>
+    <psic:EPICSField name="HIHI" value="90"/>
+    <psic:EPICSField name="HOPR" value="100"/>
+    <psic:EPICSField name="HSV" value="MINOR"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TANK-LEVEL"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:TANK-MID"/>
+    <psic:EPICSField name="INPC" value="TEST-BST0:TIMER-START"/>
+    <psic:EPICSField name="LLSV" value="MAJOR"/>
+    <psic:EPICSField name="LOLO" value="10"/>
+    <psic:EPICSField name="LOPR" value="0"/>
+    <psic:EPICSField name="LOW" value="20"/>
+    <psic:EPICSField name="LSV" value="MINOR"/>
+    <psic:EPICSField name="PREC" value="2"/>
+    <psic:EPICSField name="SCAN" value="2 second"/>
+    <psic:EPICSField name="SDIS" value="TEST-BST0:TANK-INTERLOCK"/>
+    <psic:EPICSField name="VAL" value="35"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-LOW" description="Low Level?" createdAt="2013-01-29T14:18:20.917Z" modifiedAt="2013-01-29T14:18:20.917Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-LOW</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-LOW" type="calcout" createdAt="2013-01-29T14:18:20.917Z" modifiedAt="2013-01-29T14:18:20.917Z">
+    <psic:EPICSField name="CALC" value="!(A &lt; B)"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TANK-LEVEL CP MS"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:TANK-LEVEL.LOW"/>
+    <psic:EPICSField name="OOPT" value="On Change"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:LOW-SWITCH PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-MID" description="Mid Level?" createdAt="2013-01-29T14:18:20.399Z" modifiedAt="2013-01-29T14:18:20.399Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-MID</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-MID" type="calcout" createdAt="2013-01-29T14:18:20.399Z" modifiedAt="2013-01-29T14:18:20.399Z">
+    <psic:EPICSField name="CALC" value="A &gt; B/2 - 5"/>
+    <psic:EPICSField name="DISV" value="1"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TANK-LEVEL CP MS"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:TANK-LEVEL.HOPR"/>
+    <psic:EPICSField name="OOPT" value="On Change"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:MID-SWITCH PP"/>
+    <psic:EPICSField name="SDIS" value="TEST-BST0:MID-SWITCH-FAIL"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TANK-MODE" description="Allow to reset the process" createdAt="2013-01-29T14:18:20.307Z" modifiedAt="2013-01-29T14:18:20.307Z">
+                            <psic:direction>configuration</psic:direction>
+                            <psic:kind>discrete two-state</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:defaultValue>0</psic:defaultValue>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>persistent</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TANK-MODE</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TANK-MODE" type="bo" createdAt="2013-01-29T14:18:20.307Z" modifiedAt="2013-01-29T14:18:20.307Z">
+    <psic:EPICSField name="HIGH" value="15.0"/>
+    <psic:EPICSField name="ONAM" value="Override"/>
+    <psic:EPICSField name="PINI" value="YES"/>
+    <psic:EPICSField name="VAL" value="0"/>
+    <psic:EPICSField name="ZNAM" value="Operational"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TIMER-CHECK" description="Stop pump?" createdAt="2013-01-29T14:18:19.680Z" modifiedAt="2013-01-29T14:18:19.680Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TIMER-CHECK</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TIMER-CHECK" type="calcout" createdAt="2013-01-29T14:18:19.680Z" modifiedAt="2013-01-29T14:18:19.680Z">
+    <psic:EPICSField name="CALC" value="A"/>
+    <psic:EPICSField name="DOPT" value="Use OCAL"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:TIMER-START CP MS"/>
+    <psic:EPICSField name="OCAL" value="0"/>
+    <psic:EPICSField name="OOPT" value="Transition To Zero"/>
+    <psic:EPICSField name="OUT" value="TEST-BST0:PUMP PP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                        <psic:variable name="TEST-BST0:TIMER-START" description="Start timer?" createdAt="2013-01-29T14:18:20.715Z" modifiedAt="2013-01-29T14:18:20.715Z">
+                            <psic:direction>state</psic:direction>
+                            <psic:kind>continuous</psic:kind>
+                            <psic:external>true</psic:external>
+                            <psic:implementsFunction>TEST-BST0</psic:implementsFunction>
+                            <psic:raisesAlarm>false</psic:raisesAlarm>
+                            <psic:archivingInfo enabled="false">
+<psic:samplingFrequency>0.0</psic:samplingFrequency>
+                            </psic:archivingInfo>
+                            <psic:storage>volatile</psic:storage>
+                            <psic:deployedOn>
+<psic:component type="PSH">PSH000</psic:component>
+<psic:EPICSBasedUnit>
+    <psic:IOCName>psh-idx-core</psic:IOCName>
+    <psic:recordName>TEST-BST0:TIMER-START</psic:recordName>
+</psic:EPICSBasedUnit>
+                            </psic:deployedOn>
+                            <psic:presentOnScreens>true</psic:presentOnScreens>
+                            <psic:displayIndex>0</psic:displayIndex>
+                            <psic:EPICSAttributes>
+<psic:EPICSRecord name="TEST-BST0:TIMER-START" type="calcout" createdAt="2013-01-29T14:18:20.715Z" modifiedAt="2013-01-29T14:18:20.715Z">
+    <psic:EPICSField name="CALC" value="!C &amp;&amp; !D &amp;&amp; (A == 1 || (B &gt; 0 &amp;&amp; B &lt;=25))"/>
+    <psic:EPICSField name="INPA" value="TEST-BST0:MID-SWITCH CP MS"/>
+    <psic:EPICSField name="INPB" value="TEST-BST0:MID-TIMER CP"/>
+    <psic:EPICSField name="INPC" value="TEST-BST0:TANK-INTERLOCK CP"/>
+    <psic:EPICSField name="INPD" value="TEST-BST0:TANK-MODE CP"/>
+</psic:EPICSRecord>
+                            </psic:EPICSAttributes>
+                        </psic:variable>
+                    </psic:variables>
+                </psic:plantSystemIandC>
+            </psic:plantSystemIandCs>
+        </psic:subsystem>
+    </psic:subsystems>
+    <psic:templates/>
+</psic:IandCProject>

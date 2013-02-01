@@ -20,18 +20,17 @@
    <page id="firststeps">
       <group path="page-content/top-left">
          <extension id="org.csstudio.opibuilder" importance="medium"/>
+         <extension id="org.csstudio.alarm.beast.notifier" importance="medium"/>
+         <extension id="org.csstudio.diag.pvfields.iter" importance="medium"/>
       </group>
       <group path="page-content/top-right">
          <extension id="org.csstudio.trends.databrowser" importance="medium"/>
-      </group>
-<!-- 	  <group path="page-content/bottom-left"> -->
+         <extension id="org.csstudio.display.pace" importance="medium"/>
 <!--          <extension id="org.csstudio.opibuilder.widgets.symbol" importance="medium"/> -->
-<!--       </group> -->
+      </group>
       <group path="page-content/bottom-left">
-         <extension id="org.csstudio.alarm.beast.notifier" importance="medium"/>
       </group>
       <group path="page-content/bottom-right">
-         <extension id="org.csstudio.display.pace" importance="medium"/>
       </group>
    </page>
    <page id="samples">

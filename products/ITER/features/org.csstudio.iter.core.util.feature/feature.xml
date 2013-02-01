@@ -23,13 +23,11 @@
       <import plugin="org.csstudio.java"/>
       <import plugin="org.csstudio.logging"/>
       <import plugin="org.csstudio.openfile"/>
-      <import plugin="org.csstudio.platform"/>
       <import plugin="org.csstudio.platform.jaasAuthentication"/>
       <import plugin="org.csstudio.platform.libs.epics"/>
       <import plugin="org.csstudio.platform.libs.jdbc"/>
       <import plugin="org.csstudio.platform.libs.jmock"/>
       <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.platform.utility.jms"/>
       <import plugin="org.csstudio.remote"/>
       <import plugin="org.csstudio.servicelocator"/>
@@ -122,13 +120,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.jaasAuthentication"
          download-size="0"
          install-size="0"
@@ -164,13 +155,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.utility.jms.ui"
          download-size="0"
          install-size="0"
@@ -186,13 +170,6 @@
 
    <plugin
          id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"

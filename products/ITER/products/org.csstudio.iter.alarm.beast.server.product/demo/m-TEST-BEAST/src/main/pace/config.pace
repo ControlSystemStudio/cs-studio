@@ -1,0 +1,30 @@
+<paceconfig>
+<title>Demo of PACE on Pump Control System</title>
+<columns>
+   <column>
+     <name>State</name>
+     <access>rw</access>
+     <pv>TEST-BST0:${SWITCH}-SWITCH</pv>
+   </column>
+   <column>
+     <name>Check</name>
+     <access>ro</access>
+     <pv>TEST-BST0:${SWITCH}-CHECK</pv>
+   </column>
+</columns>
+
+ <instances>
+   <instance>
+      <name>HIGH Switch</name>
+      <macros>SWITCH=HIGH</macros>
+   </instance>
+   <instance>
+      <name>MID Switch</name>
+      <macros>SWITCH=MID</macros>
+   </instance>
+   <instance>
+      <name>LOW Switch</name>
+      <macros>SWITCH=LOW</macros>
+   </instance>
+</instances>
+</paceconfig>

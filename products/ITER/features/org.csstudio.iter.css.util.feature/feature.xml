@@ -61,4 +61,8 @@
          id="org.csstudio.iter.utility.sysmon.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.iter.diag.pvfields.feature"
+         version="0.0.0"/>
+
 </feature>

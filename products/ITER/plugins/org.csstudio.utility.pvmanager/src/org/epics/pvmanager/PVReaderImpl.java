@@ -72,28 +72,32 @@ class PVReaderImpl<T> implements PVReader<T> {
         this.readerForNotification = readerForNotification;
     }
 
-    synchronized void firePvValueChanged() {
+    void firePvValueChanged() {
         int notificationMask = 0;
-        if (connectionToNotify) {
-            notificationMask += PVReaderEvent.CONNECTION_MASK;
+        synchronized(this) {
+            if (connectionToNotify) {
+                notificationMask += PVReaderEvent.CONNECTION_MASK;
+            }
+            if (valueToNotify) {
+                notificationMask += PVReaderEvent.VALUE_MASK;
+            }
+            if (exceptionToNotify) {
+                notificationMask += PVReaderEvent.EXCEPTION_MASK;
+            }
+            connectionToNotify = false;
+            valueToNotify = false;
+            exceptionToNotify = false;
         }
-        if (valueToNotify) {
-            notificationMask += PVReaderEvent.VALUE_MASK;
-        }
-        if (exceptionToNotify) {
-            notificationMask += PVReaderEvent.EXCEPTION_MASK;
-        }
-        connectionToNotify = false;
-        valueToNotify = false;
-        exceptionToNotify = false;
         boolean missed = true;
         PVReaderEvent<T> event = new PVReaderEvent(notificationMask, readerForNotification);
         for (PVReaderListener<T> listener : pvReaderListeners) {
             listener.pvChanged(event);
             missed = false;
         }
-        if (missed)
-            missedNotification = true;
+        synchronized(this) {
+            if (missed)
+                missedNotification = true;
+        }
     }
 
     /**

@@ -1,0 +1,85 @@
+<!--
+ $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-iter-units-api/tags/CODAC-CORE-4.0B5/src/main/resources/pom-unit.xml $
+ $Id: pom-unit.xml 33482 2013-01-18 17:09:46Z zagara $
+
+ Project       : CODAC Core System
+
+ Description   : Project description file for a CODAC Core System module
+
+ Authors       : Anze Zagar, Cosylab
+ 
+ Copyright (c) : 2010-2013 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.iter.codac.units</groupId>
+    <artifactId>TEST-BEAST</artifactId>
+    <packaging>codac</packaging>
+    <version>0.0a1</version>
+    <name>CODAC Core System TEST-BEAST module</name>
+    <description>CODAC Core System TEST-BEAST module</description>
+    <url>http://www.iter.org/</url>
+ 
+    <!-- project properties -->
+    <properties>
+        <unit.type>module</unit.type>
+    </properties>
+
+    <!-- parent pom.xml -->
+    <parent>
+        <groupId>org.iter.codac.units</groupId>
+        <artifactId>maven-iter-settings</artifactId>
+        <version>4.0.0</version>
+    </parent>
+
+    <!-- unit owner and developers -->
+    <developers>
+        <developer>
+            <id>utzeln</id>
+            <roles>
+                <role>unit owner</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- configuration of how the project is built -->
+    <build>
+        <!-- default phase is compile -->
+        <defaultGoal>compile</defaultGoal>
+        <!-- this command is executed if you just write 'mvn' -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-iter-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <packaging>
+                        <package name="opi">
+                            <include type="boy" file="*" />
+                            <include type="databrowser" file="*" />
+                            <include type="boy" file="*-SDDMain.opi" topopi="true" />
+                        </package>
+                        <package name="TEST-BST0-PSH0CORE-ioc">
+                            <include type="ioc" name="TEST-BST0-PSH0CORE" />
+                        </package>
+                        <package name="TEST-BST0-PSH0SYSM-ioc">
+                            <include type="ioc" name="TEST-BST0-PSH0SYSM" />
+                        </package>
+                        <package name="srv">
+                            <include type="beast" configuration="TEST-BST0-beast.xml" />
+                            <include type="beauty" configuration="TEST-BST0-beauty.xml" />
+                        </package>
+                    </packaging>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
