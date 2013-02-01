@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-4a6725d4:1389ff63d20:-7500</wuid>
-  <boy_version>3.1.1.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>300</height>
@@ -77,10 +77,10 @@
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>true</keep_wh_ratio>
     </scale_options>
+    <pv_name></pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
     </color_hi>
-    <pv_name></pv_name>
     <foreground_color>
       <color red="255" green="255" blue="255" />
     </foreground_color>
@@ -99,7 +99,7 @@
         <exp bool_exp="true">
           <value>pvStr0</value>
         </exp>
-        <pv trig="true">loc://pvname(sim://noise)</pv>
+        <pv trig="true">loc://pvname("sim://noise")</pv>
       </rule>
     </rules>
     <value_label_format></value_label_format>
@@ -234,7 +234,7 @@ $(trace_0_y_pv_value)</tooltip>
         <exp bool_exp="true">
           <value>pvStr0</value>
         </exp>
-        <pv trig="true">loc://pvname(sim://noise)</pv>
+        <pv trig="true">loc://pvname("sim://noise")</pv>
       </rule>
     </rules>
     <trace_0_y_pv_value />
@@ -249,6 +249,7 @@ $(trace_0_y_pv_value)</tooltip>
     <read_only>false</read_only>
     <visible>true</visible>
     <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>false</multiline_input>
     <wuid>-4a6725d4:1389ff63d20:-7405</wuid>
@@ -266,7 +267,7 @@ $(trace_0_y_pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>loc://pvname(sim://noise)</pv_name>
+    <pv_name>loc://pvname("sim://noise")</pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -283,6 +284,7 @@ $(trace_0_y_pv_value)</tooltip>
     </font>
     <width>203</width>
     <border_style>0</border_style>
+    <confirm_message></confirm_message>
     <rules />
     <pv_value />
     <maximum>1.7976931348623157E308</maximum>
@@ -303,6 +305,7 @@ $(pv_value)</tooltip>
     <read_only>true</read_only>
     <visible>true</visible>
     <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>false</multiline_input>
     <wuid>-4a6725d4:1389ff63d20:-7219</wuid>
@@ -337,12 +340,13 @@ $(pv_value)</tooltip>
     </font>
     <width>124</width>
     <border_style>0</border_style>
+    <confirm_message></confirm_message>
     <rules>
       <rule name="Rule" prop_id="pv_name" out_exp="true">
         <exp bool_exp="true">
           <value>pvStr0</value>
         </exp>
-        <pv trig="true">loc://pvname(sim://noise)</pv>
+        <pv trig="true">loc://pvname("sim://noise")</pv>
       </rule>
     </rules>
     <pv_value />
@@ -411,7 +415,8 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>false</multiline_input>
     <wuid>-34e2f2a9:138b545b86f:-7a4e</wuid>
@@ -446,9 +451,10 @@ $(pv_value)</tooltip>
     </font>
     <width>86</width>
     <border_style>0</border_style>
+    <confirm_message></confirm_message>
     <rules />
     <pv_value />
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
     <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>1</horizontal_alignment>
@@ -464,7 +470,8 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>true</multiline_input>
     <wuid>-34e2f2a9:138b545b86f:-7a4d</wuid>
@@ -498,10 +505,11 @@ $(pv_value)</tooltip>
     </font>
     <width>295</width>
     <border_style>0</border_style>
+    <confirm_message></confirm_message>
     <rules />
     <pv_value />
     <show_h_scroll>false</show_h_scroll>
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
     <border_width>1</border_width>
     <show_v_scroll>false</show_v_scroll>
     <limits_from_pv>false</limits_from_pv>
