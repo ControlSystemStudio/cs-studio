@@ -52,8 +52,29 @@ public class PVManagerPV implements PV {
 	 * @param bufferAllValues true if all values should be buffered.
 	 * @param updateDuration the least update duration.
 	 */
-	public PVManagerPV(String name, boolean bufferAllValues, int updateDuration) {
-		this.name = name;
+	public PVManagerPV(final String name, final boolean bufferAllValues, final int updateDuration) {
+		String n = name;
+		
+		//A workaround for utility PV and PV Manager incompatibility on local pv initialization
+		if(name.startsWith("loc://")){ //$NON-NLS-1$
+			final int value_start = name.indexOf('('); //$NON-NLS-1$
+			if(value_start >0){
+				final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
+				if(value_end >0){
+					String value_text = name.substring(value_start+1, value_end);
+					if(!value_text.matches("\".+\"")){	//$NON-NLS-1$
+						try{
+							Double.parseDouble(value_text);
+						}catch (Exception e) {
+							n = name.substring(0, value_start+1) +
+									"\"" + name.substring(value_start+1, value_end) + //$NON-NLS-1$
+									"\"" + name.substring(value_end); //$NON-NLS-1$
+						}
+					}
+				}
+			}
+		}           
+        this.name = n;	
 		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();	

@@ -586,6 +586,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 	@Override
 	public String getPVName() {
+		if(getPV() != null)
+			return getPV().getName();
 		return getWidgetModel().getPVName();
 	}
 
