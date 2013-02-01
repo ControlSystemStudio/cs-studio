@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Channel Access DataSource</title>
+    </head>
+
+    <body>
+        <h1>Channel Access DataSource</h1>
+        
+        <h2>PV syntax</h2>
+        The standard prefix for the datasource is <code>ca://</code> which can be omitted if configured as the default datasource.
+        <p>
+        EPICS Channel Access PVs can be any record name or record.field name:
+        <pre>
+  ca://some:record:name
+  ca://some_record_name
+  ca://some_record_name.SCAN
+        </pre>
+        
+        <h3>Client side parameters</h3>
+        The data source supports a small number of client parameters that specify
+        how to handle the pv at the client side. These parameters are stripped
+        from the request and never reach the server.
+        <p>
+        The parameter block is a JSON object separated from the pv name by a space (i.e ' ').
+        The currently supported parameters are:
+        <ul>
+            <li><code>ca://mypv {"putCallback":true}</code> <br/> <code>ca://mypv {"putCallback":false}</code>
+            <br/>tells whether put with callback should be used when writing a pv. The default
+            is false, a regular put is used.</li>
+            <li><code>ca://mypv {"longString":true}</code> <br/> <code>ca://mypv {"longString":false}</code>
+            <br/>tells whether to use the long string support. This allows to read and write
+            a byte[] as if it was a native String, hiding the conversion of the
+            zero terminated strings. By default, it uses false in all cases, except for pvs that
+            have a field that end in '$' (e.g. <code>mypv.NAME$</code>).</li>
+        </ul>
+        Note that at this time the JSON notation has to match exactly (no extra spaces) and does not
+        support the mix of parameters. This will be fixed in a future version.
+        
+    </body>
+</html>

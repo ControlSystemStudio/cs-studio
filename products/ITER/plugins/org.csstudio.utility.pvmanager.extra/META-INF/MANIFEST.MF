@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: pvManager experimental expressions
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.extra;singleton:=true
+Bundle-Version: 2.0.0.qualifier
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Experimental expression that, if useful, will be migrated to other packages
+Require-Bundle: org.eclipse.core.runtime,
+ org.epics.util;bundle-version="0.2.0",
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.antlr.runtime,
+ org.epics.vtype;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.epics.pvmanager.extra,
+ org.epics.pvmanager.formula

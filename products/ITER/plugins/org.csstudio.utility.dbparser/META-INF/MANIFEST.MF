@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Epics DB files parser
+Bundle-SymbolicName: org.csstudio.utility.dbparser;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.antlr.runtime
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.utility.dbparser,
+ org.csstudio.utility.dbparser.antlr,
+ org.csstudio.utility.dbparser.data,
+ org.csstudio.utility.dbparser.exception,
+ org.csstudio.utility.dbparser.util

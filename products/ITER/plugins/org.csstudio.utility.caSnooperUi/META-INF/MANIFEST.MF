@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CaSnooper Plug-in
+Bundle-SymbolicName: org.csstudio.utility.caSnooperUi;singleton:=true
+Bundle-Version: 1.3.0.qualifier
+Bundle-Activator: org.csstudio.utility.caSnooperUi.ui.ChangeView.Plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.libs.epics,
+ org.eclipse.help,
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.slf4j;bundle-version="1.6.1"
+Eclipse-LazyStart: true
+Bundle-ClassPath: .
+Export-Package: org.csstudio.utility.caSnooperUi.parser,
+ org.csstudio.utility.caSnooperUi.ui.ChangeView
