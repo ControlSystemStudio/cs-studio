@@ -82,7 +82,9 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		figure.setInternalFocusedBorderColor(model.getInternalFocusedBorderColor());
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 		figure.setButtonVisibility(model.isButtonVisible());
-
+		
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+		
 		figure.addWheelListener(new WheelListener() {
 
 			public void decrementDecimalPart(int index) {
