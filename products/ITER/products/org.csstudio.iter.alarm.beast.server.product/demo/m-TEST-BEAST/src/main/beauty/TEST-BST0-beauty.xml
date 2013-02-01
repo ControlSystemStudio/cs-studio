@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- 
+  Archive Configuration
+  Root: EngineConfig
+  WARNING: This is an automatically generated file. PLEASE DO NOT MODIFY.
+-->
+
+ <engineconfig >
+     <group >
+         <name >TEST-BST0</name>
+
+         <channel >
+             <name >TEST-BST0:HIGH-SWITCH</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:LOW-SWITCH</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:MID-SWITCH</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:MID-SWITCH-FAIL</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:PUMP</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:TANK-INTERLOCK</name>
+
+             <period >1.0</period>
+
+             <monitor ></monitor>
+</channel>
+
+         <channel >
+             <name >TEST-BST0:TANK-LEVEL</name>
+
+             <period >2.0</period>
+
+             <monitor ></monitor>
+</channel>
+</group>
+</engineconfig>

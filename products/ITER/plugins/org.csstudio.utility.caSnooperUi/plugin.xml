@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.utility.caSnooperUi.ui.ChangeView.SnooperView"
+            icon="icon/snooper.jpg"
+            id="org.csstudio.utility.caSnooper.ui.ChangeView.SnooperView"
+            name="caSnooper viewer">
+      </view>
+   </extension>
+           <extension
+           point="org.eclipse.ui.commands">
+        <command
+               defaultHandler="org.csstudio.utility.caSnooperUi.ui.ChangeView.ShowSnooper"
+            id="org.csstudio.utility.casnooperui.ui.changeview.showsnooper"
+            name="CA Snooper">
+      </command>
+     </extension>
+     <extension
+                point="org.eclipse.ui.menus">
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.utility.casnooperui.ui.changeview.showsnooper"
+               icon="icon/snooper.jpg"
+               label="CA Snooper"
+               style="push"
+               tooltip="CA Snooper">
+         </command>
+      </menuContribution>
+      </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.csstudio.remote.managementCommandResultReceivers">
+      <receiver
+            class="org.csstudio.utility.caSnooperUi.TableReceiver"
+            resultType="org.csstudio.utility.casnooper.Table">
+      </receiver>
+   </extension>
+</plugin>

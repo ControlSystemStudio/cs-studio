@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.diag.pvfields.feature"
+      label="ITER PV Fields Viewer"
+      version="1.0.0"
+      provider-name="ITER"
+      os="linux"
+      ws="gtk"
+      nl="en"
+      arch="x86_64">
+
+   <requires>
+		<import plugin="org.csstudio.apputil"/>
+		<import plugin="org.csstudio.apputil.ui"/>
+		<import plugin="org.csstudio.csdata"/>
+		<import plugin="org.csstudio.java"/>
+		<import plugin="org.csstudio.platform.libs.jdbc"/>
+		<import plugin="org.csstudio.platform.utility.rdb"/>
+		<import plugin="org.csstudio.ui.util"/>
+		<import plugin="org.eclipse.core.expressions"/>
+		<import plugin="org.eclipse.core.filesystem"/>
+		<import plugin="org.eclipse.core.resources"/>
+		<import plugin="org.eclipse.core.runtime"/>
+		<import plugin="org.eclipse.equinox.common"/>
+		<import plugin="org.eclipse.equinox.registry"/>
+		<import plugin="org.eclipse.equinox.security"/>
+		<import plugin="org.eclipse.help"/>
+		<import plugin="org.eclipse.jface"/>
+		<import plugin="org.eclipse.osgi"/>
+		<import plugin="org.eclipse.ui"/>
+		<import plugin="org.eclipse.ui.forms"/>
+		<import plugin="org.eclipse.ui.views"/>
+		<import plugin="org.eclipse.ui.workbench"/>
+		<import plugin="org.junit4"/>
+   </requires>
+
+   <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.pvfields"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.pvfields.iter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.dbparser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

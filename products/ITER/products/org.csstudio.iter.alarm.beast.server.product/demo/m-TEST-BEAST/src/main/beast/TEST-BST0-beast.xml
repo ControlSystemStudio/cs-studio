@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!-- 
+  Alarm configuration
+  Root: demo
+  WARNING: This is an automatically generated file. PLEASE DO NOT MODIFY.
+-->
+
+ <config name="demo" >
+     <component name="TEST-BST0" >
+         <component name="TEST-BST0" >
+             <pv name="TEST-BST0:HIGH-SWITCH" >
+                 <description >Whenever the HIGH switch gets wet, the pump will be forced ON</description>
+
+                 <latching >true</latching>
+
+                 <annunciating >true</annunciating>
+
+                 <guidance >
+                     <title >In the event that the MID switch has failed</title>
+
+                     <details >The tank level has continued to increase and has reached the HIGH level generating a MAJOR alarm</details>
+</guidance>
+
+                 <guidance >
+                     <title >Consequence of deviation</title>
+
+                     <details >The MID switch fails to operate: defective switch, blocked switch or damaged wiring.
+As a consequence the pump remaining dormant, the tank will overflow, causing inconvenience and damage to property.</details>
+</guidance>
+
+                 <guidance >
+                     <title >Corrective action</title>
+
+                     <details >Reset the MID Switch (if needed)</details>
+</guidance>
+
+                 <guidance >
+                     <title >Time for response</title>
+
+                     <details >The tank will overflow if the pump fails to be forced ON in 10 minutes</details>
+</guidance>
+
+                 <display >
+                     <title >Pump Control System</title>
+
+                     <details >/m-TEST-BEAST/src/main/boy/demo.opi</details>
+</display>
+
+                 <display >
+                     <title >Archived Tank Level Plot</title>
+
+                     <details >file:/m-TEST-BEAST/src/main/databrowser/tank-level.plt</details>
+</display>
+
+                 <command >
+                     <title >Reset the MID Switch</title>
+
+                     <details >caput TEST-BST0:MID-SWITCH-FAIL OFF</details>
+</command>
+
+                 <automated_action >
+                     <title >Contact Maintenance Service</title>
+
+                     <details >mailto:someone@iter.org,someone_else@iter.org?subject=*MID Switch fails to maintain the tank level&amp;body=*{0} alarm - Tank Switch is {1}</details>
+
+                     <delay >5</delay>
+</automated_action>
+</pv>
+
+             <pv name="TEST-BST0:LOW-SWITCH" >
+                 <description >Whenever the LOW switch becomes dry, the pump will be forced OFF</description>
+
+                 <latching >true</latching>
+
+                 <annunciating >true</annunciating>
+
+                 <guidance >
+                     <title >In the event that the MID switch has failed</title>
+
+                     <details >The tank level has continued to decrease and has reached the LOW level generating a MAJOR alarm</details>
+</guidance>
+
+                 <guidance >
+                     <title >Consequence of deviation</title>
+
+                     <details >The MID switch fails. The outcome is simple, the pump will drain the tank until it is empty, whereupon it will try to pump air indefinitely and burn out.
+Unfortunately, every time a MID switch fails for too long, a new pump may have to be installed</details>
+</guidance>
+
+                 <guidance >
+                     <title >Corrective action</title>
+
+                     <details >Change the MID Switch and check if the pump has already burned out</details>
+</guidance>
+
+                 <guidance >
+                     <title >Time for response</title>
+
+                     <details >The pump will burn out in 30 minutes</details>
+</guidance>
+
+                 <display >
+                     <title >Pump Control System</title>
+
+                     <details >/m-TEST-BEAST/src/main/boy/demo.opi</details>
+</display>
+
+                 <display >
+                     <title >Archived Tank Level Plot</title>
+
+                     <details >file:/m-TEST-BEAST/src/main/databrowser/tank-level.plt</details>
+</display>
+
+                 <command >
+                     <title >Reset the MID Switch</title>
+
+                     <details >caput TEST-BST0:MID-SWITCH-FAIL OFF</details>
+</command>
+
+                 <automated_action >
+                     <title >Contact Maintenance Service</title>
+
+                     <details >mailto:someone@iter.org</details>
+
+                     <delay >0</delay>
+</automated_action>
+</pv>
+</component>
+</component>
+</config>

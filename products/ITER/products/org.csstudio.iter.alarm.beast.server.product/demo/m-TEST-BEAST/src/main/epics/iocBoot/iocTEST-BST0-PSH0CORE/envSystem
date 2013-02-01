@@ -1,0 +1,5 @@
+#############################################
+## Build provided environment variables    ##
+#############################################
+epicsEnvSet("AUTOSAVE_SYSM_PV_PREFIX","TEST-BST0-SYSM:H0CORE-")
+epicsEnvSet("IOCSH_PS1","${IOC}> ")

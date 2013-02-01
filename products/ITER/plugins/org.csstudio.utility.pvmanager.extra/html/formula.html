@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Formulas</title>
+    </head>
+
+    <body>
+        <h1>Formulas</h1>
+
+        <h2>PV formulas syntax</h2>
+        PV formulas are read only expressions that allow to combine readings from multiple
+        pvs. The syntax is a tradeoff between convenience and what can possibly be achieved
+        giving that datasources themselves (ca, sim, ...) may have pvs with a syntax that
+        clashes with the formula syntax.
+        <p>
+        <h2>Disambiguating pvs and expression</h2>
+        The syntax tries to allow unquoted pvs as much as possible so that a user
+        is not forced to change format between pvs and formulas in most cases (see the reference for details). Here
+        are a list of examples and how they are recognized.
+<pre>mypv123    : the pv called "mypv123"
+mypv+123   : the pv called "mypv" added to 123
+'mypv+123' : a pv called "mypv2+123"
+"mypv+123" : the string "mypv+123"</pre>
+        The parser will always give precedence to an expression than to pvs. If a pv
+        looks like an expression, it should be escaped by single quotes.
+<pre>loc://log(1) : the pv from loc datasource called "log(1)"
+log(1)       : the function log applied to the number 1
+log          : the pv called log</pre>
+        An identifier followed by parenthesis will be interpreted as a function,
+        and if not followed by parenthesis is interpreted as unquoted pv. If
+        the pv includes the datasource, then the following parenthesis are
+        considered part of the pv name.
+        <h2>Reference</h2>
+        A formula can be one of the following:
+        <p>
+        <table border=1>
+            <tr><th>Syntax</th><th>Description</th></tr>
+            <tr>
+                <td><code>Numeric constant</code><br/>
+                    <code>42</code><br/>
+                    <code>3.14</code><br/>
+                    <code>1e5</code></td>
+                <td>A number can either be an integer, or a floating point in either decimal or exponential notation.</td>
+            </tr>
+            <tr>
+                <td><code>"String constant"</code></td>
+                <td>String constants are opened and closed by double quotes. TODO escape characteres. </td>
+            </tr>
+            <tr>
+                <td><code>'an+escaped/pv'</code><br/>
+                    <code>simpleUnescapedPv</code><br/>
+                    <code>loc://complexPvWithSource("Hello!")</code></td>
+                <td>A string surrounded by single quotes represents a pv.<br/> If the pvname does not clash with another expression,
+                    you can omit the quotes (i.e. it must be made only of the following characters <code>0-9a-zA-Z.$_:{}</code> and must contain
+                    one letter).<br/> If the syntax contain the source, these restriction are somewhat
+                    lifted: you can have a pair of parenthesis and a comma separated list
+                    of parameters. This combination should allow to keep most reasonably
+                    named pvs without single quotes, while allowing all the rest
+                    in single quotes.
+                </td>
+            </tr>
+            <tr>
+                <td><code>Algebraic operators</code><br/>
+                    <code>expr + expr: addition</code><br/>
+                    <code>expr - expr: subtraction</code><br/>
+                    <code>- expr: negation</code><br/>
+                    <code>expr * expr: multiplication</code><br/>
+                    <code>expr / expr: division</code><br/>
+                    <code>expr % expr: modulo</code><br/>
+                    <code>expr ^ expr: power</code><br/>
+                    <code>expr ** expr: power</code></td>
+                <td>Standard algebraic operator between expressions are supported. </td>
+            </tr>
+            <tr>
+                <td><code>Numeric functions</code><br/>
+                    <code>abs(expr): absolute value</code><br/>
+                    <code>acos(expr): arc cosine</code><br/>
+                    <code>asin(expr): arc sine</code><br/>
+                    <code>atan(expr): arc tangent</code><br/>
+                    <code>cbrt(expr): cubic root</code><br/>
+                    <code>ceil(expr): round up</code><br/>
+                    <code>cos(expr): cosine</code><br/>
+                    <code>cosh(expr): hyperbolic cosine</code><br/>
+                    <code>exp(expr): exponential</code><br/>
+                    <code>floor(expr): round down</code><br/>
+                    <code>log(expr): natural logarithm</code><br/>
+                    <code>log10(expr): base 10 logarithm</code><br/>
+                    <code>signum(expr): sign function</code><br/>
+                    <code>sin(expr): sine</code><br/>
+                    <code>sinh(expr): hyperbolic sine</code><br/>
+                    <code>sqrt(expr): square root</code></td>
+                    <code>tan(expr): tangent</code></td>
+                    <code>tanh(expr): hyperbolic tangent</code></td>
+                <td>Some common numeric functions are also supported. For implementation details
+                    refer to the corresponding <a href=""http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html">java.lang.Math method</a>.</td>
+            </tr>
+        </table>
+
+    </body>
+</html>
