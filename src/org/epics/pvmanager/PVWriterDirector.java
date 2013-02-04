@@ -54,8 +54,7 @@ public class PVWriterDirector<T> {
     private final WeakReference<PVWriterImpl<T>> pvRef;
     private final ConnectionCollector connCollector =
             new ConnectionCollector();
-    private final QueueCollector<Exception> exceptionCollector =
-            new QueueCollector<>(1);
+    private final QueueCollector<Exception> exceptionCollector;
     
     // Required to process the write
     
@@ -81,7 +80,8 @@ public class PVWriterDirector<T> {
 
     PVWriterDirector(PVWriterImpl<T> pvWriter, WriteFunction<T> writeFunction, DataSource dataSource,
             ScheduledExecutorService writeExecutor, Executor notificationExecutor,
-            ScheduledExecutorService scannerExecutor, TimeDuration timeout, String timeoutMessage) {
+            ScheduledExecutorService scannerExecutor, TimeDuration timeout, String timeoutMessage,
+            ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<>(pvWriter);
         this.writeFunction = writeFunction;
         this.dataSource = dataSource;
@@ -90,6 +90,11 @@ public class PVWriterDirector<T> {
         this.scannerExecutor = scannerExecutor;
         this.timeout = timeout;
         this.timeoutMessage = timeoutMessage;
+        if (exceptionHandler == null) {
+            exceptionCollector = new QueueCollector<>(1);
+        } else {
+            exceptionCollector = new LastExceptionCollector(1, exceptionHandler);
+        }
     }
     
     /**

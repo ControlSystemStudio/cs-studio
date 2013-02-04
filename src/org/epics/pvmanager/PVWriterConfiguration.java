@@ -100,7 +100,7 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         if (this.exceptionHandler != null) {
             throw new IllegalArgumentException("Exception handler already set");
         }
-        this.exceptionHandler = exceptionHandler;
+        this.exceptionHandler = ExceptionHandler.safeHandler(exceptionHandler);
         return this;
     }
 
@@ -120,7 +120,7 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         if (timeoutMessage == null)
             timeoutMessage = "Write timeout";
         PVWriterDirector<T> writerDirector = new PVWriterDirector<T>(pvWriter, writeFunction, dataSource, PVManager.getAsyncWriteExecutor(),
-                notificationExecutor, PVManager.getReadScannerExecutorService(), timeout, timeoutMessage);
+                notificationExecutor, PVManager.getReadScannerExecutorService(), timeout, timeoutMessage, exceptionHandler);
         writerDirector.connectExpression(writeExpression);
         writerDirector.startScan(TimeDuration.ofMillis(100));
         pvWriter.setWriteDirector(writerDirector);
