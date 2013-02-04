@@ -129,6 +129,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 			}
 		});
 
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return label;
 	}
 
