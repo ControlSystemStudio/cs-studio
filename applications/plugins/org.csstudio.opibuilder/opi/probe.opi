@@ -44,7 +44,7 @@
     <wuid>6d1d6840:137dc33d1ba:-7e31</wuid>
     <tab_1_icon_path>img/XYGraph.gif</tab_1_icon_path>
     <tab_2_font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </tab_2_font>
     <tab_0_background_color>
       <color red="255" green="255" blue="255" />
@@ -69,7 +69,7 @@
     <height>320</height>
     <horizontal_tabs>true</horizontal_tabs>
     <tab_1_font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </tab_1_font>
     <tab_1_foreground_color>
       <color red="0" green="0" blue="0" />
@@ -93,7 +93,7 @@
     </scale_options>
     <tab_0_icon_path>img/gauge.png</tab_0_icon_path>
     <tab_0_font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </tab_0_font>
     <rules />
     <tab_2_title>Array</tab_2_title>
@@ -109,7 +109,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>6d1d6840:137dc33d1ba:-7e30</wuid>
       <scripts />
       <height>289</height>
@@ -130,7 +130,7 @@
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>443</width>
       <border_style>0</border_style>
@@ -169,7 +169,7 @@
         <enabled>true</enabled>
         <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>429</width>
         <border_style>0</border_style>
@@ -208,7 +208,7 @@
           <enabled>true</enabled>
           <text>Input PV Name:</text>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>271</width>
           <border_style>0</border_style>
@@ -249,7 +249,7 @@
           <enabled>true</enabled>
           <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>271</width>
           <border_style>14</border_style>
@@ -282,7 +282,7 @@
             <widget_type>Gauge</widget_type>
             <show_minor_ticks>true</show_minor_ticks>
             <font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>140</width>
             <show_lolo>true</show_lolo>
@@ -318,7 +318,7 @@
             <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
             <level_hi>80.0</level_hi>
             <scale_font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </scale_font>
             <level_hihi>90.0</level_hihi>
             <ramp_gradient>true</ramp_gradient>
@@ -372,7 +372,7 @@ $(pv_value)</tooltip>
               <keep_wh_ratio>false</keep_wh_ratio>
             </scale_options>
             <precision_from_pv>true</precision_from_pv>
-            <pv_name>$(probe_pv)</pv_name>
+            <pv_name></pv_name>
             <foreground_color>
               <color red="0" green="0" blue="0" />
             </foreground_color>
@@ -385,7 +385,7 @@ $(pv_value)</tooltip>
             <precision>0</precision>
             <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
             <font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>253</width>
             <border_style>1</border_style>
@@ -438,7 +438,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <text>Readback:</text>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>271</width>
           <border_style>0</border_style>
@@ -479,7 +479,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <text>Set Value:</text>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>151</width>
           <border_style>0</border_style>
@@ -520,7 +520,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>151</width>
           <border_style>14</border_style>
@@ -560,7 +560,7 @@ $(pv_value)</tooltip>
             <widget_type>Scaled Slider</widget_type>
             <show_minor_ticks>true</show_minor_ticks>
             <font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>128</width>
             <show_lolo>true</show_lolo>
@@ -587,7 +587,7 @@ $(pv_value)</tooltip>
               <height_scalable>true</height_scalable>
               <keep_wh_ratio>false</keep_wh_ratio>
             </scale_options>
-            <pv_name>$(probe_pv)</pv_name>
+            <pv_name></pv_name>
             <color_hi>
               <color red="255" green="128" blue="0" />
             </color_hi>
@@ -598,7 +598,7 @@ $(pv_value)</tooltip>
             <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
             <level_hi>80.0</level_hi>
             <scale_font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </scale_font>
             <level_hihi>90.0</level_hihi>
             <color_lolo>
@@ -651,7 +651,7 @@ $(pv_value)</tooltip>
               <keep_wh_ratio>false</keep_wh_ratio>
             </scale_options>
             <precision_from_pv>true</precision_from_pv>
-            <pv_name>$(probe_pv)</pv_name>
+            <pv_name></pv_name>
             <foreground_color>
               <color red="0" green="0" blue="0" />
             </foreground_color>
@@ -664,7 +664,7 @@ $(pv_value)</tooltip>
             <precision>0</precision>
             <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
             <font>
-              <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>121</width>
             <border_style>0</border_style>
@@ -738,7 +738,7 @@ if(m!=null)
           <precision>0</precision>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>271</width>
           <border_style>0</border_style>
@@ -784,7 +784,7 @@ if(m!=null)
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>443</width>
       <border_style>0</border_style>
@@ -848,7 +848,7 @@ if(m!=null)
         <axis_1_axis_title>Value</axis_1_axis_title>
         <axis_0_maximum>100.0</axis_0_maximum>
         <axis_0_scale_font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </axis_0_scale_font>
         <axis_0_time_format>8</axis_0_time_format>
         <axis_1_log_scale>false</axis_1_log_scale>
@@ -860,7 +860,7 @@ if(m!=null)
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <axis_0_scale_format></axis_0_scale_format>
         <trace_0_x_pv></trace_0_x_pv>
-        <trace_0_y_pv>$(probe_pv)</trace_0_y_pv>
+        <trace_0_y_pv></trace_0_y_pv>
         <axis_0_title_font>
           <opifont.name fontName="Sans" height="10" style="1">Default Bold</opifont.name>
         </axis_0_title_font>
@@ -884,7 +884,7 @@ $(trace_0_y_pv_value)</tooltip>
         <border_alarm_sensitive>false</border_alarm_sensitive>
         <trace_0_y_axis_index>1</trace_0_y_axis_index>
         <axis_1_scale_font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </axis_1_scale_font>
         <border_style>0</border_style>
         <plot_area_background_color>
@@ -975,7 +975,7 @@ else
         <enabled>true</enabled>
         <text>Buffer Size:</text>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>91</width>
         <border_style>0</border_style>
@@ -1016,7 +1016,7 @@ else
         <enabled>true</enabled>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>115</width>
         <border_style>0</border_style>
@@ -1059,7 +1059,7 @@ $(pv_value)</tooltip>
         <enabled>true</enabled>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>151</width>
         <border_style>0</border_style>
@@ -1113,7 +1113,7 @@ $(pv_value)</tooltip>
         <precision>0</precision>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>103</width>
         <border_style>0</border_style>
@@ -1138,7 +1138,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>6d1d6840:137dc33d1ba:-7dae</wuid>
       <scripts />
       <height>289</height>
@@ -1159,7 +1159,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>443</width>
       <border_style>0</border_style>
@@ -1183,6 +1183,7 @@ $(pv_value)</tooltip>
         <scripts />
         <height>226</height>
         <show_spinner>true</show_spinner>
+        <data_type>0</data_type>
         <name>Array</name>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <scale_options>
@@ -1190,7 +1191,7 @@ $(pv_value)</tooltip>
           <height_scalable>true</height_scalable>
           <keep_wh_ratio>false</keep_wh_ratio>
         </scale_options>
-        <pv_name>$(probe_pv)</pv_name>
+        <pv_name></pv_name>
         <show_scrollbar>true</show_scrollbar>
         <background_color>
           <color red="240" green="240" blue="240" />
@@ -1200,9 +1201,10 @@ $(pv_value)</tooltip>
         </foreground_color>
         <widget_type>Array</widget_type>
         <enabled>true</enabled>
+        <array_length>10</array_length>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>241</width>
         <border_style>0</border_style>
@@ -1244,7 +1246,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <text></text>
           <font>
-            <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>119</width>
           <border_style>3</border_style>
@@ -1320,7 +1322,7 @@ This probe OPI is built in BOY. You can also create and use your own probe OPI. 
         <precision>0</precision>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>163</width>
         <border_style>14</border_style>
@@ -1367,7 +1369,7 @@ This probe OPI is built in BOY. You can also create and use your own probe OPI. 
         <enabled>true</enabled>
         <text>String Format:</text>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>97</width>
         <border_style>0</border_style>
@@ -1406,7 +1408,7 @@ This probe OPI is built in BOY. You can also create and use your own probe OPI. 
           <keep_wh_ratio>false</keep_wh_ratio>
         </scale_options>
         <precision_from_pv>false</precision_from_pv>
-        <pv_name>$(probe_pv)</pv_name>
+        <pv_name></pv_name>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
@@ -1419,7 +1421,7 @@ This probe OPI is built in BOY. You can also create and use your own probe OPI. 
         <precision>0</precision>
         <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
         <font>
-          <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>327</width>
         <border_style>0</border_style>

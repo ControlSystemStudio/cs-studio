@@ -403,15 +403,16 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 			}
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				String newPVName = ((String)newValue).trim();
-				if(newPVName.length() <= 0)
-					return false;
 				PV oldPV = pvMap.get(pvNamePropID);
 				editpart.removeFromConnectionHandler((String)oldValue);
 				if(oldPV != null){
 					oldPV.stop();
 					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
 				}
+				pvMap.remove(pvNamePropID);
+				String newPVName = ((String)newValue).trim();	
+				if(newPVName.length() <= 0)
+					return false;
 				try {
 					PV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);
 					lastWriteAccess = true;
