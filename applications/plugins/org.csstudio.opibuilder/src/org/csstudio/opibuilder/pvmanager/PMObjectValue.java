@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.pvmanager;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.data.values.IMetaData;
@@ -48,8 +49,7 @@ public class PMObjectValue implements IValue {
 			this.latestValue = allValues.get(allValues.size()-1);
 			
 		}else			
-			this.latestValue = pmValue;
-		
+			this.latestValue = pmValue;	
 	}
 
 	public Object getLatestValue(){
@@ -57,6 +57,8 @@ public class PMObjectValue implements IValue {
 	}
 	
 	public List<Object> getAllValues(){
+		if(allValues == null)
+			return Arrays.asList(latestValue);
 		return allValues;
 	}
 	

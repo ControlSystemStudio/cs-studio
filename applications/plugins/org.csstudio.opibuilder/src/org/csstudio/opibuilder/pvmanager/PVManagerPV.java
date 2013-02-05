@@ -47,6 +47,8 @@ public class PVManagerPV implements PV {
 	private volatile PVWriter<Object> pvWriter;
 	private int updateDuration;
 	private AtomicBoolean startFlag = new AtomicBoolean(false);
+	private final static String doublePattern= "\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*"; //$NON-NLS-1$
+	private final static String doubleArrayPattern = doublePattern + "(," + doublePattern + ")*";  //$NON-NLS-1$ //$NON-NLS-2$
 	/**Construct a PVManger PV.
 	 * @param name name of the pv.
 	 * @param bufferAllValues true if all values should be buffered.
@@ -59,10 +61,11 @@ public class PVManagerPV implements PV {
 		if(name.startsWith("loc://")){ //$NON-NLS-1$
 			final int value_start = name.indexOf('('); //$NON-NLS-1$
 			if(value_start >0){
-				final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
+				final int value_end = name.lastIndexOf(')'); //$NON-NLS-1$
 				if(value_end >0){
 					String value_text = name.substring(value_start+1, value_end);
-					if(!value_text.matches("\".+\"")){	//$NON-NLS-1$
+					if(!value_text.matches("\".+\"") && //$NON-NLS-1$ 
+							!value_text.matches(doubleArrayPattern)){ //if it is not number array
 						try{
 							Double.parseDouble(value_text);
 						}catch (Exception e) {
@@ -75,7 +78,10 @@ public class PVManagerPV implements PV {
 			}
 		}           
         this.name = n;	
-		this.valueBuffered = bufferAllValues;
+        if(bufferAllValues && n.matches(doublePattern)) //if it is constant
+        	this.valueBuffered =false;
+        else
+        	this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();	
 		pvWriterListeners = new LinkedList<>();
