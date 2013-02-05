@@ -38,6 +38,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 /**The tab figure.
  * @author Xihui Chen
@@ -356,8 +357,10 @@ public class TabFigure extends Figure implements Introspectable{
 		Image image = label.getIcon();
 		if(image != null){
 			image.dispose();
-			image = null;
-			label.setIcon(null);
+			image = null;			
+			//only do this if it is in UI thread and the rap session is not end. 
+			if(Display.getCurrent() != null && !Display.getCurrent().isDisposed())
+				label.setIcon(null);
 		}
 	}
 
