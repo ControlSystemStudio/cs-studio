@@ -166,7 +166,11 @@ class PVWriterImpl<T> implements PVWriter<T> {
             closed = true;
         }
         pvWriterListeners.clear();
-        writeDirector.close();
+        PVWriterDirector<T> director;
+        synchronized(lock) {
+            director = writeDirector;
+        }
+        director.close();
     }
 
     /**

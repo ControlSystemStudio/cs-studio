@@ -61,8 +61,7 @@ public class PVReaderDirector<T> {
     private final ConnectionCollector connCollector =
             new ConnectionCollector();
     /** Exception queue to be used to connect/disconnect expression and for exception notification */
-    private final QueueCollector<Exception> exceptionCollector =
-            new QueueCollector<>(1);
+    private final QueueCollector<Exception> exceptionCollector;
     
     
     ReadRecipe getCurrentReadRecipe() {
@@ -152,12 +151,17 @@ public class PVReaderDirector<T> {
      * @param notificationExecutor the thread switching mechanism
      */
     PVReaderDirector(PVReaderImpl<T> pv, ReadFunction<T> function, ScheduledExecutorService scannerExecutor,
-            Executor notificationExecutor, DataSource dataSource) {
+            Executor notificationExecutor, DataSource dataSource, ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<>(pv);
         this.function = function;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
         this.dataSource = dataSource;
+        if (exceptionHandler == null) {
+            exceptionCollector = new QueueCollector<>(1);
+        } else {
+            exceptionCollector = new LastExceptionCollector(1, exceptionHandler);
+        }
     }
 
     /**

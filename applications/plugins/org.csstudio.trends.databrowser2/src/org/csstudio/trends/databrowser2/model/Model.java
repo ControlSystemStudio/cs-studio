@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
@@ -21,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.csstudio.apputil.macros.IMacroTableProvider;
 import org.csstudio.apputil.macros.InfiniteLoopException;
 import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
@@ -914,8 +916,11 @@ public class Model
         }
         else
         {
-            XMLWriter.XML(writer, 1, TAG_START, getStartTime());
-            XMLWriter.XML(writer, 1, TAG_END, getEndTime());
+            final Calendar cal = Calendar.getInstance();
+            cal.setTime(getStartTime().toDate());
+            XMLWriter.XML(writer, 1, TAG_START, AbsoluteTimeParser.format(cal));
+            cal.setTime(getEndTime().toDate());
+            XMLWriter.XML(writer, 1, TAG_END, AbsoluteTimeParser.format(cal));
         }
 
         // Time axis config
