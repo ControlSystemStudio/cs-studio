@@ -68,6 +68,7 @@ import org.epics.util.array.CollectionNumbers;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
 
 /**
  * Editpart for array widget.
@@ -669,6 +670,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 								setValue(new String[]{((VEnum)pmValue).getValue()});
 							else if(pmValue instanceof VString)						
 								setValue(new String[]{((VString)pmValue).getValue()});
+							else if(pmValue instanceof VStringArray)
+								setValue(((VStringArray)pmValue).getData().toArray());
 							else
 								setValue(ValueUtil.getDoubleArray(value));
 						}
