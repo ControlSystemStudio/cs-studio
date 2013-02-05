@@ -193,7 +193,7 @@ public class PVManagerHelper{
 	private String formatObjectArray(Object[] array) {
 		StringBuilder sb = new StringBuilder(array.length);
 		sb.append(array[0]);
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length; i++) {
 			sb.append(ARRAY_ELEMENT_SEPARATOR);
 			sb.append(array[i]);
 			if (i >= MAX_FORMAT_VALUE_COUNT) {
@@ -224,7 +224,7 @@ public class PVManagerHelper{
 			return sb.toString();			
 		}else{		
 		   sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
-           for(int i=0; i<data.size(); i++){        	   	
+           for(int i=1; i<data.size(); i++){        	   	
         	   	sb.append(ARRAY_ELEMENT_SEPARATOR);
         	   	sb.append(formatScalarNumber(formatEnum, data.getDouble(i), precision));
 				if (i >= MAX_FORMAT_VALUE_COUNT)
