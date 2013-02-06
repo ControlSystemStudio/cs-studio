@@ -43,37 +43,4 @@ public class ExceptionHandler {
             
         };
     }
-    
-    static ExceptionHandler createDefaultExceptionHandler(final PVWriterImpl<?> pvWriter, final Executor notificationExecutor) {
-        return new ExceptionHandler() {
-            @Override
-            public void handleException(final Exception ex) {
-                notificationExecutor.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        pvWriter.setLastWriteException(ex);
-                        pvWriter.firePvWritten();
-                    }
-                });
-            }
-            
-        };
-    }
-    
-    static ExceptionHandler createDefaultExceptionHanderl(final PVReaderImpl<?> pv, final Executor notificationExecutor) {
-        return new ExceptionHandler() {
-
-            @Override
-            public void handleException(final Exception ex) {
-                notificationExecutor.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        pv.setLastException(ex);
-                    }
-                });
-            }
-        };
-    }
 }
