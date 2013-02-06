@@ -6,7 +6,7 @@
     <a>b</a>
   </macros>
   <wuid>-5cfe3b0f:138068ad464:-7f16</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>600</height>
@@ -20,7 +20,7 @@
     <color red="192" green="192" blue="192" />
   </foreground_color>
   <widget_type>Display</widget_type>
-  <show_close_button>false</show_close_button>
+  <show_close_button>true</show_close_button>
   <width>800</width>
   <rules />
   <show_edit_range>true</show_edit_range>
@@ -76,7 +76,7 @@ widget.addEditPartListener(OPICloseListener())
     <enabled>true</enabled>
     <text>This example will print "OPI Started" on OPI startup and print "OPI Closed" in BOY Console after OPI closed. Please see the "Scripts" property of this widget.</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>643</width>
     <border_style>0</border_style>
