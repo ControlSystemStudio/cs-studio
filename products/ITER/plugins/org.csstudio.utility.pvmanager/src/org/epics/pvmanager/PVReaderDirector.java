@@ -61,8 +61,7 @@ public class PVReaderDirector<T> {
     private final ConnectionCollector connCollector =
             new ConnectionCollector();
     /** Exception queue to be used to connect/disconnect expression and for exception notification */
-    private final QueueCollector<Exception> exceptionCollector =
-            new QueueCollector(1);
+    private final QueueCollector<Exception> exceptionCollector;
     
     
     ReadRecipe getCurrentReadRecipe() {
@@ -152,12 +151,17 @@ public class PVReaderDirector<T> {
      * @param notificationExecutor the thread switching mechanism
      */
     PVReaderDirector(PVReaderImpl<T> pv, ReadFunction<T> function, ScheduledExecutorService scannerExecutor,
-            Executor notificationExecutor, DataSource dataSource) {
+            Executor notificationExecutor, DataSource dataSource, ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference(pv);
         this.function = function;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
         this.dataSource = dataSource;
+        if (exceptionHandler == null) {
+            exceptionCollector = new QueueCollector(1);
+        } else {
+            exceptionCollector = new LastExceptionCollector(1, exceptionHandler);
+        }
     }
 
     /**
@@ -249,6 +253,15 @@ public class PVReaderDirector<T> {
                     // Proceed with notification only if PVReader was not garbage
                     // collected
                     if (pv != null) {
+                        
+                        // Atomicity guaranteed by:
+                        //  - all the modification on the PVReader
+                        //    are done here, on the same thread where the listeners will be called.
+                        //    This means the callbacks are guaranteed to run after all
+                        //    changes are done
+                        //  - notificationInFlight guarantees that no other notification
+                        //    will run while one notification is running. This means
+                        //    the next event is serialized after the end of this one.
                         pv.setConnected(connected);
                         if (lastException != null) {
                             pv.setLastException(lastException);

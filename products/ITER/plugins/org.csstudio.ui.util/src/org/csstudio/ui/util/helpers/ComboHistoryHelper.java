@@ -110,6 +110,7 @@ public abstract class ComboHistoryHelper {
 			combo.select(index);
 		} else {
 			addEntry(entry);
+			combo.select(0);
 		}
 	}
 

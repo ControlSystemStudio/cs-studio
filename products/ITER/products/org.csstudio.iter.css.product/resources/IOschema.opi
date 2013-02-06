@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.1.2.codac_core_4_0a1</boy_version>
+  <boy_version>3.1.4.codac_core_4_0b7</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -479,10 +479,23 @@ to enter the Label Text</text>
       </font>
       <width>37</width>
       <no_animation>false</no_animation>
+      <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <crop_top>0</crop_top>
       <border_style>0</border_style>
       <rules />
+      <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
+      <degree>0</degree>
       <border_width>2</border_width>
       <image_file>SymbolLibrary/PNG/Electrical/Miscellaneous/Earth.png</image_file>
       <border_color>
@@ -501,7 +514,7 @@ to enter the Label Text</text>
     <visible>true</visible>
     <wuid>-43350330:134b29d35a6:-7f64</wuid>
     <scripts />
-    <height>371</height>
+    <height>396</height>
     <name>Monitors Grouping Container</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -521,7 +534,7 @@ to enter the Label Text</text>
     <font>
       <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
     </font>
-    <width>1059</width>
+    <width>1259</width>
     <border_style>0</border_style>
     <rules />
     <lock_children>true</lock_children>
@@ -1058,7 +1071,7 @@ $(pv_value)</tooltip>
       <level_lolo>10.0</level_lolo>
       <y>142</y>
       <actions hook="false" hook_all="false" />
-      <x>175</x>
+      <x>147</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
@@ -1145,7 +1158,7 @@ $(pv_value)</tooltip>
       <level_lolo>10.0</level_lolo>
       <y>155</y>
       <actions hook="false" hook_all="false" />
-      <x>333</x>
+      <x>285</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
@@ -1162,7 +1175,7 @@ $(pv_value)</tooltip>
       <trace_0_point_size>4</trace_0_point_size>
       <show_legend>true</show_legend>
       <y>120</y>
-      <x>515</x>
+      <x>450</x>
       <visible>true</visible>
       <trace_0_x_pv_value />
       <axis_1_visible>true</axis_1_visible>
@@ -1334,18 +1347,17 @@ $(pv_value)</tooltip>
       <scripts />
       <height>75</height>
       <data_type>0</data_type>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
-      <off_label>OFF</off_label>
-      <widget_type>Boolean Symbol Image Monitor</widget_type>
       <enabled>true</enabled>
+      <widget_type>Boolean Symbol Image Monitor</widget_type>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>40</width>
       <permutation_matrix>
         <row>
           <col>1.0</col>
@@ -1356,13 +1368,14 @@ $(pv_value)</tooltip>
           <col>1.0</col>
         </row>
       </permutation_matrix>
+      <width>40</width>
       <border_style>0</border_style>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
-      <bit>0</bit>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
-      <border_width>2</border_width>
+      <bit>0</bit>
       <on_label>ON</on_label>
+      <border_width>2</border_width>
       <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/JA Withdrawable Circuit Breaker On.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -1371,8 +1384,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color name="IO PV ON" red="0" green="0" blue="225" />
       </on_color>
-      <name>Boolean Symbol Image Monitor Template</name>
       <stretch_to_fit>false</stretch_to_fit>
+      <name>Boolean Symbol Image Monitor Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1400,11 +1413,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color name="IO Border" red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>8</y>
+      <actions hook="false" hook_all="false" />
+      <x>0</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1482,6 +1495,45 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       <x>48</x>
+    </widget>
+    <widget typeId="org.csstudio.trends.databrowser.opiwidget" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-7df7a7b2:13cae9184ac:-7f77</wuid>
+      <scripts />
+      <height>300</height>
+      <name>Data Browser</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <foreground_color>
+        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      </foreground_color>
+      <background_color>
+        <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Data Browser</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>400</width>
+      <border_style>5</border_style>
+      <rules />
+      <border_width>2</border_width>
+      <filename></filename>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <show_toolbar>false</show_toolbar>
+      <y>95</y>
+      <actions hook="false" hook_all="false" />
+      <x>858</x>
+      <tooltip></tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
@@ -2559,21 +2611,20 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <auto_size>true</auto_size>
       <password></password>
+      <auto_size>true</auto_size>
       <scripts />
       <height>75</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
-      <widget_type>Multistate Symbol Image Control</widget_type>
       <enabled>true</enabled>
+      <widget_type>Multistate Symbol Image Control</widget_type>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>40</width>
       <permutation_matrix>
         <row>
           <col>1.0</col>
@@ -2584,10 +2635,11 @@ $(pv_value)</tooltip>
           <col>1.0</col>
         </row>
       </permutation_matrix>
+      <width>40</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
       <items />
       <border_width>2</border_width>
@@ -2600,8 +2652,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color name="IO PV ON" red="0" green="0" blue="225" />
       </on_color>
-      <name>Multistate Symbol Image Control</name>
       <stretch_to_fit>false</stretch_to_fit>
+      <name>Multistate Symbol Image Control</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -2626,16 +2678,16 @@ $(pv_value)</tooltip>
           <pv trig="true">$(pv_name).SIMM</pv>
         </rule>
       </rules>
-      <degree>0</degree>
       <show_confirm_dialog>false</show_confirm_dialog>
+      <degree>0</degree>
       <border_color>
         <color name="IO Border" red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>120</y>
+      <actions hook="false" hook_all="false" />
+      <x>441</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>441</x>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
@@ -2722,7 +2774,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <wuid>-14a921ec:134b2495e46:-7f39</wuid>
       <scripts />
-      <height>30</height>
+      <height>27</height>
       <name>Combo Box Template</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -2964,7 +3016,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="DejaVu LGC Sans Mono" height="12" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>406</width>
       <border_style>6</border_style>
@@ -3115,6 +3167,8 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
+      <minimum_tab_height>10</minimum_tab_height>
+      <active_tab>0</active_tab>
       <tab_1_title>Tab 1</tab_1_title>
       <border_style>6</border_style>
       <wuid>7318e5d8:138ec31aa1e:-7a3b</wuid>
@@ -3128,6 +3182,7 @@ $(pv_value)</tooltip>
       <tab_0_foreground_color>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </tab_0_foreground_color>
+      <tab_0_enabled>true</tab_0_enabled>
       <border_color>
         <color name="IO Border" red="215" green="215" blue="215" />
       </border_color>
@@ -3136,7 +3191,9 @@ $(pv_value)</tooltip>
       <x>742</x>
       <visible>true</visible>
       <scripts />
+      <tab_1_enabled>true</tab_1_enabled>
       <height>246</height>
+      <horizontal_tabs>true</horizontal_tabs>
       <tab_1_font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </tab_1_font>
@@ -3174,7 +3231,7 @@ $(pv_value)</tooltip>
         <visible>true</visible>
         <wuid>7318e5d8:138ec31aa1e:-7a2e</wuid>
         <scripts />
-        <height>217</height>
+        <height>215</height>
         <name>Tab 0</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -3192,7 +3249,7 @@ $(pv_value)</tooltip>
         <enabled>true</enabled>
         <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="DejaVu LGC Sans Mono" height="12" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>294</width>
         <border_style>0</border_style>
@@ -3214,7 +3271,7 @@ $(pv_value)</tooltip>
         <visible>false</visible>
         <wuid>7318e5d8:138ec31aa1e:-78d8</wuid>
         <scripts />
-        <height>217</height>
+        <height>215</height>
         <name>Tab 1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -3232,7 +3289,7 @@ $(pv_value)</tooltip>
         <enabled>true</enabled>
         <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="DejaVu LGC Sans Mono" height="12" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>294</width>
         <border_style>0</border_style>
@@ -3316,7 +3373,7 @@ $(pv_value)</tooltip>
         <enabled>true</enabled>
         <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="DejaVu LGC Sans Mono" height="12" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>197</width>
         <border_style>0</border_style>
@@ -3356,7 +3413,7 @@ $(pv_value)</tooltip>
         <enabled>true</enabled>
         <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="DejaVu LGC Sans Mono" height="12" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>196</width>
         <border_style>0</border_style>
