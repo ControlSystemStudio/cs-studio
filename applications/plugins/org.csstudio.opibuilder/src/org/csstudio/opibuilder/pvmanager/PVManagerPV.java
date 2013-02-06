@@ -23,16 +23,20 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 
-/**A utility PV which uses PVManager as the connection layer. 
- * Type of the value returned by {@link #getValue()} is always {@link PMObjectValue}.
+/**
+ * A utility PV which uses PVManager as the connection layer. Type of the value
+ * returned by {@link #getValue()} is always {@link PMObjectValue}.
+ * 
  * @author Xihui Chen
- *
+ * 
  */
 public class PVManagerPV implements PV {
-	
-	private final static ExecutorService PMPV_THREAD = Executors.newSingleThreadExecutor();
+
+	private final static ExecutorService PMPV_THREAD = Executors
+			.newSingleThreadExecutor();
 	final private String name;
 	final private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener<Object>> listenerMap;
@@ -47,43 +51,57 @@ public class PVManagerPV implements PV {
 	private volatile PVWriter<Object> pvWriter;
 	private int updateDuration;
 	private AtomicBoolean startFlag = new AtomicBoolean(false);
-	private final static String doublePattern= "\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*"; //$NON-NLS-1$
-	private final static String doubleArrayPattern = doublePattern + "(," + doublePattern + ")*";  //$NON-NLS-1$ //$NON-NLS-2$
-	/**Construct a PVManger PV.
-	 * @param name name of the pv.
-	 * @param bufferAllValues true if all values should be buffered.
-	 * @param updateDuration the least update duration.
+	private final static String doublePattern = "\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*"; //$NON-NLS-1$
+	private final static String doubleArrayPattern = doublePattern
+			+ "(," + doublePattern + ")*"; //$NON-NLS-1$ //$NON-NLS-2$
+
+	/**
+	 * Construct a PVManger PV.
+	 * 
+	 * @param name
+	 *            name of the pv.
+	 * @param bufferAllValues
+	 *            true if all values should be buffered.
+	 * @param updateDuration
+	 *            the least update duration.
 	 */
-	public PVManagerPV(final String name, final boolean bufferAllValues, final int updateDuration) {
+	public PVManagerPV(final String name, final boolean bufferAllValues,
+			final int updateDuration) {
 		String n = name;
-		
-		//A workaround for utility PV and PV Manager incompatibility on local pv initialization
-		if(name.startsWith("loc://")){ //$NON-NLS-1$
+
+		// A workaround for utility PV and PV Manager incompatibility on local
+		// pv initialization
+		if (name.startsWith("loc://")) { //$NON-NLS-1$
 			final int value_start = name.indexOf('('); //$NON-NLS-1$
-			if(value_start >0){
+			if (value_start > 0) {
 				final int value_end = name.lastIndexOf(')'); //$NON-NLS-1$
-				if(value_end >0){
-					String value_text = name.substring(value_start+1, value_end);
-					if(!value_text.matches("\".+\"") && //$NON-NLS-1$ 
-							!value_text.matches(doubleArrayPattern)){ //if it is not number array
-						try{
+				if (value_end > 0) {
+					String value_text = name.substring(value_start + 1,
+							value_end);
+					if (!value_text.matches("\".+\"") && //$NON-NLS-1$ 
+							!value_text.matches(doubleArrayPattern)) { // if it
+																		// is
+																		// not
+																		// number
+																		// array
+						try {
 							Double.parseDouble(value_text);
-						}catch (Exception e) {
-							n = name.substring(0, value_start+1) +
-									"\"" + name.substring(value_start+1, value_end) + //$NON-NLS-1$
+						} catch (Exception e) {
+							n = name.substring(0, value_start + 1)
+									+ "\"" + name.substring(value_start + 1, value_end) + //$NON-NLS-1$
 									"\"" + name.substring(value_end); //$NON-NLS-1$
 						}
 					}
 				}
 			}
-		}           
-        this.name = n;	
-        if(bufferAllValues && n.matches(doublePattern)) //if it is constant
-        	this.valueBuffered =false;
-        else
-        	this.valueBuffered = bufferAllValues;
+		}
+		this.name = n;
+		if (bufferAllValues && n.matches(doublePattern)) // if it is constant
+			this.valueBuffered = false;
+		else
+			this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
-		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();	
+		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
 		pvWriterListeners = new LinkedList<>();
 	}
 
@@ -98,42 +116,44 @@ public class PVManagerPV implements PV {
 	}
 
 	@Override
-	public synchronized void addListener(final PVListener listener) {		
+	public synchronized void addListener(final PVListener listener) {
 		final PVReaderListener<Object> pvReaderListener = new PVReaderListener<Object>() {
-	
+
 			@Override
 			public void pvChanged(PVReaderEvent<Object> event) {
-				if (event != null && event.isConnectionChanged() 
+				if (event != null && event.isConnectionChanged()
 						&& !pvReader.isConnected()) {
 					listener.pvDisconnected(PVManagerPV.this);
 					return;
 				}
-				if(event == null || event.isValueChanged())
+				if (event == null || event.isValueChanged())
 					listener.pvValueUpdate(PVManagerPV.this);
 			}
 		};
 		listenerMap.put(listener, pvReaderListener);
-		if(pvReader !=null){
-			//give an update on current value in PMPV thread.
-			if(!pvReader.isClosed() && pvReader.isConnected() && !pvReader.isPaused()){
-				PMPV_THREAD.execute(new Runnable() {						
-						@Override
-						public void run() {							
-							pvReaderListener.pvChanged(null);
-						}
-					});
+		if (pvReader != null) {
+			// give an update on current value in PMPV thread.
+			if (!pvReader.isClosed() && pvReader.isConnected()
+					&& !pvReader.isPaused()) {
+				PMPV_THREAD.execute(new Runnable() {
+					@Override
+					public void run() {
+						pvReaderListener.pvChanged(null);
+					}
+				});
 			}
-			
-			pvReader.addPVReaderListener(pvReaderListener);			
+
+			pvReader.addPVReaderListener(pvReaderListener);
 		}
 	}
-	
-	public synchronized void addPVWriterListener(final PVWriterListener<Object> listener){
+
+	public synchronized void addPVWriterListener(
+			final PVWriterListener<Object> listener) {
 		pvWriterListeners.add(listener);
-		if(pvWriter != null){
-			if(!pvWriter.isClosed()){
+		if (pvWriter != null) {
+			if (!pvWriter.isClosed()) {
 				PMPV_THREAD.execute(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						listener.pvChanged(null);
@@ -147,54 +167,61 @@ public class PVManagerPV implements PV {
 	public synchronized void removeListener(PVListener listener) {
 		if (!listenerMap.containsKey(listener))
 			return;
-		if(pvReader != null)
+		if (pvReader != null)
 			pvReader.removePVReaderListener(listenerMap.get(listener));
 		listenerMap.remove(listener);
 	}
 
-
 	@Override
-	public void start() throws Exception {		
+	public void start() throws Exception {
 		if (!startFlag.getAndSet(true)) {
 			PMPV_THREAD.execute(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					try {
 						internalStart();
 					} catch (Exception e) {
-						ErrorHandlerUtil.handleError("Failed to start PV " + getName(), e);
+						ErrorHandlerUtil.handleError("Failed to start PV "
+								+ getName(), e);
 					}
 				}
 			});
-		} else if(pvReader != null)
+		} else if (pvReader != null)
 			pvReader.setPaused(false);
 	}
 
 	/**
 	 * This method must be called in PMPV thread, because PVManager requires
 	 * that creating PVReader, adding listeners must be done in the notification
-	 * thread and must be in the same runnable to make sure no updates are missed. 
+	 * thread and must be in the same runnable to make sure no updates are
+	 * missed.
 	 */
 	private void internalStart() {
-		
+
 		if (valueBuffered) {
 			pvReader = PVManager.read(newValuesOf(channel(name)))
-					.notifyOn(PMPV_THREAD)
-					.routeExceptionsTo(exceptionHandler)
+					.notifyOn(PMPV_THREAD).routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		} else {
 			pvReader = PVManager.read(formula(name)).notifyOn(PMPV_THREAD)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		}
-		for(PVReaderListener<Object> pvReaderListener : listenerMap.values())
-			pvReader.addPVReaderListener(pvReaderListener);		
-		
-		pvWriter = PVManager.write(channel(name)).notifyOn(PMPV_THREAD)
-				.routeExceptionsTo(exceptionHandler).async();
-		
-		for(PVWriterListener<Object> pvWriterListener : pvWriterListeners){
+		for (PVReaderListener<Object> pvReaderListener : listenerMap.values())
+			pvReader.addPVReaderListener(pvReaderListener);
+
+		pvWriter = PVManager.write(channel(name))
+				.writeListener(new PVWriterListener<Object>() {
+					@Override
+					public void pvChanged(PVWriterEvent<Object> event) {
+						if (event.isWriteFailed())
+							exceptionHandler.handleException(pvWriter
+									.lastWriteException());
+					}
+				}).notifyOn(PMPV_THREAD).async();
+
+		for (PVWriterListener<Object> pvWriterListener : pvWriterListeners) {
 			pvWriter.addPVWriterListener(pvWriterListener);
 		}
 
@@ -203,29 +230,28 @@ public class PVManagerPV implements PV {
 	public boolean isValueBuffered() {
 		return valueBuffered;
 	}
-	
+
 	@Override
 	public boolean isRunning() {
-		if(pvReader == null) 
+		if (pvReader == null)
 			return false;
 		return !pvReader.isClosed() && !pvReader.isPaused();
 	}
 
 	@Override
 	public boolean isConnected() {
-		if(pvReader == null) 
+		if (pvReader == null)
 			return false;
 		return pvReader.isConnected() && pvReader.getValue() != null;
 	}
 
 	@Override
 	public boolean isWriteAllowed() {
-		if(pvWriter == null) 
+		if (pvWriter == null)
 			return false;
 		return pvWriter.isWriteConnected();
 	}
 
-	
 	@Override
 	public String getStateInfo() {
 		checkIfPVStarted();
@@ -253,23 +279,25 @@ public class PVManagerPV implements PV {
 	 */
 	@Override
 	public void stop() {
-		if(pvReader != null)
+		if (pvReader != null)
 			pvReader.close();
-		if(pvWriter != null)
+		if (pvWriter != null)
 			pvWriter.close();
 		pvReader = null;
 		pvWriter = null;
+		startFlag.set(false);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	//This method should not be synchronized because it may cause deadlock.
-	public IValue getValue() {  
+	// This method should not be synchronized because it may cause deadlock.
+	public IValue getValue() {
 		checkIfPVStarted();
-		if(pvReader.getValue() != null){
-			if(!valueBuffered || 
-					(valueBuffered && ((List<Object>)(pvReader.getValue())).size()>0))
-			return new PMObjectValue(pvReader.getValue(), valueBuffered);
+		if (pvReader.getValue() != null) {
+			if (!valueBuffered
+					|| (valueBuffered && ((List<Object>) (pvReader.getValue()))
+							.size() > 0))
+				return new PMObjectValue(pvReader.getValue(), valueBuffered);
 		}
 		return null;
 	}
@@ -279,10 +307,10 @@ public class PVManagerPV implements PV {
 		checkIfPVStarted();
 		pvWriter.write(new_value);
 	}
-	
-	private void checkIfPVStarted(){
-		if(pvReader == null)
+
+	private void checkIfPVStarted() {
+		if (pvReader == null)
 			throw new IllegalStateException("PVManagerPV is not started yet.");
 	}
-		
+
 }
