@@ -40,21 +40,38 @@ public class PVValueProperty extends AbstractWidgetProperty {
 		IValue acceptableValue = null;
 		if(value instanceof IValue)
 			acceptableValue = (IValue) value;
-		else if(value instanceof Double){
+		else if(value instanceof Double || value instanceof Float){
 	        final ISeverity severity = ValueFactory.createOKSeverity();
 			acceptableValue = ValueFactory.createDoubleValue(
 					TimestampFactory.now(), severity, severity.toString(),
-					null, Quality.Original, new double[]{(Double)value});
+					null, Quality.Original, new double[]{
+						(value instanceof Double? (Double)value : (Float)value)});
 		}else if(value instanceof String){
 	        final ISeverity severity = ValueFactory.createOKSeverity();
 			acceptableValue = ValueFactory.createStringValue(
 					TimestampFactory.now(), severity, severity.toString(),
 					Quality.Original, new String[]{(String)value});
-		}else if(value instanceof Long || value instanceof Integer){
+		}else if(value instanceof Long || value instanceof Integer || value instanceof Short 
+				|| value instanceof Boolean
+				|| value instanceof Byte || value instanceof Character){
 	        final ISeverity severity = ValueFactory.createOKSeverity();
-			acceptableValue = ValueFactory.createLongValue(
+			long r = 0;
+			if(value instanceof Long)
+				r = (Long)value;
+			else if(value instanceof Integer)
+				r = (Integer)value;
+			else if(value instanceof Short)
+				r = (Short)value;
+			else if(value instanceof Boolean)
+				r= ((Boolean)value)?1:0;
+			else if(value instanceof Byte)
+				r=(Byte)value;
+			else if(value instanceof Character)
+				r=(Character)value;			
+	        
+	        acceptableValue = ValueFactory.createLongValue(
 					TimestampFactory.now(), severity, severity.toString(),
-					null, Quality.Original, new long[]{(value instanceof Integer? ((Integer)value).longValue():(Long)value)});
+					null, Quality.Original, new long[]{r});
 		}
 
 		return acceptableValue;
