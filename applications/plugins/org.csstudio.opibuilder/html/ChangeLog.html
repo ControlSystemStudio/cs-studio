@@ -22,9 +22,9 @@
 <A NAME="nextversion"></A>
 <h2>Next Version</h2>
 <ul>
-    <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV communication layer.
+    <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
     It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
-    PVManager has lots of advantages such as better array PV performance, maximum updating rate throttling, formula support and so on.
+    PVManager has lots of advantages such as better performance on array type of PV, maximum updating rate throttling, formula support and so on.
     With PVManager, there are few differences with Utility PV on local and simulation PV syntax:
     <ul>
        <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
@@ -33,17 +33,30 @@
        <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
     </ul> 
     For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
-    Because this is the first version of BOY that supports PVManager, I mark it as an unstable version for PVManager.
+    Because this is the first version of BOY that supports PVManager, the default PV connection layer is still Utility PV, but it
+    is highly encouraged to switch to PVManager to test all your existing OPIs. 
     If your existing OPI doesn't work correctly with PVManager, you can switch back to use Utility PV and most importantly, 
-<a href="mailto:chenx1@ornl.gov">report the issue to me</a>.
+<a href="mailto:chenx1@ornl.gov">report the issue to me</a>. <code>BOY Examples</code> has been updated to meet the local pv syntax of PVManager,
+please reinstall it also. 
     </li>
+    
+    <li>Add authentication support to WebOPI so that you can protect the whole site or only OPIs in a particular directory with password.
+    You can provide user name and password either from preference file, LDAP server or Kerberos. 
+    See <a href = "http://htmlpreview.github.com/?https://raw.github.com/ControlSystemStudio/cs-studio/master/applications/plugins/org.csstudio.opibuilder.rap/html/WebOPI.html">WebOPI helps</a> for more details.
+    <p><img src="img/login.png"></p>
+    </li>
+    
  	<li>Support searching OPI by text. Double click a search result entry will open the OPI file and 
  	select the widget (Only works if the default editor of the OPI file is OPI editor). (Contributed by ITER)
  	<p><img src="img/OPISearch.png"></p>
  	</li>
 	<li>Support launching an OPI from command line in dedicated position using "Position" macro.
 	</li> 
+	<li>Add more <a href="script/ScriptUtil/index.html">ScriptUtil</a> functions.</li>
 	<li>Add Confirm Dialog option to Write PV Action.</li>
+	<li>Add <code>Directory</code> option to file selector on Text Input widget, so it only selects 
+	directory in file dialog</li>
+	<li>Add a new predefined font <code>Fine Print</code>.</li> 
 </ul>
 
 <A NAME="3.1.4"></A>
