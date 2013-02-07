@@ -25,15 +25,27 @@ class PVWriterImpl<T> implements PVWriter<T> {
 
     // PVWriter state
     
-    // Immutable part, no need to syncronize
+    // Immutable part, no need to synchronize
     private final boolean syncWrite;
-    private final boolean notifyFirstListener; 
+
+    // Thread-safe, no need to synchronize
+    private List<PVWriterListener<T>> pvWriterListeners = new CopyOnWriteArrayList();
     
-    // guarded by this
+    // Atomocity in the callback is guaranteed by how the PVWriterDirector
+    //     prepares the PVWriter before the notification
+    
+    // Thread-safety is guaranteed by the following rule:
+    //  - any variable declared after the locked should be read or written
+    //    only while holding the lock
+    // Potential deadlocks or livelocks are prevented by the following rule:
+    //  - never call outside this object, except for something small and understood,
+    //    while holding the lock
+    
+    private final Object lock = new Object();
+    // guarded by lock
     private boolean closed = false;
     private boolean writeConnected = false;
     private Exception lastWriteException;
-    private List<PVWriterListener<T>> pvWriterListeners = new CopyOnWriteArrayList<PVWriterListener<T>>();
     private PVWriterDirector<T> writeDirector;
     private PVWriter<T> writerForNotification = this;
     private boolean needsConnectionNotification = false;
@@ -41,46 +53,56 @@ class PVWriterImpl<T> implements PVWriter<T> {
 
     PVWriterImpl(boolean syncWrite, boolean notifyFirstListener) {
         this.syncWrite = syncWrite;
-        this.notifyFirstListener = notifyFirstListener;
     }
     
-    synchronized void firePvWritten() {
-        int mask = 0;
-        if (needsConnectionNotification) {
-            mask += PVWriterEvent.CONNECTION_MASK;
+    void firePvWritten() {
+        PVWriterEvent<T> event;
+        synchronized(lock) {
+            int mask = 0;
+            if (needsConnectionNotification) {
+                mask += PVWriterEvent.CONNECTION_MASK;
+            }
+            if (needsExceptionNotification) {
+                mask += PVWriterEvent.EXCEPTION_MASK;
+            }
+            // Nothing to notify
+            if (mask == 0) {
+                return;
+            }
+            needsConnectionNotification = false;
+            needsExceptionNotification = false;
+            event = new PVWriterEvent(mask, writerForNotification);
         }
-        if (needsExceptionNotification) {
-            mask += PVWriterEvent.EXCEPTION_MASK;
-        }
-        // Nothing to notify
-        if (mask == 0) {
-            return;
-        }
-        needsConnectionNotification = false;
-        needsExceptionNotification = false;
-        PVWriterEvent<T> event = new PVWriterEvent(mask, writerForNotification);
         for (PVWriterListener<T> listener : pvWriterListeners) {
             listener.pvChanged(event);
         }
     }
     
-    synchronized void fireWriteSuccess() {
-        PVWriterEvent<T> event = new PVWriterEvent(PVWriterEvent.WRITE_SUCCEEDED_MASK, writerForNotification);
+    void fireWriteSuccess() {
+        PVWriterEvent<T> event;
+        synchronized(lock) {
+            event = new PVWriterEvent(PVWriterEvent.WRITE_SUCCEEDED_MASK, writerForNotification);
+        }
         for (PVWriterListener<T> listener : pvWriterListeners) {
             listener.pvChanged(event);
         }
     }
     
-    synchronized void fireWriteFailure(Exception ex) {
+    void fireWriteFailure(Exception ex) {
         setLastWriteException(ex);
-        PVWriterEvent<T> event = new PVWriterEvent(PVWriterEvent.WRITE_FAILED_MASK, writerForNotification);
+        PVWriterEvent<T> event;
+        synchronized(lock) {
+            event = new PVWriterEvent(PVWriterEvent.WRITE_FAILED_MASK, writerForNotification);
+        }
         for (PVWriterListener<T> listener : pvWriterListeners) {
             listener.pvChanged(event);
         }
     }
 
-    synchronized void setWriteDirector(PVWriterDirector<T> writeDirector) {
-        this.writeDirector = writeDirector;
+    void setWriteDirector(PVWriterDirector<T> writeDirector) {
+        synchronized(lock) {
+            this.writeDirector = writeDirector;
+        }
     }
 
     /**
@@ -89,24 +111,14 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @param listener a new listener
      */
     @Override
-    public synchronized void addPVWriterListener(PVWriterListener<? extends T> listener) {
-        if (isClosed())
+    public void addPVWriterListener(PVWriterListener<? extends T> listener) {
+        if (isClosed()) {
             throw new IllegalStateException("Can't add listeners to a closed PV");
-        
-        // Check whether to notify when the first listener is added.
-        // This is done to make sure that exceptions thrown at pv creation
-        // are not lost since the listener is added after the pv is created.
-        // If the notification is done on a separate thread, the context switch
-        // is enough to make sure the listener is registerred before the event
-        // arrives, but if the notification is done on the same thread
-        // the notification would be lost.
-        boolean notify = pvWriterListeners.isEmpty() && notifyFirstListener &&
-                lastWriteException != null;
+        }
+
         @SuppressWarnings("unchecked")
         PVWriterListener<T> convertedListener = (PVWriterListener<T>) listener;
         pvWriterListeners.add(convertedListener);
-        if (notify)
-            listener.pvChanged(null);
     }
 
     /**
@@ -129,7 +141,7 @@ class PVWriterImpl<T> implements PVWriter<T> {
         // it would block the notifications in case of syncWrite
         // and would deadlock
         PVWriterDirector<T> director;
-        synchronized(this) {
+        synchronized(lock) {
             director = writeDirector;
         }
         if (syncWrite) {
@@ -146,12 +158,19 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * do anything.
      */
     @Override
-    public synchronized void close() {
-        if (!closed) {
+    public void close() {
+        synchronized(lock) {
+            if (closed) {
+                return;
+            }
             closed = true;
-            pvWriterListeners.clear();
-            writeDirector.close();
         }
+        pvWriterListeners.clear();
+        PVWriterDirector<T> director;
+        synchronized(lock) {
+            director = writeDirector;
+        }
+        director.close();
     }
 
     /**
@@ -160,8 +179,10 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @return true if closed
      */
     @Override
-    public synchronized boolean isClosed() {
-        return closed;
+    public boolean isClosed() {
+        synchronized(lock) {
+            return closed;
+        }
     }
     
     /**
@@ -169,10 +190,12 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * 
      * @param ex the new exception
      */
-    synchronized void setLastWriteException(Exception ex) {
-        if (!Objects.equals(ex, lastWriteException)) {
-            lastWriteException = ex;
-            needsExceptionNotification = true;
+    void setLastWriteException(Exception ex) {
+        synchronized(lock) {
+            if (!Objects.equals(ex, lastWriteException)) {
+                lastWriteException = ex;
+                needsExceptionNotification = true;
+            }
         }
     }
 
@@ -183,25 +206,33 @@ class PVWriterImpl<T> implements PVWriter<T> {
      * @return the last generated exception or null
      */
     @Override
-    public synchronized Exception lastWriteException() {
-        Exception exception = lastWriteException;
-        lastWriteException = null;
-        return exception;
+    public Exception lastWriteException() {
+        synchronized(lock) {
+            Exception exception = lastWriteException;
+            lastWriteException = null;
+            return exception;
+        }
     }
 
     @Override
-    public synchronized boolean isWriteConnected() {
-        return writeConnected;
+    public boolean isWriteConnected() {
+        synchronized(lock) {
+            return writeConnected;
+        }
     }
     
-    public synchronized void setWriteConnected(boolean writeConnected) {
-        if (this.writeConnected != writeConnected) {
-            this.writeConnected = writeConnected;
-            needsConnectionNotification = true;
+    public void setWriteConnected(boolean writeConnected) {
+        synchronized(lock) {
+            if (this.writeConnected != writeConnected) {
+                this.writeConnected = writeConnected;
+                needsConnectionNotification = true;
+            }
         }
     }
     
     void setWriterForNotification(PVWriter<T> writerForNotification) {
-        this.writerForNotification = writerForNotification;
+        synchronized(lock) {
+            this.writerForNotification = writerForNotification;
+        }
     }
 }

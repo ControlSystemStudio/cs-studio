@@ -12,11 +12,14 @@ package org.epics.pvmanager;
  * values are notified through the {@link PVReaderListener}. Listeners
  * can be registered from any thread.
  * <p>
- * The value/connection/exception can be accessed from any the thread,
+ * The implementation is thread safe, meaning any element (e.g. value, connection, exception, ...)
+ * can be accessed from any thread,
  * but there is no guarantee on the atomicity. The only way to work on a consistent
  * snapshot is to use a listener and to process the event on the thread
  * of the listener. If the event is forwarded on another thread, one loses
  * the atomicity and also the other safeguards (like rate throttling).
+ * The callback does not lock the object, so other threads can still access
+ * the object while listeners are executing.
  *
  * @author carcassi
  * @param <T> the type of the PVReader.

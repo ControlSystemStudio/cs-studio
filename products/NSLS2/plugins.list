@@ -8,6 +8,7 @@ net.coobird.thumbnailator
 org.antlr.runtime
 org.apache.batik
 org.csstudio.alarm.beast
+org.csstudio.alarm.beast.notifier
 org.csstudio.alarm.beast.annunciator
 org.csstudio.alarm.beast.msghist
 org.csstudio.alarm.beast.ui
@@ -27,6 +28,7 @@ org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
+org.csstudio.archive.vtype
 org.csstudio.channel.intro
 org.csstudio.channel.opiwidgets
 org.csstudio.channel.views
@@ -51,6 +53,7 @@ org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
 org.csstudio.logbook.ui
+org.csstudio.logbook.viewer
 org.csstudio.logging
 org.csstudio.logging.ui
 org.csstudio.nsls2.product
@@ -86,6 +89,7 @@ org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
 org.csstudio.remote
+org.csstudio.servicelocator
 org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
@@ -97,6 +101,7 @@ org.csstudio.systemopen.linux
 org.csstudio.systemopen.mac
 org.csstudio.systemopen.win
 org.csstudio.trends.databrowser2
+org.csstudio.trends.databrowser2.rcp
 org.csstudio.trends.databrowser2.intro
 org.csstudio.trends.databrowser2.opiwidget
 org.csstudio.ui.help
@@ -110,6 +115,7 @@ org.csstudio.utility.channel.adapters
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
+org.csstudio.utility.jms
 org.csstudio.utility.ldap
 org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
@@ -119,15 +125,19 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.extra
 org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.pvmanager.graphene
+org.csstudio.utility.pvmanager.vtype
 org.csstudio.utility.speech
 org.csstudio.workspace
 org.epics.graphene
 org.epics.util
+org.epics.vtype
 org.python
+org.slf4j
 org.slf4j.api
