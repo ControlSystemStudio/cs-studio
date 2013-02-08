@@ -1,6 +1,6 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.util.time.TimeDuration.*;
 
@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +40,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
@@ -544,7 +546,7 @@ public class PVManagerProbe extends ViewPart {
 						setReadOnly(!pv.isWriteConnected());
 					}
 				})
-				.notifyOn(swtThread()).asynchWriteAndMaxReadRate(ofHertz(25));
+				.notifyOn(swtThread(this)).asynchWriteAndMaxReadRate(ofHertz(25));
 		
 		
 		this.PVName = pvName;
