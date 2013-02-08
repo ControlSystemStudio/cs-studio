@@ -14,16 +14,18 @@ import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Format;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.pvmanager.PMObjectValue;
+import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
-import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
@@ -324,8 +326,27 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 
 		String text;
+		if(value instanceof PMObjectValue)
+			text = PVManagerHelper.getInstance().formatValue(
+					format, ((PMObjectValue)value).getLatestValue(), tempPrecision);
+		else
+			text = formatUtilityPVValue(value, tempPrecision);
+
+		//synchronize the property value without fire listeners.
+		widgetModel.getProperty(
+				TextUpdateModel.PROP_TEXT).setPropertyValue(text, false);
+		setFigureText(text);
+
+		if(isAutoSize)
+			performAutoSize();
+
+		return text;
+	}	
+
+	private String formatUtilityPVValue(IValue value, int tempPrecision) {
+		String text;
 		switch (format) {
-		case DECIAML:
+		case DECIMAL:
 			text = value.format(Format.Decimal, tempPrecision);
 			break;
 		case EXP:
@@ -381,17 +402,10 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			if(units != null && units.trim().length()>0)
 				text = text + " " + units; //$NON-NLS-1$
 		}
-
-		//synchronize the property value without fire listeners.
-		widgetModel.getProperty(
-				TextUpdateModel.PROP_TEXT).setPropertyValue(text, false);
-		setFigureText(text);
-
-		if(isAutoSize)
-			performAutoSize();
-
 		return text;
 	}
+	
+
 
 	@Override
 	public String getValue() {

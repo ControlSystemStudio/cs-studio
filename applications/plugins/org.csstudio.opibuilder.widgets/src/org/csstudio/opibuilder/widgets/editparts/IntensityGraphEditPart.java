@@ -11,17 +11,19 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
+import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
@@ -32,6 +34,8 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.epics.util.array.ListNumber;
+import org.epics.vtype.VNumberArray;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen
@@ -121,10 +125,15 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null || !(newValue instanceof IValue))
 					return false;
 				IValue value = (IValue)newValue;
-				//if(ValueUtil.getSize(value) > 1){
-					((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDoubleArray(value));
-				//}else
-				//	((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDouble(value));
+				if(value instanceof PMObjectValue){
+					Object obj = ((PMObjectValue)value).getLatestValue();
+					if(obj instanceof VNumberArray){
+						setValue(((VNumberArray)obj).getData());
+						return false;
+					}
+				}				
+				((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDoubleArray(value));
+
 				return false;
 			}
 		};
@@ -456,7 +465,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
-		} else if(value instanceof short[]){
+		}else if(value instanceof ListNumber)
+			((IntensityGraphFigure)getFigure()).setDataArray(
+					new ListNumberWrapper((ListNumber)value));
+		else if(value instanceof short[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((short[]) value);
 		}else if(value instanceof byte[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((byte[]) value);

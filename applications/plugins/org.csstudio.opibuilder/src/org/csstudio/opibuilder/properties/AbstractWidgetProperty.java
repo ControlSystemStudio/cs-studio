@@ -191,7 +191,7 @@ public abstract class AbstractWidgetProperty {
 		Object newValue = checkValue(value);
 		if(newValue == null || newValue.equals(propertyValue))
 			return;
-		Object oldValue= propertyValue;
+		Object oldValue= getPropertyValue();
 		propertyValue = newValue;
 		firePropertyChange(oldValue, getPropertyValue());
 	}

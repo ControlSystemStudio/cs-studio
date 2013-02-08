@@ -90,8 +90,10 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
 									if(meta == null || !meta.equals(new_meta)){
 										meta = new_meta;
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());
+										if(!Double.isNaN(meta.getDisplayHigh()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
+										if(!Double.isNaN(meta.getDisplayLow()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());
 										if(Double.isNaN(meta.getWarnHigh()))
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
 										else{

@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>38d90a0d:1357c5ff43f:-7fda</wuid>
-  <boy_version>3.1.3.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -48,16 +48,16 @@
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color name="Header Background" red="94" green="151" blue="230" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color name="Header Background" red="94" green="151" blue="230" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>765</width>
     <border_style>14</border_style>
@@ -67,10 +67,10 @@
     <border_color>
       <color red="191" green="191" blue="191" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>11</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>17</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <read_only>true</read_only>
@@ -322,7 +322,7 @@
     <trace_3_update_mode>0</trace_3_update_mode>
     <axis_0_maximum>100.0</axis_0_maximum>
     <axis_0_scale_font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </axis_0_scale_font>
     <trace_2_point_size>4</trace_2_point_size>
     <trace_4_y_axis_index>1</trace_4_y_axis_index>
@@ -358,7 +358,7 @@
     <trace_2_update_delay>100</trace_2_update_delay>
     <trace_4_point_size>4</trace_4_point_size>
     <trace_0_concatenate_data>true</trace_0_concatenate_data>
-    <trace_3_y_pv>sim://noise2</trace_3_y_pv>
+    <trace_3_y_pv>sim://noise(10,20,1)</trace_3_y_pv>
     <actions hook="false" hook_all="false" />
     <trigger_pv_value />
     <trace_1_x_pv></trace_1_x_pv>
@@ -383,12 +383,12 @@
     <tooltip>$(trace_0_y_pv)
 $(trace_0_y_pv_value)</tooltip>
     <border_alarm_sensitive>false</border_alarm_sensitive>
-    <trace_4_y_pv>sim://noise3</trace_4_y_pv>
+    <trace_4_y_pv>sim://noise(5,10,1)</trace_4_y_pv>
     <trace_1_x_axis_index>0</trace_1_x_axis_index>
     <trace_0_y_axis_index>1</trace_0_y_axis_index>
     <trace_3_visible>true</trace_3_visible>
     <axis_1_scale_font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </axis_1_scale_font>
     <border_style>14</border_style>
     <trace_3_x_axis_index>0</trace_3_x_axis_index>
@@ -480,7 +480,7 @@ In this example, axis are added from script, so it can have more than 4 axes.</t
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>765</width>
     <border_style>0</border_style>

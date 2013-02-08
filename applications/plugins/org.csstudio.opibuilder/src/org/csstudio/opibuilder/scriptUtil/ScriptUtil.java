@@ -151,6 +151,15 @@ public class ScriptUtil {
 		action.run();
 	}
 	
+	/**Execute a runnable in UI thread.
+	 * @param runnable the runnable to be executed.
+	 * @param widget any widget. It is referred to get the UI thread.
+	 */
+	public final static void execInUI(Runnable runnable, 
+			AbstractBaseEditPart widget){
+		widget.getViewer().getControl().getDisplay().asyncExec(runnable);
+	}
+	
 	/**
 	 * @return true if it the OPI is running in WebOPI.
 	 */

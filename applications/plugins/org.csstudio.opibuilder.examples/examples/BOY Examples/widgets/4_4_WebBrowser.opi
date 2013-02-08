@@ -5,11 +5,11 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>66d1507f:138820a85e5:-7a50</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
-  <name>Tabbed Container</name>
+  <name>Web Browser</name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
   <background_color>
@@ -141,7 +141,7 @@
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
-    <width>117</width>
+    <width>114</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -324,47 +324,48 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
-    <show_units>true</show_units>
     <multiline_input>false</multiline_input>
-    <wuid>66d1507f:138820a85e5:-7a47</wuid>
     <auto_size>false</auto_size>
-    <rotation_angle>0.0</rotation_angle>
     <scripts />
     <height>20</height>
-    <name>Text Input</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text>https://sourceforge.net/apps/trac/cs-studio/wiki/BOY</text>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>683</width>
+    <border_style>3</border_style>
+    <pv_value />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <minimum>-1.7976931348623157E308</minimum>
+    <show_units>true</show_units>
+    <wuid>66d1507f:138820a85e5:-7a47</wuid>
+    <rotation_angle>0.0</rotation_angle>
+    <name>Text Input</name>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <format_type>0</format_type>
-    <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>loc://urlPV(https://sourceforge.net/apps/trac/cs-studio/wiki/BOY)</pv_name>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
+    <pv_name>loc://urlPV("https://sourceforge.net/apps/trac/cs-studio/wiki/BOY")</pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Text Input</widget_type>
-    <enabled>true</enabled>
-    <text>https://sourceforge.net/apps/trac/cs-studio/wiki/BOY</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
-    <font>
-      <fontdata fontName="Arial" height="9" style="0" />
-    </font>
-    <width>683</width>
-    <border_style>3</border_style>
+    <confirm_message></confirm_message>
     <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <maximum>1.7976931348623157E308</maximum>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -443,7 +444,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="true">
           <value>pvStr0</value>
         </exp>
-        <pv trig="true">loc://urlPV(https://ics-web.sns.ornl.gov/css/boy.html)</pv>
+        <pv trig="true">loc://urlPV("https://sourceforge.net/apps/trac/cs-studio/wiki/BOY")</pv>
       </rule>
     </rules>
     <url>https://sourceforge.net/apps/trac/cs-studio/wiki/BOY</url>
@@ -473,16 +474,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -492,6 +493,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>546</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
@@ -501,9 +503,8 @@ $(pv_value)</tooltip>
         <description>Open Help</description>
       </action>
     </actions>
-    <y>546</y>
-    <tooltip></tooltip>
     <x>577</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -581,7 +582,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -624,14 +625,27 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
+      <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <crop_top>0</crop_top>
       <border_style>0</border_style>
       <rules />
+      <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
+      <degree>0</degree>
       <border_width>1</border_width>
       <image_file>../pictures/onlineHelp.gif</image_file>
       <border_color>
@@ -664,7 +678,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>

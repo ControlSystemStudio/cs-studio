@@ -216,14 +216,23 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 	}
 
 	private void popConsoleView(){
-		if(PlatformUI.getWorkbench() != null){
+		if(PlatformUI.getWorkbench() != null &&
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null &&
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() !=null &&
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
+					findView("org.eclipse.ui.console.ConsoleView") == null){		//$NON-NLS-1$
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
 				public void run() {
 					try {
-						IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+						final IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
 							getActivePage().showView("org.eclipse.ui.console.ConsoleView"); //$NON-NLS-1$
 						if(view != null && view instanceof ConsoleView){
-							((ConsoleView)view).display(console);
+							UIBundlingThread.getInstance().addRunnable(new Runnable() {
+								@Override
+								public void run() {
+									((ConsoleView)view).display(console);									
+								}
+							});
 						}
 					} catch (PartInitException e) {
 			            OPIBuilderPlugin.getLogger().log(Level.WARNING, "ConsoleView activation error",e); //$NON-NLS-1$

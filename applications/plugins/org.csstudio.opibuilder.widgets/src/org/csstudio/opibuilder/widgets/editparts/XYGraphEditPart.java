@@ -13,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
@@ -110,7 +111,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 						model.getProperty(propID).getPropertyValue());
 			}
 		}
-
+		//all values should be buffered
+		getPVWidgetEditpartDelegate().setAllValuesBuffered(true);
 		return xyGraphFigure;
 	}
 
@@ -533,30 +535,49 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			if(newValue == null || !(newValue instanceof IValue))
 				break;
 			IValue value = (IValue)newValue;
-			if(ValueUtil.getSize(value) > 1){
-				dataProvider.setCurrentXDataArray(ValueUtil.getDoubleArray(value));
+			if(dataProvider.isConcatenate_data() && value instanceof PMObjectValue){
+				for(Object o:((PMObjectValue)value).getAllValues()){
+					setXValue(dataProvider, new PMObjectValue(o, false));
+				}
 			}else
-				dataProvider.setCurrentXData(ValueUtil.getDouble(value));
+				setXValue(dataProvider, value);
 			break;
 		case YPV_VALUE:
 			if(newValue == null || !(newValue instanceof IValue))
 				break;
 			IValue y_value = (IValue)newValue;
-			if(ValueUtil.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
-				long time = y_value.getTime().seconds() * 1000 + y_value.getTime().nanoseconds()/1000000;
-				dataProvider.setCurrentYData(ValueUtil.getDouble(y_value), time);
-			}else{
-				if(ValueUtil.getSize(y_value) > 1){
-					dataProvider.setCurrentYDataArray(ValueUtil.getDoubleArray(y_value));
-				}else
-					dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));
-			}
+			if(dataProvider.isConcatenate_data() && y_value instanceof PMObjectValue){
+				for(Object o:((PMObjectValue)y_value).getAllValues()){
+					setYValue(trace, dataProvider, new PMObjectValue(o, false));
+				}
+			}else
+				setYValue(trace, dataProvider, y_value);
 			break;
 		case VISIBLE:
 			trace.setVisible((Boolean)newValue);
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void setXValue(CircularBufferDataProvider dataProvider, IValue value) {
+		if(ValueUtil.getSize(value) > 1){
+			dataProvider.setCurrentXDataArray(ValueUtil.getDoubleArray(value));
+		}else
+			dataProvider.setCurrentXData(ValueUtil.getDouble(value));
+	}
+
+	private void setYValue(Trace trace,
+			CircularBufferDataProvider dataProvider, IValue y_value) {
+		if(ValueUtil.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
+			long time = y_value.getTime().seconds() * 1000 + y_value.getTime().nanoseconds()/1000000;
+			dataProvider.setCurrentYData(ValueUtil.getDouble(y_value), time);
+		}else{
+			if(ValueUtil.getSize(y_value) > 1){
+				dataProvider.setCurrentYDataArray(ValueUtil.getDoubleArray(y_value));
+			}else
+				dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));
 		}
 	}
 

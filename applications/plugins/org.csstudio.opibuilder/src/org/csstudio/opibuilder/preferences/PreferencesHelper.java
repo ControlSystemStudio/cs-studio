@@ -36,6 +36,11 @@ public class PreferencesHelper {
 		ONLY_INFO,
 		ALL;
 	}
+	
+	public enum PVConnectionLayer {
+		PV_MANAGER,
+		UTILITY_PV;
+	}
 
 	public static final String COLOR_FILE = "color_file"; //$NON-NLS-1$
 	public static final String FONT_FILE = "font_file"; //$NON-NLS-1$
@@ -56,6 +61,7 @@ public class PreferencesHelper {
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
+	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
 	//The widgets that are hidden from palette.
 	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 	
@@ -142,6 +148,13 @@ public class PreferencesHelper {
     	return ConsolePopupLevel.valueOf(popupLevelString);
     }
 
+    public static PVConnectionLayer getPVConnectionLayer(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	String preStr = service.getString(
+    			OPIBuilderPlugin.PLUGIN_ID, PV_CONNECTION_LAYER,
+    			PVConnectionLayer.PV_MANAGER.toString(), null);
+    	return PVConnectionLayer.valueOf(preStr);
+    }
 
     public static boolean isAdvancedGraphicsDisabled(){
     	final IPreferencesService service = Platform.getPreferencesService();

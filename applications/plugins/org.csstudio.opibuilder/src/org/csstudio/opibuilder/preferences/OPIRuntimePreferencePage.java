@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.preferences;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper.ConsolePopupLevel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper.PVConnectionLayer;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
@@ -108,6 +109,13 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 				"The fatest refresh cycle for OPI GUI in millisecond");
 		addField(guiRefreshCycleEditor);	
 	
+		ComboFieldEditor pvConnectionLayerEditor = 
+				new ComboFieldEditor(PreferencesHelper.PV_CONNECTION_LAYER, 
+						"PV Connection Layer", new String[][]{
+						{"PV Manager", PVConnectionLayer.PV_MANAGER.toString()},
+						{"Utility PV", PVConnectionLayer.UTILITY_PV.toString()}}, parent);				
+		addField(pvConnectionLayerEditor);
+		
 		ComboFieldEditor popupConsoleEditor = 
 			new ComboFieldEditor(PreferencesHelper.POPUP_CONSOLE, 
 					"Console Popup Level", new String[][]{

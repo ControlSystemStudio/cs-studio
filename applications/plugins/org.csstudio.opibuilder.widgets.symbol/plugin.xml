@@ -50,7 +50,6 @@
             file="index.xml">
       </index>
    </extension>
-
    <extension
          point="org.eclipse.help.toc">
       <toc

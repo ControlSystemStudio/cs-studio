@@ -6,8 +6,8 @@
 *.orig
 bin/
 classes/
-build/build/
-build/ext/
+build/build
+build/ext
 
 # ignore all log files ?
 logs/*.log
@@ -15,7 +15,7 @@ log/*.log
 
 
 # SNS, KEK Products: Ignore output of headless build
-# syntax: glob
+syntax: glob
 products/SNS/product/org.csstudio.sns.updatesite/build/*
 products/SNS/product/org.csstudio.sns.updatesite/apps/*
 products/SNS/product/org.csstudio.sns.updatesite/config_build_*/build.log
@@ -27,5 +27,19 @@ products/KEK/plugins/org.csstudio.kek.build/*/build.log
 # should it be changed to all */.settings/* ?
 .settings/
 
-# Ignore generated jython classes
-*$py.class
+syntax: regexp
+^applications/plugins/org\.csstudio\.diag\.pvmanager\.probe/\.settings$
+^applications/plugins/org\.csstudio\.channelfinder/\.settings$
+^core/plugins/org\.csstudio\.platform\.libs\.glazedlists/\.settings$
+^applications/plugins/org\.csstudio\.channelfinder\.ui/\.settings$
+^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.settings$
+^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$
+^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.settings$
+^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.classpath$
+rescue/.+/.+\.sql$
+rescue/.+/.+\.gpb$
+^applications/plugins/net\.coobird\.thumbnailator/\.settings$
+syntax: regexp
+^applications/plugins/org\.apache\.jackrabbit/\.settings$
+syntax: regexp
+^applications/plugins/org\.csstudio\.utility\.olog\.ui/\.settings$

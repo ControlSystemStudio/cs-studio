@@ -13,7 +13,6 @@ import java.util.List;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -23,6 +22,7 @@ import org.csstudio.opibuilder.widgets.symbol.util.IImageLoadedListener;
 import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
@@ -112,8 +112,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	}
 	
 	@Override
-	public void activate() {
-		super.activate();
+	public void doActivate() {
+		super.doActivate();
 		registerLoadItemsListener();
 	}
 

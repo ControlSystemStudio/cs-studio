@@ -48,6 +48,7 @@ public final class MediaService {
 	public static final String HEADER1 = "Header 1"; //$NON-NLS-1$
 	public static final String HEADER2 = "Header 2"; //$NON-NLS-1$
 	public static final String HEADER3 = "Header 3"; //$NON-NLS-1$
+	public static final String FINE_PRINT = "Fine Print"; //$NON-NLS-1$
 	/**
 	 * The shared instance of this class.
 	 */
@@ -104,15 +105,17 @@ public final class MediaService {
 		//			defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
 		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
-		FontData defaultBoldFont = new FontData(defaultFont.getName(), defaultFont.getHeight(), SWT.BOLD);
+		int height = defaultFont.getHeight();
+		FontData defaultBoldFont = new FontData(defaultFont.getName(), height, SWT.BOLD);
 		fontMap.put(DEFAULT_BOLD_FONT, new OPIFont(DEFAULT_BOLD_FONT, defaultBoldFont));
-		FontData header1 = new FontData(defaultFont.getName(), 18, SWT.BOLD);
+		FontData header1 = new FontData(defaultFont.getName(), height + 8, SWT.BOLD);
 		fontMap.put(HEADER1, new OPIFont(HEADER1, header1));
-		FontData header2 = new FontData(defaultFont.getName(), 14, SWT.BOLD);
+		FontData header2 = new FontData(defaultFont.getName(), height + 4, SWT.BOLD);
 		fontMap.put(HEADER2, new OPIFont(HEADER2, header2));
-		FontData header3 = new FontData(defaultFont.getName(), 12, SWT.BOLD);
+		FontData header3 = new FontData(defaultFont.getName(), height + 2, SWT.BOLD);
 		fontMap.put(HEADER3, new OPIFont(HEADER3, header3));
-
+		FontData finePrint = new FontData(defaultFont.getName(), height -2, SWT.NORMAL);
+		fontMap.put(FINE_PRINT, new OPIFont(FINE_PRINT, finePrint));
 	}
 
 	/**

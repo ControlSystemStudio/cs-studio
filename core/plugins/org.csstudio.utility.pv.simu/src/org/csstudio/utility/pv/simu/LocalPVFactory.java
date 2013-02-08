@@ -19,7 +19,9 @@ import org.csstudio.utility.pv.PV;
 @SuppressWarnings("nls")
 public class LocalPVFactory implements IPVFactory
 {
-    /** PV type prefix */
+    private static final String QUOTE = "\""; //$NON-NLS-1$
+
+	/** PV type prefix */
     public static final String PREFIX = "loc";
 
     /** All the 'local' PVs, mapped by name */
@@ -51,6 +53,8 @@ public class LocalPVFactory implements IPVFactory
         	 if (value_end < 0)
         		 throw new Exception("Value in PV " + name +" not terminated by ')'");
         	 value_text = name.substring(value_start+1, value_end);
+        	 if(value_text.startsWith(QUOTE) && value_text.endsWith(QUOTE))
+        		 value_text=value_text.substring(1, value_text.length()-1);
         }
 
 

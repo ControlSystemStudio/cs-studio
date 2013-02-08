@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <auto_zoom_to_fit_all>true</auto_zoom_to_fit_all>
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>2da4dada:138bb0b2666:-7ff6</wuid>
-  <boy_version>3.1.2.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>300</height>
@@ -48,16 +48,16 @@
     </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color name="Background" red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="229" green="229" blue="229" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color name="Background" red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>166</width>
     <border_style>14</border_style>
@@ -67,10 +67,10 @@
     <border_color>
       <color red="191" green="191" blue="191" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>3</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>3</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
@@ -92,7 +92,7 @@
       <enabled>true</enabled>
       <text>Reset</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>148</width>
       <border_style>0</border_style>
@@ -162,7 +162,7 @@ timerLabel.setPropertyValue("foreground_color", ColorFontUtil.BLACK)]]></scriptT
       <widget_type>Progress Bar</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>148</width>
       <show_lolo>true</show_lolo>
@@ -189,10 +189,10 @@ timerLabel.setPropertyValue("foreground_color", ColorFontUtil.BLACK)]]></scriptT
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
+      <pv_name>loc://$(DID)_progress</pv_name>
       <color_hi>
         <color red="255" green="128" blue="0" />
       </color_hi>
-      <pv_name>loc://$(DID)_progress</pv_name>
       <origin_ignored>true</origin_ignored>
       <foreground_color>
         <color red="0" green="0" blue="0" />
@@ -201,7 +201,7 @@ timerLabel.setPropertyValue("foreground_color", ColorFontUtil.BLACK)]]></scriptT
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
       <scale_font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>0.0</origin>
@@ -252,7 +252,7 @@ $(pv_value)</tooltip>
       <enabled>false</enabled>
       <text>Stop</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>72</width>
       <border_style>0</border_style>
@@ -271,6 +271,7 @@ $(pv_value)</tooltip>
           <pv_name>loc://$(DID)_start</pv_name>
           <value>0</value>
           <timeout>10</timeout>
+          <confirm_message></confirm_message>
           <description></description>
         </action>
       </actions>
@@ -298,7 +299,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Start</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>69</width>
       <border_style>0</border_style>
@@ -317,6 +318,7 @@ $(pv_value)</tooltip>
           <pv_name>loc://$(DID)_start</pv_name>
           <value>1</value>
           <timeout>10</timeout>
+          <confirm_message></confirm_message>
           <description></description>
         </action>
       </actions>
@@ -389,7 +391,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>min</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>36</width>
       <border_style>0</border_style>
@@ -430,7 +432,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>sec</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>36</width>
       <border_style>0</border_style>
@@ -471,7 +473,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>hr</text>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>36</width>
       <border_style>0</border_style>

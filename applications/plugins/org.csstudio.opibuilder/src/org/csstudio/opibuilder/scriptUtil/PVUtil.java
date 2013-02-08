@@ -10,8 +10,12 @@ package org.csstudio.opibuilder.scriptUtil;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartListener;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.
@@ -19,6 +23,46 @@ import org.csstudio.utility.pv.PV;
  *
  */
 public class PVUtil{
+	
+	/**Create a PV and start it. PVListener can be added to the PV to monitor its
+	 * value change, but please note that the listener is executed in non-UI thread.
+	 * If the code need be executed in UI thread, please use {@link ScriptUtil#execInUI(Runnable, AbstractBaseEditPart)}.
+	 * The monitor's maximum update rate is 50hz. If the PV updates faster than this rate, some updates
+	 * will be discarded.  
+	 * <br>Example Jython script:
+	 * 
+	 *  <pre>
+	from org.csstudio.opibuilder.scriptUtil import PVUtil
+	from org.csstudio.utility.pv import PVListener
+		
+	class MyPVListener(PVListener):
+		def pvValueUpdate(self, pv):
+			widget.setPropertyValue("text", PVUtil.getString(pv))
+		
+	pv = PVUtil.createPV("sim://noise", widget)
+	pv.addListener(MyPVListener())  
+	 *  </pre>
+	 * 
+	 * @param name name of the PV.
+	 * @param widget the reference widget. The PV will stop when the widget is deactivated,
+	 * so it is not needed to stop the pv in script.
+	 * @return the PV.
+	 * @throws Exception the exception that might happen while creating the pv.
+	 */
+	public final static PV createPV(String name, AbstractBaseEditPart widget) throws Exception{
+		
+		final PV pv = BOYPVFactory.createPV(name, false, 2);
+		pv.start();
+		widget.addEditPartListener(new EditPartListener.Stub(){
+			
+			@Override
+			public void partDeactivated(EditPart arg0) {
+				pv.stop();
+			}	
+			
+		});
+		return pv;		
+	}
 
 	 /** Try to get a double number from the PV.
      *  <p>

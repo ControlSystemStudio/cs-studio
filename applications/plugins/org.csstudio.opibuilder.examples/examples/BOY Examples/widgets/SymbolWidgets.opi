@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>768</height>
@@ -48,16 +48,16 @@
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="205" green="216" blue="192" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="205" green="216" blue="192" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
@@ -67,17 +67,17 @@
     <border_color>
       <color red="0" green="0" blue="0" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>111</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>10</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>21</height>
+      <height>19</height>
       <name>Label Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -96,9 +96,9 @@
       <enabled>false</enabled>
       <text>Symbol Monitors - SVG format</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="12" style="1">Header 3</opifont.name>
+        <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
       </font>
-      <width>232</width>
+      <width>276</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -119,25 +119,35 @@
       <scripts />
       <height>40</height>
       <data_type>0</data_type>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <off_label>OFF</off_label>
-      <widget_type>Boolean Symbol Monitor</widget_type>
       <enabled>true</enabled>
+      <widget_type>Boolean Symbol Monitor</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <width>40</width>
       <border_style>0</border_style>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
-      <bit>0</bit>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
+      <bit>0</bit>
       <on_label>ON</on_label>
+      <border_width>1</border_width>
       <image_file>../pictures/SymbolLibrary/SVG/PL General.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -146,8 +156,8 @@
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Boolean Symbol Monitor</name>
       <stretch_to_fit>true</stretch_to_fit>
+      <name>Boolean Symbol Monitor</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -163,24 +173,16 @@
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>35</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -208,7 +210,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Monitor: &#xD;
 Single Image animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -231,25 +233,35 @@ Single Image animated in ON/OFF color</text>
       <scripts />
       <height>75</height>
       <data_type>0</data_type>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <off_label>OFF</off_label>
-      <widget_type>Boolean Symbol Monitor</widget_type>
       <enabled>true</enabled>
+      <widget_type>Boolean Symbol Monitor</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <width>40</width>
       <border_style>0</border_style>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
-      <bit>0</bit>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
+      <bit>0</bit>
       <on_label>ON</on_label>
+      <border_width>1</border_width>
       <image_file>../pictures/SymbolLibrary/SVG/JF Fuse Switch Off.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -258,8 +270,8 @@ Single Image animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Boolean Symbol Monitor</name>
       <stretch_to_fit>true</stretch_to_fit>
+      <name>Boolean Symbol Monitor</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -275,24 +287,16 @@ Single Image animated in ON/OFF color</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>90</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -320,7 +324,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Monitor: &#xD;
 ON/OFF Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -362,7 +366,7 @@ ON/OFF Image Symbol animated in ON/OFF color</text>
       <text>Multistate Symbol Monitor: &#xD;
 Multi Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -414,21 +418,23 @@ Multi Image Symbol animated in ON/OFF color</text>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>41</width>
       <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <border_style>0</border_style>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <pv_value />
       <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
@@ -463,16 +469,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="217" green="193" blue="223" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="217" green="193" blue="223" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
@@ -482,17 +488,17 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="0" blue="0" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>111</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>326</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>4982c4ba:136d02e386e:-7fd2</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>21</height>
+      <height>19</height>
       <name>Label Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -511,9 +517,9 @@ $(pv_value)</tooltip>
       <enabled>false</enabled>
       <text>Symbol Controls - SVG format</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="12" style="1">Header 3</opifont.name>
+        <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
       </font>
-      <width>227</width>
+      <width>272</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -553,7 +559,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Control: &#xD;
 Single Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -587,9 +593,19 @@ Single Image Symbol animated in ON/OFF color</text>
       <enabled>true</enabled>
       <widget_type>Boolean Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>49</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <push_action_index>0</push_action_index>
       <border_style>0</border_style>
       <pv_value />
@@ -606,8 +622,8 @@ Single Image Symbol animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <stretch_to_fit>true</stretch_to_fit>
       <name>Boolean Symbol Control</name>
+      <stretch_to_fit>true</stretch_to_fit>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -623,16 +639,8 @@ Single Image Symbol animated in ON/OFF color</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <show_confirm_dialog>0</show_confirm_dialog>
       <toggle_button>true</toggle_button>
       <degree>0</degree>
@@ -663,9 +671,19 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <widget_type>Boolean Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>40</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <push_action_index>0</push_action_index>
       <border_style>0</border_style>
       <pv_value />
@@ -682,8 +700,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <stretch_to_fit>true</stretch_to_fit>
       <name>Boolean Symbol Control</name>
+      <stretch_to_fit>true</stretch_to_fit>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -699,16 +717,8 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <show_confirm_dialog>1</show_confirm_dialog>
       <toggle_button>true</toggle_button>
       <degree>0</degree>
@@ -724,25 +734,35 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <auto_size>false</auto_size>
       <password></password>
+      <auto_size>false</auto_size>
       <scripts />
       <height>75</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <widget_type>Multistate Symbol Control</widget_type>
       <enabled>true</enabled>
+      <widget_type>Multistate Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <width>41</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
       <items />
       <border_width>2</border_width>
@@ -755,8 +775,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Multistate Symbol Control</name>
       <stretch_to_fit>true</stretch_to_fit>
+      <name>Multistate Symbol Control</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -772,26 +792,18 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
-      <degree>0</degree>
+      <rules />
       <show_confirm_dialog>false</show_confirm_dialog>
+      <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -819,7 +831,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Control:&#xD;
 ON/OFF Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -861,7 +873,7 @@ ON/OFF Image Symbol animated in ON/OFF color</text>
       <text>Multistate Symbol Control:&#xD;
 Multi Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -894,16 +906,16 @@ Multi Image Symbol animated in ON/OFF color</text>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="217" green="193" blue="223" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="217" green="193" blue="223" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
@@ -913,10 +925,10 @@ Multi Image Symbol animated in ON/OFF color</text>
     <border_color>
       <color red="0" green="0" blue="0" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>402</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>10</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -942,7 +954,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <enabled>false</enabled>
       <text>Symbol Monitors - PNG format</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="12" style="1">Header 3</opifont.name>
+        <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
       </font>
       <width>263</width>
       <border_style>0</border_style>
@@ -963,27 +975,37 @@ Multi Image Symbol animated in ON/OFF color</text>
       <visible>true</visible>
       <auto_size>true</auto_size>
       <scripts />
-      <height>40</height>
+      <height>39</height>
       <data_type>0</data_type>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <off_label>OFF</off_label>
-      <widget_type>Boolean Symbol Monitor</widget_type>
       <enabled>true</enabled>
+      <widget_type>Boolean Symbol Monitor</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>40</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
+      <width>39</width>
       <border_style>0</border_style>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
-      <bit>0</bit>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
+      <bit>0</bit>
       <on_label>ON</on_label>
+      <border_width>1</border_width>
       <image_file>../pictures/SymbolLibrary/PNG/PL General.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -992,8 +1014,8 @@ Multi Image Symbol animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Boolean Symbol Monitor</name>
       <stretch_to_fit>false</stretch_to_fit>
+      <name>Boolean Symbol Monitor</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1009,24 +1031,16 @@ Multi Image Symbol animated in ON/OFF color</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>35</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -1054,7 +1068,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Monitor: &#xD;
 Single Image animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1075,27 +1089,37 @@ Single Image animated in ON/OFF color</text>
       <visible>true</visible>
       <auto_size>true</auto_size>
       <scripts />
-      <height>75</height>
+      <height>74</height>
       <data_type>0</data_type>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <off_label>OFF</off_label>
-      <widget_type>Boolean Symbol Monitor</widget_type>
       <enabled>true</enabled>
+      <widget_type>Boolean Symbol Monitor</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>40</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
+      <width>39</width>
       <border_style>0</border_style>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
-      <bit>0</bit>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
+      <bit>0</bit>
       <on_label>ON</on_label>
+      <border_width>1</border_width>
       <image_file>../pictures/SymbolLibrary/PNG/JF Fuse Switch Off.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -1104,8 +1128,8 @@ Single Image animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Boolean Symbol Monitor</name>
       <stretch_to_fit>false</stretch_to_fit>
+      <name>Boolean Symbol Monitor</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1121,24 +1145,16 @@ Single Image animated in ON/OFF color</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>90</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -1166,7 +1182,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Monitor: &#xD;
 ON/OFF Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1208,7 +1224,7 @@ ON/OFF Image Symbol animated in ON/OFF color</text>
       <text>Multistate Symbol Monitor: &#xD;
 Multi Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1236,7 +1252,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <height>75</height>
+      <height>74</height>
       <name>Multistate Symbol Monitor_1</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <stretch_to_fit>false</stretch_to_fit>
@@ -1260,21 +1276,23 @@ Multi Image Symbol animated in ON/OFF color</text>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>41</width>
+      <width>40</width>
       <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <border_style>0</border_style>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <pv_value />
       <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
@@ -1309,16 +1327,16 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="205" green="216" blue="192" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="205" green="216" blue="192" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
@@ -1328,10 +1346,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="0" blue="0" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>402</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>326</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -1357,7 +1375,7 @@ $(pv_value)</tooltip>
       <enabled>false</enabled>
       <text>Symbol Controls - PNG format</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="12" style="1">Header 3</opifont.name>
+        <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
       </font>
       <width>248</width>
       <border_style>0</border_style>
@@ -1399,7 +1417,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Control: &#xD;
 Single Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1421,7 +1439,7 @@ Single Image Symbol animated in ON/OFF color</text>
       <password></password>
       <auto_size>true</auto_size>
       <scripts />
-      <height>62</height>
+      <height>61</height>
       <data_type>0</data_type>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1433,9 +1451,19 @@ Single Image Symbol animated in ON/OFF color</text>
       <enabled>true</enabled>
       <widget_type>Boolean Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>49</width>
+      <width>48</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <push_action_index>0</push_action_index>
       <border_style>0</border_style>
       <pv_value />
@@ -1452,8 +1480,8 @@ Single Image Symbol animated in ON/OFF color</text>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <stretch_to_fit>false</stretch_to_fit>
       <name>Boolean Symbol Control</name>
+      <stretch_to_fit>false</stretch_to_fit>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1469,16 +1497,8 @@ Single Image Symbol animated in ON/OFF color</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <show_confirm_dialog>0</show_confirm_dialog>
       <toggle_button>true</toggle_button>
       <degree>0</degree>
@@ -1497,7 +1517,7 @@ $(pv_value)</tooltip>
       <password></password>
       <auto_size>true</auto_size>
       <scripts />
-      <height>75</height>
+      <height>74</height>
       <data_type>0</data_type>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1509,9 +1529,19 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <widget_type>Boolean Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>40</width>
+      <width>39</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <push_action_index>0</push_action_index>
       <border_style>0</border_style>
       <pv_value />
@@ -1528,8 +1558,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <stretch_to_fit>false</stretch_to_fit>
       <name>Boolean Symbol Control</name>
+      <stretch_to_fit>false</stretch_to_fit>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1545,16 +1575,8 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <show_confirm_dialog>1</show_confirm_dialog>
       <toggle_button>true</toggle_button>
       <degree>0</degree>
@@ -1570,25 +1592,35 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <auto_size>true</auto_size>
       <password></password>
+      <auto_size>true</auto_size>
       <scripts />
-      <height>75</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <height>74</height>
       <show_boolean_label>true</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
         <color red="255" green="255" blue="205" />
       </background_color>
-      <widget_type>Multistate Symbol Control</widget_type>
       <enabled>true</enabled>
+      <widget_type>Multistate Symbol Control</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
-      <width>41</width>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
+      <width>40</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <pv_value />
       <flip_vertical>false</flip_vertical>
+      <pv_value />
       <crop_bottom>0</crop_bottom>
       <items />
       <border_width>2</border_width>
@@ -1601,8 +1633,8 @@ $(pv_value)</tooltip>
       <on_color>
         <color red="0" green="255" blue="0" />
       </on_color>
-      <name>Multistate Symbol Control</name>
       <stretch_to_fit>false</stretch_to_fit>
+      <name>Multistate Symbol Control</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -1618,26 +1650,18 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <image_disposition>1234</image_disposition>
       <confirm_message>Are your sure you want to do this?</confirm_message>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
-      <degree>0</degree>
+      <rules />
       <show_confirm_dialog>false</show_confirm_dialog>
+      <degree>0</degree>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>185</y>
+      <actions hook="false" hook_all="false" />
+      <x>18</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>18</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
@@ -1665,7 +1689,7 @@ $(pv_value)</tooltip>
       <text>Boolean Symbol Control:&#xD;
 ON/OFF Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1707,7 +1731,7 @@ ON/OFF Image Symbol animated in ON/OFF color</text>
       <text>Multistate Symbol Control:&#xD;
 Multi Image Symbol animated in ON/OFF color</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>221</width>
       <border_style>0</border_style>
@@ -1740,16 +1764,16 @@ Multi Image Symbol animated in ON/OFF color</text>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color name="Header Background" red="94" green="151" blue="230" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color name="Header Background" red="94" green="151" blue="230" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>934</width>
     <border_style>14</border_style>
@@ -1759,10 +1783,10 @@ Multi Image Symbol animated in ON/OFF color</text>
     <border_color>
       <color red="191" green="191" blue="191" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>5</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>10</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -1789,7 +1813,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <text>Boolean Symbol Monitor/Control&#xD;
 MultiState Symbol Monitor/Control</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="14" style="1">Header 2</opifont.name>
+        <opifont.name fontName="Sans" height="14" style="1">Header 2</opifont.name>
       </font>
       <width>344</width>
       <border_style>0</border_style>
@@ -1830,7 +1854,7 @@ MultiState Symbol Monitor/Control</text>
       <enabled>true</enabled>
       <text>Examples</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="18" style="1">Header 1</opifont.name>
+        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
       </font>
       <width>451</width>
       <border_style>0</border_style>
@@ -1871,7 +1895,7 @@ MultiState Symbol Monitor/Control</text>
       <enabled>true</enabled>
       <text>Best OPI Yet (BOY)</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="18" style="1">Header 1</opifont.name>
+        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
       </font>
       <width>451</width>
       <border_style>0</border_style>
@@ -1904,16 +1928,16 @@ MultiState Symbol Monitor/Control</text>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -1923,6 +1947,7 @@ MultiState Symbol Monitor/Control</text>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>703</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
@@ -1936,9 +1961,8 @@ PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(
         <description>Open Help</description>
       </action>
     </actions>
-    <y>703</y>
-    <tooltip></tooltip>
     <x>759</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -2016,7 +2040,7 @@ PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -2059,14 +2083,27 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
+      <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <crop_top>0</crop_top>
       <border_style>0</border_style>
       <rules />
+      <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
+      <degree>0</degree>
       <border_width>1</border_width>
       <image_file>../pictures/onlineHelp.gif</image_file>
       <border_color>
@@ -2099,7 +2136,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
@@ -2131,6 +2168,7 @@ $(pv_value)</tooltip>
     <read_only>true</read_only>
     <visible>true</visible>
     <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>true</multiline_input>
     <wuid>5ec8b324:13880ba2d91:-6fcc</wuid>
@@ -2163,10 +2201,11 @@ ITER also contributed more than 200 SVG and PNG symbol images to BOY, which can 
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
+    <confirm_message></confirm_message>
     <rules />
     <pv_value />
     <show_h_scroll>false</show_h_scroll>
@@ -2189,6 +2228,7 @@ ITER also contributed more than 200 SVG and PNG symbol images to BOY, which can 
     <read_only>true</read_only>
     <visible>true</visible>
     <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
     <show_units>true</show_units>
     <multiline_input>true</multiline_input>
     <wuid>5ec8b324:13880ba2d91:-6faf</wuid>
@@ -2229,10 +2269,11 @@ record(mbbo,"EpicsDemoMbbo") {&#xD;
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>301</width>
     <border_style>14</border_style>
+    <confirm_message></confirm_message>
     <rules />
     <pv_value />
     <show_h_scroll>false</show_h_scroll>

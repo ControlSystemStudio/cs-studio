@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>38d90a0d:1357c5ff43f:-7fda</wuid>
-  <boy_version>3.1.1.qualifier</boy_version>
+  <boy_version>3.1.4.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -99,7 +99,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Button</widget_type>
     <enabled>true</enabled>
-    <text>Back</text>
+    <text>Next</text>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -117,7 +117,7 @@ $(pv_value)</tooltip>
     <y>561</y>
     <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>2_5_1_XY_Graph.opi</path>
+        <path>2_5_3_XY_Graph.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -144,14 +144,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -163,10 +163,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color name="Dark Gray Border" red="190" green="190" blue="190" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>362</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>17</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
       <trace_1_visible>true</trace_1_visible>
       <trace_1_trace_type>3</trace_1_trace_type>
@@ -493,14 +493,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -512,10 +512,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color name="Dark Gray Border" red="190" green="190" blue="190" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>101</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>428</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
       <trace_0_trace_color>
         <color red="255" green="0" blue="0" />
@@ -661,7 +661,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://trace0PV(sim://sine(0,100,100,1)</pv_name>
+      <pv_name>loc://trace0PV("sim://sine(0,100,100,1)")</pv_name>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
@@ -799,14 +799,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -818,10 +818,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color name="Dark Gray Border" red="190" green="190" blue="190" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>101</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>17</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
       <trace_1_visible>true</trace_1_visible>
       <trace_1_trace_type>0</trace_1_trace_type>
@@ -1051,14 +1051,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color name="Header Background" red="94" green="151" blue="230" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color name="Header Background" red="94" green="151" blue="230" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -1070,10 +1070,10 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="191" green="191" blue="191" />
     </border_color>
-    <actions hook="false" hook_all="false" />
     <y>11</y>
-    <tooltip></tooltip>
+    <actions hook="false" hook_all="false" />
     <x>17</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <read_only>true</read_only>
@@ -1239,5 +1239,53 @@ $(pv_value)</tooltip>
       <x>57</x>
       <tooltip></tooltip>
     </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>-2e1db4eb:13a70298f3d:-77f9</wuid>
+    <scripts />
+    <height>36</height>
+    <name>Action Button_6</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Button</widget_type>
+    <enabled>true</enabled>
+    <text>Back</text>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>98</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>563</y>
+    <actions hook="true" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>2_5_1_XY_Graph.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>1</replace>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip></tooltip>
+    <x>573</x>
   </widget>
 </display>
