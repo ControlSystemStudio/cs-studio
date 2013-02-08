@@ -7,7 +7,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
 import org.epics.vtype.VImage;
 
 public class SWTUtil {
@@ -36,6 +39,14 @@ public class SWTUtil {
 				}
 	        }
 	    };
+	}
+    
+	public static Executor swtThread(final Widget widget) {
+		return swtThread(widget.getDisplay());
+	}
+	
+	public static Executor swtThread(final WorkbenchPart viewPart) {
+		return swtThread(viewPart.getSite().getShell().getDisplay());
 	}
 	
 	public static Image toImage(GC gc, VImage vImage) {
