@@ -384,7 +384,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 		@Override
 		public void queryExecuted(final Result result) {
-			SWTUtil.swtThread().execute(new Runnable() {
+			SWTUtil.swtThread(Line2DPlotWidget.this).execute(new Runnable() {
 
 				@Override
 				public void run() {
@@ -527,7 +527,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				.imageHeight(imageDisplay.getSize().y)
 				.imageWidth(imageDisplay.getSize().x)
 				.interpolation(InterpolationScheme.LINEAR));
-		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<Plot2DResult>() {
 					@Override
 					public void pvChanged(PVReaderEvent<Plot2DResult> event) {

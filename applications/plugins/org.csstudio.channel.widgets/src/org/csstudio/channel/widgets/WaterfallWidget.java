@@ -243,7 +243,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			plot = waterfallPlotOf(vNumberArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.swtThread())
+				.notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<VImage>() {
 					public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
 						setLastError(pv.lastException());
@@ -259,7 +259,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
-				.notifyOn(SWTUtil.swtThread())
+				.notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<VImage>() {
 					public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
 						setLastError(pv.lastException());

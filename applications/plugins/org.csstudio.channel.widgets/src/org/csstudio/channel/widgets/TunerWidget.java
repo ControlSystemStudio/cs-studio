@@ -774,7 +774,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 						mapOf(latestValueOf(channels(ChannelUtil
 								.getChannelNames(tunerChannelTableModel
 										.getChannels()), VDouble.class,
-								Double.class)))).notifyOn(SWTUtil.swtThread())
+								Double.class)))).notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<Map<String, VDouble>>() {
 					@Override
 					public void pvChanged(
