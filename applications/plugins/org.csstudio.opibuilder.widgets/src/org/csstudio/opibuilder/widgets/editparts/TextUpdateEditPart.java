@@ -331,6 +331,12 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 					format, ((PMObjectValue)value).getLatestValue(), tempPrecision);
 		else
 			text = formatUtilityPVValue(value, tempPrecision);
+		
+		if(isShowUnits && value.getMetaData() instanceof INumericMetaData){
+			String units = ((INumericMetaData)value.getMetaData()).getUnits();
+			if(units != null && units.trim().length()>0)
+				text = text + " " + units; //$NON-NLS-1$
+		}
 
 		//synchronize the property value without fire listeners.
 		widgetModel.getProperty(
@@ -395,13 +401,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		default:
 			text = value.format(Format.Default, tempPrecision);
 			break;
-		}
-
-		if(isShowUnits && value.getMetaData() instanceof INumericMetaData){
-			String units = ((INumericMetaData)value.getMetaData()).getUnits();
-			if(units != null && units.trim().length()>0)
-				text = text + " " + units; //$NON-NLS-1$
-		}
+		}		
 		return text;
 	}
 	
