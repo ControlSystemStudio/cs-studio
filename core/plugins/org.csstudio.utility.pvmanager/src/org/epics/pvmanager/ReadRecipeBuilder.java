@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,18 +17,23 @@ import java.util.Set;
  */
 public class ReadRecipeBuilder {
 
-    private final Map<String, ValueCache<?>> channelCaches
+    private final Map<String, Collection<ValueCache<?>>> channelCaches
             = new HashMap<>();
 
     /**
      * Adds a channel and its read cache to the recipe.
      * 
      * @param channelName the name of the channel
-     * @param caches the cache that contains the value
+     * @param cache the cache that contains the value
      * @return this builder
      */
-    public ReadRecipeBuilder addChannel(String channelName, ValueCache<?> caches) {
-        channelCaches.put(channelName, caches);
+    public ReadRecipeBuilder addChannel(String channelName, ValueCache<?> cache) {
+        Collection<ValueCache<?>> cachesForChannel = channelCaches.get(channelName);
+        if (cachesForChannel == null) {
+            cachesForChannel = new HashSet<>();
+            channelCaches.put(channelName, cachesForChannel);
+        }
+        cachesForChannel.add(cache);
         return this;
     }
 
@@ -43,11 +49,13 @@ public class ReadRecipeBuilder {
      */
     public ReadRecipe build(WriteFunction<Exception> exceptionWriteFunction, ConnectionCollector connectionCollector) {
         Set<ChannelReadRecipe> recipes = new HashSet<>();
-        for (Map.Entry<String, ValueCache<?>> entry : channelCaches.entrySet()) {
+        for (Map.Entry<String, Collection<ValueCache<?>>> entry : channelCaches.entrySet()) {
             String channelName = entry.getKey();
-            ValueCache<?> valueCache = entry.getValue();
-            recipes.add(new ChannelReadRecipe(channelName, 
-                    new ChannelHandlerReadSubscription(valueCache, exceptionWriteFunction, connectionCollector.addChannel(channelName))));
+            Collection<ValueCache<?>> valueCaches = entry.getValue();
+            for (ValueCache<?> valueCache : valueCaches) {
+                recipes.add(new ChannelReadRecipe(channelName, 
+                       new ChannelHandlerReadSubscription(valueCache, exceptionWriteFunction, connectionCollector.addChannel(channelName))));
+           }
         }
         return new ReadRecipe(recipes);
     }
