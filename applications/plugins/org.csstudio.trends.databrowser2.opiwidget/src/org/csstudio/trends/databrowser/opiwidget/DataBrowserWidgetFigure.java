@@ -82,17 +82,19 @@ public class DataBrowserWidgetFigure extends Figure
         // Paint children, i.e. plot
         super.paintClientArea(graphics);
 
-        if (filename == null)
-            return;
+        // Display file name or message
+        final String text = (filename == null  ||  filename.isEmpty())
+            ? Messages.NoFilename
+            : filename;
 
         // Display filename on top of figure, centered
         final Rectangle client = getClientArea();
-        final Dimension text = TextUtilities.INSTANCE.getStringExtents(filename, getFont());
+        final Dimension dim = TextUtilities.INSTANCE.getStringExtents(text, getFont());
         final Rectangle rect =
-            new Rectangle(client.x + (client.width - text.width)/2,
-                          client.y + (client.height - text.height)/2,
-                          text.width, text.height);
+            new Rectangle(client.x + (client.width - dim.width)/2,
+                          client.y + (client.height - dim.height)/2,
+                          dim.width, dim.height);
         graphics.fillRectangle(rect);
-        graphics.drawString(filename, rect.x, rect.y);
+        graphics.drawString(text, rect.x, rect.y);
     }
 }
