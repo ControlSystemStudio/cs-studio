@@ -78,7 +78,7 @@
     <crop_bottom>0</crop_bottom>
     <degree>0</degree>
     <border_width>2</border_width>
-    <image_file>PID.png</image_file>
+    <image_file>pictures/PID.png</image_file>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
     </border_color>
