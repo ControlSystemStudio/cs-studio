@@ -110,19 +110,19 @@
      <topic href="html/script/CreateCustomScriptUtil.html" label="Creating Custom ScriptUtil">
      </topic>
      <topic href="html/script/ScriptUtil.html" label="Script Utililty APIs">
-        <topic href="html/script/ScriptUtil/PVUtil.html" label="PVUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/PVUtil.html" label="PVUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/ColorFontUtil.html" label="ColorFontUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/ColorFontUtil.html" label="ColorFontUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/DataUtil.html" label="DataUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/DataUtil.html" label="DataUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/ScriptUtil.html" label="ScriptUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/ScriptUtil.html" label="ScriptUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/FileUtil.html" label="FileUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/FileUtil.html" label="FileUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/WidgetUtil.html" label="WidgetUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/WidgetUtil.html" label="WidgetUtil">
         </topic>
-        <topic href="html/script/ScriptUtil/GUIUtil.html" label="GUIUtil">
+        <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/GUIUtil.html" label="GUIUtil">
         </topic>
      </topic>
   </topic>
