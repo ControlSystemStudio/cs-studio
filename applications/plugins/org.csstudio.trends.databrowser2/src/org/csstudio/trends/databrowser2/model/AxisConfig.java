@@ -205,12 +205,20 @@ public class AxisConfig
 		if (fireEvent) fireAxisChangeEvent();
 	}
 
-	/** @return Axis title */
+	/** @return Axis title, may include macros */
 	public String getName()
 	{
 		return name;
 	}
 
+	/** @return Axis title, macros have been resolved */
+    public String getResolvedName()
+    {
+        if (model == null)
+            return name;
+        return model.resolveMacros(name);
+    }
+	
 	/**
 	 * @param name
 	 *            New axis title

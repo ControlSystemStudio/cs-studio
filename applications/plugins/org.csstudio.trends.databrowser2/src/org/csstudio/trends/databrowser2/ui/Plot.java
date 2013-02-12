@@ -465,7 +465,7 @@ public class Plot
 		try
 		{
 			axis.setVisible(config.isVisible());
-			axis.setTitle(config.getName());
+			axis.setTitle(config.getResolvedName());
 
 			if (config.getFontData() != null)
 				axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(
