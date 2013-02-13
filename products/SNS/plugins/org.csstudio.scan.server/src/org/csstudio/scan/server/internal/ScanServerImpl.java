@@ -149,35 +149,46 @@ public class ScanServerImpl implements ScanServer
     			ScanSystemPreferences.getSimulationConfigPath());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException
+    /** Query server for devices used by a scan
+     * 
+     *  <p>Meant to be called only inside the scan server.
+     *  
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *            or -1 for default devices
+     *  @return {@link Device}s
+     *  @see #getDeviceInfos(long) for similar method that is exposed to clients
+     *  @throws RemoteException on error in remote access
+     */
+     public Device[] getDevices(final long id) throws RemoteException
     {
-		// Get devices in context
-    	Device[] devices;
     	if (id >= 0)
-    	{
+    	{   // Get devices for specific scan
             final ExecutableScan scan = scan_engine.getExecutableScan(id);
             if (scan != null)
-                devices = scan.getDevices();
-            else
-                devices = new Device[0];
+                return scan.getDevices();
+            // else: It's a logged scan, no device info available any more
     	}
     	else
-        {
+        {   // Get devices in context
             try
             {
                 final DeviceContext context = DeviceContext.getDefault();
-                devices = context.getDevices();
+                return context.getDevices();
             }
             catch (Exception ex)
             {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
                         "Error reading device context", ex);
-                devices = new Device[0];
             }
         }
+    	return new Device[0];
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException
+    {    	
+    	final Device[] devices = getDevices(id);
     	// Turn Device[] into DeviceInfo[]
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
     	for (int i = 0; i < infos.length; i++)

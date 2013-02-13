@@ -19,9 +19,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanDataIterator;
-import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
@@ -66,6 +66,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
         buf.append("\tabort  ID       - Abort scan with given ID\n");
+        buf.append("\tcommands ID     - Show commands of scan with given ID\n");
         buf.append("\tremoveCompleted - Remove completed scans\n");
         return buf.toString();
     }
@@ -130,9 +131,9 @@ public class ConsoleCommands implements CommandProvider
             else
                 id = Long.parseLong(arg.trim());
 
-            final DeviceInfo[] infos = server.getDeviceInfos(id);
-            for (DeviceInfo info : infos)
-                intp.println(info);
+            final Device[] devices = server.getDevices(id);
+            for (Device device : devices)
+                intp.println(device);
         }
         catch (Throwable ex)
         {
@@ -185,10 +186,12 @@ public class ConsoleCommands implements CommandProvider
             // Dump data
             final ScanData data = server.getScanData(id);
             final ScanDataIterator sheet = new ScanDataIterator(data);
-            
+
+            // Header: Device names
             for (String device : sheet.getDevices())
                 intp.print(device + "  ");
             intp.println();
+            // Rows
             while (sheet.hasNext())
             {
                 final ScanSample[] line = sheet.getSamples();
