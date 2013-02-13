@@ -37,6 +37,8 @@ public class Messages extends NLS
     public static String SeverityLevel_MINOR;
     public static String SeverityLevel_MINOR_ACK;
     public static String SeverityLevel_OK;
+    public static String SeverityLevel_UNDEFINED;
+    public static String SeverityLevel_UNDEFINED_ACK;
     public static String Unknown;
     public static String VerboseAlarmDescriptionFmt;
     public static String VerboseAlarmPVDescriptionFmt;

@@ -69,21 +69,21 @@ public class VTypeHelper
     final public static SeverityLevel decodeSeverity(final VType value)
     {
         final Alarm alarm = ValueUtil.alarmOf(value);
-        if (alarm != null)
+        if (alarm == null)
+            return SeverityLevel.OK;
+        switch (alarm.getAlarmSeverity())
         {
-            switch (alarm.getAlarmSeverity())
-            {
-            case MINOR:
-                return SeverityLevel.MINOR;
-            case MAJOR:
-                return SeverityLevel.MAJOR;
-            case INVALID:
-                return SeverityLevel.INVALID;
-            default:
-                break;
-            }
+        case NONE:
+            return SeverityLevel.OK;
+        case MINOR:
+            return SeverityLevel.MINOR;
+        case MAJOR:
+            return SeverityLevel.MAJOR;
+        case INVALID:
+            return SeverityLevel.INVALID;
+        default:
+            return SeverityLevel.UNDEFINED;
         }
-        return SeverityLevel.OK;
     }
 
     /** Decode a {@link VType}'s severity

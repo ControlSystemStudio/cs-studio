@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.eclipse.osgi.util.NLS;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.epics.util.time.Timestamp;
 
 /** Alarm state combines an alarm severity with its message info,
@@ -19,6 +19,7 @@ import org.epics.util.time.Timestamp;
  *  but so far there's no hard evidence that this class matters.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AlarmState
 {
     final private SeverityLevel severity;
@@ -30,7 +31,6 @@ public class AlarmState
      *  @param severity Initial alarm severity
      *  @param message   .. and message
      */
-    @SuppressWarnings("nls")
     public AlarmState(final SeverityLevel severity, final String message,
             final String value, final Timestamp time)
     {
@@ -83,6 +83,8 @@ public class AlarmState
         {
             switch (current_state.getSeverity())
             {
+            case UNDEFINED:
+                return new AlarmState(SeverityLevel.UNDEFINED_ACK, current_state.getMessage(), current_state.getValue(), current_state.getTime());
             case INVALID:
                 return new AlarmState(SeverityLevel.INVALID_ACK, current_state.getMessage(), current_state.getValue(), current_state.getTime());
             case MAJOR:
@@ -97,6 +99,8 @@ public class AlarmState
         // Else: Use the alarm severity as the one to ack'
         switch (severity)
         {
+        case UNDEFINED:
+            return createUpdatedState(SeverityLevel.UNDEFINED_ACK);
         case INVALID:
             return createUpdatedState(SeverityLevel.INVALID_ACK);
         case MAJOR:
@@ -114,6 +118,8 @@ public class AlarmState
     {
         switch (severity)
         {
+        case UNDEFINED_ACK:
+            return createUpdatedState(SeverityLevel.UNDEFINED);
         case INVALID_ACK:
             return createUpdatedState(SeverityLevel.INVALID);
         case MAJOR_ACK:
@@ -186,17 +192,12 @@ public class AlarmState
 	    return result;
     }
 
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return NLS.bind("{0}/{1} ({2}), {3}",
-                        new Object[]
-                        {
-                            severity.getDisplayName(),
-                            message,
-                            value,
-                            time.toString()
-                        });
+        final StringBuilder buf = new StringBuilder();
+        buf.append(severity.getDisplayName()).append("/").append(message);
+        buf.append("(").append(value).append("), ").append(TimestampHelper.format(time));
+        return buf.toString();
     }
 }

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import org.epics.vtype.AlarmSeverity;
+
 /** A severity level.
  *  <p>
  *  Defined as an enum with known instances OK, MINOR, .. to allow quick
@@ -28,9 +30,11 @@ package org.csstudio.alarm.beast;
  *  1-MINOR_ACK,
  *  2-MAJOR_ACK,
  *  3-INVALID_ACK,
- *  4-MINOR,
- *  5-MAJOR,
- *  6-INVALID.
+ *  4-UNDEFINED_ACK,
+ *  5-MINOR,
+ *  6-MAJOR,
+ *  7-INVALID,
+ *  8-UNDEFINED.
  *  <p>
  *  Inside the alarm server, a slightly different order is used to handle
  *  alarm updates: If a PV is in MINOR alarm and receives a MAJOR value,
@@ -46,32 +50,46 @@ package org.csstudio.alarm.beast;
  *  3-MAJOR,
  *  4-MAJOR_ACK,
  *  5-INVALID,
- *  6-INVALID_ACK.
+ *  6-INVALID_ACK,
+ *  7-UNDEFINED,
+ *  8-UNDEFINED_ACK.
  *   
  *  @author Kay Kasemir
  */
 public enum SeverityLevel
 {    
     /** OK/NO_ALARM/normal/good */
-    OK(Messages.SeverityLevel_OK, Preferences.COLOR_OK, false, 0),
+    OK(AlarmSeverity.NONE, false, Messages.SeverityLevel_OK, Preferences.COLOR_OK, 0),
 
     /** Acknowledged minor issue */
-    MINOR_ACK(Messages.SeverityLevel_MINOR_ACK, Preferences.COLOR_MINOR_ACK, false, 2),
+    MINOR_ACK(AlarmSeverity.MINOR, false, Messages.SeverityLevel_MINOR_ACK, Preferences.COLOR_MINOR_ACK, 2),
 
     /** Acknowledged major issue */
-    MAJOR_ACK(Messages.SeverityLevel_MAJOR_ACK, Preferences.COLOR_MAJOR_ACK, false, 4),
+    MAJOR_ACK(AlarmSeverity.MAJOR, false, Messages.SeverityLevel_MAJOR_ACK, Preferences.COLOR_MAJOR_ACK, 4),
 
     /** Acknowledged invalid condition */
-    INVALID_ACK(Messages.SeverityLevel_INVALID_ACK, Preferences.COLOR_INVALID_ACK, false, 6),
+    INVALID_ACK(AlarmSeverity.INVALID, false, Messages.SeverityLevel_INVALID_ACK, Preferences.COLOR_INVALID_ACK, 6),
 
+    /** Acknowledged undefined condition */
+    UNDEFINED_ACK(AlarmSeverity.UNDEFINED, false, Messages.SeverityLevel_UNDEFINED_ACK, Preferences.COLOR_INVALID_ACK, 8),
+    
     /** Minor issue */
-    MINOR(Messages.SeverityLevel_MINOR, Preferences.COLOR_MINOR, true, 1),
+    MINOR(AlarmSeverity.MINOR, true, Messages.SeverityLevel_MINOR, Preferences.COLOR_MINOR, 1),
 
     /** Major issue */
-    MAJOR(Messages.SeverityLevel_MAJOR, Preferences.COLOR_MAJOR, true, 3),
+    MAJOR(AlarmSeverity.MAJOR, true, Messages.SeverityLevel_MAJOR, Preferences.COLOR_MAJOR, 3),
 
-    /** Invalid condition, also used for unknown states; potentially very bad */
-    INVALID(Messages.SeverityLevel_INVALID, Preferences.COLOR_INVALID, true, 5);
+    /** Invalid condition, potentially very bad */
+    INVALID(AlarmSeverity.INVALID, true, Messages.SeverityLevel_INVALID, Preferences.COLOR_INVALID, 5),
+
+    /** Unknown states, potentially very bad */
+    UNDEFINED(AlarmSeverity.UNDEFINED, true, Messages.SeverityLevel_UNDEFINED, Preferences.COLOR_INVALID, 7);
+    
+    /** Underlying alarm severity */
+    final private AlarmSeverity severity;
+    
+    /** Active alarm (not OK, not acknowledged?) */
+    final private boolean active;
 
     /** End-user display name */
     final private String display_name;
@@ -85,26 +103,42 @@ public enum SeverityLevel
     /** Priority used for alarm state updates in the alarm server */
     final private int alarm_update_priority;
     
-    final private boolean active;
     
     /** Initialize severity level
-     *  @param display_name Name
-     *  @param level Level (higher = more severe)
-     *  @param pref Name of preference for RGB values
+     *  @param severity {@link AlarmSeverity}
      *  @param active <code>true</code> for active alarm severity,
-     *         <code>false</code> for acknowledged or OK state
+     *          <code>false</code> for acknowledged or OK state
+     *  @param display_name Name
+     *  @param pref Name of preference for RGB values
      *  @param alarm_update_priority Priority used inside the server to
      *         update alarm severity of a PV.
+     *  @param level Level (higher = more severe)
      */
-    SeverityLevel(final String display_name,
-            final String pref,
+    SeverityLevel(final AlarmSeverity severity,
             final boolean active,
+            final String display_name,
+            final String pref,
             final int alarm_update_priority)
     {
+        this.severity = severity;
+        this.active = active;
         this.display_name = display_name;
         this.rgb = Preferences.getColor(pref);
-        this.active = active;
         this.alarm_update_priority = alarm_update_priority;
+    }
+    
+    /** @return {@link AlarmSeverity} */
+    public AlarmSeverity getAlarmSeverity()
+    {
+        return severity;
+    }
+
+    /** @return <code>true</code> if severity indicates an active alarm,
+     *          <code>false</code> for acknowledged or OK state
+     */
+    public boolean isActive()
+    {
+        return active;
     }
 
     /** @return (Possibly localized) Name of the severity level for users.
@@ -133,14 +167,6 @@ public enum SeverityLevel
         return rgb[2];
     }
 
-    /** @return <code>true</code> if severity indicates an active alarm,
-     *         <code>false</code> for acknowledged or OK state
-     */
-    public boolean isActive()
-    {
-        return active;
-    }
-    
     /** @return Priority used inside the server to update alarm severity
      *          of a PV.
      */

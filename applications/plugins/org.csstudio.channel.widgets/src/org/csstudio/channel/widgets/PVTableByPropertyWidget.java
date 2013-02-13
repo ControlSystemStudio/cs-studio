@@ -174,7 +174,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		// Increasing the notification rate will make the tooltips not work,
 		// so it's limited to 500 ms.
-		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread())
+		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread(this))
 				.readListener(listener).maxRate(ofMillis(500));
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
 	}

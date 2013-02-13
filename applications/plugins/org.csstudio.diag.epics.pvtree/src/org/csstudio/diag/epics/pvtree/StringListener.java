@@ -19,10 +19,11 @@ import org.epics.vtype.VType;
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class StringListener implements PVReaderListener<VType>
 {
 	/** @param error Error to handle */
-	public void handleError(final Exception error)
+    public void handleError(final Exception error)
 	{
 		handleText("Error: " + error.getMessage());
 	}

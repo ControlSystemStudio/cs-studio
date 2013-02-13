@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 public class WriteRecipeBuilder {
 
-    private final Map<String, WriteCache<?>> caches;
+    private final Map<String, Collection<WriteCache<?>>> caches;
 
     /**
      * A new builder
@@ -33,7 +34,12 @@ public class WriteRecipeBuilder {
      * @return this builder
      */
     public WriteRecipeBuilder addChannel(String channelName, WriteCache<?> writeCache) {
-        caches.put(channelName, writeCache);
+        Collection<WriteCache<?>> cachesForChannel = caches.get(channelName);
+        if (cachesForChannel == null) {
+            cachesForChannel = new HashSet<>();
+            caches.put(channelName, cachesForChannel);
+        }
+        cachesForChannel.add(writeCache);
         return this;
     }
 
@@ -49,11 +55,13 @@ public class WriteRecipeBuilder {
      */
     public WriteRecipe build(WriteFunction<Exception> exceptionWriteFunction, ConnectionCollector connectionCollector) {
         Set<ChannelWriteRecipe> recipes = new HashSet<>();
-        for (Map.Entry<String, WriteCache<?>> entry : caches.entrySet()) {
+        for (Map.Entry<String, Collection<WriteCache<?>>> entry : caches.entrySet()) {
             String channelName = entry.getKey();
-            WriteCache<?> valueCache = entry.getValue();
-            recipes.add(new ChannelWriteRecipe(channelName, 
-                    new ChannelHandlerWriteSubscription(valueCache, exceptionWriteFunction, connectionCollector.addChannel(channelName))));
+            Collection<WriteCache<?>> valueCaches = entry.getValue();
+            for (WriteCache<?> valueCache : valueCaches) {
+                recipes.add(new ChannelWriteRecipe(channelName, 
+                        new ChannelHandlerWriteSubscription(valueCache, exceptionWriteFunction, connectionCollector.addChannel(channelName))));
+            }
         }
         return new WriteRecipe(recipes);
     }

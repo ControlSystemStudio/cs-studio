@@ -17,6 +17,7 @@ public class Messages extends NLS
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.opiwidget.messages"; //$NON-NLS-1$
     public static String Error;
     public static String FileName;
+    public static String NoFilename;
     public static String OpenDataBrowserErrorFmt;
     public static String ShowToolbar;
 

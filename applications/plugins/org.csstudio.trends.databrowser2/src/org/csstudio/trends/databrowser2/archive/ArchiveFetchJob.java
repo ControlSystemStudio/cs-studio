@@ -132,9 +132,9 @@ public class ArchiveFetchJob extends Job
                     }
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)
-                        value_iter = the_reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                        value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(), start, end);
                     else
-                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
+                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(), start, end, bins);
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())

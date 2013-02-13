@@ -143,8 +143,8 @@ public abstract class DataSource {
 
         // Let's go through all the recipes first, so if something
         // breaks unexpectadely, either everything works or nothing works
-        final Map<ChannelHandler, ChannelReadRecipe> handlersWithSubscriptions =
-                new HashMap<ChannelHandler, ChannelReadRecipe>();
+        final Map<ChannelHandler, Collection<ChannelReadRecipe>> handlersWithSubscriptions =
+                new HashMap<>();
         for (final ChannelReadRecipe channelRecipe : readRecipe.getChannelReadRecipes()) {
             try {
                 String channelName = channelRecipe.getChannelName();
@@ -152,7 +152,12 @@ public abstract class DataSource {
                 if (channelHandler == null) {
                     throw new RuntimeException("Channel named '" + channelName + "' not found");
                 }
-                handlersWithSubscriptions.put(channelHandler, channelRecipe);
+                Collection<ChannelReadRecipe> channelSubscriptions = handlersWithSubscriptions.get(channelHandler);
+                if (channelSubscriptions == null) {
+                    channelSubscriptions = new HashSet<>();
+                    handlersWithSubscriptions.put(channelHandler, channelSubscriptions);
+                }
+                channelSubscriptions.add(channelRecipe);
             } catch (Exception ex) {
                 // If any error happens while creating the channel,
                 // report it to the exception handler of that channel
@@ -167,15 +172,17 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (Map.Entry<ChannelHandler, ChannelReadRecipe> entry : handlersWithSubscriptions.entrySet()) {
+                for (Map.Entry<ChannelHandler, Collection<ChannelReadRecipe>> entry : handlersWithSubscriptions.entrySet()) {
                     ChannelHandler channelHandler = entry.getKey();
-                    ChannelReadRecipe channelRecipe = entry.getValue();
-                    try {
-                        channelHandler.addReader(channelRecipe.getReadSubscription());
-                    } catch(Exception ex) {
-                        // If an error happens while adding the read subscription,
-                        // notify the appropriate handler
-                        channelRecipe.getReadSubscription().getExceptionWriteFunction().writeValue(ex);
+                    Collection<ChannelReadRecipe> channelRecipes = entry.getValue();
+                    for (ChannelReadRecipe channelRecipe : channelRecipes) {
+                        try {
+                            channelHandler.addReader(channelRecipe.getReadSubscription());
+                        } catch(Exception ex) {
+                            // If an error happens while adding the read subscription,
+                            // notify the appropriate handler
+                            channelRecipe.getReadSubscription().getExceptionWriteFunction().writeValue(ex);
+                        }
                     }
                 }
             }
@@ -228,7 +235,7 @@ public abstract class DataSource {
         
         // Let's go through the whole request first, so if something
         // breaks unexpectadely, either everything works or nothing works
-        final Map<ChannelHandler, ChannelHandlerWriteSubscription> handlers = new HashMap<ChannelHandler, ChannelHandlerWriteSubscription>();
+        final Map<ChannelHandler, Collection<ChannelHandlerWriteSubscription>> handlers = new HashMap<>();
         for (ChannelWriteRecipe channelWriteRecipe : writeRecipe.getChannelWriteRecipes()) {
             try {
                 String channelName = channelWriteRecipe.getChannelName();
@@ -236,7 +243,12 @@ public abstract class DataSource {
                 if (handler == null) {
                     throw new RuntimeException("Channel " + channelName + " does not exist");
                 }
-                handlers.put(handler, channelWriteRecipe.getWriteSubscription());
+                Collection<ChannelHandlerWriteSubscription> channelSubscriptions = handlers.get(handler);
+                if (channelSubscriptions == null) {
+                    channelSubscriptions = new HashSet<>();
+                    handlers.put(handler, channelSubscriptions);
+                }
+                channelSubscriptions.add(channelWriteRecipe.getWriteSubscription());
             } catch (Exception ex) {
                 channelWriteRecipe.getWriteSubscription().getExceptionWriteFunction().writeValue(ex);
             }
@@ -247,15 +259,17 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (Map.Entry<ChannelHandler, ChannelHandlerWriteSubscription> entry : handlers.entrySet()) {
-                    try {
-                        ChannelHandler channelHandler = entry.getKey();
-                        ChannelHandlerWriteSubscription subscription = entry.getValue();
-                        channelHandler.addWriter(subscription);
-                    } catch (Exception ex) {
-                        // If an error happens while adding the write subscription,
-                        // notify the appropriate handler
-                        entry.getValue().getExceptionWriteFunction().writeValue(ex);
+                for (Map.Entry<ChannelHandler, Collection<ChannelHandlerWriteSubscription>> entry : handlers.entrySet()) {
+                    ChannelHandler channelHandler = entry.getKey();
+                    Collection<ChannelHandlerWriteSubscription> subscriptions = entry.getValue();
+                    for (ChannelHandlerWriteSubscription subscription : subscriptions) {
+                        try {
+                            channelHandler.addWriter(subscription);
+                        } catch (Exception ex) {
+                            // If an error happens while adding the write subscription,
+                            // notify the appropriate handler
+                            subscription.getExceptionWriteFunction().writeValue(ex);
+                        }
                     }
                 }
             }

@@ -148,10 +148,10 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                     Activator.getLogger().log(Level.WARNING, "Channel " + getName() + " error", error);
                     final AlarmState received;
                     if (error instanceof org.epics.pvmanager.TimeoutException)
-                        received = new AlarmState(SeverityLevel.INVALID,
+                        received = new AlarmState(SeverityLevel.UNDEFINED,
                             Messages.AlarmMessageNotConnected, error.getMessage(), Timestamp.now());
                     else
-                        received = new AlarmState(SeverityLevel.INVALID,
+                        received = new AlarmState(SeverityLevel.UNDEFINED,
                             Messages.AlarmMessageDisconnected, error.getMessage(), Timestamp.now());
                     logic.computeNewState(received);
                 }

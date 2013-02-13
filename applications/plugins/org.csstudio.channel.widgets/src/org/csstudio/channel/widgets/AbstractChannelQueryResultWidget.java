@@ -39,7 +39,7 @@ public abstract class AbstractChannelQueryResultWidget extends AbstractChannelQu
 		
 		@Override
 		public void queryExecuted(final Result result) {
-			SWTUtil.swtThread().execute(new Runnable() {
+			SWTUtil.swtThread(AbstractChannelQueryResultWidget.this).execute(new Runnable() {
 				
 				@Override
 				public void run() {

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
@@ -38,7 +40,11 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class PVTreeView extends ViewPart
 {
+    /** View ID, defined in plugin.xml */
     public static final String ID = PVTreeView.class.getName();
+    
+    /** (Numeric) secondary view ID */
+    final private static AtomicInteger instance = new AtomicInteger();
 
     // Memento tags
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
@@ -57,6 +63,12 @@ public class PVTreeView extends ViewPart
     private DrillDownAdapter drillDownAdapter;
 
     private ComboHistoryHelper pv_name_helper;
+    
+    /** @return New unique code to allow multiple instances of this view */
+    public static String newInstance()
+    {
+        return Integer.toString(instance.incrementAndGet());
+    }
 
     /** ViewPart interface, keep the memento. */
     @Override

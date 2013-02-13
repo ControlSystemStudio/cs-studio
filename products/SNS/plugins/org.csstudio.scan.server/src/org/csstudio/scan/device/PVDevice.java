@@ -174,9 +174,21 @@ public class PVDevice extends Device
     @Override
     public synchronized String toString()
     {
+        final StringBuilder buf = new StringBuilder();
+        buf.append(super.toString());
     	if (pv == null)
-            return super.toString() + ", no PV";
+            buf.append(", no PV");
     	else
-    		return super.toString() + ", PV '" + pv.getName() + "'";
+    	{
+    	    buf.append(", PV '").append(pv.getName()).append("'");
+
+    	    final VType current;
+    	    synchronized (this)
+            {
+                current = this.value;
+            }
+    	    buf.append(" = ").append(VTypeHelper.toString(current));
+    	}
+    	return buf.toString();
     }
 }

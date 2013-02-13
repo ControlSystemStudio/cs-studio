@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /** Model for persisting data browser widget configuration.
  *
@@ -47,6 +48,8 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
 
     /** Property to show/hide the toolbar */
     public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
+    
+    public static final IPath EMPTY_PATH = new Path(""); //$NON-NLS-1$
 
     /** Initialize */
     public DataBrowserWidgedModel()
@@ -87,7 +90,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     protected void configureProperties()
     {
         addProperty(new FilePathProperty(PROP_FILENAME, Messages.FileName,
-                WidgetPropertyCategory.Basic, null,
+                WidgetPropertyCategory.Basic, EMPTY_PATH,
                 new String[]
                 {
                     Model.FILE_EXTENSION,
@@ -97,10 +100,11 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
                 WidgetPropertyCategory.Display, false));
     }
 
-    /** @return Path to data browser configuration file, including macros */
+    /** @return Path to data browser configuration file, including macros. Never <code>null</code>. */
     public IPath getPlainFilename()
     {
-        return (IPath) getPropertyValue(PROP_FILENAME);
+        final IPath path = (IPath) getPropertyValue(PROP_FILENAME);
+        return path == null ? EMPTY_PATH : path;
     }
 
     /** @return All macros of this widget, including optional parent settings */

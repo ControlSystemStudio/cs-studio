@@ -131,20 +131,27 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 		int minorCount = 0;
 		int majorCount = 0;
 		int invalidCount = 0;
+		int undefinedCount = 0;
 		for (PVSnapshot pv : pvs) {
 			switch (pv.getCurrentSeverity()) {
 			case OK: okCount++; break;
 			case MINOR: minorCount++; break;
 			case MAJOR: majorCount++; break;
 			case INVALID: invalidCount++; break;
+			case UNDEFINED: undefinedCount++; break;
 			}
 		}
-		// nb MINOR alarms – nb MINOR alarms - nb INVALID alarms
+		// nb MINOR alarms ... nb MINOR alarms - nb INVALID alarms
 		boolean isFirst = true;
-		if (invalidCount > 0) {
+		if (undefinedCount > 0) {
 			isFirst = false;
-			builder.append(invalidCount + " INVALID alarm(s)");
+			builder.append(undefinedCount + " UNDEFINED alarm(s)");
 		}
+        if (invalidCount > 0) {
+            if (!isFirst) builder.append(" - ");
+            isFirst = false;
+            builder.append(invalidCount + " INVALID alarm(s)");
+        }
 		if (majorCount > 0) {
 			if (!isFirst) builder.append(" - ");
 			isFirst = false;

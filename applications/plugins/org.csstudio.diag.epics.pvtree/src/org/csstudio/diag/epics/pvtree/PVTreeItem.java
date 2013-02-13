@@ -31,6 +31,7 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVTreeItem
 {
    /** The model to which this whole tree belongs. */
@@ -103,7 +104,7 @@ class PVTreeItem
             record_name = pv_name;
 
         Plugin.getLogger().log(Level.FINE,
-                "New Tree item {0}, record name {1}", //$NON-NLS-1$
+                "New Tree item {0}, record name {1}",
                 new Object[] { pv_name, record_name});
 
 
@@ -114,7 +115,7 @@ class PVTreeItem
         // Is this a link to follow, or just a constant to display?
         // Hardware links "@vme..." or constant numbers "-12.3"
         // cause us to stop here:
-        if (pv_name.startsWith("@") || pv_name.matches("^-?[0-9]"))  //$NON-NLS-1$//$NON-NLS-2$
+        if (pv_name.startsWith("@") || pv_name.matches("^-?[0-9]"))
         {
             pv = null;
             return;
@@ -142,7 +143,7 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e);
         }
         
         // Avoid loops.
@@ -157,7 +158,7 @@ class PVTreeItem
         if (other != null  &&  other.type != null)
         {
             type = other.type;
-            Plugin.getLogger().fine("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            Plugin.getLogger().fine("Known item, not traversing inputs (again)");
             return;
         }
     	try
@@ -182,7 +183,7 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e);
         }
     }
 
@@ -283,7 +284,6 @@ class PVTreeItem
     }
 
     /** @return Returns a String. No really, it does! */
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
@@ -307,7 +307,6 @@ class PVTreeItem
     }
 
     /** Thread-safe handling of the 'type' update. */
-    @SuppressWarnings("nls")
     private void updateType()
     {
         Plugin.getLogger().log(Level.FINE,
@@ -334,7 +333,6 @@ class PVTreeItem
     }
 
     /** Helper for reading next link from links_to_read. */
-    @SuppressWarnings("nls")
     private void getNextLink()
     {
         // Probably superflous, but can't hurt
@@ -350,12 +348,11 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e);
         }
     }
 
     /** Thread-safe handling of the 'link_pv' update. */
-    @SuppressWarnings("nls")
     private void updateLink()
     {
         Plugin.getLogger().log(Level.FINE,
