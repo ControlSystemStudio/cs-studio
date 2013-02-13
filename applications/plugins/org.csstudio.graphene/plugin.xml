@@ -19,6 +19,14 @@
             name="Line graph (alpha)"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.graphene.Line2DPlotView"
+            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+            id="org.csstudio.graphene.Line2DPlot"
+            name="Line2D Plot (alpha)"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
