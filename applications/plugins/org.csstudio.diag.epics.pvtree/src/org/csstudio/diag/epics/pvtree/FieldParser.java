@@ -47,7 +47,26 @@ public class FieldParser
 			final String[] field_configs = rec_config.substring(i1+1, i2).split("\\s*,\\s*");
 			final ArrayList<String> fields = new ArrayList<String>();
 			for (String field : field_configs)
-				fields.add(field.trim());
+			{
+				final String field_spec = field.trim();
+				// Plain 'FIELD', or 'FIELDA-L'?
+				final int range_sep = field_spec.indexOf('-');
+				if (range_sep > 0)
+				{
+				    if (field_spec.length() != range_sep + 2)
+				        throw new Exception("Can only handle field ranges with single-character XYZA-L, not for example XYZAA-LL with 2-character ranges");
+				    // 'FIELD'
+				    final String base = field_spec.substring(0,  range_sep-1);
+				    // 'A'
+				    char first = field_spec.charAt(range_sep-1);
+				    // 'L'
+                    char last = field_spec.charAt(range_sep+1);
+                    for (char c = first; c<=last; ++c)
+                        fields.add(base + c);
+				}
+				else
+				    fields.add(field_spec);
+			}
 			// Put into hash
 			rec_fields.put(rec_type, fields);
 		}
