@@ -262,6 +262,15 @@ record (mbbo,"TEST-BOY0:MBBO")
 	field(ZRST, "Disconnect")
 	field(ZRVL, "0")
 }
+record (waveform,"TEST-BOY0:SETPOINT")
+{
+	field(DESC, "Setpoints")
+	field(EGU, "C")
+	field(FTVL, "DOUBLE")
+	field(HOPR, "3.0")
+	field(LOPR, "0.0")
+	field(NELM, "8")
+}
 record (waveform,"TEST-BOY0:WAVEFORM")
 {
 	field(DESC, "Waveform")
@@ -272,13 +281,4 @@ record (waveform,"TEST-BOY0:WAVEFORM")
 	field(LOPR, "0")
 	field(NELM, "50")
 	field(SCAN, ".1 second")
-}
-record (waveform,"TEST-BOY0:SETPOINT")
-{
-	field(DESC, "Setpoints")
-	field(EGU, "C")
-	field(FTVL, "DOUBLE")
-	field(HOPR, "3.0")
-	field(LOPR, "0.0")
-	field(NELM, "8")
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE05.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.736439in"
+		height="0.736439in" viewBox="0 0 53.0236 53.0236" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st2 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st3 {fill:#000000;font-family:Arial;font-size:1.00001em}
+		.st4 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="EQ" v:index="0"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(1,-1)">
+			<title>Feuille.1</title>
+			<ellipse cx="25.5118" cy="27.5118" rx="25.5118" ry="25.5118" class="st1"/>
+		</g>
+		<g id="shape2-3" v:mID="2" v:groupContext="shape" v:layerMember="0" transform="translate(15.8819,-26.5118)">
+			<title>Feuille.6</title>
+			<desc>M</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
+			<v:textRect cx="10.6299" cy="45.9249" width="21.38" height="14.1973"/>
+			<rect x="0" y="38.8263" width="21.2598" height="14.1973" class="st2"/>
+			<text x="5.63" y="49.53" class="st3" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>M</text>		</g>
+	</g>
+</svg>
