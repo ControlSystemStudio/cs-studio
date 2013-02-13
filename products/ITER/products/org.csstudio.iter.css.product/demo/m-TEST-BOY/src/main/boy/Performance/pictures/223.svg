@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 CA_EC01.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.248346in"
+		height="0.25622in" viewBox="0 0 17.8809 18.4479" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719997}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.99997"
+				v:shadowOffsetY="-8.99997"/>
+		<g id="group1-1" transform="translate(0.719997,-0.719997)" v:mID="1" v:groupContext="group">
+			<title>Rectangle5</title>
+			<g id="group2-2" v:mID="2" v:groupContext="group">
+				<title>Rectangle4</title>
+				<g id="group5-3" v:mID="5" v:groupContext="group">
+					<title>Rectangle3</title>
+					<g id="shape3-4" v:mID="3" v:groupContext="shape">
+						<title>Rectangle1</title>
+						<rect x="0" y="1.44009" width="8.22047" height="17.0078" class="st1"/>
+					</g>
+					<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(8.22047,-9.64876E-005)">
+						<title>Rectangle2</title>
+						<rect x="0" y="1.44009" width="8.22047" height="17.0078" class="st1"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

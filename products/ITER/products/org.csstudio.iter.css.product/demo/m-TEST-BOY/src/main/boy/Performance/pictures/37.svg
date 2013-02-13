@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0302.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.500219in"
+		height="0.500219in" viewBox="0 0 36.0157 36.0157" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
+	<title>document de base</title>
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape1637-1" v:mID="1637" v:groupContext="shape" transform="translate(1,-1)">
+			<title>Feuille.1637</title>
+			<path d="M34.02 19.01 L17.01 36.02 L0 19.01 L17.01 2 L34.02 19.01 Z" class="st1"/>
+		</g>
+		<g id="shape1638-3" v:mID="1638" v:groupContext="shape" transform="translate(53.315,9.50394) rotate(90)">
+			<title>Feuille.1638</title>
+			<path d="M0 36.02 L17.01 36.02" class="st2"/>
+		</g>
+		<g id="shape1639-6" v:mID="1639" v:groupContext="shape" transform="translate(12.8772,-22.2598)">
+			<title>Feuille.1639</title>
+			<path d="M0 36.02 L8.5 36.02" class="st2"/>
+		</g>
+		<g id="shape1640-9" v:mID="1640" v:groupContext="shape" transform="translate(13.0472,-15.1732)">
+			<title>Feuille.1640</title>
+			<path d="M0 36.02 L8.5 36.02" class="st2"/>
+		</g>
+		<g id="shape1641-12" v:mID="1641" v:groupContext="shape" transform="translate(-8.16777,-4.62446) rotate(-45)">
+			<title>Feuille.1641</title>
+			<path d="M0 36.02 L8.02 34.03" class="st2"/>
+		</g>
+		<g id="shape1642-15" v:mID="1642" v:groupContext="shape" transform="translate(-7.96529,46.512) rotate(-135)">
+			<title>Feuille.1642</title>
+			<path d="M0 36.02 L8.64 37.72" class="st2"/>
+		</g>
+	</g>
+</svg>

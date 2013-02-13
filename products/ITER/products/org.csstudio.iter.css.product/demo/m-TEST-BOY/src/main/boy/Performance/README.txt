@@ -20,7 +20,7 @@ Example:
 
 outpfileName - better is it end with .opi
 iocName - A, B, C or D
-startingPV - count added after the IOC name- TEST-BOY1:rndmTEST-BOY1:rndmAx519
+startingPV - count added after the IOC name- TEST-BOY1:rndmAx519
 widgetHeight
 widgetWidth
 widgetType - gauge, textUpdate, boolean symbol, multistate symbol currently supported.

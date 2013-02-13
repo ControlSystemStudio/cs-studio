@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1010.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.382204in"
+		height="0.736336in" viewBox="0 0 27.5187 53.0162" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:0.999999}
+		.st2 {fill:none;stroke:none;stroke-width:1}
+		.st3 {fill:none}
+		.st4 {stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
+		.st5 {fill:none;stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
+		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.99999"
+				v:shadowOffsetY="-8.99999"/>
+		<g id="group1-1" transform="translate(0.72,-1)" v:mID="1" v:groupContext="group">
+			<title>Feuille.1</title>
+			<g id="group2-2" transform="translate(0.283465,7.10543E-015)" v:mID="2" v:groupContext="group">
+				<title>FL_EF0201.163</title>
+				<g id="group3-3" v:mID="3" v:groupContext="group">
+					<title>FL_EF1005.3</title>
+					<g id="shape4-4" v:mID="4" v:groupContext="shape">
+						<title>Feuille.4</title>
+						<path d="M25.51 10.5 L0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L25.51 10.5 Z" class="st1"/>
+					</g>
+					<g id="group5-6" transform="translate(0,-42.5197)" v:mID="5" v:groupContext="group">
+						<title>Feuille.5</title>
+						<g id="shape6-7" v:mID="6" v:groupContext="shape">
+							<title>Feuille.6</title>
+							<path d="M0 53.02 L25.51 53.02 L0 53.02 Z" class="st2"/>
+						</g>
+						<g id="shape7-9" v:mID="7" v:groupContext="shape">
+							<title>Feuille.7</title>
+							<path d="M0 53.02 L25.51 53.02 L0 53.02 Z" class="st3"/>
+							<path d="M0 53.02 L25.51 53.02" class="st4"/>
+						</g>
+					</g>
+					<g id="shape8-12" v:mID="8" v:groupContext="shape">
+						<title>Feuille.8</title>
+						<path d="M25.51 10.5 L0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L25.51 10.5 Z" class="st5"/>
+					</g>
+					<g id="group9-14" v:mID="9" v:groupContext="group">
+						<title>Feuille.9</title>
+						<g id="shape10-15" v:mID="10" v:groupContext="shape">
+							<title>Feuille.10</title>
+							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L0 10.5 Z" class="st2"/>
+						</g>
+						<g id="shape11-17" v:mID="11" v:groupContext="shape">
+							<title>Feuille.11</title>
+							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L0 10.5 Z" class="st3"/>
+							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26" class="st4"/>
+						</g>
+					</g>
+					<g id="group12-20" transform="translate(12.7609,-6.23622)" v:mID="12" v:groupContext="group">
+						<title>Feuille.12</title>
+						<g id="shape13-21" v:mID="13" v:groupContext="shape">
+							<title>Feuille.13</title>
+							<path d="M0 53.02 L0 8.24 L0 53.02 Z" class="st2"/>
+						</g>
+						<g id="shape14-23" v:mID="14" v:groupContext="shape">
+							<title>Feuille.14</title>
+							<path d="M0 53.02 L0 8.24 L0 53.02 Z" class="st3"/>
+							<path d="M0 53.02 L0 8.24" class="st4"/>
+						</g>
+					</g>
+					<g id="group15-26" transform="translate(25.5118,-12.7599)" v:mID="15" v:groupContext="group">
+						<title>Feuille.15</title>
+						<g id="shape16-27" v:mID="16" v:groupContext="shape">
+							<title>Feuille.16</title>
+							<path d="M0 23.26 L0 53.02 L0 23.26 Z" class="st2"/>
+						</g>
+						<g id="shape17-29" v:mID="17" v:groupContext="shape">
+							<title>Feuille.17</title>
+							<path d="M0 23.26 L0 53.02 L0 23.26 Z" class="st3"/>
+							<path d="M0 23.26 L0 53.02" class="st4"/>
+						</g>
+					</g>
+				</g>
+			</g>
+			<g id="shape18-32" v:mID="18" v:groupContext="shape" transform="translate(-24.4463,84.2743) rotate(-135)">
+				<title>Feuille.18</title>
+				<path d="M0 53.02 L12.03 53.02 L0 53.02 Z" class="st3"/>
+				<path d="M0 53.02 L12.03 53.02" class="st4"/>
+			</g>
+			<g id="shape19-35" v:mID="19" v:groupContext="shape" transform="translate(-24.4412,9.29808) rotate(-45)">
+				<title>Feuille.19</title>
+				<path d="M0 53.02 L12.03 53.02 L0 53.02 Z" class="st3"/>
+				<path d="M0 53.02 L12.03 53.02" class="st4"/>
+			</g>
+			<g id="shape20-38" v:mID="20" v:groupContext="shape" transform="translate(0,-34.0157)">
+				<title>Feuille.20</title>
+				<path d="M3.4 49.62 L3.4 53.02 L0 53.02 L3.4 49.62 Z" class="st3"/>
+				<path d="M3.4 49.62 L3.4 53.02 L0 53.02" class="st4"/>
+			</g>
+			<g id="shape21-41" v:mID="21" v:groupContext="shape" transform="translate(26.0787,-34.0157) scale(-1,1)">
+				<title>Feuille.21</title>
+				<path d="M3.4 49.62 L3.4 53.02 L0 53.02 L3.4 49.62 Z" class="st3"/>
+				<path d="M3.4 49.62 L3.4 53.02 L0 53.02" class="st4"/>
+			</g>
+		</g>
+	</g>
+</svg>
