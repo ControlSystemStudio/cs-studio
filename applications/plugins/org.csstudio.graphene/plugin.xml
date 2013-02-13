@@ -13,16 +13,8 @@
       </view>
       <view
             category="org.csstudio.channel.application.category"
-            class="org.csstudio.graphene.LineGraphView"
-            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
-            id="org.csstudio.graphene.LineGraphView"
-            name="Line graph (alpha)"
-            restorable="true">
-      </view>
-      <view
-            category="org.csstudio.channel.application.category"
             class="org.csstudio.graphene.Line2DPlotView"
-            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
             id="org.csstudio.graphene.Line2DPlot"
             name="Line2D Plot (alpha)"
             restorable="true">
@@ -45,12 +37,12 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
-               label="Line Graph (alpha)"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+               label="Line2D Plot (alpha)"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.graphene.LineGraphView">
+                  value="org.csstudio.graphene.Line2DPlotView">
             </parameter>
          </command>
       </menuContribution>

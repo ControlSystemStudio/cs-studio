@@ -19,6 +19,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * View that allows to create a waterfall plot out of a given PV.
  */
+@Deprecated
 public class LineGraphView extends ViewPart {
 
 	/**

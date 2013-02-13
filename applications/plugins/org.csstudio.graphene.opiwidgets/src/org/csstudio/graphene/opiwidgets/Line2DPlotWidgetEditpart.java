@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.LineGraphWidget;
+import org.csstudio.graphene.Line2DPlotWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -23,7 +23,7 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
 	return figure;
     }
 
-    private static void configure(LineGraphWidget widget,
+    private static void configure(Line2DPlotWidget widget,
 	    Line2DPlotWidgetModel model, boolean runMode) {
 	if (runMode)
 	    widget.setProcessVariable(model.getProcessVariable());
@@ -43,7 +43,9 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
 	    @SuppressWarnings("unchecked")
 	    public boolean handleChange(final Object oldValue,
 		    final Object newValue, final IFigure figure) {
-		configure(((AbstractSWTWidgetFigure<LineGraphWidget>) getFigure()).getSWTWidget(), getWidgetModel(),
+		configure(
+			((AbstractSWTWidgetFigure<Line2DPlotWidget>) getFigure())
+				.getSWTWidget(), getWidgetModel(),
 			((Line2DPlotWidgetFigure) getFigure()).isRunMode());
 		return false;
 	    }

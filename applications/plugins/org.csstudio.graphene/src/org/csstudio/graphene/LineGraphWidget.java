@@ -32,6 +32,7 @@ import org.epics.vtype.VImage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 
+@Deprecated
 public class LineGraphWidget extends Composite {
 	
 	private VImageDisplay imageDisplay;
