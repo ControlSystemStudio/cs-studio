@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: graphene BOY widgets
+Bundle-SymbolicName: org.csstudio.graphene.opiwidgets;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.graphene.opiwidgets.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.graphene;bundle-version="1.0.0",
+ org.csstudio.opibuilder.widgets;bundle-version="3.2.0",
+ org.csstudio.opibuilder;bundle-version="3.2.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
