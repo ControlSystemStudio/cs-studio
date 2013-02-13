@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 /** Helper for dealing with time stamps
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class TimestampHelper
 {
     final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:SS");
