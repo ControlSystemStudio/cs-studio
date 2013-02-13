@@ -28,27 +28,42 @@ public class OpenPVTree extends AbstractHandler implements IHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        // Open (new) PV Tree view
-        final PVTreeView view;
         try
         {
-            final IWorkbenchPage page = HandlerUtil.getActiveSite(event).getPage();
-            view = (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
+            PVTreeView view = openView(event);
+
+            // If there is a currently selected PV
+            // (because this was invoked from a context menu),
+            // use that PV
+            final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+            final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+            if (pvs == null)
+                return null;
+            // Set PV name(s)
+            for (int i=0; i<pvs.length; ++i)
+            {
+                view.setPVName(pvs[i].getName());
+                // Open new tree for each additional PV
+                if (i < pvs.length-1)
+                    view = openView(event);
+            }
         }
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
                         "Cannot open PVTreeView" , ex);
-            return null;
         }
-
-        // If there is a currently selected PV
-        // (because this was invoked from a context menu),
-        // use that PV
-        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-        final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-        if (pvs != null  &&  pvs.length > 0)
-            view.setPVName(pvs[0].getName());
         return null;
+    }
+    
+    /** Open (new) PV Tree view
+     *  @param event
+     *  @return {@link PVTreeView}
+     *  @throws Exception
+     */
+    private PVTreeView openView(final ExecutionEvent event) throws Exception
+    {
+        final IWorkbenchPage page = HandlerUtil.getActiveSite(event).getPage();
+        return (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
     }
 }
