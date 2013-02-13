@@ -7,14 +7,15 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import java.util.logging.Level;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.AdapterUtil;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Command handler for opening PV Tree on the current selection.
@@ -27,24 +28,27 @@ public class OpenPVTree extends AbstractHandler implements IHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        // Retrieve the selection and the current page
+        // Open (new) PV Tree view
+        final PVTreeView view;
+        try
+        {
+            final IWorkbenchPage page = HandlerUtil.getActiveSite(event).getPage();
+            view = (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
+                        "Cannot open PVTreeView" , ex);
+            return null;
+        }
+
+        // If there is a currently selected PV
+        // (because this was invoked from a context menu),
+        // use that PV
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-
         if (pvs != null  &&  pvs.length > 0)
-        {
-            final PVTreeView view;
-            try
-            {
-                view = (PVTreeView) HandlerUtil.getActiveSite(event).getPage().showView(PVTreeView.ID);
-            }
-            catch (Exception ex)
-            {
-                Plugin.getLogger().log(Level.SEVERE, "Cannot open PVTreeView" , ex);
-                return null;
-            }
             view.setPVName(pvs[0].getName());
-        }
         return null;
     }
 }
