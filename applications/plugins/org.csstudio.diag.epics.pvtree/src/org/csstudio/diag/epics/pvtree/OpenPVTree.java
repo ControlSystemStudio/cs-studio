@@ -14,7 +14,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -22,7 +24,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
  *  Linked from popup menu that is sensitive to {@link ProcessVariable}
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class OpenPVTree extends AbstractHandler implements IHandler
 {
     @Override
@@ -39,6 +40,14 @@ public class OpenPVTree extends AbstractHandler implements IHandler
             final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
             if (pvs == null)
                 return null;
+            
+            if (pvs.length > 5 &&
+                ! MessageDialog.openConfirm(
+                        HandlerUtil.getActiveShell(event),
+                        Messages.ManyPVs,
+                        NLS.bind(Messages.ManyPVConfirmFmt, pvs.length)))
+                return null;
+                    
             // Set PV name(s)
             for (int i=0; i<pvs.length; ++i)
             {
@@ -51,7 +60,7 @@ public class OpenPVTree extends AbstractHandler implements IHandler
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
-                        "Cannot open PVTreeView" , ex);
+                        "Cannot open PVTreeView" , ex); //$NON-NLS-1$
         }
         return null;
     }
