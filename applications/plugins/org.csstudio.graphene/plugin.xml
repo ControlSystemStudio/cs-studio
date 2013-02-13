@@ -15,7 +15,7 @@
             category="org.csstudio.channel.application.category"
             class="org.csstudio.graphene.Line2DPlotView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
-            id="org.csstudio.graphene.Line2DPlot"
+            id="org.csstudio.graphene.Line2DPlotView"
             name="Line2D Plot (alpha)"
             restorable="true">
       </view>
