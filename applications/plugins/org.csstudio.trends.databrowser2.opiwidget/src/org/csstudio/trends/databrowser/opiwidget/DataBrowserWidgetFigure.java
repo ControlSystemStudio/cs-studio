@@ -46,7 +46,10 @@ public class DataBrowserWidgetFigure extends Figure
         return plot;
     }
 
-    /** @param filename New file name */
+    /** @param filename New file name.
+     *                  "" to display message that path is not defined.
+     *                  <code>null</code> to not display any path.
+     */
     public void setFilename(final String filename)
     {
         this.filename = filename;
@@ -82,8 +85,10 @@ public class DataBrowserWidgetFigure extends Figure
         // Paint children, i.e. plot
         super.paintClientArea(graphics);
 
-        // Display file name or message
-        final String text = (filename == null  ||  filename.isEmpty())
+        // Display file name or message?
+        if (filename == null)
+            return;
+        final String text = filename.isEmpty()
             ? Messages.NoFilename
             : filename;
 

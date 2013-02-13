@@ -31,6 +31,7 @@ import org.eclipse.draw2d.IFigure;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
 {
     /** Data Browser controller for D.B. Model and Plot, used in run mode */
@@ -57,10 +58,21 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
 
         // Creating the figure/UI
         final boolean running = getExecutionMode() == ExecutionMode.RUN_MODE;
-        // In edit mode, display the file name
+        // In edit mode, display the file name.
+        // In runmode, hide the file name, unless there _is_ no filename,
+        // then display the message.
+        final String filename;
+        if (running)
+        {
+            if (model.getPlainFilename().isEmpty())
+                filename = "";
+            else
+                filename = null;
+        }
+        else
+            filename = model.getPlainFilename().toString();
         final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(running ? null : model.getPlainFilename().toString(),
-                    model.isToolbarVisible());
+            new DataBrowserWidgetFigure(filename, model.isToolbarVisible());
 
         if (running)
         {   // In run mode, create a controller
@@ -72,7 +84,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             }
             catch (Exception ex)
             {
-                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot run Data Browser", ex); //$NON-NLS-1$
+                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot run Data Browser", ex);
             }
         }
 
@@ -89,9 +101,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure)
             {
-                // In edit mode, display file name
-                if (getExecutionMode() == ExecutionMode.EDIT_MODE)
-                    getWidgetFigure().setFilename(((IPath) newValue).toString());
+                getWidgetFigure().setFilename(((IPath) newValue).toString());
                 return false;
             }
         });
@@ -123,7 +133,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             }
             catch (Exception ex)
             {
-                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot start Data Browser Widget", ex); //$NON-NLS-1$
+                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot start Data Browser Widget", ex);
             }
         }
         super.activate();
