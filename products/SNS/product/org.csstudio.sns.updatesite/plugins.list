@@ -132,6 +132,7 @@ org.csstudio.utility.pv.epics/**
 org.csstudio.utility.pv.simu/**
 org.csstudio.utility.pvmanager/**
 org.csstudio.utility.pvmanager.epics/**
+org.csstudio.utility.pvmanager.extra/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
