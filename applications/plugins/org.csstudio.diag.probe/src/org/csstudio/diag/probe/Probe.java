@@ -214,7 +214,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
             final IWorkbenchPage page = window.getActivePage();
             final Probe probe = (Probe) page.showView(ID, createNewInstance(),
                                                 IWorkbenchPage.VIEW_ACTIVATE);
-            probe.setPVName(pv_name.getName());
+            if (pv_name != null)
+                probe.setPVName(pv_name.getName());
             return true;
         }
         catch (final Exception e)

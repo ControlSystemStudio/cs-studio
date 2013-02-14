@@ -327,9 +327,12 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			squareButtonFigure.setBounds(clientArea);
 		if(boolLabel.isVisible()){			
 			Dimension labelSize = boolLabel.getPreferredSize();				
-			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - labelSize.width/2,
+			Rectangle labelBounds = new Rectangle(clientArea.x + clientArea.width/2 - labelSize.width/2,
 					clientArea.y + clientArea.height/2 - labelSize.height/2,
-					labelSize.width, labelSize.height));
+					labelSize.width, labelSize.height);
+			if(getBooleanValue())
+				labelBounds.translate(1, 1);
+			boolLabel.setBounds(labelBounds);
 		}
 		super.layout();
 	}

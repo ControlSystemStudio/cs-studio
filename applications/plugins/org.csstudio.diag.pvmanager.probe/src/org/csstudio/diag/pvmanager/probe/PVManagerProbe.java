@@ -1,14 +1,13 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.util.time.TimeDuration.*;
+import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.epics.util.time.TimeDuration.ofMillis;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,13 +33,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.part.WorkbenchPart;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
@@ -51,6 +45,7 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
+import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
@@ -59,7 +54,6 @@ import org.epics.vtype.SimpleValueFormat;
 import org.epics.vtype.Time;
 import org.epics.vtype.ValueFormat;
 import org.epics.vtype.ValueUtil;
-import org.epics.util.time.TimestampFormat;
 
 /**
  * Probe view.
@@ -71,10 +65,9 @@ public class PVManagerProbe extends ViewPart {
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
 
 	/**
-	 * The ID of the view as specified by the extension.
+	 * The ID of the view as specified by the extension point
 	 */
-	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView"; //$NON-NLS-1$
-	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView"; //$NON-NLS-1$
+	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
 	private static int instance = 0;
 	private Label valueLabel;
 	private Label timestampLabel;
@@ -551,11 +544,8 @@ public class PVManagerProbe extends ViewPart {
 		
 		this.PVName = pvName;
 
-		// If this is an instance of the multiple view, show the PV name
-		// as the title
-		if (MULTIPLE_VIEW_ID.equals(getSite().getId())) {
-			setPartName(pvName.getName());
-		}
+		// Show the PV name  as the title
+		setPartName(pvName.getName());
 	}
 
 	/**
@@ -703,28 +693,5 @@ public class PVManagerProbe extends ViewPart {
 		if (pv != null)
 			pv.close();
 		super.dispose();
-	}
-
-	/**
-	 * Open PVManagerProbe initialized to the given PV
-	 * 
-	 * @param pvName the pv
-	 * @return true if successful
-	 */
-	public static boolean activateWithPV(ProcessVariable pvName) {
-		try {
-			final IWorkbench workbench = PlatformUI.getWorkbench();
-			final IWorkbenchWindow window = workbench
-					.getActiveWorkbenchWindow();
-			final IWorkbenchPage page = window.getActivePage();
-			final PVManagerProbe probe = (PVManagerProbe) page.showView(
-					SINGLE_VIEW_ID, createNewInstance(),
-					IWorkbenchPage.VIEW_ACTIVATE);
-			probe.setPVName(pvName);
-			return true;
-		} catch (final Exception e) {
-			log.log(Level.WARNING, "Failed while opening probe", e);
-		}
-		return false;
 	}
 }

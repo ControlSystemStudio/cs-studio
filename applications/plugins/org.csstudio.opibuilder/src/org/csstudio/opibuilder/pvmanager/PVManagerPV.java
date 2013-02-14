@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.pvmanager;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
+import static org.epics.pvmanager.formula.ExpressionLanguage.channelFromFormula;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
@@ -17,6 +18,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.osgi.util.NLS;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -37,8 +39,8 @@ public class PVManagerPV implements PV {
 
 	private final static ExecutorService PMPV_THREAD = Executors
 			.newSingleThreadExecutor();
-	final private String name;
-	final private boolean valueBuffered;
+	private String name;
+	private boolean valueBuffered;
 	private Map<PVListener, PVReaderListener<Object>> listenerMap;
 	private List<PVWriterListener<Object>> pvWriterListeners;
 	private ExceptionHandler exceptionHandler = new ExceptionHandler() {
@@ -79,11 +81,7 @@ public class PVManagerPV implements PV {
 					String value_text = name.substring(value_start + 1,
 							value_end);
 					if (!value_text.matches("\".+\"") && //$NON-NLS-1$ 
-							!value_text.matches(doubleArrayPattern)) { // if it
-																		// is
-																		// not
-																		// number
-																		// array
+							!value_text.matches(doubleArrayPattern)) { // if it is not number array
 						try {
 							Double.parseDouble(value_text);
 						} catch (Exception e) {
@@ -96,10 +94,7 @@ public class PVManagerPV implements PV {
 			}
 		}
 		this.name = n;
-		if (bufferAllValues && n.matches(doublePattern)) // if it is constant
-			this.valueBuffered = false;
-		else
-			this.valueBuffered = bufferAllValues;
+		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
 		pvWriterListeners = new LinkedList<>();
@@ -198,31 +193,44 @@ public class PVManagerPV implements PV {
 	 * missed.
 	 */
 	private void internalStart() {
-
+		String singleChannel = channelFromFormula(name); //null means formula
+		if(singleChannel == null)
+			valueBuffered = false;
+		else
+			name = singleChannel;
 		if (valueBuffered) {
-			pvReader = PVManager.read(newValuesOf(channel(name)))
+			pvReader = PVManager.read(newValuesOf(channel(singleChannel)))
 					.notifyOn(PMPV_THREAD).routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
 		} else {
-			pvReader = PVManager.read(formula(name)).notifyOn(PMPV_THREAD)
+			if(singleChannel == null)
+				pvReader = PVManager.read(formula(name)).notifyOn(PMPV_THREAD)
 					.routeExceptionsTo(exceptionHandler)
 					.maxRate(ofMillis(updateDuration));
+			else{
+				pvReader = PVManager.read(channel(singleChannel)).notifyOn(PMPV_THREAD)
+						.routeExceptionsTo(exceptionHandler)
+						.maxRate(ofMillis(updateDuration));
+			}
 		}
 		for (PVReaderListener<Object> pvReaderListener : listenerMap.values())
 			pvReader.addPVReaderListener(pvReaderListener);
 
-		pvWriter = PVManager.write(channel(name))
-				.writeListener(new PVWriterListener<Object>() {
-					@Override
-					public void pvChanged(PVWriterEvent<Object> event) {
-						if (event.isWriteFailed())
-							exceptionHandler.handleException(pvWriter
-									.lastWriteException());
-					}
-				}).notifyOn(PMPV_THREAD).async();
+		//only create writer if it is not a formula
+		if (singleChannel != null) {
+			pvWriter = PVManager.write(channel(singleChannel))
+					.writeListener(new PVWriterListener<Object>() {
+						@Override
+						public void pvChanged(PVWriterEvent<Object> event) {
+							if (event.isWriteFailed())
+								exceptionHandler.handleException(pvWriter
+										.lastWriteException());
+						}
+					}).notifyOn(PMPV_THREAD).async();
 
-		for (PVWriterListener<Object> pvWriterListener : pvWriterListeners) {
-			pvWriter.addPVWriterListener(pvWriterListener);
+			for (PVWriterListener<Object> pvWriterListener : pvWriterListeners) {
+				pvWriter.addPVWriterListener(pvWriterListener);
+			}
 		}
 
 	}
@@ -305,6 +313,8 @@ public class PVManagerPV implements PV {
 	@Override
 	public void setValue(Object new_value) throws Exception {
 		checkIfPVStarted();
+		if(pvWriter == null)
+			throw new Exception(NLS.bind("PV {0} is not writable!", getName()));
 		pvWriter.write(new_value);
 	}
 

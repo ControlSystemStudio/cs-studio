@@ -425,10 +425,17 @@
                tooltip="Resize the widget to fill its parent.">
          </action>
          <visibility>
-            <objectState
-                  name="executionMode"
-                  value="EDIT_MODE">
-            </objectState>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="EDIT_MODE">
+               </objectState>
+               <not>
+                  <objectClass
+                        name="org.csstudio.opibuilder.editparts.DisplayEditpart">
+                  </objectClass>
+               </not>
+            </and>
          </visibility>
       </objectContribution>
       <objectContribution

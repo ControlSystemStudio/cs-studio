@@ -28,8 +28,11 @@ public class OpenProbe extends AbstractHandler implements IHandler
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pvs = AdapterUtil.convert(selection,
                 ProcessVariable.class);
-        if (pvs != null  &&  pvs.length > 0)
-            Probe.activateWithPV(pvs[0]);
+        if (pvs == null  ||  pvs.length <= 0)
+            Probe.activateWithPV(null);
+        else
+            for (ProcessVariable pv : pvs)
+                Probe.activateWithPV(pv);
         return null;
     }
 }

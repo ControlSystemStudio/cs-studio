@@ -16,6 +16,7 @@ public interface IPVWidgetEditpart {
 	
 	/**
 	 * @return A String array with all PV names from PV properties.
+	 * It only returns the visible and nonempty PV properties.
 	 */
 	public String[] getAllPVNames();
 	
@@ -24,8 +25,14 @@ public interface IPVWidgetEditpart {
 	 */
 	public PV getControlPV();
 
+	/**
+	 * @return the major PV.
+	 */
 	public PV getPV();
 	
+	/**
+	 * @return name of the major PV.
+	 */
 	public String getPVName();
 
 	/**Get the pv by PV property id.
