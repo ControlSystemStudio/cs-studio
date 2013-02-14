@@ -1,4 +1,4 @@
-package org.csstudio.graphene;
+package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;

@@ -47,16 +47,5 @@
          </command>
       </menuContribution>
     </extension>
-   <extension
-         point="org.csstudio.opibuilder.widget">
-      <widget
-            category="Multi-channel"
-            editpart_class="org.csstudio.graphene.HistogramEditPart"
-            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
-            model_class="org.csstudio.graphene.HistogramModel"
-            name="Histogram (alpha)"
-            typeId="org.csstudio.graphene.Histogram">
-      </widget>
-   </extension>
 
 </plugin>
