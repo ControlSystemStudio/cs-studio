@@ -31,13 +31,9 @@
       <plugin id="javax.servlet"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.csstudio.apputil"/>
-      <plugin id="org.csstudio.apputil.test" fragment="true"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.java"/>
-      <plugin id="org.csstudio.java.test" fragment="true"/>
       <plugin id="org.csstudio.logging"/>
-      <plugin id="org.csstudio.logging.test" fragment="true"/>
       <plugin id="org.csstudio.ndarray"/>
       <plugin id="org.csstudio.numjy"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
