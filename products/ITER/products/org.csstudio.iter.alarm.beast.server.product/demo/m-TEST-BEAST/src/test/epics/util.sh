@@ -1,6 +1,6 @@
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-iter-units-api/tags/CODAC-CORE-4.0B5/src/main/resources/util.sh $
-# $Id: util.sh 33482 2013-01-18 17:09:46Z zagara $
+# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-iter-units-api/branches/codac-core-4.0/src/main/resources/util.sh $
+# $Id: util.sh 33491 2013-01-20 18:21:08Z zagara $
 #
 # Project       : CODAC Core System
 #
