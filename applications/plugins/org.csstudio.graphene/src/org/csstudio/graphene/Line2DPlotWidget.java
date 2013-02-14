@@ -10,10 +10,7 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -62,6 +59,20 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private boolean showRange;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
+
+    // TODO refactor out to some abstract base class
+    private ProcessVariable processVariable;
+
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
+	    this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+	changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+	changeSupport.removePropertyChangeListener(listener);
+    }
 
     public Line2DPlotWidget(Composite parent, int style) {
 	super(parent, style);
@@ -179,27 +190,22 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     private PVReader<Plot2DResult> pv;
     // Y values
-    private Collection<String> yChannelNames;
-    private String yWaveformChannelName;
+    private String yPVName;
 
     private enum YAxis {
-	CHANNELQUERY, WAVEFORM
+	PVARRAY, WAVEFORM
     }
 
-    private YAxis yOrdering = YAxis.CHANNELQUERY;
+    private YAxis yOrdering = YAxis.PVARRAY;
 
     // X values
-    private Collection<String> xChannelNames;
-    private String xWaveformChannelName;
-
-    private String sortProperty;
-    private Collection<String> properties;
+    private String xPVName;
 
     private String offset;
     private String increment;
 
     public enum XAxis {
-	INDEX, CHANNELQUERY, PROPERTY, OFFSET_INCREMENT
+	INDEX, CHANNELQUERY, OFFSET_INCREMENT
     }
 
     private XAxis xOrdering = XAxis.INDEX;
@@ -213,90 +219,28 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	return xOrdering;
     }
 
-    public Collection<String> getxChannelNames() {
-	return xChannelNames;
+    public String getxPVName() {
+	return xPVName;
     }
 
-    public void setxChannelNames(Collection<String> xChannelNames) {
-	if (this.xChannelNames != null
-		&& this.xChannelNames.equals(xChannelNames)) {
+    public void setxPVName(String xPVName) {
+	if (this.xPVName != null && this.xPVName.equals(xPVName)) {
 	    return;
 	}
-	this.xChannelNames = xChannelNames;
-	this.xWaveformChannelName = null;
+	this.xPVName = xPVName;
 	reconnect();
     }
 
-    public String getxWaveformChannelName() {
-	return xWaveformChannelName;
+    public String getyPVName() {
+	return this.yPVName;
     }
 
-    public void setxWaveformChannelName(String xWaveformChannelName) {
-	if (this.xWaveformChannelName != null
-		&& this.xWaveformChannelName.equals(xWaveformChannelName)) {
+    public void setyPVName(String yPVName) {
+	if (this.yPVName != null && this.yPVName.equals(yPVName)) {
 	    return;
 	}
-	this.xWaveformChannelName = xWaveformChannelName;
-	this.xChannelNames = null;
+	this.yPVName = yPVName;
 	reconnect();
-    }
-
-    public Collection<String> getYChannelNames(List<String> finalChannels) {
-	return this.yChannelNames;
-    }
-
-    public void setYChannelNames(List<String> yChannelNames) {
-	if (this.yChannelNames != null
-		&& this.yChannelNames.equals(yChannelNames)) {
-	    return;
-	}
-	this.yChannelNames = yChannelNames;
-	this.yWaveformChannelName = null;
-	this.yOrdering = YAxis.CHANNELQUERY;
-	reconnect();
-    }
-
-    public String getyWaveformChannelName() {
-	return yWaveformChannelName;
-    }
-
-    public void setyWaveformChannelName(String yWaveformChannelName) {
-	if (this.yWaveformChannelName != null
-		&& this.yWaveformChannelName.equals(yWaveformChannelName)) {
-	    return;
-	}
-	this.yWaveformChannelName = yWaveformChannelName;
-	this.yChannelNames = null;
-	this.yOrdering = YAxis.WAVEFORM;
-	reconnect();
-    }
-
-    private void xChannelQueryCleared() {
-	setLastError(null);
-	setxChannelNames(null);
-	imageDisplay.setVImage(null);
-	// reconnect();
-    }
-
-    public String getSortProperty() {
-	return sortProperty;
-    }
-
-    public void setSortProperty(String sortProperty) {
-	if (sortProperty != null) {
-	    this.sortProperty = sortProperty;
-	    reconnect();
-	}
-    }
-
-    public Collection<String> getProperties() {
-	if (this.properties == null)
-	    return Collections.emptyList();
-	return properties;
-    }
-
-    private void setProperties(Collection<String> properties) {
-	this.properties = properties;
     }
 
     public String getOffset() {
@@ -335,7 +279,8 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    resetRange(yRangeControl);
 	}
 
-	plot = ExpressionLanguage.lineGraphOf(latestValueOf(vNumberArray(getProcessVariable().getName())));
+	plot = ExpressionLanguage
+		.lineGraphOf(latestValueOf(vNumberArray(getxPVName())));
 	plot.update(new LineGraphRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
@@ -394,7 +339,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     @Override
     public ISelection getSelection() {
-	return new StructuredSelection(getProcessVariable());
+	return new StructuredSelection(getxPVName());
     }
 
     @Override
@@ -409,43 +354,26 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     }
 
     /** Memento tag */
-    private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+    private static final String MEMENTO_XPVNAME = "XPVName"; //$NON-NLS-1$
+    private static final String MEMENTO_YPVNAME = "YPVName"; //$NON-NLS-1$
 
     public void saveState(IMemento memento) {
-	if (getProcessVariable() != null) {
-	    memento.putString(MEMENTO_PVNAME, getProcessVariable().toString());
+	if (getxPVName() != null) {
+	    memento.putString(MEMENTO_XPVNAME, getxPVName());	    
 	}
+	if (getyPVName() != null) {
+	    memento.putString(MEMENTO_YPVNAME, getyPVName());	    
+	}	
     }
 
     public void loadState(IMemento memento) {
 	if (memento != null) {
-	    if (memento.getString(MEMENTO_PVNAME) != null) {
-		setSortProperty(memento.getString(MEMENTO_PVNAME));
+	    if (memento.getString(MEMENTO_XPVNAME) != null) {
+		setxPVName(memento.getString(MEMENTO_XPVNAME));
+	    }
+	    if (memento.getString(MEMENTO_YPVNAME) != null) {
+		setyPVName(memento.getString(MEMENTO_YPVNAME));
 	    }
 	}
-    }
-
-    // TODO refactor out to some abstract base class
-    private ProcessVariable processVariable;
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-	    this);
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-	changeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-	changeSupport.removePropertyChangeListener(listener);
-    }
-
-    public ProcessVariable getProcessVariable() {
-	return processVariable;
-    }
-
-    public void setProcessVariable(ProcessVariable processVariable) {
-	ProcessVariable oldValue = this.processVariable;
-	this.processVariable = processVariable;
-	changeSupport.firePropertyChange("processVariable", oldValue,
-		processVariable);
     }
 }

@@ -1,9 +1,10 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumber;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumbers;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
+import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
@@ -37,9 +39,9 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
@@ -49,20 +51,12 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VDoubleArray;
-import org.epics.vtype.VImage;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VNumberArray;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.graphene.PlotDataRange;
-import org.epics.util.time.TimeDuration;
-import org.csstudio.ui.util.widgets.StartEndRangeWidget;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
+import org.epics.vtype.VNumberArray;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
