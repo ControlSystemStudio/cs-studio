@@ -25,11 +25,15 @@ public class CSS_Perspective implements IPerspectiveFactory
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
     final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
+    final private static String ID_PROBE2 = "org.csstudio.diag.pvmanager.probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     final private static String ID_ALARM_TREE = "org.csstudio.alarm.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE= "org.csstudio.alarm.ui.alarmtable.view";
 
+    /** Suffix for matching View IDs when multiple instances are allowed */
+    final private static String MULTIPLE = ":*";
+    
     /** Check if certain plugin is available
      *  @param plugin_id ID of the plugin
      *  @return <code>true</code> if available
@@ -62,8 +66,16 @@ public class CSS_Perspective implements IPerspectiveFactory
         	left.addPlaceholder(ID_ALARM_TREE);
 
         // Stuff for 'bottom'
-        bottom.addPlaceholder(ID_PROBE);
-        bottom.addPlaceholder(ID_PROBE + ":*");
+        if (isPluginAvailable("org.csstudio.diag.probe"))
+        {
+            bottom.addPlaceholder(ID_PROBE);
+            bottom.addPlaceholder(ID_PROBE + MULTIPLE);
+        }
+        if (isPluginAvailable("org.csstudio.diag.pvmanager.probe"))
+        {
+            bottom.addPlaceholder(ID_PROBE2);
+            bottom.addPlaceholder(ID_PROBE2 + MULTIPLE);
+        }
         if (have_alarm)
         	bottom.addPlaceholder(ID_ALARM_TABLE);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
