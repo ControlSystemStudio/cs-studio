@@ -320,7 +320,7 @@ public class PVManagerPV implements PV {
 
 	private void checkIfPVStarted() {
 		if (pvReader == null)
-			throw new IllegalStateException("PVManagerPV is not started yet.");
+			throw new IllegalStateException(NLS.bind("PVManagerPV {0} is not started yet.", name));
 	}
 
 }
