@@ -7,7 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <wuid>6cc102d7:13895a319f6:-648f</wuid>
-  <boy_version>3.1.1.qualifier</boy_version>
+  <boy_version>3.2.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -259,14 +259,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <widget_type>Grouping Container</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
@@ -278,6 +278,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>551</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/openHelp.js</path>
@@ -287,9 +288,8 @@ $(pv_value)</tooltip>
         <description>Open Help</description>
       </action>
     </actions>
-    <y>551</y>
-    <tooltip></tooltip>
     <x>611</x>
+    <tooltip></tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -414,10 +414,23 @@ $(pv_value)</tooltip>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
+      <flip_horizontal>false</flip_horizontal>
+      <permutation_matrix>
+        <row>
+          <col>1.0</col>
+          <col>0.0</col>
+        </row>
+        <row>
+          <col>0.0</col>
+          <col>1.0</col>
+        </row>
+      </permutation_matrix>
       <crop_top>0</crop_top>
       <border_style>0</border_style>
       <rules />
+      <flip_vertical>false</flip_vertical>
       <crop_bottom>0</crop_bottom>
+      <degree>0</degree>
       <border_width>1</border_width>
       <image_file>pictures/onlineHelp.gif</image_file>
       <border_color>
@@ -622,10 +635,23 @@ $(pv_value)</tooltip>
     </font>
     <width>296</width>
     <no_animation>false</no_animation>
+    <flip_horizontal>false</flip_horizontal>
+    <permutation_matrix>
+      <row>
+        <col>1.0</col>
+        <col>0.0</col>
+      </row>
+      <row>
+        <col>0.0</col>
+        <col>1.0</col>
+      </row>
+    </permutation_matrix>
     <crop_top>0</crop_top>
     <border_style>0</border_style>
     <rules />
+    <flip_vertical>false</flip_vertical>
     <crop_bottom>0</crop_bottom>
+    <degree>0</degree>
     <border_width>1</border_width>
     <image_file>pictures/Disconnected.png</image_file>
     <border_color>
@@ -706,10 +732,23 @@ $(pv_value)</tooltip>
     </font>
     <width>300</width>
     <no_animation>false</no_animation>
+    <flip_horizontal>false</flip_horizontal>
+    <permutation_matrix>
+      <row>
+        <col>1.0</col>
+        <col>0.0</col>
+      </row>
+      <row>
+        <col>0.0</col>
+        <col>1.0</col>
+      </row>
+    </permutation_matrix>
     <crop_top>0</crop_top>
     <border_style>0</border_style>
     <rules />
+    <flip_vertical>false</flip_vertical>
     <crop_bottom>0</crop_bottom>
+    <degree>0</degree>
     <border_width>1</border_width>
     <image_file>pictures/Write_forbidden.png</image_file>
     <border_color>
@@ -762,12 +801,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     <x>356</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>6cc102d7:13895a319f6:-63d5</wuid>
     <scripts />
     <height>37</height>
+    <style>1</style>
     <name>Action Button_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -776,12 +816,16 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="1">Default Bold</opifont.name>
     </font>

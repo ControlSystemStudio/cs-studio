@@ -168,12 +168,13 @@ if(opiVersion.compareTo(BOYVersion)<0)
     <actions hook="false" hook_all="false" />
     <x>23</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7ea4</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_9</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -182,12 +183,16 @@ if(opiVersion.compareTo(BOYVersion)<0)
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Widgets</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -217,12 +222,13 @@ if(opiVersion.compareTo(BOYVersion)<0)
 $(pv_value)</tooltip>
       <x>414</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7ea5</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_8</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -231,12 +237,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Border</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -266,12 +276,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>414</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7ea6</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_7</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -280,12 +291,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Widget Property</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -315,12 +330,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>414</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7ea7</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_6</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -329,12 +345,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Color Font Macro</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -364,12 +384,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>414</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7ea8</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_5</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -378,12 +399,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Macro</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -413,12 +438,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>414</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7f21</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_4</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -427,12 +453,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Rules and Scripts</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -462,12 +492,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7f32</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_3</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -476,12 +507,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Actions</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -511,12 +546,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7f72</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_2</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -525,12 +561,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Use OPI Editor</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -560,12 +600,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7faf</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button_1</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -574,12 +615,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>OPI Editor Perspective</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
@@ -609,12 +654,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-785f7a78:138580fb6c4:-7fca</wuid>
       <scripts />
       <height>50</height>
+      <style>1</style>
       <name>Action Button</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -623,12 +669,16 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Start Up</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>

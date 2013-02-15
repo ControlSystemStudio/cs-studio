@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -27,6 +28,35 @@ import org.eclipse.core.runtime.Path;
  * 
  */
 public class ActionButtonModel extends AbstractPVWidgetModel implements ITextModel{
+	public enum Style{
+		SIMPLE("Simple"), //$NON-NLS-1$
+		NATIVE("Native");//$NON-NLS-1$
+		
+		private String description;
+		private Style(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(Style f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
+	
+	/**
+	 * Button Style
+	 */
+	public static final String PROP_STYLE = "style"; //$NON-NLS-1$
+	
 	/**
 	 * Text on the button.
 	 */
@@ -102,6 +132,10 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	 */
 	@Override
 	protected void configureProperties() {
+		
+		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Display,
+				Style.stringValues(), Style.SIMPLE.ordinal()));
+		
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "$(actions)", true)); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
@@ -181,4 +215,13 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	public boolean isToggleButton(){
 	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
+	
+	public Style getStyle(){
+		return Style.values()[(Integer)getProperty(PROP_STYLE).getPropertyValue()];
+	}
+	
+	public void setStyle(Style style){
+		setPropertyValue(PROP_STYLE, style.ordinal());
+	}
+	
 }
