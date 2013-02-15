@@ -3,13 +3,10 @@
 # Kay Kasemir
 
 # Version to build
-
 export VERSION=3.2.0I
 
-export PATH=/Library/Java/JavaVirtualMachines/1.6.0_23-b05-318.jdk/Contents/Home/bin:$PATH
-
 # Must use Java 7
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_13.jdk/Contents/Home
 
 if [ ! -d $JAVA_HOME/Classes ]
 then

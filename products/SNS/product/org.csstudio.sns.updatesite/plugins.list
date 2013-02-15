@@ -39,6 +39,7 @@ org.csstudio.debugging.rdbshell/**
 org.csstudio.diag.epics.pvtree/**
 org.csstudio.diag.postanalyser/**
 org.csstudio.diag.probe/**
+org.csstudio.diag.pvmanager.probe/**
 org.csstudio.diag.pvfields/**
 org.csstudio.diag.pvfields.sns/**
 org.csstudio.diag.pvutil/**

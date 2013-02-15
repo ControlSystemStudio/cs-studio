@@ -3,8 +3,6 @@
 The 'Basic EPICS' and 'SNS' versions as well as optional plugins are built
 'headless' into a product and a P2 repository.
 
-Web page is in a separate JEE Project.
-
 ** Create new version
 - IN MANY PLACES! UPDATE VERSION NUMBERS IN ALL THESE:
   * settings.sh
@@ -24,11 +22,10 @@ Web page is in a separate JEE Project.
   Check settings.sh for the required versions.
   On my first attempt, versions didn't match and voila, it didn't work.
   The delta pack is needed for the headless build as well as cross-builds.
-  0.  Unzip the delta pack into the IDE installation for the headless build.
-  1.  Also extract the delta pack archive into its own directory on disk.
-  2.  Open the Target Platform preferences (Window -> Preferences -> Plug-in Development -> Target Platform).
-  3.  Edit the active target, add the delta pack directory (top level that contains features, plugins).
-
+  1. Extract the delta pack archive into its own directory on disk.
+  2. In the IDE, open the Target Platform preferences (Window -> Preferences -> Plug-in Development -> Target Platform).
+  3. Edit the active target, add the delta pack directory (top level that contains features, plugins).
+  4. For headless build, see settings.sh DELTAPACK
       
 ** Headless build
   # Edit the version number in settings.sh(!!), then run
