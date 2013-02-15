@@ -12,6 +12,8 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -34,6 +36,30 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 		
 		public EllipseButton() {
 			addMouseListener(buttonPresser);
+			addMouseMotionListener(new MouseMotionListener.Stub() {
+				@Override
+				public void mouseEntered(MouseEvent me) {
+					if (isRunMode()) {
+						Color backColor = BoolButtonFigure.this
+								.getBackgroundColor();
+						RGB darkColor = GraphicsUtil
+								.mixColors(backColor.getRGB(), new RGB(255,
+										255, 255), 0.5);
+						EllipseButton.this
+								.setBackgroundColor(CustomMediaFactory
+										.getInstance().getColor(darkColor));
+					}
+				}
+				@Override
+				public void mouseExited(MouseEvent me) {
+					if (isRunMode()) {
+						EllipseButton.this
+								.setBackgroundColor(BoolButtonFigure.this
+										.getBackgroundColor());
+					}
+
+				}
+			});
 		}
 		
 		/**
@@ -127,6 +153,32 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 	class SquareButton extends Figure {
 		public SquareButton() {			
 			addMouseListener(buttonPresser);
+
+			addMouseMotionListener(new MouseMotionListener.Stub() {
+				@Override
+				public void mouseEntered(MouseEvent me) {
+					if (isRunMode()) {
+						Color backColor = BoolButtonFigure.this
+								.getBackgroundColor();
+						RGB darkColor = GraphicsUtil
+								.mixColors(backColor.getRGB(), new RGB(255,
+										255, 255), 0.5);
+						SquareButton.this.setBackgroundColor(CustomMediaFactory
+								.getInstance().getColor(darkColor));
+					}
+				}
+
+				@Override
+				public void mouseExited(MouseEvent me) {
+
+					if (isRunMode()) {
+						SquareButton.this
+								.setBackgroundColor(BoolButtonFigure.this
+										.getBackgroundColor());
+					}
+
+				}
+			});			
 		}
 		
 		/**

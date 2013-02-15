@@ -18,6 +18,7 @@ import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +38,8 @@ public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implemen
 	
 	@Override
 	protected Button createSWTWidget(Composite parent, int style) {
-		button= new Button(parent, style);		
+		button= new Button(parent, style);	
+		button.setCursor(Cursors.HAND);
 		return button;
 	}	
 

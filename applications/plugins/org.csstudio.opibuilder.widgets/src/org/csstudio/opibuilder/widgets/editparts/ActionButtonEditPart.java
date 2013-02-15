@@ -12,6 +12,7 @@ import java.util.List;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
@@ -56,6 +57,8 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			this.delegate = new Draw2DButtonEditPartDelegate(this);
 			break;
 		}
+		updatePropSheet(model.isToggleButton());	
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return delegate.doCreateFigure();
 	}
 
