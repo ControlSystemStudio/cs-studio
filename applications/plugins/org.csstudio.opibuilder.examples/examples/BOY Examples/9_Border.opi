@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
@@ -34,7 +34,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-70c4</wuid>
@@ -76,7 +76,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-70c3</wuid>
@@ -117,7 +117,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-70c2</wuid>
@@ -158,7 +158,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>320</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-70c1</wuid>
@@ -199,7 +199,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>320</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-708b</wuid>
@@ -240,7 +240,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-7087</wuid>
@@ -281,7 +281,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>208</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f81</wuid>
@@ -322,7 +322,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>390</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f6f</wuid>
@@ -363,7 +363,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>568</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f5d</wuid>
@@ -404,7 +404,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f2a</wuid>
@@ -445,7 +445,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>208</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f12</wuid>
@@ -486,7 +486,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>390</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6f00</wuid>
@@ -527,7 +527,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>568</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6ee6</wuid>
@@ -568,7 +568,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6e72</wuid>
@@ -609,7 +609,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>208</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6e60</wuid>
@@ -650,7 +650,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>390</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6e4e</wuid>
@@ -691,7 +691,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>568</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6e20</wuid>
@@ -732,7 +732,7 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>26</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-3d426973:1382a253902:-6dbc</wuid>
@@ -774,7 +774,7 @@ Background Style</text>
     <tooltip></tooltip>
     <x>208</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.meter" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.meter" version="1.0.0">
     <level_lo>20.0</level_lo>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -852,7 +852,7 @@ Background Style</text>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -891,7 +891,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>568</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-64612ba8:138158e76d0:-7e34</wuid>
@@ -944,7 +944,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>13</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <minimum>-1.7976931348623157E308</minimum>
@@ -996,7 +996,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>57</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <minimum>-1.7976931348623157E308</minimum>
@@ -1048,7 +1048,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>57</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-64612ba8:138158e76d0:-7e0b</wuid>
@@ -1102,7 +1102,7 @@ $(pv_value)</tooltip>
       <x>13</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>0.0</fill_level>
@@ -1159,7 +1159,7 @@ $(pv_value)</tooltip>
     <x>26</x>
     <gradient>false</gradient>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-89f6aea:1383380b141:-7d13</wuid>
@@ -1200,7 +1200,7 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>46</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>0.0</fill_level>
@@ -1257,7 +1257,7 @@ $(pv_value)</tooltip>
     <x>208</x>
     <gradient>false</gradient>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-89f6aea:1383380b141:-7ce4</wuid>
@@ -1298,7 +1298,7 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>228</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>0.0</fill_level>
@@ -1355,7 +1355,7 @@ $(pv_value)</tooltip>
     <x>390</x>
     <gradient>false</gradient>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-89f6aea:1383380b141:-7cde</wuid>
@@ -1396,7 +1396,7 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>410</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>0.0</fill_level>
@@ -1453,7 +1453,7 @@ $(pv_value)</tooltip>
     <x>568</x>
     <gradient>false</gradient>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-89f6aea:1383380b141:-7cac</wuid>
@@ -1494,7 +1494,7 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>593</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>6cc102d7:13895a319f6:-63a8</wuid>

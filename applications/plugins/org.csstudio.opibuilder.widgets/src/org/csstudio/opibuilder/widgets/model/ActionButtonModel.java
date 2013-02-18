@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Version;
 
 /**
  * An action button widget model.
@@ -29,7 +30,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class ActionButtonModel extends AbstractPVWidgetModel implements ITextModel{
 	public enum Style{
-		SIMPLE("Simple"), //$NON-NLS-1$
+		CLASSIC("Classic"), //$NON-NLS-1$
 		NATIVE("Native");//$NON-NLS-1$
 		
 		private String description;
@@ -134,7 +135,7 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	protected void configureProperties() {
 		
 		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Display,
-				Style.stringValues(), Style.SIMPLE.ordinal()));
+				Style.stringValues(), Style.NATIVE.ordinal()));
 		
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "$(actions)", true)); //$NON-NLS-1$
@@ -155,15 +156,24 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 				WidgetPropertyCategory.Behavior, false));
 		
 		
-//		removeProperty(PROP_BORDER_COLOR);
-//		removeProperty(PROP_BORDER_STYLE);
-//		removeProperty(PROP_BORDER_WIDTH);
-//		removeProperty(PROP_BORDER_ALARMSENSITIVE);
 		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON);
 		
 	}
 	
 	
+	@Override
+	public void processVersionDifference() {		
+		//There was no style property before 2.0.0
+		if(getVersionOnFile().getMajor() <2){			
+			// convert native button widget to native style		
+			if (getWidgetType().equals("Button")){ //$NON-NLS-N$
+				setStyle(Style.NATIVE);
+				setPropertyValue(PROP_WIDGET_TYPE, "Action Button");
+			}
+			else
+				setStyle(Style.CLASSIC);			
+		}		
+	}
 	
 
 	/**
@@ -218,6 +228,11 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	
 	public Style getStyle(){
 		return Style.values()[(Integer)getProperty(PROP_STYLE).getPropertyValue()];
+	}
+	
+	@Override
+	public Version getVersion() {
+		return new Version(2, 0, 0);
 	}
 	
 	public void setStyle(Style style){

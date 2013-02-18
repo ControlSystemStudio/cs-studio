@@ -45,14 +45,12 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		ActionButtonModel model = getWidgetModel();
-		// A hack to convert previous Native button to native style.
-		if (model.getWidgetType().equals("Button")) //$NON-NLS-N$
-			model.setStyle(Style.NATIVE);
+		
 		switch (model.getStyle()) {
 		case NATIVE:
 			this.delegate = new NativeButtonEditPartDelegate(this);
 			break;
-		case SIMPLE:
+		case CLASSIC:
 		default:
 			this.delegate = new Draw2DButtonEditPartDelegate(this);
 			break;

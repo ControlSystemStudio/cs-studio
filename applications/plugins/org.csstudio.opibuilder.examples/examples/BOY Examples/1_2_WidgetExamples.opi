@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>true</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>-4499eab:1386c3a53ab:-7fd0</wuid>
@@ -73,7 +73,7 @@
     <tooltip></tooltip>
     <x>1</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -134,7 +134,7 @@
     <rules />
     <tab_count>2</tab_count>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -173,7 +173,7 @@
       <actions hook="false" hook_all="false" />
       <x>1</x>
       <tooltip></tooltip>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -212,7 +212,7 @@
         <actions hook="false" hook_all="false" />
         <x>4</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
           <crop_right>0</crop_right>
           <crop_left>0</crop_left>
           <visible>true</visible>
@@ -267,7 +267,7 @@
           <tooltip></tooltip>
           <x>875</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <fill_arrow>true</fill_arrow>
           <arrow_length>20</arrow_length>
@@ -323,7 +323,7 @@
 $(pv_value)</tooltip>
           <x>164</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <total_angle>135</total_angle>
@@ -377,7 +377,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>11</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <fill_level>60.0</fill_level>
@@ -443,7 +443,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>289</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -499,7 +499,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -555,7 +555,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -611,7 +611,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <fill_level>50.0</fill_level>
@@ -675,7 +675,7 @@ $(pv_value)</tooltip>
           <x>405</x>
           <gradient>true</gradient>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -731,7 +731,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <fill_level>50.0</fill_level>
@@ -797,7 +797,7 @@ $(pv_value)</tooltip>
           <x>507</x>
           <gradient>true</gradient>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <fill_level>50.0</fill_level>
@@ -861,7 +861,7 @@ $(pv_value)</tooltip>
           <x>607</x>
           <gradient>true</gradient>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -917,7 +917,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -973,7 +973,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -1029,7 +1029,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -1068,7 +1068,7 @@ $(pv_value)</tooltip>
           <actions hook="false" hook_all="false" />
           <x>710</x>
           <tooltip></tooltip>
-          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
             <wuid>-98641ad:138805fb287:-7ffe</wuid>
@@ -1109,7 +1109,7 @@ $(pv_value)</tooltip>
             <tooltip></tooltip>
             <x>0</x>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
             <wuid>-98641ad:138805fb287:-7ffb</wuid>
@@ -1150,7 +1150,7 @@ $(pv_value)</tooltip>
             <tooltip></tooltip>
             <x>0</x>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
             <wuid>-98641ad:138805fb287:-7ff9</wuid>
@@ -1192,7 +1192,7 @@ $(pv_value)</tooltip>
             <x>0</x>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -1250,7 +1250,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -1307,7 +1307,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
         </widget>
       </widget>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -1346,7 +1346,7 @@ $(pv_value)</tooltip>
         <actions hook="false" hook_all="false" />
         <x>4</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7ff3</wuid>
@@ -1399,7 +1399,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>17</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
@@ -1450,7 +1450,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>179</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.meter" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.meter" version="1.0.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1528,7 +1528,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.gauge" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.gauge" version="1.0.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1607,7 +1607,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1690,7 +1690,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.tank" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.tank" version="1.0.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1770,7 +1770,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0.0">
           <level_lo>30.0</level_lo>
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
@@ -1856,7 +1856,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <indicator_mode>false</indicator_mode>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -1917,7 +1917,7 @@ $(pv_value)</tooltip>
           <rules />
           <tab_count>2</tab_count>
           <tooltip></tooltip>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -1956,7 +1956,7 @@ $(pv_value)</tooltip>
             <actions hook="false" hook_all="false" />
             <x>1</x>
             <tooltip></tooltip>
-            <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0.0">
               <trace_1_visible>true</trace_1_visible>
               <trace_1_trace_type>3</trace_1_trace_type>
               <trace_0_trace_color>
@@ -2097,7 +2097,7 @@ $(pv_value)</tooltip>
               <trace_0_update_delay>0</trace_0_update_delay>
             </widget>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -2136,7 +2136,7 @@ $(pv_value)</tooltip>
             <actions hook="false" hook_all="false" />
             <x>1</x>
             <tooltip></tooltip>
-            <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <y_axis_scale_font>
                 <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -2243,7 +2243,7 @@ $(pv_value)</tooltip>
             </widget>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2299,7 +2299,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-7a72</wuid>
@@ -2349,7 +2349,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>93</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2405,7 +2405,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2461,7 +2461,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
@@ -2512,7 +2512,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>179</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2568,7 +2568,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2624,7 +2624,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.bytemonitor" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.bytemonitor" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-6e83</wuid>
@@ -2676,7 +2676,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>13</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <auto_size>false</auto_size>
@@ -2748,7 +2748,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2804,7 +2804,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2860,7 +2860,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2916,7 +2916,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -2972,7 +2972,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3030,7 +3030,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3089,7 +3089,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
         </widget>
       </widget>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -3128,7 +3128,7 @@ $(pv_value)</tooltip>
         <actions hook="false" hook_all="false" />
         <x>4</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0.0">
           <level_lo>20.0</level_lo>
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
@@ -3212,7 +3212,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fe0</wuid>
@@ -3265,7 +3265,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>10</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3321,7 +3321,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <actions_from_pv>false</actions_from_pv>
@@ -3387,7 +3387,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>127</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3443,7 +3443,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3499,7 +3499,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
@@ -3555,7 +3555,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>254</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
@@ -3612,7 +3612,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>254</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
@@ -3664,7 +3664,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>434</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <minimum>-1.7976931348623157E308</minimum>
@@ -3716,7 +3716,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>434</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -3772,7 +3772,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0.0">
           <level_lo>30.0</level_lo>
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
@@ -3859,7 +3859,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.ThumbWheel" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ThumbWheel" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <show_buttons>true</show_buttons>
           <visible>true</visible>
@@ -3912,7 +3912,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>104</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <minimum>0.0</minimum>
@@ -3960,7 +3960,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>850</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4016,7 +4016,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fdd</wuid>
@@ -4075,7 +4075,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>28</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fe1</wuid>
@@ -4135,7 +4135,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>559</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fe2</wuid>
@@ -4195,7 +4195,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>633</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fd9</wuid>
@@ -4238,7 +4238,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>850</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4294,7 +4294,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <password></password>
@@ -4379,7 +4379,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.radioBox" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.radioBox" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-6371</wuid>
@@ -4429,7 +4429,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>376</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-6370</wuid>
@@ -4479,7 +4479,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>269</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4535,7 +4535,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4591,7 +4591,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4647,7 +4647,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-6230</wuid>
@@ -4703,7 +4703,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>761</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4759,7 +4759,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4815,7 +4815,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4871,7 +4871,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4929,7 +4929,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -4987,7 +4987,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5047,7 +5047,7 @@ $(pv_value)</tooltip>
         </widget>
       </widget>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -5086,7 +5086,7 @@ $(pv_value)</tooltip>
       <actions hook="false" hook_all="false" />
       <x>1</x>
       <tooltip></tooltip>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -5125,7 +5125,7 @@ $(pv_value)</tooltip>
         <actions hook="false" hook_all="false" />
         <x>7</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>-98641ad:138805fb287:-7fda</wuid>
@@ -5171,7 +5171,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>466</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5227,7 +5227,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5283,7 +5283,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>false</read_only>
           <visible>true</visible>
@@ -5339,7 +5339,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>false</read_only>
           <visible>true</visible>
@@ -5395,7 +5395,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5451,7 +5451,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.table" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.table" version="1.0.0">
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-5a5a</wuid>
           <default_content />
@@ -5521,7 +5521,7 @@ the&#xD;
 tooltip.</tooltip>
           <x>11</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.webbrowser" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.webbrowser" version="1.0.0">
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-5950</wuid>
           <scripts />
@@ -5554,7 +5554,7 @@ tooltip.</tooltip>
           <x>645</x>
           <tooltip></tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5610,7 +5610,7 @@ tooltip.</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5666,7 +5666,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -5722,7 +5722,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>5ec8b324:13880ba2d91:-5b34</wuid>
@@ -5776,7 +5776,7 @@ $(pv_value)</tooltip>
           <x>11</x>
         </widget>
       </widget>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -5815,7 +5815,7 @@ $(pv_value)</tooltip>
         <actions hook="false" hook_all="false" />
         <x>7</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <macros>
             <include_parent_macros>true</include_parent_macros>
@@ -5862,7 +5862,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>17</x>
           <vec>17</vec>
-          <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0.0">
             <level_lo>20.0</level_lo>
             <border_alarm_sensitive>false</border_alarm_sensitive>
             <visible>true</visible>
@@ -5949,7 +5949,7 @@ $(pv_value)</tooltip>
             <indicator_mode>false</indicator_mode>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
           <macros>
             <include_parent_macros>true</include_parent_macros>
@@ -5996,7 +5996,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
           <x>9</x>
           <vec>9</vec>
-          <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0.0">
             <border_alarm_sensitive>false</border_alarm_sensitive>
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
@@ -6053,7 +6053,7 @@ $(pv_value)</tooltip>
             <x>11</x>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -6109,7 +6109,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -6165,7 +6165,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
           <sash_style>2</sash_style>
           <macros>
             <include_parent_macros>true</include_parent_macros>
@@ -6208,7 +6208,7 @@ $(pv_value)</tooltip>
           <y>32</y>
           <tooltip></tooltip>
           <x>405</x>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -6247,7 +6247,7 @@ $(pv_value)</tooltip>
             <actions hook="false" hook_all="false" />
             <x>0</x>
             <tooltip></tooltip>
-            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <visible>true</visible>
               <wuid>307ab5bb:1389aa3731f:-7b86</wuid>
@@ -6268,7 +6268,7 @@ $(pv_value)</tooltip>
               <foreground_color>
                 <color red="0" green="0" blue="0" />
               </foreground_color>
-              <widget_type>Button</widget_type>
+              <widget_type>Action Button</widget_type>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -6300,7 +6300,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
               <x>15</x>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <visible>true</visible>
               <wuid>307ab5bb:1389aa3731f:-7b29</wuid>
@@ -6321,7 +6321,7 @@ $(pv_value)</tooltip>
               <foreground_color>
                 <color red="0" green="0" blue="0" />
               </foreground_color>
-              <widget_type>Button</widget_type>
+              <widget_type>Action Button</widget_type>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -6353,7 +6353,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
               <x>15</x>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <visible>true</visible>
               <wuid>307ab5bb:1389aa3731f:-7b28</wuid>
@@ -6374,7 +6374,7 @@ $(pv_value)</tooltip>
               <foreground_color>
                 <color red="0" green="0" blue="0" />
               </foreground_color>
-              <widget_type>Button</widget_type>
+              <widget_type>Action Button</widget_type>
               <enabled>true</enabled>
               <text>$(actions)</text>
               <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -6407,7 +6407,7 @@ $(pv_value)</tooltip>
               <x>15</x>
             </widget>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -6446,7 +6446,7 @@ $(pv_value)</tooltip>
             <actions hook="false" hook_all="false" />
             <x>160</x>
             <tooltip></tooltip>
-            <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
               </macros>
@@ -6496,7 +6496,7 @@ $(pv_value)</tooltip>
             </widget>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -6552,7 +6552,7 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -6593,7 +6593,7 @@ $(pv_value)</tooltip>
           <x>203</x>
           <tooltip></tooltip>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <read_only>true</read_only>
           <visible>true</visible>
@@ -6652,7 +6652,7 @@ $(pv_value)</tooltip>
       </widget>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>5ec8b324:13880ba2d91:-4ead</wuid>
@@ -6673,7 +6673,7 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -6708,7 +6708,7 @@ ScriptUtil.openOPI(widget, "main.opi",0, null);
 $(pv_value)</tooltip>
     <x>8</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -6754,7 +6754,7 @@ $(pv_value)</tooltip>
     </actions>
     <x>804</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-60e24287:133c6b5d52b:-74e4</wuid>
@@ -6795,7 +6795,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>41</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <fill_arrow>true</fill_arrow>
       <arrow_length>20</arrow_length>
@@ -6850,7 +6850,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>49</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <visible>true</visible>

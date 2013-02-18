@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
     <sash_style>2</sash_style>
     <macros>
       <include_parent_macros>true</include_parent_macros>
@@ -75,7 +75,7 @@
     <y>0</y>
     <tooltip></tooltip>
     <x>0</x>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -114,7 +114,7 @@
       <actions hook="false" hook_all="false" />
       <x>0</x>
       <tooltip></tooltip>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -153,7 +153,7 @@
         <actions hook="false" hook_all="false" />
         <x>0</x>
         <tooltip></tooltip>
-        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
           <wuid>553ac269:135b01240d5:-49f7</wuid>
@@ -194,7 +194,7 @@
           <tooltip></tooltip>
           <x>0</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
           <wuid>553ac269:135b01240d5:-49f6</wuid>
@@ -235,7 +235,7 @@
           <tooltip></tooltip>
           <x>315</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
           <visible>true</visible>
           <vertical_alignment>1</vertical_alignment>
           <wuid>553ac269:135b01240d5:-49f5</wuid>
@@ -278,7 +278,7 @@
         </widget>
       </widget>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -317,7 +317,7 @@
       <actions hook="false" hook_all="false" />
       <x>0</x>
       <tooltip></tooltip>
-      <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+      <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
         <sash_style>2</sash_style>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -360,7 +360,7 @@
         <y>0</y>
         <tooltip></tooltip>
         <x>0</x>
-        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -399,7 +399,7 @@
           <actions hook="false" hook_all="false" />
           <x>0</x>
           <tooltip></tooltip>
-          <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
             <sash_style>2</sash_style>
             <macros>
               <include_parent_macros>true</include_parent_macros>
@@ -442,7 +442,7 @@
             <y>0</y>
             <tooltip></tooltip>
             <x>0</x>
-            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
               </macros>
@@ -481,7 +481,7 @@
               <actions hook="false" hook_all="false" />
               <x>0</x>
               <tooltip></tooltip>
-              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <visible>true</visible>
                 <wuid>e7948:13631faf1e5:-7abd</wuid>
@@ -533,7 +533,7 @@
                 <tooltip>$(actions)</tooltip>
                 <x>10</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <visible>true</visible>
                 <wuid>e7948:13631faf1e5:-79b8</wuid>
@@ -585,7 +585,7 @@
                 <tooltip>$(actions)</tooltip>
                 <x>10</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <visible>true</visible>
                 <wuid>e7948:13631faf1e5:-7acb</wuid>
@@ -637,7 +637,7 @@
                 <tooltip>$(actions)</tooltip>
                 <x>10</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <visible>true</visible>
                 <wuid>e7948:13631faf1e5:-7ac7</wuid>
@@ -689,7 +689,7 @@
                 <tooltip>$(actions)</tooltip>
                 <x>10</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <visible>true</visible>
                 <wuid>970253a:136364d449d:-7a50</wuid>
@@ -742,7 +742,7 @@
                 <x>10</x>
               </widget>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
               </macros>
@@ -781,7 +781,7 @@
               <actions hook="false" hook_all="false" />
               <x>177</x>
               <tooltip></tooltip>
-              <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0.0">
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
@@ -832,7 +832,7 @@
             </widget>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -871,7 +871,7 @@
           <actions hook="false" hook_all="false" />
           <x>0</x>
           <tooltip></tooltip>
-          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
             <visible>true</visible>
             <vertical_alignment>1</vertical_alignment>
             <wuid>553ac269:135b01240d5:-49f8</wuid>
@@ -914,7 +914,7 @@ Tip: Right click widget and choose "Fill Parent Container" can help to resize a 
             <tooltip></tooltip>
             <x>14</x>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -961,7 +961,7 @@ Tip: Right click widget and choose "Fill Parent Container" can help to resize a 
             </actions>
             <x>615</x>
             <tooltip></tooltip>
-            <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
               <visible>true</visible>
               <vertical_alignment>1</vertical_alignment>
               <wuid>553ac269:135b01240d5:-49df</wuid>
@@ -1002,7 +1002,7 @@ Tip: Right click widget and choose "Fill Parent Container" can help to resize a 
               <tooltip></tooltip>
               <x>37</x>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0.0">
               <border_alarm_sensitive>false</border_alarm_sensitive>
               <fill_arrow>true</fill_arrow>
               <arrow_length>20</arrow_length>
@@ -1057,7 +1057,7 @@ Tip: Right click widget and choose "Fill Parent Container" can help to resize a 
 $(pv_value)</tooltip>
               <x>45</x>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
               <crop_right>0</crop_right>
               <crop_left>0</crop_left>
               <visible>true</visible>
@@ -1113,7 +1113,7 @@ $(pv_value)</tooltip>
               <x>7</x>
             </widget>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
             <border_alarm_sensitive>false</border_alarm_sensitive>
             <visible>true</visible>
             <wuid>66d1507f:138820a85e5:-79e6</wuid>
@@ -1134,7 +1134,7 @@ $(pv_value)</tooltip>
             <foreground_color>
               <color red="0" green="0" blue="128" />
             </foreground_color>
-            <widget_type>Button</widget_type>
+            <widget_type>Action Button</widget_type>
             <enabled>true</enabled>
             <text>Go Home</text>
             <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -1166,7 +1166,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
             <x>14</x>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
             <border_alarm_sensitive>false</border_alarm_sensitive>
             <visible>true</visible>
             <wuid>e7948:13631faf1e5:-7751</wuid>
