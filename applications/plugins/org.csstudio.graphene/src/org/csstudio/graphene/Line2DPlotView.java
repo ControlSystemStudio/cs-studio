@@ -68,7 +68,7 @@ public class Line2DPlotView extends ViewPart {
 
     public void setProcessVariable(ProcessVariable processVariable) {
 	inputBar.setProcessVariable(processVariable);
-	line2DPlotWidget.setxPVName(processVariable.getName());
+	line2DPlotWidget.setpvName(processVariable.getName());
     }
 
     private ProcessVariableInputBar inputBar;
@@ -97,7 +97,7 @@ public class Line2DPlotView extends ViewPart {
 	    @Override
 	    public void propertyChange(PropertyChangeEvent event) {
 		if ("processVariable".equals(event.getPropertyName())) {
-		    line2DPlotWidget.setxPVName(inputBar.getProcessVariable()
+		    line2DPlotWidget.setpvName(inputBar.getProcessVariable()
 			    .getName());
 		}
 	    }

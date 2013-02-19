@@ -13,6 +13,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.apputil.formula.Formula;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -46,8 +47,13 @@ import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.graphene.PlotDataRange;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.formula.ExpressionLanguage.*;
+import org.epics.vtype.VNumberArray;
 
 /**
+ * A simple Line 2D plot which can handle both waveforms and a list of PVs
+ * 
  * @author shroffk
  * 
  */
@@ -190,85 +196,25 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     private PVReader<Plot2DResult> pv;
     // Y values
-    private String yPVName;
+    private String pvName;
 
-    private enum YAxis {
-	PVARRAY, WAVEFORM
+    public String getpvName() {
+	return this.pvName;
     }
 
-    private YAxis yOrdering = YAxis.PVARRAY;
-
-    // X values
-    private String xPVName;
-
-    private String offset;
-    private String increment;
-
-    public enum XAxis {
-	INDEX, CHANNELQUERY, OFFSET_INCREMENT
-    }
-
-    private XAxis xOrdering = XAxis.INDEX;
-
-    public void setxOrdering(XAxis xAxis) {
-	this.xOrdering = xAxis;
-	reconnect();
-    }
-
-    public XAxis getxOrdering() {
-	return xOrdering;
-    }
-
-    public String getxPVName() {
-	return xPVName;
-    }
-
-    public void setxPVName(String xPVName) {
-	if (this.xPVName != null && this.xPVName.equals(xPVName)) {
+    public void setpvName(String pvName) {
+	if (this.pvName != null && this.pvName.equals(pvName)) {
 	    return;
 	}
-	this.xPVName = xPVName;
+	this.pvName = pvName;
 	reconnect();
-    }
-
-    public String getyPVName() {
-	return this.yPVName;
-    }
-
-    public void setyPVName(String yPVName) {
-	if (this.yPVName != null && this.yPVName.equals(yPVName)) {
-	    return;
-	}
-	this.yPVName = yPVName;
-	reconnect();
-    }
-
-    public String getOffset() {
-	return offset;
-    }
-
-    public void setOffset(String offset) {
-	if (offset != null && !offset.isEmpty()) {
-	    this.offset = offset;
-	    reconnect();
-	}
-    }
-
-    public String getIncrement() {
-	return increment;
-    }
-
-    public void setIncrement(String increment) {
-	if (increment != null && !increment.isEmpty()) {
-	    this.increment = increment;
-	    reconnect();
-	}
     }
 
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
     }
 
+    @SuppressWarnings("unchecked")
     private void reconnect() {
 	if (pv != null) {
 	    pv.close();
@@ -279,8 +225,11 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    resetRange(yRangeControl);
 	}
 
+	// This part will be handled by pvmanager using formula
+
 	plot = ExpressionLanguage
-		.lineGraphOf(latestValueOf(vNumberArray(getxPVName())));
+		.lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+			.formula(getpvName()));
 	plot.update(new LineGraphRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
@@ -339,7 +288,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     @Override
     public ISelection getSelection() {
-	return new StructuredSelection(getxPVName());
+	return new StructuredSelection(getpvName());
     }
 
     @Override
@@ -354,25 +303,18 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     }
 
     /** Memento tag */
-    private static final String MEMENTO_XPVNAME = "XPVName"; //$NON-NLS-1$
-    private static final String MEMENTO_YPVNAME = "YPVName"; //$NON-NLS-1$
+    private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
     public void saveState(IMemento memento) {
-	if (getxPVName() != null) {
-	    memento.putString(MEMENTO_XPVNAME, getxPVName());	    
+	if (getpvName() != null) {
+	    memento.putString(MEMENTO_PVNAME, getpvName());
 	}
-	if (getyPVName() != null) {
-	    memento.putString(MEMENTO_YPVNAME, getyPVName());	    
-	}	
     }
 
     public void loadState(IMemento memento) {
 	if (memento != null) {
-	    if (memento.getString(MEMENTO_XPVNAME) != null) {
-		setxPVName(memento.getString(MEMENTO_XPVNAME));
-	    }
-	    if (memento.getString(MEMENTO_YPVNAME) != null) {
-		setyPVName(memento.getString(MEMENTO_YPVNAME));
+	    if (memento.getString(MEMENTO_PVNAME) != null) {
+		setpvName(memento.getString(MEMENTO_PVNAME));
 	    }
 	}
     }
