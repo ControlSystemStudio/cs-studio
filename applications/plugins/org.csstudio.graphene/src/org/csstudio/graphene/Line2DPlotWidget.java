@@ -5,13 +5,9 @@ package org.csstudio.graphene;
 
 import static org.epics.util.time.TimeDuration.ofHertz;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.csstudio.channel.widgets.Line2DPlotSelection;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -22,7 +18,6 @@ import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -269,32 +264,24 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	}
     }
 
-    private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
-
     @Override
     public void addSelectionChangedListener(
 	    final ISelectionChangedListener listener) {
-	PropertyChangeListener propListener = new PropertyChangeListener() {
-	    @Override
-	    public void propertyChange(PropertyChangeEvent event) {
-		if ("channelQuery".equals(event.getPropertyName()))
-		    listener.selectionChanged(new SelectionChangedEvent(
-			    Line2DPlotWidget.this, getSelection()));
-	    }
-	};
-	listenerMap.put(listener, propListener);
-	addPropertyChangeListener(propListener);
+
     }
 
     @Override
     public ISelection getSelection() {
-	return new StructuredSelection(new ProcessVariable(getpvName()));
+	if (getpvName() != null) {
+	    return new StructuredSelection(new ProcessVariable(getpvName()));
+	}
+	return null;
     }
 
     @Override
     public void removeSelectionChangedListener(
 	    ISelectionChangedListener listener) {
-	removePropertyChangeListener(listenerMap.remove(listener));
+
     }
 
     @Override
