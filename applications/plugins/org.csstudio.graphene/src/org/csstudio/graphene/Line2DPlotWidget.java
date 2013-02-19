@@ -3,8 +3,6 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
 import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
@@ -13,7 +11,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.apputil.formula.Formula;
+import org.csstudio.channel.widgets.Line2DPlotSelection;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -43,12 +41,11 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.graphene.PlotDataRange;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.formula.ExpressionLanguage.*;
 import org.epics.vtype.VNumberArray;
 
 /**
@@ -65,9 +62,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private boolean showRange;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
-
-    // TODO refactor out to some abstract base class
-    private ProcessVariable processVariable;
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
@@ -175,17 +169,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		}
 	    }
 	});
-
-	this.addPropertyChangeListener(new PropertyChangeListener() {
-
-	    @Override
-	    public void propertyChange(PropertyChangeEvent evt) {
-		// System.out.println(evt.getPropertyName());
-		reconnect();
-
-	    }
-	});
-
     }
 
     @Override
@@ -269,39 +252,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	control.setRanges(0, 0, 1, 1);
     }
 
-    private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
-
-    @Override
-    public void addSelectionChangedListener(
-	    final ISelectionChangedListener listener) {
-	PropertyChangeListener propListener = new PropertyChangeListener() {
-	    @Override
-	    public void propertyChange(PropertyChangeEvent event) {
-		if ("processVariable".equals(event.getPropertyName()))
-		    listener.selectionChanged(new SelectionChangedEvent(
-			    Line2DPlotWidget.this, getSelection()));
-	    }
-	};
-	listenerMap.put(listener, propListener);
-	addPropertyChangeListener(propListener);
-    }
-
-    @Override
-    public ISelection getSelection() {
-	return new StructuredSelection(getpvName());
-    }
-
-    @Override
-    public void removeSelectionChangedListener(
-	    ISelectionChangedListener listener) {
-	removePropertyChangeListener(listenerMap.remove(listener));
-    }
-
-    @Override
-    public void setSelection(ISelection selection) {
-	throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     /** Memento tag */
     private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
@@ -317,5 +267,38 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		setpvName(memento.getString(MEMENTO_PVNAME));
 	    }
 	}
+    }
+
+    private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
+
+    @Override
+    public void addSelectionChangedListener(
+	    final ISelectionChangedListener listener) {
+	PropertyChangeListener propListener = new PropertyChangeListener() {
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if ("channelQuery".equals(event.getPropertyName()))
+		    listener.selectionChanged(new SelectionChangedEvent(
+			    Line2DPlotWidget.this, getSelection()));
+	    }
+	};
+	listenerMap.put(listener, propListener);
+	addPropertyChangeListener(propListener);
+    }
+
+    @Override
+    public ISelection getSelection() {
+	return new StructuredSelection(new ProcessVariable(getpvName()));
+    }
+
+    @Override
+    public void removeSelectionChangedListener(
+	    ISelectionChangedListener listener) {
+	removePropertyChangeListener(listenerMap.remove(listener));
+    }
+
+    @Override
+    public void setSelection(ISelection selection) {
+	throw new UnsupportedOperationException("Not implemented yet");
     }
 }

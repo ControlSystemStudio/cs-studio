@@ -117,6 +117,7 @@ public class Line2DPlotView extends ViewPart {
 	}
 
 	PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
+	PopupMenuUtil.installPopupForView(line2DPlotWidget, getSite(), line2DPlotWidget);
     }
 
 }
