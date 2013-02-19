@@ -35,7 +35,7 @@ public class RangeUtil {
 
             @Override
             public String toString() {
-                return toString(this);
+                return RangeUtil.toString(this);
             }
             
         };
