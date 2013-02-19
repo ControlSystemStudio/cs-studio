@@ -8,7 +8,6 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public interface Histogram1D extends Cell1DDataset {
+public class ScatterGraph2DRendererUpdate extends Graph2DRendererUpdate<ScatterGraph2DRendererUpdate> {
     
-    public void update(Histogram1DUpdate update);
 }

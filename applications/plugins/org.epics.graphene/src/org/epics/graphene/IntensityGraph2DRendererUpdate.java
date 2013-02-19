@@ -8,7 +8,7 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public class LineGraphRendererUpdate {
+public class IntensityGraph2DRendererUpdate {
 
     private Integer imageHeight;
     private Integer imageWidth;
@@ -21,42 +21,42 @@ public class LineGraphRendererUpdate {
     
     private Boolean rangeFromDataset;
     
-    public LineGraphRendererUpdate startX(Double startX) {
+    public IntensityGraph2DRendererUpdate startX(Double startX) {
         this.startX = startX;
         return this;
     }
     
-    public LineGraphRendererUpdate startY(Double startY) {
+    public IntensityGraph2DRendererUpdate startY(Double startY) {
         this.startY = startY;
         return this;
     }
     
-    public LineGraphRendererUpdate endX(Double endX) {
+    public IntensityGraph2DRendererUpdate endX(Double endX) {
         this.endX = endX;
         return this;
     }
     
-    public LineGraphRendererUpdate endY(Double endY) {
+    public IntensityGraph2DRendererUpdate endY(Double endY) {
         this.endY = endY;
         return this;
     }
     
-    public LineGraphRendererUpdate rangeFromDataset(boolean rangeFromDataset) {
+    public IntensityGraph2DRendererUpdate rangeFromDataset(boolean rangeFromDataset) {
         this.rangeFromDataset = rangeFromDataset;
         return this;
     }
     
-    public LineGraphRendererUpdate imageHeight(int height) {
+    public IntensityGraph2DRendererUpdate imageHeight(int height) {
         this.imageHeight = height;
         return this;
     }
     
-    public LineGraphRendererUpdate imageWidth(int width) {
+    public IntensityGraph2DRendererUpdate imageWidth(int width) {
         this.imageWidth = width;
         return this;
     }
     
-    public LineGraphRendererUpdate interpolation(InterpolationScheme scheme) {
+    public IntensityGraph2DRendererUpdate interpolation(InterpolationScheme scheme) {
         this.interpolation = scheme;
         return this;
     }

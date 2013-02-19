@@ -74,6 +74,9 @@ public class ValueAxis {
     public static ValueAxis createAutoAxis(double minValue, double maxValue, int maxTicks, double minIncrement) {
         double increment = incrementForRange(minValue, maxValue, maxTicks, minIncrement);
         double[] ticks = createTicks(minValue, maxValue, increment);
+        if (ticks.length < 2) {
+            ticks = createSmallerTicks(minValue, maxValue, increment);
+        }
         int rangeOrder = (int) orderOfMagnitude(minValue, maxValue);
         int incrementOrder = (int) orderOfMagnitude(increment);
         int nDigits = rangeOrder - incrementOrder;
@@ -149,6 +152,24 @@ public class ValueAxis {
         } else {
             return magnitude.multiply(BigDecimal.valueOf(10)).doubleValue();
         }
+    }
+
+    private static double[] createSmallerTicks(double minValue, double maxValue, double increment) {
+        int order = (int) orderOfMagnitude(increment);
+        BigDecimal magnitude = BigDecimal.ONE.scaleByPowerOfTen(order);
+        double normalizedIncrement = increment / magnitude.doubleValue();
+        double smallerIncrement;
+        if (normalizedIncrement < 1.1) {
+            smallerIncrement = BigDecimal.ONE.scaleByPowerOfTen(order - 1).multiply(BigDecimal.valueOf(5)).doubleValue();
+        } else if (normalizedIncrement < 2.1) {
+            smallerIncrement = magnitude.doubleValue();
+        } else if (normalizedIncrement < 5.1) {
+            smallerIncrement = magnitude.multiply(BigDecimal.valueOf(2)).doubleValue();
+        } else {
+            smallerIncrement = magnitude.multiply(BigDecimal.valueOf(5)).doubleValue();
+        }
+        
+        return createTicks(minValue, maxValue, smallerIncrement);
     }
     
     /**
