@@ -4,8 +4,7 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.graphene.LineGraphRendererUpdate;
-import org.epics.vtype.VImage;
+import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 
@@ -19,7 +18,7 @@ public class LineGraphPlot extends DesiredRateExpressionImpl<Plot2DResult> {
         super(childExpressions, function, defaultName);
     }
     
-    public void update(LineGraphRendererUpdate update) {
+    public void update(LineGraph2DRendererUpdate update) {
         ((LineGraphFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
     }
 }

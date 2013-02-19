@@ -22,12 +22,12 @@ import org.epics.vtype.ValueUtil;
 class Histogram1DFunction implements ReadFunction<VImage> {
     
     private ReadFunction<? extends List<? extends VNumber>> argument;
-    private Point1DDataset dataset = new Point1DCircularBuffer(1000000);
+    private Point1DCircularBuffer dataset = new Point1DCircularBuffer(1000000);
     private Histogram1D histogram = Histograms.createHistogram(dataset);
-    private Histogram1DRenderer renderer = new Histogram1DRenderer(300, 200);
+    private AreaGraph2DRenderer renderer = new AreaGraph2DRenderer(300, 200);
     private VImage previousImage;
     private List<Histogram1DUpdate> histogramUpdates = Collections.synchronizedList(new ArrayList<Histogram1DUpdate>());
-    private QueueCollector<Histogram1DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
+    private QueueCollector<AreaGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     public Histogram1DFunction(ReadFunction<? extends List<? extends VNumber>> argument) {
         this.argument = argument;
@@ -38,14 +38,14 @@ class Histogram1DFunction implements ReadFunction<VImage> {
         histogramUpdates.add(update);
     }
     
-    public QueueCollector<Histogram1DRendererUpdate> getUpdateQueue() {
+    public QueueCollector<AreaGraph2DRendererUpdate> getUpdateQueue() {
         return rendererUpdateQueue;
     }
 
     @Override
     public VImage readValue() {
         List<? extends VNumber> newData = argument.readValue();
-        List<Histogram1DRendererUpdate> rendererUpdates = rendererUpdateQueue.readValue();
+        List<AreaGraph2DRendererUpdate> rendererUpdates = rendererUpdateQueue.readValue();
         if (newData.isEmpty() && previousImage != null && histogramUpdates.isEmpty() && rendererUpdates.isEmpty())
             return previousImage;
         
@@ -66,7 +66,7 @@ class Histogram1DFunction implements ReadFunction<VImage> {
         histogram.update(new Histogram1DUpdate().recalculateFrom(dataset));
 
         // Process all renderer updates
-        for (Histogram1DRendererUpdate rendererUpdate : rendererUpdates) {
+        for (AreaGraph2DRendererUpdate rendererUpdate : rendererUpdates) {
             renderer.update(rendererUpdate);
         }
         
