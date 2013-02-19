@@ -26,7 +26,7 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
     private static void configure(Line2DPlotWidget widget,
 	    Line2DPlotWidgetModel model, boolean runMode) {
 	if (runMode)
-	    widget.setxPVName(model.getProcessVariable().getName());
+	    widget.setpvName(model.getProcessVariable().getName());
     }
 
     @Override

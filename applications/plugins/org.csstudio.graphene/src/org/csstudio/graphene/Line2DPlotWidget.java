@@ -3,15 +3,10 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
 import static org.epics.util.time.TimeDuration.ofHertz;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -23,7 +18,6 @@ import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -42,12 +36,16 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.graphene.PlotDataRange;
+import org.epics.vtype.VNumberArray;
 
 /**
+ * A simple Line 2D plot which can handle both waveforms and a list of PVs
+ * 
  * @author shroffk
  * 
  */
@@ -59,9 +57,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private boolean showRange;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
-
-    // TODO refactor out to some abstract base class
-    private ProcessVariable processVariable;
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
@@ -169,17 +164,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		}
 	    }
 	});
-
-	this.addPropertyChangeListener(new PropertyChangeListener() {
-
-	    @Override
-	    public void propertyChange(PropertyChangeEvent evt) {
-		// System.out.println(evt.getPropertyName());
-		reconnect();
-
-	    }
-	});
-
     }
 
     @Override
@@ -190,85 +174,25 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     private PVReader<Plot2DResult> pv;
     // Y values
-    private String yPVName;
+    private String pvName;
 
-    private enum YAxis {
-	PVARRAY, WAVEFORM
+    public String getpvName() {
+	return this.pvName;
     }
 
-    private YAxis yOrdering = YAxis.PVARRAY;
-
-    // X values
-    private String xPVName;
-
-    private String offset;
-    private String increment;
-
-    public enum XAxis {
-	INDEX, CHANNELQUERY, OFFSET_INCREMENT
-    }
-
-    private XAxis xOrdering = XAxis.INDEX;
-
-    public void setxOrdering(XAxis xAxis) {
-	this.xOrdering = xAxis;
-	reconnect();
-    }
-
-    public XAxis getxOrdering() {
-	return xOrdering;
-    }
-
-    public String getxPVName() {
-	return xPVName;
-    }
-
-    public void setxPVName(String xPVName) {
-	if (this.xPVName != null && this.xPVName.equals(xPVName)) {
+    public void setpvName(String pvName) {
+	if (this.pvName != null && this.pvName.equals(pvName)) {
 	    return;
 	}
-	this.xPVName = xPVName;
+	this.pvName = pvName;
 	reconnect();
-    }
-
-    public String getyPVName() {
-	return this.yPVName;
-    }
-
-    public void setyPVName(String yPVName) {
-	if (this.yPVName != null && this.yPVName.equals(yPVName)) {
-	    return;
-	}
-	this.yPVName = yPVName;
-	reconnect();
-    }
-
-    public String getOffset() {
-	return offset;
-    }
-
-    public void setOffset(String offset) {
-	if (offset != null && !offset.isEmpty()) {
-	    this.offset = offset;
-	    reconnect();
-	}
-    }
-
-    public String getIncrement() {
-	return increment;
-    }
-
-    public void setIncrement(String increment) {
-	if (increment != null && !increment.isEmpty()) {
-	    this.increment = increment;
-	    reconnect();
-	}
     }
 
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
     }
 
+    @SuppressWarnings("unchecked")
     private void reconnect() {
 	if (pv != null) {
 	    pv.close();
@@ -279,8 +203,11 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    resetRange(yRangeControl);
 	}
 
+	// This part will be handled by pvmanager using formula
+
 	plot = ExpressionLanguage
-		.lineGraphOf(latestValueOf(vNumberArray(getxPVName())));
+		.lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+			.formula(getpvName()));
 	plot.update(new LineGraphRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
@@ -320,60 +247,45 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	control.setRanges(0, 0, 1, 1);
     }
 
-    private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
+    /** Memento tag */
+    private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+
+    public void saveState(IMemento memento) {
+	if (getpvName() != null) {
+	    memento.putString(MEMENTO_PVNAME, getpvName());
+	}
+    }
+
+    public void loadState(IMemento memento) {
+	if (memento != null) {
+	    if (memento.getString(MEMENTO_PVNAME) != null) {
+		setpvName(memento.getString(MEMENTO_PVNAME));
+	    }
+	}
+    }
 
     @Override
     public void addSelectionChangedListener(
 	    final ISelectionChangedListener listener) {
-	PropertyChangeListener propListener = new PropertyChangeListener() {
-	    @Override
-	    public void propertyChange(PropertyChangeEvent event) {
-		if ("processVariable".equals(event.getPropertyName()))
-		    listener.selectionChanged(new SelectionChangedEvent(
-			    Line2DPlotWidget.this, getSelection()));
-	    }
-	};
-	listenerMap.put(listener, propListener);
-	addPropertyChangeListener(propListener);
+
     }
 
     @Override
     public ISelection getSelection() {
-	return new StructuredSelection(getxPVName());
+	if (getpvName() != null) {
+	    return new StructuredSelection(new ProcessVariable(getpvName()));
+	}
+	return null;
     }
 
     @Override
     public void removeSelectionChangedListener(
 	    ISelectionChangedListener listener) {
-	removePropertyChangeListener(listenerMap.remove(listener));
+
     }
 
     @Override
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /** Memento tag */
-    private static final String MEMENTO_XPVNAME = "XPVName"; //$NON-NLS-1$
-    private static final String MEMENTO_YPVNAME = "YPVName"; //$NON-NLS-1$
-
-    public void saveState(IMemento memento) {
-	if (getxPVName() != null) {
-	    memento.putString(MEMENTO_XPVNAME, getxPVName());	    
-	}
-	if (getyPVName() != null) {
-	    memento.putString(MEMENTO_YPVNAME, getyPVName());	    
-	}	
-    }
-
-    public void loadState(IMemento memento) {
-	if (memento != null) {
-	    if (memento.getString(MEMENTO_XPVNAME) != null) {
-		setxPVName(memento.getString(MEMENTO_XPVNAME));
-	    }
-	    if (memento.getString(MEMENTO_YPVNAME) != null) {
-		setyPVName(memento.getString(MEMENTO_YPVNAME));
-	    }
-	}
     }
 }
