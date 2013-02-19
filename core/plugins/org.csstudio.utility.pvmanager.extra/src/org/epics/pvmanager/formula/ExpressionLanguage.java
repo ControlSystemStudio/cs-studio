@@ -83,6 +83,15 @@ public class ExpressionLanguage {
         return op1;
     }
     
+    static <T> DesiredRateExpressionList<T> cast(Class<T> clazz, DesiredRateExpressionList<?> args) {
+        for (DesiredRateExpression<? extends Object> desiredRateExpression : args.getDesiredRateExpressions()) {
+            cast(clazz, desiredRateExpression);
+        }
+        @SuppressWarnings("unchecked")
+        DesiredRateExpressionList<T> op1 = (DesiredRateExpressionList<T>) args;
+        return op1;
+    }
+    
     static String opName(String op, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
         return "(" + arg1.getName() + op + arg2.getName() + ")";
     }
@@ -194,6 +203,9 @@ public class ExpressionLanguage {
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
+        if ("arrayOf".equals(function)) {
+            return org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf(cast(VNumber.class, args));
+        }
         if (args.getDesiredRateExpressions().size() == 1 && oneArgNumericFunction.containsKey(function)) {
             return oneArgNumbericFunction(function, args);
         }
