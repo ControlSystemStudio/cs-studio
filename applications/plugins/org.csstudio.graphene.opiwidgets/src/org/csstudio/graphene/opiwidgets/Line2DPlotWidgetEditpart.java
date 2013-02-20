@@ -25,8 +25,10 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
 
     private static void configure(Line2DPlotWidget widget,
 	    Line2DPlotWidgetModel model, boolean runMode) {
-	if (runMode)
-	    widget.setpvName(model.getProcessVariable().getName());
+	if (runMode) {
+	    widget.setPvName(model.getProcessVariable().getName());
+	    widget.setXPvName(model.getXPvName());
+	}
     }
 
     @Override
@@ -51,6 +53,8 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
 	    }
 	};
 	setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
+	setPropertyChangeHandler(Line2DPlotWidgetModel.PROP_XPVNAME, reconfigure);
+	setPropertyChangeHandler(Line2DPlotWidgetModel.PROP_SHOW_AXIS, reconfigure);
     }
 
 }

@@ -174,19 +174,36 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     }
 
     private PVReader<Plot2DResult> pv;
-    // Y values
-    private String pvName;
 
-    public String getpvName() {
+    private String pvName;
+    private String xPvName;
+
+    public String getXpvName() {
+	return xPvName;
+    }
+
+    public void setXPvName(String xPvName) {
+	if (this.xPvName != null && this.xPvName.equals(xPvName)) {
+	    return;
+	}
+	this.xPvName = xPvName;
+	reconnect();
+    }
+
+    public String getPvName() {
 	return this.pvName;
     }
 
-    public void setpvName(String pvName) {
+    public void setPvName(String pvName) {
 	if (this.pvName != null && this.pvName.equals(pvName)) {
 	    return;
 	}
 	this.pvName = pvName;
 	reconnect();
+    }
+    
+    public void setPvs(String pvName, String xPvName){
+	
     }
 
     private void setLastError(Exception lastException) {
@@ -204,11 +221,22 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    resetRange(yRangeControl);
 	}
 
-	// This part will be handled by pvmanager using formula
+	if (getPvName() == null || getPvName().isEmpty()) {
+	    return;
+	}
 
-	plot = ExpressionLanguage
-		.lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-			.formula(getpvName()));
+	if (getXpvName() != null && !getXpvName().isEmpty()) {
+	    plot = ExpressionLanguage
+		    .lineGraphOf(
+			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				    .formula(getXpvName()),
+			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				    .formula(getPvName()));
+	} else {
+	    plot = ExpressionLanguage
+		    .lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+			    .formula(getPvName()));
+	}
 	plot.update(new LineGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
@@ -252,15 +280,15 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
     public void saveState(IMemento memento) {
-	if (getpvName() != null) {
-	    memento.putString(MEMENTO_PVNAME, getpvName());
+	if (getPvName() != null) {
+	    memento.putString(MEMENTO_PVNAME, getPvName());
 	}
     }
 
     public void loadState(IMemento memento) {
 	if (memento != null) {
 	    if (memento.getString(MEMENTO_PVNAME) != null) {
-		setpvName(memento.getString(MEMENTO_PVNAME));
+		setPvName(memento.getString(MEMENTO_PVNAME));
 	    }
 	}
     }
@@ -273,8 +301,8 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     @Override
     public ISelection getSelection() {
-	if (getpvName() != null) {
-	    return new StructuredSelection(new ProcessVariable(getpvName()));
+	if (getPvName() != null) {
+	    return new StructuredSelection(new ProcessVariable(getPvName()));
 	}
 	return null;
     }

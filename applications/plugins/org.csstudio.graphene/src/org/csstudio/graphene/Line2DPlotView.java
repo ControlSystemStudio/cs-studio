@@ -18,6 +18,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.jface.dialogs.IDialogSettings;
 
 /**
  * @author shroffk
@@ -60,19 +61,21 @@ public class Line2DPlotView extends ViewPart {
     public void saveState(final IMemento memento) {
 	super.saveState(memento);
 	// Save the currently selected variable
-	if (inputBar.getProcessVariable() != null) {
-	    memento.putString(MEMENTO_PVNAME, inputBar.getProcessVariable()
+	if (processVariableInputBar.getProcessVariable() != null) {
+	    memento.putString(MEMENTO_PVNAME, processVariableInputBar.getProcessVariable()
 		    .getName());
 	}
     }
 
     public void setProcessVariable(ProcessVariable processVariable) {
-	inputBar.setProcessVariable(processVariable);
-	line2DPlotWidget.setpvName(processVariable.getName());
+	processVariableInputBar.setProcessVariable(processVariable);
+	line2DPlotWidget.setPvName(processVariable.getName());
     }
 
-    private ProcessVariableInputBar inputBar;
+    private ProcessVariableInputBar processVariableInputBar;
     private Line2DPlotWidget line2DPlotWidget;
+    private Label lblXPvName;
+    private ProcessVariableInputBar xProcessVariableInputBar;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -85,19 +88,43 @@ public class Line2DPlotView extends ViewPart {
 	lblPvName.setLayoutData(fd_lblPvName);
 	lblPvName.setText("PV Name:");
 
-	inputBar = new ProcessVariableInputBar(parent, SWT.NONE, Activator
+	processVariableInputBar = new ProcessVariableInputBar(parent, SWT.NONE, Activator
 		.getDefault().getDialogSettings(), "histogram.query");
 	FormData fd_combo = new FormData();
 	fd_combo.top = new FormAttachment(0, 5);
 	fd_combo.left = new FormAttachment(lblPvName, 6);
 	fd_combo.right = new FormAttachment(100, -5);
-	inputBar.setLayoutData(fd_combo);
-	inputBar.addPropertyChangeListener(new PropertyChangeListener() {
+	processVariableInputBar.setLayoutData(fd_combo);
+	processVariableInputBar.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent event) {
 		if ("processVariable".equals(event.getPropertyName())) {
-		    line2DPlotWidget.setpvName(inputBar.getProcessVariable()
+		    line2DPlotWidget.setPvName(processVariableInputBar.getProcessVariable()
+			    .getName());
+		}
+	    }
+	});
+	
+	lblXPvName = new Label(parent, SWT.NONE);
+	FormData fd_lblXPvName = new FormData();
+	fd_lblXPvName.left = new FormAttachment(0,5);
+	fd_lblXPvName.top = new FormAttachment(processVariableInputBar, 8);
+	lblXPvName.setLayoutData(fd_lblXPvName);
+	lblXPvName.setText("X PV(optional)");
+	
+	xProcessVariableInputBar = new ProcessVariableInputBar(parent, SWT.NONE, (IDialogSettings) null, "histogram.query");
+	FormData fd_processVariableInputBar = new FormData();
+	fd_processVariableInputBar.top = new FormAttachment(processVariableInputBar, 5);
+	fd_processVariableInputBar.left = new FormAttachment(lblXPvName, 5);
+	fd_processVariableInputBar.right = new FormAttachment(100, -5);
+	xProcessVariableInputBar.setLayoutData(fd_processVariableInputBar);
+	xProcessVariableInputBar.addPropertyChangeListener(new PropertyChangeListener() {
+	    
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if ("processVariable".equals(event.getPropertyName())) {
+		    line2DPlotWidget.setXPvName(xProcessVariableInputBar.getProcessVariable()
 			    .getName());
 		}
 	    }
@@ -105,10 +132,10 @@ public class Line2DPlotView extends ViewPart {
 
 	line2DPlotWidget = new Line2DPlotWidget(parent, SWT.NONE);
 	FormData fd_waterfallComposite = new FormData();
+	fd_waterfallComposite.top = new FormAttachment(xProcessVariableInputBar, 5);
 	fd_waterfallComposite.bottom = new FormAttachment(100, -5);
 	fd_waterfallComposite.left = new FormAttachment(0, 5);
-	fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
-	fd_waterfallComposite.right = new FormAttachment(inputBar, 0, SWT.RIGHT);
+	fd_waterfallComposite.right = new FormAttachment(100, -5);
 	line2DPlotWidget.setLayoutData(fd_waterfallComposite);
 
 	if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
@@ -116,8 +143,9 @@ public class Line2DPlotView extends ViewPart {
 		    memento.getString(MEMENTO_PVNAME)));
 	}
 
-	PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
+	PopupMenuUtil.installPopupForView(processVariableInputBar, getSite(), processVariableInputBar);
 	PopupMenuUtil.installPopupForView(line2DPlotWidget, getSite(), line2DPlotWidget);
     }
 
 }
+
