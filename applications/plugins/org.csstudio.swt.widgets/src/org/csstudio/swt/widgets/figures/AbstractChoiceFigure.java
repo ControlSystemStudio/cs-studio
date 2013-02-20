@@ -53,7 +53,7 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 	
 	protected Color selectedColor = ColorConstants.black;
 	
-	private boolean runMode;
+	protected boolean runMode;
 	
 	public AbstractChoiceFigure(boolean runMode) {
 		this.runMode = runMode;

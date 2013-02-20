@@ -32,9 +32,11 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	protected IFigure doCreateFigure() {
-		CheckBoxFigure figure = new CheckBoxFigure();
+		CheckBoxFigure figure = new CheckBoxFigure(getExecutionMode().equals(
+				ExecutionMode.RUN_MODE));
 		figure.setBit(getWidgetModel().getBit());
 		figure.setText(getWidgetModel().getLabel());
+		figure.setSelectedColor(getWidgetModel().getSelectedColor().getSWTColor());
 		figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
 			public void manualValueChanged(double newValue) {
@@ -43,8 +45,6 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		});
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-		figure.setRunMode(getExecutionMode().equals(
-				ExecutionMode.RUN_MODE));
 
 		return figure;
 	}
@@ -132,6 +132,16 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((CheckBoxFigure)figure).setSelectedColor(
+						getWidgetModel().getSelectedColor().getSWTColor());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CheckBoxModel.PROP_SELECTED_COLOR, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,

@@ -9,8 +9,6 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,18 +18,36 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.LabelWidgetIntrospector;
-import org.eclipse.draw2d.Label;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ActionEvent;
+import org.eclipse.draw2d.ActionListener;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Cursors;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FigureUtilities;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.draw2d.MouseMotionListener;
+import org.eclipse.draw2d.Toggle;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 /**
  * Figure for a check box.
  *
  * @author Xihui Chen
  *
  */
-public class CheckBoxFigure extends Label implements Introspectable, ITextFigure{
+public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigure{
+
+
+
+	private static final int BOX_SIZE = 14;
+
+	private static final int GAP = 4;
 
 	protected long value = 0;
 
@@ -39,26 +55,6 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 
 	protected boolean boolValue = false;
 
-	static final Image
-	unChecked = createImage("icons/checkboxenabledoff.gif"), //$NON-NLS-1$
-	checked = createImage("icons/checkboxenabledon.gif"); //$NON-NLS-1$
-
-	private static Image createImage(String name) {
-		InputStream stream = CheckBoxFigure.class.getResourceAsStream(name);
-		Image image = new Image(null, stream);
-		try {
-			stream.close();
-		} catch (IOException ioe) {
-		}
-		return image;
-	}
-
-
-//	private static Image checked = CustomMediaFactory.getInstance().getImageFromPlugin(
-//			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledon.gif");
-//
-//	private static Image unChecked = CustomMediaFactory.getInstance().getImageFromPlugin(
-//			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledoff.gif");
 
 		/**
 	 * Listeners that react on manual boolean value change events.
@@ -67,31 +63,48 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 		new ArrayList<IManualValueChangeListener>();
 
 	private boolean runMode;
+	
+	private String text;
 
-	public CheckBoxFigure() {
-		setIcon(unChecked);
-		setLabelAlignment(PositionConstants.LEFT);
-		addMouseListener(new MouseListener.Stub(){
-			@Override
-			public void mousePressed(MouseEvent me) {
-				if(!runMode)
-					return;
-				if (me.button != 1)
-					return;
-				me.consume();
-			}
+	private Boolean support3d;
 
-			@Override
-			public void mouseReleased(MouseEvent me) {
-				if (me.button != 1)
-					return;
+	private Color selectedColor=ColorConstants.darkGray;;
+
+	public CheckBoxFigure(final boolean runMode) {
+		this.runMode = runMode;
+		final BoxFigure boxFigure = new BoxFigure();
+		setContents(boxFigure);	
+		if(!runMode)
+			setEventHandler(null);
+		else
+			setCursor(Cursors.HAND);
+		addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent event) {
 				if(runMode){
 					fireManualValueChange(!boolValue);
-					requestFocus();
 				}
-
 			}
 		});
+		
+		if (runMode && !Activator.isRAP()){
+			addMouseMotionListener(new MouseMotionListener.Stub() {
+
+				@Override
+				public void mouseEntered(MouseEvent me) {
+					Color backColor = getBackgroundColor();
+					RGB darkColor = GraphicsUtil.mixColors(
+							backColor.getRGB(), new RGB(94, 151, 230), 0.7);
+					boxFigure.setBackgroundColor(CustomMediaFactory.getInstance()
+							.getColor(darkColor));
+				}
+
+				@Override
+				public void mouseExited(MouseEvent me) {
+					boxFigure.setBackgroundColor(getBackgroundColor());
+				}
+			});
+		}
 	}
 
 	/**add a boolean control listener which will be executed when pressed or released
@@ -136,6 +149,10 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 		return boolValue;
 	}
 
+	public Color getSelectedColor() {
+		return selectedColor;
+	}
+	
 	/**
 	 * @return the value
 	 */
@@ -154,6 +171,8 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 	public boolean isRunMode() {
 		return runMode;
 	}
+	
+	
 
 	/**
 	 * @param bit the bit to set
@@ -178,15 +197,12 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 		repaint();
 	}
 
-	/**
-	 * @param runMode the runMode to set
-	 */
-	public void setRunMode(boolean runMode) {
-		if(this.runMode == runMode)
-			return;
-		this.runMode = runMode;
+	
+	public void setSelectedColor(Color selectedColor) {
+		this.selectedColor = selectedColor;
+		repaint();
 	}
-
+	
 	/**
 	 * @param value the value to set
 	 */
@@ -222,15 +238,9 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 				boolValue = (binArray[binArray.length - 1 - bit] == '1');
 			}
 		}
-		updateImage();
+		repaint();
 	}
 
-	private void updateImage() {
-		if(boolValue)
-			setIcon(checked);
-		else
-			setIcon(unChecked);
-	}
 
 	/**
 	 * update the value from boolValue
@@ -268,13 +278,68 @@ public class CheckBoxFigure extends Label implements Introspectable, ITextFigure
 				setValue(Long.parseLong(binString, 2));
 			}
 		}
-		updateImage();
+		repaint();
 	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new LabelWidgetIntrospector().getBeanInfo(this.getClass());
 	}
+	
+	public void setText(String text) {
+		this.text = text;
+		repaint();
+	}
 
+	public String getText() {
+		return text;
+	}
+
+	
+	class BoxFigure extends Figure{
+		@Override
+		protected void paintClientArea(Graphics graphics) {
+			if(support3d == null)
+				support3d = GraphicsUtil.testPatternSupported(graphics);
+			Rectangle clientArea = getClientArea();
+			Rectangle square = new Rectangle(clientArea.x, clientArea.y+clientArea.height/2 - BOX_SIZE/2,
+					BOX_SIZE, BOX_SIZE);
+			graphics.pushState();
+			if(support3d)
+				graphics.setBackgroundPattern(
+					GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
+							square.x, square.y+1, 
+							square.x, square.y+square.height,
+							ColorConstants.white, graphics.getBackgroundColor()));
+			graphics.fillRoundRectangle(square, 4, 4);
+			graphics.setForegroundColor(
+					CustomMediaFactory.getInstance().getColor(130, 130, 130));
+			graphics.drawRoundRectangle(square, 4, 4);
+			
+			if(boolValue){
+				graphics.translate(square.x, square.y);
+				graphics.setLineWidth(3);
+				graphics.setForegroundColor(selectedColor);
+			
+				graphics.drawPolyline(new int[]{
+						3, (int) (BOX_SIZE*0.45),  (int) (BOX_SIZE*0.45), BOX_SIZE*3/4-1, BOX_SIZE-2, 3
+				});
+			}
+			graphics.popState();
+			Dimension textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
+
+			if (!isEnabled()) {
+				graphics.translate(1, 1);
+				graphics.setForegroundColor(ColorConstants.buttonLightest);
+				graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
+				graphics.translate(-1, -1);
+				graphics.setForegroundColor(ColorConstants.buttonDarker);
+			}
+			graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
+
+			super.paintClientArea(graphics);
+			
+		}
+	}
 
 
 }
