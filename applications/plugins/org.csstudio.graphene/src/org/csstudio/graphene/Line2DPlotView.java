@@ -19,6 +19,9 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
@@ -80,7 +83,7 @@ public class Line2DPlotView extends ViewPart {
     @Override
     public void createPartControl(Composite parent) {
 	parent.setLayout(new FormLayout());
-
+	
 	Label lblPvName = new Label(parent, SWT.NONE);
 	FormData fd_lblPvName = new FormData();
 	fd_lblPvName.top = new FormAttachment(0, 8);
@@ -146,6 +149,5 @@ public class Line2DPlotView extends ViewPart {
 	PopupMenuUtil.installPopupForView(processVariableInputBar, getSite(), processVariableInputBar);
 	PopupMenuUtil.installPopupForView(line2DPlotWidget, getSite(), line2DPlotWidget);
     }
-
 }
 

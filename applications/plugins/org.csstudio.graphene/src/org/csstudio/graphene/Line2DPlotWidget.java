@@ -5,6 +5,7 @@ package org.csstudio.graphene;
 
 import static org.epics.util.time.TimeDuration.ofHertz;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -55,7 +56,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private VImageDisplay imageDisplay;
     private LineGraphPlot plot;
     private ErrorBar errorBar;
-    private boolean showRange;
+    private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
@@ -118,6 +119,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		}
 	    }
 	});
+	yRangeControl.setVisible(showAxis);
 
 	imageDisplay = new VImageDisplay(this);
 	FormData fd_imageDisplay = new FormData();
@@ -165,6 +167,23 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		}
 	    }
 	});
+	xRangeControl.setVisible(showAxis);
+
+	addPropertyChangeListener(new PropertyChangeListener() {
+
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if (event.getPropertyName().equals("processVariable")
+			|| event.getPropertyName().equals("xProcessVariable")) {
+		    reconnect();
+		} else if(event.getPropertyName().equals("showAxis")){
+		    xRangeControl.setVisible(showAxis);
+		    yRangeControl.setVisible(showAxis);
+		    redraw();
+		}
+
+	    }
+	});
     }
 
     @Override
@@ -178,16 +197,25 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private String pvName;
     private String xPvName;
 
+    public boolean isShowAxis() {
+	return showAxis;
+    }
+
+    public void setShowAxis(boolean showAxis) {
+	boolean oldValue = this.showAxis;
+	this.showAxis = showAxis;
+	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
+    }
+
     public String getXpvName() {
 	return xPvName;
     }
 
     public void setXPvName(String xPvName) {
-	if (this.xPvName != null && this.xPvName.equals(xPvName)) {
-	    return;
-	}
+	String oldValue = this.xPvName;
 	this.xPvName = xPvName;
-	reconnect();
+	changeSupport.firePropertyChange("xProcessVariable", oldValue,
+		this.xPvName);
     }
 
     public String getPvName() {
@@ -195,15 +223,14 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     }
 
     public void setPvName(String pvName) {
-	if (this.pvName != null && this.pvName.equals(pvName)) {
-	    return;
-	}
+	String oldValue = this.pvName;
 	this.pvName = pvName;
-	reconnect();
+	changeSupport.firePropertyChange("processVariable", oldValue,
+		this.pvName);
     }
-    
-    public void setPvs(String pvName, String xPvName){
-	
+
+    public void setPvs(String pvName, String xPvName) {
+
     }
 
     private void setLastError(Exception lastException) {

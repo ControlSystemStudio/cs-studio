@@ -28,6 +28,7 @@ public class Line2DPlotWidgetEditpart extends AbstractWidgetEditPart {
 	if (runMode) {
 	    widget.setPvName(model.getProcessVariable().getName());
 	    widget.setXPvName(model.getXPvName());
+	    widget.setShowAxis(model.getShowAxis());
 	}
     }
 
