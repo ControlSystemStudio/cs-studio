@@ -44,6 +44,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -243,6 +244,9 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             }
         });
         
+        // Default traversal gets confused because text boxes interleave the radio buttons
+        group.setTabList(new Control[] { start, sel_times, end, use_plot_times, source_plot, source_raw, source_opt, optimize, source_lin, linear });
+        
         // Ghost label to fill the last column
         l = new Label(group, 0);
         l.setLayoutData(new GridData());
@@ -266,6 +270,8 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         type_matlab = new Button(box, SWT.RADIO);
         type_matlab.setText(Messages.ExportTypeMatlab);
         type_matlab.setToolTipText(Messages.ExportTypeMatlabTT);
+
+        box.setTabList(new Control[] { type_spreadsheet, type_matlab });
 
         // [x] Tabular [x] ... with min/max column [x] ... with Severity/Status
         box = new Composite(group, 0);
@@ -306,6 +312,8 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         format_digits.setText(Messages.ExportDefaultDigits);
         format_digits.setToolTipText(Messages.ExportDigitsTT);
         format_digits.setEnabled(false);
+
+        box.setTabList(new Control[] { format_default, format_decimal, format_expo, format_digits });
 
         l = new Label(box, 0);
         l.setText(Messages.ExportDigits);
