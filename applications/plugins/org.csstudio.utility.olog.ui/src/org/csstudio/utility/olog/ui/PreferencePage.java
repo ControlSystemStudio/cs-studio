@@ -11,7 +11,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-
 public class PreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
@@ -48,28 +47,35 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 				"username:", getFieldEditorParent());
 		addField(usernameField);
 		passwordField = new PasswordFieldEditor(PreferenceConstants.Password,
-				"user password:", getFieldEditorParent(), org.csstudio.utility.olog.Activator.PLUGIN_ID);
+				"user password:", getFieldEditorParent(),
+				org.csstudio.utility.olog.Activator.PLUGIN_ID);
 		addField(passwordField);
 		enableAuthenticationFields();
 	}
-	
+
 	public void enableAuthenticationFields() {
 		boolean useAuthentication = useAuthenticationField.getBooleanValue();
 		usernameField.setEnabled(useAuthentication, getFieldEditorParent());
 		passwordField.setEnabled(useAuthentication, getFieldEditorParent());
 	}
-	
+
 	@Override
 	protected void initialize() {
 		super.initialize();
 	}
-	
-	// TODO (shroffk) better checking for enabling the username and password fields.
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);
 		enableAuthenticationFields();
 	}
-	
+
+	@Override
+	public void setVisible(boolean visible) {
+		// Override it to enable/disable user and password field depending on
+		// useAuthenticationField
+		super.setVisible(visible);
+		enableAuthenticationFields();
+	}
 
 }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EI010401.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.374488in"
+		height="0.374611in" viewBox="0 0 26.9632 26.972" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719999}
+		.st2 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719999}
+		.st3 {fill:none}
+		.st4 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719999}
+		.st5 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group1-1" transform="translate(0.719999,-0.740146)" v:mID="1" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="guid" v:prompt="" v:val="VT4({81B256AD-CC27-472D-A250-464AA1D599D2})"/>
+				<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({81B256AD-CC27-472D-A250-464AA1D599D2})"/>
+				<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+				<v:ud v:nameU="Xpo_Guid" v:prompt="" v:val="VT4({81B256AD-CC27-472D-A250-464AA1D599D2})"/>
+			</v:userDefs>
+			<title>SV_GROUP</title>
+			<g id="group2-2" v:mID="2" v:groupContext="group">
+				<v:userDefs>
+					<v:ud v:nameU="guid" v:prompt="" v:val="VT4({D10834FF-DA8C-4446-8CB4-C2AB9A6BF153})"/>
+					<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({D10834FF-DA8C-4446-8CB4-C2AB9A6BF153})"/>
+					<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+					<v:ud v:nameU="Xpo_Guid" v:prompt="" v:val="VT4({D10834FF-DA8C-4446-8CB4-C2AB9A6BF153})"/>
+				</v:userDefs>
+				<title>SV_GROUP</title>
+				<g id="shape3-3" v:mID="3" v:groupContext="shape">
+					<title>Feuille.3</title>
+					<v:userDefs>
+						<v:ud v:nameU="guid" v:prompt="" v:val="VT4({C5C75957-132C-463A-B1D7-87C97F19A03C})"/>
+						<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({C5C75957-132C-463A-B1D7-87C97F19A03C})"/>
+						<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+					</v:userDefs>
+					<rect x="0" y="1.46025" width="25.5118" height="25.5118" class="st1"/>
+				</g>
+				<g id="shape4-5" v:mID="4" v:groupContext="shape" transform="translate(0,-0.0019)">
+					<title>Feuille.4</title>
+					<v:userDefs>
+						<v:ud v:nameU="guid" v:prompt="" v:val="VT4({973B6E1D-11B5-4B62-9E5E-1FBA50995F5D})"/>
+						<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({973B6E1D-11B5-4B62-9E5E-1FBA50995F5D})"/>
+						<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+					</v:userDefs>
+					<path d="M25.51 14.22 L12.76 26.97 L0 14.22 L12.76 1.46 L25.51 14.22 Z" class="st2"/>
+				</g>
+			</g>
+			<g id="shape5-7" v:mID="5" v:groupContext="shape" transform="translate(0,-12.7578)">
+				<title>Feuille.5</title>
+				<v:userDefs>
+					<v:ud v:nameU="guid" v:prompt="" v:val="VT4({DFCA2FB8-5075-4B68-AC9C-7626BB345E9E})"/>
+					<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({DFCA2FB8-5075-4B68-AC9C-7626BB345E9E})"/>
+					<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+				</v:userDefs>
+				<path d="M0 26.97 L25.51 26.97 L0 26.97 Z" class="st3"/>
+				<path d="M0 26.97 L25.51 26.97" class="st4"/>
+			</g>
+		</g>
+		<g id="group6-10" transform="translate(0.731345,-0.72)" v:mID="6" v:groupContext="group">
+			<title>format_img</title>
+			<g id="shape7-11" v:mID="7" v:groupContext="shape" transform="translate(0,-25.4959)">
+				<title>point1</title>
+				<rect x="0" y="26.9561" width="0.0159449" height="0.0159449" class="st5"/>
+			</g>
+			<g id="shape8-13" v:mID="8" v:groupContext="shape" transform="translate(25.4959,0)">
+				<title>point2</title>
+				<rect x="0" y="26.9561" width="0.0159449" height="0.0159449" class="st5"/>
+			</g>
+		</g>
+	</g>
+</svg>

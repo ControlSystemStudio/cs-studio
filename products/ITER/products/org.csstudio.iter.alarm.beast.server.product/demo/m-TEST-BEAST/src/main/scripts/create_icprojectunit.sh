@@ -53,13 +53,16 @@ cd m-TEST-BEAST
 execCmd mvn iter:newapp -Dapp=SharedTemplate -Dtype=sddconf
 execCmd mvn iter:newapp -Dapp=TEST -Dtype=sddconf
 execCmd mvn iter:newapp -Dapp=TEST-BST0 -Dtype=sddconf
+execCmd mvn iter:newapp -Dapp=TEST-BST1 -Dtype=sddconf
 
 execCmd mvn iter:newioc -Dioc=TEST-BST0-PSH0CORE -Dtype=generic  -Dapp=TEST-BST0
 execCmd mvn iter:newioc -Dioc=TEST-BST0-PSH0SYSM -Dtype=generic  -Dapp=TEST-BST0
+execCmd mvn iter:newioc -Dioc=TEST-BST1-PSH0CORE -Dtype=generic  -Dapp=TEST-BST1
+execCmd mvn iter:newioc -Dioc=TEST-BST1-PSH0SYSM -Dtype=generic  -Dapp=TEST-BST1
 
-execCmd mvn iter:include -Dtype=beast -Dconfiguration=TEST-BST0-beast.xml
+execCmd mvn iter:include -Dtype=beast -Dconfiguration=TEST-beast.xml
 
-execCmd mvn iter:include -Dtype=beauty -Dconfiguration=TEST-BST0-beauty.xml
+execCmd mvn iter:include -Dtype=beauty -Dconfiguration=TEST-beauty.xml
 
 execCmd cp -r "${UNITBASEDIR}/src" .
 

@@ -1,47 +1,51 @@
 record(bi, TEST-BOY1:BIx$(IOC)$(COUNT))
 {
-	field(PINI, "YES")
-	field(OSV, "NO_ALARM")
 	field(ONAM, "ON")
+	field(PINI, "YES")
 	field(INP, "TEST-BOY1:RNDM-BIx$(IOC)$(COUNT)")
+	field(DESC, "Control Station ON/OFF")
+	field(OSV, "NO_ALARM")
+	field(archivingSamplingFrequency, "0.0")
+	field(ZNAM, "OFF")
 	field(SCAN, "$(SCAN)")
 	field(ZSV, "MAJOR")
-	field(ZNAM, "OFF")
-	field(DESC, "Control Station ON/OFF")
 }
 
 record(mbbi, TEST-BOY1:MBBIx$(IOC)$(COUNT))
 {
-	field(ZRSV, "MAJOR")
-	field(THST, "Initialising")
-	field(ONST, "NotReady")
-	field(TWVL, "2")
-	field(INP, "TEST-BOY1:RNDM-MBBIx$(IOC)$(COUNT)")
-	field(DESC, "Switch State")
 	field(TWSV, "NO_ALARM")
+	field(THST, "Initialising")
+	field(ONVL, "1")
+	field(archivingSamplingFrequency, "0.0")
 	field(THVL, "3")
+	field(ZRSV, "MAJOR")
+	field(DESC, "Switch State")
 	field(ZRVL, "0")
+	field(SCAN, "$(SCAN)")
 	field(TWST, "Ready")
 	field(THSV, "NO_ALARM")
-	field(ONSV, "MINOR")
-	field(ONVL, "1")
-	field(SCAN, "$(SCAN)")
 	field(ZRST, "Off")
+	field(TWVL, "2")
+	field(ONST, "NotReady")
+	field(ONSV, "MINOR")
+	field(INP, "TEST-BOY1:RNDM-MBBIx$(IOC)$(COUNT)")
 }
 
 record(calc, TEST-BOY1:RNDM-BIx$(IOC)$(COUNT))
 {
-	field(CALC, "2*RNDM")
 	field(SCAN, "$(SCAN)")
-	field(DESC, "Random bi")
 	field(EGU, "TBD")
+	field(archivingSamplingFrequency, "0.0")
+	field(CALC, "2*RNDM")
+	field(DESC, "Random bi")
 }
 
 record(calc, TEST-BOY1:RNDM-MBBIx$(IOC)$(COUNT))
 {
-	field(DESC, "Random mbbi")
+	field(archivingSamplingFrequency, "0.0")
 	field(SCAN, "$(SCAN)")
-	field(EGU, "TBD")
+	field(DESC, "Random mbbi")
 	field(CALC, "3*RNDM")
+	field(EGU, "TBD")
 }
 
