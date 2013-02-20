@@ -9,10 +9,16 @@ import java.util.Map;
 import org.csstudio.opibuilder.datadefinition.DataType;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.epics.util.array.CollectionNumbers;
+import org.epics.util.array.ListByte;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListLong;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListShort;
 import org.epics.vtype.Array;
 import org.epics.vtype.Display;
+import org.epics.vtype.MultiScalar;
 import org.epics.vtype.Scalar;
 import org.epics.vtype.VByte;
 import org.epics.vtype.VByteArray;
@@ -24,6 +30,7 @@ import org.epics.vtype.VFloat;
 import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VInt;
 import org.epics.vtype.VIntArray;
+import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VShort;
 import org.epics.vtype.VShortArray;
@@ -62,6 +69,10 @@ public class PVManagerHelper{
 		
 	}
 	
+	/**Get the data type of a single VType value.
+	 * @param obj The PV Manager VType value.
+	 * @return the data type.
+	 */
 	public static DataType getDataType(Object obj){
 		Class<?> typeClass = ValueUtil.typeOf(obj);
 		if(typeClass == VByte.class)
@@ -95,6 +106,47 @@ public class PVManagerHelper{
 			return DataType.STRING_ARRAY;	
 		
 		return DataType.UNKNOWN;
+	}
+	
+	
+	/**Get the original number value of the VType object without casting. 
+	 * If it is an array, return the first element.
+	 * @param obj the VType object value.
+	 * @return the number or null if it is not a Number.
+	 */
+	@SuppressWarnings("rawtypes")
+	public static Number getNumber(Object obj) {
+		if (obj instanceof VNumber) {
+			return ((VNumber) obj).getValue();
+		} else if (obj instanceof VEnum) {
+			return ((VEnum) obj).getIndex();
+		} else if (obj instanceof VNumberArray) {
+			ListNumber data = ((VNumberArray) obj).getData();
+			if (data != null && data.size() != 0) {
+				if (data instanceof ListByte)
+					return data.getByte(0);
+				if (data instanceof ListDouble)
+					return data.getDouble(0);
+				if (data instanceof ListFloat)
+					return data.getFloat(0);
+				if (data instanceof ListInt)
+					return data.getInt(0);
+				if (data instanceof ListLong)
+					return data.getLong(0);
+				if (data instanceof ListShort)
+					return data.getShort(0);
+			}
+		} else if (obj instanceof VEnumArray) {
+			ListNumber data = ((VEnumArray) obj).getIndexes();
+			if (data != null && data.size() != 0) {
+				return data.getInt(0);
+			}
+		} else if (obj instanceof MultiScalar) {
+			List values = ((MultiScalar) obj).getValues();
+			if (!values.isEmpty())
+				return getNumber(values.get(0));
+		}
+		return null;
 	}
 	
 	/**Get size of the PVManager object value.
