@@ -802,7 +802,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 * @param handler
 	 *            the property change handler
 	 */
-	protected final void setPropertyChangeHandler(final String propertyId,
+	public final void setPropertyChangeHandler(final String propertyId,
 			final IWidgetPropertyChangeHandler handler) {
 		WidgetPropertyChangeListener listener = propertyListenerMap
 				.get(propertyId);

@@ -135,8 +135,7 @@ public class DisplayModel extends AbstractContainerModel {
 	
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON,
 				"Show Close Button", WidgetPropertyCategory.Display, true));
-		Version version = OPIBuilderPlugin.getDefault().getBundle()
-				.getVersion();
+		Version version = new Version(0, 0, 0);
 		addProperty(new VersionProperty(PROP_BOY_VERSION, "BOY Version",
 				WidgetPropertyCategory.Basic, version.toString()));
 		

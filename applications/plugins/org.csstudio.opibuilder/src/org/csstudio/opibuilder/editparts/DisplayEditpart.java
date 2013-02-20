@@ -39,7 +39,6 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IActionFilter;
 
 /**The editpart for the root display.
  * @author Sven Wende (class of same name in SDS)
@@ -306,19 +305,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		figure.repaint();
 	}
 	
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if(key == IActionFilter.class)
-			return new IActionFilter(){
 
-				public boolean testAttribute(Object target, String name,
-						String value) {
-					return false;
-				}
-			
-		};
-		return super.getAdapter(key);
-	}
 	
 	@Override
 	public EditPart getWidget(String name) throws Exception {

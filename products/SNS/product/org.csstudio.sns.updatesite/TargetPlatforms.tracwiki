@@ -4,33 +4,36 @@
 Recent Linux and Windows users tend to have 64-bit-only versions of Java, so they need
 the 64 bit products.
 
-For OS X, the JVM can support both 32 and 64 bit.
+Oracle Java 7 for Mac OS X is 64 bit.
 
 == Mac OS X ==
-{{{os=macosx, ws=carbon, arch=x86}}} works for Mac OS X 10.5 and 10.6.
+Started out with {{{os=macosx, ws=carbon, arch=x86}}} for Mac OS X 10.5 and 10.6.
 
-{{{ws=cocoa}}} gives a slightly different look and might be better in the long term because carbon is
-an older underlying API.
+Then switched to {{{ws=cocoa}}}.
 
-With OS 10.6 the default Java changed from 1.5 to 1.6, also defaulting to 64 bit mode.
-After an OS update there can be problems because the original target platform in the IDE was
-set to x86 for Java 1.5.
-There will be an error
+Eventually, CSS source code updates required Java 7.
+The Eclipse 3.7.2 target launcher, however, does not work with Oracle Java 7.
+Options {{{-vm /path/to/jdk1.7/bin/java}}} have no effect.
+
+Need to start CSS like this:
 {{{
- Cannot load 64-bit SWT libraries on 32-bit JVM
+java -showversion -XX:MaxPermSize=256m -Xms1024m -Xmx1024m -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Xdock:icon=css.app/Contents/Resources/css.icns -Dosgi.requiredJavaVersion=1.7 -jar plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar
 }}}
 
-SWT for cocoa has two different, specific versions for x86 and x86_64.
-Since the IDE now actually launches the products in 64 bit mode, but the platform
-is still set to 32 bit, the 32 bit SWT library for cocoa won't load.
+See also http://stackoverflow.com/questions/10352715/how-do-i-run-eclipse-using-oracles-new-1-7-jdk-for-the-mac
 
-A quick fix is the addition of a command-line argument
-{{{
- -vmargs -d32
-}}}
+== Update from P2 Repository ==
+When supporting self-updates from a P2 repository, assert that products will not attempt to update
+from for example {{{os=macosx, ws=carbon}}} to {{{ws=cocoa}}}.
+The result would be:
 
-A better fix is to configure the Eclipse Preferences, Plugin Development, Target Platform to use {{{cocoa}}} and {{{x86_64}}}.
+ 1. Update, running on {{{ws=carbon}}}, removes/disables the old carbon artefacts.
+ 2. Update then refuses to install the new {{{ws=cocoa}}} artefacts, because it's running as {{{ws=carbon}}}, so the update does not apply.
+ 3. Result is a defunct setup.
 
-The headless build can still create products for {{{macosx,cocoa,x86}}}.
-When executed, the Java 6 JVM will run in 32 bit mode for them.
 
+To guard against this, add specific filters to the product plugin, for example 
+{{{(| (osgi.ws=win32)(osgi.ws=cocoa)(osgi.ws=gtk))}}}
+which prevent installation of this 'latest' product into an existing {{{ws=carbon}}} setup.
+
+Users will have to download the new product ZIP file, they cannot use self-update.

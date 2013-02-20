@@ -70,6 +70,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.osgi.framework.Version;
 
 /**The abstract base model for display and all widgets .
  *@author Alexander Will, Sven Wende, Stefan Hofer (similar class of SDS)
@@ -225,6 +226,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	private Dimension originSize;
 
 	private Point originLocation;
+
+	private Version versionOnFile;
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -550,8 +553,20 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public abstract String getTypeID();
 	
-	public String getVersion() {
-		return VERSION;
+	/**
+	 * @return version of this widget model.
+	 */
+	public Version getVersion() {
+		return new Version(1, 0, 0);
+	}
+	
+	/**
+	 * @return version read from opi file.
+	 */
+	public Version getVersionOnFile(){
+		if(versionOnFile == null) 
+			return getVersion();
+		return versionOnFile;
 	}
 	
 	public String getWidgetType(){
@@ -661,6 +676,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 			originLocation = getLocation();
 		}
 		return originLocation;
+	}
+	
+	/**
+	 * Make necessary adjustment for widget compatibility between different versions.
+	 */
+	public void processVersionDifference(){
+		
 	}
 	
 	public WidgetScaleData getScaleOptions(){
@@ -844,6 +866,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public void setParent(AbstractContainerModel parent) {
 		this.parent = parent;
+	}
+	
+	/**Set the widget version read from opi file.
+	 * @param versionOnFile
+	 */
+	public void setVersionOnFile(Version versionOnFile) {
+		this.versionOnFile = versionOnFile;
 	}
 
 	/**

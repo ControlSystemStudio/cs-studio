@@ -3,13 +3,10 @@
 # Kay Kasemir
 
 # Version to build
-
 export VERSION=3.2.0I
 
-export PATH=/Library/Java/JavaVirtualMachines/1.6.0_23-b05-318.jdk/Contents/Home/bin:$PATH
-
 # Must use Java 7
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_13.jdk/Contents/Home
 
 if [ ! -d $JAVA_HOME/Classes ]
 then
@@ -29,8 +26,8 @@ export WORKSPACE=/Kram/Eclipse/Workspace_cs-studio_4.2
 
 # Location of Eclipse and Delta pack, the 'target' platform
 export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
-# Deltapack can list several sites: delta pack;SVN support;...
-export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/site-1.6.18"
+# Deltapack can list several sites: delta pack;PyDev;...
+export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/PyDev2.6.0"
 export ECLIPSE=$ECLIPSE_BASE/eclipse
 
 export JRE_Macosx64=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/jre

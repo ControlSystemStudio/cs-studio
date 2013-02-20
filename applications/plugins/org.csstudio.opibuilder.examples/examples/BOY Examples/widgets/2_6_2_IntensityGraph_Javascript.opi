@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-3c52</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.2.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c50</wuid>
@@ -74,7 +74,7 @@ with Javascript</text>
     <tooltip></tooltip>
     <x>5</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c4f</wuid>
@@ -115,7 +115,7 @@ with Javascript</text>
     <tooltip></tooltip>
     <x>299</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c4e</wuid>
@@ -156,12 +156,13 @@ with Javascript</text>
     <tooltip></tooltip>
     <x>299</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <y_axis_scale_font>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </y_axis_scale_font>
     <visible>true</visible>
+    <rgb_mode>false</rgb_mode>
     <x_axis_axis_title>X Axis</x_axis_axis_title>
     <scripts>
       <path pathString="../scripts/SetIntensityGraphData.js" checkConnect="true" sfe="false" seoe="false">
@@ -171,14 +172,16 @@ with Javascript</text>
     </scripts>
     <height>311</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <single_line_profiling>false</single_line_profiling>
     <y_axis_maximum>100.0</y_axis_maximum>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <color_depth>0</color_depth>
     <enabled>true</enabled>
     <widget_type>Intensity Graph</widget_type>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>371</width>
     <color_map>
@@ -189,6 +192,9 @@ with Javascript</text>
     <border_style>0</border_style>
     <vertical_profile_y_pv_name>loc://vpy</vertical_profile_y_pv_name>
     <x_axis_minimum>0.0</x_axis_minimum>
+    <roi_color>
+      <color red="0" green="255" blue="255" />
+    </roi_color>
     <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
     <pv_value />
     <crop_bottom>0</crop_bottom>
@@ -202,7 +208,7 @@ with Javascript</text>
     <horizon_profile_x_pv_value />
     <y_axis_visible>true</y_axis_visible>
     <crop_left>0</crop_left>
-    <graph_area_width>274</graph_area_width>
+    <graph_area_width>264</graph_area_width>
     <minimum>-1.0</minimum>
     <vertial_profile_x_pv_value />
     <data_height>256</data_height>
@@ -241,7 +247,7 @@ with Javascript</text>
     <vertial_profile_y_pv_value />
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <crop_top>0</crop_top>
-    <graph_area_height>265</graph_area_height>
+    <graph_area_height>266</graph_area_height>
     <rules>
       <rule name="SelectColorMap" prop_id="color_map" out_exp="true">
         <exp bool_exp="true">
@@ -261,12 +267,12 @@ with Javascript</text>
     <x>258</x>
     <tooltip>$(pv_name)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c4b</wuid>
     <scripts />
-    <height>27</height>
+    <height>31</height>
     <name>ColorMapSelector</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -310,7 +316,7 @@ with Javascript</text>
 $(pv_value)</tooltip>
     <x>643</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c4a</wuid>
@@ -351,12 +357,12 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>643</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c49</wuid>
     <scripts />
-    <height>27</height>
+    <height>31</height>
     <name>Combo Box_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -396,7 +402,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     <x>643</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c48</wuid>
@@ -437,7 +443,7 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>643</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0.0">
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
     </trace_0_trace_color>
@@ -556,7 +562,7 @@ $(pv_value)</tooltip>
     </axis_1_grid_color>
     <trace_0_update_delay>100</trace_0_update_delay>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0.0">
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
     </trace_0_trace_color>
@@ -675,7 +681,7 @@ $(pv_value)</tooltip>
     </axis_1_grid_color>
     <trace_0_update_delay>100</trace_0_update_delay>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>0</vertical_alignment>
     <wuid>553ac269:135b01240d5:-3c45</wuid>
@@ -704,7 +710,7 @@ In Run Mode, dragging mouse on graph area will zoom in. &#xD;
 Double clicking will return to original states.&#xD;
 The text tip right below the cursor is (X, Y, Value)</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>154</width>
     <border_style>1</border_style>
@@ -720,12 +726,13 @@ The text tip right below the cursor is (X, Y, Value)</text>
     <tooltip></tooltip>
     <x>643</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>66d1507f:138820a85e5:-7d3f</wuid>
     <scripts />
     <height>38</height>
+    <style>1</style>
     <name>Action Button_3</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -734,14 +741,18 @@ The text tip right below the cursor is (X, Y, Value)</text>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
@@ -768,12 +779,13 @@ The text tip right below the cursor is (X, Y, Value)</text>
 $(pv_value)</tooltip>
     <x>10</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>66d1507f:138820a85e5:-7d3a</wuid>
     <scripts />
     <height>28</height>
+    <style>1</style>
     <name>Action Button_2</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -782,14 +794,18 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>
@@ -817,12 +833,13 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     <x>615</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <wuid>66d1507f:138820a85e5:-7d27</wuid>
     <scripts />
     <height>28</height>
+    <style>1</style>
     <name>Action Button_2</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -831,14 +848,18 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Next</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>

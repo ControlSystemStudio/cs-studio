@@ -237,10 +237,15 @@ public class PreferencesHelper {
      * @return typeId of widgets that should be hidden from palette.
      * @throws Exception
      */
-    public static String[] getHiddenWidgets(){
+    public static String[] getHiddenWidgets(){    	
     	String rawString = getString(HIDDEN_WIDGETS);
+    	
     	if(rawString == null || rawString.trim().isEmpty())
-    		return null;
+    		rawString = "";
+    	else rawString = "|"+rawString;    	
+    	//a hack to hide deprecated native button widget
+    	rawString = "org.csstudio.opibuilder.widgets.NativeButton"+ rawString; //$NON-NLS-1$
+    				
     	try {
 			return StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
 		} catch (Exception e) {

@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.display.pace.gui.GUI;
@@ -243,7 +246,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             {
                 @Override
                 public void save(final String user, final String password,
-                        final String logbook, final String title, final String body) throws Exception
+                        final Collection<String> logbooks, final String title, final String body) throws Exception
                 {
                     // The whole elog-and-pv-update should be handled
                     // as a transaction that either succeeds or fails
@@ -274,9 +277,12 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 
                     try
                     {   // Then make elog entry.
+                        final List<LogbookBuilder> books = new ArrayList<>();
+                        for (String logbook : logbooks)
+                            books.add(LogbookBuilder.logbook(logbook));
                         final LogEntry entry = LogEntryBuilder
                                 .withText(title + "\n" + body) //$NON-NLS-1$
-                                .addLogbook(LogbookBuilder.logbook(logbook))
+                                .setLogbooks(books)
                                 .build();
                         client.createLogEntry(entry);
                         model.clearUserValues();

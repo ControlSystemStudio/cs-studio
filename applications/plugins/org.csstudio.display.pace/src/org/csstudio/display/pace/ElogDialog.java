@@ -7,15 +7,19 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.ui.util.widgets.MultiSelectionCombo;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -32,7 +36,7 @@ public abstract class ElogDialog extends Dialog
     private String body;
     private Text txt_user;
     private Text txt_password;
-    private Combo cmb_logbook;
+    private MultiSelectionCombo<String> cmb_logbook;
     private Text txt_title;
     private Text txt_body;
 
@@ -90,7 +94,7 @@ public abstract class ElogDialog extends Dialog
         l.setText(Messages.Logbook);
         l.setLayoutData(new GridData());
         
-        cmb_logbook = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+        cmb_logbook = new MultiSelectionCombo<>(composite, 0);
         cmb_logbook.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
         l = new Label(composite, 0);
@@ -110,15 +114,17 @@ public abstract class ElogDialog extends Dialog
         
         try
         {
-            LogbookClient client = LogbookClientManager.getLogbookClientFactory().getClient();
-            for (Logbook book : client.listLogbooks())
-                cmb_logbook.add(book.getName());
+            final LogbookClient client = LogbookClientManager.getLogbookClientFactory().getClient();
+            final List<String> names = new ArrayList<>();
+            for (Logbook logbook : client.listLogbooks())
+                names.add(logbook.getName());
+            cmb_logbook.setItems(names);
         }
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(getShell(), Messages.SaveError, ex);
         }
-        cmb_logbook.setText(logbook);
+        cmb_logbook.setSelection(logbook);
         
         txt_body.setText(body);
         
@@ -133,7 +139,7 @@ public abstract class ElogDialog extends Dialog
         {
             save(txt_user.getText(),
                  txt_password.getText(),
-                 cmb_logbook.getText(),
+                 cmb_logbook.getSelection(),
                  txt_title.getText(),
                  txt_body.getText());
         }
@@ -153,5 +159,5 @@ public abstract class ElogDialog extends Dialog
      *  @param body
      *  @throws Exception on error
      */
-    abstract public void save(String user, String password, String logbook, String title, String body) throws Exception;
+    abstract public void save(String user, String password, Collection<String> logbooks, String title, String body) throws Exception;
 }

@@ -71,7 +71,7 @@ public class XMLUtil {
 		Element result = new Element((widgetModel instanceof DisplayModel) ? XMLTAG_DISPLAY :
 			(widgetModel instanceof ConnectionModel) ? XMLTAG_CONNECTION : XMLTAG_WIDGET);
 		result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
-		result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion());
+		result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion().toString());
 		for(String propId : widgetModel.getAllPropertyIDs()){
 			if(widgetModel.getProperty(propId).isSavable()){
 				Element propElement = new Element(propId);
@@ -260,6 +260,8 @@ public class XMLUtil {
 			return null;
 		}
 		
+		String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
+		rootWidgetModel.setVersionOnFile(Version.parseVersion(versionOnFile));
 		//fill root widget model
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();
@@ -293,6 +295,9 @@ public class XMLUtil {
 				}				
 			}
 		}
+		
+		rootWidgetModel.processVersionDifference();
+		
 		return rootWidgetModel;
 	}
 	

@@ -2,7 +2,9 @@ package org.csstudio.opibuilder.editparts;
 
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.csstudio.data.values.ISeverity;
@@ -576,12 +578,13 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	public String[] getAllPVNames() {
 		if(editpart.getWidgetModel().getPVMap().isEmpty())
 			 return new String[]{""}; //$NON-NLS-1$
-		String[] result = new String[editpart.getWidgetModel().getPVMap().size()];
-		int i=0;
+		Set<String> result = new HashSet<String>();
+
 		for(StringProperty sp : editpart.getWidgetModel().getPVMap().keySet()){
-			result[i++] = (String) sp.getPropertyValue();
+			if(sp.isVisibleInPropSheet() && !((String)sp.getPropertyValue()).trim().isEmpty())
+				result.add((String) sp.getPropertyValue());
 		}
-		return result;
+		return result.toArray(new String[result.size()]);
 	}
 
 

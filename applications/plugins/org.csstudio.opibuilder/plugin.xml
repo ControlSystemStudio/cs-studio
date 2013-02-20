@@ -194,7 +194,7 @@
                id="org.csstudio.opibuilder.showMacrosAction"
                label="Show Macros"
                menubarPath="org.eclipse.gef.group.edit"
-               tooltip="Show detail infomation of PV">
+               tooltip="Show macros on selected widget">
          </action>
       </objectContribution>
       <objectContribution
@@ -212,6 +212,25 @@
             <objectState
                   name="executionMode"
                   value="EDIT_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.dumpPVList"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.DumpPVListAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.DumpPVListAction"
+               label="Dump PV List"
+               menubarPath="org.eclipse.gef.group.edit"
+               tooltip="Dump all PVs in the OPI.">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="RUN_MODE">
             </objectState>
          </visibility>
       </objectContribution>
@@ -267,6 +286,9 @@
             class="org.csstudio.opibuilder.editparts.PVWidgetAdapterFactory">
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
          </adapter>
       </factory>
    </extension>

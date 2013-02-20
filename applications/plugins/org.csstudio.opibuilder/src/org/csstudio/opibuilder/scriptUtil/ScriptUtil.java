@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.osgi.framework.Version;
 
 /**
  * The utility class to facilitate BOY script programming.
@@ -181,5 +182,10 @@ public class ScriptUtil {
 	public final static boolean isMobile(AbstractBaseEditPart widget){
 		return OPIBuilderPlugin.isMobile(widget.getViewer().getControl().getDisplay());
 	}
+	
+	public final static Version getBOYVersion(){
+		return OPIBuilderPlugin.getDefault().getBundle().getVersion();
+	}
+	
 	
 }

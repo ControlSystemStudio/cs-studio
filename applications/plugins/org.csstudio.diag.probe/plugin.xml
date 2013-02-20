@@ -34,15 +34,11 @@
             allPopups="false"
             locationURI="menu:diag">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="org.csstudio.diag.probe.OpenProbe"
                icon="icons/probe.gif"
                label="%Probe"
                style="push"
                tooltip="%MenuTooltip">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.diag.probe.Probe">
-            </parameter>
          </command>
       </menuContribution>
       <menuContribution

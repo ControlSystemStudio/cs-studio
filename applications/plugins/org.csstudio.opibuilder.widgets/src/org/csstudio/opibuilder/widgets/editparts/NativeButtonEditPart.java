@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Button;
 /**
  * EditPart controller for the Native Button widget. 
  * @author Xihui Chen
- * 
+ * @deprecated This is not used anymore since the native button is merged to action button.
  */
 public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 	  

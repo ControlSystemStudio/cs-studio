@@ -20,6 +20,7 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.ActionButtonIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -48,6 +49,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A re-written action button figure which can pass mouse event state to action listener.
@@ -142,7 +144,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 
 		if(runMode){
 			hookEventHandler(new ButtonEventHandler());
-			label.setCursor(Cursors.HAND);
+			label.setCursor(Cursors.HAND);	
 		}
 	}
 
@@ -725,6 +727,21 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			setMousePressed(false);
 
 			me.consume();
+		}
+		
+		@Override
+		public void mouseEntered(MouseEvent me) {
+				Color backColor = label.getBackgroundColor();
+				RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
+						new RGB(255, 255, 255), 0.5);
+				label.setBackgroundColor(CustomMediaFactory.getInstance()
+						.getColor(darkColor));
+		}
+
+		@Override
+		public void mouseExited(MouseEvent me) {
+				label.setBackgroundColor(getBackgroundColor());
+			
 		}
 
 	}

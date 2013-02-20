@@ -21,11 +21,12 @@
             id="org.csstudio">
       </category>
       <view
-            name="%PVTree"
-            icon="icons/pvtree.png"
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.diag.epics.pvtree.PVTreeView"
-            id="org.csstudio.diag.epics.pvtree.PVTreeView">
+            icon="icons/pvtree.png"
+            id="org.csstudio.diag.epics.pvtree.PVTreeView"
+            name="%PVTree">
       </view>
    </extension>
    <extension
@@ -42,15 +43,11 @@
             allPopups="false"
             locationURI="menu:diag">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="org.csstudio.diag.epics.pvtree.OpenPVTree"
                icon="icons/pvtree.png"
                label="%PVTree"
                style="push"
                tooltip="%PVTree_TT">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.diag.epics.pvtree.PVTreeView">
-            </parameter>
          </command>
       </menuContribution>
       <menuContribution

@@ -19,8 +19,6 @@ public enum MajorCategories {
 	
 	CONTROLS("Controls"),
 	
-	NATIVE_WIDGETS("Native Widgets"),
-	
 	OTHERS("Others");
 	
 	private String description;

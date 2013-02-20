@@ -6,7 +6,11 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.diag.pvmanager.probe.messages"; //$NON-NLS-1$
 
-	public static String Probe_alarmLabelText;
+	public static String MultipleInstancesFmt;
+
+    public static String MultipleInstancesTitle;
+
+    public static String Probe_alarmLabelText;
 
 	public static String Probe_infoButtonToolTipText;
 

@@ -10,17 +10,10 @@
       </category>
       <view
             allowMultiple="true"
-            class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
-            icon="icons/probe-16.png"
-            id="org.csstudio.diag.pvmanager.probe.MultipleView"
-            name="Probe - New instance">
-      </view>
-      <view
-            allowMultiple="false"
             category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
             icon="icons/probe-16.png"
-            id="org.csstudio.diag.pvmanager.probe.SingleView"
+            id="org.csstudio.diag.pvmanager.probe"
             name="Probe">
       </view>
    </extension>
@@ -31,11 +24,6 @@
             id="org.csstudio.diag.pvmanager.probe.OpenProbe"
             name="Probe">
       </command>
-      <command
-            defaultHandler="org.csstudio.diag.pvmanager.probe.CreateNewProbe"
-            id="org.csstudio.diag.pvmanager.probe.createNewProbe"
-            name="New Probe...">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -43,14 +31,10 @@
             allPopups="false"
             locationURI="menu:diag">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
                icon="icons/probe-16.png"
                label="Probe"
                style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.diag.pvmanager.probe.SingleView">
-            </parameter>
          </command>
       </menuContribution>
       <menuContribution
@@ -64,13 +48,16 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.csstudio.diag.pvmanager.probe.SingleView">
-         <command
-               commandId="org.csstudio.diag.pvmanager.probe.createNewProbe"
-               icon="icons/probe-add-16.png"
-               label="New Probe..."
-               style="push">
-         </command>
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.csstudio.diag.pvmanager.probe.toolbar">
+            <command
+                  commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
+                  icon="icons/probe-add-16.png"
+                  label="New Probe..."
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension

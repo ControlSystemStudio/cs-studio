@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -18,6 +19,7 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Version;
 
 /**
  * An action button widget model.
@@ -27,6 +29,35 @@ import org.eclipse.core.runtime.Path;
  * 
  */
 public class ActionButtonModel extends AbstractPVWidgetModel implements ITextModel{
+	public enum Style{
+		CLASSIC("Classic"), //$NON-NLS-1$
+		NATIVE("Native");//$NON-NLS-1$
+		
+		private String description;
+		private Style(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(Style f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
+	
+	/**
+	 * Button Style
+	 */
+	public static final String PROP_STYLE = "style"; //$NON-NLS-1$
+	
 	/**
 	 * Text on the button.
 	 */
@@ -102,6 +133,10 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	 */
 	@Override
 	protected void configureProperties() {
+		
+		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Display,
+				Style.stringValues(), Style.NATIVE.ordinal()));
+		
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "$(actions)", true)); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
@@ -121,15 +156,24 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 				WidgetPropertyCategory.Behavior, false));
 		
 		
-//		removeProperty(PROP_BORDER_COLOR);
-//		removeProperty(PROP_BORDER_STYLE);
-//		removeProperty(PROP_BORDER_WIDTH);
-//		removeProperty(PROP_BORDER_ALARMSENSITIVE);
 		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON);
 		
 	}
 	
 	
+	@Override
+	public void processVersionDifference() {		
+		//There was no style property before 2.0.0
+		if(getVersionOnFile().getMajor() <2){			
+			// convert native button widget to native style		
+			if (getWidgetType().equals("Button")){ //$NON-NLS-N$
+				setStyle(Style.NATIVE);
+				setPropertyValue(PROP_WIDGET_TYPE, "Action Button");
+			}
+			else
+				setStyle(Style.CLASSIC);			
+		}		
+	}
 	
 
 	/**
@@ -181,4 +225,18 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	public boolean isToggleButton(){
 	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
+	
+	public Style getStyle(){
+		return Style.values()[(Integer)getProperty(PROP_STYLE).getPropertyValue()];
+	}
+	
+	@Override
+	public Version getVersion() {
+		return new Version(2, 0, 0);
+	}
+	
+	public void setStyle(Style style){
+		setPropertyValue(PROP_STYLE, style.ordinal());
+	}
+	
 }

@@ -178,7 +178,7 @@
             category="Controls"
             description="A button which can execute an action when clicked."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ActionButtonEditPart"
-            icon="icons/actionbutton.gif"
+            icon="icons/nativeButton2.png"
             model_class="org.csstudio.opibuilder.widgets.model.ActionButtonModel"
             name="Action Button"
             typeId="org.csstudio.opibuilder.widgets.ActionButton">
@@ -301,25 +301,25 @@
             typeId="org.csstudio.opibuilder.widgets.choiceButton">
       </widget>
       <widget
-            category="Native Widgets"
-            description="A native button which can execute an action when clicked."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeButtonEditPart"
+            category="Controls"
+            description="Will ge hidden from Palette."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ActionButtonEditPart"
             icon="icons/nativeButton2.png"
-            model_class="org.csstudio.opibuilder.widgets.model.NativeButtonModel"
-            name="Button"
+            model_class="org.csstudio.opibuilder.widgets.model.ActionButtonModel"
+            name="Button (Deprecated)"
             typeId="org.csstudio.opibuilder.widgets.NativeButton">
       </widget>
       <widget
-            category="Native Widgets"
+            category="Controls"
             description="A native text widget which can be use as label, text update or text input."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeTextEditpart"
             icon="icons/nativeText.gif"
             model_class="org.csstudio.opibuilder.widgets.model.NativeTextModel"
-            name="Text"
+            name="Native Text"
             typeId="org.csstudio.opibuilder.widgets.NativeText">
       </widget>
       <widget
-            category="Native Widgets"
+            category="Controls"
             description="A combo box which can write string or integer to PV based on its items property."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ComboEditPart"
             icon="icons/combo.gif"
@@ -328,7 +328,7 @@
             typeId="org.csstudio.opibuilder.widgets.combo">
       </widget>
       <widget
-            category="Native Widgets"
+            category="Others"
             description="A table widget which works like a spread sheet."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TableEditPart"
             icon="icons/table.gif"
@@ -337,7 +337,7 @@
             typeId="org.csstudio.opibuilder.widgets.table">
       </widget>
       <widget
-            category="Native Widgets"
+            category="Others"
             description="A widget that allows embedding webpage in OPI. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
             icon="icons/web_browser.png"
@@ -425,10 +425,17 @@
                tooltip="Resize the widget to fill its parent.">
          </action>
          <visibility>
-            <objectState
-                  name="executionMode"
-                  value="EDIT_MODE">
-            </objectState>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="EDIT_MODE">
+               </objectState>
+               <not>
+                  <objectClass
+                        name="org.csstudio.opibuilder.editparts.DisplayEditpart">
+                  </objectClass>
+               </not>
+            </and>
          </visibility>
       </objectContribution>
       <objectContribution

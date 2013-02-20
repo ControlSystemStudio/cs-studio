@@ -40,7 +40,9 @@ public class ELog
 	private static final String DEFAULT_BADGE_NUMBER = "999992"; //$NON-NLS-1$
 	final private String badge_number;
 	
-	final private List<ELogCategory> categories;
+	private static List<ELogbook> logbooks = null;
+	
+	private static List<ELogCategory> categories = null;
 
 	/** Initialize
 	 *  @param url 	RDB URL
@@ -54,7 +56,14 @@ public class ELog
 	    this.rdb = RDBUtil.connect(url, user, password, false);
 		badge_number = getBadgeNumber(user);
 		MAX_TEXT_SIZE = getMaxContentLength();
-		categories = readCategories();
+		// Only initialize logbooks and categories once per JVM
+		synchronized (ELog.class)
+        {
+            if (logbooks == null)
+                logbooks = readLogbooks();
+            if (categories == null)
+                categories = readCategories();
+        }
 	}
 
 	/** Get the badge number for the user in the connection dictionary
@@ -65,10 +74,11 @@ public class ELog
 	 */
 	private String getBadgeNumber(final String user) throws Exception
 	{ 
-	    final PreparedStatement statement = rdb.getConnection()
-               .prepareStatement(
-                       "select bn from OPER.EMPLOYEE_V where user_id=?");
 	    try
+	    (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+               "SELECT bn FROM OPER.EMPLOYEE_V WHERE user_id=?");
+	    )
 	    {
 	        // OPER.EMPLOYEE_V seems to only keep uppercase user_id entries
 	        statement.setString(1, user.trim().toUpperCase());
@@ -81,10 +91,6 @@ public class ELog
 	                return badge;
 	        }
 	        // No error, but also not found: fall through
-	    }
-	    finally
-	    {
-	        statement.close();
 	    }
 	    return DEFAULT_BADGE_NUMBER;
 	}
@@ -103,30 +109,51 @@ public class ELog
         return max_elog_text;
     }
     
-    /** List available logbooks
-     *  @return List of known logbooks
+    /** Read available logbooks from RDB
+     *  @return Available logbooks
      *  @throws Exception on error
      */
-    public List<String> getLogbooks() throws Exception
+    private List<ELogbook> readLogbooks() throws Exception
     {
-        final List<String> logbooks = new ArrayList<>();
-        final Statement statement = rdb.getConnection().createStatement();
+        final List<ELogbook> logbooks = new ArrayList<>();
+        
         try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "SELECT logbook_nm, logbook_id FROM LOGBOOK.logbook_v");
+        )
         {
-            final ResultSet result = statement.executeQuery(
-                    "SELECT oper_grp_nm FROM oper.oper_grp " +
-                    "WHERE elog_ind='Y' ORDER BY oper_grp_nm");
+            final ResultSet result = statement.executeQuery();
             while (result.next())
-                logbooks.add(result.getString(1));
-            result.close();
-        }
-        finally
-        {
-            statement.close();
+                logbooks.add(new ELogbook(result.getString(1), result.getString(2)));
         }
         return logbooks;
     }
     
+    /** Locate logbook by name
+     *  @param name Name of logbook
+     *  @return {@link ELogbook}
+     *  @throws Exception if no known logbook for that name
+     */
+    private ELogbook findLogbook(final String name) throws Exception
+    {
+        for (ELogbook logbook : logbooks)
+            if (logbook.getName().equals(name))
+                return logbook;
+        throw new Exception("Unknown logbook '" + name + "'");
+    }
+
+    /** List available logbooks
+     *  @return List of known logbooks
+     */
+    public List<String> getLogbooks()
+    {
+        final List<String> books = new ArrayList<>(logbooks.size());
+        for (ELogbook logbook : logbooks)
+            books.add(logbook.getName());
+        return books;
+    }
+
     /** Read available logbook categories from RDB
      *  @return Available categories
      *  @throws Exception on error
@@ -134,17 +161,15 @@ public class ELog
     private List<ELogCategory> readCategories() throws Exception
     {
         final List<ELogCategory> tags = new ArrayList<>();
-        final Statement statement = rdb.getConnection().createStatement();
         try
+        (
+            final Statement statement = rdb.getConnection().createStatement();
+        )
         {
             final ResultSet result = statement.executeQuery(
                     "SELECT cat_id, cat_nm FROM logbook.log_categories_v");
             while (result.next())
                 tags.add(new ELogCategory(result.getString(1), result.getString(2)));
-        }
-        finally
-        {
-            statement.close();
         }
         return tags;
     }
@@ -167,14 +192,16 @@ public class ELog
         final Date date;
         final String title;
         final String text;
-        PreparedStatement statement = rdb.getConnection().prepareStatement(
-            "SELECT e.log_entry_id, d.pref_first_nm, d.pref_last_nm," +
-            "  e.orig_post, e.title, e.content " +
-            " FROM LOGBOOK.log_entry e" +
-            " LEFT JOIN oper.employee_v d ON d.bn = e.bn" +
-            " WHERE (e.pub_stat_id = 'P' OR e.pub_stat_id IS NULL)" +
-            " AND e.log_entry_id = ?");
         try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "SELECT e.log_entry_id, d.pref_first_nm, d.pref_last_nm," +
+                "  e.orig_post, e.title, e.content " +
+                " FROM LOGBOOK.log_entry e" +
+                " LEFT JOIN oper.employee_v d ON d.bn = e.bn" +
+                " WHERE (e.pub_stat_id = 'P' OR e.pub_stat_id IS NULL)" +
+                " AND e.log_entry_id = ?");
+        )
         {
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
@@ -184,10 +211,6 @@ public class ELog
             date = result.getDate(4);
             title = result.getString(5);
             text = result.getString(6);
-        }
-        finally
-        {
-            statement.close();
         }
 
         final List<String> logbooks = getLogbooks(entry_id);
@@ -208,22 +231,20 @@ public class ELog
 	private List<String> getLogbooks(final long entry_id) throws Exception
     {
 	    final List<String> logbooks = new ArrayList<>();
-	    final PreparedStatement statement = rdb.getConnection().prepareStatement(
-            "SELECT b.logbook_nm" +
-            " FROM LOGBOOK.entry_logbook e" +
-            " JOIN LOGBOOK.logbook_v b ON e.logbook_id = b.logbook_id" +
-            " AND e.log_entry_id = ?");
-        try
+	    try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "SELECT b.logbook_nm" +
+                " FROM LOGBOOK.entry_logbook e" +
+                " JOIN LOGBOOK.logbook_v b ON e.logbook_id = b.logbook_id" +
+                " AND e.log_entry_id = ?");
+        )
         {
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
             while (result.next())
                 logbooks.add(result.getString(1));
             result.close();
-        }
-        finally
-        {
-            statement.close();
         }
         return logbooks;
     }
@@ -235,22 +256,20 @@ public class ELog
 	private List<ELogCategory> getCategories(final long entry_id) throws Exception
 	{
 	    final List<ELogCategory> logbooks = new ArrayList<>();
-	    final PreparedStatement statement = rdb.getConnection().prepareStatement(
-            "SELECT e.cat_id, c.cat_nm" +
-            " FROM LOGBOOK.log_categories_v c" +
-            " JOIN LOGBOOK.LOG_ENTRY_CATEGORIES e ON e.cat_id = c.cat_id" +
-            " AND e.log_entry_id = ?");
         try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "SELECT e.cat_id, c.cat_nm" +
+                " FROM LOGBOOK.log_categories_v c" +
+                " JOIN LOGBOOK.LOG_ENTRY_CATEGORIES e ON e.cat_id = c.cat_id" +
+                " AND e.log_entry_id = ?");
+        )
         {
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
             while (result.next())
                 logbooks.add(new ELogCategory(result.getString(1), result.getString(2)));
             result.close();
-        }
-        finally
-        {
-            statement.close();
         }
         return logbooks;
 	}
@@ -301,12 +320,11 @@ public class ELog
 	private long createBasicEntry(final String logbook, final String title, final String text)
 	        throws Exception
 	{
-		// Initiate the multi-file sql and retrieve the entry_id
-		final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
-		        + "(?, ?, ?, ?, ?, ?)";
-		final CallableStatement statement = rdb.getConnection().prepareCall(
-		        mysql);
 		try
+		(
+	        final CallableStatement statement = rdb.getConnection().prepareCall(
+                "call logbook.logbook_pkg.insert_logbook_entry(?, ?, ?, ?, ?, ?)");
+        )
 		{
 			statement.setString(1, badge_number);
 			statement.setString(2, logbook);
@@ -316,10 +334,6 @@ public class ELog
 			statement.registerOutParameter(6, OracleTypes.NUMBER);
 			statement.executeQuery();
 			return statement.getLong(6);
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 
@@ -373,6 +387,28 @@ public class ELog
         return fetchLongResult(statement);
 	}
 
+	/** Add another logbook reference to existing entry.
+     *
+     *  @param entry_id ID of entry to which to add a logbook reference
+     *  @param logbook_name Name of the logbook where this entry should also appear
+     *  @throws Exception on error
+     */
+    public void addLogbook(final long entry_id, final String logbook_name) throws Exception
+    {
+        final ELogbook logbook = findLogbook(logbook_name);
+        final Connection connection = rdb.getConnection();
+        try
+        (
+            final PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO LOGBOOK.ENTRY_LOGBOOK(log_entry_id, logbook_id) VALUES(?,?)");
+        )
+        {
+            statement.setLong(1, entry_id);
+            statement.setString(2, logbook.getId());
+            statement.executeUpdate();
+        }
+    }
+	
 	/** Determine the type of attachment, based on file extension, and add it
      *  to the elog entry with the entry_id.
      *
@@ -412,9 +448,11 @@ public class ELog
     	
     	// Submit to RDB
     	final Connection connection = rdb.getConnection();
-    	final CallableStatement statement = connection.prepareCall(
-            "call logbook.logbook_pkg.add_entry_attachment(?, ?, ?, ?, ?)");
     	try
+    	(
+	        final CallableStatement statement = connection.prepareCall(
+                "call logbook.logbook_pkg.add_entry_attachment(?, ?, ?, ?, ?)");
+        )
     	{
     		statement.setLong(1, entry_id);
     		statement.setString(2, is_image ? "I" : "A");
@@ -422,10 +460,6 @@ public class ELog
     		statement.setLong(4, fileTypeID);
     		statement.setBinaryStream(5, new ByteArrayInputStream(data));
     		statement.executeQuery();
-    	}
-    	finally
-    	{
-    		statement.close();
     	}
     	
     	return new ELogAttachment(is_image, fname, caption, data);
@@ -440,13 +474,15 @@ public class ELog
     {
         final List<ELogAttachment> images = new ArrayList<>();
         final Connection connection = rdb.getConnection();
-        final PreparedStatement statement = connection.prepareStatement(
-            "SELECT e.image_id, i.image_nm, t.image_type_nm, i.image_data" +
-            " FROM LOGBOOK.LOG_ENTRY_IMAGE e" +
-            " JOIN LOGBOOK.IMAGE i ON e.image_id = i.image_id" +
-            " JOIN LOGBOOK.IMAGE_TYPE t ON i.image_type_id = t.image_type_id" +
-            " WHERE log_entry_id=?");
         try
+        (
+            final PreparedStatement statement = connection.prepareStatement(
+                "SELECT e.image_id, i.image_nm, t.image_type_nm, i.image_data" +
+                        " FROM LOGBOOK.LOG_ENTRY_IMAGE e" +
+                        " JOIN LOGBOOK.IMAGE i ON e.image_id = i.image_id" +
+                        " JOIN LOGBOOK.IMAGE_TYPE t ON i.image_type_id = t.image_type_id" +
+                " WHERE log_entry_id=?");
+        )
         {
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
@@ -458,10 +494,6 @@ public class ELog
                 final byte[] data = blob.getBytes(1, (int) blob.length());
                 images.add(new ELogAttachment(true, name, type, data));
             }
-        }
-        finally
-        {
-            statement.close();
         }
         return images;
     }
@@ -475,13 +507,15 @@ public class ELog
     {
         final List<ELogAttachment> attachments = new ArrayList<>();
         final Connection connection = rdb.getConnection();
-        final PreparedStatement statement = connection.prepareStatement(
-            "SELECT e.attachment_id, a.attachment_nm, t.attachment_type_nm, a.attachment_data, t.file_extension" +
-            " FROM LOGBOOK.LOG_ENTRY_ATTACHMENT e" +
-            " JOIN LOGBOOK.ATTACHMENT a ON e.attachment_id = a.attachment_id" +
-            " JOIN LOGBOOK.ATTACHMENT_TYPE t ON a.attachment_type_id = t.attachment_type_id" +
-            " WHERE log_entry_id=?");
         try
+        (
+            final PreparedStatement statement = connection.prepareStatement(
+                "SELECT e.attachment_id, a.attachment_nm, t.attachment_type_nm, a.attachment_data, t.file_extension" +
+                        " FROM LOGBOOK.LOG_ENTRY_ATTACHMENT e" +
+                        " JOIN LOGBOOK.ATTACHMENT a ON e.attachment_id = a.attachment_id" +
+                        " JOIN LOGBOOK.ATTACHMENT_TYPE t ON a.attachment_type_id = t.attachment_type_id" +
+                " WHERE log_entry_id=?");
+        )
         {
             statement.setLong(1, entry_id);
             final ResultSet result = statement.executeQuery();
@@ -493,10 +527,6 @@ public class ELog
                 final byte[] data = blob.getBytes(1, (int) blob.length());
                 attachments.add(new ELogAttachment(false, name, type, data));
             }
-        }
-        finally
-        {
-            statement.close();
         }
         return attachments;
     }
@@ -510,18 +540,16 @@ public class ELog
     {
         final String tag_id = getTagID(category_name);
         final Connection connection = rdb.getConnection();
-        final PreparedStatement statement = connection.prepareStatement(
-            "INSERT INTO LOGBOOK.LOG_ENTRY_CATEGORIES(LOG_ENTRY_ID, CAT_ID)" +
-            " VALUES(?, ?)");
         try
+        (
+            final PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO LOGBOOK.LOG_ENTRY_CATEGORIES(LOG_ENTRY_ID, CAT_ID)" +
+                " VALUES(?, ?)");
+        )
         {
             statement.setLong(1, entry_id);
             statement.setString(2, tag_id);
             statement.executeUpdate();
-        }
-        finally
-        {
-            statement.close();
         }
     }
     

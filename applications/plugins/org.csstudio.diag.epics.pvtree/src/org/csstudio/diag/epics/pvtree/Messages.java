@@ -13,6 +13,10 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.diag.epics.pvtree.messages"; //$NON-NLS-1$
 
+    public static String ManyPVConfirmFmt;
+
+    public static String ManyPVs;
+
     public static String PV;
     public static String PV_Label;
     public static String PV_TT;

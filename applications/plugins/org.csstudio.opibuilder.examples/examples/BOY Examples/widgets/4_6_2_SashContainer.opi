@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-49f9</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.2.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
     <sash_style>0</sash_style>
     <macros>
       <include_parent_macros>true</include_parent_macros>
@@ -60,14 +60,14 @@
     <widget_type>Sash Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>800</width>
     <sash_position>0.2475</sash_position>
     <border_style>0</border_style>
     <rules />
-    <horizontal>true</horizontal>
     <border_width>1</border_width>
+    <horizontal>true</horizontal>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -75,7 +75,7 @@
     <y>0</y>
     <tooltip></tooltip>
     <x>0</x>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -91,16 +91,16 @@
       </scale_options>
       <transparent>true</transparent>
       <show_scrollbar>true</show_scrollbar>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <widget_type>Grouping Container</widget_type>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>197</width>
       <border_style>0</border_style>
@@ -110,11 +110,11 @@
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>0</y>
-      <tooltip></tooltip>
+      <actions hook="false" hook_all="false" />
       <x>0</x>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -130,16 +130,16 @@
         </scale_options>
         <transparent>true</transparent>
         <show_scrollbar>true</show_scrollbar>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
-        <widget_type>Grouping Container</widget_type>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
         <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
         <font>
-          <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>197</width>
         <border_style>14</border_style>
@@ -149,16 +149,17 @@
         <border_color>
           <color red="240" green="240" blue="240" />
         </border_color>
-        <actions hook="false" hook_all="false" />
         <y>0</y>
-        <tooltip></tooltip>
+        <actions hook="false" hook_all="false" />
         <x>0</x>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+        <tooltip></tooltip>
+        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>66d1507f:138820a85e5:-79c6</wuid>
           <scripts />
           <height>38</height>
+          <style>1</style>
           <name>Action Button_3</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <scale_options>
@@ -167,14 +168,18 @@
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
           <pv_name></pv_name>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <foreground_color>
             <color red="0" green="0" blue="128" />
           </foreground_color>
-          <widget_type>Button</widget_type>
+          <widget_type>Action Button</widget_type>
           <enabled>true</enabled>
           <text>Go Home</text>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>116</width>
           <border_style>0</border_style>
@@ -201,12 +206,13 @@
 $(pv_value)</tooltip>
           <x>31</x>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
           <visible>true</visible>
           <wuid>66d1507f:138820a85e5:-7114</wuid>
           <scripts />
           <height>38</height>
+          <style>1</style>
           <name>Action Button_1</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <scale_options>
@@ -215,14 +221,18 @@ $(pv_value)</tooltip>
             <keep_wh_ratio>false</keep_wh_ratio>
           </scale_options>
           <pv_name></pv_name>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <foreground_color>
             <color red="0" green="0" blue="128" />
           </foreground_color>
           <widget_type>Action Button</widget_type>
           <enabled>true</enabled>
           <text>Back</text>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <font>
-            <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>116</width>
           <border_style>0</border_style>
@@ -252,7 +262,7 @@ $(pv_value)</tooltip>
         </widget>
       </widget>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
@@ -268,16 +278,16 @@ $(pv_value)</tooltip>
       </scale_options>
       <transparent>true</transparent>
       <show_scrollbar>true</show_scrollbar>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <widget_type>Grouping Container</widget_type>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
       <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>600</width>
       <border_style>0</border_style>
@@ -287,11 +297,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>0</y>
-      <tooltip></tooltip>
+      <actions hook="false" hook_all="false" />
       <x>199</x>
-      <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0">
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
         <sash_style>0</sash_style>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -319,14 +329,14 @@ $(pv_value)</tooltip>
         <widget_type>Sash Container</widget_type>
         <enabled>true</enabled>
         <font>
-          <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
         </font>
         <width>600</width>
         <sash_position>0.20166666666666666</sash_position>
         <border_style>0</border_style>
         <rules />
-        <horizontal>false</horizontal>
         <border_width>1</border_width>
+        <horizontal>false</horizontal>
         <border_color>
           <color red="0" green="128" blue="255" />
         </border_color>
@@ -334,7 +344,7 @@ $(pv_value)</tooltip>
         <y>0</y>
         <tooltip></tooltip>
         <x>0</x>
-        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -350,16 +360,16 @@ $(pv_value)</tooltip>
           </scale_options>
           <transparent>true</transparent>
           <show_scrollbar>true</show_scrollbar>
-          <background_color>
-            <color red="240" green="240" blue="240" />
-          </background_color>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
-          <widget_type>Grouping Container</widget_type>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>600</width>
           <border_style>0</border_style>
@@ -369,11 +379,11 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <actions hook="false" hook_all="false" />
           <y>0</y>
-          <tooltip></tooltip>
+          <actions hook="false" hook_all="false" />
           <x>0</x>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -389,16 +399,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>600</width>
             <border_style>14</border_style>
@@ -408,11 +418,11 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="240" green="240" blue="240" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>0</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>0</x>
-            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+            <tooltip></tooltip>
+            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
               </macros>
@@ -428,16 +438,16 @@ $(pv_value)</tooltip>
               </scale_options>
               <transparent>false</transparent>
               <show_scrollbar>false</show_scrollbar>
-              <background_color>
-                <color red="240" green="240" blue="240" />
-              </background_color>
               <foreground_color>
                 <color red="192" green="192" blue="192" />
               </foreground_color>
-              <widget_type>Grouping Container</widget_type>
+              <background_color>
+                <color red="240" green="240" blue="240" />
+              </background_color>
               <enabled>true</enabled>
+              <widget_type>Grouping Container</widget_type>
               <font>
-                <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
               </font>
               <width>518</width>
               <border_style>0</border_style>
@@ -447,11 +457,11 @@ $(pv_value)</tooltip>
               <border_color>
                 <color red="0" green="128" blue="255" />
               </border_color>
-              <actions hook="false" hook_all="false" />
               <y>8</y>
-              <tooltip></tooltip>
+              <actions hook="false" hook_all="false" />
               <x>34</x>
-              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+              <tooltip></tooltip>
+              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                 <visible>true</visible>
                 <vertical_alignment>1</vertical_alignment>
                 <wuid>553ac269:135b01240d5:-49f7</wuid>
@@ -492,7 +502,7 @@ $(pv_value)</tooltip>
                 <tooltip></tooltip>
                 <x>0</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                 <visible>true</visible>
                 <vertical_alignment>1</vertical_alignment>
                 <wuid>553ac269:135b01240d5:-49f6</wuid>
@@ -533,7 +543,7 @@ $(pv_value)</tooltip>
                 <tooltip></tooltip>
                 <x>235</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                 <visible>true</visible>
                 <vertical_alignment>1</vertical_alignment>
                 <wuid>553ac269:135b01240d5:-49f5</wuid>
@@ -577,7 +587,7 @@ $(pv_value)</tooltip>
             </widget>
           </widget>
         </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -593,16 +603,16 @@ $(pv_value)</tooltip>
           </scale_options>
           <transparent>true</transparent>
           <show_scrollbar>true</show_scrollbar>
-          <background_color>
-            <color red="240" green="240" blue="240" />
-          </background_color>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
-          <widget_type>Grouping Container</widget_type>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
           <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>600</width>
           <border_style>0</border_style>
@@ -612,11 +622,11 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <actions hook="false" hook_all="false" />
           <y>122</y>
-          <tooltip></tooltip>
+          <actions hook="false" hook_all="false" />
           <x>0</x>
-          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
             <macros>
               <include_parent_macros>true</include_parent_macros>
             </macros>
@@ -632,16 +642,16 @@ $(pv_value)</tooltip>
             </scale_options>
             <transparent>true</transparent>
             <show_scrollbar>true</show_scrollbar>
-            <background_color>
-              <color red="240" green="240" blue="240" />
-            </background_color>
             <foreground_color>
               <color red="192" green="192" blue="192" />
             </foreground_color>
-            <widget_type>Grouping Container</widget_type>
+            <background_color>
+              <color red="240" green="240" blue="240" />
+            </background_color>
             <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>600</width>
             <border_style>14</border_style>
@@ -651,11 +661,11 @@ $(pv_value)</tooltip>
             <border_color>
               <color red="240" green="240" blue="240" />
             </border_color>
-            <actions hook="false" hook_all="false" />
             <y>0</y>
-            <tooltip></tooltip>
+            <actions hook="false" hook_all="false" />
             <x>0</x>
-            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+            <tooltip></tooltip>
+            <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
               <macros>
                 <include_parent_macros>true</include_parent_macros>
               </macros>
@@ -671,16 +681,16 @@ $(pv_value)</tooltip>
               </scale_options>
               <transparent>true</transparent>
               <show_scrollbar>false</show_scrollbar>
-              <background_color>
-                <color red="240" green="240" blue="240" />
-              </background_color>
               <foreground_color>
                 <color red="192" green="192" blue="192" />
               </foreground_color>
-              <widget_type>Grouping Container</widget_type>
+              <background_color>
+                <color red="240" green="240" blue="240" />
+              </background_color>
               <enabled>true</enabled>
+              <widget_type>Grouping Container</widget_type>
               <font>
-                <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
               </font>
               <width>185</width>
               <border_style>0</border_style>
@@ -690,6 +700,7 @@ $(pv_value)</tooltip>
               <border_color>
                 <color red="0" green="128" blue="255" />
               </border_color>
+              <y>263</y>
               <actions hook="true" hook_all="false">
                 <action type="EXECUTE_JAVASCRIPT">
                   <path>../scripts/openHelp.js</path>
@@ -699,10 +710,9 @@ $(pv_value)</tooltip>
                   <description>Open Help</description>
                 </action>
               </actions>
-              <y>263</y>
-              <tooltip></tooltip>
               <x>183</x>
-              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+              <tooltip></tooltip>
+              <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                 <visible>true</visible>
                 <vertical_alignment>1</vertical_alignment>
                 <wuid>553ac269:135b01240d5:-49df</wuid>
@@ -743,7 +753,7 @@ $(pv_value)</tooltip>
                 <tooltip></tooltip>
                 <x>41</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0.0">
                 <border_alarm_sensitive>false</border_alarm_sensitive>
                 <fill_arrow>true</fill_arrow>
                 <arrow_length>20</arrow_length>
@@ -779,7 +789,7 @@ $(pv_value)</tooltip>
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>120</width>
                 <line_style>0</line_style>
@@ -798,7 +808,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
                 <x>49</x>
               </widget>
-              <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+              <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
                 <crop_right>0</crop_right>
                 <crop_left>0</crop_left>
                 <visible>true</visible>
@@ -822,14 +832,27 @@ $(pv_value)</tooltip>
                 <widget_type>Image</widget_type>
                 <enabled>true</enabled>
                 <font>
-                  <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>42</width>
                 <no_animation>false</no_animation>
+                <flip_horizontal>false</flip_horizontal>
+                <permutation_matrix>
+                  <row>
+                    <col>1.0</col>
+                    <col>0.0</col>
+                  </row>
+                  <row>
+                    <col>0.0</col>
+                    <col>1.0</col>
+                  </row>
+                </permutation_matrix>
                 <crop_top>0</crop_top>
                 <border_style>0</border_style>
                 <rules />
+                <flip_vertical>false</flip_vertical>
                 <crop_bottom>0</crop_bottom>
+                <degree>0</degree>
                 <border_width>1</border_width>
                 <image_file>../pictures/onlineHelp.gif</image_file>
                 <border_color>
@@ -841,7 +864,7 @@ $(pv_value)</tooltip>
                 <x>8</x>
               </widget>
             </widget>
-            <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+            <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
               <visible>true</visible>
               <vertical_alignment>1</vertical_alignment>
               <wuid>553ac269:135b01240d5:-49f8</wuid>

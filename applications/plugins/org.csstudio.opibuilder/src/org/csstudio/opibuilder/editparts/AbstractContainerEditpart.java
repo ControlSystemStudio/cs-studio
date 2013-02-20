@@ -10,8 +10,11 @@ package org.csstudio.opibuilder.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.opibuilder.dnd.DropPVtoContainerEditPolicy;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
@@ -23,6 +26,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.scriptUtil.WidgetUtil;
 import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.utility.pv.PV;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -110,6 +114,27 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		}
 		return null;
 	}	
+	
+	/**
+	 * @return all pv names attached to this container and its children at runtime.
+	 */
+	public Set<String> getAllRuntimePVNames(){
+		Set<String> result = new HashSet<String>();
+		Map<String, PV> allPVs = getAllPVs();
+		if(allPVs != null && !allPVs.isEmpty())
+			result.addAll(getAllPVs().keySet());
+		for(Object child: getChildren()){
+			if(child instanceof AbstractContainerEditpart){
+				result.addAll(((AbstractContainerEditpart)child).getAllRuntimePVNames());
+			}else if(child instanceof AbstractBaseEditPart){
+				allPVs = ((AbstractBaseEditPart)child).getAllPVs();
+				if(allPVs != null && !allPVs.isEmpty())
+					result.addAll(allPVs.keySet());
+			}
+		}
+		return result;
+	}
+	
 	/**Add a child widget to the container.
 	 * @param widgetModel model of the widget to be added. 
 	 * @see WidgetUtil#createWidgetModel(String)
