@@ -31,19 +31,17 @@ public class MultiSelectionComboDemo
         
         shell.setLayout(new GridLayout());
         
-        final MultiSelectionCombo list = new MultiSelectionCombo(shell, 0);
+        final MultiSelectionCombo<String> list = new MultiSelectionCombo<>(shell, 0);
         list.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        list.setItems(new Object[]
-        {  
+        list.setItems(Arrays.asList(
            "Zero",
            "One",
            "Two",
            "Three",
            "Four",
            "Five",
-           "Six"
-        });
+           "Six"));
         list.setSelection("One, Four  , Five");
         
         list.setForeground(display.getSystemColor(SWT.COLOR_DARK_BLUE));
@@ -56,7 +54,7 @@ public class MultiSelectionComboDemo
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                System.out.println("Selected items: " + Arrays.toString(list.getSelection()));
+                System.out.println("Selected items: " + list.getSelection());
             }
         });
         

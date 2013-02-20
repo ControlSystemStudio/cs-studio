@@ -9,6 +9,8 @@ package org.csstudio.ui.util.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -28,7 +30,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -53,7 +54,7 @@ import org.eclipse.swt.widgets.Text;
  *  
  *  @author Kay Kasemir
  */
-public class MultiSelectionCombo extends Composite
+public class MultiSelectionCombo<T> extends Composite
 {
     final private static String SEPARATOR = ", "; //$NON-NLS-1$
     final private static String SEPERATOR_PATTERN = "\\s*,\\s*"; //$NON-NLS-1$
@@ -66,10 +67,10 @@ public class MultiSelectionCombo extends Composite
     private Button drop_down;
     
     private Shell popup;
-    private List list;
+    private org.eclipse.swt.widgets.List list;
     
     /** Items to show in list */
-    private ArrayList<Object> items = new ArrayList<>();
+    private ArrayList<T> items = new ArrayList<>();
  
     /** Selection indices */
     private ArrayList<Integer> selection = new ArrayList<>();
@@ -187,11 +188,11 @@ public class MultiSelectionCombo extends Composite
      *  and returned as the current selection when selected.
      *  @param new_items Items to display in the list
      */
-    public void setItems(final Object[] new_items)
+    public void setItems(final List<T> new_items)
     {
         items.clear();
-        items.addAll(Arrays.asList(new_items));
-        setSelection(new Object[0]);
+        items.addAll(new_items);
+        setSelection(Collections.<T>emptyList());
     }
 
     /** Define items that should be selected.
@@ -205,8 +206,9 @@ public class MultiSelectionCombo extends Composite
      */
     public boolean setSelection(final String selection_text)
     {
-        final String[] to_select = selection_text.split(SEPERATOR_PATTERN);
-        return setSelection(to_select);
+        final boolean good_selection = setSelectionIndices(selection_text);
+        updateText();
+        return good_selection;
     }
 
     /** Define items that should be selected.
@@ -218,19 +220,31 @@ public class MultiSelectionCombo extends Composite
      *  @return <code>true</code> if all requested items could be selected,
      *          <code>false</code> if some are not in the list
      */
-    public boolean setSelection(final Object[] sel_items)
+    public boolean setSelection(final List<T> sel_items)
     {
         final boolean good_selection = setSelectionIndices(sel_items);
         updateText();
         return good_selection;
     }
     
-    /** @return Currently selected items */
-    public Object[] getSelection()
+    /** Obtain currently selected items
+     *  
+     *  <p>The order of selected items is not guaranteed.
+     *  In the current implementation, it will match
+     *  the order of items provided to <code>setItems()</code>.
+     *  It does <u>not</u> reflect the order in which items
+     *  were selected inside the GUI's drop-down list.
+     *  That may change in the future, so treat the
+     *  result as a <code>Collection</code> rather than
+     *  ordered <code>List</code>.
+     *  
+     *  @return Currently selected items
+     */
+    public List<T> getSelection()
     {
-        final Object[] result = new Object[selection.size()];
-        for (int i=0; i<result.length; ++i)
-            result[i] = items.get(selection.get(i));
+        final List<T> result = new ArrayList<>(selection.size());
+        for (int i : selection)
+            result.add(items.get(i));
         return result;
     }
 
@@ -241,8 +255,19 @@ public class MultiSelectionCombo extends Composite
      */
     private boolean setSelectionIndices(final String selection_text)
     {
-        final String[] to_select = selection_text.split(SEPERATOR_PATTERN);
-        return setSelectionIndices(to_select);
+        final String[] item_texts = selection_text.split(SEPERATOR_PATTERN);
+        boolean good_selection = true;
+        selection.clear();
+        // Locate index for each item
+        for (String text : item_texts)
+        {
+            final int index = findItemIndex(text);
+            if (index >= 0)
+                selection.add(index);
+            else
+                good_selection = false;
+        }
+        return good_selection;
     }
 
     /** Set indices of <code>selection</code> based on desired selection.
@@ -250,14 +275,14 @@ public class MultiSelectionCombo extends Composite
      *  @return <code>true</code> if all requested items could be selected,
      *          <code>false</code> if some are not in the list
      */
-    private boolean setSelectionIndices(final Object[] sel_items)
+    private boolean setSelectionIndices(final List<T> sel_items)
     {
         boolean good_selection = true;
         selection.clear();
         // Locate index for each item
-        for (Object item : sel_items)
+        for (T item : sel_items)
         {
-            final int index = findItemIndex(item);
+            final int index = findItemIndex(item.toString());
             if (index >= 0)
                 selection.add(index);
             else
@@ -269,9 +294,8 @@ public class MultiSelectionCombo extends Composite
     /** @param item Item for which to locate the index in <code>items</code>
      *  @return Index 0, ... within <code>items</code>, or -1 if not found
      */
-    private int findItemIndex(final Object item)
+    private int findItemIndex(final String item_text)
     {
-        final String item_text = item.toString();
         for (int i=0; i<items.size(); ++i)
             if (items.get(i).toString().equals(item_text))
                 return i;
@@ -322,7 +346,7 @@ public class MultiSelectionCombo extends Composite
     {
         popup = new Shell (getShell (), SWT.NO_TRIM | SWT.ON_TOP);
         popup.setLayout(new FillLayout());
-        list = new List (popup, SWT.MULTI | SWT.V_SCROLL);
+        list = new org.eclipse.swt.widgets.List (popup, SWT.MULTI | SWT.V_SCROLL);
         list.setToolTipText(tool_tip);
                 
         // Position popup under the text box
