@@ -10,7 +10,7 @@ package org.csstudio.logbook.sns;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
+import java.util.Iterator;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
@@ -153,13 +153,21 @@ public class SNSLogbookClient implements LogbookClient
         if (entry.getLogbooks().isEmpty())
             throw new Exception("No logbook specified");
         
-        final String logbook = entry.getLogbooks().iterator().next().getName();
+        final Iterator<Logbook> logbooks = entry.getLogbooks().iterator();
+        String logbook = logbooks.next().getName();
         
         final ELog elog = new ELog(url, user, password);
         final long id;
         try
         {
             id = elog.createEntry(logbook, title, text);
+        
+            // Attach to multiple logbooks?
+            while (logbooks.hasNext())
+            {
+                logbook = logbooks.next().getName();
+                elog.addLogbook(id, logbook);
+            }
             
             // Add optional tags
             for (Tag tag : entry.getTags())
