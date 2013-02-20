@@ -30,8 +30,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRanges;
 import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraphRendererUpdate;
+import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -110,10 +111,10 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		if (plot != null) {
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
-		    plot.update(new LineGraphRendererUpdate()
-			    .rangeFromDataset(false)
-			    .startY((invert - yRangeControl.getSelectedMax()))
-			    .endY((invert - yRangeControl.getSelectedMin())));
+		    plot.update(new LineGraph2DRendererUpdate()
+			    .yAxisRange(AxisRanges.absolute(invert
+				    - yRangeControl.getSelectedMax(), invert
+				    - yRangeControl.getSelectedMin())));
 		}
 	    }
 	});
@@ -131,7 +132,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    @Override
 	    public void controlResized(ControlEvent e) {
 		if (plot != null) {
-		    plot.update(new LineGraphRendererUpdate()
+		    plot.update(new LineGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
 			    .imageWidth(imageDisplay.getSize().x)
 			    .interpolation(InterpolationScheme.LINEAR));
@@ -157,10 +158,10 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    @Override
 	    public void rangeChanged() {
 		if (plot != null) {
-		    plot.update(new LineGraphRendererUpdate()
-			    .rangeFromDataset(false)
-			    .startX(xRangeControl.getSelectedMin())
-			    .endX(xRangeControl.getSelectedMax()));
+		    plot.update(new LineGraph2DRendererUpdate()
+			    .xAxisRange(AxisRanges.absolute(
+				    xRangeControl.getSelectedMin(),
+				    xRangeControl.getSelectedMax())));
 		}
 	    }
 	});
@@ -208,7 +209,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	plot = ExpressionLanguage
 		.lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
 			.formula(getpvName()));
-	plot.update(new LineGraphRendererUpdate()
+	plot.update(new LineGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
 		.interpolation(InterpolationScheme.LINEAR));

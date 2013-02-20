@@ -23,7 +23,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraphRendererUpdate;
+import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -148,7 +148,7 @@ public class LineGraphWidget extends Composite {
 		}
 		
 		plot = lineGraphOf(latestValueOf(vNumberArray(getProcessVariable().getName())));
-		plot.update(new LineGraphRendererUpdate()
+		plot.update(new LineGraph2DRendererUpdate()
 				.imageWidth(imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y)
 				.interpolation(InterpolationScheme.LINEAR));
 		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
@@ -168,7 +168,7 @@ public class LineGraphWidget extends Composite {
 	
 	private void changePlotSize(int newWidgth, int newHeight) {
 		if (plot != null) {
-			plot.update(new LineGraphRendererUpdate()
+			plot.update(new LineGraph2DRendererUpdate()
 			.imageHeight(newHeight).imageWidth(newWidgth));
 		}
 	}
