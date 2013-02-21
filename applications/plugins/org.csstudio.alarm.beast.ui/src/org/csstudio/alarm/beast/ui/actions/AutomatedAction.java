@@ -104,7 +104,7 @@ public class AutomatedAction extends Action
 			snapshots.add(snapshot);
 		} else {
 			for (int index = 0; index < item.getChildCount(); index++)
-				findPVs(item.getClientChild(index), snapshots);
+				findPVs(item.getChild(index), snapshots);
 		}
 	}
 	

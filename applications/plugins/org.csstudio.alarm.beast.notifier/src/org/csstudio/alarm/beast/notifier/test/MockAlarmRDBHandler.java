@@ -110,7 +110,7 @@ public class MockAlarmRDBHandler implements IAlarmRDBHandler {
 	private void listPVs(AlarmTreeItem root) {
 		if (root == null) return;
 		for (int i = 0; i < root.getChildCount(); i++) {
-			final AlarmTreeItem child = root.getClientChild(i);
+			final AlarmTreeItem child = root.getChild(i);
 			if (child.getPosition().equals(AlarmTreePosition.PV)
 					&& child instanceof AlarmTreePV)
 				pvs.put(child.getName(), (AlarmTreePV) child);

@@ -52,7 +52,7 @@ public class ElogAdapter implements IAdapterFactory
             text.append(item.getPathName()).append(":\n");
             final int N = item.getChildCount();
             for (int i=0; i<N; ++i)
-                addAlarmLeafs(text, item.getClientChild(i));
+                addAlarmLeafs(text, item.getChild(i));
         }
     }
 }

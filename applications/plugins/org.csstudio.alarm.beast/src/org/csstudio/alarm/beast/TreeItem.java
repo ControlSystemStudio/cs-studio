@@ -84,13 +84,13 @@ public class TreeItem
     }
 
     /** @return Parent item. <code>null</code> for root */
-    final synchronized public TreeItem getParent()
+    synchronized public TreeItem getParent()
     {
         return parent;
     }
 
     /** @return Alarm tree root element */
-    final public TreeItem getRoot()
+    public TreeItem getRoot()
     {
         TreeItem root = this;
         TreeItem p = getParent();
@@ -145,7 +145,7 @@ public class TreeItem
      *  @throws IndexOutOfBoundsException if the index is out of range
      *          (<tt>index &lt; 0 || index &gt;= getChildCount()</tt>)
      */
-    final public synchronized TreeItem getChild(final int index)
+    public synchronized TreeItem getChild(final int index)
     {
         return children.get(index);
     }
@@ -154,7 +154,7 @@ public class TreeItem
      *  @param child_name Name of child to locate.
      *  @return Child with given name or <code>null</code> if not found.
      */
-    final public synchronized TreeItem getChild(final String name)
+    public synchronized TreeItem getChild(final String name)
     {
         for (TreeItem child : children)
             if (child.getName().equals(name))
@@ -296,6 +296,6 @@ public class TreeItem
     @Override
     public String toString()
     {
-        return path_name + " (ID " + id + ")";
+        return "'" + path_name + "' (ID " + id + ")";
     }
 }

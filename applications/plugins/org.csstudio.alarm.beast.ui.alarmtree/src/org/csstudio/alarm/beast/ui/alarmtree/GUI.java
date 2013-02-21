@@ -468,7 +468,7 @@ public class GUI implements AlarmClientModelListener
                 		tree_viewer.refresh(pv, true);
                 	if (parent_changed)
             		{	// Update parents up to root
-            			AlarmTreeItem item = pv.getClientParent();
+            			AlarmTreeItem item = pv.getParent();
             			while (! (item instanceof AlarmTreeRoot))
 	                	{
 	            			// Parent could become hidden with its PV
@@ -476,7 +476,7 @@ public class GUI implements AlarmClientModelListener
 	            				tree_viewer.remove(item);
 	            			else
 	            				tree_viewer.refresh(item);
-	                		item = item.getClientParent();
+	                		item = item.getParent();
 	                	}
             		}
                 }
