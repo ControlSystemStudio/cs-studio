@@ -431,7 +431,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     Activator.getLogger().log(Level.WARNING, "Unknown MODE request {0}", mode);
             }
             else if (JMSAlarmMessage.TEXT_DEBUG.equals(text))
-                server.dump();
+                server.dump(System.out);
         }
         catch (Throwable ex)
         {
