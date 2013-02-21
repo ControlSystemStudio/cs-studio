@@ -9,7 +9,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.csstudio.channel.widgets.ChannelViewerConfigurationDialog;
+import org.csstudio.channel.widgets.WaterfallConfigurationDialog;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
@@ -51,7 +54,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends Composite implements ISelectionProvider {
+public class Line2DPlotWidget extends Composite implements ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
     private LineGraphPlot plot;
@@ -201,6 +204,10 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	return showAxis;
     }
 
+    public boolean getShowAxis(){
+	return this.showAxis;
+    }
+    
     public void setShowAxis(boolean showAxis) {
 	boolean oldValue = this.showAxis;
 	this.showAxis = showAxis;
@@ -343,5 +350,41 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     @Override
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    private boolean configurable = true;
+
+    private Line2DPlotConfigurationDialog dialog;
+
+	
+    @Override
+    public boolean isConfigurable() {
+	return this.configurable;
+    }
+
+    @Override
+    public void setConfigurable(boolean configurable) {
+	boolean oldValue = this.configurable;
+	this.configurable = configurable;
+	changeSupport.firePropertyChange("configurable", oldValue, this.configurable);
+    }
+
+    @Override
+    public void openConfigurationDialog() {
+	if (dialog != null)
+		return;
+	dialog = new Line2DPlotConfigurationDialog(this);
+	dialog.open();
+    }
+
+    @Override
+    public boolean isConfigurationDialogOpen() {
+	return dialog != null;
+    }
+
+    @Override
+    public void configurationDialogClosed() {
+	dialog.getParent().close();
+	dialog = null;
     }
 }
