@@ -196,6 +196,8 @@ public class AddComponentDialog extends TitleAreaDialog
             }
         });
 
+        name.setFocus();
+        
         return parent_composite;
     }
 
