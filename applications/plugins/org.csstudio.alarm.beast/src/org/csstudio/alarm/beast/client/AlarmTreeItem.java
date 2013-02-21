@@ -133,6 +133,15 @@ public class AlarmTreeItem extends TreeItem
         return (AlarmTreeItem) super.getChild(name);
     }
 
+    /** Locate alarm tree item by path, starting at this element
+     *  @param path Path to item
+     *  @return Item or <code>null</code> if not found
+     */
+    public AlarmTreeItem getItemByPath(final String path)
+    {
+        return (AlarmTreeItem) super.getItemByPath(path);
+    }
+    
     /** @return Guidance messages */
     public synchronized GDCDataStructure[] getGuidance()
     {

@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.client;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelRoot;
 import org.csstudio.apputil.xml.XMLWriter;
 
@@ -157,27 +156,5 @@ public class AlarmTreeRoot extends AlarmTreeItem
             child.writeItemXML(out, 1);
         }
         out.append("</config>\n");
-    }
-
-
-    /** Locate alarm tree item by path
-     *  @param path Path to item
-     *  @return Item or <code>null</code> if not found
-     */
-    public AlarmTreeItem getItemByPath(final String path)
-    {
-        if (path == null)
-            return null;
-        final String[] steps = AlarmTreePath.splitPath(path);
-        if (steps.length <= 0)
-            return null;
-        // Does root of path match?
-        if (!steps[0].equals(getName()))
-            return null;
-        // Descend down the path
-        AlarmTreeItem item = this;
-        for (int i=1;  i < steps.length  &&  item != null;    ++i)
-            item = item.getClientChild(steps[i]);
-        return item;
     }
 }

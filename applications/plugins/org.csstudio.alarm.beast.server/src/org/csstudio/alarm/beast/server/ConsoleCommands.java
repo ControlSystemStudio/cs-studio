@@ -18,6 +18,8 @@ package org.csstudio.alarm.beast.server;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.TreeItem;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -33,6 +35,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 public class ConsoleCommands implements CommandProvider
 {
     final private AlarmServer server;
+    private String pwd = AlarmTreePath.PATH_SEP;
     
     /** Initialize
      *  @param server {@link AlarmServer}
@@ -51,7 +54,12 @@ public class ConsoleCommands implements CommandProvider
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
-        buf.append("\tdump           - Dump complete alarm tree\n");
+        buf.append("\tdump               - Dump complete alarm tree\n");
+        buf.append("\tpvs                - List PVs\n");
+        buf.append("\tpvs -d             - List disconnected PVs\n");
+        buf.append("\tls '/path/to/item' - List alarm tree based on path\n");
+        buf.append("\tpwd                - Print working 'directory'\n");
+        buf.append("\tcd '/path'         - Change working 'directory'\n");
         return buf.toString();
     }
 
@@ -70,6 +78,85 @@ public class ConsoleCommands implements CommandProvider
             server.dump(out);
             out.close();
             intp.println(buf.toString());
+        }
+        catch (Exception ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    /** 'pvs' command */
+    public Object _pvs(final CommandInterpreter intp)
+    {
+        final boolean only_disconnected = "-d".equals(intp.nextArgument());
+        try
+        {
+            final AlarmPV[] pvs = server.getPVs();
+            for (AlarmPV pv : pvs)
+            {
+                if (only_disconnected  &&  pv.isConnected())
+                    continue;
+                intp.println(pv.toString());
+            }
+        }
+        catch (Exception ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    /** 'pwd' command */
+    public Object _pwd(final CommandInterpreter intp)
+    {
+        intp.println("Path: '" + pwd + "'");
+        return null;
+    }
+
+    /** 'cd' command */
+    public Object _cd(final CommandInterpreter intp)
+    {
+        String nwd = intp.nextArgument();
+        if (nwd == null  ||  nwd.isEmpty())
+            pwd = AlarmTreePath.PATH_SEP;
+        else
+        {
+            // New complete path "/..."?
+            if (nwd.startsWith(AlarmTreePath.PATH_SEP))
+                pwd = nwd;
+            else
+            {
+                if ("..".equals(nwd))
+                {   // Go one level 'up'
+                    final String[] elements = AlarmTreePath.splitPath(pwd);
+                    if (elements.length > 1)
+                        pwd = AlarmTreePath.makePath(elements, elements.length-1);
+                }
+                else // Append to pwd
+                    pwd = AlarmTreePath.makePath(pwd, nwd);
+            }
+        }
+        return _pwd(intp);
+    }
+    
+    /** 'ls' command */
+    public Object _ls(final CommandInterpreter intp)
+    {
+        String path = intp.nextArgument();
+        if (path == null)
+            path = pwd;
+        try
+        {
+            final TreeItem item = server.getItemByPath(path);
+            if (item == null)
+                intp.println("No item '" + path + "'");
+            else
+            {
+                intp.println(item);
+                for (int i=0; i<item.getChildCount(); ++i)
+                    intp.println(item.getChild(i));
+            }
         }
         catch (Exception ex)
         {

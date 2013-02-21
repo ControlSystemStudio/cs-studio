@@ -151,6 +151,31 @@ public class AlarmServer
                 format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
     }
 
+    /** @return list of all PVs known to the server */
+    public AlarmPV[] getPVs()
+    {
+        final AlarmPV pvs[];
+        synchronized (this)
+        {
+            pvs = pv_list.clone();
+        }
+        return pvs;
+    }
+
+    /** Locate alarm tree item by path
+     *  @param path Alarm tree path
+     *  @return Item or <code>null</code>
+     */
+    public TreeItem getItemByPath(String path)
+    {
+        if (path == null  ||  path.isEmpty())
+            path = getRootName();
+        synchronized (this)
+        {
+            return alarm_tree.getItemByPath(path);
+        }
+    }
+    
     /** Release all resources */
     public void close()
     {

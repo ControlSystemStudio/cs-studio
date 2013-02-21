@@ -200,6 +200,29 @@ public class TreeItem
             throw new Error("Corrupted tree item: " + toString());
     }
 
+    /** Locate alarm tree item by path, starting at this element
+     *  @param path Path to item
+     *  @return Item or <code>null</code> if not found
+     */
+    public synchronized TreeItem getItemByPath(final String path)
+    {
+        if (path == null)
+            return null;
+        if (AlarmTreePath.PATH_SEP.equals(path))
+            return this;
+        final String[] steps = AlarmTreePath.splitPath(path);
+        if (steps.length <= 0)
+            return null;
+        // Does root of path match?
+        if (!steps[0].equals(getName()))
+            return null;
+        // Descend down the path
+        TreeItem item = this;
+        for (int i=1;  i < steps.length  &&  item != null;    ++i)
+            item = item.getChild(steps[i]);
+        return item;
+    }
+    
     /** Dump this item and sub-items.
      *  To be called by outside code.
      *  Derived classes should override <code>dump_item()</code>
