@@ -113,30 +113,11 @@ public class ConsoleCommands implements CommandProvider
         intp.println("Path: '" + pwd + "'");
         return null;
     }
-
+    
     /** 'cd' command */
     public Object _cd(final CommandInterpreter intp)
     {
-        String nwd = intp.nextArgument();
-        if (nwd == null  ||  nwd.isEmpty())
-            pwd = AlarmTreePath.PATH_SEP;
-        else
-        {
-            // New complete path "/..."?
-            if (nwd.startsWith(AlarmTreePath.PATH_SEP))
-                pwd = nwd;
-            else
-            {
-                if ("..".equals(nwd))
-                {   // Go one level 'up'
-                    final String[] elements = AlarmTreePath.splitPath(pwd);
-                    if (elements.length > 1)
-                        pwd = AlarmTreePath.makePath(elements, elements.length-1);
-                }
-                else // Append to pwd
-                    pwd = AlarmTreePath.makePath(pwd, nwd);
-            }
-        }
+        pwd = AlarmTreePath.update(pwd, intp.nextArgument());
         return _pwd(intp);
     }
     
@@ -144,8 +125,11 @@ public class ConsoleCommands implements CommandProvider
     public Object _ls(final CommandInterpreter intp)
     {
         String path = intp.nextArgument();
-        if (path == null)
+        // No arg provided? Use pwd
+        if (path == null  ||  path.isEmpty())
             path = pwd;
+        else // else use given path (based on pwd)
+            path = AlarmTreePath.update(pwd, path);
         try
         {
             final TreeItem item = server.getItemByPath(path);
