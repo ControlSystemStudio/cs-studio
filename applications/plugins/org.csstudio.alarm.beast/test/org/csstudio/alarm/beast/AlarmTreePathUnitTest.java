@@ -132,5 +132,11 @@ public class AlarmTreePathUnitTest
 
         path = AlarmTreePath.update("/", "path");
         assertThat(path, equalTo("/path"));
+
+        path = AlarmTreePath.update("/", "path/to/sub");
+        assertThat(path, equalTo("/path/to/sub"));
+
+        path = AlarmTreePath.update("/", "path/to\\/sub");
+        assertThat(path, equalTo("/path/to\\/sub"));
     }
 }

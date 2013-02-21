@@ -81,9 +81,6 @@ public class AlarmTreePath
      */
     public static String[] splitPath(final String path)
     {
-        // Shortcut for path that's really just a name
-        if (!isPath(path))
-            return new String[] { path.replace("\\/", PATH_SEP) };
     	// Split on '/', but only those that are NOT preceded by '\'.
     	// '(?<!x)' means 'not preceded by x',
     	// and in this case the x=\ must be escaped twice:
@@ -133,7 +130,11 @@ public class AlarmTreePath
                 return AlarmTreePath.makePath(elements, elements.length-1);
             }
             else // Append to pwd
-                return AlarmTreePath.makePath(path, modifier);
+            {
+                for (String element : AlarmTreePath.splitPath(modifier))
+                    path = AlarmTreePath.makePath(path, element);
+                return path;
+            }
         }
     }
 }
