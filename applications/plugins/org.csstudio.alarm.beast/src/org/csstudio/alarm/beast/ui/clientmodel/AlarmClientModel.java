@@ -1005,7 +1005,7 @@ public class AlarmClientModel
     /** Inform listeners about overall change to alarm tree configuration:
      *  Items added, removed.
      */
-    private void fireNewConfig()
+    void fireNewConfig()
     {
         for (AlarmClientModelListener listener : listeners)
         {
