@@ -129,6 +129,7 @@ public class Line2DPlotView extends ViewPart {
 		});
 
 	line2DPlotWidget = new Line2DPlotWidget(parent, SWT.NONE);
+	line2DPlotWidget.setConfigurable(true);
 	line2DPlotWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 		true, 2, 1));
 	PopupMenuUtil.installPopupForView(line2DPlotWidget, getSite(),

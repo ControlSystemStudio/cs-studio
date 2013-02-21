@@ -42,20 +42,20 @@ public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
 		1, 1));
 	lblYPv.setText("Y PV:");
 
-	textXPv = new Text(this, SWT.BORDER);
-	textXPv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+	textYPv = new Text(this, SWT.BORDER);
+	textYPv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 		1, 1));
 
 	Label lblXPv = new Label(this, SWT.NONE);
 	lblXPv.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
 		1, 1));
-	lblXPv.setText("Y PV(optional):");
+	lblXPv.setText("X PV(optional):");
 
-	textYPv = new Text(this, SWT.BORDER);
-	textYPv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+	textXPv = new Text(this, SWT.BORDER);
+	textXPv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 		1, 1));
 	new Label(this, SWT.NONE);
-	
+
 	btnShowAxis = new Button(this, SWT.CHECK);
 	btnShowAxis.setText("Show Axis Scroll");
     }
@@ -65,7 +65,8 @@ public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
     }
 
     public void setXPv(String xPv) {
-	this.textXPv.setText(xPv);
+	if (xPv != null)
+	    this.textXPv.setText(xPv);
     }
 
     public String getYPv() {
@@ -73,14 +74,15 @@ public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
     }
 
     public void setYPv(String yPv) {
-	this.textYPv.setText(yPv);
+	if (yPv != null)
+	    this.textYPv.setText(yPv);
     }
-    
+
     public boolean getShowAxis() {
 	return false;
     }
 
-    public void setShowAxis(boolean showAxis){
+    public void setShowAxis(boolean showAxis) {
 	this.btnShowAxis.setSelection(showAxis);
     }
 }

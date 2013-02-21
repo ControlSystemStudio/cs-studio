@@ -54,7 +54,8 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends Composite implements ISelectionProvider, ConfigurableWidget {
+public class Line2DPlotWidget extends Composite implements ISelectionProvider,
+	ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
     private LineGraphPlot plot;
@@ -179,7 +180,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
 		if (event.getPropertyName().equals("processVariable")
 			|| event.getPropertyName().equals("xProcessVariable")) {
 		    reconnect();
-		} else if(event.getPropertyName().equals("showAxis")){
+		} else if (event.getPropertyName().equals("showAxis")) {
 		    xRangeControl.setVisible(showAxis);
 		    yRangeControl.setVisible(showAxis);
 		    redraw();
@@ -204,10 +205,10 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
 	return showAxis;
     }
 
-    public boolean getShowAxis(){
+    public boolean getShowAxis() {
 	return this.showAxis;
     }
-    
+
     public void setShowAxis(boolean showAxis) {
 	boolean oldValue = this.showAxis;
 	this.showAxis = showAxis;
@@ -336,7 +337,10 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
     @Override
     public ISelection getSelection() {
 	if (getPvName() != null) {
-	    return new StructuredSelection(new ProcessVariable(getPvName()));
+	    return new StructuredSelection(new Line2DPlotSelection(
+		    new ProcessVariable(getPvName()), 
+		    getXpvName() != null ? new ProcessVariable(getXpvName()) : null,
+		    this));
 	}
 	return null;
     }
@@ -356,7 +360,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
 
     private Line2DPlotConfigurationDialog dialog;
 
-	
     @Override
     public boolean isConfigurable() {
 	return this.configurable;
@@ -366,13 +369,14 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
     public void setConfigurable(boolean configurable) {
 	boolean oldValue = this.configurable;
 	this.configurable = configurable;
-	changeSupport.firePropertyChange("configurable", oldValue, this.configurable);
+	changeSupport.firePropertyChange("configurable", oldValue,
+		this.configurable);
     }
 
     @Override
     public void openConfigurationDialog() {
 	if (dialog != null)
-		return;
+	    return;
 	dialog = new Line2DPlotConfigurationDialog(this);
 	dialog.open();
     }
@@ -384,7 +388,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider, C
 
     @Override
     public void configurationDialogClosed() {
-	dialog.getParent().close();
 	dialog = null;
     }
 }
