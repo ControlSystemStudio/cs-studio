@@ -12,6 +12,7 @@ import java.beans.PropertyChangeSupport;
 import org.csstudio.channel.widgets.ChannelViewerConfigurationDialog;
 import org.csstudio.channel.widgets.WaterfallConfigurationDialog;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.BeanComposite;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -54,7 +55,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends Composite implements ISelectionProvider,
+public class Line2DPlotWidget extends BeanComposite implements ISelectionProvider,
 	ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
@@ -63,17 +64,6 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider,
     private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
-
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-	    this);
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-	changeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-	changeSupport.removePropertyChangeListener(listener);
-    }
 
     public Line2DPlotWidget(Composite parent, int style) {
 	super(parent, style);
