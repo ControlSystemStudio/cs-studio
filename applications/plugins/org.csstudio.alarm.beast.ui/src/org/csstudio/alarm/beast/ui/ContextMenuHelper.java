@@ -139,7 +139,7 @@ public class ContextMenuHelper
     {
         if (item == null  ||  addedGuidance.size() > max_context_entries)
             return;
-        addGuidanceMessages(manager, shell, item.getClientParent());
+        addGuidanceMessages(manager, shell, item.getParent());
         for (GDCDataStructure guidance_entry : item.getGuidance())
         {	// avoid duplicates
         	if (addedGuidance.contains(guidance_entry))
@@ -166,7 +166,7 @@ public class ContextMenuHelper
     {
         if (item == null  ||  addedDisplays.size() > max_context_entries)
             return;
-        addRelatedDisplays(manager, shell, item.getClientParent());
+        addRelatedDisplays(manager, shell, item.getParent());
         for (GDCDataStructure display : item.getDisplays())
         {   // avoid duplicates
         	if (addedDisplays.contains(display))
@@ -196,7 +196,7 @@ public class ContextMenuHelper
     {
         if (item == null  ||  addedCommands.size() > max_context_entries)
             return;
-        addCommands(manager, shell, item.getClientParent());
+        addCommands(manager, shell, item.getParent());
         for (GDCDataStructure command : item.getCommands())
         {   // avoid duplicates
         	if (addedCommands.contains(command))
@@ -222,7 +222,7 @@ public class ContextMenuHelper
     {
         if (item == null  ||  addedAutoActions.size() > max_context_entries)
             return;
-        addAutomatedActions(manager, shell, item.getClientParent());
+        addAutomatedActions(manager, shell, item.getParent());
         for (AADataStructure action : item.getAutomatedActions())
         {   // avoid duplicates
         	if (addedAutoActions.contains(action))

@@ -295,17 +295,17 @@ public class GlobalAlarmModel
                 return false;
             // .. descend tree..
             for (int i=1; item != null &&  i<path.length; ++i)
-                item = item.getClientChild(path[i]);
+                item = item.getChild(path[i]);
             // Found?
             if (item == null || !(item instanceof GlobalAlarm))
                 return false;
 
             // Up to the root, delete all 'empty' nodes
-            final AlarmTreeRoot root = item.getClientRoot();
+            final AlarmTreeRoot root = item.getRoot();
             while (item != null  &&  item.getChildCount() <= 0)
             {
                 final AlarmTreeItem tmp = item;
-                item = item.getClientParent();
+                item = item.getParent();
                 tmp.detachFromParent();
             }
             // If root is now unused, delete it from configurations

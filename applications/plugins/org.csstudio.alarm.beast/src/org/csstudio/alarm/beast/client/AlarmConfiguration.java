@@ -681,7 +681,7 @@ public class AlarmConfiguration
     public synchronized void removeAllItems() throws Exception
     {
         while (config_tree.getChildCount() > 0)
-            remove(config_tree.getClientChild(0));
+            remove(config_tree.getChild(0));
     }
 
     /** Remove item and all sub-items from alarm tree.
@@ -707,7 +707,7 @@ public class AlarmConfiguration
         // First recurse down
         while (item.getChildCount() > 0)
         {
-            final AlarmTreeItem child = item.getClientChild(0);
+            final AlarmTreeItem child = item.getChild(0);
             if (child instanceof AlarmTreePV)
                 removePV((AlarmTreePV) child);
             else

@@ -272,7 +272,7 @@ public class AlarmConfigurationReader
      */
     public void completeItemInfo(final AlarmTreeItem item) throws Exception
     {
-        final AlarmTreeItem parent = item.getClientParent();
+        final AlarmTreeItem parent = item.getParent();
         // 'root' elements only have an ID, no other info.
         // In the RDB they could have more info, but the alarm GUI
         // doesn't show the root element so it's impossible to configure

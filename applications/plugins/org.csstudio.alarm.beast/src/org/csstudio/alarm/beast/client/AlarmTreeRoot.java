@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.client;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelRoot;
 import org.csstudio.apputil.xml.XMLWriter;
 
@@ -75,7 +74,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
             return 1;
         int count = 0;
         for (int i=0; i<item.getChildCount(); ++i)
-            count += getLeafCount(item.getClientChild(i));
+            count += getLeafCount(item.getChild(i));
         return count;
     }
 
@@ -98,7 +97,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
         synchronized (item)
         {
             for (int i=0; i<item.getChildCount(); ++i)
-                addLeavesToList(leaves, item.getClientChild(i));
+                addLeavesToList(leaves, item.getChild(i));
         }
     }
 
@@ -116,7 +115,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
         // Then add counts recursively
         int total = child_count;
         for (int i=0; i<child_count; ++i)
-            total += getElementCount(item.getClientChild(i));
+            total += getElementCount(item.getChild(i));
         return total;
     }
 
@@ -153,31 +152,9 @@ public class AlarmTreeRoot extends AlarmTreeItem
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
         {
-            final AlarmTreeItem child = getClientChild(i);
+            final AlarmTreeItem child = getChild(i);
             child.writeItemXML(out, 1);
         }
         out.append("</config>\n");
-    }
-
-
-    /** Locate alarm tree item by path
-     *  @param path Path to item
-     *  @return Item or <code>null</code> if not found
-     */
-    public AlarmTreeItem getItemByPath(final String path)
-    {
-        if (path == null)
-            return null;
-        final String[] steps = AlarmTreePath.splitPath(path);
-        if (steps.length <= 0)
-            return null;
-        // Does root of path match?
-        if (!steps[0].equals(getName()))
-            return null;
-        // Descend down the path
-        AlarmTreeItem item = this;
-        for (int i=1;  i < steps.length  &&  item != null;    ++i)
-            item = item.getClientChild(steps[i]);
-        return item;
     }
 }

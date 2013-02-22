@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Helper for handling the path names of alarm tree elements.
  *  Path looks like "/root/area/system/subsystem/pv_name".
  *  @author Kay Kasemir
@@ -15,7 +18,7 @@ package org.csstudio.alarm.beast;
 public class AlarmTreePath
 {
     /** Separator used to create path names to items in the alarm tree */
-    final private static String PATH_SEP = "/";
+    final public static String PATH_SEP = "/";
 
     /** @param path String to test
      *  @return <code>true</code> if a string is a path or just a plain name
@@ -30,18 +33,26 @@ public class AlarmTreePath
      *  @param item Name of item at end of path
      *  @return Full path name to item
      */
-    public static String makePath(final String path, final String item)
+    public static String makePath(final String path, String item)
     {
         final StringBuilder result = new StringBuilder();
         if (path != null)
         {
             if (! isPath(path))
                 result.append(PATH_SEP);
-            result.append(path);
+            // Skip path it it's only '/' 
+            if (!PATH_SEP.equals(path))
+                result.append(path);
         }
         result.append(PATH_SEP);
-        // Escape any path-seps inside item with backslashes
-        result.append(item.replace(PATH_SEP, "\\/"));
+        if (item != null  &&  !item.isEmpty())
+        {
+            // If item already starts with '/', skip it
+            if (item.startsWith(PATH_SEP))
+                item = item.substring(1);
+            // Escape any path-seps inside item with backslashes
+            result.append(item.replace(PATH_SEP, "\\/"));
+        }
         return result.toString();
     }
 
@@ -70,19 +81,21 @@ public class AlarmTreePath
      */
     public static String[] splitPath(final String path)
     {
-        // Shortcut for path that's really just a name
-        if (!isPath(path))
-            return new String[] { path.replace("\\/", PATH_SEP) };
     	// Split on '/', but only those that are NOT preceded by '\'.
     	// '(?<!x)' means 'not preceded by x',
     	// and in this case the x=\ must be escaped twice:
     	// Once to get into the Java string, once more to pass to the regex.
         // Also skip the initial '/'
-        final String[] items = path.substring(1).split("(?<!\\\\)/");
-        // Un-escape any PATH_SEP that's inside each item
-        for (int i = 0; i < items.length; ++i)
-        	items[i] = items[i].replace("\\/", PATH_SEP);
-		return items;
+        final List<String> items = new ArrayList<>();
+        for (String item : path.split("(?<!\\\\)/+"))
+        {
+            // Skip empty items
+            if (item.isEmpty())
+                continue;
+            // Un-escape any PATH_SEP that's inside each item
+            items.add(item.replace("\\/", PATH_SEP));
+        }
+		return items.toArray(new String[items.size()]);
     }
 
     /** Get last path element
@@ -93,5 +106,35 @@ public class AlarmTreePath
     {
         final String elements[] = splitPath(path);
         return elements[elements.length-1];
+    }
+    
+    /** Determine modified path
+     *  @param path Original path
+     *  @param modifier Path modifier: "segments/to/add", "/absolute/new/path", ".."
+     *  @return Path based on pwd and modifier
+     */
+    public static String update(String path, String modifier)
+    {
+        if (modifier == null  ||  modifier.isEmpty())
+            return makePath(null, path);
+        // New complete path "/..."?
+        if (modifier.startsWith(AlarmTreePath.PATH_SEP))
+            return modifier;
+        else
+        {
+            if ("..".equals(modifier))
+            {   // Go one level 'up'
+                final String[] elements = AlarmTreePath.splitPath(path);
+                if (elements.length <= 0)
+                    return AlarmTreePath.PATH_SEP;
+                return AlarmTreePath.makePath(elements, elements.length-1);
+            }
+            else // Append to pwd
+            {
+                for (String element : AlarmTreePath.splitPath(modifier))
+                    path = AlarmTreePath.makePath(path, element);
+                return path;
+            }
+        }
     }
 }

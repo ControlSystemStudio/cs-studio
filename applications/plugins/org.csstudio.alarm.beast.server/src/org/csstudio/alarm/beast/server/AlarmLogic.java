@@ -501,6 +501,6 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     @Override
     public String toString()
     {
-        return "Current: " + current_state + " / Alarm: " + alarm_state;
+        return "Current: " + current_state + ", Alarm: " + alarm_state;
     }
 }

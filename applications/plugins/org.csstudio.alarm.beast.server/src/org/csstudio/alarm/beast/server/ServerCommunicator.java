@@ -104,6 +104,25 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     protected void createProducersAndConsumers() throws Exception
     {
+        // Send initial CONFIG message to client topic.
+        // This will cause all running clients to re-load the configuration,
+        // asserting that server which starts up now and clients
+        // are in sync in case the RDB was changed.
+        final MessageProducer client_producer = createProducer(Preferences.getJMS_AlarmClientTopic(root_name));
+        try
+        {
+            final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_CONFIG);
+            client_producer.send(map);
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING, "Cannot send idle message", ex);
+        }
+        finally
+        {
+            client_producer.close();
+        }
+        
         server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(root_name));
         talk_producer = createProducer(Preferences.getJMS_TalkTopic(root_name));
         global_producer = createProducer(Preferences.getJMS_GlobalServerTopic());
@@ -431,7 +450,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     Activator.getLogger().log(Level.WARNING, "Unknown MODE request {0}", mode);
             }
             else if (JMSAlarmMessage.TEXT_DEBUG.equals(text))
-                server.dump();
+                server.dump(System.out);
         }
         catch (Throwable ex)
         {

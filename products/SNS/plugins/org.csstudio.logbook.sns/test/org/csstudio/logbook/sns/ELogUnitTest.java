@@ -60,6 +60,18 @@ public class ELogUnitTest
     }
 
     @Test
+    public void testTextEntryForMultipleLogbooks() throws Exception
+    {
+        entry_id = elog.createEntry(LOGBOOK, "Text test", "this is a test");
+        elog.addLogbook(entry_id, "Automated Entries");
+        
+        final ELogEntry entry = elog.getEntry(entry_id);
+        System.out.println(entry);
+        assertThat(entry.getTitle(), equalTo("Text test"));
+        assertThat(entry.getLogbooks().size(), equalTo(2));
+    }
+    
+    @Test
     public void testLongEntry() throws Exception
     {
         // Happen to know that max text length is 4000...

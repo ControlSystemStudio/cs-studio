@@ -206,7 +206,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     	// Changing the alarm state will eventually recurse up to the root
     	// to maximize the severities.
     	// To prevent deadlock, first lock the root, then this and other affected items
-    	final AlarmTreeRoot root = getClientRoot();
+    	final AlarmTreeRoot root = getRoot();
     	final boolean parent_changed;
     	synchronized (root)
         {
@@ -233,7 +233,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     @Override
     public void acknowledge(final boolean acknowledge)
     {
-        getClientRoot().acknowledge(this, acknowledge);
+        getRoot().acknowledge(this, acknowledge);
     }
 
     /** @return XML tag for this tree item */

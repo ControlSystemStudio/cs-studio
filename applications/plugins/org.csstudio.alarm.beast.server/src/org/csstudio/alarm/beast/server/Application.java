@@ -15,6 +15,9 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.osgi.framework.console.CommandProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /** Alarm Server Application
  *  <p>
@@ -72,8 +75,9 @@ public class Application implements IApplication
         LogConfigurator.configureFromPreferences();
 
         // Display config info
+        final Bundle bundle = context.getBrandingBundle();
         final String version = (String)
-            context.getBrandingBundle().getHeaders().get("Bundle-Version");
+                bundle.getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
         Activator.getLogger().info(app_info +
             " started for '" + config_name.get() + "' configuration");
@@ -89,11 +93,22 @@ public class Application implements IApplication
         final WorkQueue work_queue = new WorkQueue();
         try
         {
+            // Create alarm server
             final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
+            
+            // Enable console commands
+            ConsoleCommands commands = new ConsoleCommands(alarm_server);
+            final BundleContext bundle_context = bundle.getBundleContext();
+            bundle_context.registerService(CommandProvider.class.getName(), commands, null);
+
+            // "Main Loop"
             alarm_server.start();
             while (run)
                 work_queue.performQueuedCommands(500);
             alarm_server.stop();
+
+            // Release commands
+            commands = null;
         }
         catch (Throwable ex)
         {

@@ -31,7 +31,7 @@ public class ReadConfigJob extends Job
 
     /** Initialize job. Caller still has to <code>schedule()</code>!
      *  @param model Model who's config. reader will be invoked.
-     *  @param listener Listener to notify when done
+     *  @param listener Listener to notify when done.
      */
     public ReadConfigJob(final AlarmClientModel model, final AlarmClientModelConfigListener listener)
     {
@@ -49,6 +49,7 @@ public class ReadConfigJob extends Job
         model.readConfiguration(monitor);
         if (listener != null)
         	listener.newAlarmConfiguration(model);
+        model.fireNewConfig();
         return Status.OK_STATUS;
     }
 }

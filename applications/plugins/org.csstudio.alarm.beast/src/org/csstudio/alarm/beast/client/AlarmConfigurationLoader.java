@@ -102,7 +102,7 @@ public class AlarmConfigurationLoader
     {
         // New component, or modify existing component?
         final String name = loadName(component);
-        AlarmTreeItem tree_component = parent.getClientChild(name);
+        AlarmTreeItem tree_component = parent.getChild(name);
         if (tree_component == null)
             tree_component = config.addComponent(parent, name);
         else if (tree_component instanceof AlarmTreePV)
@@ -166,7 +166,7 @@ public class AlarmConfigurationLoader
         final String name = loadName(node);
         // Existing or new PV?
         final AlarmTreePV pv;
-        final AlarmTreeItem existing = parent.getClientChild(name);
+        final AlarmTreeItem existing = parent.getChild(name);
         if (existing == null)
             pv = config.addPV(parent, name);
         else if (existing instanceof AlarmTreePV)
