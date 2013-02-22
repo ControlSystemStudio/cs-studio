@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,9 +26,10 @@ public class LockUnlockChildrenHandler extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-
-			ISelection currentSelection =
-					HandlerUtil.getCurrentSelection(event);
+			Object viewer = HandlerUtil.getActivePart(event).getAdapter(GraphicalViewer.class);			
+			if(viewer == null) return null;
+			
+			ISelection currentSelection =((GraphicalViewer)viewer).getSelection();
 			if(currentSelection instanceof IStructuredSelection){
 				Object element = ((IStructuredSelection) currentSelection)
 						.getFirstElement();

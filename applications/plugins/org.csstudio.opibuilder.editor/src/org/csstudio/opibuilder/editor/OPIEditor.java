@@ -1129,8 +1129,8 @@ class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
 			if(helpContextProvider == null)
 				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
 			return helpContextProvider;
-		}					
-		return null;
+		}			
+		return OPIEditor.this.getAdapter(type);
 	}
 
 	public Control getControl() {
