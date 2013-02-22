@@ -218,7 +218,7 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 			
 			buttonGroup.add(toggleModel);
 			toggle.setModel(toggleModel);	
-			
+			toggle.setEnabled(isEnabled());
 			toggles.add(toggle);
 			models.add(toggleModel);
 			add(toggle);			
