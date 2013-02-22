@@ -12,6 +12,8 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.*;
+import gov.aps.jca.event.AccessRightsEvent;
+import gov.aps.jca.event.AccessRightsListener;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.GetEvent;
@@ -265,6 +267,16 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             channel.addMonitor(valueTypeFor(channel), countFor(channel), jcaDataSource.getMonitorMask(), monitorListener);
             needsMonitor = false;
         }
+        
+        channel.addAccessRightsListener(new AccessRightsListener() {
+
+            @Override
+            public void accessRightsChanged(AccessRightsEvent ev) {
+                synchronized(JCAChannelHandler.this) {
+                    processConnection(new JCAConnectionPayload(JCAChannelHandler.this, (Channel) ev.getSource()));
+                }
+            }
+        });
         
         // Setup metadata monitor if required
         if (jcaDataSource.isDbePropertySupported() && metaType != null) {
