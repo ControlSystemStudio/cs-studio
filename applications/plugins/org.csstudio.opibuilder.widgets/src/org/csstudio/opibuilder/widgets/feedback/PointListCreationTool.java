@@ -366,7 +366,8 @@ public final class PointListCreationTool extends TargetingTool {
 		if (editpart instanceof EditPart) {
 			// Force the new object to get positioned in the viewer.
 			viewer.flush();
-			viewer.select((EditPart) editpart);
+			if(((EditPart) editpart).isSelectable())
+				viewer.select((EditPart) editpart);
 		}
 	}
 
