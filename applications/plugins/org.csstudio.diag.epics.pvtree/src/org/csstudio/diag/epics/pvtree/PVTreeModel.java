@@ -3,12 +3,14 @@
  */
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.epics.vtype.AlarmSeverity;
 
 /** The PV Tree Model
  *  <p>
@@ -82,6 +84,26 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
                 return found;
         }
         return null;
+    }
+
+    /** @return Leaf items that are in alarm */
+    public List<PVTreeItem> getAlarmPVs()
+    {
+        final List<PVTreeItem> alarms = new ArrayList<>();
+        addAlarmPVs(alarms, root);
+        return alarms;
+    }
+
+    /** Recursively add leaf items that are in alarm
+     *  @param alarms List to extend
+     *  @param item Where to start looking for alarm leafs
+     */
+    private void addAlarmPVs(final List<PVTreeItem> alarms, final PVTreeItem item)
+    {
+        if (item.getSeverity() != AlarmSeverity.NONE)
+            alarms.add(item);
+        for (PVTreeItem sub : item.getLinks())
+            addAlarmPVs(alarms, sub);
     }
 
     // IStructuredContentProvider

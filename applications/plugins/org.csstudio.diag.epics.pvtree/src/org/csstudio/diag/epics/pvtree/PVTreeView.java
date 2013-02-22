@@ -14,6 +14,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -88,7 +89,21 @@ public class PVTreeView extends ViewPart
 
     /** Create the GUI. */
     @Override
-    public void createPartControl(Composite parent)
+    public void createPartControl(final Composite parent)
+    {
+        createGUI(parent);
+        if (model == null)
+            return;
+
+        hookContextMenu();
+        
+        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        toolbar.add(new CollapseTreeAction(viewer.getTree()));
+        toolbar.add(new ExpandAlarmTreeAction(viewer));
+        toolbar.add(new ExpandTreeAction(viewer.getTree()));
+    }
+    
+    private void createGUI(final Composite parent)
     {
         GridLayout gl = new GridLayout();
         gl.numColumns = 2;
@@ -115,7 +130,7 @@ public class PVTreeView extends ViewPart
             {   setPVName(new_pv_name); }
         };
 
-        Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        final Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
         gd.horizontalSpan = gl.numColumns;
         gd.grabExcessHorizontalSpace = true;
@@ -138,7 +153,11 @@ public class PVTreeView extends ViewPart
         }
         viewer.setContentProvider(model);
         viewer.setLabelProvider(new PVTreeLabelProvider(tree));
-        viewer.setInput(getViewSite());
+        // One and only model _is_ the content.
+        // Setting the Input will trigger refresh,
+        // but the exact 'Input' doesn't really matter:
+        // Model used as content provider will ignore it.
+        viewer.setInput(model);
 
         // Support drop
         new ControlSystemDropTarget(parent, ProcessVariable.class, String.class)
@@ -163,7 +182,6 @@ public class PVTreeView extends ViewPart
                 pv_name_helper.saveSettings();
             }
         });
-        hookContextMenu();
 
         // Populate PV list
         pv_name_helper.loadSettings();
