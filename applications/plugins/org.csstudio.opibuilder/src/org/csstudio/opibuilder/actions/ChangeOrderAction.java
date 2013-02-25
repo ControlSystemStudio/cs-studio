@@ -240,7 +240,7 @@ public class ChangeOrderAction extends SelectionAction {
 			if(selection instanceof AbstractBaseEditPart){
 				AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
 				AbstractWidgetModel widgetModel = (AbstractWidgetModel) widgetEditpart.getModel();
-				if(widgetEditpart.getParent() != null){
+				if(widgetEditpart.getParent() != null && widgetModel.getParent()!=null){
 					AbstractContainerModel containerModel = 
 						(AbstractContainerModel) widgetEditpart.getParent().getModel();
 					

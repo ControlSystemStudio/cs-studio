@@ -58,10 +58,10 @@
             name="Step Back">
       </command>
       <command
-            defaultHandler="org.csstudio.opibuilder.actions.LayoutWidgetsHandler"
-            description="Layout Widgets"
-            id="org.csstudio.opibuilder.actions.layoutWidgets"
-            name="Layout Widgets">
+            defaultHandler="org.csstudio.opibuilder.actions.SelectParentHandler"
+            description="Select Parent Container"
+            id="org.csstudio.opibuilder.actions.selectParent"
+            name="Select Parent">
       </command>
    </extension>
    <extension
@@ -97,10 +97,10 @@
             sequence="M1+ARROW_RIGHT">
       </key>
       <key
-            commandId="org.csstudio.opibuilder.actions.layoutWidgets"
+            commandId="org.csstudio.opibuilder.actions.selectParent"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+L">
+            sequence="M1+R">
       </key>
    </extension>
    <extension
@@ -189,7 +189,7 @@
                enablesFor="1"
                icon="icons/layout_widgets.png"
                id="org.csstudio.opibuilder.layoutWidgetsAction"
-               label="Layout Widgets"
+               label="&amp;Layout Widgets"
                menubarPath="group"
                tooltip="Layout widgets in the container">
          </action>
@@ -198,6 +198,33 @@
                   name="executionMode"
                   value="EDIT_MODE">
             </objectState>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.selectParent"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.SelectParentAction"
+               definitionId="org.csstudio.opibuilder.actions.selectParent"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.selectParentAction"
+               label="&amp;Select Parent"
+               menubarPath="edit"
+               tooltip="Select Parent Container">
+         </action>
+         <visibility>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="EDIT_MODE">
+               </objectState>
+               <not>
+                  <objectClass
+                        name="org.csstudio.opibuilder.editparts.DisplayEditpart">
+                  </objectClass>
+               </not>
+            </and>
          </visibility>
       </objectContribution>
    </extension>

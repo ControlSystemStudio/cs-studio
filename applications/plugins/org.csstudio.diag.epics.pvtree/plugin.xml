@@ -65,5 +65,8 @@
       <toc
             file="toc.xml"
             primary="true"/>
+      <toc
+            file="tocChangelog.xml"
+            primary="true"/>
    </extension>
 </plugin>

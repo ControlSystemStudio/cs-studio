@@ -270,7 +270,7 @@ class PVTreeItem
             return links.get(0);
         return null;
     }
-
+    
     /** @return Returns the all links. */
     public PVTreeItem[] getLinks()
     {

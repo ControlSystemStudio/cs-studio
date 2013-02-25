@@ -27,6 +27,13 @@ public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 		
 		final GroupingContainerModel containerModel = getSelectedContainer();
 		
+		Command cmd = createLockUnlockCommand(containerModel);
+		execute(cmd);		
+		
+	}
+
+	public static Command createLockUnlockCommand(
+			final GroupingContainerModel containerModel) {
 		Command cmd = new SetWidgetPropertyCommand(containerModel, 
 				GroupingContainerModel.PROP_LOCK_CHILDREN, !containerModel.isLocked()){
 			@Override
@@ -58,8 +65,7 @@ public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 			}
 		};	
 		cmd.setLabel(containerModel.isLocked()? "Unlock Children" : "Lock Children");
-		execute(cmd);		
-		
+		return cmd;
 	}
 	
 	/**

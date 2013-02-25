@@ -10,6 +10,7 @@ package org.csstudio.display.pvtable.ui.editor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.logging.Level;
 
 import org.csstudio.display.pvtable.Plugin;
@@ -20,11 +21,15 @@ import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -37,11 +42,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /** EditorPart for the PV Table
  *  @author Kay Kasemir
+ *  @author Eric Berryman - File system support
  */
 public class PVTableEditor extends EditorPart
 {
@@ -86,9 +93,26 @@ public class PVTableEditor extends EditorPart
         // "Site is incorrect" error results if the site is not set:
         setSite(site);
         setInput(new NoResourceEditorInput(input));
+        
+        // Try workspace file..
         final IFile file = getEditorInputFile();
-        if (file != null)
+        // .. as well as file store
+        IFileStore fileStore = (IFileStore) input.getAdapter(IFileStore.class);
+        if (fileStore == null && input instanceof FileStoreEditorInput)
         {
+            final URI uri = ((FileStoreEditorInput)input).getURI();
+            try
+            {
+                fileStore = EFS.getStore(uri);
+            }
+            catch (CoreException e)
+            {
+                // Ignore
+            }
+        }
+        
+        if (file != null)
+        {   // Got workspace file?
             try
             {
                 final InputStream stream = file.getContents();
@@ -96,7 +120,19 @@ public class PVTableEditor extends EditorPart
             }
             catch (Exception e)
             {
-                throw new PartInitException("Load error", e); //$NON-NLS-1$
+                throw new PartInitException("Workspace file load error", e); //$NON-NLS-1$
+            }
+        }
+        else if (fileStore != null)
+        {   // Got file system location?
+            try
+            {
+                final InputStream stream = fileStore.openInputStream(EFS.CACHE, new NullProgressMonitor());
+                model = PVTableXMLPersistence.read(stream);
+            }
+            catch (Exception e)
+            {
+                throw new PartInitException("File system file load error", e); //$NON-NLS-1$
             }
         }
         else // Empty model

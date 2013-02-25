@@ -135,7 +135,7 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
 					.createCustomHandles(hostEP);
 
 			if (contributedHandles != null) {
-				handleList.addAll(contributedHandles);
+				handleList.addAll(0, contributedHandles);
 			}
 
 			return handleList;

@@ -44,15 +44,15 @@ public class LabelModel extends AbstractPVWidgetModel implements ITextModel{
 	public LabelModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_WHITE);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
-		setSize(150, 20);	
+		setSize(80, 20);	
 	}
 
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
-				WidgetPropertyCategory.Display, "double click to enter text", true));
+				WidgetPropertyCategory.Display, "Label", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
-				WidgetPropertyCategory.Display, false));
+				WidgetPropertyCategory.Display, !pvModel));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
 				WidgetPropertyCategory.Display, false));
 		addProperty(new ComboProperty(PROP_ALIGN_H, "Horizontal Alignment", 
