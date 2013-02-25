@@ -7,10 +7,9 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.csstudio.channel.widgets.ChannelViewerConfigurationDialog;
-import org.csstudio.channel.widgets.WaterfallConfigurationDialog;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.BeanComposite;
 import org.csstudio.ui.util.ConfigurableWidget;
@@ -23,6 +22,7 @@ import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -55,8 +55,8 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends BeanComposite implements ISelectionProvider,
-	ConfigurableWidget {
+public class Line2DPlotWidget extends BeanComposite implements
+	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
     private LineGraphPlot plot;
@@ -319,26 +319,24 @@ public class Line2DPlotWidget extends BeanComposite implements ISelectionProvide
     }
 
     @Override
-    public void addSelectionChangedListener(
-	    final ISelectionChangedListener listener) {
-
-    }
-
-    @Override
     public ISelection getSelection() {
 	if (getPvName() != null) {
 	    return new StructuredSelection(new Line2DPlotSelection(
-		    new ProcessVariable(getPvName()), 
-		    getXpvName() != null ? new ProcessVariable(getXpvName()) : null,
-		    this));
+		    new ProcessVariable(getPvName()),
+		    getXpvName() != null ? new ProcessVariable(getXpvName())
+			    : null, this));
 	}
 	return null;
     }
 
     @Override
+    public void addSelectionChangedListener(
+	    final ISelectionChangedListener listener) {
+    }
+
+    @Override
     public void removeSelectionChangedListener(
 	    ISelectionChangedListener listener) {
-
     }
 
     @Override
