@@ -5,10 +5,14 @@ package org.csstudio.graphene;
 
 import static org.epics.util.time.TimeDuration.ofHertz;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.csstudio.channel.widgets.ChannelViewerConfigurationDialog;
+import org.csstudio.channel.widgets.WaterfallConfigurationDialog;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
@@ -30,8 +34,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRanges;
 import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraphRendererUpdate;
+import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -49,12 +54,13 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends Composite implements ISelectionProvider {
+public class Line2DPlotWidget extends Composite implements ISelectionProvider,
+	ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
     private LineGraphPlot plot;
     private ErrorBar errorBar;
-    private boolean showRange;
+    private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
@@ -110,13 +116,14 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 		if (plot != null) {
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
-		    plot.update(new LineGraphRendererUpdate()
-			    .rangeFromDataset(false)
-			    .startY((invert - yRangeControl.getSelectedMax()))
-			    .endY((invert - yRangeControl.getSelectedMin())));
+		    plot.update(new LineGraph2DRendererUpdate()
+			    .yAxisRange(AxisRanges.absolute(invert
+				    - yRangeControl.getSelectedMax(), invert
+				    - yRangeControl.getSelectedMin())));
 		}
 	    }
 	});
+	yRangeControl.setVisible(showAxis);
 
 	imageDisplay = new VImageDisplay(this);
 	FormData fd_imageDisplay = new FormData();
@@ -131,7 +138,7 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    @Override
 	    public void controlResized(ControlEvent e) {
 		if (plot != null) {
-		    plot.update(new LineGraphRendererUpdate()
+		    plot.update(new LineGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
 			    .imageWidth(imageDisplay.getSize().x)
 			    .interpolation(InterpolationScheme.LINEAR));
@@ -157,11 +164,28 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    @Override
 	    public void rangeChanged() {
 		if (plot != null) {
-		    plot.update(new LineGraphRendererUpdate()
-			    .rangeFromDataset(false)
-			    .startX(xRangeControl.getSelectedMin())
-			    .endX(xRangeControl.getSelectedMax()));
+		    plot.update(new LineGraph2DRendererUpdate()
+			    .xAxisRange(AxisRanges.absolute(
+				    xRangeControl.getSelectedMin(),
+				    xRangeControl.getSelectedMax())));
 		}
+	    }
+	});
+	xRangeControl.setVisible(showAxis);
+
+	addPropertyChangeListener(new PropertyChangeListener() {
+
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if (event.getPropertyName().equals("processVariable")
+			|| event.getPropertyName().equals("xProcessVariable")) {
+		    reconnect();
+		} else if (event.getPropertyName().equals("showAxis")) {
+		    xRangeControl.setVisible(showAxis);
+		    yRangeControl.setVisible(showAxis);
+		    redraw();
+		}
+
 	    }
 	});
     }
@@ -173,19 +197,48 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     }
 
     private PVReader<Plot2DResult> pv;
-    // Y values
-    private String pvName;
 
-    public String getpvName() {
+    private String pvName;
+    private String xPvName;
+
+    public boolean isShowAxis() {
+	return showAxis;
+    }
+
+    public boolean getShowAxis() {
+	return this.showAxis;
+    }
+
+    public void setShowAxis(boolean showAxis) {
+	boolean oldValue = this.showAxis;
+	this.showAxis = showAxis;
+	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
+    }
+
+    public String getXpvName() {
+	return xPvName;
+    }
+
+    public void setXPvName(String xPvName) {
+	String oldValue = this.xPvName;
+	this.xPvName = xPvName;
+	changeSupport.firePropertyChange("xProcessVariable", oldValue,
+		this.xPvName);
+    }
+
+    public String getPvName() {
 	return this.pvName;
     }
 
-    public void setpvName(String pvName) {
-	if (this.pvName != null && this.pvName.equals(pvName)) {
-	    return;
-	}
+    public void setPvName(String pvName) {
+	String oldValue = this.pvName;
 	this.pvName = pvName;
-	reconnect();
+	changeSupport.firePropertyChange("processVariable", oldValue,
+		this.pvName);
+    }
+
+    public void setPvs(String pvName, String xPvName) {
+
     }
 
     private void setLastError(Exception lastException) {
@@ -203,12 +256,23 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 	    resetRange(yRangeControl);
 	}
 
-	// This part will be handled by pvmanager using formula
+	if (getPvName() == null || getPvName().isEmpty()) {
+	    return;
+	}
 
-	plot = ExpressionLanguage
-		.lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-			.formula(getpvName()));
-	plot.update(new LineGraphRendererUpdate()
+	if (getXpvName() != null && !getXpvName().isEmpty()) {
+	    plot = ExpressionLanguage
+		    .lineGraphOf(
+			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				    .formula(getXpvName()),
+			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				    .formula(getPvName()));
+	} else {
+	    plot = ExpressionLanguage
+		    .lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+			    .formula(getPvName()));
+	}
+	plot.update(new LineGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x)
 		.interpolation(InterpolationScheme.LINEAR));
@@ -251,15 +315,15 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
     public void saveState(IMemento memento) {
-	if (getpvName() != null) {
-	    memento.putString(MEMENTO_PVNAME, getpvName());
+	if (getPvName() != null) {
+	    memento.putString(MEMENTO_PVNAME, getPvName());
 	}
     }
 
     public void loadState(IMemento memento) {
 	if (memento != null) {
 	    if (memento.getString(MEMENTO_PVNAME) != null) {
-		setpvName(memento.getString(MEMENTO_PVNAME));
+		setPvName(memento.getString(MEMENTO_PVNAME));
 	    }
 	}
     }
@@ -272,8 +336,11 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
 
     @Override
     public ISelection getSelection() {
-	if (getpvName() != null) {
-	    return new StructuredSelection(new ProcessVariable(getpvName()));
+	if (getPvName() != null) {
+	    return new StructuredSelection(new Line2DPlotSelection(
+		    new ProcessVariable(getPvName()), 
+		    getXpvName() != null ? new ProcessVariable(getXpvName()) : null,
+		    this));
 	}
 	return null;
     }
@@ -287,5 +354,40 @@ public class Line2DPlotWidget extends Composite implements ISelectionProvider {
     @Override
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    private boolean configurable = true;
+
+    private Line2DPlotConfigurationDialog dialog;
+
+    @Override
+    public boolean isConfigurable() {
+	return this.configurable;
+    }
+
+    @Override
+    public void setConfigurable(boolean configurable) {
+	boolean oldValue = this.configurable;
+	this.configurable = configurable;
+	changeSupport.firePropertyChange("configurable", oldValue,
+		this.configurable);
+    }
+
+    @Override
+    public void openConfigurationDialog() {
+	if (dialog != null)
+	    return;
+	dialog = new Line2DPlotConfigurationDialog(this);
+	dialog.open();
+    }
+
+    @Override
+    public boolean isConfigurationDialogOpen() {
+	return dialog != null;
+    }
+
+    @Override
+    public void configurationDialogClosed() {
+	dialog = null;
     }
 }

@@ -22,7 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.epics.graphene.Histogram1DRendererUpdate;
+import org.epics.graphene.Histogram1DUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -196,8 +196,8 @@ public class HistogramWidget extends Composite {
 	}
 
 	plot = histogramOf(vDouble(getProcessVariable().getName()));
-	plot.update(new Histogram1DRendererUpdate().imageWidth(
-		imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y));
+//	plot.update(new Histogram1DUpdate().imageWidth(
+//		imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y));
 	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<VImage>() {
 		    @Override
@@ -210,8 +210,8 @@ public class HistogramWidget extends Composite {
 
     private void changePlotSize(int newWidgth, int newHeight) {
 	if (plot != null) {
-	    plot.update(new Histogram1DRendererUpdate().imageHeight(newHeight)
-		    .imageWidth(newWidgth));
+//	    plot.update(new Histogram1DUpdate(). imageHeight(newHeight)
+//		    .imageWidth(newWidgth));
 	}
     }
 
