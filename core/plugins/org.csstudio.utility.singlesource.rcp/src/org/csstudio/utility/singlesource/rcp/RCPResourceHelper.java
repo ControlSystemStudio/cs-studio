@@ -84,7 +84,10 @@ public class RCPResourceHelper extends ResourceHelper
             {
                 try
                 {
-                    ws_file.setContents(pipein, IResource.FORCE, new NullProgressMonitor());
+                    if (ws_file.exists())
+                        ws_file.setContents(pipein, IResource.FORCE, new NullProgressMonitor());
+                    else
+                        ws_file.create(pipein, IResource.FORCE, new NullProgressMonitor());
                 }
                 catch (Exception ex)
                 {
