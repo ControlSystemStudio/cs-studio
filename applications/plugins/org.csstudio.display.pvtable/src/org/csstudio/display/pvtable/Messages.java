@@ -18,6 +18,7 @@ public class Messages extends NLS
     public static String Delete_TT;
     public static String EnterPositiveTolerance;
     public static String EnterTolerance;
+    public static String Error;
     public static String NotSaved;
     public static String NotSaved_TT;
     public static String PV;
