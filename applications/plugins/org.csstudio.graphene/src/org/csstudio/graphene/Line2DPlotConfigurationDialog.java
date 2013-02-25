@@ -18,6 +18,9 @@ public class Line2DPlotConfigurationDialog extends
 
     protected Line2DPlotConfigurationDialog(Line2DPlotWidget control) {
 	super(control, SWT.DIALOG_TRIM, "Configure Line2D Plot");
+	addInitialValues("showAxisScroll", getWidget().getShowAxis());
+	addInitialValues("yPv", getWidget().getPvName());
+	addInitialValues("xPv", getWidget().getXpvName());
     }
 
     @Override
@@ -29,9 +32,9 @@ public class Line2DPlotConfigurationDialog extends
 
     @Override
     protected void populateInitialValues() {
-	getConfigurationComposite().setYPv(getWidget().getPvName());
-	getConfigurationComposite().setXPv(getWidget().getXpvName());
-	getConfigurationComposite().setShowAxis(getWidget().getShowAxis());
+	getConfigurationComposite().setYPv((String) getInitialValues().get("yPv"));
+	getConfigurationComposite().setXPv((String) getInitialValues().get("xPv"));
+	getConfigurationComposite().setShowAxis((Boolean) getInitialValues().get("showAxisScroll"));
     }
 
     @Override
