@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Single Source Helper
+Bundle-SymbolicName: org.csstudio.utility.singlesource;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.utility.singlesource.SingleSourcePlugin
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.eclipse.ui.workbench;bundle-version="3.7.0";visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Description: Abstraction to support both RCP and RAP
+Export-Package: org.csstudio.utility.singlesource

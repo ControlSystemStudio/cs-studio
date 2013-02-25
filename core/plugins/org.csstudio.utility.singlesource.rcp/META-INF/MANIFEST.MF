@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Single Source Helper implementation for RCP
+Bundle-SymbolicName: org.csstudio.utility.singlesource.rcp;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Description: Abstraction to support both RCP and RAP
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.0",
+ org.csstudio.utility.singlesource;bundle-version="1.0.0"
