@@ -28,7 +28,7 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
     private ReadFunction<? extends VNumber> xInitialOffset;
     private ReadFunction<? extends VNumber> xIncrementSize;
     
-    private LineGraph2DRenderer renderer = new LineGraph2DRenderer();
+    private LineGraph2DRenderer renderer = new LineGraph2DRenderer(300, 200);
     
     private VImage previousImage;
     private final QueueCollector<LineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);

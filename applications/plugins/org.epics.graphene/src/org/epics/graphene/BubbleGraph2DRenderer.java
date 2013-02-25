@@ -10,6 +10,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Path2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 
 /**
@@ -45,9 +46,14 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpdate
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         LabelColorScheme labelColor = LabelColorSchemes.orderedHueColor(data.getLabels());
+        
+        // Order values by 
+        ListInt indexes = org.epics.util.array.ListNumbers.sortedView(data.getZValues()).getIndexes();
+        
         // Make sure that the line does not go ouside the chart
         setClip(g);
-        for (int i = 0; i < data.getCount(); i++) {
+        for (int j = indexes.size() - 1; j >= 0; j--) {
+            int i = indexes.getInt(j);
             double size = radiusScale(zPlotRange.getMinimum().doubleValue(), data.getZValues().getDouble(i), zPlotRange.getMaximum().doubleValue(),
                     3, 15);
             double x = scaledX(data.getXValues().getDouble(i));

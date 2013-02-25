@@ -13,6 +13,12 @@ public class LineGraph2DRendererUpdate extends Graph2DRendererUpdate<LineGraph2D
     private InterpolationScheme interpolation;
     
     public LineGraph2DRendererUpdate interpolation(InterpolationScheme scheme) {
+        if (scheme == null) {
+            throw new NullPointerException("Interpolation scheme chan't be null");
+        }
+        if (!LineGraph2DRenderer.supportedInterpolationScheme.contains(scheme)) {
+            throw new IllegalArgumentException("Interpolation " + scheme + " is not supported");
+        }
         this.interpolation = scheme;
         return this;
     }

@@ -9,7 +9,7 @@ package org.epics.graphene;
  * @author carcassi
  */
 public class Graph2DRendererUpdate<T extends Graph2DRendererUpdate<T>> {
-
+    
     private Integer imageHeight;
     private Integer imageWidth;
     private AxisRange xAxisRange;

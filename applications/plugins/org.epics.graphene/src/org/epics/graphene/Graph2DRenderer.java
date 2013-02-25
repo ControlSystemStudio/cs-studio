@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.util.Arrays;
 import java.util.List;
 import org.epics.util.array.ArrayDouble;
@@ -19,6 +20,7 @@ import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 
 /**
+ * The base class for all graph renderers.
  *
  * @author carcassi
  */
@@ -42,15 +44,31 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     protected int yAreaEnd;
     protected int xAreaEnd;
 
-    public Graph2DRenderer(int imageWidth, int imageHeight) {
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
+    /**
+     * Creates a graph renderer.
+     * 
+     * @param graphWidth the graph width
+     * @param graphHeight the graph height
+     */
+    public Graph2DRenderer(int graphWidth, int graphHeight) {
+        this.imageWidth = graphWidth;
+        this.imageHeight = graphHeight;
     }
 
+    /**
+     * The current height of the graph.
+     * 
+     * @return the graph height
+     */
     public int getImageHeight() {
         return imageHeight;
     }
 
+    /**
+     * The current width of the graph.
+     * 
+     * @return the graph width
+     */
     public int getImageWidth() {
         return imageWidth;
     }
@@ -100,30 +118,68 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     private int xLabelMaxHeight;
     private int yLabelMaxWidth;
 
+    /**
+     * The current strategy to calculate the x range for the graph.
+     * 
+     * @return the x axis range calculator
+     */
     public AxisRange getXAxisRange() {
         return xAxisRange;
     }
 
+    /**
+     * The current strategy to calculate the y range for the graph.
+     * 
+     * @return the y axis range calculator
+     */
     public AxisRange getYAxisRange() {
         return yAxisRange;
     }
 
+    /**
+     * The aggregated range of all the data that has been rendered.
+     * 
+     * @return the aggregated data x range
+     */
     public Range getXAggregatedRange() {
         return xAggregatedRange;
     }
 
+    /**
+     * The aggregated range of all the data that has been rendered.
+     * 
+     * @return the aggregated data y range
+     */
     public Range getYAggregatedRange() {
         return yAggregatedRange;
     }
 
+    /**
+     * The range of the x axis in the last graph rendering.
+     * 
+     * @return the x axis range
+     */
     public Range getXPlotRange() {
         return xPlotRange;
     }
 
+    /**
+     * The range of the y axis in the last graph rendering.
+     * 
+     * @return the y axis range
+     */
     public Range getYPlotRange() {
         return yPlotRange;
     }
 
+    /**
+     * Applies the update to the renderer.
+     * <p>
+     * When sub-classing, one should re-implement this method by first calling it
+     * and then applying all the updates specific to the sub-class.
+     * 
+     * @param update the update to apply
+     */
     public void update(T update) {
         if (update.getImageHeight() != null) {
             imageHeight = update.getImageHeight();
@@ -147,6 +203,11 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         }
     }
     
+    /**
+     * Creates a new update for the given graph.
+     * 
+     * @return a new update object
+     */
     public abstract T newUpdate();
     
     protected void calculateRanges(Range xDataRange, Range yDataRange) {
@@ -242,6 +303,104 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         
         drawYLabels();
         drawXLabels();
+    }
+    
+    protected void drawValueLine(ListNumber xValues, ListNumber yValues, InterpolationScheme interpolation) {
+        // Scale data and sort data
+        int dataCount = xValues.size();
+        double[] scaledX = new double[dataCount];
+        double[] scaledY = new double[dataCount];
+        for (int i = 0; i < scaledY.length; i++) {
+            scaledX[i] = scaledX(xValues.getDouble(i));
+            scaledY[i] = scaledY(yValues.getDouble(i));;
+        }
+        
+        Path2D path;
+        switch (interpolation) {
+            default:
+            case NEAREST_NEIGHBOUR:
+                path = nearestNeighbour(scaledX, scaledY);
+                break;
+            case LINEAR:
+                path = linearInterpolation(scaledX, scaledY);
+                break;
+            case CUBIC:
+                path = cubicInterpolation(scaledX, scaledY);
+        }
+
+        // Draw the line
+        g.draw(path);
+    }
+
+    private static Path2D.Double nearestNeighbour(double[] scaledX, double[] scaledY) {
+        Path2D.Double line = new Path2D.Double();
+        line.moveTo(scaledX[0], scaledY[0]);
+        for (int i = 1; i < scaledY.length; i++) {
+            double halfX = scaledX[i - 1] + (scaledX[i] - scaledX[i - 1]) / 2;
+            if (!java.lang.Double.isNaN(scaledY[i-1])) {
+                line.lineTo(halfX, scaledY[i - 1]);
+                if (!java.lang.Double.isNaN(scaledY[i]))
+                    line.lineTo(halfX, scaledY[i]);
+            } else {
+                line.moveTo(halfX, scaledY[i]);
+            }
+        }
+        line.lineTo(scaledX[scaledX.length - 1], scaledY[scaledY.length - 1]);
+        return line;
+    }
+
+    private static Path2D.Double linearInterpolation(double[] scaledX, double[] scaledY) {
+        Path2D.Double line = new Path2D.Double();
+        line.moveTo(scaledX[0], scaledY[0]);
+        for (int i = 1; i < scaledY.length; i++) {
+            line.lineTo(scaledX[i], scaledY[i]);
+        }
+        return line;
+    }
+
+    private static Path2D.Double cubicInterpolation(double[] scaledX, double[] scaledY) {
+        Path2D.Double path = new Path2D.Double();
+        path.moveTo(scaledX[0], scaledY[0]);
+        for (int i = 1; i < scaledY.length; i++) {
+            // Extract 4 points (take care of boundaries)
+            double y1 = scaledY[i - 1];
+            double y2 = scaledY[i];
+            double x1 = scaledX[i - 1];
+            double x2 = scaledX[i];
+            double y0;
+            double x0;
+            if (i > 1) {
+                y0 = scaledY[i - 2];
+                x0 = scaledX[i - 2];
+            } else {
+                y0 = y1 - (y2 - y1) / 2;
+                x0 = x1 - (x2 - x1);
+            }
+            double y3;
+            double x3;
+            if (i < scaledY.length - 1) {
+                y3 = scaledY[i + 1];
+                x3 = scaledX[i + 1];
+            } else {
+                y3 = y2 + (y2 - y1) / 2;
+                x3 = x2 + (x2 - x1) / 2;
+            }
+
+            // Convert to Bezier
+            double bx0 = x1;
+            double by0 = y1;
+            double bx3 = x2;
+            double by3 = y2;
+            double bdy0 = (y2 - y0) / (x2 - x0);
+            double bdy3 = (y3 - y1) / (x3 - x1);
+            double bx1 = bx0 + (x2 - x0) / 6.0;
+            double by1 = (bx1 - bx0) * bdy0 + by0;
+            double bx2 = bx3 - (x3 - x1) / 6.0;
+            double by2 = (bx2 - bx3) * bdy3 + by3;
+
+            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+        }
+        return path;
     }
     
     private static final int MIN = 0;
