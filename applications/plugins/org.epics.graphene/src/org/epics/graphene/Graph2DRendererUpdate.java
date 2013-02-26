@@ -14,6 +14,8 @@ public class Graph2DRendererUpdate<T extends Graph2DRendererUpdate<T>> {
     private Integer imageWidth;
     private AxisRange xAxisRange;
     private AxisRange yAxisRange;
+    private ValueScale xValueScale;
+    private ValueScale yValueScale;
     
     protected T self() {
         return (T) this;
@@ -39,6 +41,16 @@ public class Graph2DRendererUpdate<T extends Graph2DRendererUpdate<T>> {
         return self();
     }
     
+    public T xValueScale(ValueScale xValueScale) {
+        this.xValueScale = xValueScale;
+        return self();
+    }
+    
+    public T yValueScale(ValueScale yValueScale) {
+        this.yValueScale = yValueScale;
+        return self();
+    }
+    
     public Integer getImageHeight() {
         return imageHeight;
     }
@@ -54,7 +66,14 @@ public class Graph2DRendererUpdate<T extends Graph2DRendererUpdate<T>> {
     public AxisRange getYAxisRange() {
         return yAxisRange;
     }
-    
+
+    public ValueScale getXValueScale() {
+        return xValueScale;
+    }
+
+    public ValueScale getYValueScale() {
+        return yValueScale;
+    }
     
     
 }

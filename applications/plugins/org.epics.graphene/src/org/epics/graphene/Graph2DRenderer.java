@@ -83,6 +83,9 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     // Strategy for calculating the axis range
     private AxisRange xAxisRange = AxisRanges.integrated();
     private AxisRange yAxisRange = AxisRanges.integrated();
+    // Strategy for generating labels and scaling value of the axis
+    private ValueScale xValueScale = ValueScales.linearScale();
+    private ValueScale yValueScale = ValueScales.linearScale();
     // Colors and fonts
     protected Color backgroundColor = Color.WHITE;
     protected Color labelColor = Color.BLACK;
@@ -193,6 +196,12 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         if (update.getYAxisRange() != null) {
             yAxisRange = update.getYAxisRange();
         }
+        if (update.getXValueScale()!= null) {
+            xValueScale = update.getXValueScale();
+        }
+        if (update.getYValueScale() != null) {
+            yValueScale = update.getYValueScale();
+        }
     }
     
     static Range aggregateRange(Range dataRange, Range aggregatedRange) {
@@ -238,8 +247,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     }
     
     protected void calculateGraphArea() {
-        ValueAxis xAxis = ValueAxis.createAutoAxis(xPlotRange.getMinimum().doubleValue(), xPlotRange.getMaximum().doubleValue(), Math.max(2, getImageWidth() / 60));
-        ValueAxis yAxis = ValueAxis.createAutoAxis(yPlotRange.getMinimum().doubleValue(), yPlotRange.getMaximum().doubleValue(), Math.max(2, getImageHeight() / 60));
+        ValueAxis xAxis = xValueScale.references(xPlotRange, 2, Math.max(2, getImageWidth() / 60));
+        ValueAxis yAxis = yValueScale.references(yPlotRange, 2, Math.max(2, getImageHeight() / 60));
         xReferenceLabels = Arrays.asList(xAxis.getTickLabels());
         yReferenceLabels = Arrays.asList(yAxis.getTickLabels());
         xReferenceValues = new ArrayDouble(xAxis.getTickValues());
@@ -478,11 +487,11 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     
 
     protected final double scaledX(double value) {
-        return xPlotCoordStart + NumberUtil.scale(value, xPlotValueStart, xPlotValueEnd, xPlotCoordWidth);
+        return xValueScale.scaleValue(value, xPlotValueStart, xPlotValueEnd, xPlotCoordStart, xPlotCoordEnd);
     }
 
     protected final double scaledY(double value) {
-        return yPlotCoordEnd - NumberUtil.scale(value, yPlotValueStart, yPlotValueEnd, yPlotCoordHeight);
+        return yValueScale.scaleValue(value, yPlotValueStart, yPlotValueEnd, yPlotCoordEnd, yPlotCoordStart);
     }
     
     protected void setClip(Graphics2D g) {
