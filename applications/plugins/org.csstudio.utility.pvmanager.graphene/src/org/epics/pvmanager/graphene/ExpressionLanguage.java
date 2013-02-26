@@ -18,43 +18,68 @@ import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.SourceRateExpression;
 
 /**
- *
+ * 
  * @author carcassi
  */
 public class ExpressionLanguage {
-    private ExpressionLanguage() {}
+    private ExpressionLanguage() {
+    }
 
     static {
-        // Add support for Epics types.
-        DataTypeSupport.install();
-        // Add support for Basic types
-        BasicTypeSupport.install();
-        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Plot2DResult.class));
+	// Add support for Epics types.
+	DataTypeSupport.install();
+	// Add support for Basic types
+	BasicTypeSupport.install();
+	TypeSupport.addTypeSupport(NotificationSupport
+		.immutableTypeSupport(Plot2DResult.class));
     }
 
-    public static Histogram1DPlot histogramOf(SourceRateExpression<? extends VNumber> vDoubles) {
-        DesiredRateExpression<? extends List<? extends VNumber>> queue = newValuesOf(vDoubles);
-        return new Histogram1DPlot(queue, new Histogram1DFunction(queue.getFunction()), "histogram");
+    public static Histogram1DPlot histogramOf(
+	    SourceRateExpression<? extends VNumber> vDoubles) {
+	DesiredRateExpression<? extends List<? extends VNumber>> queue = newValuesOf(vDoubles);
+	return new Histogram1DPlot(queue, new Histogram1DFunction(
+		queue.getFunction()), "histogram");
     }
 
-    public static Histogram1DPlot histogramOf(DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
-        return new Histogram1DPlot(vDoubles, new Histogram1DFunction(vDoubles.getFunction()), "histogram");
+    public static Histogram1DPlot histogramOf(
+	    DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
+	return new Histogram1DPlot(vDoubles, new Histogram1DFunction(
+		vDoubles.getFunction()), "histogram");
     }
 
-    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
-        return new LineGraphPlot(vDoubleArray, new LineGraphFunction(vDoubleArray.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(
+	    DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
+	return new LineGraphPlot(vDoubleArray, new LineGraphFunction(
+		vDoubleArray.getFunction()), "lineGraph");
     }
 
-    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> yArray,
-            DesiredRateExpression<? extends VNumber> xInitialOffset,
-            DesiredRateExpression<? extends VNumber> xIncrementSize) {
-        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(yArray).and(xInitialOffset).and(xIncrementSize),
-                new LineGraphFunction(yArray.getFunction(), xInitialOffset.getFunction(), xIncrementSize.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(
+	    DesiredRateExpression<? extends VNumberArray> yArray,
+	    DesiredRateExpression<? extends VNumber> xInitialOffset,
+	    DesiredRateExpression<? extends VNumber> xIncrementSize) {
+	return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>()
+		.and(yArray).and(xInitialOffset).and(xIncrementSize),
+		new LineGraphFunction(yArray.getFunction(),
+			xInitialOffset.getFunction(),
+			xIncrementSize.getFunction()), "lineGraph");
     }
 
-    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> xVDoubleArray, DesiredRateExpression<? extends VNumberArray> yVDoubleArray) {
-        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(xVDoubleArray).and(yVDoubleArray),
-                new LineGraphFunction(xVDoubleArray.getFunction(), yVDoubleArray.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(
+	    DesiredRateExpression<? extends VNumberArray> xVDoubleArray,
+	    DesiredRateExpression<? extends VNumberArray> yVDoubleArray) {
+	return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>()
+		.and(xVDoubleArray).and(yVDoubleArray), new LineGraphFunction(
+		xVDoubleArray.getFunction(), yVDoubleArray.getFunction()),
+		"lineGraph");
     }
 
+    public static ScatterGraphPlot scatterGraphOf(
+	    DesiredRateExpression<? extends VNumberArray> xNumberArray,
+	    DesiredRateExpression<? extends VNumberArray> yNumberArray) {
+	return new ScatterGraphPlot(new DesiredRateExpressionListImpl<>().and(
+		xNumberArray).and(yNumberArray), new ScatterGraphFunction(
+		yNumberArray.getFunction(), xNumberArray.getFunction()),
+		"Scatter Graph");
+
+    }
 }
