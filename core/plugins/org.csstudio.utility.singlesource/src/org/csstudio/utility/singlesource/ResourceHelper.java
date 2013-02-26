@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -34,12 +35,32 @@ public class ResourceHelper
     /** Extension point ID for providing a {@link ResourceHelper} */
     final public static String ID = "org.csstudio.utility.singlesource.resourcehelper";
     
+    /** Check if a path exists
+     * 
+     *  <p>Default implementation is limited to local files and URLs.
+     *  
+     *  @param path Path to workspace file, local file, URL
+     *  @return <code>true</code> if the path points to an existing item
+     */
+    public boolean exists(final IPath path)
+    {
+        // Try file outside of the workspace
+        final File file = getFilesystemFile(path);
+        if (file != null)
+            return file.exists();
+
+        // TODO Check URL??
+        
+        return false;
+    }
+
     /** Obtain input stream for editor input
      * 
      *  <p>Depending on the implementation, the path may be
      *  <ul>
      *  <li>Workspace location
      *  <li>Local file
+     *  <li>TODO URL
      *  </ul>
      *  
      *  <p>Default implementation is limited to local files.
@@ -68,7 +89,7 @@ public class ResourceHelper
      * 
      *  <p>Default implementation is limited to local files.
      *
-     *  @param input IEditorInput
+     *  @param input {@link IEditorInput}
      *  @return <code>true</code> if input can be written
      *  @throws Exception on error
      */
@@ -94,7 +115,7 @@ public class ResourceHelper
      *  
      *  <p>Default implementation is limited to local files.
      *  
-     *  @param input IEditorInput
+     *  @param input {@link IEditorInput}
      *  @return {@link OutputStream} or <code>null</code> if input cannot be resolved
      *  @throws Exception on error
      */
@@ -115,14 +136,23 @@ public class ResourceHelper
     }
     
     /** Attempt to locate file system file, outside of the workspace 
-     *  @param input IEditorInput
+     *  @param input {@link IEditorInput}
      *  @return {@link File} or <code>null</code>
      */
     private File getFilesystemFile(final IEditorInput input)
     {
         final IPathEditorInput patheditor = (IPathEditorInput) input.getAdapter(IPathEditorInput.class);
         if (patheditor != null)
-            return patheditor.getPath().toFile();
+            return getFilesystemFile(patheditor.getPath());
         return null;
+    }
+
+    /** Determine file system file for path
+     *  @param path {@link IPath}
+     *  @return {@link File}
+     */
+    private File getFilesystemFile(final IPath path)
+    {
+        return path.toFile();
     }
 }

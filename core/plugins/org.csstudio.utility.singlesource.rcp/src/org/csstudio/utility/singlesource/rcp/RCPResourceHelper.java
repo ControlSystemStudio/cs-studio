@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 
@@ -28,6 +30,22 @@ import org.eclipse.ui.IEditorInput;
 @SuppressWarnings("nls")
 public class RCPResourceHelper extends ResourceHelper
 {
+    /** {@inheritDoc} */
+    @Override
+    public boolean exists(final IPath path)
+    {
+        // Try workspace file
+        final IResource resource =
+            ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+        if (resource != null  &&
+            resource.isAccessible() &&
+            resource instanceof IFile)
+            return true;
+        
+        return super.exists(path);
+    }
+
+    
     /** {@inheritDoc} */
     @Override
     public InputStream getInputStream(final IEditorInput input) throws Exception
