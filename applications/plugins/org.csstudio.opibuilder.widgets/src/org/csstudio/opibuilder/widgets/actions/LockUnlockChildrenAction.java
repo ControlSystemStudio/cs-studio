@@ -55,9 +55,9 @@ public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 								new Runnable() {
 					
 					public void run() {
-						if(!containerModel.isLocked())
-							containerModel.selectWidgets(containerModel.getChildren(), false);
-						else
+//						if(!containerModel.isLocked())
+//							containerModel.selectWidgets(containerModel.getChildren(), false);
+//						else
 							containerModel.getParent().selectWidget(containerModel, false);						
 					}
 				}, Display.getCurrent()));
