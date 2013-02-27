@@ -12,9 +12,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -35,6 +38,41 @@ public class ResourceHelper
     /** Extension point ID for providing a {@link ResourceHelper} */
     final public static String ID = "org.csstudio.utility.singlesource.resourcehelper";
     
+    /** Create {@link IPath} for string
+     *  @param path Path to workspace file, file system file or URL
+     *  @return {@link IPath}
+     */
+    public IPath newPath(final String path)
+    {
+        try
+        {
+            if (isURL(path))
+                return new URLPath(path);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot handle URL path " + path, ex);
+        }
+        return new Path(path);
+    }
+    
+    /** Check if a path is actually a URL (http://, ftp://, ..)
+     *  @param url Possible URL
+     *  @return <code>true</code> if considered a URL, <code>false</code> for file path
+     */
+    private boolean isURL(final String path)
+    {
+        try 
+        {
+            new URL(path);
+        }
+        catch (Exception ex)
+        {   // Not a valid URL
+            return false;
+        }
+        return true;
+    }
+
     /** Check if a path exists
      * 
      *  <p>Default implementation is limited to local files and URLs.
@@ -49,8 +87,16 @@ public class ResourceHelper
         if (file != null)
             return file.exists();
 
-        // TODO Check URL??
-        
+        // Check URL
+        try
+        {
+            new URL(path.toString()).openStream().close();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Ignore
+        }
         return false;
     }
 
@@ -67,6 +113,32 @@ public class ResourceHelper
         final Logger logger = Logger.getLogger(getClass().getName());
         logger.fine("Cannot read adapt path " + path + " to " + adapter.getName());
         return null;
+    }
+
+    /** Obtain input stream for path
+     * 
+     *  <p>Depending on the implementation, the path may be
+     *  <ul>
+     *  <li>Workspace location
+     *  <li>Local file
+     *  <li>URL
+     *  </ul>
+     *  
+     *  <p>Default implementation is limited to local files.
+     *
+     *  @param path IPath
+     *  @return {@link InputStream}
+     *  @throws Exception on error
+     */
+    public InputStream getInputStream(final IPath path) throws Exception
+    {
+        // Try file outside of the workspace
+        final File file = getFilesystemFile(path);
+        if (file != null)
+            return new FileInputStream(file);
+        
+        // Try URL
+        return new URL(path.toString()).openStream();
     }
 
     /** Obtain input stream for editor input
@@ -90,6 +162,13 @@ public class ResourceHelper
         final File file = getFilesystemFile(input);
         if (file != null)
             return new FileInputStream(file);
+
+        // Try URL
+        if (input instanceof PathEditorInput)
+        {
+            final IPath path = ((PathEditorInput) input).getPath();
+            return getInputStream(path);
+        }
         
         // Didn't find anything. Log adapters to aid in future extension of this code.
         final Logger logger = Logger.getLogger(getClass().getName());

@@ -63,6 +63,19 @@ public class RCPResourceHelper extends ResourceHelper
     
     /** {@inheritDoc} */
     @Override
+    public InputStream getInputStream(final IPath path) throws Exception
+    {
+        // Try workspace file
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IResource ws_file = root.findMember(path);
+        if (ws_file instanceof IFile)
+            return ((IFile)ws_file).getContents(true);
+        
+        return super.getInputStream(path);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public InputStream getInputStream(final IEditorInput input) throws Exception
     {
         // Try workspace file
