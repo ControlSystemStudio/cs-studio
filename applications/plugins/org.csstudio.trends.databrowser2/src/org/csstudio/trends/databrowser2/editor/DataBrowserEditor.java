@@ -7,11 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
@@ -20,8 +17,6 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
-import org.csstudio.trends.databrowser2.DataBrowserInput;
-import org.csstudio.trends.databrowser2.IDataBrowserInput;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
 import org.csstudio.trends.databrowser2.exportview.ExportView;
@@ -41,8 +36,10 @@ import org.csstudio.trends.databrowser2.ui.Plot;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.utility.singlesource.PathEditorInput;
+import org.csstudio.utility.singlesource.ResourceHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -70,7 +67,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -170,30 +166,19 @@ public class DataBrowserEditor extends EditorPart
 	        model = new Model();
 	        setInput(new DataBrowserModelEditorInput(input, model));
 
-			if (!(input instanceof EmptyEditorInput)) {
-				// Load model content from file
-				InputStream stream = null;
-				try {
-					if (input instanceof IDataBrowserInput) {
-						stream = ((IDataBrowserInput) input).getInputStream();
-					} else {
-						final IFile workspace_file = getWorkspaceFile();
-						if (workspace_file != null)
-							stream = workspace_file.getContents(true);
-						else {
-							final File file = getInputFile();
-							if (file != null)
-								stream = new FileInputStream(file);
-						}
-					}
-					if (stream == null)
-						throw new PartInitException(
-								"Cannot handle " + input.getName()); //$NON-NLS-1$
-					model.read(stream);
-				} catch (Exception ex) {
-					throw new PartInitException(NLS.bind(
-							Messages.ConfigFileErrorFmt, input.getName()), ex);
-				}
+			// Load model content from file
+	        try
+	        {
+        		final InputStream stream = SingleSourcePlugin.getResourceHelper().getInputStream(input);
+        		if (stream == null)
+        			throw new PartInitException(
+        					"Cannot handle " + input.getName()); //$NON-NLS-1$
+        			model.read(stream);
+			}
+	        catch (Exception ex)
+	        {
+				throw new PartInitException(NLS.bind(
+						Messages.ConfigFileErrorFmt, input.getName()), ex);
 			}
         }
 
@@ -446,34 +431,6 @@ public class DataBrowserEditor extends EditorPart
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
-    /** Get workspace for input
-     *  <p>The file is 'relative' to the workspace, not 'absolute' in the
-     *  file system. However, the file might be a linked resource to a
-     *  file that physically resides outside of the workspace tree.
-     *
-     *  <p>Using this IFile is preferred because it allows the Navigator to update
-     *
-     *  @return IFile for the current editor input or <code>null</code> if file is outside the workspace
-     */
-    private IFile getWorkspaceFile()
-    {
-        return (IFile) getEditorInput().getAdapter(IFile.class);
-    }
-
-    /** Get plain file for input
-     *
-     *  <p>This has to be used for files outside of the workspace.
-     *
-     *  @return File for the current editor input or <code>null</code>
-     */
-    private File getInputFile()
-    {
-        final IPathEditorInput path_input = (IPathEditorInput) getEditorInput().getAdapter(IPathEditorInput.class);
-        if (path_input == null)
-            return null;
-        return path_input.getPath().toFile();
-    }
-
     /** {@inheritDoc} */
     @Override
     public boolean isSaveAsAllowed()
@@ -485,14 +442,18 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void doSave(final IProgressMonitor monitor)
     {
-        final IFile file = getWorkspaceFile();
-        // Only allow saving to workspace.
-        // Use Save-As to create new workspace file for
-        // empty or out-of-workspace inputs
-        if (file == null)
-            doSaveAs();
-        else
-            saveToFile(monitor, file);
+        try
+        {
+            final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
+            if (! resources.isWritable(getEditorInput()))
+                doSaveAs();
+            else
+                save(monitor, resources.getOutputStream(getEditorInput()));
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+        }
     }
 
     /** {@inheritDoc} */
@@ -502,12 +463,19 @@ public class DataBrowserEditor extends EditorPart
         final IFile file = promptForFile(null);
         if (file == null)
             return;
-        if (! saveToFile(new NullProgressMonitor(), file))
-            return;
-        // Set that file as editor's input, so that just 'save' instead of
-        // 'save as' is possible from now on
-        setInput(new DataBrowserModelEditorInput(new DataBrowserInput(file.getFullPath()), model));
-        setPartName(file.getName());
+        try
+        {
+            final PathEditorInput new_input = new PathEditorInput(file.getFullPath());
+            save(new NullProgressMonitor(), SingleSourcePlugin.getResourceHelper().getOutputStream(new_input));
+            // Set that file as editor's input, so that just 'save' instead of
+            // 'save as' is possible from now on
+            setInput(new DataBrowserModelEditorInput(new_input, model));
+            setPartName(file.getName());
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+        }
     }
 
     /** Prompt for file name
@@ -540,13 +508,13 @@ public class DataBrowserEditor extends EditorPart
         return root.getFile(path);
     }
 
-    /** Save current model content to given file, mark editor as clean.
+    /** Save current model content, mark editor as clean.
      *
      *  @param monitor <code>IProgressMonitor</code>, may be null.
-     *  @param file The file to use. May not exist, but I think its container has to.
+     *  @param stream The stream to use.
      *  @return Returns <code>true</code> when successful.
      */
-    private boolean saveToFile(final IProgressMonitor monitor, final IFile file)
+    private void save(final IProgressMonitor monitor, final OutputStream stream) throws Exception
     {
         monitor.beginTask(Messages.Save, IProgressMonitor.UNKNOWN);
         try
@@ -579,35 +547,15 @@ public class DataBrowserEditor extends EditorPart
       	  	model.setGraphSettings(plot.getGraphSettings());
       	  	model.setAnnotations(plot.getAnnotations(), false);
 
-        	// Write model to string
-        	ByteArrayOutputStream buf = new ByteArrayOutputStream();
-
-        	model.write(buf);
-        	buf.close();
-
-        	final ByteArrayInputStream in = new ByteArrayInputStream(buf.toByteArray());
-            // Write buffer to file
-            if (file.exists())
-                file.setContents(in, IResource.FORCE, monitor);
-            else
-                file.create(in, true, monitor);
-
+        	// Write model
+        	model.write(stream);
             setDirty(false);
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(getSite().getShell(),
-                    Messages.Error,
-                    NLS.bind(Messages.FileSaveErrorFmt, file.getName(), ex.getMessage()));
-            return false;
         }
         finally
         {
             monitor.done();
         }
-        return true;
     }
-
 
     /**
      * Set AxisConfigProperties from Axis

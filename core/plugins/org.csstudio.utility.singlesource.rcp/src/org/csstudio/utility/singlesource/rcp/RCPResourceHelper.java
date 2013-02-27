@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -45,6 +46,20 @@ public class RCPResourceHelper extends ResourceHelper
         return super.exists(path);
     }
 
+    /** {@inheritDoc} */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object adapt(final IPath path, final Class adapter)
+    {
+        // For getInputStream() and getOutputStream() to function,
+        // path must adapt to IFile.
+        if (adapter == IFile.class)
+        {
+            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            return root.getFile(path);
+        }
+        return super.adapt(path, adapter);
+    }
     
     /** {@inheritDoc} */
     @Override

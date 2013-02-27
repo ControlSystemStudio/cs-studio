@@ -2,5 +2,12 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="resourcehelper" name="Resource Helper" schema="schema/resourcehelper.exsd"/>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.utility.singlesource.PathEditorInputFactory"
+            id="org.csstudio.utility.singlesource.PathEditorInputFactory">
+      </factory>
+   </extension>
 
 </plugin>

@@ -54,6 +54,21 @@ public class ResourceHelper
         return false;
     }
 
+    /** Adapt a path to some other class
+     * 
+     *  @param path {@link IPath} to adapt
+     *  @param adapter Desired class, for example IFile
+     *  @return Adapted path or <code>null</code>
+     */
+    @SuppressWarnings("rawtypes")
+    public Object adapt(final IPath path, final Class adapter)
+    {
+        // By default, don't adapt, but log to aid in future extension of this code.
+        final Logger logger = Logger.getLogger(getClass().getName());
+        logger.fine("Cannot read adapt path " + path + " to " + adapter.getName());
+        return null;
+    }
+
     /** Obtain input stream for editor input
      * 
      *  <p>Depending on the implementation, the path may be

@@ -15,6 +15,7 @@ import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
 import org.csstudio.trends.databrowser2.editor.EmptyEditorInput;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -42,7 +43,7 @@ public class OpenDisplayFile implements IOpenDisplayAction
             final IFile file = (IFile) resource;
             if (! file.exists())
             	throw new Exception("File  '" + file + "' does not exist in workspace");
-            input = new DataBrowserInput(file.getFullPath());
+            input = new PathEditorInput(file.getFullPath());
         }
         else
         {   // Try plain file

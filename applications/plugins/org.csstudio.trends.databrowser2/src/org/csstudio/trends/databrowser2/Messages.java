@@ -128,7 +128,6 @@ public class Messages extends NLS
     public static String ExportTypeSpreadsheetTT;
     public static String ExportValueInfo;
     public static String ExportValueInfoTT;
-    public static String FileSaveErrorFmt;
     public static String Format_Decimal;
     public static String Format_Default;
     public static String Format_Exponential;
