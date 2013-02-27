@@ -11,20 +11,28 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.opibuilder.feedback.DefaultGraphicalFeedbackFactory;
+import org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.swt.xygraph.util.SWTConstants;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Locator;
 import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Handle;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.handles.AbstractHandle;
 import org.eclipse.gef.tools.DragEditPartsTracker;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 /**Feedback Factory for Grouping Contianer
  * @author Xihui Chen
@@ -36,8 +44,7 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 	@Override
 	public List<Handle> createCustomHandles(GraphicalEditPart editPart) {
 		
-		if(editPart instanceof GroupingContainerEditPart && 
-				((GroupingContainerEditPart)editPart).getWidgetModel().isLocked()){
+		if(editPart instanceof GroupingContainerEditPart){
 			Handle handle = new LockIndicatorHandle(editPart);
 			return Arrays.asList(handle);
 		}
@@ -45,9 +52,13 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 	}
 	
 	
-	private final class LockIndicatorHandle extends AbstractHandle{
+	private final static class LockIndicatorHandle extends AbstractHandle{
 
+		private static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(255, 255, 150);
+		private static final Color handleForeColor = CustomMediaFactory.getInstance().getColor(77, 77, 77);
 		private static final String LOCKED = "Locked";
+		private static final String UNLOCKED = "Unlocked";
+		private Dimension textExtents;
 
 		public LockIndicatorHandle(final GraphicalEditPart owner) {
 			super(owner, new Locator() {
@@ -62,29 +73,85 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 					targetBounds.expand(preferedSize.height,preferedSize.height);
 					target.setBounds(targetBounds);
 				}
-			});
+			});			
+			setCursor(Cursors.HAND);
+			setToolTip(new Label("Click to Lock/Unlock"));
+
+		}
+		
+
+		
+		private Dimension getTextExtent(){
+			if(textExtents == null)
+				textExtents = TextUtilities.INSTANCE.getTextExtents(((GroupingContainerEditPart) getOwner())
+						.getWidgetModel().isLocked() ? LOCKED : UNLOCKED, getFont());	
+			return textExtents;
 		}
 		
 		@Override
 		protected DragTracker createDragTracker() {
-			DragEditPartsTracker tracker = new DragEditPartsTracker(getOwner());
+			DragEditPartsTracker tracker = new DragEditPartsTracker(getOwner()){
+				@Override
+				protected boolean handleButtonDown(int button) {
+					
+					if((button == 1 || button==3) && 
+							getOwner() instanceof GroupingContainerEditPart){
+						IWorkbenchPart activePart = PlatformUI.getWorkbench().
+								getActiveWorkbenchWindow().getActivePage().getActivePart();
+						
+						CommandStack commandStack = 
+								(CommandStack)activePart.getAdapter(CommandStack.class);
+							if(commandStack != null)
+								commandStack.execute(LockUnlockChildrenAction.createLockUnlockCommand
+										(((GroupingContainerEditPart)getOwner()).getWidgetModel()));
+					}				
+					return true;
+				}
+			};
 			tracker.setDefaultCursor(getCursor());
 			return tracker;
 		}
 		
 		@Override
 		protected void paintFigure(Graphics graphics) {
-			graphics.setForegroundColor(ColorConstants.lightBlue);			
-			Dimension textExtents = TextUtilities.INSTANCE.getTextExtents(LOCKED, getFont());
-			graphics.drawText(LOCKED, getLocation().translate(textExtents.height, 0));
-			graphics.setLineStyle(SWT.LINE_DOT);
-			graphics.drawRectangle(getBounds().getCopy().shrink(textExtents.height-3,textExtents.height-3));
+			super.paintFigure(graphics);
+			boolean locked = ((GroupingContainerEditPart) getOwner())
+					.getWidgetModel().isLocked();
+			graphics.setForegroundColor(handleForeColor);		
+
+			if(locked){
+				
+				graphics.setLineStyle(SWTConstants.LINE_DOT);
+				graphics.drawRectangle(getBounds().getCopy().shrink(getTextExtent().height-3,getTextExtent().height-3));
+				}
+			Point textLocation = getTextLocation();
+			graphics.setBackgroundColor(handleBackColor);
+			graphics.setAlpha(180);
+			graphics.fillRectangle(textLocation.x-2, textLocation.y, 
+					getTextExtent().width+4, getTextExtent().height);
+			graphics.setAlpha(250);
+			graphics.drawText(locked ? LOCKED : UNLOCKED, textLocation);
 			
+			
+		}
+
+
+
+		private Point getTextLocation() {
+			return getLocation().translate(
+					getTextExtent().height,0);
+		}
+		
+		@Override
+		public boolean containsPoint(int x, int y) {
+			return Rectangle.SINGLETON.setBounds(
+					getTextLocation(),
+					getTextExtent()).contains(x, y);
 		}
 		
 		@Override
 		public Dimension getPreferredSize(int wHint, int hHint) {			
-			return TextUtilities.INSTANCE.getTextExtents(LOCKED, getFont());
+			return getTextExtent();
 		}
 		
 		

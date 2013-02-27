@@ -7,13 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.logging.Level;
+import java.io.OutputStream;
 
-import org.csstudio.display.pvtable.Plugin;
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -21,15 +18,13 @@ import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
+import org.csstudio.utility.singlesource.ResourceHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -42,7 +37,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -94,49 +88,19 @@ public class PVTableEditor extends EditorPart
         setSite(site);
         setInput(new NoResourceEditorInput(input));
         
-        // Try workspace file..
-        final IFile file = getEditorInputFile();
-        // .. as well as file store
-        IFileStore fileStore = (IFileStore) input.getAdapter(IFileStore.class);
-        if (fileStore == null && input instanceof FileStoreEditorInput)
+        try
         {
-            final URI uri = ((FileStoreEditorInput)input).getURI();
-            try
-            {
-                fileStore = EFS.getStore(uri);
-            }
-            catch (CoreException e)
-            {
-                // Ignore
-            }
-        }
-        
-        if (file != null)
-        {   // Got workspace file?
-            try
-            {
-                final InputStream stream = file.getContents();
+            final InputStream stream = 
+                SingleSourcePlugin.getResourceHelper().getInputStream(input);
+            if (stream != null)
                 model = PVTableXMLPersistence.read(stream);
-            }
-            catch (Exception e)
-            {
-                throw new PartInitException("Workspace file load error", e); //$NON-NLS-1$
-            }
+            else // Empty model
+                model = new PVTableModel();
         }
-        else if (fileStore != null)
-        {   // Got file system location?
-            try
-            {
-                final InputStream stream = fileStore.openInputStream(EFS.CACHE, new NullProgressMonitor());
-                model = PVTableXMLPersistence.read(stream);
-            }
-            catch (Exception e)
-            {
-                throw new PartInitException("File system file load error", e); //$NON-NLS-1$
-            }
+        catch (Exception e)
+        {
+            throw new PartInitException("Workspace file load error", e); //$NON-NLS-1$
         }
-        else // Empty model
-            model = new PVTableModel();
 
         model.addListener(new PVTableModelListener()
         {
@@ -191,77 +155,39 @@ public class PVTableEditor extends EditorPart
         return gui.getTableViewer();
     }
 
-    /** @return Returns the <code>IFile</code> for the current editor input.
-     *  The file is 'relative' to the workspace, not 'absolute' in the
-     *  file system. However, the file might be a linked resource to a
-     *  file that physically resides outside of the workspace tree.
-     */
-    private IFile getEditorInputFile()
-    {
-        IEditorInput input = getEditorInput();
-        if (input instanceof EmptyEditorInput)
-            return null;
-        // Side Note:
-        // After some back and forth, trying to avoid the resource/workspace/
-        // project/container/file stuff and instead sticking with the
-        // java.io.file, I found it best to give up and use the Eclipse
-        // resource API, since otherwise one keeps converting between those
-        // two APIs anyway, plus runs into errors with 'resources' being
-        // out of sync....
-        return (IFile) input.getAdapter(IFile.class);
-    }
-
     @Override
-    public void doSave(IProgressMonitor monitor)
+    public void doSave(final IProgressMonitor monitor)
     {
-        IFile file = getEditorInputFile();
-        if (file != null)
-            saveToFile(monitor, file);
-        else
-            doSaveAs();
-    }
-
-    /** Save current model content to given file, mark editor as clean.
-     *
-     *  @param monitor <code>IProgressMonitor</code>, may be null.
-     *  @param file The file to use. May not exist, but I think its container has to.
-     *  @return Returns <code>true</code> when successful.
-     */
-    private boolean saveToFile(final IProgressMonitor monitor, final IFile file)
-    {
-        boolean ok = true;
-        if (monitor != null)
-            monitor.beginTask("Save", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-        
-        // Write model buffer, then stream from there into file...
-        final PVTableModel model = gui.getModel();
-        final String xml;
-        {
-            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            PVTableXMLPersistence.write(model, buf);
-            xml = buf.toString();
-        }
+        final IEditorInput input = getEditorInput();
+        final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
         try
         {
-            final ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
-            if (file.exists())
-                file.setContents(stream, true, false, monitor);
+            if (resources.isWritable(input))
+                saveToStream(monitor, resources.getOutputStream(input));
             else
-                file.create(stream, true, monitor);
-            if (monitor != null)
-                monitor.done();
-            // Mark as clean
-            is_dirty = false;
-            firePropertyChange(IEditorPart.PROP_DIRTY);
+                doSaveAs();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            ok = false;
-            if (monitor != null)
-                monitor.setCanceled(true);
-            Plugin.getLogger().log(Level.SEVERE, "Save error", e); //$NON-NLS-1$
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
         }
-        return ok;
+    }
+
+    /** Save current model, mark editor as clean.
+     *
+     *  @param monitor <code>IProgressMonitor</code>, may be <code>null</code>.
+     *  @param stream Output stream
+     */
+    private void saveToStream(final IProgressMonitor monitor, final OutputStream stream)
+    {
+        if (monitor != null)
+            monitor.beginTask("Save", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        PVTableXMLPersistence.write(model, stream);
+        if (monitor != null)
+            monitor.done();
+        // Mark as clean
+        is_dirty = false;
+        firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
     @Override
@@ -270,7 +196,10 @@ public class PVTableEditor extends EditorPart
         // Prompt for file name
         final SaveAsDialog dlg = new SaveAsDialog(getEditorSite().getShell());
         dlg.setBlockOnOpen(true);
-        dlg.setOriginalFile(getEditorInputFile());
+        
+        // If there is an original file name, try to display it
+        final IFile original = (IFile) getEditorInput().getAdapter(IFile.class);
+        dlg.setOriginalFile(original);
         if (dlg.open() != Window.OK)
             return;
         IPath path = dlg.getResult();
@@ -284,11 +213,20 @@ public class PVTableEditor extends EditorPart
         // Get file for the new resource's path.
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IFile file = root.getFile(path);
-
-        if (!saveToFile(null, file))
-            return;
+        
+        final IEditorInput new_input = new FileEditorInput(file);
+        try
+        {
+            final OutputStream stream =
+                SingleSourcePlugin.getResourceHelper().getOutputStream(new_input);
+            saveToStream(null, stream);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+        }
         // Update input and title
-        setInput(new FileEditorInput(file));
+        setInput(new_input);
         updateTitle();
     }
 

@@ -49,22 +49,34 @@ please reinstall it also.
  	<li>Support searching OPI by text. Double click a search result entry will open the OPI file and 
  	select the widget (Only works if the default editor of the OPI file is OPI editor). (Contributed by ITER)
  	<p><img src="img/OPISearch.png"></p>
- 	</li>
+ 	</li> 	
  	
- 	<li>Add <code>Dump PV List</code> context menu in Runtime to dump all PVs in the OPI including the ones for rules and scripts.
- 	<p><img src="img/PVList.png"></p> 	
- 	</li>
+ 	 <li>Add a small square handle on top left of PV widget to allow editing PV Name directly on widget. Hover mouse on the 
+ 	 handle will show PV Name as tooltip. Handle color could be gray or orange, which depends on if the PV name is empty or not.
+ 	 <p><img src="img/EditPVNameHandle.png"></p>
+ 	 </li>
  	
- 	<li>Add <code>Select Parent</code> context menu to help selecting the parent container. For example, one can 
+ 	<li>Add <code>Select Parent (Ctrl+R)</code> context menu to help selecting the parent container. For example, one can 
  	finally select the Display by hitting <code>Ctrl+R</code> multiple times. </li>
  	
- 	<li>Show locked feedback if the selected grouping container is locked.
- 	<p><img src="img/groupingContainerLocked.png"></p> 
+ 	<li>Add a feedback to Grouping Container widget to show if it is locked. Click the handle can
+ 	lock/unlock the container.
+ 	<p><img src="img/locked.png"></p> 
  	</li>
+ 	
+ 	<li>Add <code>Forward Colors</code> property to Grouping Container widget. If it is yes, it will
+ 	forward background and foreground color to its children. This is useful for creating
+ 	symbol from multiple graphics widgets shown as below. See Grouping Container Example in BOY Example.
+ 	<p><img src="img/ForwardColorsDemo.png"></p>
+ 	</li> 
  	
  	<li>Changed the looking of Check Box and Radio Box to have modern style and feeling.
  	<p><img src="img/NewCheckBox.png"></p> 
  	</li> 
+ 	
+ 	<li>Add <code>Dump PV List</code> context menu in Runtime to dump all PVs in the OPI including the ones for rules and scripts.
+ 	<p><img src="img/PVList.png"></p> 	
+ 	</li>
  	
 	<li>Support launching an OPI from command line in dedicated position using "Position" macro.
 	</li> 
@@ -171,7 +183,8 @@ ITER also contributed more than 200 SVG and PNG symbol images to BOY,
  Undersampling and drawing polyline tactics are used for line or dash line trace.</li>
 <br>
 <li>Fixed the bug that zooming a widget with gradient (or 3D) effect resulted in ugly looking.
-<img height=300 src="img/ZoomingGradient.png"></li>
+<p>
+<img height=300 src="img/ZoomingGradient.png"></p></li>
 
 <li>Add alpha property to all shape widgets. <p><img src="img/AlphaEffect.png"></li>
 

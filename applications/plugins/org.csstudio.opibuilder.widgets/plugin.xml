@@ -411,7 +411,7 @@
                enablesFor="+"
                icon="icons/addGroup.png"
                id="org.csstudio.opibuilder.widgets.creategroupAction"
-               label="Create Group"
+               label="Group"
                menubarPath="group"
                tooltip="Create a group container which contains all the selected widgets.">
          </action>
@@ -444,7 +444,6 @@
             objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction"
-               definitionId="org.csstudio.opibuilder.widgets.lockUnlockChildren"
                enablesFor="1"
                icon="icons/unlock.png"
                id="org.csstudio.opibuilder.widgets.lockUnlockChildrenAction"
@@ -457,7 +456,7 @@
                enablesFor="1"
                icon="icons/removeGroup.png"
                id="org.csstudio.opibuilder.widgets.removeGroupAction"
-               label="Remove Group"
+               label="Ungroup"
                menubarPath="group"
                tooltip="Remove the group container.">
          </action>
@@ -693,23 +692,6 @@
             class="org.csstudio.opibuilder.widgets.feedback.GroupingContainerFeedbackFactory"
             typeId="org.csstudio.opibuilder.widgets.groupingContainer">
       </graphicalFeedbackFactory>
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenHandler"
-            id="org.csstudio.opibuilder.widgets.lockUnlockChildren"
-            name="Lock/Unlock Children">
-      </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.csstudio.opibuilder.widgets.lockUnlockChildren"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+L">
-      </key>
    </extension>
 
 </plugin>
