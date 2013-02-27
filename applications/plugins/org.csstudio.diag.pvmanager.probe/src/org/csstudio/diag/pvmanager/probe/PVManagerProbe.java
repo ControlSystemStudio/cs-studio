@@ -2,6 +2,7 @@ package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
@@ -94,11 +95,11 @@ public class PVManagerProbe extends ViewPart {
 	
 	private boolean readOnly = true;
 
-	/** Currently displayed pv */
-	private ProcessVariable PVName;
+	/** Currently displayed formula */
+	private String pvFormula;
 
-	/** Currently connected pv */
-	private PV<Object, Object> pv;
+	/** Currently connected formula */
+	private PV<?, Object> pv;
 
 	/** Formatting used for the value text field */
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
@@ -133,8 +134,8 @@ public class PVManagerProbe extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (PVName != null) {
-			memento.putString(PV_TAG, PVName.getName());
+		if (pvFormula != null) {
+			memento.putString(PV_TAG, pvFormula);
 		}
 	}
 
@@ -287,7 +288,7 @@ public class PVManagerProbe extends ViewPart {
 				.getDialogSettings(), PV_LIST_TAG, pvNameField.getCombo()) {
 			@Override
 			public void newSelection(final String pvName) {
-				setPVName(new ProcessVariable(pvName));
+				setPVFormula(pvName);
 			}
 		};
 
@@ -346,7 +347,7 @@ public class PVManagerProbe extends ViewPart {
 		pvNameHelper.loadSettings();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
-			setPVName(new ProcessVariable(memento.getString(PV_TAG)));
+			setPVFormula(memento.getString(PV_TAG));
 			// Per default, the meter is shown.
 			// Hide according to memento.
 			final String show = memento.getString(METER_TAG);
@@ -381,7 +382,7 @@ public class PVManagerProbe extends ViewPart {
 	
 	private String pvNameWithDataSource() {
 		DataSource defaultDS = PVManager.getDefaultDataSource();
-		String pvName = PVName.getName();
+		String pvName = pvFormula;
 		if (defaultDS instanceof CompositeDataSource) {
 			CompositeDataSource composite = (CompositeDataSource) defaultDS;
 			if (!pvName.contains(composite.getDelimiter())) {
@@ -483,10 +484,14 @@ public class PVManagerProbe extends ViewPart {
 	 *            the new pv name or null
 	 */
 	public void setPVName(ProcessVariable pvName) {
-		log.log(Level.FINE, "setPVName ({0})", pvName); //$NON-NLS-1$
+		setPVFormula("'" + pvName.getName() + "'");
+	}
+	
+	public void setPVFormula(String pvFormula) {
+		log.log(Level.FINE, "setPVFormula ({0})", pvFormula); //$NON-NLS-1$
 
 		// If we are already scanning that pv, do nothing
-		if (this.PVName != null && this.PVName.equals(pvName)) {
+		if (this.pvFormula != null && this.pvFormula.equals(pvFormula)) {
 			return;
 		}
 
@@ -503,19 +508,18 @@ public class PVManagerProbe extends ViewPart {
 		setReadOnly(true);
 
 		// If name is blank, update status to waiting and quit
-		if ((pvName.getName() == null) || pvName.getName().trim().isEmpty()) {
+		if ((pvFormula == null) || pvFormula.trim().isEmpty()) {
 			pvNameField.getCombo().setText(""); //$NON-NLS-1$
 			setStatus(Messages.Probe_statusWaitingForPV);
 		}
 
 		// Update displayed name, unless it's already current
-		if (!(pvNameField.getCombo().getText().equals(pvName
-				.getName()))) {
-			pvNameHelper.changeSelection(pvName.getName());
+		if (!(pvNameField.getCombo().getText().equals(pvFormula))) {
+			pvNameHelper.changeSelection(pvFormula);
 		}
 
 		setStatus(Messages.Probe_statusSearching);
-		pv = PVManager.readAndWrite(channel(pvName.getName()))
+		pv = PVManager.readAndWrite(formula(pvFormula))
 				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
 				.readListener(new PVReaderListener<Object>() {
 					@Override
@@ -542,10 +546,10 @@ public class PVManagerProbe extends ViewPart {
 				.notifyOn(swtThread(this)).asynchWriteAndMaxReadRate(ofHertz(25));
 		
 		
-		this.PVName = pvName;
+		this.pvFormula = pvFormula;
 
 		// Show the PV name  as the title
-		setPartName(pvName.getName());
+		setPartName(pvFormula);
 	}
 
 	/**
@@ -553,9 +557,9 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @return pv name or null
 	 */
-	public ProcessVariable getPVName() {
-		return this.PVName;
-	}
+//	public ProcessVariable getPVName() {
+//		return this.PVName;
+//	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
