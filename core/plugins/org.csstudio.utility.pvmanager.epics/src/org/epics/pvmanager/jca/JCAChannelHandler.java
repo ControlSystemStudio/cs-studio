@@ -315,7 +315,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                         }
 
                         // Setup monitors on connection
-                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
+                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                         if (ev.isConnected()) {
                             setup(channel);
                         }
@@ -350,7 +350,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                                     @Override
                                     public void run() {
                                         synchronized(JCAChannelHandler.this) {
-                                            processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
+                                            processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                                         }
                                     }
                                 };
