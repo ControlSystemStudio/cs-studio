@@ -342,8 +342,22 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
                             @Override
                             public void accessRightsChanged(AccessRightsEvent ev) {
-                                synchronized(JCAChannelHandler.this) {
-                                    processConnection(new JCAConnectionPayload(JCAChannelHandler.this, (Channel) ev.getSource()));
+                                // Some JNI implementation lock if calling getState
+                                // from within this callback. We context switch in that case
+                                final Channel channel = (Channel) ev.getSource();
+                                Runnable task = new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        synchronized(JCAChannelHandler.this) {
+                                            processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
+                                        }
+                                    }
+                                };
+                                if (jcaDataSource.useContextSwitchForAccessRightCallback()) {
+                                    jcaDataSource.getContextSwitch().submit(task);
+                                } else {
+                                    task.run();
                                 }
                             }
                         });
