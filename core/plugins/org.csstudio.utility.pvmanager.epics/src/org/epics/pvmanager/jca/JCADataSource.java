@@ -19,6 +19,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import static org.epics.pvmanager.util.Executors.namedPool;
 
 /**
  * A data source that uses jca.
@@ -143,6 +146,12 @@ public class JCADataSource extends DataSource {
         dbePropertySupported = builder.dbePropertySupported;
         rtypValueOnly = builder.rtypValueOnly;
         honorZeroPrecision = builder.honorZeroPrecision;
+        
+        if (useContextSwitchForAccessRightCallback()) {
+            contextSwitch = Executors.newSingleThreadExecutor(namedPool("PVMgr JCA Workaround "));
+        } else {
+            contextSwitch = null;
+        }
     }
 
     @Override
@@ -226,5 +235,18 @@ public class JCADataSource extends DataSource {
     public static boolean isVarArraySupported(Context context) {
         return JCADataSourceBuilder.isVarArraySupported(context);
     }
+    
+    final boolean useContextSwitchForAccessRightCallback() {
+        if (ctxt instanceof JNIContext) {
+            return true;
+        }
+        return false;
+    }
+    
+    ExecutorService getContextSwitch() {
+        return contextSwitch;
+    }
+    
+    private final ExecutorService contextSwitch;
     
 }
