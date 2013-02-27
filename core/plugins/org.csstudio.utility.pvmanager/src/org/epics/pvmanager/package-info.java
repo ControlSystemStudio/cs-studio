@@ -48,6 +48,28 @@
  * elements) and the second part (by extending the language to support other cases.
  * All support for data types is relegated to separate packages: you can use
  * the same style to extend the framework to your needs.
+ * <p>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
+ * <br/>
  */
 package org.epics.pvmanager;
 
