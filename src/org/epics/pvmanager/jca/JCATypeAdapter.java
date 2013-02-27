@@ -51,7 +51,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<JCAConnect
             return 0;
         
         // If the type of the channel does not match, no match
-        if (!dbrTypeMatch(epicsValueType, channel.getFieldType()))
+        if (!dbrTypeMatch(epicsValueType, connPayload.getFieldType()))
             return 0;
         
         // If processes array, but count is 1, no match
@@ -67,6 +67,12 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<JCAConnect
     }
     
     private static boolean dbrTypeMatch(DBRType aType, DBRType anotherType) {
+        if (aType.getClass() == null && anotherType.getClass() != null) {
+            return false;
+        }
+        if (aType.getClass() != null && anotherType.getClass() == null) {
+            return false;
+        }
         return aType.isBYTE() && anotherType.isBYTE() ||
                 aType.isDOUBLE() && anotherType.isDOUBLE() ||
                 aType.isENUM() && anotherType.isENUM() ||

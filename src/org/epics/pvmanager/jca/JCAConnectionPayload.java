@@ -9,6 +9,7 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.Channel;
+import gov.aps.jca.dbr.DBRType;
 
 /**
  * Represents the connection payload, which consists of the actual JCA
@@ -22,12 +23,20 @@ public class JCAConnectionPayload {
     private final Channel channel;
     private final boolean connected;
     private final boolean longString;
+    private final DBRType fieldType;
 
-    public JCAConnectionPayload(JCAChannelHandler channleHandler, Channel channel) {
+    public JCAConnectionPayload(JCAChannelHandler channleHandler, Channel channel, JCAConnectionPayload previousPayload) {
         this.jcaDataSource = channleHandler.getJcaDataSource();
         this.channel = channel;
         this.connected = channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
         this.longString = channleHandler.isLongString();
+        if (channel.getFieldType().getClass() == null && previousPayload != null) {
+            // JNI sets the type to unknown on disconnect. We need
+            // to remember the type before the disconnection
+            this.fieldType = previousPayload.fieldType;
+        } else {
+            this.fieldType = channel.getFieldType();
+        }
     }
 
     /**
@@ -46,6 +55,10 @@ public class JCAConnectionPayload {
      */
     public Channel getChannel() {
         return channel;
+    }
+    
+    public DBRType getFieldType() {
+        return fieldType;
     }
     
     /**
