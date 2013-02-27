@@ -47,6 +47,12 @@ public class ScatterGraphFunction implements ReadFunction<Plot2DResult> {
 	VNumberArray newYData = yArray.readValue();
 	VNumberArray newXData = xArray.readValue();
 
+	// both x and y array data should be avaliable
+	if (newYData == null || newYData.getData() == null)
+	    return null;
+	if (newXData == null || newXData.getData() == null)
+	    return null;
+	
 	Point2DDataset dataset = null;
 	dataset = org.epics.graphene.Point2DDatasets.lineData(
 		newXData.getData(), newYData.getData());
