@@ -13,6 +13,7 @@ import java.util.List;
 import org.csstudio.opibuilder.feedback.DefaultGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
+import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
@@ -29,7 +30,6 @@ import org.eclipse.gef.Handle;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.handles.AbstractHandle;
 import org.eclipse.gef.tools.DragEditPartsTracker;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -121,7 +121,7 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 
 			if(locked){
 				
-				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineStyle(SWTConstants.LINE_DOT);
 				graphics.drawRectangle(getBounds().getCopy().shrink(getTextExtent().height-3,getTextExtent().height-3));
 				}
 			Point textLocation = getTextLocation();

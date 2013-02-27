@@ -35,6 +35,9 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";//$NON-NLS-1$
 	
 
+	/**Forward background and foreground color properties change to children. */
+	public static final String PROP_FORWARD_COLORS = "fc";	//$NON-NLS-1$
+	
 	
 	public GroupingContainerModel() {
 		setSize(200, 200);
@@ -49,7 +52,8 @@ public class GroupingContainerModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, false));
 		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar",
 				WidgetPropertyCategory.Behavior, true));
-
+		addProperty(new BooleanProperty(PROP_FORWARD_COLORS, "Forward Colors",
+				WidgetPropertyCategory.Behavior, false));
 	
 	}
 
@@ -82,6 +86,10 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	*/
 	public boolean isShowScrollbar() {
 		return (Boolean) getProperty(PROP_SHOW_SCROLLBAR).getPropertyValue();
+	}
+	
+	public boolean isForwardColors(){
+		return (Boolean)getPropertyValue(PROP_FORWARD_COLORS);
 	}
 	
 
