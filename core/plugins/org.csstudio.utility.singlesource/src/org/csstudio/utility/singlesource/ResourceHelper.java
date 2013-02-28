@@ -35,9 +35,6 @@ import org.eclipse.ui.IPathEditorInput;
 @SuppressWarnings("nls")
 public class ResourceHelper
 {
-    /** Extension point ID for providing a {@link ResourceHelper} */
-    final public static String ID = "org.csstudio.utility.singlesource.resourcehelper";
-    
     /** Create {@link IPath} for string
      *  @param path Path to workspace file, file system file or URL
      *  @return {@link IPath}
@@ -54,6 +51,17 @@ public class ResourceHelper
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot handle URL path " + path, ex);
         }
         return new Path(path);
+    }
+
+    /** Obtain path for editor input
+     *  @param input IEditorInput
+     *  @return IPath or <code>null</code>
+     */
+    public IPath getPath(final IEditorInput input)
+    {
+        if (input instanceof IPathEditorInput)
+            return ((IPathEditorInput) input).getPath();
+        return null;
     }
     
     /** Check if a path is actually a URL (http://, ftp://, ..)

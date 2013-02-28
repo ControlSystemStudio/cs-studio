@@ -33,6 +33,16 @@ public class RCPResourceHelper extends ResourceHelper
 {
     /** {@inheritDoc} */
     @Override
+    public IPath getPath(final IEditorInput input)
+    {
+        final IFile ws_file = (IFile) input.getAdapter(IFile.class);
+        if (ws_file != null)
+            return ws_file.getFullPath();
+        return super.getPath(input);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public boolean exists(final IPath path)
     {
         // Try workspace file
@@ -46,6 +56,18 @@ public class RCPResourceHelper extends ResourceHelper
         return super.exists(path);
     }
 
+    /** Obtain file for path within workspace
+     *  @param path Path to a resource in the workspace
+     *  @return IFile for path or <code>null</code>
+     */
+    static IFile getFileForPath(final IPath path)
+    {
+        if (path == null)
+            return null;
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        return root.getFile(path);
+    }
+
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
@@ -54,10 +76,7 @@ public class RCPResourceHelper extends ResourceHelper
         // For getInputStream() and getOutputStream() to function,
         // path must adapt to IFile.
         if (adapter == IFile.class)
-        {
-            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            return root.getFile(path);
-        }
+            return getFileForPath(path);
         return super.adapt(path, adapter);
     }
     

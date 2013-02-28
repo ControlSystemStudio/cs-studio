@@ -39,9 +39,7 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -50,7 +48,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -73,7 +70,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 
@@ -360,8 +356,8 @@ public class DataBrowserEditor extends EditorPart
             ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
-		final boolean is_rap = Activator.isRAP();
-        if (!is_rap)
+		final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+        if (is_rcp)
 		{
 			mm.add(new Separator());
 			open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
@@ -375,7 +371,7 @@ public class DataBrowserEditor extends EditorPart
 		}
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
-		if (!is_rap)
+		if (is_rcp)
 		{
 			mm.add(new OpenViewAction(WaveformView.ID,
 					Messages.OpenWaveformView, activator
@@ -460,52 +456,26 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void doSaveAs()
     {
-        final IFile file = promptForFile(null);
+        final Shell shell = getSite().getShell();
+        final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
+        final IPath original = resources.getPath(getEditorInput());
+        final IPath file = SingleSourcePlugin.getUIHelper()
+            .openSaveDialog(shell, original, Model.FILE_EXTENSION);
         if (file == null)
             return;
         try
         {
-            final PathEditorInput new_input = new PathEditorInput(file.getFullPath());
-            save(new NullProgressMonitor(), SingleSourcePlugin.getResourceHelper().getOutputStream(new_input));
+            final PathEditorInput new_input = new PathEditorInput(file);
+            save(new NullProgressMonitor(), resources.getOutputStream(new_input));
             // Set that file as editor's input, so that just 'save' instead of
             // 'save as' is possible from now on
             setInput(new DataBrowserModelEditorInput(new_input, model));
-            setPartName(file.getName());
+            setPartName(file.lastSegment());
         }
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
         }
-    }
-
-    /** Prompt for file name
-     *  @param old_file Old file name or <code>null</code>
-     *  @return IFile for new file name
-     */
-    private IFile promptForFile(final IFile old_file)
-    {
-    	// TODO RAP and RCP
-		if (Activator.isRAP()) {
-                throw new RuntimeException("Not yet implemented for web version."); //$NON-NLS-1$
-		}
-        final SaveAsDialog dlg = new SaveAsDialog(getSite().getShell());
-        dlg.setBlockOnOpen(true);
-        if (old_file != null)
-            dlg.setOriginalFile(old_file);
-        if (dlg.open() != Window.OK)
-            return null;
-
-        // The path to the new resource relative to the workspace
-        IPath path = dlg.getResult();
-        if (path == null)
-            return null;
-        // Assert it's an '.xml' file
-        final String ext = path.getFileExtension();
-        if (ext == null  ||  !ext.equals(Model.FILE_EXTENSION))
-            path = path.removeFileExtension().addFileExtension(Model.FILE_EXTENSION);
-        // Get the file for the new resource's path.
-        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        return root.getFile(path);
     }
 
     /** Save current model content, mark editor as clean.

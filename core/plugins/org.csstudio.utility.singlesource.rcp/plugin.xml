@@ -2,10 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.csstudio.utility.singlesource.resourcehelper">
-      <ResourceHelper
-            class="org.csstudio.utility.singlesource.rcp.RCPResourceHelper">
-      </ResourceHelper>
+         point="org.csstudio.utility.singlesource.helpers">
+      <helpers
+            resources="org.csstudio.utility.singlesource.rcp.RCPResourceHelper"
+            ui="org.csstudio.utility.singlesource.rcp.RCPUIHelper">
+      </helpers>
    </extension>
 
 </plugin>

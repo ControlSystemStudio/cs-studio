@@ -28,8 +28,9 @@ import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
-import org.csstudio.trends.databrowser2.util.SingleSourceHelper;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -395,11 +396,12 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         sel_filename.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
-            	final String name =  SingleSourceHelper.openFileBrowser(parent.getShell(), SWT.SAVE);
+            	final IPath name = SingleSourcePlugin.getUIHelper()
+        	        .openSaveDialog(parent.getShell(), null, null);
                 if (name != null)
-                    filename.setText(name.trim());
+                    filename.setText(name.toString());
             }
         });
 
