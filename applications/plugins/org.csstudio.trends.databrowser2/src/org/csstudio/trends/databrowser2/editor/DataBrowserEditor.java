@@ -35,6 +35,7 @@ import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
+import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
@@ -166,9 +167,7 @@ public class DataBrowserEditor extends EditorPart
 	        try
 	        {
         		final InputStream stream = SingleSourcePlugin.getResourceHelper().getInputStream(input);
-        		if (stream == null)
-        			throw new PartInitException(
-        					"Cannot handle " + input.getName()); //$NON-NLS-1$
+        		if (stream != null)
         			model.read(stream);
 			}
 	        catch (Exception ex)

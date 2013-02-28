@@ -118,7 +118,7 @@ public final class Messages extends NLS {
     public static String TimeStampWidget_Time_Sep;
     public static String TimeStampWidget_Time_SelectMinute;
     public static String TimeStampWidget_Time_SelectSeconds;
-
+    
     public static String SaveAsDialog_TITLE;
     public static String SaveAsDialog_MESSAGE;
     public static String SaveAsDialog_FILE_LABEL;
@@ -188,6 +188,9 @@ public final class Messages extends NLS {
     public static String WorkspacePreferencePage_REFRESH_ON_STARTUP;
     public static String WorkspacePreferencePage_PROMPT_FOR_WORKSPACE;
     public static String WorkspacePreferencePage_CONFIRM_EXIT;
+
+    public static String EmptyEditorInput_NotSaved;
+    public static String EmptyEditorInput_NotSaved_TT;
     
     static
     {

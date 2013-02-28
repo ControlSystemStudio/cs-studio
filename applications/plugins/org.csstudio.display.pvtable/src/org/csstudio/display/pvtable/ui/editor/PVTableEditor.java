@@ -11,11 +11,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
+import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.PathEditorInput;
@@ -59,7 +61,7 @@ public class PVTableEditor extends EditorPart
         final IWorkbenchPage page = window.getActivePage();
         try
         {
-            final EmptyEditorInput input = new EmptyEditorInput();
+            final EmptyEditorInput input = new EmptyEditorInput(Plugin.getImageDescriptor("icons/pvtable.png")); //$NON-NLS-1$
             return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
         }
         catch (Exception ex)
