@@ -49,6 +49,5 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.propsheet,
  org.csstudio.trends.databrowser2.sampleview,
  org.csstudio.trends.databrowser2.ui,
- org.csstudio.trends.databrowser2.util,
  org.csstudio.trends.databrowser2.waveformview
 Bundle-ClassPath: .
