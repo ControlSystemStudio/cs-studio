@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.utility.singlesource;
 
-import java.io.InputStream;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 /** JUnit test of the URLPath
  *  @author Kay Kasemir

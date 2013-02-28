@@ -24,9 +24,9 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -122,11 +122,10 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     public IPath getExpandedFilename()
     {
         IPath path = getPlainFilename();
-
         try
         {
             final String new_path = MacroUtil.replaceMacros(path.toPortableString(), getAllMacros());
-            path = ResourceUtil.getPathFromString(new_path);
+            path = SingleSourcePlugin.getResourceHelper().newPath(new_path);
         }
         catch (InfiniteLoopException e)
         {
@@ -150,7 +149,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     {
         final Model model = new Model();
         model.setMacros(getAllMacros());
-        final InputStream input = ResourceUtil.pathToInputStream(getExpandedFilename());
+        final InputStream input = SingleSourcePlugin.getResourceHelper().getInputStream(getExpandedFilename());
         model.read(input);
         return model;
     }

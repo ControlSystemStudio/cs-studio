@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.util.ResourceUtil;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -197,7 +197,7 @@ public class Preferences
 				null, null);
 		if (pltRepo == null || pltRepo.trim().isEmpty())
 			return null;
-		return ResourceUtil.getPathFromString(pltRepo);
+		return SingleSourcePlugin.getResourceHelper().newPath(pltRepo);
 	}
 	
 	public static String getEmailDefaultSender() {

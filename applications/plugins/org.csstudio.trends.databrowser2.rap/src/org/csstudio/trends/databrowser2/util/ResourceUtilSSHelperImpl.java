@@ -134,17 +134,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	}
 
 	@Override
-	public boolean isExistingWorkspaceFile(IPath path) {
-		return false;
-	}
-
-	@Override
 	public Image getScreenShotImage(GraphicalViewer viewer) {
 		throw new RuntimeException(NOT_IMPLEMENTED);
 	}	
-
-	
-
-
-
 }

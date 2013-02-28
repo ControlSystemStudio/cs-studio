@@ -6,10 +6,9 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir, <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.1",
  org.eclipse.ui.views;bundle-version="3.5.0",
- org.eclipse.ui.ide;bundle-version="3.6.0",
+ org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.apputil.ui;bundle-version="1.1.7",
  org.csstudio.opibuilder;bundle-version="1.0.6",
  org.csstudio.opibuilder.widgets;bundle-version="1.0.5",
