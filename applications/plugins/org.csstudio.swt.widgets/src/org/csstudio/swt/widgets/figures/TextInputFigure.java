@@ -261,9 +261,11 @@ public class TextInputFigure extends TextFigure {
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
 		Dimension superSize = super.getPreferredSize(wHint, hHint);
-		if(superSize.height < SELECTOR_WIDTH)
-			superSize.height = SELECTOR_WIDTH;
-		superSize.width += SELECTOR_WIDTH+1;
+		if(getSelectorType() != SelectorType.NONE){
+			if (superSize.height < SELECTOR_WIDTH)
+				superSize.height = SELECTOR_WIDTH;
+			superSize.width += SELECTOR_WIDTH + 1;
+		}
 		return superSize;
 	}
 	
