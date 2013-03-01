@@ -47,6 +47,9 @@ public class Activator extends AbstractUIPlugin
         super.start(context);
 		if (SingleSourcePlugin.getUIHelper().getUI() == UI.RAP)
 		{
+		    // Is this necessary?
+		    // RAPCorePlugin adds the "server" scope for all plugins,
+		    // but starts too late...
 	        Platform.getPreferencesService().setDefaultLookupOrder(
                 PLUGIN_ID, null,
                 new String[]
