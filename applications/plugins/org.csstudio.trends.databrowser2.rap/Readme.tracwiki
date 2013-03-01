@@ -1,0 +1,25 @@
+= Running the Data Browser an a RAP Application =
+
+== Create Target Platform ==
+Create a new target platform that includes
+
+ 1. http://download.eclipse.org/rt/rap/1.5/runtime
+ 2. The directory `cs-studio/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0`
+ 3. .. `third_party_plugins/JUnit`
+ 
+May also use the `databrowser.target` from this fragment, but need to adjust the path to `org.csstudio.rap.core` in there.
+
+When changing to this target platform, `Project/Clean...` may be required to force a full rebuild.
+
+
+== Create Preferences ==
+Create a plugin_customization.ini as you would for an RCP product that uses the Data Browser.
+Place it in `$HOME/css_rap.ini` or define the Java property `org.csstudio.rap.preference`
+to define the file with full path name.
+
+
+== Launch RAP within IDE ==
+Open `org.csstudio.trends.databrowser2.rap/fragment.xml`.
+
+In the main tab of the Fragment editor, under Testing, select "Launch a RAP Application".
+"CSS Data Browser RAP" should be listed; select it.
