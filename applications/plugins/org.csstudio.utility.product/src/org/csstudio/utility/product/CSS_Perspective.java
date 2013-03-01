@@ -28,8 +28,8 @@ public class CSS_Perspective implements IPerspectiveFactory
     final private static String ID_PROBE2 = "org.csstudio.diag.pvmanager.probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_ALARM_TREE = "org.csstudio.alarm.ui.alarmtree.View";
-    final private static String ID_ALARM_TABLE= "org.csstudio.alarm.ui.alarmtable.view";
+    final private static String ID_ALARM_TREE = "org.csstudio.alarm.beast.ui.alarmtree.View";
+    final private static String ID_ALARM_TABLE= "org.csstudio.alarm.beast.ui.alarmtable.view";
 
     /** Suffix for matching View IDs when multiple instances are allowed */
     final private static String MULTIPLE = ":*";
