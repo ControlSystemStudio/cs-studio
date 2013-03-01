@@ -48,9 +48,8 @@ public class NativeTextFigure extends AbstractSWTWidgetFigure<Text> implements I
 	public void setEnabled(boolean value) {		
 			super.setEnabled(value);
 			if(runmode && getSWTWidget() != null && !getSWTWidget().isDisposed()){
-				//on rap, it will gray the widget if parent is disabled.
-				if(OPIBuilderPlugin.isRAP())
-					text.getParent().setEnabled(true);
+				//Its parent should be always enabled so the text can be enabled.
+				text.getParent().setEnabled(true);
 				text.setEnabled(true);
 				if(!readOnly)
 					getSWTWidget().setEditable(value);

@@ -42,6 +42,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.GuideModel;
+import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.util.GuideUtil;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.draw2d.IFigure;
@@ -54,10 +55,12 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Handle;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
@@ -74,7 +77,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 
 	@Override
-	protected EditPolicy createChildEditPolicy(EditPart child) {
+	protected EditPolicy createChildEditPolicy(final EditPart child) {
 		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(
 					((AbstractWidgetModel)child.getModel()).getTypeID());
@@ -82,7 +85,21 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			return new GraphicalFeedbackChildEditPolicy(
 					(AbstractBaseEditPart) child, feedbackFactory);
 		}else
-			return super.createChildEditPolicy(child);
+			return new ResizableEditPolicy(){
+			@Override
+			protected List<?> createSelectionHandles() {
+				@SuppressWarnings("unchecked")
+					List<Handle> handleList = super.createSelectionHandles();
+					if (child.getModel() instanceof IPVWidgetModel
+							&& ((AbstractWidgetModel) (child.getModel()))
+									.getProperty(IPVWidgetModel.PROP_PVNAME)
+									.isVisibleInPropSheet()) {			
+							handleList.add(new PVWidgetSelectionHandle(
+								(GraphicalEditPart) child));
+					}
+					return handleList;
+			}
+		};
 	}
 
 	@Override

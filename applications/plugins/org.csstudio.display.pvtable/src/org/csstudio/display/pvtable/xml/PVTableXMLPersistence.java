@@ -165,5 +165,6 @@ public class PVTableXMLPersistence
         out.println(XML_TAIL);
         
         out.flush();
+        out.close();
     }
 }

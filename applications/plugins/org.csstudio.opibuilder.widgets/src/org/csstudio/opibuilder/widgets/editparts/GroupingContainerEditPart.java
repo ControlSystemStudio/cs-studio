@@ -116,6 +116,16 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		};
 		setPropertyChangeHandler(GroupingContainerModel.PROP_SHOW_SCROLLBAR, showBarHandler);
 		
+		IWidgetPropertyChangeHandler fowardColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+				if(getWidgetModel().isForwardColors())
+					forwardColors();
+				return true;
+			}
+		};
+		setPropertyChangeHandler(GroupingContainerModel.PROP_FORWARD_COLORS, fowardColorHandler);
+		setPropertyChangeHandler(GroupingContainerModel.PROP_COLOR_BACKGROUND, fowardColorHandler);
+		setPropertyChangeHandler(GroupingContainerModel.PROP_COLOR_FOREGROUND, fowardColorHandler);		
 		
 		
 		//use property listener because it doesn't need to be queued in GUIRefreshThread.
@@ -141,6 +151,19 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		});		
 		
 	}
+	
+	private void forwardColors(){
+		for(Object o: getChildren()){
+			if(o instanceof AbstractBaseEditPart){
+				((AbstractBaseEditPart)o).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, 
+						getWidgetModel().getPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+				((AbstractBaseEditPart)o).setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, 
+						getWidgetModel().getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+				
+			}
+		}
+	}
+	
 	/**
 	* @param lock true if the children should be locked.
 	 */

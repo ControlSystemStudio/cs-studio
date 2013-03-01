@@ -218,11 +218,15 @@ public class GUI implements AlarmClientModelListener
         			"FILTER", filter) //$NON-NLS-1$
 		{
 			@Override
-			public void newSelection(String entry)
+			public void itemSelected(final String selection)
 			{
                 final String filter_text = filter.getText().trim();
-                selectFilteredPVs(filter_text, active_table_viewer);
-                selectFilteredPVs(filter_text, acknowledged_table_viewer);
+                // Turn glob-type filter into regex, then pattern
+                final Pattern pattern =
+                        Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
+                                        Pattern.CASE_INSENSITIVE);
+                selectFilteredPVs(pattern, active_table_viewer);
+                selectFilteredPVs(pattern, acknowledged_table_viewer);
 			}
 		};
 		filter_history.loadSettings();
@@ -307,15 +311,12 @@ public class GUI implements AlarmClientModelListener
     }
 
     /** Select PVs in table that match filter expression
-     *  @param filter_text Filter expression ('vac', 'amp*trip')
+     *  @param pattern PV name pattern ('vac', 'amp*trip')
      *  @param table_viewer Table in which to select PVs
      */
-    private void selectFilteredPVs(final String filter_text,
+    private void selectFilteredPVs(final Pattern pattern,
                                    final TableViewer table_viewer)
     {
-        final Pattern pattern =
-            Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
-                            Pattern.CASE_INSENSITIVE);
         final AlarmTreePV pvs[] =
             ((AlarmTableContentProvider) table_viewer.getContentProvider()).getAlarms();
         final ArrayList<AlarmTreePV> selected =

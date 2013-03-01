@@ -61,6 +61,7 @@ public class TextInputModel extends TextUpdateModel {
 	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
 	
 	public TextInputModel() {
+		setSize(100, 25);
 		setPropertyValue(PROP_LIMITS_FROM_PV, false);
 	}
 	

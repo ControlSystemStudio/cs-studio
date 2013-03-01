@@ -181,6 +181,12 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         pv.close();
     }
 
+    /** @return <code>true</code> if PV is connected */
+    public boolean isConnected()
+    {
+        return pv != null  &&  pv.isConnected();
+    }
+
     /** @see FilterListener */
     @Override
     public void filterChanged(final double value)

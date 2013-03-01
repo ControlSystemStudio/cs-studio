@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.rap.core;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +29,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("nls")
 public class RAPCorePlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -38,7 +46,15 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor
 	 */
-	public RAPCorePlugin() {
+    public RAPCorePlugin()
+	{
+	    // RAP code may use AWT to create in-memory images,
+	    // but it cannot open AWT windows.
+	    // On Mac OS X, calling
+	    //  new java.awt.image.BufferedImage(..)
+	    // can cause a hangup unless AWT is configured for
+	    // headless mode:
+	    System.setProperty("java.awt.headless", "true");
 	}
 
 	/*

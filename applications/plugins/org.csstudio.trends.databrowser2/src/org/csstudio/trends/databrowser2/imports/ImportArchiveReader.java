@@ -7,17 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import java.io.InputStream;
 import java.util.List;
 
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.trends.databrowser2.Activator;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
+import org.csstudio.utility.singlesource.ResourceHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.eclipse.core.runtime.IPath;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
@@ -90,15 +88,11 @@ public class ImportArchiveReader implements ArchiveReader
     {
         if (values == null)
         {
-  	  		// TODO RAP and RCP
-			if (Activator.isRAP()) {
-   	             throw new RuntimeException("Not yet implemented for web version.");
-			}
             // Locate file
-            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-            final InputStream input = file.getContents();
+            final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
+            final IPath ipath = resources.newPath(path);
             // Import data
-            values = importer.importValues(input );
+            values = importer.importValues(resources.getInputStream(ipath));
         }
         return new ArrayValueIterator(values);
     }

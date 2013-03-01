@@ -9,9 +9,11 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -32,6 +34,11 @@ public class CheckBoxModel extends AbstractPVWidgetModel implements ITextModel{
 	public static final String PROP_AUTOSIZE = "auto_size";	//$NON-NLS-1$
 	
 	/**
+	 * The color of the selected item.
+	 */
+	public static final String PROP_SELECTED_COLOR = "selected_color";//$NON-NLS-1$
+	
+	/**
 	 * Unique identifier.
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.checkbox"; //$NON-NLS-1$
@@ -50,6 +57,8 @@ public class CheckBoxModel extends AbstractPVWidgetModel implements ITextModel{
 				WidgetPropertyCategory.Display, ""));	//$NON-NLS-1$	
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
 				WidgetPropertyCategory.Display, false));
+		addProperty(new ColorProperty(PROP_SELECTED_COLOR, "Selected Color", 
+				WidgetPropertyCategory.Display, new RGB(77, 77, 77)));
 	}
 	
 	/**
@@ -87,5 +96,9 @@ public class CheckBoxModel extends AbstractPVWidgetModel implements ITextModel{
 	
 	public boolean isAutoSize(){
 		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
+	}
+	
+	public OPIColor getSelectedColor(){
+		return (OPIColor)getPropertyValue(PROP_SELECTED_COLOR);
 	}
 }

@@ -77,7 +77,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
         // Check for existing item
         for (int i=0; i<parent.getChildCount(); ++i)
         {
-            final AlarmTreeItem item = parent.getClientChild(i);
+            final AlarmTreeItem item = parent.getChild(i);
             if ((item instanceof GlobalAlarm) && item.getName().equals(name))
             {
                 // Update existing alarm
@@ -102,7 +102,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
         // Check for existing item
         for (int i=0; i<parent.getChildCount(); ++i)
         {
-            final AlarmTreeItem item = parent.getClientChild(i);
+            final AlarmTreeItem item = parent.getChild(i);
             if (item.getName().equals(name))
                 return item;
         }
@@ -170,7 +170,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
         // Item names are not necessarily unique,
         // so name & ID-of-parent are required for lookup.
         // To get all parent IDs, start at the root
-        final AlarmTreeRoot root = getClientRoot();
+        final AlarmTreeRoot root = getRoot();
         // Lock the root
         // When several global alarms for the same root trigger at about the same time,
         // multiple ReadInfoJob instances will try to complete the GUI info.
@@ -197,7 +197,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
         {
             children = new AlarmTreeItem[item.getChildCount()];
             for (int i=0; i<children.length; ++i)
-                children[i] = item.getClientChild(i);
+                children[i] = item.getChild(i);
         }
         for (AlarmTreeItem child : children)
             completeGuiInfo(reader, child);

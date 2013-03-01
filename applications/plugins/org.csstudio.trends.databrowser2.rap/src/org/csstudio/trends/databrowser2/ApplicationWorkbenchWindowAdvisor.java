@@ -3,9 +3,11 @@ package org.csstudio.trends.databrowser2;
 import java.util.logging.Level;
 
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -36,7 +38,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		}
 		IWorkbenchWindow targetWindow = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
-		DataBrowserInput dataBrowserInput = new DataBrowserInput(path);
+		IEditorInput dataBrowserInput = new PathEditorInput(path);
 		try {
 			targetWindow.getActivePage().openEditor(dataBrowserInput,
 					DataBrowserEditor.ID);

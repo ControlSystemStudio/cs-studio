@@ -236,7 +236,7 @@ public class ALHConverter
             return item;
         for (int i=0; i<item.getChildCount(); ++i)
         {
-            final AlarmTreeItem found = findGroup(item.getClientChild(i), name);
+            final AlarmTreeItem found = findGroup(item.getChild(i), name);
             if (found != null)
                 return found;
         }
@@ -262,6 +262,6 @@ public class ALHConverter
                 System.err.println("Warning: No sub-entries for '" +
                         item.getName() + "'");
         for (int i=0; i<item.getChildCount(); ++i)
-            check(item.getClientChild(i));
+            check(item.getChild(i));
     }
 }

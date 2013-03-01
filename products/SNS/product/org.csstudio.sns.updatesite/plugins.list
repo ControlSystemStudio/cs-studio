@@ -138,6 +138,8 @@ org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.pvmanager.vtype/**
+org.csstudio.utility.singlesource/**
+org.csstudio.utility.singlesource.rcp/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**

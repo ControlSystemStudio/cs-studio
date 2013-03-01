@@ -66,7 +66,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
 		if (item_level == panel_level)
 			items.add(item);
 		for (int i=0;  i<n;  ++i)
-			collectPanelItems(item.getClientChild(i), items, item_level+1, panel_level);
+			collectPanelItems(item.getChild(i), items, item_level+1, panel_level);
     }
 	
 	/** @return Items in alarm panel */

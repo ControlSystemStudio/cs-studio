@@ -138,7 +138,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>66d1507f:138820a85e5:-6be6</wuid>
       <scripts />
       <height>791</height>
@@ -4224,6 +4224,9 @@ $(pv_value)</tooltip>
           </font>
           <width>100</width>
           <border_style>0</border_style>
+          <selected_color>
+            <color red="77" green="77" blue="77" />
+          </selected_color>
           <label>Check Box</label>
           <rules />
           <pv_value />
@@ -4394,7 +4397,7 @@ $(pv_value)</tooltip>
           </scale_options>
           <pv_name>loc://myChoice</pv_name>
           <background_color>
-            <color red="255" green="255" blue="0" />
+            <color red="240" green="240" blue="240" />
           </background_color>
           <foreground_color>
             <color red="0" green="0" blue="0" />
@@ -4405,10 +4408,10 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>100</width>
+          <width>88</width>
           <border_style>0</border_style>
           <selected_color>
-            <color red="255" green="0" blue="0" />
+            <color red="0" green="74" blue="166" />
           </selected_color>
           <rules />
           <pv_value />
@@ -5051,7 +5054,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>66d1507f:138820a85e5:-6bdb</wuid>
       <scripts />
       <height>791</height>

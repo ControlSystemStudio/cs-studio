@@ -29,7 +29,7 @@ below the PV name. </li>
 <li>Send a PV name to the EPICS PV tree via the context menu of another
 CSS application.  </li>
 </ul>
-    
+
 <h2>Examples</h2>
 <p>
 The first screen-shot shows an analog input (ai) record, which reads its
@@ -52,6 +52,27 @@ Note how the color-coding indicates severities.
 <img alt="" src="screenshot2.png" />
 <!--/center-->
 </p>
+
+<h2>Tool Bar Buttons</h2>
+<p><img alt="" src="../icons/collapse.gif" />
+- Collapse the tree, i.e. close all sub-sections of the tree.
+</p>
+
+<p><img alt="" src="../icons/alarmtree.png" />
+- Display all items in the tree that are in an alarm state.
+Note that this is performed whenever you push the tool bar button.
+If the PV tree items update, branches will not automatically
+show or hide based on their alarm state, because this could
+result in a very nervous display for a rapidly changing
+PV tree.
+Whenever you desire to update the tree to show/hide items,
+push the button.
+</p>
+
+<p><img alt="" src="../icons/pvtree.png" />
+- Expand all sub-sections of the tree.
+</p>
+
 
 <h2>Limitations</h2>
 <p>

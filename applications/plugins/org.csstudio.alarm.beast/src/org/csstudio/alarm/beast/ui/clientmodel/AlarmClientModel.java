@@ -846,7 +846,7 @@ public class AlarmClientModel
         }
         
         // This could change the alarm tree after a PV was disabled or enabled.
-        final AlarmTreeItem parent = pv.getClientParent();
+        final AlarmTreeItem parent = pv.getParent();
         if (parent != null)
             parent.maximizeSeverity();
 
@@ -884,7 +884,7 @@ public class AlarmClientModel
             pv.setEnabled(enabled);
         }
         // This could change the alarm tree after a PV was disabled or enabled.
-        final AlarmTreeItem parent = pv.getClientParent();
+        final AlarmTreeItem parent = pv.getParent();
         if (parent != null)
             parent.maximizeSeverity();
         // Update alarm display
@@ -1005,7 +1005,7 @@ public class AlarmClientModel
     /** Inform listeners about overall change to alarm tree configuration:
      *  Items added, removed.
      */
-    private void fireNewConfig()
+    void fireNewConfig()
     {
         for (AlarmClientModelListener listener : listeners)
         {

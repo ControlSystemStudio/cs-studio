@@ -16,19 +16,6 @@ import java.util.List;
  *  Client and server code need additional but different data in the alarm tree:
  *  Display info like guidance, or alarm state determination details.
  *
- *  When client and server code uses tree items derived from this base
- *  tree item, hierarchy related methods like <code>getParent()</code>,
- *  <code>getChild()</code> usually require a cast to the actual derived data type.
- *
- *  One could use a generic <code>TreeItem&lt;T&gt;</code> to add a member variable
- *  <code>T info</code> to the tree item to remain type-safe without casts.
- *  That "info" would then be specific to client or server code.
- *  But the data member needs access to the tree item that owns it to
- *  get the path etc., adding another reference back to the tree item.
- *
- *  A middle way seems to be that derived classes 'X' have a <code>getParentX()</code>
- *  method that performs the cast in one place.
- *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -84,13 +71,13 @@ public class TreeItem
     }
 
     /** @return Parent item. <code>null</code> for root */
-    final synchronized public TreeItem getParent()
+    synchronized public TreeItem getParent()
     {
         return parent;
     }
 
     /** @return Alarm tree root element */
-    final public TreeItem getRoot()
+    public TreeItem getRoot()
     {
         TreeItem root = this;
         TreeItem p = getParent();
@@ -145,7 +132,7 @@ public class TreeItem
      *  @throws IndexOutOfBoundsException if the index is out of range
      *          (<tt>index &lt; 0 || index &gt;= getChildCount()</tt>)
      */
-    final public synchronized TreeItem getChild(final int index)
+    public synchronized TreeItem getChild(final int index)
     {
         return children.get(index);
     }
@@ -154,7 +141,7 @@ public class TreeItem
      *  @param child_name Name of child to locate.
      *  @return Child with given name or <code>null</code> if not found.
      */
-    final public synchronized TreeItem getChild(final String name)
+    public synchronized TreeItem getChild(final String name)
     {
         for (TreeItem child : children)
             if (child.getName().equals(name))
@@ -200,6 +187,29 @@ public class TreeItem
             throw new Error("Corrupted tree item: " + toString());
     }
 
+    /** Locate alarm tree item by path, starting at this element
+     *  @param path Path to item
+     *  @return Item or <code>null</code> if not found
+     */
+    public synchronized TreeItem getItemByPath(final String path)
+    {
+        if (path == null)
+            return null;
+        if (AlarmTreePath.PATH_SEP.equals(path))
+            return this;
+        final String[] steps = AlarmTreePath.splitPath(path);
+        if (steps.length <= 0)
+            return null;
+        // Does root of path match?
+        if (!steps[0].equals(getName()))
+            return null;
+        // Descend down the path
+        TreeItem item = this;
+        for (int i=1;  i < steps.length  &&  item != null;    ++i)
+            item = item.getChild(steps[i]);
+        return item;
+    }
+    
     /** Dump this item and sub-items.
      *  To be called by outside code.
      *  Derived classes should override <code>dump_item()</code>
@@ -273,6 +283,6 @@ public class TreeItem
     @Override
     public String toString()
     {
-        return path_name + " (ID " + id + ")";
+        return "'" + path_name + "' (ID " + id + ")";
     }
 }

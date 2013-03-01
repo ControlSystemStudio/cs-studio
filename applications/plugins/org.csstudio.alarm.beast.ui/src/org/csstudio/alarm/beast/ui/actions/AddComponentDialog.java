@@ -113,7 +113,7 @@ public class AddComponentDialog extends TitleAreaDialog
         // Is the parent of this a top-level element,
         // a "Facility" just above root?
         final boolean haveTopLevelParent =
-            parent_item.getClientParent() instanceof AlarmTreeRoot;
+            parent_item.getParent() instanceof AlarmTreeRoot;
         type_component.setText(Messages.AlarmComponent);
         type_component.setLayoutData(new GridData());
 
@@ -196,6 +196,8 @@ public class AddComponentDialog extends TitleAreaDialog
             }
         });
 
+        name.setFocus();
+        
         return parent_composite;
     }
 

@@ -8,7 +8,6 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -27,7 +26,6 @@ import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
-import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -38,8 +36,6 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.XYGraphSettings;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.osgi.util.NLS;
@@ -258,22 +254,12 @@ public class Plot
 				else if (item instanceof String)
 					listener.droppedName(item.toString());
 				else if (item instanceof String[])
-				{
+				{   // File names arrive as String[]...
 				    final String[] files = (String[])item;
-				    if (files.length <= 0)
-				        return;
 				    try
 				    {
-  				  		// TODO RAP and RCP
-						if (Activator.isRAP()) {
-   				             throw new RuntimeException("Not yet implemented for web version.");
-						}
-				        // Only allow workspace files
-    				    final URI location = new URI("file",null, files[0], null); //$NON-NLS-1$
-    				    final IFile[] ws_files = ResourcesPlugin.getWorkspace().
-    				            getRoot().findFilesForLocationURI(location);
-    				    if (ws_files.length == 1  && ws_files[0].exists())
-    				        listener.droppedFilename(ws_files[0].getFullPath().toString());
+				        for (String filename : files)
+    				        listener.droppedFilename(filename);
 				    }
 				    catch (Exception ex)
 				    {

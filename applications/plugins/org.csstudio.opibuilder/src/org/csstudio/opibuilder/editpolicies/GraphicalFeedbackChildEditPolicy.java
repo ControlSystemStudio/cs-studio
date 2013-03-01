@@ -26,6 +26,7 @@ import java.util.List;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -138,7 +139,13 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
 				handleList.addAll(contributedHandles);
 			}
 
+			if (hostEP.getModel() instanceof IPVWidgetModel
+					&& ((AbstractWidgetModel) (hostEP.getModel()))
+							.getProperty(IPVWidgetModel.PROP_PVNAME)
+							.isVisibleInPropSheet()) {	
+					handleList.add(new PVWidgetSelectionHandle(
+						(GraphicalEditPart) hostEP));
+			}
 			return handleList;
-
 		}
 	}

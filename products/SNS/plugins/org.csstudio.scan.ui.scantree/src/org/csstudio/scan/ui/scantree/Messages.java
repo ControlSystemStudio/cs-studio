@@ -32,7 +32,6 @@ public class Messages extends NLS
     public static String FileOpenErrorFmt;
     public static String FileSaveErrorFmt;
     public static String NoScanCommandsFmt;
-    public static String NotSaved;
     public static String OpenCommandList;
     public static String OpenProperties;
     public static String OpenScanTreeError;

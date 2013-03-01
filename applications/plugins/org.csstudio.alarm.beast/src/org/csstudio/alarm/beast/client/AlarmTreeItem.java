@@ -102,37 +102,41 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Alarm tree root element */
-    public AlarmTreeRoot getClientRoot()
+    public AlarmTreeRoot getRoot()
     {
-        final TreeItem root = getRoot();
+        final TreeItem root = super.getRoot();
         if (root instanceof AlarmTreeRoot)
             return (AlarmTreeRoot) root;
         throw new Error("Alarm tree has no root"); //$NON-NLS-1$
     }
 
-    /** @return Parent as client tree type */
-    public AlarmTreeItem getClientParent()
+    /** {@inheritDoc} */
+    public AlarmTreeItem getParent()
     {
-        return (AlarmTreeItem) getParent();
+        return (AlarmTreeItem) super.getParent();
     }
 
-    /** @param index 0 ... <code>getChildCount()-1</code>
-     *  @return Child item as client tree type
-     */
-    public AlarmTreeItem getClientChild(final int i)
+    /** {@inheritDoc} */
+    public AlarmTreeItem getChild(final int i)
     {
-        return (AlarmTreeItem) getChild(i);
+        return (AlarmTreeItem) super.getChild(i);
     }
 
-    /** Locate child element by name.
-     *  @param child_name Name of child to locate.
-     *  @return Child with given name or <code>null</code> if not found.
-     */
-    public AlarmTreeItem getClientChild(final String name)
+    /** {@inheritDoc} */
+    public AlarmTreeItem getChild(final String name)
     {
         return (AlarmTreeItem) super.getChild(name);
     }
 
+    /** Locate alarm tree item by path, starting at this element
+     *  @param path Path to item
+     *  @return Item or <code>null</code> if not found
+     */
+    public AlarmTreeItem getItemByPath(final String path)
+    {
+        return (AlarmTreeItem) super.getItemByPath(path);
+    }
+    
     /** @return Guidance messages */
     public synchronized GDCDataStructure[] getGuidance()
     {
@@ -267,7 +271,7 @@ public class AlarmTreeItem extends TreeItem
         this.current_severity = current_severity;
         this.severity = severity;
         this.message = message;
-        final AlarmTreeItem parent = getClientParent();
+        final AlarmTreeItem parent = getParent();
         if (parent != null)
             parent.maximizeSeverity();
         return true;
@@ -287,14 +291,14 @@ public class AlarmTreeItem extends TreeItem
     	// to JMS (for the AlarmClientModelRoot)
     	// To prevent deadlocks, first lock the root,
     	// then this and other affected tree items
-        final AlarmTreeRoot root = getClientRoot();
+        final AlarmTreeRoot root = getRoot();
         synchronized (root)
         {
         	synchronized (this)
             {
             	final int n = getChildCount();
                 for (int i=0; i<n; ++i)
-                    getClientChild(i).acknowledge(acknowledge);
+                    getChild(i).acknowledge(acknowledge);
             }
         }
     }
@@ -313,7 +317,7 @@ public class AlarmTreeItem extends TreeItem
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
         {
-            final AlarmTreeItem child = getClientChild(i);
+            final AlarmTreeItem child = getChild(i);
             // Maximize 'current' severity
             if (child.getCurrentSeverity().ordinal() > new_current_severity.ordinal())
             	new_current_severity = child.getCurrentSeverity();
@@ -339,7 +343,7 @@ public class AlarmTreeItem extends TreeItem
         }
 
         // Percolate changes towards root
-        final AlarmTreeItem parent = getClientParent();
+        final AlarmTreeItem parent = getParent();
         if (parent != null)
             parent.maximizeSeverity();
     }
@@ -410,7 +414,7 @@ public class AlarmTreeItem extends TreeItem
         writeConfigXML(out, level+1);
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
-            getClientChild(i).writeItemXML(out, level+1);
+            getChild(i).writeItemXML(out, level+1);
         XMLWriter.end(out, level, tag);
         out.println();
     }
@@ -490,7 +494,7 @@ public class AlarmTreeItem extends TreeItem
             {
                 if (i > 0)
                     buf.append(", ");
-                buf.append(getClientChild(i).getName());
+                buf.append(getChild(i).getName());
             }
         }
         return buf.toString();

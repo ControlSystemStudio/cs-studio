@@ -1,0 +1,62 @@
+= Running the Data Browser an a RAP Application =
+
+== Create Target Platform ==
+Create a new target platform that includes
+
+ 1. http://download.eclipse.org/rt/rap/1.5/runtime
+ 2. The directory `cs-studio/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0`
+ 3. .. `third_party_plugins/JUnit`
+ 
+May also use the `databrowser.target` from this fragment, but need to adjust
+the paths related to `org.csstudio.rap.core` in there.
+
+After enabling the new target platform, `Project/Clean...` is required to force a full rebuild.
+
+
+== Create Preferences ==
+Create a `plugin_customization.ini` as you would for an RCP product that uses the Data Browser.
+Key settings include:
+{{{
+# Data Browser configuration example
+# kasemirk@ornl.gov
+
+## Channel Access
+org.csstudio.platform.libs.epics/auto_addr_list=false
+org.csstudio.platform.libs.epics/use_pure_java=true
+org.csstudio.platform.libs.epics/addr_list=127.0.0.1
+org.csstudio.platform.libs.epics/max_array_bytes=460000
+
+## Data Browser
+org.csstudio.trends.databrowser2/urls=jdbc:mysql://localhost/archive*xnds://localhost/archive/cgi/ArchiveDataServer.cgi
+
+# Default data sources for newly added channels
+# Format:  <name>|<key>|<url>
+# xnds: URLs use the key. Other URLs might ignore the key.
+org.csstudio.trends.databrowser2/archives=RDB|1|jdbc:mysql://localhost/archive*- All -|1|xnds://localhost/archive/cgi/ArchiveDataServer.cgi
+
+org.csstudio.archive.rdb/user=archive
+org.csstudio.archive.rdb/password=$archive
+}}}
+
+Place it in `$HOME/css_rap.ini` or set the Java property `org.csstudio.rap.preference`
+to the full path name.
+
+
+== Launch RAP within IDE ==
+Open `org.csstudio.trends.databrowser2.rap/fragment.xml`.
+
+In the main tab of the Fragment editor, under Testing, select "Launch a RAP Application".
+"CSS Data Browser RAP" should be listed; select it.
+
+A web browser should open, pointed to for example http://127.0.0.1:10082/d.
+Since the RAP startup takes some time, a refresh of the web browser may be required.
+
+If the RAP application doesn't work, check the `Run Configuration`'s `Bundles` section for
+missing dependencies.
+
+
+== Create deployable databrowser.war ==
+Refer to WebOPI documentation:
+ * Install WAR product tooling
+ * Export `databrowser.warproduct`
+ 

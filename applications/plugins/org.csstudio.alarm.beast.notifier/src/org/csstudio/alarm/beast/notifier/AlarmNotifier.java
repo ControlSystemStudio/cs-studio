@@ -107,12 +107,12 @@ public class AlarmNotifier {
 			}
 		}
 		// Process System automated actions
-		AlarmTreeItem item = pvItem.getClientParent();
+		AlarmTreeItem item = pvItem.getParent();
 		while (item != null) {
 			for (AADataStructure aa : item.getAutomatedActions()) {
 				handleAutomatedAction(snapshot, item, aa);
 			}
-			item = item.getClientParent();
+			item = item.getParent();
 			if (item.getPosition().equals(AlarmTreePosition.Root))
 				break;
 		}

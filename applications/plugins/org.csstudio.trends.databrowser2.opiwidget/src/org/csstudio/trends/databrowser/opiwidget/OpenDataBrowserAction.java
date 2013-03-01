@@ -11,14 +11,11 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.FileEditorInput;
 
 /** Action for context menu object contribution that opens
  *  the full Data Browser for the model in the Data Browser widget
@@ -39,10 +36,10 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
             filename = ResourceUtil.buildAbsolutePath(model, filename);
         try
         {
-            final IFile file_input = getIFileFromIPath(filename);
+            final IEditorInput input = new  PathEditorInput(filename);
             final DataBrowserModelEditorInput model_input =
-                    new DataBrowserModelEditorInput(new FileEditorInput(file_input), model.createDataBrowserModel());
-            IDE.openEditor(page, model_input, DataBrowserEditor.ID, true);
+                    new DataBrowserModelEditorInput(input, model.createDataBrowserModel());
+            page.openEditor(model_input, DataBrowserEditor.ID, true);
         }
         catch (Exception ex)
         {
@@ -52,27 +49,4 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
                 ex);
         }
     }
-	/**Get the IFile from IPath.
-	 * @param path Path to file in workspace
-	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
-	 */
-	public static IFile getIFileFromIPath(final IPath path)
-	{
-	    try
-	    {
-    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-    				path, false);
-    		if (r!= null && r instanceof IFile)
-		    {
-    		    final IFile file = (IFile) r;
-    		    if (file.exists())
-    		        return file;
-		    }
-	    }
-	    catch (Exception ex)
-	    {
-	        // Ignored
-	    }
-	    return null;
-	}
 }

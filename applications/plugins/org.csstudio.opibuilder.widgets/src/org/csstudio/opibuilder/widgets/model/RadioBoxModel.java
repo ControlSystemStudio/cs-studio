@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.swt.graphics.RGB;
 
 
 /**Model of Radio Box.
@@ -19,7 +19,8 @@ public class RadioBoxModel extends AbstractChoiceModel {
 	public final String ID = "org.csstudio.opibuilder.widgets.radioBox";
 
 	public RadioBoxModel() {
-		setPropertyValue(PROP_SELECTED_COLOR, CustomMediaFactory.COLOR_BLACK);
+		setPropertyValue(PROP_COLOR_BACKGROUND, new RGB(230, 230, 230));
+		setPropertyValue(PROP_SELECTED_COLOR, new RGB(77,77,77));
 	}
 	
 	@Override

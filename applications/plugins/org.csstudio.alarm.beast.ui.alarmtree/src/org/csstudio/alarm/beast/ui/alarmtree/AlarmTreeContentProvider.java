@@ -68,7 +68,7 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
         if (gui.getAlarmDisplayMode())
             child = item.getAlarmChild(index);
         else
-            child = item.getClientChild(index);
+            child = item.getChild(index);
         //System.out.println("Tree update: " + child.getName());
         tree_viewer.replace(parent, index, child);
         // Must be called to trigger tree viewer to descend further

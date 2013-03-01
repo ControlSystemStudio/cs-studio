@@ -411,7 +411,7 @@
                enablesFor="+"
                icon="icons/addGroup.png"
                id="org.csstudio.opibuilder.widgets.creategroupAction"
-               label="Create Group"
+               label="Group"
                menubarPath="group"
                tooltip="Create a group container which contains all the selected widgets.">
          </action>
@@ -447,7 +447,7 @@
                enablesFor="1"
                icon="icons/unlock.png"
                id="org.csstudio.opibuilder.widgets.lockUnlockChildrenAction"
-               label="Lock/Unlock Children"
+               label="&amp;Lock/Unlock Children"
                menubarPath="group"
                tooltip="Lock/Unlock children in the grouping container.">
          </action>
@@ -456,7 +456,7 @@
                enablesFor="1"
                icon="icons/removeGroup.png"
                id="org.csstudio.opibuilder.widgets.removeGroupAction"
-               label="Remove Group"
+               label="Ungroup"
                menubarPath="group"
                tooltip="Remove the group container.">
          </action>
@@ -687,6 +687,10 @@
       <graphicalFeedbackFactory
             class="org.csstudio.opibuilder.widgets.feedback.ArrayFeedbackFactory"
             typeId="org.csstudio.opibuilder.widgets.array">
+      </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.GroupingContainerFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.groupingContainer">
       </graphicalFeedbackFactory>
    </extension>
 

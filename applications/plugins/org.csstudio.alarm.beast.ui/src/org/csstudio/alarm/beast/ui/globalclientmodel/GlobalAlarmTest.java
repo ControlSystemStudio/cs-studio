@@ -38,7 +38,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations,
                 "/Root/Area/System/TheAlarm",
                 SeverityLevel.MAJOR, "Demo", Timestamp.now());
-        final AlarmTreeRoot root = alarm.getClientRoot();
+        final AlarmTreeRoot root = alarm.getRoot();
         root.dump(System.out);
         // New root should be in list of configurations
         assertEquals(1, configurations.size());
@@ -104,7 +104,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         }
 
         System.out.println("Before reading GUI info:");
-        alarm.getClientRoot().dump(System.out);
+        alarm.getRoot().dump(System.out);
 
         // Read RDB info in background job
         BenchmarkTimer timer = new BenchmarkTimer();
@@ -118,7 +118,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         }
         timer.stop();
         System.out.println("After reading GUI info (" + timer.toString() + "):");
-        alarm.getClientRoot().dump(System.out);
+        alarm.getRoot().dump(System.out);
 
         assertTrue(alarm.getID() >= 0);
         assertTrue(alarm.getGuidance().length > 0);
@@ -152,9 +152,9 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations, full_path2,
                 SeverityLevel.MAJOR, "Demo", Timestamp.now());
         // Same root, no detail from RDB, yet
-        final AlarmTreeRoot root = alarm1.getClientRoot();
+        final AlarmTreeRoot root = alarm1.getRoot();
         assertNotSame(alarm1, alarm2);
-        assertSame(root, alarm2.getClientRoot());
+        assertSame(root, alarm2.getRoot());
         assertEquals(-1, root.getID());
 
         // Read RDB info for both in background jobs

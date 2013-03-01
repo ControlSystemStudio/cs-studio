@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.rap.core.preferences;
 
 import java.io.BufferedInputStream;
@@ -25,11 +32,22 @@ import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-/**
- * A preference node for server side configuration, 
- * which is stored on my_product.war/plugin_customization.ini
- * @author Xihui Chen
- *
+
+/** A preference node for server side (RAP) configuration, 
+ *  which is stored in a file similar to the RCP
+ *  product_plugin/plugin_customization.ini
+ *  
+ *  <p>By default, looks for a file "css_rap.ini"
+ *  in the user's home directory.
+ *  
+ *  <p>Alternatively, a property "org.csstudio.rap.preference"
+ *  can point to the customization file.
+ *  For Tomcat, this can be defined in conf/catalina.properties:
+ *  <pre>
+ *  org.csstudio.rap.preference=/path/to/my/css_rap.ini
+ *  </pre>
+ *  
+ *  @author Xihui Chen
  */
 @SuppressWarnings({ "restriction", "unchecked", "rawtypes" })
 public class ServerPreferenceNode implements IEclipsePreferences {
@@ -396,36 +414,12 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 									propDir);
 				RAPCorePlugin.getLogger().log(Level.WARNING, message);
 					
-//				IPath iniPath = null;
-//				try { //try war file folder
-//					String path = ServerPreferenceNode.class
-//							.getProtectionDomain().getCodeSource()
-//							.getLocation().getPath();
-//					String decodedPath = URLDecoder.decode(path, "UTF-8"); //$NON-NLS-1$
-//					iniPath = new Path(decodedPath).removeLastSegments(3)
-//							.append(SERVER_PREFERENCE_FILE_NAME);
-//					System.out.println(iniPath);
-//					properties = loadProperties(iniPath.toOSString()); //$NON-NLS-1$
-//				} catch (IOException e) {
-//					RAPCorePlugin
-//							.getLogger()
-//							.log(Level.WARNING,
-//									NLS.bind(
-//											"RAP CSS configuration file is not found at war folder {0}, try user.home",
-//											iniPath));
-					//try "user.home"
+				//try "user.home"
 					propDir = System.getProperty("user.home");//$NON-NLS-1$
 					properties = loadProperties(new Path(propDir).append(SERVER_PREFERENCE_FILE_NAME).toOSString());
 //				}
 
 			}
-
-			// Cannot use context since it doesn't exist if no UI created.
-			// ServletContext sc = RWT.getRequest().getSession()
-			// .getServletContext();
-			//			String realPath = sc.getRealPath("/"); //$NON-NLS-1$
-			// Properties properties = loadProperties(realPath
-			//					+ "plugin_customization.ini"); //$NON-NLS-1$
 
 			applyDefaults(properties);
 		} catch (Exception e) {

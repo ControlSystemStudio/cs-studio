@@ -128,6 +128,7 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 			private final Color EFFECT3D_OUTLINE_COLOR = CustomMediaFactory.getInstance().getColor(
 					new RGB(160, 160, 160));
 			private static final int DEFAULT_CORNER = 15;
+			private Boolean support3d;
 			public Tank() {
 				super();
 				setOutline(true);
@@ -148,23 +149,10 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 				corner.width = fill_corner;
 				graphics.setAntialias(SWT.ON);			
 				int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
-				boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-		//		Pattern pattern = null;
-	//			//just test if pattern is supported on the platform.
-	//			try {
-	//				graphics.pushState();
-	//				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
-	//								0, 0, 0, 0,	fillBackgroundColor,WHITE_COLOR);
-	//				graphics.setBackgroundPattern(pattern);
-	//			} catch (Exception e) {
-	//				support3D= false;
-	//				if(pattern != null)
-	//					pattern.dispose();	
-	//			}finally{
-	//				graphics.popState();
-	//			}
+				if(support3d == null)
+					support3d = GraphicsUtil.testPatternSupported(graphics);
 				
-				if(effect3D && support3D) {				
+				if(effect3D && support3d) {				
 					graphics.setBackgroundColor(WHITE_COLOR);
 					super.fillShape(graphics);
 					//fill background
@@ -172,20 +160,18 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 							bounds.x, bounds.y, rectWidth, bounds.height);
 					Pattern leftGradientPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
 							leftRectangle.x, leftRectangle.y,
-							leftRectangle.x + leftRectangle.width, leftRectangle.y,
+							leftRectangle.x + leftRectangle.width+2, leftRectangle.y,
 							fillBackgroundColor, 255, WHITE_COLOR, 0);
 					graphics.setBackgroundPattern(leftGradientPattern);
 					graphics.fillRoundRectangle(leftRectangle, corner.width, corner.height);
-					
 					Rectangle rightRectangle = new Rectangle(
 							bounds.x + bounds.width - rectWidth, bounds.y, rectWidth, bounds.height);
 					Pattern rightGradientPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
-							rightRectangle.x, rightRectangle.y, 
+							rightRectangle.x-2, rightRectangle.y, 
 							rightRectangle.x + rightRectangle.width, rightRectangle.y,
 							WHITE_COLOR, 0, fillBackgroundColor, 255);
 					graphics.setBackgroundPattern(rightGradientPattern);
 					graphics.fillRoundRectangle(rightRectangle, corner.width, corner.height);
-					
 					leftGradientPattern.dispose();
 					rightGradientPattern.dispose();
 					
@@ -201,7 +187,7 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 						leftGradientPattern = GraphicsUtil.createScaledPattern(
 								graphics, Display.getCurrent(), leftRectangle.x,
 								leftRectangle.y, leftRectangle.x
-										+ leftRectangle.width, leftRectangle.y,
+										+ leftRectangle.width+2, leftRectangle.y,
 								fillColor, 255, WHITE_COLOR, 0);
 						graphics.setBackgroundPattern(leftGradientPattern);
 						graphics.fillRoundRectangle(leftRectangle, fill_corner,
@@ -210,7 +196,7 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 						rightRectangle = new Rectangle(bounds.x + bounds.width
 								- rectWidth, valuePosition, rectWidth, fillHeight);
 						rightGradientPattern = GraphicsUtil.createScaledPattern(
-								graphics, Display.getCurrent(), rightRectangle.x,
+								graphics, Display.getCurrent(), rightRectangle.x-2,
 								rightRectangle.y, rightRectangle.x
 										+ rightRectangle.width, rightRectangle.y,
 								WHITE_COLOR, 0, fillColor, 255);

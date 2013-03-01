@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -130,15 +131,15 @@ public class AlarmServer
     }
 
     /** Dump all PVs to stdout */
-    public void dump()
+    public void dump(final PrintStream out)
     {
-        System.out.println("== Alarm Server PV Snapshot ==");
+        out.println("== Alarm Server PV Snapshot ==");
         synchronized (this)
         {
-        	alarm_tree.dump(System.out);
+        	alarm_tree.dump(out);
         }
 
-        System.out.println("Work queue size: " + work_queue.size());
+        out.println("Work queue size: " + work_queue.size());
 
         // Log memory usage in MB
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
@@ -146,10 +147,35 @@ public class AlarmServer
         final double max = Runtime.getRuntime().maxMemory() / (1024.0*1024.0);
 
         final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-        System.out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+        out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
                 format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
     }
 
+    /** @return list of all PVs known to the server */
+    public AlarmPV[] getPVs()
+    {
+        final AlarmPV pvs[];
+        synchronized (this)
+        {
+            pvs = pv_list.clone();
+        }
+        return pvs;
+    }
+
+    /** Locate alarm tree item by path
+     *  @param path Alarm tree path
+     *  @return Item or <code>null</code>
+     */
+    public TreeItem getItemByPath(String path)
+    {
+        if (path == null  ||  path.isEmpty())
+            path = getRootName();
+        synchronized (this)
+        {
+            return alarm_tree.getItemByPath(path);
+        }
+    }
+    
     /** Release all resources */
     public void close()
     {
