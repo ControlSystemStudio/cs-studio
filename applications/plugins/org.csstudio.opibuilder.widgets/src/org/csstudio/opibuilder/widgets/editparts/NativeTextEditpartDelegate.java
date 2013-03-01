@@ -13,13 +13,10 @@ import java.beans.PropertyChangeListener;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.NativeTextFigure;
-import org.csstudio.opibuilder.widgets.model.NativeTextModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
-import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.swt.SWT;
@@ -32,27 +29,30 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * The editpart for native text widget.
+ * The editpart delegate for native text input widget.
  * 
  * @author Xihui Chen
- * @deprecated not used anymore
+ * 
  */
-public class NativeTextEditpart extends TextInputEditpart {
+public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
 
+	private TextInputEditpart editpart;
+	private TextInputModel model;
 	private Text text;
 	
-	@Override
-	public NativeTextModel getWidgetModel() {
-		return (NativeTextModel) getModel();
+	
+
+	public NativeTextEditpartDelegate(TextInputEditpart editpart,
+			TextInputModel model) {
+		this.editpart = editpart;
+		this.model = model;
 	}
 
 	@Override
-	protected IFigure doCreateFigure() {
-		initFields();
+	public IFigure doCreateFigure() {
 		
 		int style=SWT.NONE;
-		NativeTextModel model = getWidgetModel();
 		if(model.isShowNativeBorder())
 			style |= SWT.BORDER;
 		if(model.isMultilineInput()){
@@ -83,7 +83,7 @@ public class NativeTextEditpart extends TextInputEditpart {
 			break;
 		}		
 		
-		final NativeTextFigure figure = new NativeTextFigure(this, style);
+		final NativeTextFigure figure = new NativeTextFigure(editpart, style);
 		text = figure.getSWTWidget();
 
 		if(!model.isReadOnly()){
@@ -108,7 +108,7 @@ public class NativeTextEditpart extends TextInputEditpart {
 				text.addListener (SWT.DefaultSelection, new Listener () {
 					public void handleEvent (Event e) {
 						outputText(text.getText());
-						switch (getWidgetModel().getFocusTraverse()) {
+						switch (model.getFocusTraverse()) {
 						case LOSE:
 							 text.getShell().setFocus();
 							 break;
@@ -130,7 +130,7 @@ public class NativeTextEditpart extends TextInputEditpart {
 				@Override
 				public void keyPressed(KeyEvent keyEvent) {
 					if(keyEvent.character == SWT.ESC){
-						text.setText(getWidgetModel().getText());
+						text.setText(model.getText());
 					}
 				}
 			});
@@ -138,60 +138,53 @@ public class NativeTextEditpart extends TextInputEditpart {
 				@Override
 				public void focusLost(FocusEvent e) {
 					//On mobile, lost focus should output text since there is not enter hit or ctrl key. 
-					if(getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
-						text.setText(getWidgetModel().getText());
+					if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
+						text.setText(model.getText());
 					else if(figure.isEnabled())
 						outputText(text.getText());
 				}
 			});
 		}
-		
-		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
-		updatePropSheet();
 		return figure;
 	}
 	
 	protected void outputText(String newValue) {
-		if(getPV() == null){
-			setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
-			outputPVValue(newValue);
+		if(editpart.getPV() == null){
+			editpart.setPropertyValue(TextInputModel.PROP_TEXT, newValue);
+			editpart.outputPVValue(newValue);
 		}
 		else{ 
 			//PV may not be changed instantly, so recover it to old text first.	
-			text.setText(getWidgetModel().getText());	
+			text.setText(model.getText());	
 			//Write PV and update the text with new PV value if writing succeed.
-			outputPVValue(newValue);
+			editpart.outputPVValue(newValue);
 		}
 	}
 	
 	@Override
-	protected void updatePropSheet() {
-		super.updatePropSheet();
-		boolean isMulti = getWidgetModel().isMultilineInput();
-		getWidgetModel().setPropertyVisible(NativeTextModel.PROP_SHOW_H_SCROLL, isMulti);
-		getWidgetModel().setPropertyVisible(NativeTextModel.PROP_SHOW_V_SCROLL, isMulti);
-		getWidgetModel().setPropertyVisible(NativeTextModel.PROP_WRAP_WORDS, isMulti);
-		getWidgetModel().setPropertyVisible(NativeTextModel.PROP_PASSWORD_INPUT, !isMulti);	
+	public void updatePropSheet() {
+		boolean isMulti = model.isMultilineInput();
+		model.setPropertyVisible(TextInputModel.PROP_SHOW_H_SCROLL, isMulti);
+		model.setPropertyVisible(TextInputModel.PROP_SHOW_V_SCROLL, isMulti);
+		model.setPropertyVisible(TextInputModel.PROP_WRAP_WORDS, isMulti);
+		model.setPropertyVisible(TextInputModel.PROP_PASSWORD_INPUT, !isMulti);	
 	}
 
 
 	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		if(getExecutionMode()==ExecutionMode.RUN_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,	null);
+	public void createEditPolicies() {
+		if(editpart.getExecutionMode()==ExecutionMode.RUN_MODE)
+			editpart.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,	null);
 	}
 
 	
-	@Override
-	protected void setFigureText(String text) {
+	public void setFigureText(String text) {
 		this.text.setText(text);
 	}
 
 	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();	
-		removeAllPropertyChangeHandlers(NativeTextModel.PROP_ALIGN_H);
+	public void registerPropertyChangeHandlers() {
+		editpart.removeAllPropertyChangeHandlers(TextInputModel.PROP_ALIGN_H);
 		
 		PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
 			
@@ -201,14 +194,13 @@ public class NativeTextEditpart extends TextInputEditpart {
 			}
 		};
 		
-		getWidgetModel().getProperty(NativeTextModel.PROP_MULTILINE_INPUT)
+		model.getProperty(TextInputModel.PROP_MULTILINE_INPUT)
 			.addPropertyChangeListener(updatePropSheetListener);
 		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			
 			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				AbstractWidgetModel model = getWidgetModel();
 				AbstractContainerModel parent = model.getParent();
 				parent.removeChild(model);
 				parent.addChild(model);
@@ -216,46 +208,24 @@ public class NativeTextEditpart extends TextInputEditpart {
 				return false;
 			}
 		};
-		setPropertyChangeHandler(NativeTextModel.PROP_SHOW_NATIVE_BORDER, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_MULTILINE_INPUT, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_WRAP_WORDS, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_SHOW_H_SCROLL, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_SHOW_V_SCROLL, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_PASSWORD_INPUT, handler);
-		setPropertyChangeHandler(NativeTextModel.PROP_ALIGN_H, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_SHOW_NATIVE_BORDER, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_MULTILINE_INPUT, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_WRAP_WORDS, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_SHOW_H_SCROLL, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_SHOW_V_SCROLL, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_PASSWORD_INPUT, handler);
+		editpart.setPropertyChangeHandler(TextInputModel.PROP_ALIGN_H, handler);
 		
 	}	
 
-	@Override
-	protected String formatValue(Object newValue, String propId) {
-		String text = super.formatValue(newValue, propId);
-		getWidgetModel()
-				.setPropertyValue(TextInputModel.PROP_TEXT, text, false);
-		return text;
-
-	}
 	
-	@Override
-	protected void performAutoSize() {
-		getWidgetModel().setSize(((NativeTextFigure)getFigure()).
+	public void performAutoSize() {
+		model.setSize(((NativeTextFigure)editpart.getFigure()).
 				getAutoSizeDimension());
 	}
 	
-	@Override
 	public String getValue() {
 		return text.getText();
 	}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Object getAdapter(Class key) {
-		if(key == ITextFigure.class)
-			return getFigure();
-
-		return super.getAdapter(key);
-	}
-	
-	
-	
 
 }

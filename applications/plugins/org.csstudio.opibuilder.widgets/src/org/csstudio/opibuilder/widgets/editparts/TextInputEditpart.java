@@ -18,28 +18,26 @@ import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.IValue;
-import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.widgets.model.ActionButtonModel.Style;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
-import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure;
-import org.csstudio.swt.widgets.figures.TextInputFigure.FileReturnPart;
-import org.csstudio.swt.widgets.figures.TextInputFigure.FileSource;
 import org.csstudio.swt.widgets.figures.TextInputFigure.SelectorType;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
@@ -62,6 +60,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	private static DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
+	
+	private ITextInputEditPartDelegate delegate;
 
 	@Override
 	public TextInputModel getWidgetModel() {
@@ -69,47 +69,42 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	}
 
 	@Override
-	protected IFigure doCreateFigure() {
-		TextInputFigure textInputFigure = (TextInputFigure) super
-				.doCreateFigure();
-		textInputFigure.setSelectorType(getWidgetModel().getSelectorType());
-		textInputFigure.setDateTimeFormat(getWidgetModel().getDateTimeFormat());
-		textInputFigure.setFileSource(getWidgetModel().getFileSource());
-		textInputFigure.setFileReturnPart(getWidgetModel().getFileReturnPart());
-
-		textInputFigure
-				.addManualValueChangeListener(new IManualStringValueChangeListener() {
-
-					public void manualValueChanged(String newValue) {
-						outputText(newValue);
-					}
-
-					
-				});
-
+	protected IFigure doCreateFigure() {		
+		if(shouldBeTextInputFigure()){
+			TextInputFigure textInputFigure = (TextInputFigure) super
+					.doCreateFigure();
+			delegate = new Draw2DTextInputEditpartDelegate(
+					this, getWidgetModel(), textInputFigure);
+			
+		}else{
+			initFields();
+			delegate = new NativeTextEditpartDelegate(this, getWidgetModel());
+		}	
+		
 		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
 		updatePropSheet();
-		setPropertiesVisibilities(getWidgetModel().getSelectorType());
-		return textInputFigure;
+		
+		return delegate.doCreateFigure();
 	}
 
-	/**Call this method when user hit Enter or Ctrl+Enter for multiline input.
-	 * @param newValue
+	/**
+	 * @return true if it should use Draw2D {@link TextInputFigure}.
 	 */
-	protected void outputText(String newValue) {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			setPVValue(TextInputModel.PROP_PVNAME, newValue);
-			getWidgetModel().setPropertyValue(TextInputModel.PROP_TEXT,
-					newValue, false);
-		} else {
-			getViewer()
-					.getEditDomain()
-					.getCommandStack()
-					.execute(
-							new SetWidgetPropertyCommand(getWidgetModel(),
-									TextInputModel.PROP_TEXT, newValue));
+	private boolean shouldBeTextInputFigure(){
+		TextInputModel model = getWidgetModel();
+		if(model.getStyle() == Style.NATIVE)
+			return false;
+		// Always use native text in webopi if it doesn't need TextInputFigure functions
+		if (OPIBuilderPlugin.isRAP() && !model.isTransparent()
+				&& model.getRotationAngle() == 0
+				&& model.getSelectorType() == SelectorType.NONE){
+			model.setPropertyValue(TextInputModel.PROP_SHOW_NATIVE_BORDER, false);
+			return false;
 		}
+		return true;
 	}
+	
+	
 	@Override
 	protected TextFigure createTextFigure() {
 		return new TextInputFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
@@ -118,8 +113,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new TextUpdateDirectEditPolicy());
+		delegate.createEditPolicies();
 	}
 
 	@Override
@@ -176,7 +170,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	/**
 	 * @param text
 	 */
-	protected void outputPVValue(String text) {
+	public void outputPVValue(String text) {
 		if(!getWidgetModel().getConfirmMessage().isEmpty())
 			if(!GUIUtil.openConfirmDialog("PV Name: " + getPVName() +
 					"\nNew Value: "+ text+ "\n\n"+
@@ -241,112 +235,44 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
 				pvNameHandler);
 	
-		getWidgetModel().getProperty(TextInputModel.PROP_LIMITS_FROM_PV)
-			.addPropertyChangeListener(new PropertyChangeListener() {
-			
+		PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
+
 			@Override
 			public void propertyChange(PropertyChangeEvent arg0) {
 				updatePropSheet();
 			}
-		});
-			
+		};
+		getWidgetModel().getProperty(TextInputModel.PROP_LIMITS_FROM_PV)
+			.addPropertyChangeListener(updatePropSheetListener);
 		
+		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
+				.addPropertyChangeListener(updatePropSheetListener);
 		
-		IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((TextInputFigure) figure).setDateTimeFormat((String) newValue);
-				return false;
+		PropertyChangeListener reCreateWidgetListener = new PropertyChangeListener() {			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				reCreateWidget();
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_DATETIME_FORMAT,
-				dateTimeFormatHandler);
 
-		IWidgetPropertyChangeHandler fileSourceHandler = new IWidgetPropertyChangeHandler() {
+		getWidgetModel().getProperty(TextInputModel.PROP_STYLE)
+				.addPropertyChangeListener(reCreateWidgetListener);
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((TextInputFigure) figure)
-						.setFileSource(FileSource.values()[(Integer) newValue]);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_FILE_SOURCE,
-				fileSourceHandler);
-
-		IWidgetPropertyChangeHandler fileReturnPartHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((TextInputFigure) figure).setFileReturnPart(FileReturnPart
-						.values()[(Integer) newValue]);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART,
-				fileReturnPartHandler);		
 		
-		if(getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE) != null)
-			getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
-				.addPropertyChangeListener(new PropertyChangeListener() {
-
-					public void propertyChange(PropertyChangeEvent evt) {
-						SelectorType selectorType = SelectorType.values()[(Integer) evt
-								.getNewValue()];
-						((TextInputFigure) figure)
-								.setSelectorType(selectorType);
-						setPropertiesVisibilities(selectorType);
-					}
-
-				});
+		delegate.registerPropertyChangeHandlers();
 	}
-
-	protected void setPropertiesVisibilities(SelectorType selectorType) {
-		switch (selectorType) {
-		case NONE:
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_DATETIME_FORMAT, false);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_RETURN_PART, false);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_SOURCE, false);
-			break;
-		case DATETIME:
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_DATETIME_FORMAT, true);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_RETURN_PART, false);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_SOURCE, false);
-			break;
-		case FILE:
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_DATETIME_FORMAT, false);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_RETURN_PART, true);
-			getWidgetModel().setPropertyVisible(
-					TextInputModel.PROP_FILE_SOURCE, true);
-			break;
-		default:
-			break;
-		}
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if (getWidgetModel().isLimitsFromPV()) {
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null && pvLoadLimitsListener != null) {
-				pv.removeListener(pvLoadLimitsListener);
-			}
-		}
-
+	
+	private void reCreateWidget(){
+		TextInputModel model = getWidgetModel();
+		AbstractContainerModel parent = model.getParent();
+		parent.removeChild(model);
+		parent.addChild(model);
+		parent.selectWidget(model, true);
 	}
 	
 	public DragTracker getDragTracker(Request request) {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE && 
+				delegate instanceof Draw2DTextInputEditpartDelegate) {
 			return new SelectEditPartTracker(this) {				
 				@Override
 				protected boolean handleButtonUp(int button) {
@@ -640,11 +566,52 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	 * @param newValue
 	 */
 	protected void updatePropSheet() {
-		getWidgetModel().setPropertyVisible(
+		TextInputModel model = getWidgetModel();
+		model.setPropertyVisible(
 				TextInputModel.PROP_MAX, !getWidgetModel().isLimitsFromPV());
-		getWidgetModel().setPropertyVisible(
+		model.setPropertyVisible(
 				TextInputModel.PROP_MIN, !getWidgetModel().isLimitsFromPV());
-
+		
+		//set native text related properties visibility
+		boolean isNative = delegate instanceof NativeTextEditpartDelegate;
+		model.setPropertyVisible(TextInputModel.PROP_SHOW_NATIVE_BORDER,
+				isNative);
+		model.setPropertyVisible(TextInputModel.PROP_PASSWORD_INPUT, isNative);
+		model.setPropertyVisible(TextInputModel.PROP_READ_ONLY, isNative);
+		model.setPropertyVisible(TextInputModel.PROP_SHOW_H_SCROLL, isNative);
+		model.setPropertyVisible(TextInputModel.PROP_SHOW_V_SCROLL, isNative);
+		model.setPropertyVisible(TextInputModel.PROP_NEXT_FOCUS, isNative);
+		
+		//set classic text figure related properties visibility
+		model.setPropertyVisible(TextInputModel.PROP_TRANSPARENT, !isNative);
+		model.setPropertyVisible(TextInputModel.PROP_ROTATION, !isNative);
+		model.setPropertyVisible(TextInputModel.PROP_SELECTOR_TYPE, !isNative);				
+		
+		delegate.updatePropSheet();
+	}
+	
+	@Override
+	protected void setFigureText(String text) {
+		if(delegate instanceof NativeTextEditpartDelegate)
+			((NativeTextEditpartDelegate)delegate).setFigureText(text);
+		else
+			super.setFigureText(text);
+	}
+	
+	@Override
+	protected void performAutoSize() {
+		if(delegate instanceof NativeTextEditpartDelegate)
+			((NativeTextEditpartDelegate)delegate).performAutoSize();
+		else
+			super.performAutoSize();
+	}
+	
+	@Override
+	public String getValue() {
+		if(delegate instanceof NativeTextEditpartDelegate)
+			return ((NativeTextEditpartDelegate)delegate).getValue();
+		else
+			return super.getValue();
 	}
 
 }

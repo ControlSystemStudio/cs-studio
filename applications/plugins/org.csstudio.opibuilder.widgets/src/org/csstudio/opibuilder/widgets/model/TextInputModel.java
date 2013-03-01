@@ -16,9 +16,11 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.widgets.model.ActionButtonModel.Style;
 import org.csstudio.swt.widgets.figures.TextInputFigure.FileReturnPart;
 import org.csstudio.swt.widgets.figures.TextInputFigure.FileSource;
 import org.csstudio.swt.widgets.figures.TextInputFigure.SelectorType;
+import org.osgi.framework.Version;
 
 
 /**The model for text input.
@@ -26,6 +28,32 @@ import org.csstudio.swt.widgets.figures.TextInputFigure.SelectorType;
  *
  */
 public class TextInputModel extends TextUpdateModel {
+	
+	public enum FOCUS_TRAVERSE {
+		LOSE("Lose Focus"),
+		KEEP("Keep Focus"),
+		NEXT ("Next Widget"),
+		PREVIOUS("Previous Widget");
+		
+		private String description;
+		private FOCUS_TRAVERSE(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(FOCUS_TRAVERSE f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
 	
 	/** The minimum input value allowed.*/
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
@@ -60,6 +88,21 @@ public class TextInputModel extends TextUpdateModel {
 	/** The message which will be shown on confirm dialog. */
 	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
 	
+	//Properties for native text	
+	public static final String PROP_SHOW_NATIVE_BORDER = "show_native_border"; //$NON-NLS-1$
+
+	public static final String PROP_PASSWORD_INPUT = "password_input"; //$NON-NLS-1$	
+
+	public static final String PROP_READ_ONLY = "read_only"; //$NON-NLS-1$
+
+	public static final String PROP_SHOW_H_SCROLL = "show_h_scroll"; //$NON-NLS-1$		
+
+	public static final String PROP_SHOW_V_SCROLL = "show_v_scroll"; //$NON-NLS-1$
+	
+	public static final String PROP_NEXT_FOCUS = "next_focus"; //$NON-NLS-1$
+
+	public static final String PROP_STYLE = "style"; //$NON-NLS-1$
+	
 	public TextInputModel() {
 		setSize(100, 25);
 		setPropertyValue(PROP_LIMITS_FROM_PV, false);
@@ -74,6 +117,10 @@ public class TextInputModel extends TextUpdateModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();	
+		
+		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Basic,
+				Style.stringValues(), Style.CLASSIC.ordinal()));
+		
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		
@@ -98,15 +145,48 @@ public class TextInputModel extends TextUpdateModel {
 		addProperty(new StringProperty(PROP_CONFIRM_MESSAGE, "Confirm Message", 
 				WidgetPropertyCategory.Behavior, "", true));	//$NON-NLS-1$
 		
+		addProperty(new BooleanProperty(PROP_SHOW_NATIVE_BORDER, "Show Native Border",
+				WidgetPropertyCategory.Display, true));		
+		addProperty(new BooleanProperty(PROP_PASSWORD_INPUT, "Password Input",
+				WidgetPropertyCategory.Behavior, false));		
+		addProperty(new BooleanProperty(PROP_READ_ONLY, "Read Only",
+				WidgetPropertyCategory.Behavior, false));
+		addProperty(new BooleanProperty(PROP_SHOW_H_SCROLL, "Show Horizontal Scrollbar",
+				WidgetPropertyCategory.Display, false));
+		addProperty(new BooleanProperty(PROP_SHOW_V_SCROLL, "Show Vertical Scrollbar",
+				WidgetPropertyCategory.Display, false));
+		addProperty(new ComboProperty(PROP_NEXT_FOCUS, "Next Focus",
+				WidgetPropertyCategory.Behavior, FOCUS_TRAVERSE.stringValues(),0));
+		
+		
 		setPropertyVisible(PROP_DATETIME_FORMAT, false);
 		setPropertyVisible(PROP_FILE_RETURN_PART, false);
 		setPropertyVisible(PROP_FILE_SOURCE, false);
 		setPropertyVisible(PROP_WRAP_WORDS, false);
+		setPropertyVisible(PROP_ALIGN_V,false);
 		
 		setText(""); //$NON-NLS-1$
-		setBorderStyle(BorderStyle.LOWERED);
+		setPropertyValue(PROP_BORDER_STYLE, BorderStyle.LOWERED.ordinal());
 		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
 	}
+	
+	@Override
+	public Version getVersion() {
+		return new Version(2,0,0);
+	}
+	
+	@Override
+	public void processVersionDifference() {
+		super.processVersionDifference();
+		if(getVersionOnFile().getMajor()<2){			
+			if(getWidgetType().equals("Text") || //$NON-NLS-1$
+					getWidgetType().equals("Native Text")){ //$NON-NLS-1$
+				setPropertyValue(PROP_WIDGET_TYPE, "Text Input"); //$NON-NLS-1$
+				setPropertyValue(PROP_STYLE, Style.NATIVE.ordinal());				
+			}
+		}
+	}
+	
 	
 	
 	/**
@@ -154,6 +234,34 @@ public class TextInputModel extends TextUpdateModel {
 	
 	public String getConfirmMessage(){
 		return (String)getPropertyValue(PROP_CONFIRM_MESSAGE);
+	}
+	
+	public boolean isShowNativeBorder(){
+		return (Boolean)getPropertyValue(PROP_SHOW_NATIVE_BORDER);
+	}
+	
+	public boolean isReadOnly(){
+		return (Boolean)getPropertyValue(PROP_READ_ONLY);
+	}
+	
+	public boolean isPasswordInput(){
+		return (Boolean)getPropertyValue(PROP_PASSWORD_INPUT);
+	}
+	
+	public boolean isShowHScroll(){
+		return (Boolean)getPropertyValue(PROP_SHOW_H_SCROLL);
+	}
+	
+	public boolean isShowVScroll(){
+		return (Boolean)getPropertyValue(PROP_SHOW_V_SCROLL);
+	}
+	
+	public FOCUS_TRAVERSE getFocusTraverse(){
+		return FOCUS_TRAVERSE.values()[(Integer)getPropertyValue(PROP_NEXT_FOCUS)];
+	}
+	
+	public Style getStyle(){
+		return Style.values()[(Integer)getProperty(PROP_STYLE).getPropertyValue()];
 	}
 	
 	@Override

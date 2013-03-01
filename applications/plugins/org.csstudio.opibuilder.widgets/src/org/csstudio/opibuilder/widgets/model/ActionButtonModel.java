@@ -134,7 +134,7 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	@Override
 	protected void configureProperties() {
 		
-		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Display,
+		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Basic,
 				Style.stringValues(), Style.NATIVE.ordinal()));
 		
 		addProperty(new StringProperty(PROP_TEXT, "Text",
