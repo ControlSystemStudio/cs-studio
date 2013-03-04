@@ -65,9 +65,13 @@ public class Perspective implements IPerspectiveFactory
 
         // Stuff for 'bottom'
         bottom.addView(IPageLayout.ID_PROP_SHEET);
-        bottom.addView(ExportView.ID);
+        if (rcp)
+        	bottom.addView(ExportView.ID);
+        
         bottom.addPlaceholder(SampleView.ID);
-        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        
+        if (rcp)
+        	bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Populate the "Window/Views..." menu with suggested views
 		if (rcp)
