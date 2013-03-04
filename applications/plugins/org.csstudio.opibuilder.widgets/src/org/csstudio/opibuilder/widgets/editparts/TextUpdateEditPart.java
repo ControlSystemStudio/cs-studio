@@ -14,6 +14,7 @@ import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Format;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -24,6 +25,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.widgets.figures.NativeTextFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.csstudio.swt.widgets.figures.ITextFigure;
@@ -36,6 +38,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /**The editor for text indicator widget.
@@ -58,16 +61,36 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 
 		initFields();
+		//use native text figure to have better performance on RAP.
+		if(OPIBuilderPlugin.isRAP() && !widgetModel.isTransparent()){
+			int style = SWT.READ_ONLY;
+			switch (widgetModel.getHorizontalAlignment()) {
+			case CENTER:
+				style |= SWT.CENTER;
+				break;
+			case LEFT:
+				style |= SWT.LEFT;
+				break;
+			case RIGHT:
+				style |= SWT.RIGHT;
+			}
+			if(widgetModel.isWrapWords())
+				style |=SWT.WRAP;
+			return new NativeTextFigure(this, style);			
+		}else {
+			TextFigure labelFigure = createTextFigure();
+			initTextFigure(labelFigure);
+			return labelFigure;
+		}
+	}
 
-
-		TextFigure labelFigure = createTextFigure();
+	protected void initTextFigure(TextFigure labelFigure) {
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				widgetModel.getFont().getFontData()));
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		labelFigure.setRotate(widgetModel.getRotationAngle());
-		return labelFigure;
 	}
 
 	/**
@@ -109,7 +132,10 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	 * @param text
 	 */
 	protected void setFigureText(String text) {
-		((TextFigure) getFigure()).setText(text);
+		if(getFigure() instanceof NativeTextFigure)
+			((NativeTextFigure)getFigure()).getSWTWidget().setText(text);
+		else
+			((TextFigure) getFigure()).setText(text);
 	}
 	@Override
 	protected void registerPropertyChangeHandlers() {
@@ -167,7 +193,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((TextFigure)figure).setOpaque(!(Boolean)newValue);
+				figure.setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -189,7 +215,9 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((TextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+				if(figure instanceof TextFigure)
+					((TextFigure)figure).setHorizontalAlignment(
+							H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -198,7 +226,8 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((TextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+				if(figure instanceof TextFigure)
+					((TextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -258,7 +287,8 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((TextFigure)figure).setRotate((Double)newValue);
+				if(figure instanceof TextFigure)
+					((TextFigure)figure).setRotate((Double)newValue);
 				return true;
 			}
 		};
@@ -301,7 +331,10 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	 * @param figure
 	 */
 	protected void performAutoSize() {
-		getWidgetModel().setSize(((TextFigure)getFigure()).getAutoSizeDimension());
+		if(figure instanceof TextFigure)
+			getWidgetModel().setSize(((TextFigure)getFigure()).getAutoSizeDimension());
+		else if(figure instanceof NativeTextFigure)
+			getWidgetModel().setSize(((NativeTextFigure)getFigure()).getAutoSizeDimension());
 	}
 
 	/**
@@ -408,7 +441,9 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 
 	@Override
-	public String getValue() {
+	public String getValue() {			
+		if(getFigure() instanceof NativeTextFigure)
+			return ((NativeTextFigure)getFigure()).getText();
 		return ((TextFigure)getFigure()).getText();
 	}
 

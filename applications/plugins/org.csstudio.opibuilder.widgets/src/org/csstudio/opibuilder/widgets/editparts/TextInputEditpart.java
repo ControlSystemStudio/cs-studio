@@ -69,15 +69,16 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	}
 
 	@Override
-	protected IFigure doCreateFigure() {		
+	protected IFigure doCreateFigure() {	
+		initFields();
+		
 		if(shouldBeTextInputFigure()){
-			TextInputFigure textInputFigure = (TextInputFigure) super
-					.doCreateFigure();
+			TextInputFigure textInputFigure = (TextInputFigure) createTextFigure();
+			initTextFigure(textInputFigure);
 			delegate = new Draw2DTextInputEditpartDelegate(
 					this, getWidgetModel(), textInputFigure);
 			
-		}else{
-			initFields();
+		}else{			
 			delegate = new NativeTextEditpartDelegate(this, getWidgetModel());
 		}	
 		
@@ -581,6 +582,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		model.setPropertyVisible(TextInputModel.PROP_SHOW_H_SCROLL, isNative);
 		model.setPropertyVisible(TextInputModel.PROP_SHOW_V_SCROLL, isNative);
 		model.setPropertyVisible(TextInputModel.PROP_NEXT_FOCUS, isNative);
+		model.setPropertyVisible(TextInputModel.PROP_WRAP_WORDS, isNative);
+		
 		
 		//set classic text figure related properties visibility
 		model.setPropertyVisible(TextInputModel.PROP_TRANSPARENT, !isNative);
