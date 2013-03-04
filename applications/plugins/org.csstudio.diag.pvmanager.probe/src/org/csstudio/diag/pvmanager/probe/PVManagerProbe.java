@@ -6,7 +6,10 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -74,12 +77,10 @@ public class PVManagerProbe extends ViewPart {
 	private Label timestampLabel;
 	private Label statusLabel;
 	private Label newValueLabel;
-	private Label pvNameLabel;
 	private Label timestampField;
 	private Label valueField;
 	private Label statusField;
-	private ComboViewer pvNameField;
-	private ComboHistoryHelper pvNameHelper;
+	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
 	private MeterWidget meter;
 	private Composite topBox;
@@ -171,16 +172,22 @@ public class PVManagerProbe extends ViewPart {
 		errorBar.setMarginLeft(5);
 		errorBar.setMarginBottom(5);
 
-		Label label;
-		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
-		pvNameLabel.setText(Messages.Probe_pvNameLabelText);
-
-		pvNameField = new ComboViewer(topBox, SWT.BORDER);
-		pvNameField.getCombo().setToolTipText(Messages.Probe_pvNameFieldToolTipText);
+		pvFomulaInputBar = new PVFormulaInputBar(topBox, SWT.None, Activator.getDefault()
+				.getDialogSettings(), PV_LIST_TAG);
+		pvFomulaInputBar.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("pvFormula".equals(event.getPropertyName())) {
+					setPVFormula((String) event.getNewValue());
+				}
+			}
+		});
+		
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		pvNameField.getCombo().setLayoutData(gd);
+		pvFomulaInputBar.setLayoutData(gd);
 
 		infoButton = new Button(topBox, SWT.PUSH);
 		infoButton.setText(Messages.Probe_infoTitle);
@@ -238,7 +245,7 @@ public class PVManagerProbe extends ViewPart {
 		btn_adjust.setEnabled(canExecute);
 
 		// Status bar
-		label = new Label(bottomBox, SWT.SEPARATOR | SWT.HORIZONTAL);
+		Label label = new Label(bottomBox, SWT.SEPARATOR | SWT.HORIZONTAL);
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
@@ -284,21 +291,6 @@ public class PVManagerProbe extends ViewPart {
 		bottomBox.setLayoutData(fd_bottomBox);
 
 		// Connect actions
-		pvNameHelper = new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), PV_LIST_TAG, pvNameField.getCombo()) {
-			@Override
-			public void newSelection(final String pvName) {
-				setPVFormula(pvName);
-			}
-		};
-
-		pvNameField.getCombo().addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(final DisposeEvent e) {
-				if (pv != null)
-					pv.close();
-				pvNameHelper.saveSettings();
-			}
-		});
 
 		infoButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -343,8 +335,6 @@ public class PVManagerProbe extends ViewPart {
 				showMeter(showMeterButton.getSelection());
 			}
 		});
-
-		pvNameHelper.loadSettings();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
 			setPVFormula(memento.getString(PV_TAG));
@@ -509,13 +499,13 @@ public class PVManagerProbe extends ViewPart {
 
 		// If name is blank, update status to waiting and quit
 		if ((pvFormula == null) || pvFormula.trim().isEmpty()) {
-			pvNameField.getCombo().setText(""); //$NON-NLS-1$
 			setStatus(Messages.Probe_statusWaitingForPV);
+			return;
 		}
 
 		// Update displayed name, unless it's already current
-		if (!(pvNameField.getCombo().getText().equals(pvFormula))) {
-			pvNameHelper.changeSelection(pvFormula);
+		if (!(Objects.equals(pvFomulaInputBar.getPVFormula(), pvFormula))) {
+			pvFomulaInputBar.setPVFormula(pvFormula);
 		}
 
 		setStatus(Messages.Probe_statusSearching);
