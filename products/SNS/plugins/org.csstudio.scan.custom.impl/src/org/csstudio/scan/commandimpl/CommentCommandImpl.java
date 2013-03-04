@@ -25,10 +25,8 @@ import org.csstudio.scan.server.ScanContext;
 @SuppressWarnings("nls")
 public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public CommentCommandImpl(final CommentCommand command)
+    /** {@inheritDoc} */
+    public CommentCommandImpl(final CommentCommand command) throws Exception
     {
         super(command);
     }

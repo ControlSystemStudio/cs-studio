@@ -27,7 +27,8 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
 {
 	private volatile Condition condition = null;
 
-    public WaitForDevicesCommandImpl(final WaitForDevicesCommand command)
+    /** {@inheritDoc} */
+    public WaitForDevicesCommandImpl(final WaitForDevicesCommand command) throws Exception
     {
         super(command);
     }

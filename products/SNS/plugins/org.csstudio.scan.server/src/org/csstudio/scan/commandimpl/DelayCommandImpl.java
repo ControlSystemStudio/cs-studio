@@ -25,10 +25,8 @@ import org.csstudio.scan.server.SimulationContext;
  */
 public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public DelayCommandImpl(final DelayCommand command)
+    /** {@inheritDoc} */
+    public DelayCommandImpl(final DelayCommand command) throws Exception
     {
         super(command);
     }

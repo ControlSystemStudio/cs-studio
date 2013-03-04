@@ -28,10 +28,8 @@ import org.csstudio.scan.server.SimulationContext;
 @SuppressWarnings("nls")
 public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public SetCommandImpl(final SetCommand command)
+    /** {@inheritDoc} */
+    public SetCommandImpl(final SetCommand command) throws Exception
     {
         super(command);
     }

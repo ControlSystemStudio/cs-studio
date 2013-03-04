@@ -481,24 +481,42 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 wait();
             }
         }
-        try
+        
+        boolean retry;
+        do
         {
-            current_command = command;
-    		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
-            command.execute(this);
+            retry = false;
+            try
+            {
+                current_command = command;
+        		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
+                command.execute(this);
+            }
+            catch (InterruptedException abort)
+            {   // Command was interrupted on purpose
+                final String message = "Command aborted: " + command.toString();
+                Logger.getLogger(getClass().getName()).log(Level.INFO, message, abort);
+                throw abort;
+            }
+            catch (Exception error)
+            {   // Command generated an error
+                final String message = "Command failed: " + command.toString();
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, message, error);
+                // Error handler determines how to proceed
+                switch (command.handleError(this, error))
+                {
+                case Abort:
+                    // Abort on the original error
+                    throw error;
+                case Continue:
+                    // Ignore the error, move on
+                    return;
+                case Retry:
+                    retry = true;
+                }
+            }
         }
-        catch (InterruptedException ex)
-        {
-            final String message = "Command aborted: " + command.toString();
-            Logger.getLogger(getClass().getName()).log(Level.INFO, message, ex);
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            final String message = "Command failed: " + command.toString();
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, message, ex);
-            throw ex;
-        }
+        while (retry);
     }
 
     /** Pause execution of a currently executing scan */

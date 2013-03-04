@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -30,19 +31,15 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class ConfigLogCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-    	new ScanCommandProperty("automatic", "Log automatically", Boolean.class)
-    };
-
     private volatile boolean automatic = false;
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(
+            new ScanCommandProperty("automatic", "Log automatically", Boolean.class));
+        super.configureProperties(properties);
     }
 
     /** @return Log automatically? */
@@ -68,6 +65,7 @@ public class ConfigLogCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<automatic>" + automatic + "</automatic>");
         }
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</config_log>");
     }
@@ -78,6 +76,7 @@ public class ConfigLogCommand extends ScanCommand
     {
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setAutomatic(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "automatic", "false")));
+        super.readXML(factory, element);
     }
 
     /** {@inheritDoc} */

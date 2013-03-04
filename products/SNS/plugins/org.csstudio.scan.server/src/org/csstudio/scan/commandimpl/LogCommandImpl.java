@@ -32,10 +32,8 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 {
-	/** Initialize
-	 *  @param command Command description
-	 */
-	public LogCommandImpl(final LogCommand command)
+    /** {@inheritDoc} */
+	public LogCommandImpl(final LogCommand command) throws Exception
     {
 	    super(command);
     }

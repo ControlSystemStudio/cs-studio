@@ -29,10 +29,8 @@ import org.csstudio.scan.server.SimulationContext;
 @SuppressWarnings("nls")
 public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 {
-	/** Initialize
-	 *  @param command Command description
-	 */
-    public WaitCommandImpl(final WaitCommand command)
+    /** {@inheritDoc} */
+    public WaitCommandImpl(final WaitCommand command) throws Exception
     {
         super(command);
     }

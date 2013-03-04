@@ -24,10 +24,8 @@ import org.csstudio.scan.server.ScanContext;
  */
 public class ConfigLogCommandImpl extends ScanCommandImpl<ConfigLogCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public ConfigLogCommandImpl(final ConfigLogCommand command)
+    /** {@inheritDoc} */
+    public ConfigLogCommandImpl(final ConfigLogCommand command) throws Exception
     {
         super(command);
     }

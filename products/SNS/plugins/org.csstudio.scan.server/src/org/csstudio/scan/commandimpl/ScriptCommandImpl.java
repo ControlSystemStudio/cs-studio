@@ -33,16 +33,12 @@ import org.python.core.PyException;
 @SuppressWarnings("nls")
 public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
 {
-	final private JythonSupport jython;
 	final private ScanScript script_object;
 
-	/** Initialize
-	 *  @param command Command description
-	 */
+    /** {@inheritDoc} */
     public ScriptCommandImpl(final ScriptCommand command) throws Exception
     {
         super(command);
-        jython = new JythonSupport();
         try
         {
             script_object = jython.loadClass(ScanScript.class, command.getScript());

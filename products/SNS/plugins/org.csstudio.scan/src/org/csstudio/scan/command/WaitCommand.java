@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -25,16 +26,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class WaitCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        ScanCommandProperty.DEVICE_NAME,
-        new ScanCommandProperty("comparison", "Comparison", Comparison.class),
-        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
-        ScanCommandProperty.TOLERANCE,
-        ScanCommandProperty.TIMEOUT,
-    };
-
     private volatile String device_name;
     private volatile Comparison comparison;
     private volatile double desired_value;
@@ -90,9 +81,14 @@ public class WaitCommand extends ScanCommand
 
 	/** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(ScanCommandProperty.DEVICE_NAME);
+        properties.add(new ScanCommandProperty("comparison", "Comparison", Comparison.class));
+        properties.add(new ScanCommandProperty("desired_value", "Desired Value", Double.class));
+        properties.add(ScanCommandProperty.TOLERANCE);
+        properties.add(ScanCommandProperty.TIMEOUT);
+        super.configureProperties(properties);
     }
 
 	/** @return Device name (may be "" but not <code>null</code>) */
@@ -181,6 +177,7 @@ public class WaitCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</wait>");
     }
@@ -202,6 +199,7 @@ public class WaitCommand extends ScanCommand
         }
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
+        super.readXML(factory, element);
     }
 
     /** {@inheritDoc} */

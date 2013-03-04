@@ -46,19 +46,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class LoopCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        ScanCommandProperty.DEVICE_NAME,
-        new ScanCommandProperty("start", "Initial Value", Double.class),
-        new ScanCommandProperty("end", "Final Value", Double.class),
-        new ScanCommandProperty("step_size", "Step Size", Double.class),
-        ScanCommandProperty.WAIT,
-        ScanCommandProperty.READBACK,
-        ScanCommandProperty.TOLERANCE,
-        ScanCommandProperty.TIMEOUT,
-    };
-
     private volatile String device_name;
     private volatile double start;
     private volatile double end;
@@ -157,9 +144,17 @@ public class LoopCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(ScanCommandProperty.DEVICE_NAME);
+        properties.add(new ScanCommandProperty("start", "Initial Value", Double.class));
+        properties.add(new ScanCommandProperty("end", "Final Value", Double.class));
+        properties.add(new ScanCommandProperty("step_size", "Step Size", Double.class));
+        properties.add(ScanCommandProperty.WAIT);
+        properties.add(ScanCommandProperty.READBACK);
+        properties.add(ScanCommandProperty.TOLERANCE);
+        properties.add(ScanCommandProperty.TIMEOUT);
+        super.configureProperties(properties);
     }
 
 	/** @return Device name (may be "" but not <code>null</code>) */
@@ -321,6 +316,7 @@ public class LoopCommand extends ScanCommand
             cmd.writeXML(out, level + 2);
         writeIndent(out, level+1);
         out.println("</body>");
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</loop>");
     }
@@ -343,6 +339,7 @@ public class LoopCommand extends ScanCommand
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
+        super.readXML(factory, element);
     }
 
     /** @param buf If the set command uses a condition,
