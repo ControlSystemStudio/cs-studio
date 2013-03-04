@@ -47,7 +47,7 @@ import org.epics.vtype.VNumberArray;
 
 /**
  * @author shroffk
- *
+ * 
  */
 public class Scatter2DPlotWidget extends BeanComposite {
 
@@ -239,20 +239,24 @@ public class Scatter2DPlotWidget extends BeanComposite {
 	    resetRange(yRangeControl);
 	}
 
+	// For ScatterPlot both x and y pvs are needed
 	if (getPvName() == null || getPvName().isEmpty()) {
 	    return;
 	}
-
-	if (getXpvName() != null && !getXpvName().isEmpty()) {
-	    plot = ExpressionLanguage.scatterGraphOf(
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getXpvName()),
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getPvName()));
+	if (getXpvName() == null || getXpvName().isEmpty()) {
+	    return;
 	}
+
+	plot = ExpressionLanguage
+		.scatterGraphOf(
+			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				.formula(getXpvName()),
+			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				.formula(getPvName()));
 	plot.update(new ScatterGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x));
+		.imageWidth(imageDisplay.getSize().x)
+		.interpolation(InterpolationScheme.NONE));
 	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Plot2DResult>() {
 		    @Override
@@ -303,5 +307,10 @@ public class Scatter2DPlotWidget extends BeanComposite {
 		setPvName(memento.getString(MEMENTO_PVNAME));
 	    }
 	}
+    }
+
+    public void setConfigurable(boolean configurable) {
+	// TODO Auto-generated method stub
+
     }
 }

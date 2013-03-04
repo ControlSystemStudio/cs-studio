@@ -19,6 +19,14 @@
             name="Histogram"
             typeId="org.csstudio.graphene.Histogram">
       </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.graphene.opiwidgets.Scatter2DPlotWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            model_class="org.csstudio.graphene.opiwidgets.Scatter2DPlotWidgetModel"
+            name="Scatter Plot"
+            typeId="org.csstudio.graphene.opiwidgets.Scatter2DPlot">
+      </widget>
    </extension>
 
 </plugin>
