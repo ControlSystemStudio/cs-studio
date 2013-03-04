@@ -12,6 +12,8 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.*;
+import gov.aps.jca.event.AccessRightsEvent;
+import gov.aps.jca.event.AccessRightsListener;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.GetEvent;
@@ -22,6 +24,7 @@ import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
@@ -53,6 +56,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     private volatile boolean largeArray = false;
     private final boolean putCallback;
     private final boolean longString;
+    
+    // For the AccessChaneListener we need to guard it differently
+    private final AtomicBoolean needsAccessChangeListener = new AtomicBoolean(false);
     
     public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     private final static Pattern hasOptions = Pattern.compile("(.*) (\\{.*\\})");
@@ -145,6 +151,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
             needsMonitor = true;
+            needsAccessChangeListener.set(true);
         } catch (CAException ex) {
             throw new RuntimeException("JCA Connection failed", ex);
         }
@@ -303,11 +310,52 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                         }
 
                         // Setup monitors on connection
-                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel));
+                        processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                         if (ev.isConnected()) {
                             setup(channel);
                         }
                         
+                    } catch (Exception ex) {
+                        reportExceptionToAllReadersAndWriters(ex);
+                    }
+                }
+                
+                // XXX: because of the JNI implementation this section cannot
+                // be part of the previous atomic section. The problem is that
+                // adding the listener causes the listener to be called
+                // right away on a different thread, and the addAccessRightsListener
+                // seems to return only after the event is processed. This
+                // means that you cannot serialize the addListener call
+                // and the listener callback.
+                // Since we have to make a choice between having either the add
+                // or the callback properly synchronized, we choose the callback
+                boolean addListener = needsAccessChangeListener.getAndSet(false);
+                if (addListener) {
+                    try {
+                        Channel channel = (Channel) ev.getSource();
+                        channel.addAccessRightsListener(new AccessRightsListener() {
+
+                            @Override
+                            public void accessRightsChanged(AccessRightsEvent ev) {
+                                // Some JNI implementation lock if calling getState
+                                // from within this callback. We context switch in that case
+                                final Channel channel = (Channel) ev.getSource();
+                                Runnable task = new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        synchronized(JCAChannelHandler.this) {
+                                            processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
+                                        }
+                                    }
+                                };
+                                if (jcaDataSource.useContextSwitchForAccessRightCallback()) {
+                                    jcaDataSource.getContextSwitch().submit(task);
+                                } else {
+                                    task.run();
+                                }
+                            }
+                        });
                     } catch (Exception ex) {
                         reportExceptionToAllReadersAndWriters(ex);
                     }

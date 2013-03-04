@@ -277,7 +277,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 
                     try
                     {   // Then make elog entry.
-                        final List<LogbookBuilder> books = new ArrayList<>();
+                        final List<LogbookBuilder> books = new ArrayList<LogbookBuilder>();
                         for (String logbook : logbooks)
                             books.add(LogbookBuilder.logbook(logbook));
                         final LogEntry entry = LogEntryBuilder
