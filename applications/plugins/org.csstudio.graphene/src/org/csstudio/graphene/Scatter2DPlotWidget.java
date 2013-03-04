@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.BeanComposite;
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
@@ -51,7 +52,7 @@ import org.epics.vtype.VNumberArray;
  * 
  */
 public class Scatter2DPlotWidget extends BeanComposite implements
-	ISelectionProvider {
+	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
     private ScatterGraphPlot plot;
@@ -311,11 +312,6 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 	}
     }
 
-    public void setConfigurable(boolean configurable) {
-	// TODO Auto-generated method stub
-
-    }
-
     @Override
     public ISelection getSelection() {
 	if (getPvName() != null) {
@@ -339,6 +335,41 @@ public class Scatter2DPlotWidget extends BeanComposite implements
     @Override
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    private boolean configurable = true;
+
+    private Scatter2DPlotConfigurationDialog dialog;
+
+    @Override
+    public boolean isConfigurable() {
+	return this.configurable;
+    }
+
+    @Override
+    public void setConfigurable(boolean configurable) {
+	boolean oldValue = this.configurable;
+	this.configurable = configurable;
+	changeSupport.firePropertyChange("configurable", oldValue,
+		this.configurable);
+    }
+
+    @Override
+    public void openConfigurationDialog() {
+	if (dialog != null)
+	    return;
+	dialog = new Scatter2DPlotConfigurationDialog(this);
+	dialog.open();
+    }
+
+    @Override
+    public boolean isConfigurationDialogOpen() {
+	return dialog != null;
+    }
+
+    @Override
+    public void configurationDialogClosed() {
+	dialog = null;
     }
 
 }

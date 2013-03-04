@@ -64,9 +64,7 @@ public class Scatter2DPlotSelection implements YAxisProcessVariableAdaptable,
 
     @Override
     public ConfigurableWidget toConfigurableWidget() {
-	// TODO make scatter2Dwidget configurable
-//	return scatter2DPlotWidget;
-	return null;
+	return scatter2DPlotWidget;
     }
 
 }
