@@ -21,6 +21,7 @@
       </view>
       <view
             class="org.csstudio.graphene.Scatter2DPlotView"
+            icon="icons/scatter-plot.png"
             id="org.csstudio.graphene.Scatter2DPlotView"
             name="Scatter Plot (alpha)"
             restorable="true">
@@ -53,6 +54,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
+               icon="icons/scatter-plot.png"
                label="Scatter Plot"
                style="push">
             <parameter
