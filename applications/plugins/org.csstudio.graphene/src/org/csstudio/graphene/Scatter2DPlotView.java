@@ -135,11 +135,11 @@ public class Scatter2DPlotView extends ViewPart {
 		});
 
 	scatter2DPlotWidget = new Scatter2DPlotWidget(parent, SWT.NONE);
-	// scatter2DPlotView.setConfigurable(true);
+	scatter2DPlotWidget.setConfigurable(true);
 	scatter2DPlotWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 		true, true, 2, 1));
-	// PopupMenuUtil.installPopupForView(scatter2DPlotView, getSite(),
-	// scatter2DPlotView);
+	PopupMenuUtil.installPopupForView(scatter2DPlotWidget, getSite(),
+		scatter2DPlotWidget);
 
 	if (memento != null && memento.getString(MEMENTO_YPVNAME) != null) {
 	    setYProcessVariable(new ProcessVariable(
