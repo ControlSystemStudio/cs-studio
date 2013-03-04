@@ -94,7 +94,7 @@ public abstract class ElogDialog extends Dialog
         l.setText(Messages.Logbook);
         l.setLayoutData(new GridData());
         
-        cmb_logbook = new MultiSelectionCombo<>(composite, 0);
+        cmb_logbook = new MultiSelectionCombo<String>(composite, 0);
         cmb_logbook.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
         l = new Label(composite, 0);
@@ -115,7 +115,7 @@ public abstract class ElogDialog extends Dialog
         try
         {
             final LogbookClient client = LogbookClientManager.getLogbookClientFactory().getClient();
-            final List<String> names = new ArrayList<>();
+            final List<String> names = new ArrayList<String>();
             for (Logbook logbook : client.listLogbooks())
                 names.add(logbook.getName());
             cmb_logbook.setItems(names);
