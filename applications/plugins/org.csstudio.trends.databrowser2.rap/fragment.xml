@@ -35,7 +35,7 @@
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
-            alias="/webdatabrowser/loading.gif"
+            alias="/webdatabrowser_img/loading.gif"
             base-name="html/loading.gif">
       </resource>
    </extension>
