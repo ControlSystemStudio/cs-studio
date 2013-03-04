@@ -18,6 +18,7 @@ import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -49,7 +50,8 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Scatter2DPlotWidget extends BeanComposite {
+public class Scatter2DPlotWidget extends BeanComposite implements
+	ISelectionProvider {
 
     private VImageDisplay imageDisplay;
     private ScatterGraphPlot plot;
@@ -313,4 +315,30 @@ public class Scatter2DPlotWidget extends BeanComposite {
 	// TODO Auto-generated method stub
 
     }
+
+    @Override
+    public ISelection getSelection() {
+	if (getPvName() != null) {
+	    return new StructuredSelection(new Scatter2DPlotSelection(
+		    new ProcessVariable(getPvName()), new ProcessVariable(
+			    getXpvName()), this));
+	}
+	return null;
+    }
+
+    @Override
+    public void addSelectionChangedListener(
+	    final ISelectionChangedListener listener) {
+    }
+
+    @Override
+    public void removeSelectionChangedListener(
+	    ISelectionChangedListener listener) {
+    }
+
+    @Override
+    public void setSelection(ISelection selection) {
+	throw new UnsupportedOperationException("Not implemented yet");
+    }
+
 }
