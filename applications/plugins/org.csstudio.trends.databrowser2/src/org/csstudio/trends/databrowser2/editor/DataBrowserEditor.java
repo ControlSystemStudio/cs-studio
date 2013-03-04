@@ -345,17 +345,16 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new Separator());
         mm.add(new AddPVAction(op_manager, shell, model, false));
         mm.add(new AddPVAction(op_manager, shell, model, true));
-        try
-        {
-            for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
-                    mm.add(imp);
-        }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+		final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+        if (is_rcp) {
+	        try {
+	            for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
+	                    mm.add(imp);
+	        } catch (Exception ex) {
+	            ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+	        }
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
-		final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
         if (is_rcp)
 		{
 			mm.add(new Separator());
@@ -386,8 +385,10 @@ public class DataBrowserEditor extends EditorPart
 
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
-        
-        getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
+
+		if (is_rcp) {
+			getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
+		}
     }
 
     /** {@inheritDoc} */
