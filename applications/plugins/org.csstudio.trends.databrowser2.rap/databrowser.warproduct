@@ -85,7 +85,6 @@
       <plugin id="org.hamcrest"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
       <plugin id="org.mockito"/>
    </plugins>
 
@@ -168,7 +167,6 @@
       <plugin id="org.hamcrest" autoStart="true" startLevel="0" />
       <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
-      <plugin id="org.junit4" autoStart="true" startLevel="0" />
       <plugin id="org.mockito" autoStart="true" startLevel="0" />
    </configurations>
 
