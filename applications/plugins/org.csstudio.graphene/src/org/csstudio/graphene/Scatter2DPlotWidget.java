@@ -126,8 +126,7 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 		if (plot != null) {
 		    plot.update(new ScatterGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
-			    .imageWidth(imageDisplay.getSize().x)
-			    .interpolation(InterpolationScheme.LINEAR));
+			    .imageWidth(imageDisplay.getSize().x));
 		}
 	    }
 
@@ -258,8 +257,7 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 				.formula(getPvName()));
 	plot.update(new ScatterGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x)
-		.interpolation(InterpolationScheme.NONE));
+		.imageWidth(imageDisplay.getSize().x));
 	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Plot2DResult>() {
 		    @Override
