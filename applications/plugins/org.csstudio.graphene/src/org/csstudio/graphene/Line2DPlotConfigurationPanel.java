@@ -32,15 +32,6 @@ public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
 	super(parent, style);
 	setLayout(new GridLayout(2, false));
 
-	Label lblInterpolationScheme = new Label(this, SWT.NONE);
-	lblInterpolationScheme.setLayoutData(new GridData(SWT.RIGHT,
-		SWT.CENTER, false, false, 1, 1));
-	lblInterpolationScheme.setText("Interpolation scheme:");
-
-	comboInterpolationScheme = new Combo(this, SWT.NONE);
-	comboInterpolationScheme.setLayoutData(new GridData(SWT.FILL,
-		SWT.CENTER, true, false, 1, 1));
-
 	Label lblYPv = new Label(this, SWT.NONE);
 	lblYPv.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
 		1, 1));
@@ -73,16 +64,26 @@ public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
 		changeSupport.firePropertyChange("xPv", null, textXPv.getText());
 	    }
 	});
-
-	btnShowAxis = new Button(this, SWT.CHECK);
-	btnShowAxis.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		changeSupport.firePropertyChange("showAxisScroll", null,
-			getShowAxis());
-	    }
-	});
-	btnShowAxis.setText("Show Axis Scroll");
+	
+		Label lblInterpolationScheme = new Label(this, SWT.NONE);
+		lblInterpolationScheme.setLayoutData(new GridData(SWT.RIGHT,
+			SWT.CENTER, false, false, 1, 1));
+		lblInterpolationScheme.setText("Interpolation scheme:");
+	
+		comboInterpolationScheme = new Combo(this, SWT.NONE);
+		comboInterpolationScheme.setLayoutData(new GridData(SWT.FILL,
+			SWT.CENTER, true, false, 1, 1));
+		new Label(this, SWT.NONE);
+	
+		btnShowAxis = new Button(this, SWT.CHECK);
+		btnShowAxis.addSelectionListener(new SelectionAdapter() {
+		    @Override
+		    public void widgetSelected(SelectionEvent e) {
+			changeSupport.firePropertyChange("showAxisScroll", null,
+				getShowAxis());
+		    }
+		});
+		btnShowAxis.setText("Show Axis Scroll");
     }
 
     public String getXPv() {
