@@ -40,6 +40,8 @@ import org.w3c.dom.Element;
  *
  *  <p>The loop checks if the device actually reaches the desired value
  *  with a timeout.
+ *  By default, the read-back uses the device that the loop writes,
+ *  but alternate read-back device can be configured.
  *
  *  @author Kay Kasemir
  */
@@ -224,7 +226,10 @@ public class LoopCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device (may be "" but not <code>null</code>) */
+    /** @return Name of readback device
+     *          (may be "" to use the primary device of the loop,
+     *           but not <code>null</code>)
+     */
     public String getReadback()
     {
         return readback;
@@ -334,7 +339,7 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
