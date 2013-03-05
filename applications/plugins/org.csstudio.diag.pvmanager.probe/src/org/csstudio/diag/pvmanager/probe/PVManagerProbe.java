@@ -76,12 +76,8 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
 	private static int instance = 0;
-	private Label valueLabel;
-	private Label timestampLabel;
 	private Label statusLabel;
 	private Label newValueLabel;
-	private Label timestampField;
-	private Label valueField;
 	private Label statusField;
 	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
@@ -206,42 +202,9 @@ public class PVManagerProbe extends ViewPart {
 		gl_bottomBox = new GridLayout();
 		gl_bottomBox.numColumns = 3;
 		bottomBox.setLayout(gl_bottomBox);
-
-		Composite readValuePanel = new Composite(bottomBox, SWT.BORDER);
-		FormLayout fl_readValuePanel = new FormLayout();
-		fl_readValuePanel.marginBottom = 5;
-		readValuePanel.setLayout(fl_readValuePanel);
-		readValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-				false, 3, 1));
-
-		valueLabel = new Label(readValuePanel, 0);
-		FormData fd_valueLabel = new FormData();
-		fd_valueLabel.left = new FormAttachment(0, 5);
-		fd_valueLabel.top = new FormAttachment(0, 5);
-		valueLabel.setLayoutData(fd_valueLabel);
-		valueLabel.setText(Messages.Probe_valueLabelText);
-
-		valueField = new Label(readValuePanel, SWT.BORDER);
-		FormData fd_valueField = new FormData();
-		fd_valueField.left = new FormAttachment(valueLabel, 6);
-		fd_valueField.right = new FormAttachment(100, -5);
-		fd_valueField.bottom = new FormAttachment(valueLabel, 0, SWT.CENTER);
-		valueField.setLayoutData(fd_valueField);
-
-		// New Row
-		timestampLabel = new Label(readValuePanel, 0);
-		FormData fd_timestampLabel = new FormData();
-		fd_timestampLabel.top = new FormAttachment(valueField, 5);
-		fd_timestampLabel.left = new FormAttachment(valueLabel, 0, SWT.LEFT);
-		timestampLabel.setLayoutData(fd_timestampLabel);
-		timestampLabel.setText(Messages.Probe_timestampLabelText);
 		
-				timestampField = new Label(readValuePanel, SWT.BORDER);
-				FormData fd_timestampField = new FormData();
-				fd_timestampField.bottom = new FormAttachment(timestampLabel, 0, SWT.CENTER);
-				fd_timestampField.left = new FormAttachment(timestampLabel, 6);
-				fd_timestampField.right = new FormAttachment(100, -5);
-				timestampField.setLayoutData(fd_timestampField);
+		valueBox = new ValueBox(bottomBox, SWT.BORDER);
+		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		new Label(bottomBox, SWT.NONE);
 		new Label(bottomBox, SWT.NONE);
 
@@ -329,7 +292,7 @@ public class PVManagerProbe extends ViewPart {
 				final boolean enable = btn_adjust.getSelection();
 				newValueLabel.setVisible(enable);
 				newValueField.setVisible(enable);
-				newValueField.setText(valueField.getText());
+				newValueField.setText(valueFormat.format(pv.getValue()));
 			}
 		});
 
@@ -493,7 +456,7 @@ public class PVManagerProbe extends ViewPart {
 		if (info.length() == 0) {
 			info.append(Messages.Probe_infoNoInfoAvailable);
 		}
-		final MessageBox box = new MessageBox(valueField.getShell(),
+		final MessageBox box = new MessageBox(valueBox.getShell(),
 				SWT.ICON_INFORMATION);
 		if (pv == null) {
 			box.setText(Messages.Probe_infoTitle);
@@ -528,7 +491,7 @@ public class PVManagerProbe extends ViewPart {
 			pv = null;
 		}
 
-		setValue(null, null);
+		valueBox.changeValue(null);
 		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
@@ -555,8 +518,6 @@ public class PVManagerProbe extends ViewPart {
 						public void pvChanged(PVReaderEvent<Object> event) {
 							Object obj = event.getPvReader().getValue();
 							setLastError(event.getPvReader().lastException());
-							setValue(valueFormat.format(obj),
-									ValueUtil.alarmOf(obj));
 							setTime(ValueUtil.timeOf(obj));
 							setMeter(ValueUtil.numericValueOf(obj),
 									ValueUtil.displayOf(obj));
@@ -565,6 +526,7 @@ public class PVManagerProbe extends ViewPart {
 							} else {
 								setStatus(Messages.Probe_statusSearching);
 							}
+							valueBox.changeValue(obj);
 						}
 					})
 					.writeListener(new PVWriterListener<Object>() {
@@ -619,6 +581,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	private Exception lastError = null;
+	private ValueBox valueBox;
 
 	/**
 	 * Displays the last error in the status.
@@ -633,33 +596,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 		errorBar.setException(ex);
 		lastError = ex;
-	}
-
-	/**
-	 * Displays the new value.
-	 * 
-	 * @param value
-	 *            a new value
-	 */
-	private void setValue(String value, Alarm alarm) {
-		// Calculate alarm string
-		String alarmString = "";
-		if (alarm != null)
-			alarmString = alarmToString(alarm);
-
-		// Calculate value string
-		String valueString = "";
-		if (value != null)
-			valueString = value;
-
-		String mergedString = valueString;
-		if (!alarmString.isEmpty())
-			mergedString = mergedString + " " + alarmString;
-
-		valueField.setText(mergedString);
-		if (newValueField.isVisible() && !newValueField.isFocusControl()) {
-			newValueField.setText(valueString);
-		}
 	}
 
 	/**
@@ -685,11 +621,11 @@ public class PVManagerProbe extends ViewPart {
 	 *            a new time
 	 */
 	private void setTime(Time time) {
-		if (time == null) {
-			timestampField.setText(""); //$NON-NLS-1$
-		} else {
-			timestampField.setText(timeFormat.format(time.getTimestamp()));
-		}
+//		if (time == null) {
+//			timestampField.setText(""); //$NON-NLS-1$
+//		} else {
+//			timestampField.setText(timeFormat.format(time.getTimestamp()));
+//		}
 	}
 
 	/**
