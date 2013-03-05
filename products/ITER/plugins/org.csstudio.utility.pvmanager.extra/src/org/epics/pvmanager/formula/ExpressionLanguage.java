@@ -37,6 +37,25 @@ public class ExpressionLanguage {
         return new FormulaParser(tokenStream);
     }
     
+    public static String channelFromFormula(String formula) {
+        try {
+            FormulaParser parser = createParser(formula);
+            DesiredRateExpression<?> exp = parser.singlePv();
+            if (parser.failed()) {
+                return null;
+            }
+            if (exp instanceof LastOfChannelExpression) {
+                LastOfChannelExpression channelExp = (LastOfChannelExpression) exp;
+                return channelExp.getName();
+            }
+            return null;
+        } catch (RecognitionException ex) {
+            return null;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
     public static DesiredRateExpression<?> formula(String formula) {
         try {
             DesiredRateExpression<?> exp = createParser(formula).formula();

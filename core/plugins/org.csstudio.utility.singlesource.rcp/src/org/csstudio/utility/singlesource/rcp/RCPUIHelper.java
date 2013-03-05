@@ -11,6 +11,8 @@ import org.csstudio.utility.singlesource.UIHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
@@ -46,5 +48,19 @@ public class RCPUIHelper extends UIHelper
                 path = path.removeFileExtension().addFileExtension(extension);
         }
         return path;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String openSaveOutsideWorkspaceDialog(final Shell shell, final IPath original, final String extension)
+    {
+        final FileDialog dlg = new FileDialog(shell, SWT.SAVE);
+		if (extension != null)
+			dlg.setFilterExtensions(new String[] { extension });
+		
+        final IFile orig_file = RCPResourceHelper.getFileForPath(original);
+        if (orig_file != null)
+    		dlg.setFileName(orig_file.toString());
+        return dlg.open();
     }
 }

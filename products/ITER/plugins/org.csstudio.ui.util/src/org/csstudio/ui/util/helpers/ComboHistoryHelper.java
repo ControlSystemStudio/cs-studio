@@ -24,17 +24,19 @@ import org.eclipse.swt.widgets.Combo;
  * <p>
  * You must
  * <ul>
- * <li>implement newSelection() to handle entered/selected values
+ * <li>either implement <code>itemSelected()</code> or <code>newSelection()</code>
+ *     to handle entered/selected values.
  * <li>decide if you want to call loadSettings() to restore the saved values
  * <li>save values via saveSettings, or use the save_on_dispose option of the
  * constructor.
  * </ul>
  *
+ * @see #itemSelected(String)
  * @see #newSelection(String)
  * @author Kay Kasemir
  * @author Gabriele Carcassi
  */
-public abstract class ComboHistoryHelper {
+public class ComboHistoryHelper {
 
 	private static final String TAG = "values"; //$NON-NLS-1$
 	private static final int DEFAULT_HISTORY_SIZE = 10;
@@ -80,14 +82,14 @@ public abstract class ComboHistoryHelper {
 				String new_entry = ComboHistoryHelper.this.combo.getText();
 				addEntry(new_entry);
 				ComboHistoryHelper.this.combo.select(0);
-				notifySelection(new_entry);
+				itemSelected(new_entry);
 			}
 
 			// Called after existing entry was picked from list
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String name = ComboHistoryHelper.this.combo.getText();
-				notifySelection(name);
+				itemSelected(name);
 			}
 		});
 
@@ -153,21 +155,45 @@ public abstract class ComboHistoryHelper {
 	
 	private String oldSelection = null;
 	
-	private void notifySelection(String newSelection) {
+	/** Invoked whenever an item is selected.
+	 *  <p>Default implementation will compare
+	 *  with previous selection, and only invoke
+	 *  <code>newSelection</code>
+	 *  when the selection changed.
+	 *  
+	 *  <p>Override this method to be notified
+	 *  of any selection, including the case where the
+	 *  user re-selects the same entry, or presses 'Return'
+	 *  in the combo's text field without changing its content.
+	 *  
+	 *  @param selection Selected item, may be <code>null</code>
+	 */
+	public void itemSelected(final String selection)
+	{
 		if (oldSelection == null) {
-			if (newSelection == null) {
+			if (selection == null) {
 				return;
 			}
-		} else if (oldSelection.equals(newSelection)) {
+		} else if (oldSelection.equals(selection)) {
 			return;
 		}
 		
-		oldSelection = newSelection;
-		newSelection(newSelection);
+		oldSelection = selection;
+		newSelection(selection);
 	}
 
-	/** Invoked whenever a new entry was entered or selected. */
-	public abstract void newSelection(String entry);
+	/** Invoked whenever a new entry was entered or selected.
+     *
+     *  <p>Override this method to be notified only when
+     *  the user selects a different item.
+     *  Re-selection of the same item will be ignored.
+     *
+     *  @param selection Selected item, may be <code>null</code>
+	 */
+	public void newSelection(final String selection)
+	{
+	    // Default: NOP
+	}
 
 	/** Load persisted list values. */
 	public void loadSettings() {

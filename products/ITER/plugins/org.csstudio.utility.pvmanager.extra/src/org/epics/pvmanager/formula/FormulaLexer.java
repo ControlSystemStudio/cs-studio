@@ -1,4 +1,4 @@
-// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2013-01-28 16:39:00
+// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2013-02-08 14:06:03
 
   package org.epics.pvmanager.formula;
 
@@ -266,13 +266,13 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = FULL_ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:10: ( ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' ) ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:12: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' ) ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:10: ( ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' ) ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )* )
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:12: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' ) ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )*
             {
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:12: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:13: ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/'
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:12: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:13: ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/'
             {
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:13: ( 'a' .. 'z' | 'A' .. 'Z' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:13: ( 'a' .. 'z' | 'A' .. 'Z' )*
             loop1:
             do {
                 int alt1=2;
@@ -368,7 +368,7 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:89:48: ( '0' .. '9' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:100:48: ( '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -423,7 +423,7 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:90:18: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:101:18: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')' )*
             loop4:
             do {
                 int alt4=11;
@@ -542,74 +542,74 @@ public class FormulaLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:20: 'a' .. 'z'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:20: 'a' .. 'z'
             	    {
             	    matchRange('a','z'); 
 
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:29: 'A' .. 'Z'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:29: 'A' .. 'Z'
             	    {
             	    matchRange('A','Z'); 
 
             	    }
             	    break;
             	case 3 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:38: '0' .. '9'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:38: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
             	    }
             	    break;
             	case 4 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:47: '.'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:47: '.'
             	    {
             	    match('.'); 
 
             	    }
             	    break;
             	case 5 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:51: '$'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:51: '$'
             	    {
             	    match('$'); 
 
             	    }
             	    break;
             	case 6 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:55: '_'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:55: '_'
             	    {
             	    match('_'); 
 
             	    }
             	    break;
             	case 7 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:59: ':'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:59: ':'
             	    {
             	    match(':'); 
 
             	    }
             	    break;
             	case 8 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:63: '{'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:63: '{'
             	    {
             	    match('{'); 
 
             	    }
             	    break;
             	case 9 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:90:67: '}'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:101:67: '}'
             	    {
             	    match('}'); 
 
             	    }
             	    break;
             	case 10 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:91:20: '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')'
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:102:20: '(' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )* ')'
             	    {
             	    match('('); 
 
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:91:24: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )*
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:102:24: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' | ',' | ' ' | '-' | STRING )*
             	    loop3:
             	    do {
             	        int alt3=14;
@@ -743,91 +743,91 @@ public class FormulaLexer extends Lexer {
 
             	        switch (alt3) {
             	    	case 1 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:25: 'a' .. 'z'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:25: 'a' .. 'z'
             	    	    {
             	    	    matchRange('a','z'); 
 
             	    	    }
             	    	    break;
             	    	case 2 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:34: 'A' .. 'Z'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:34: 'A' .. 'Z'
             	    	    {
             	    	    matchRange('A','Z'); 
 
             	    	    }
             	    	    break;
             	    	case 3 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:43: '0' .. '9'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:43: '0' .. '9'
             	    	    {
             	    	    matchRange('0','9'); 
 
             	    	    }
             	    	    break;
             	    	case 4 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:52: '.'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:52: '.'
             	    	    {
             	    	    match('.'); 
 
             	    	    }
             	    	    break;
             	    	case 5 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:56: '$'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:56: '$'
             	    	    {
             	    	    match('$'); 
 
             	    	    }
             	    	    break;
             	    	case 6 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:60: '_'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:60: '_'
             	    	    {
             	    	    match('_'); 
 
             	    	    }
             	    	    break;
             	    	case 7 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:64: ':'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:64: ':'
             	    	    {
             	    	    match(':'); 
 
             	    	    }
             	    	    break;
             	    	case 8 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:68: '{'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:68: '{'
             	    	    {
             	    	    match('{'); 
 
             	    	    }
             	    	    break;
             	    	case 9 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:72: '}'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:72: '}'
             	    	    {
             	    	    match('}'); 
 
             	    	    }
             	    	    break;
             	    	case 10 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:76: ','
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:76: ','
             	    	    {
             	    	    match(','); 
 
             	    	    }
             	    	    break;
             	    	case 11 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:80: ' '
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:80: ' '
             	    	    {
             	    	    match(' '); 
 
             	    	    }
             	    	    break;
             	    	case 12 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:84: '-'
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:84: '-'
             	    	    {
             	    	    match('-'); 
 
             	    	    }
             	    	    break;
             	    	case 13 :
-            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:91:89: STRING
+            	    	    // org\\epics\\pvmanager\\formula\\Formula.g:102:89: STRING
             	    	    {
             	    	    mSTRING(); 
 
@@ -868,10 +868,10 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:94:5: ( ( '0' .. '9' )+ )
-            // org\\epics\\pvmanager\\formula\\Formula.g:94:7: ( '0' .. '9' )+
+            // org\\epics\\pvmanager\\formula\\Formula.g:105:5: ( ( '0' .. '9' )+ )
+            // org\\epics\\pvmanager\\formula\\Formula.g:105:7: ( '0' .. '9' )+
             {
-            // org\\epics\\pvmanager\\formula\\Formula.g:94:7: ( '0' .. '9' )+
+            // org\\epics\\pvmanager\\formula\\Formula.g:105:7: ( '0' .. '9' )+
             int cnt5=0;
             loop5:
             do {
@@ -937,14 +937,14 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = FLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:98:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '0' .. '9' )+ EXPONENT )
+            // org\\epics\\pvmanager\\formula\\Formula.g:109:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '0' .. '9' )+ EXPONENT )
             int alt12=3;
             alt12 = dfa12.predict(input);
             switch (alt12) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:98:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )?
+                    // org\\epics\\pvmanager\\formula\\Formula.g:109:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )?
                     {
-                    // org\\epics\\pvmanager\\formula\\Formula.g:98:9: ( '0' .. '9' )+
+                    // org\\epics\\pvmanager\\formula\\Formula.g:109:9: ( '0' .. '9' )+
                     int cnt6=0;
                     loop6:
                     do {
@@ -996,7 +996,7 @@ public class FormulaLexer extends Lexer {
 
                     match('.'); 
 
-                    // org\\epics\\pvmanager\\formula\\Formula.g:98:25: ( '0' .. '9' )*
+                    // org\\epics\\pvmanager\\formula\\Formula.g:109:25: ( '0' .. '9' )*
                     loop7:
                     do {
                         int alt7=2;
@@ -1041,7 +1041,7 @@ public class FormulaLexer extends Lexer {
                     } while (true);
 
 
-                    // org\\epics\\pvmanager\\formula\\Formula.g:98:37: ( EXPONENT )?
+                    // org\\epics\\pvmanager\\formula\\Formula.g:109:37: ( EXPONENT )?
                     int alt8=2;
                     switch ( input.LA(1) ) {
                         case 'E':
@@ -1054,7 +1054,7 @@ public class FormulaLexer extends Lexer {
 
                     switch (alt8) {
                         case 1 :
-                            // org\\epics\\pvmanager\\formula\\Formula.g:98:37: EXPONENT
+                            // org\\epics\\pvmanager\\formula\\Formula.g:109:37: EXPONENT
                             {
                             mEXPONENT(); 
 
@@ -1068,11 +1068,11 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:99:9: '.' ( '0' .. '9' )+ ( EXPONENT )?
+                    // org\\epics\\pvmanager\\formula\\Formula.g:110:9: '.' ( '0' .. '9' )+ ( EXPONENT )?
                     {
                     match('.'); 
 
-                    // org\\epics\\pvmanager\\formula\\Formula.g:99:13: ( '0' .. '9' )+
+                    // org\\epics\\pvmanager\\formula\\Formula.g:110:13: ( '0' .. '9' )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -1122,7 +1122,7 @@ public class FormulaLexer extends Lexer {
                     } while (true);
 
 
-                    // org\\epics\\pvmanager\\formula\\Formula.g:99:25: ( EXPONENT )?
+                    // org\\epics\\pvmanager\\formula\\Formula.g:110:25: ( EXPONENT )?
                     int alt10=2;
                     switch ( input.LA(1) ) {
                         case 'E':
@@ -1135,7 +1135,7 @@ public class FormulaLexer extends Lexer {
 
                     switch (alt10) {
                         case 1 :
-                            // org\\epics\\pvmanager\\formula\\Formula.g:99:25: EXPONENT
+                            // org\\epics\\pvmanager\\formula\\Formula.g:110:25: EXPONENT
                             {
                             mEXPONENT(); 
 
@@ -1149,9 +1149,9 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:100:9: ( '0' .. '9' )+ EXPONENT
+                    // org\\epics\\pvmanager\\formula\\Formula.g:111:9: ( '0' .. '9' )+ EXPONENT
                     {
-                    // org\\epics\\pvmanager\\formula\\Formula.g:100:9: ( '0' .. '9' )+
+                    // org\\epics\\pvmanager\\formula\\Formula.g:111:9: ( '0' .. '9' )+
                     int cnt11=0;
                     loop11:
                     do {
@@ -1222,10 +1222,10 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:103:5: ( ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:103:7: ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:114:5: ( ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )* )
+            // org\\epics\\pvmanager\\formula\\Formula.g:114:7: ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
             {
-            // org\\epics\\pvmanager\\formula\\Formula.g:103:7: ( '0' .. '9' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:114:7: ( '0' .. '9' )*
             loop13:
             do {
                 int alt13=2;
@@ -1280,7 +1280,7 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:103:43: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:114:43: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
             loop14:
             do {
                 int alt14=2;
@@ -1399,8 +1399,8 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:106:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // org\\epics\\pvmanager\\formula\\Formula.g:106:9: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // org\\epics\\pvmanager\\formula\\Formula.g:117:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // org\\epics\\pvmanager\\formula\\Formula.g:117:9: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -1430,12 +1430,12 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:114:5: ( '\"' ( ESC_SEQ |~ ( '\\\\' | '\"' ) )* '\"' )
-            // org\\epics\\pvmanager\\formula\\Formula.g:114:8: '\"' ( ESC_SEQ |~ ( '\\\\' | '\"' ) )* '\"'
+            // org\\epics\\pvmanager\\formula\\Formula.g:125:5: ( '\"' ( ESC_SEQ |~ ( '\\\\' | '\"' ) )* '\"' )
+            // org\\epics\\pvmanager\\formula\\Formula.g:125:8: '\"' ( ESC_SEQ |~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:114:12: ( ESC_SEQ |~ ( '\\\\' | '\"' ) )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:125:12: ( ESC_SEQ |~ ( '\\\\' | '\"' ) )*
             loop15:
             do {
                 int alt15=3;
@@ -1451,7 +1451,7 @@ public class FormulaLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:114:14: ESC_SEQ
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:125:14: ESC_SEQ
             	    {
             	    mESC_SEQ(); 
 
@@ -1459,7 +1459,7 @@ public class FormulaLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:114:24: ~ ( '\\\\' | '\"' )
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:125:24: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
@@ -1498,12 +1498,12 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = QUOTED_ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:118:5: ( '\\'' ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )* '\\'' )
-            // org\\epics\\pvmanager\\formula\\Formula.g:118:8: '\\'' ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )* '\\''
+            // org\\epics\\pvmanager\\formula\\Formula.g:129:5: ( '\\'' ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )* '\\'' )
+            // org\\epics\\pvmanager\\formula\\Formula.g:129:8: '\\'' ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )* '\\''
             {
             match('\''); 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:118:13: ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:129:13: ( ESC_SEQ |~ ( '\\\\' | '\\'' ) )*
             loop16:
             do {
                 int alt16=3;
@@ -1519,7 +1519,7 @@ public class FormulaLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:118:15: ESC_SEQ
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:129:15: ESC_SEQ
             	    {
             	    mESC_SEQ(); 
 
@@ -1527,7 +1527,7 @@ public class FormulaLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:118:25: ~ ( '\\\\' | '\\'' )
+            	    // org\\epics\\pvmanager\\formula\\Formula.g:129:25: ~ ( '\\\\' | '\\'' )
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
@@ -1564,8 +1564,8 @@ public class FormulaLexer extends Lexer {
     // $ANTLR start "EXPONENT"
     public final void mEXPONENT() throws RecognitionException {
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:123:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // org\\epics\\pvmanager\\formula\\Formula.g:123:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // org\\epics\\pvmanager\\formula\\Formula.g:134:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // org\\epics\\pvmanager\\formula\\Formula.g:134:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -1577,7 +1577,7 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:123:22: ( '+' | '-' )?
+            // org\\epics\\pvmanager\\formula\\Formula.g:134:22: ( '+' | '-' )?
             int alt17=2;
             switch ( input.LA(1) ) {
                 case '+':
@@ -1608,7 +1608,7 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:123:33: ( '0' .. '9' )+
+            // org\\epics\\pvmanager\\formula\\Formula.g:134:33: ( '0' .. '9' )+
             int cnt18=0;
             loop18:
             do {
@@ -1671,7 +1671,7 @@ public class FormulaLexer extends Lexer {
     // $ANTLR start "HEX_DIGIT"
     public final void mHEX_DIGIT() throws RecognitionException {
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:126:11: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // org\\epics\\pvmanager\\formula\\Formula.g:137:11: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
             // org\\epics\\pvmanager\\formula\\Formula.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
@@ -1697,7 +1697,7 @@ public class FormulaLexer extends Lexer {
     // $ANTLR start "ESC_SEQ"
     public final void mESC_SEQ() throws RecognitionException {
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:130:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UNICODE_ESC | OCTAL_ESC )
+            // org\\epics\\pvmanager\\formula\\Formula.g:141:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UNICODE_ESC | OCTAL_ESC )
             int alt19=3;
             switch ( input.LA(1) ) {
             case '\\':
@@ -1752,7 +1752,7 @@ public class FormulaLexer extends Lexer {
 
             switch (alt19) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:130:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // org\\epics\\pvmanager\\formula\\Formula.g:141:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
 
@@ -1769,7 +1769,7 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:131:9: UNICODE_ESC
+                    // org\\epics\\pvmanager\\formula\\Formula.g:142:9: UNICODE_ESC
                     {
                     mUNICODE_ESC(); 
 
@@ -1777,7 +1777,7 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:132:9: OCTAL_ESC
+                    // org\\epics\\pvmanager\\formula\\Formula.g:143:9: OCTAL_ESC
                     {
                     mOCTAL_ESC(); 
 
@@ -1797,7 +1797,7 @@ public class FormulaLexer extends Lexer {
     // $ANTLR start "OCTAL_ESC"
     public final void mOCTAL_ESC() throws RecognitionException {
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:137:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // org\\epics\\pvmanager\\formula\\Formula.g:148:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt20=3;
             switch ( input.LA(1) ) {
             case '\\':
@@ -1887,7 +1887,7 @@ public class FormulaLexer extends Lexer {
 
             switch (alt20) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:137:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // org\\epics\\pvmanager\\formula\\Formula.g:148:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1924,7 +1924,7 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:138:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // org\\epics\\pvmanager\\formula\\Formula.g:149:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1951,7 +1951,7 @@ public class FormulaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:139:9: '\\\\' ( '0' .. '7' )
+                    // org\\epics\\pvmanager\\formula\\Formula.g:150:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1980,8 +1980,8 @@ public class FormulaLexer extends Lexer {
     // $ANTLR start "UNICODE_ESC"
     public final void mUNICODE_ESC() throws RecognitionException {
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:144:5: ( '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT )
-            // org\\epics\\pvmanager\\formula\\Formula.g:144:9: '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+            // org\\epics\\pvmanager\\formula\\Formula.g:155:5: ( '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT )
+            // org\\epics\\pvmanager\\formula\\Formula.g:155:9: '\\\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
             {
             match('\\'); 
 
@@ -2208,7 +2208,7 @@ public class FormulaLexer extends Lexer {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "97:1: FLOAT : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '0' .. '9' )+ EXPONENT );";
+            return "108:1: FLOAT : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '0' .. '9' )+ EXPONENT );";
         }
     }
     static final String DFA21_eotS =

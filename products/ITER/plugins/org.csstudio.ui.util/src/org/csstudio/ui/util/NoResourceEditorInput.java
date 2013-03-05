@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.ui.util;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -46,6 +45,7 @@ import org.eclipse.ui.IPersistableElement;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class NoResourceEditorInput implements IEditorInput
 {
     final private IEditorInput orig;
@@ -69,7 +69,9 @@ public class NoResourceEditorInput implements IEditorInput
     @Override
     public Object getAdapter(Class adapter)
     {
-        if (adapter == IResource.class)
+        // Compare name as string to compile with RAP,
+        // where the RCP IResource class is not available
+        if ("org.eclipse.core.resources.IResource".equals(adapter.getName()))
             return null;
         return orig.getAdapter(adapter);
     }
