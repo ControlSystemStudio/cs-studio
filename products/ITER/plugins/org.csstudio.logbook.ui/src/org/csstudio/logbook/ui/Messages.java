@@ -28,6 +28,8 @@ public class Messages extends NLS
     public static String LogEntry_Title_TT;
     public static String LogEntry_User;
     public static String LogEntry_User_TT;
+    public static String LogEntry_Confirm_DeleteImage_Title;
+    public static String LogEntry_Confirm_DeleteImage_Desc;
     static
     {
         // initialize resource bundle
