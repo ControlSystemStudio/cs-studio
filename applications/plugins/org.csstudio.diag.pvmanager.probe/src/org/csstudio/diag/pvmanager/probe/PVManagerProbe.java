@@ -496,11 +496,10 @@ public class PVManagerProbe extends ViewPart {
 		setMeter(null, null);
 		setLastError(null);
 		setReadOnly(true);
-
 		// If name is blank, update status to waiting and quit
 		if ((pvFormula == null) || pvFormula.trim().isEmpty()) {
 			setStatus(Messages.Probe_statusWaitingForPV);
-			return;
+			pvFormula = null;
 		}
 
 		// Update displayed name, unless it's already current
@@ -508,8 +507,9 @@ public class PVManagerProbe extends ViewPart {
 			pvFomulaInputBar.setPVFormula(pvFormula);
 		}
 
-		setStatus(Messages.Probe_statusSearching);
-		pv = PVManager.readAndWrite(formula(pvFormula))
+		if (pvFormula != null) {
+			setStatus(Messages.Probe_statusSearching);
+			pv = PVManager.readAndWrite(formula(pvFormula))
 				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
 				.readListener(new PVReaderListener<Object>() {
 					@Override
@@ -534,12 +534,13 @@ public class PVManagerProbe extends ViewPart {
 					}
 				})
 				.notifyOn(swtThread(this)).asynchWriteAndMaxReadRate(ofHertz(25));
+			// Show the PV name  as the title
+			setPartName(pvFormula);
+		}
 		
 		
 		this.pvFormula = pvFormula;
 
-		// Show the PV name  as the title
-		setPartName(pvFormula);
 	}
 
 	/**
