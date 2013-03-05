@@ -62,4 +62,16 @@ public class UIHelper
     {
         return null;
     }
+    
+    /** Prompt for file name to save data outside of workspace
+     * 
+     *  @param shell Parent shell
+     *  @param original Original file name, may be <code>null</code>
+     *  @param extension Extension to enforce, without ".". May be <code>null</code>
+     *  @return
+     */
+    public String openSaveOutsideWorkspaceDialog(final Shell shell, final IPath original, final String extension)
+    {
+        return null;
+    }
 }
