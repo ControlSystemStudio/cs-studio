@@ -51,6 +51,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
 {
     final protected C command;
 
+    // TODO Share JythonSupport for all commands in a scan
     final protected JythonSupport jython;
 
     private ScanErrorHandler error_handler;

@@ -2,9 +2,9 @@
 
 from org.csstudio.scan.command import ScanErrorHandler
 
-class ContinueOnError(ScanErrorHandler):
+class OnErrorContinue(ScanErrorHandler):
     
     def handleError(self, command, error, context):
         print "Ignoring error from " + str(command)
-        return ScanErrorHandler.Result.Continue        
+        return ScanErrorHandler.Result.Continue
 

@@ -13,7 +13,7 @@ package org.csstudio.scan.command;
  *  <pre>
  *  class MyErrorHandler(ScanErrorHandler):
  *   def handleError(self, command, error, context):
- *       return Advice.Abort
+ *       return ScanErrorHandler.Result.Continue
  *  </pre>
  *
  *  <p>The jython script that defines the class <code>MyErrorHandler</code> must
