@@ -278,6 +278,7 @@ public class PVManagerProbe extends ViewPart {
 			}
 		});
 		
+		showMeter(false);		
 		createActions();
 		initializeToolBar();
 
@@ -291,6 +292,7 @@ public class PVManagerProbe extends ViewPart {
 				showMeter(false);
 			}
 		}
+		parent.layout();
 	}
 	
 	private void hideSection(Composite section) {
@@ -462,6 +464,8 @@ public class PVManagerProbe extends ViewPart {
 			return;
 		}
 
+		this.pvFormula = pvFormula;
+
 		// The PV is different, so disconnect and reset the visuals
 		if (pv != null) {
 			pv.close();
@@ -518,8 +522,6 @@ public class PVManagerProbe extends ViewPart {
 			// Show the PV name as the title
 			setPartName(pvFormula);
 		}
-
-		this.pvFormula = pvFormula;
 
 	}
 
@@ -638,6 +640,8 @@ public class PVManagerProbe extends ViewPart {
 					sectionsMenu.setVisible(true);
 				}
 			};
+			showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/obj16/submenu.gif"));
+
 //			showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
 			showHideAction.setToolTipText("Show/Hide");
 			showHideAction.setMenuCreator(new IMenuCreator() {

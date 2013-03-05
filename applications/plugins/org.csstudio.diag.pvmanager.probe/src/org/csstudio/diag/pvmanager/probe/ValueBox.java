@@ -132,7 +132,7 @@ public class ValueBox extends Composite {
 		hideSection(displaySection);
 		
 		if (needsDoLayout) {
-			this.getParent().getParent().layout();
+			this.getParent().layout();
 		}
 	}
 	
