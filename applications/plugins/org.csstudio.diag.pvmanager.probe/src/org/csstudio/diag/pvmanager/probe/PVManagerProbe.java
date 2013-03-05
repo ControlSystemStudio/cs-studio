@@ -514,12 +514,12 @@ public class PVManagerProbe extends ViewPart {
 				.readListener(new PVReaderListener<Object>() {
 					@Override
 					public void pvChanged(PVReaderEvent<Object> event) {
-						Object obj = pv.getValue();
-						setLastError(pv.lastException());
+						Object obj = event.getPvReader().getValue();
+						setLastError(event.getPvReader().lastException());
 						setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
 						setTime(ValueUtil.timeOf(obj));
 						setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
-						if (pv.isConnected()) {
+						if (event.getPvReader().isConnected()) {
 							setStatus(Messages.Probe_statusConnected);
 						} else {
 							setStatus(Messages.Probe_statusSearching);
@@ -529,8 +529,8 @@ public class PVManagerProbe extends ViewPart {
 				.writeListener(new PVWriterListener<Object>() {
 					@Override
 					public void pvChanged(PVWriterEvent<Object> event) {
-						Exception lastException = pv.lastWriteException();
-						setReadOnly(!pv.isWriteConnected());
+						Exception lastException = event.getPvWriter().lastWriteException();
+						setReadOnly(!event.getPvWriter().isWriteConnected());
 					}
 				})
 				.notifyOn(swtThread(this)).asynchWriteAndMaxReadRate(ofHertz(25));
