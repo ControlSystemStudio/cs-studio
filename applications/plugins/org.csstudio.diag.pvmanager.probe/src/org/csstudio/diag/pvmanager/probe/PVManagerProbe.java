@@ -86,10 +86,7 @@ public class PVManagerProbe extends ViewPart {
 	private Composite bottomBox;
 	private Button showMeterButton;
 	private Button infoButton;
-	private GridData gd_statusField;
 	private GridLayout gl_topBox;
-	private FormData fd_topBox;
-	private FormData fd_bottomBox;
 
 	private boolean readOnly = true;
 
@@ -141,11 +138,11 @@ public class PVManagerProbe extends ViewPart {
 	public void createPartControl(Composite parent) {
 		// Create the view
 		final boolean canExecute = true;
-		// final boolean canExecute =
-		// SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
-
-		final FormLayout layout = new FormLayout();
-		parent.setLayout(layout);
+		GridLayout gl_parent = new GridLayout(1, false);
+		gl_parent.verticalSpacing = 0;
+		gl_parent.marginWidth = 0;
+		gl_parent.marginHeight = 0;
+		parent.setLayout(gl_parent);
 
 		// 3 Boxes, connected via form layout: Top, meter, bottom
 		//
@@ -161,9 +158,12 @@ public class PVManagerProbe extends ViewPart {
 		//
 		// Inside top & bottom, it's a grid layout
 		topBox = new Composite(parent, 0);
+		topBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_bottomBox;
 		gl_topBox = new GridLayout();
-		gl_topBox.numColumns = 3;
+		gl_topBox.marginWidth = 0;
+		gl_topBox.marginHeight = 0;
+		gl_topBox.numColumns = 2;
 		topBox.setLayout(gl_topBox);
 
 		errorBar = new ErrorBar(parent, SWT.NONE);
@@ -189,19 +189,17 @@ public class PVManagerProbe extends ViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		pvFomulaInputBar.setLayoutData(gd);
 
-		infoButton = new Button(topBox, SWT.PUSH);
-		infoButton.setText(Messages.Probe_infoTitle);
-		infoButton.setToolTipText(Messages.Probe_infoButtonToolTipText);
-
-		// New Box with only the meter
-		meter = new MeterWidget(parent, 0);
-		meter.setEnabled(false);
-
 		// Button Box
 		bottomBox = new Composite(parent, 0);
+		bottomBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		gl_bottomBox = new GridLayout();
 		gl_bottomBox.numColumns = 3;
 		bottomBox.setLayout(gl_bottomBox);
+		
+				// New Box with only the meter
+				meter = new MeterWidget(bottomBox, 0);
+				meter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+				meter.setEnabled(false);
 		
 		valueBox = new ValueBox(bottomBox, SWT.BORDER);
 		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -229,62 +227,35 @@ public class PVManagerProbe extends ViewPart {
 		btn_adjust.setText(Messages.S_Adjust);
 		btn_adjust.setToolTipText(Messages.S_ModValue);
 		btn_adjust.setEnabled(canExecute);
-
-		// Status bar
-		Label label = new Label(bottomBox, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		gd.horizontalSpan = gl_bottomBox.numColumns;
-		label.setLayoutData(gd);
-
-		statusLabel = new Label(bottomBox, 0);
-		statusLabel.setText(Messages.Probe_statusLabelText);
-
-		statusField = new Label(bottomBox, SWT.BORDER);
-		statusField.setText(Messages.Probe_statusWaitingForPV);
-		gd_statusField = new GridData();
-		gd_statusField.grabExcessHorizontalSpace = true;
-		gd_statusField.horizontalAlignment = SWT.FILL;
-		gd_statusField.horizontalSpan = gl_bottomBox.numColumns - 1;
-		statusField.setLayoutData(gd_statusField);
-
-		// Connect the 3 boxes in form layout
-		FormData fd;
-		fd_topBox = new FormData();
-		fd_topBox.left = new FormAttachment(0, 0);
-		fd_topBox.top = new FormAttachment(0, 0);
-		fd_topBox.right = new FormAttachment(100, 0);
-		topBox.setLayoutData(fd_topBox);
-
-		fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(topBox);
-		new Label(topBox, SWT.NONE);
-		fd.right = new FormAttachment(100, 0);
-		errorBar.setLayoutData(fd);
-
-		fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(errorBar);
-		fd.right = new FormAttachment(100, 0);
-		fd.bottom = new FormAttachment(bottomBox);
-		meter.setLayoutData(fd);
-
-		fd_bottomBox = new FormData();
-		fd_bottomBox.left = new FormAttachment(0, 0);
-		fd_bottomBox.right = new FormAttachment(100, 0);
-		fd_bottomBox.bottom = new FormAttachment(100, 0);
-		bottomBox.setLayoutData(fd_bottomBox);
-
-		// Connect actions
-
-		infoButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent ev) {
-				showInfo();
-			}
-		});
+				
+						infoButton = new Button(topBox, SWT.PUSH);
+						infoButton.setText(Messages.Probe_infoTitle);
+						infoButton.setToolTipText(Messages.Probe_infoButtonToolTipText);
+						
+								// Connect actions
+						
+								infoButton.addSelectionListener(new SelectionAdapter() {
+									@Override
+									public void widgetSelected(final SelectionEvent ev) {
+										showInfo();
+									}
+								});
+		
+		composite_1 = new Composite(parent, SWT.NONE);
+		composite_1.setLayout(new GridLayout(2, false));
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+				
+						// Status bar
+						Label label = new Label(composite_1, SWT.SEPARATOR | SWT.HORIZONTAL);
+						label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+						label.setSize(64, 2);
+										
+												statusLabel = new Label(composite_1, 0);
+												statusLabel.setText(Messages.Probe_statusLabelText);
+								
+										statusField = new Label(composite_1, SWT.BORDER);
+										statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+										statusField.setText(Messages.Probe_statusWaitingForPV);
 
 		btn_adjust.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -335,26 +306,46 @@ public class PVManagerProbe extends ViewPart {
 			}
 		}
 	}
+	
+	private void hideSection(Composite section) {
+		GridData data = (GridData) section.getLayoutData();
+		if (data.heightHint != 0) {
+			data.heightHint = 0;
+		}
+	}
+	
+	private void showSection(Composite section) {
+		GridData data = (GridData) section.getLayoutData();
+		if (data.heightHint != -1) {
+			data.heightHint = -1;
+		}
+	}
 
 	protected void showMeter(final boolean show) {
-		if (show) { // Meter about to become visible
-			// Attach bottom box to bottom of screen,
-			// and meter stretches between top and bottom box.
-			final FormData fd = new FormData();
-			fd.left = new FormAttachment(0, 0);
-			fd.right = new FormAttachment(100, 0);
-			fd.bottom = new FormAttachment(100, 0);
-			bottomBox.setLayoutData(fd);
-		} else { // Meter about to be hidden.
-			// Attach bottom box to top box.
-			final FormData fd = new FormData();
-			fd.left = new FormAttachment(0, 0);
-			fd.top = new FormAttachment(topBox);
-			fd.right = new FormAttachment(100, 0);
-			bottomBox.setLayoutData(fd);
+		if (show) {
+			showSection(meter);
+		} else {
+			hideSection(meter);
 		}
-		meter.setVisible(show);
-		meter.getShell().layout(true, true);
+		meter.getParent().layout();
+//		if (show) { // Meter about to become visible
+//			// Attach bottom box to bottom of screen,
+//			// and meter stretches between top and bottom box.
+//			final FormData fd = new FormData();
+//			fd.left = new FormAttachment(0, 0);
+//			fd.right = new FormAttachment(100, 0);
+//			fd.bottom = new FormAttachment(100, 0);
+//			bottomBox.setLayoutData(fd);
+//		} else { // Meter about to be hidden.
+//			// Attach bottom box to top box.
+//			final FormData fd = new FormData();
+//			fd.left = new FormAttachment(0, 0);
+//			fd.top = new FormAttachment(topBox);
+//			fd.right = new FormAttachment(100, 0);
+//			bottomBox.setLayoutData(fd);
+//		}
+//		meter.setVisible(show);
+//		meter.getShell().layout(true, true);
 	}
 
 	private String pvNameWithDataSource() {
@@ -582,6 +573,7 @@ public class PVManagerProbe extends ViewPart {
 
 	private Exception lastError = null;
 	private ValueBox valueBox;
+	private Composite composite_1;
 
 	/**
 	 * Displays the last error in the status.
