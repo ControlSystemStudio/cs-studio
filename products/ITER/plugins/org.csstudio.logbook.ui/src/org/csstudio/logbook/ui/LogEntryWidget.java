@@ -38,6 +38,7 @@ import org.csstudio.ui.util.widgets.ImageStackWidget;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -63,6 +64,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.ResourceManager;
 
@@ -457,16 +459,22 @@ public class LogEntryWidget extends Composite {
 	btnCSSWindow.setText("CSS Window");
 
 	btnDeleteImage = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	
+	final Shell shell = getParent().getShell();
 	btnDeleteImage.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		try {
 			String selectedImageName = imageStackWidget.getSelectedImageName();
 			if (selectedImageName != null) {
-				LogEntryBuilder logEntryBuilder = LogEntryBuilder
-						.logEntry(logEntryChangeset.getLogEntry())
-						.removeAttach(selectedImageName);
-				logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+				if (MessageDialog.openConfirm(shell,
+						Messages.LogEntry_Confirm_DeleteImage_Title,
+						Messages.LogEntry_Confirm_DeleteImage_Desc)) {
+					LogEntryBuilder logEntryBuilder = LogEntryBuilder
+							.logEntry(logEntryChangeset.getLogEntry())
+							.removeAttach(selectedImageName);
+					logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+				}
 			}
 		} catch (IOException e1) {
 		    setLastException(e1);
