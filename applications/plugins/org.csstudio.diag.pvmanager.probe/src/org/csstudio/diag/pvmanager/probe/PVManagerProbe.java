@@ -204,7 +204,7 @@ public class PVManagerProbe extends ViewPart {
 		bottomBox.setLayout(gl_bottomBox);
 		
 		valueBox = new ValueBox(bottomBox, SWT.BORDER);
-		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		new Label(bottomBox, SWT.NONE);
 		new Label(bottomBox, SWT.NONE);
 
