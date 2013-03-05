@@ -6,54 +6,39 @@ package org.csstudio.ui.util.widgets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * A widget to display a set of Images
@@ -118,19 +103,53 @@ public class ImageStackWidget extends Composite {
 			
 				TableViewerColumn tableViewerColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
-				tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
-				    @Override
-				    public void update(ViewerCell cell) {
-					// TODO does not center
-					// TODO does not preserve aspect ratio
-					// use the OwnerDrawLabelProvider
-					String imageName = cell.getElement() == null ? "" : cell
-						.getElement().toString();
-					ImageData imageData = new ImageData(new ByteArrayInputStream(
-						imageInputStreamsMap.get(imageName)));
-					cell.setImage(new Image(getDisplay(), imageData
-						.scaledTo(90, 90)));
-				    }
+				tableViewerColumn.setLabelProvider(new OwnerDrawLabelProvider() {
+					
+					@Override
+					protected void paint(Event event, Object element) {
+						String imageName = element == null ? "" : element.toString();
+						ImageData imageData = new ImageData(new ByteArrayInputStream(
+							imageInputStreamsMap.get(imageName)));
+						double scale = determineImageScale(imageData, 85, 85);
+						Image img = new Image(getDisplay(), imageData.scaledTo(
+								(int) (imageData.width * scale),
+								(int) (imageData.height * scale)));
+						if (img != null) {
+							Rectangle bounds = ((TableItem) event.item)
+									.getBounds(event.index);
+							Rectangle imgBounds = img.getBounds();
+							bounds.width /= 2;
+							bounds.width -= imgBounds.width / 2;
+							bounds.height /= 2;
+							bounds.height -= imgBounds.height / 2;
+		
+							int x = bounds.width > 0 ? bounds.x + bounds.width
+									: bounds.x;
+							int y = bounds.height > 0 ? bounds.y + bounds.height
+									: bounds.y;
+		
+							event.gc.drawImage(img, x, y);
+						}
+					}
+					
+					@Override
+					protected void measure(Event event, Object element) {
+						String imageName = element == null ? "" : element.toString();
+						ImageData imageData = new ImageData(new ByteArrayInputStream(
+								imageInputStreamsMap.get(imageName)));
+						double scale = determineImageScale(imageData, 85, 85);
+						event.height = (int) (scale * imageData.height) + 10;
+					}
+					
+					private double determineImageScale(ImageData imgData,
+							int targetWidth, int targetHeight) {
+						if (imgData == null) {
+							return 1;
+						}
+						double scalex = (double) targetWidth / imgData.width;
+						double scaley = (double) targetHeight / imgData.height;
+						return Math.min(scalex, scaley);
+					}
 				});
 				TableColumn tblclmnImage = tableViewerColumn.getColumn();
 				tblclmnImage.setResizable(false);
@@ -190,15 +209,18 @@ public class ImageStackWidget extends Composite {
 					    imageInputStreamsMap
 						    .get(selectedImageName)));
 			} else {
-			    imagePreview.setImage(new ByteArrayInputStream(
-				    imageInputStreamsMap.values().iterator()
-					    .next()));
+				Entry<String, byte[]> entry = imageInputStreamsMap.entrySet().iterator().next();
+			    imagePreview.setImage(new ByteArrayInputStream(entry.getValue()));
+			    selectedImageName = entry.getKey();
+			    table.setSelection(0);
 			}
 		    } else {
 			tableViewer.setInput(null);
 			imagePreview.setImage((InputStream) null);
+			selectedImageName = null;
 		    }
 		    tableViewer.refresh();
+		    table.redraw();
 		    imagePreview.redraw();
 		} else if("selectedImageName".equals(evt.getPropertyName())) {
 		    imagePreview.setImage(new ByteArrayInputStream(
