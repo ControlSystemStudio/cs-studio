@@ -8,6 +8,9 @@ import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
@@ -19,12 +22,16 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -32,13 +39,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.ResourceManager;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
@@ -84,7 +97,6 @@ public class PVManagerProbe extends ViewPart {
 	private MeterWidget meter;
 	private Composite topBox;
 	private Composite bottomBox;
-	private Button showMeterButton;
 	private Button infoButton;
 	private GridLayout gl_topBox;
 
@@ -203,14 +215,6 @@ public class PVManagerProbe extends ViewPart {
 		
 		valueBox = new ValueBox(bottomBox, SWT.BORDER);
 		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		new Label(bottomBox, SWT.NONE);
-		new Label(bottomBox, SWT.NONE);
-
-		showMeterButton = new Button(bottomBox, SWT.CHECK);
-		showMeterButton.setText(Messages.Probe_showMeterButtonText);
-		showMeterButton
-				.setToolTipText(Messages.Probe_showMeterButtonToolTipText);
-		showMeterButton.setSelection(true);
 
 		// New Row
 		newValueLabel = new Label(bottomBox, 0);
@@ -273,26 +277,9 @@ public class PVManagerProbe extends ViewPart {
 				pv.write(newValueField.getText());
 			}
 		});
-		// // Create a listener to enable/disable the Save to IOC button based
-		// on
-		// // the availability of a command handler.
-		// saveToIocCmdListener = new ICommandListener() {
-		// public void commandChanged(final CommandEvent commandEvent) {
-		// if (commandEvent.isEnabledChanged()) {
-		// btn_save_to_ioc.setVisible(commandEvent.getCommand()
-		// .isEnabled());
-		// }
-		// }
-		// };
-		// // Set the initial vilibility of the button
-		// updateSaveToIocButtonVisibility();
-
-		showMeterButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent ev) {
-				showMeter(showMeterButton.getSelection());
-			}
-		});
+		
+		createActions();
+		initializeToolBar();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
 			setPVFormula(memento.getString(PV_TAG));
@@ -301,7 +288,6 @@ public class PVManagerProbe extends ViewPart {
 			final String show = memento.getString(METER_TAG);
 			if ((show != null) && show.equals("false")) //$NON-NLS-1$
 			{
-				showMeterButton.setSelection(false);
 				showMeter(false);
 			}
 		}
@@ -619,7 +605,64 @@ public class PVManagerProbe extends ViewPart {
 //			timestampField.setText(timeFormat.format(time.getTimestamp()));
 //		}
 	}
+	
+	private Action showHideAction;
+	private void initializeToolBar() {
+		IToolBarManager toolbarManager = getViewSite().getActionBars()
+				.getToolBarManager();
+		toolbarManager.add(showHideAction);
+	}
 
+	private void createActions() {
+		// Create the actions
+		{
+			// Drop down menu to select what to show
+			// First selection for All and then each datasource in alphabetical order
+			final Menu sectionsMenu = new Menu(topBox);
+			final MenuItem meterMenuItem = new MenuItem(sectionsMenu, SWT.CHECK);
+			meterMenuItem.setText("Meter");
+			meterMenuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					showMeter(meterMenuItem.getSelection());
+				}
+			});
+			
+			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
+				@Override
+				public void runWithEvent(Event event) {
+					//Point point = event.
+					ToolItem toolItem = (ToolItem) event.widget;
+					Point point = toolItem.getParent().toDisplay(new Point(toolItem.getBounds().x, toolItem.getBounds().y + toolItem.getBounds().height));
+					sectionsMenu.setLocation(point.x, point.y); // waiting
+					sectionsMenu.setVisible(true);
+				}
+			};
+//			showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
+			showHideAction.setToolTipText("Show/Hide");
+			showHideAction.setMenuCreator(new IMenuCreator() {
+				
+				
+				
+				@Override
+				public Menu getMenu(Menu parent) {
+					return sectionsMenu;
+				}
+				
+				@Override
+				public Menu getMenu(Control parent) {
+					// TODO Auto-generated method stub
+					return sectionsMenu;
+				}
+				
+				@Override
+				public void dispose() {
+					sectionsMenu.dispose();
+				}
+			});
+		}
+	}
+	
 	/**
 	 * Displays a new value in the meter.
 	 * 
