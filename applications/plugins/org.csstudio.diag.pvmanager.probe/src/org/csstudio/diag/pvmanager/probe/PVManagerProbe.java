@@ -621,14 +621,8 @@ public class PVManagerProbe extends ViewPart {
 			// Drop down menu to select what to show
 			// First selection for All and then each datasource in alphabetical order
 			final Menu sectionsMenu = new Menu(topBox);
-			final MenuItem meterMenuItem = new MenuItem(sectionsMenu, SWT.CHECK);
+			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meter);
 			meterMenuItem.setText("Meter");
-			meterMenuItem.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					showMeter(meterMenuItem.getSelection());
-				}
-			});
 			
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override

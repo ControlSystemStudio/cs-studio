@@ -157,19 +157,11 @@ public class ValueBox extends Composite {
 	}
 	
 	private void hideSection(Composite section) {
-		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != 0) {
-			data.heightHint = 0;
-			needsDoLayout = true;
-		}
+		needsDoLayout = ShowHideForGridLayout.hide(section) || needsDoLayout;
 	}
 	
 	private void showSection(Composite section) {
-		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != -1) {
-			data.heightHint = -1;
-			needsDoLayout = true;
-		}
+		needsDoLayout = ShowHideForGridLayout.show(section) || needsDoLayout;
 	}
 	
 	private void appendAlarm(StringBuilder builder, Alarm alarm) {
