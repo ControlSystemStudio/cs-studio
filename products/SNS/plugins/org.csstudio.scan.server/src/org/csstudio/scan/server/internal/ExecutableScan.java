@@ -405,7 +405,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Execute commands
         try
         {
-            execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices())));
+            execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
             try
             {
                 // Execute pre-scan commands

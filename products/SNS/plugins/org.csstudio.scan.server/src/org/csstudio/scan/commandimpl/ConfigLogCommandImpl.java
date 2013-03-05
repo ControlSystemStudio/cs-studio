@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.ConfigLogCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanContext;
 public class ConfigLogCommandImpl extends ScanCommandImpl<ConfigLogCommand>
 {
     /** {@inheritDoc} */
-    public ConfigLogCommandImpl(final ConfigLogCommand command) throws Exception
+    public ConfigLogCommandImpl(final ConfigLogCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
 	/** {@inheritDoc} */

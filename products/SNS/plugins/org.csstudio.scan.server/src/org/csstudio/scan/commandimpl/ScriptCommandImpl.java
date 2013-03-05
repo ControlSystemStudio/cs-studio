@@ -36,9 +36,9 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
 	final private ScanScript script_object;
 
     /** {@inheritDoc} */
-    public ScriptCommandImpl(final ScriptCommand command) throws Exception
+    public ScriptCommandImpl(final ScriptCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
         try
         {
             script_object = jython.loadClass(ScanScript.class, command.getScript());

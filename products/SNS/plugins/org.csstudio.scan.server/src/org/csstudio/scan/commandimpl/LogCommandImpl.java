@@ -22,6 +22,7 @@ import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.vtype.VType;
@@ -33,9 +34,15 @@ import org.epics.vtype.VType;
 public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 {
     /** {@inheritDoc} */
-	public LogCommandImpl(final LogCommand command) throws Exception
+	public LogCommandImpl(final LogCommand command, final JythonSupport jython) throws Exception
     {
-	    super(command);
+	    super(command, jython);
+    }
+	
+    /** Implement without Jython support */
+    public LogCommandImpl(final LogCommand command) throws Exception
+    {
+        this(command, null);
     }
 
     /** {@inheritDoc} */

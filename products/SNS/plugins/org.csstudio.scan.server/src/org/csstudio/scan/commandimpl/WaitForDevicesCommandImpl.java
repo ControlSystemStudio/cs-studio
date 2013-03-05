@@ -17,6 +17,7 @@ package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.condition.Condition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
@@ -28,9 +29,9 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
 	private volatile Condition condition = null;
 
     /** {@inheritDoc} */
-    public WaitForDevicesCommandImpl(final WaitForDevicesCommand command) throws Exception
+    public WaitForDevicesCommandImpl(final WaitForDevicesCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
     /** {@inheritDoc} */

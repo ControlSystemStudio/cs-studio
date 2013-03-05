@@ -51,23 +51,23 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
 {
     final protected C command;
 
-    // TODO Share JythonSupport for all commands in a scan
     final protected JythonSupport jython;
 
     private ScanErrorHandler error_handler;
     
     /** Initialize
      *  @param command Command that is implemented
+     *  @param jython Jython interpreter, may be <code>null</code> 
      *  @throws Exception on error
      */
-    public ScanCommandImpl(final C command) throws Exception
+    public ScanCommandImpl(final C command, final JythonSupport jython) throws Exception
     {
         this.command = command;
-        jython = new JythonSupport();
+        this.jython = jython;
         
         // Implement error handler?
         final String error_handler_class = command.getErrorHandler();
-        if (error_handler_class.isEmpty())
+        if (error_handler_class.isEmpty()  ||  jython == null)
             error_handler = null;
         else
         {
