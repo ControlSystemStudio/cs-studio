@@ -58,6 +58,8 @@ import org.epics.vtype.SimpleValueFormat;
 import org.epics.vtype.Time;
 import org.epics.vtype.ValueFormat;
 import org.epics.vtype.ValueUtil;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.layout.FillLayout;
 
 /**
  * Probe view.
@@ -66,7 +68,8 @@ public class PVManagerProbe extends ViewPart {
 	public PVManagerProbe() {
 	}
 
-	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
+	private static final Logger log = Logger.getLogger(PVManagerProbe.class
+			.getName());
 
 	/**
 	 * The ID of the view as specified by the extension point
@@ -87,13 +90,11 @@ public class PVManagerProbe extends ViewPart {
 	private Composite bottomBox;
 	private Button showMeterButton;
 	private Button infoButton;
-	private GridData gd_valueField;
-	private GridData gd_timestampField;
 	private GridData gd_statusField;
 	private GridLayout gl_topBox;
 	private FormData fd_topBox;
 	private FormData fd_bottomBox;
-	
+
 	private boolean readOnly = true;
 
 	/** Currently displayed formula */
@@ -106,7 +107,8 @@ public class PVManagerProbe extends ViewPart {
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 
 	/** Formatting used for the time text field */
-	private TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
+	private TimestampFormat timeFormat = new TimestampFormat(
+			"yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
@@ -143,8 +145,9 @@ public class PVManagerProbe extends ViewPart {
 	public void createPartControl(Composite parent) {
 		// Create the view
 		final boolean canExecute = true;
-		// final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
-		
+		// final boolean canExecute =
+		// SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+
 		final FormLayout layout = new FormLayout();
 		parent.setLayout(layout);
 
@@ -166,24 +169,25 @@ public class PVManagerProbe extends ViewPart {
 		gl_topBox = new GridLayout();
 		gl_topBox.numColumns = 3;
 		topBox.setLayout(gl_topBox);
-		
+
 		errorBar = new ErrorBar(parent, SWT.NONE);
 		errorBar.setMarginRight(5);
 		errorBar.setMarginLeft(5);
 		errorBar.setMarginBottom(5);
 
-		pvFomulaInputBar = new PVFormulaInputBar(topBox, SWT.None, Activator.getDefault()
-				.getDialogSettings(), PV_LIST_TAG);
-		pvFomulaInputBar.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if ("pvFormula".equals(event.getPropertyName())) {
-					setPVFormula((String) event.getNewValue());
-				}
-			}
-		});
-		
+		pvFomulaInputBar = new PVFormulaInputBar(topBox, SWT.None, Activator
+				.getDefault().getDialogSettings(), PV_LIST_TAG);
+		pvFomulaInputBar
+				.addPropertyChangeListener(new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent event) {
+						if ("pvFormula".equals(event.getPropertyName())) {
+							setPVFormula((String) event.getNewValue());
+						}
+					}
+				});
+
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
@@ -203,30 +207,49 @@ public class PVManagerProbe extends ViewPart {
 		gl_bottomBox.numColumns = 3;
 		bottomBox.setLayout(gl_bottomBox);
 
-		valueLabel = new Label(bottomBox, 0);
+		Composite readValuePanel = new Composite(bottomBox, SWT.BORDER);
+		FormLayout fl_readValuePanel = new FormLayout();
+		fl_readValuePanel.marginBottom = 5;
+		readValuePanel.setLayout(fl_readValuePanel);
+		readValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+				false, 3, 1));
+
+		valueLabel = new Label(readValuePanel, 0);
+		FormData fd_valueLabel = new FormData();
+		fd_valueLabel.left = new FormAttachment(0, 5);
+		fd_valueLabel.top = new FormAttachment(0, 5);
+		valueLabel.setLayoutData(fd_valueLabel);
 		valueLabel.setText(Messages.Probe_valueLabelText);
 
-		valueField = new Label(bottomBox, SWT.BORDER);
-		gd_valueField = new GridData();
-		gd_valueField.grabExcessHorizontalSpace = true;
-		gd_valueField.horizontalAlignment = SWT.FILL;
-		valueField.setLayoutData(gd_valueField);
+		valueField = new Label(readValuePanel, SWT.BORDER);
+		FormData fd_valueField = new FormData();
+		fd_valueField.left = new FormAttachment(valueLabel, 6);
+		fd_valueField.right = new FormAttachment(100, -5);
+		fd_valueField.bottom = new FormAttachment(valueLabel, 0, SWT.CENTER);
+		valueField.setLayoutData(fd_valueField);
+
+		// New Row
+		timestampLabel = new Label(readValuePanel, 0);
+		FormData fd_timestampLabel = new FormData();
+		fd_timestampLabel.top = new FormAttachment(valueField, 5);
+		fd_timestampLabel.left = new FormAttachment(valueLabel, 0, SWT.LEFT);
+		timestampLabel.setLayoutData(fd_timestampLabel);
+		timestampLabel.setText(Messages.Probe_timestampLabelText);
+		
+				timestampField = new Label(readValuePanel, SWT.BORDER);
+				FormData fd_timestampField = new FormData();
+				fd_timestampField.bottom = new FormAttachment(timestampLabel, 0, SWT.CENTER);
+				fd_timestampField.left = new FormAttachment(timestampLabel, 6);
+				fd_timestampField.right = new FormAttachment(100, -5);
+				timestampField.setLayoutData(fd_timestampField);
+		new Label(bottomBox, SWT.NONE);
+		new Label(bottomBox, SWT.NONE);
 
 		showMeterButton = new Button(bottomBox, SWT.CHECK);
 		showMeterButton.setText(Messages.Probe_showMeterButtonText);
-		showMeterButton.setToolTipText(Messages.Probe_showMeterButtonToolTipText);
+		showMeterButton
+				.setToolTipText(Messages.Probe_showMeterButtonToolTipText);
 		showMeterButton.setSelection(true);
-
-		// New Row
-		timestampLabel = new Label(bottomBox, 0);
-		timestampLabel.setText(Messages.Probe_timestampLabelText);
-
-		timestampField = new Label(bottomBox, SWT.BORDER);
-		gd_timestampField = new GridData();
-		gd_timestampField.grabExcessHorizontalSpace = true;
-		gd_timestampField.horizontalAlignment = SWT.FILL;
-		timestampField.setLayoutData(gd_timestampField);
-		new Label(bottomBox, SWT.NONE);
 
 		// New Row
 		newValueLabel = new Label(bottomBox, 0);
@@ -274,6 +297,7 @@ public class PVManagerProbe extends ViewPart {
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
 		fd.top = new FormAttachment(topBox);
+		new Label(topBox, SWT.NONE);
 		fd.right = new FormAttachment(100, 0);
 		errorBar.setLayoutData(fd);
 
@@ -369,14 +393,15 @@ public class PVManagerProbe extends ViewPart {
 		meter.setVisible(show);
 		meter.getShell().layout(true, true);
 	}
-	
+
 	private String pvNameWithDataSource() {
 		DataSource defaultDS = PVManager.getDefaultDataSource();
 		String pvName = pvFormula;
 		if (defaultDS instanceof CompositeDataSource) {
 			CompositeDataSource composite = (CompositeDataSource) defaultDS;
 			if (!pvName.contains(composite.getDelimiter())) {
-				pvName = composite.getDefaultDataSource() + composite.getDelimiter() + pvName;
+				pvName = composite.getDefaultDataSource()
+						+ composite.getDelimiter() + pvName;
 			}
 		}
 
@@ -396,14 +421,19 @@ public class PVManagerProbe extends ViewPart {
 			Alarm alarm = ValueUtil.alarmOf(value);
 			Display display = ValueUtil.displayOf(value);
 			Class<?> type = ValueUtil.typeOf(value);
-			ChannelHandler handler = PVManager.getDefaultDataSource().getChannels().get(pvNameWithDataSource());
-			
+			ChannelHandler handler = PVManager.getDefaultDataSource()
+					.getChannels().get(pvNameWithDataSource());
+
 			if (handler != null) {
-				SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(handler.getProperties());
+				SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(
+						handler.getProperties());
 				if (!sortedProperties.isEmpty()) {
 					info.append("Channel details:").append(nl);
-					for (Map.Entry<String, Object> entry : sortedProperties.entrySet()) {
-						info.append(indent).append(entry.getKey()).append(" = ").append(entry.getValue()).append(nl);
+					for (Map.Entry<String, Object> entry : sortedProperties
+							.entrySet()) {
+						info.append(indent).append(entry.getKey())
+								.append(" = ").append(entry.getValue())
+								.append(nl);
 					}
 				}
 			}
@@ -415,38 +445,45 @@ public class PVManagerProbe extends ViewPart {
 				if (alarm != null
 						&& AlarmSeverity.UNDEFINED.equals(alarm
 								.getAlarmSeverity())) {
-					info.append(Messages.Probe_infoStateDisconnected).append(nl);
+					info.append(Messages.Probe_infoStateDisconnected)
+							.append(nl);
 				} else {
 					info.append(Messages.Probe_infoStateConnected).append(nl);
 				}
 			}
 
 			if (type != null) {
-				info.append(Messages.Probe_infoDataType).append(space).append(type.getSimpleName())
-						.append(nl);
+				info.append(Messages.Probe_infoDataType).append(space)
+						.append(type.getSimpleName()).append(nl);
 			}
 
 			if (display != null) {
 				info.append(Messages.Probe_infoNumericDisplay).append(nl)
-						.append(indent).append(Messages.Probe_infoLowDisplayLimit).append(space)
-						.append(display.getLowerDisplayLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoLowAlarmLimit).append(space)
+						.append(indent)
+						.append(Messages.Probe_infoLowDisplayLimit)
+						.append(space).append(display.getLowerDisplayLimit())
+						.append(nl).append(indent)
+						.append(Messages.Probe_infoLowAlarmLimit).append(space)
 						.append(display.getLowerAlarmLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoLowWarnLimit).append(space)
-						.append(display.getLowerWarningLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoHighWarnLimit).append(space)
+						.append(indent).append(Messages.Probe_infoLowWarnLimit)
+						.append(space).append(display.getLowerWarningLimit())
+						.append(nl).append(indent)
+						.append(Messages.Probe_infoHighWarnLimit).append(space)
 						.append(display.getUpperWarningLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoHighAlarmLimit).append(space)
-						.append(display.getUpperAlarmLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoHighDisplayLimit).append(space)
-						.append(display.getUpperDisplayLimit()).append(nl);
+						.append(indent)
+						.append(Messages.Probe_infoHighAlarmLimit)
+						.append(space).append(display.getUpperAlarmLimit())
+						.append(nl).append(indent)
+						.append(Messages.Probe_infoHighDisplayLimit)
+						.append(space).append(display.getUpperDisplayLimit())
+						.append(nl);
 			}
 
 			if (value instanceof org.epics.vtype.Enum) {
 				Enum enumValue = (Enum) value;
 				info.append(Messages.Probe_infoEnumMetadata).append(space)
-						.append(enumValue.getLabels().size()).append(space).append(Messages.Probe_infoLabels)
-						.append(nl);
+						.append(enumValue.getLabels().size()).append(space)
+						.append(Messages.Probe_infoLabels).append(nl);
 				for (String label : enumValue.getLabels()) {
 					info.append(indent).append(label).append(nl);
 				}
@@ -476,7 +513,7 @@ public class PVManagerProbe extends ViewPart {
 	public void setPVName(ProcessVariable pvName) {
 		setPVFormula("'" + pvName.getName() + "'");
 	}
-	
+
 	public void setPVFormula(String pvFormula) {
 		log.log(Level.FINE, "setPVFormula ({0})", pvFormula); //$NON-NLS-1$
 
@@ -509,36 +546,40 @@ public class PVManagerProbe extends ViewPart {
 
 		if (pvFormula != null) {
 			setStatus(Messages.Probe_statusSearching);
-			pv = PVManager.readAndWrite(formula(pvFormula))
-				.timeout(ofMillis(5000), "No connection after 5s. Still trying...")
-				.readListener(new PVReaderListener<Object>() {
-					@Override
-					public void pvChanged(PVReaderEvent<Object> event) {
-						Object obj = event.getPvReader().getValue();
-						setLastError(event.getPvReader().lastException());
-						setValue(valueFormat.format(obj), ValueUtil.alarmOf(obj));
-						setTime(ValueUtil.timeOf(obj));
-						setMeter(ValueUtil.numericValueOf(obj), ValueUtil.displayOf(obj));
-						if (event.getPvReader().isConnected()) {
-							setStatus(Messages.Probe_statusConnected);
-						} else {
-							setStatus(Messages.Probe_statusSearching);
+			pv = PVManager
+					.readAndWrite(formula(pvFormula))
+					.timeout(ofMillis(5000),
+							"No connection after 5s. Still trying...")
+					.readListener(new PVReaderListener<Object>() {
+						@Override
+						public void pvChanged(PVReaderEvent<Object> event) {
+							Object obj = event.getPvReader().getValue();
+							setLastError(event.getPvReader().lastException());
+							setValue(valueFormat.format(obj),
+									ValueUtil.alarmOf(obj));
+							setTime(ValueUtil.timeOf(obj));
+							setMeter(ValueUtil.numericValueOf(obj),
+									ValueUtil.displayOf(obj));
+							if (event.getPvReader().isConnected()) {
+								setStatus(Messages.Probe_statusConnected);
+							} else {
+								setStatus(Messages.Probe_statusSearching);
+							}
 						}
-					}
-				})
-				.writeListener(new PVWriterListener<Object>() {
-					@Override
-					public void pvChanged(PVWriterEvent<Object> event) {
-						Exception lastException = event.getPvWriter().lastWriteException();
-						setReadOnly(!event.getPvWriter().isWriteConnected());
-					}
-				})
-				.notifyOn(swtThread(this)).asynchWriteAndMaxReadRate(ofHertz(25));
-			// Show the PV name  as the title
+					})
+					.writeListener(new PVWriterListener<Object>() {
+						@Override
+						public void pvChanged(PVWriterEvent<Object> event) {
+							Exception lastException = event.getPvWriter()
+									.lastWriteException();
+							setReadOnly(!event.getPvWriter().isWriteConnected());
+						}
+					}).notifyOn(swtThread(this))
+					.asynchWriteAndMaxReadRate(ofHertz(25));
+			// Show the PV name as the title
 			setPartName(pvFormula);
 		}
-		
-		
+
 		this.pvFormula = pvFormula;
 
 	}
@@ -548,9 +589,9 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @return pv name or null
 	 */
-//	public ProcessVariable getPVName() {
-//		return this.PVName;
-//	}
+	// public ProcessVariable getPVName() {
+	// return this.PVName;
+	// }
 
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -566,7 +607,8 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Modifies the prove status.
 	 * 
-	 * @param status new status to be displayed
+	 * @param status
+	 *            new status to be displayed
 	 */
 	private void setStatus(String status) {
 		if (status == null) {
@@ -577,11 +619,12 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	private Exception lastError = null;
-	
+
 	/**
 	 * Displays the last error in the status.
 	 * 
-	 * @param ex an exception
+	 * @param ex
+	 *            an exception
 	 */
 	private void setLastError(Exception ex) {
 		// If a timeout comes after an error, ignore it
@@ -595,23 +638,24 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Displays the new value.
 	 * 
-	 * @param value a new value
+	 * @param value
+	 *            a new value
 	 */
 	private void setValue(String value, Alarm alarm) {
 		// Calculate alarm string
 		String alarmString = "";
 		if (alarm != null)
 			alarmString = alarmToString(alarm);
-		
+
 		// Calculate value string
 		String valueString = "";
 		if (value != null)
 			valueString = value;
-		
+
 		String mergedString = valueString;
 		if (!alarmString.isEmpty())
 			mergedString = mergedString + " " + alarmString;
-		
+
 		valueField.setText(mergedString);
 		if (newValueField.isVisible() && !newValueField.isFocusControl()) {
 			newValueField.setText(valueString);
@@ -621,10 +665,12 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Displays the new alarm.
 	 * 
-	 * @param alarm a new alarm
+	 * @param alarm
+	 *            a new alarm
 	 */
 	private String alarmToString(Alarm alarm) {
-		if (alarm == null || alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
+		if (alarm == null
+				|| alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
 			return ""; //$NON-NLS-1$
 		} else {
 			return "[" + alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
@@ -635,7 +681,8 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Displays the new time.
 	 * 
-	 * @param time a new time
+	 * @param time
+	 *            a new time
 	 */
 	private void setTime(Time time) {
 		if (time == null) {
@@ -648,11 +695,14 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Displays a new value in the meter.
 	 * 
-	 * @param value the new value
-	 * @param display the display information
+	 * @param value
+	 *            the new value
+	 * @param display
+	 *            the display information
 	 */
 	private void setMeter(Double value, Display display) {
-		if (value == null || display == null || !ValueUtil.displayHasValidDisplayLimits(display)) {
+		if (value == null || display == null
+				|| !ValueUtil.displayHasValidDisplayLimits(display)) {
 			meter.setEnabled(false);
 			// meter.setValue(0.0);
 		} else if (display.getUpperDisplayLimit() <= display
@@ -670,12 +720,12 @@ public class PVManagerProbe extends ViewPart {
 			meter.setValue(value);
 		}
 	}
-	
+
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 		newValueField.setEditable(!readOnly);
 	}
-	
+
 	public boolean isReadOnly() {
 		return readOnly;
 	}
