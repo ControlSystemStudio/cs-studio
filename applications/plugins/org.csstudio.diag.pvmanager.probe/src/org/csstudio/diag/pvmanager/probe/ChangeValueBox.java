@@ -65,7 +65,6 @@ public class ChangeValueBox extends Composite {
 		
 		valueSection = new Composite(this, SWT.NONE);
 		GridLayout gl_valueSection = new GridLayout(2, false);
-		gl_valueSection.marginBottom = 5;
 		gl_valueSection.marginWidth = 0;
 		gl_valueSection.marginHeight = 0;
 		valueSection.setLayout(gl_valueSection);

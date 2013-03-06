@@ -90,7 +90,6 @@ public class PVManagerProbe extends ViewPart {
 	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
 	private static int instance = 0;
 	private Label statusLabel;
-	private Label newValueLabel;
 	private Label statusField;
 	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
@@ -114,11 +113,6 @@ public class PVManagerProbe extends ViewPart {
 	/** Formatting used for the time text field */
 	private TimestampFormat timeFormat = new TimestampFormat(
 			"yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
-
-	// No writing to ioc option.
-	// private ICommandListener saveToIocCmdListener;
-
-	private Text newValueField;
 
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
@@ -156,19 +150,6 @@ public class PVManagerProbe extends ViewPart {
 		gl_parent.marginHeight = 0;
 		parent.setLayout(gl_parent);
 
-		// 3 Boxes, connected via form layout: Top, meter, bottom
-		//
-		// PV Name: ____ name ____________________ [Info]
-		// +---------------------------------------------------+
-		// | Meter |
-		// +---------------------------------------------------+
-		// Value : ____ value ________________ [x] meter
-		// Timestamp : ____ time _________________ [Save to IOC]
-		// [x] Adjust
-		// ---------------
-		// Status: ...
-		//
-		// Inside top & bottom, it's a grid layout
 		topBox = new Composite(parent, 0);
 		topBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_bottomBox;
@@ -216,24 +197,8 @@ public class PVManagerProbe extends ViewPart {
 		valueBox = new ValueBox(bottomBox, SWT.BORDER);
 		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
-		changeValueBox = new ChangeValueBox(bottomBox, SWT.NONE);
+		changeValueBox = new ChangeValueBox(bottomBox, SWT.BORDER);
 		changeValueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-
-		// New Row
-		newValueLabel = new Label(bottomBox, 0);
-		newValueLabel.setText(Messages.Probe_newValueLabelText);
-		newValueLabel.setVisible(false);
-
-		newValueField = new Text(bottomBox, SWT.BORDER);
-		newValueField.setToolTipText(Messages.Probe_newValueFieldToolTipText);
-		newValueField.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-		newValueField.setVisible(false);
-		newValueField.setText(""); //$NON-NLS-1$
-
-		final Button btn_adjust = new Button(bottomBox, SWT.CHECK);
-		btn_adjust.setText(Messages.S_Adjust);
-		btn_adjust.setToolTipText(Messages.S_ModValue);
-		btn_adjust.setEnabled(canExecute);
 				
 						infoButton = new Button(topBox, SWT.PUSH);
 						infoButton.setText(Messages.Probe_infoTitle);
@@ -248,38 +213,31 @@ public class PVManagerProbe extends ViewPart {
 									}
 								});
 		
-		composite_1 = new Composite(parent, SWT.NONE);
-		composite_1.setLayout(new GridLayout(2, false));
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		statusBarPanel = new Composite(parent, SWT.NONE);
+		GridLayout gl_statusBarPanel = new GridLayout(1, false);
+		gl_statusBarPanel.verticalSpacing = 0;
+		gl_statusBarPanel.marginWidth = 0;
+		gl_statusBarPanel.marginHeight = 0;
+		statusBarPanel.setLayout(gl_statusBarPanel);
+		statusBarPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				
 						// Status bar
-						Label label = new Label(composite_1, SWT.SEPARATOR | SWT.HORIZONTAL);
-						label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+						Label label = new Label(statusBarPanel, SWT.SEPARATOR | SWT.HORIZONTAL);
+						label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 						label.setSize(64, 2);
-										
-												statusLabel = new Label(composite_1, 0);
-												statusLabel.setText(Messages.Probe_statusLabelText);
-								
-										statusField = new Label(composite_1, SWT.BORDER);
-										statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-										statusField.setText(Messages.Probe_statusWaitingForPV);
-
-		btn_adjust.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent ev) {
-				final boolean enable = btn_adjust.getSelection();
-				newValueLabel.setVisible(enable);
-				newValueField.setVisible(enable);
-				newValueField.setText(valueFormat.format(pv.getValue()));
-			}
-		});
-
-		newValueField.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				pv.write(newValueField.getText());
-			}
-		});
+												
+												composite_1 = new Composite(statusBarPanel, SWT.NONE);
+												composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+												composite_1.setLayout(new GridLayout(2, false));
+												
+														statusLabel = new Label(composite_1, 0);
+														statusLabel.setSize(43, 20);
+														statusLabel.setText(Messages.Probe_statusLabelText);
+														
+																statusField = new Label(composite_1, SWT.BORDER);
+																statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+																statusField.setSize(326, 22);
+																statusField.setText(Messages.Probe_statusWaitingForPV);
 		
 		showMeter(false);		
 		createActions();
@@ -480,7 +438,6 @@ public class PVManagerProbe extends ViewPart {
 		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
-		setReadOnly(true);
 		// If name is blank, update status to waiting and quit
 		if ((pvFormula == null) || pvFormula.trim().isEmpty()) {
 			setStatus(Messages.Probe_statusWaitingForPV);
@@ -514,14 +471,7 @@ public class PVManagerProbe extends ViewPart {
 							valueBox.changeValue(obj);
 						}
 					})
-					.writeListener(new PVWriterListener<Object>() {
-						@Override
-						public void pvChanged(PVWriterEvent<Object> event) {
-							Exception lastException = event.getPvWriter()
-									.lastWriteException();
-							setReadOnly(!event.getPvWriter().isWriteConnected());
-						}
-					}).notifyOn(swtThread(this))
+					.notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
 			changeValueBox.setPV(pv);
 			// Show the PV name as the title
@@ -566,7 +516,7 @@ public class PVManagerProbe extends ViewPart {
 
 	private Exception lastError = null;
 	private ValueBox valueBox;
-	private Composite composite_1;
+	private Composite statusBarPanel;
 
 	/**
 	 * Displays the last error in the status.
@@ -615,6 +565,7 @@ public class PVManagerProbe extends ViewPart {
 	
 	private Action showHideAction;
 	private ChangeValueBox changeValueBox;
+	private Composite composite_1;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -700,15 +651,6 @@ public class PVManagerProbe extends ViewPart {
 					display.getUpperDisplayLimit(), 1);
 			meter.setValue(value);
 		}
-	}
-
-	public void setReadOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-		newValueField.setEditable(!readOnly);
-	}
-
-	public boolean isReadOnly() {
-		return readOnly;
 	}
 
 	/**
