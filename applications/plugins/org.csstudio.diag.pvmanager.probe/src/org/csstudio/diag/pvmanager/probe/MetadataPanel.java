@@ -8,15 +8,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.util.NumberFormats;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
 import org.epics.vtype.Enum;
-import org.epics.vtype.SimpleValueFormat;
-import org.epics.vtype.Time;
-import org.epics.vtype.ValueFormat;
 import org.epics.vtype.ValueUtil;
 
 /**
@@ -46,6 +39,23 @@ public class MetadataPanel extends Composite {
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		setLayout(gridLayout);
+		
+		typeSection = new Composite(this, SWT.NONE);
+		typeSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridLayout gl_typeSection = new GridLayout(2, false);
+		gl_typeSection.marginHeight = 0;
+		gl_typeSection.marginBottom = 5;
+		gl_typeSection.marginWidth = 0;
+		typeSection.setLayout(gl_typeSection);
+		
+		typeLabel = new Label(typeSection, SWT.NONE);
+		typeLabel.setText("Type:");
+		typeLabel.setBounds(0, 0, 45, 20);
+		
+		typeField = new Text(typeSection, SWT.BORDER);
+		typeField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		typeField.setEditable(false);
+		typeField.setBounds(0, 0, 390, 26);
 		
 		labelsSection = new Composite(this, SWT.NONE);
 		labelsSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -111,10 +121,14 @@ public class MetadataPanel extends Composite {
 	private Text controlLimitsField;
 	private Label unitLabel;
 	private Text unitField;
+	private Composite typeSection;
+	private Label typeLabel;
+	private Text typeField;
 	
 	public void changeValue(Object value) {
 		needsDoLayout = false;
 		
+		setType(value);
 		setDisplay(ValueUtil.displayOf(value));
 		
 		if (value instanceof Enum) {
@@ -125,6 +139,18 @@ public class MetadataPanel extends Composite {
 		
 		if (needsDoLayout) {
 			this.getParent().layout();
+		}
+	}
+	
+	private void setType(Object obj) {
+		if (obj != null) {
+			Class type = ValueUtil.typeOf(obj);
+			if (type == null) {
+				type = obj.getClass();
+			}
+			typeField.setText(type.getSimpleName());
+		} else {
+			typeField.setText("");
 		}
 	}
 	
