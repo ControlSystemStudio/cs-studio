@@ -62,6 +62,7 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
@@ -202,6 +203,9 @@ public class PVManagerProbe extends ViewPart {
 		
 		metadataPanel = new MetadataPanel(mainSection, SWT.BORDER);
 		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		detailsPanel = new DetailsPanel(mainSection, SWT.BORDER);
+		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				
 						infoButton = new Button(topBox, SWT.PUSH);
 						infoButton.setText(Messages.Probe_infoTitle);
@@ -441,6 +445,7 @@ public class PVManagerProbe extends ViewPart {
 		valuePanel.changeValue(null);
 		changeValuePanel.setPV(null);
 		metadataPanel.changeValue(null);
+		detailsPanel.changeValue(null, null);
 		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
@@ -457,8 +462,9 @@ public class PVManagerProbe extends ViewPart {
 
 		if (pvFormula != null) {
 			setStatus(Messages.Probe_statusSearching);
+			DesiredRateReadWriteExpression<?, Object> expression = formula(pvFormula);
 			pv = PVManager
-					.readAndWrite(formula(pvFormula))
+					.readAndWrite(expression)
 					.timeout(ofMillis(5000),
 							"No connection after 5s. Still trying...")
 					.readListener(new PVReaderListener<Object>() {
@@ -483,6 +489,7 @@ public class PVManagerProbe extends ViewPart {
 			changeValuePanel.setPV(pv);
 			// Show the PV name as the title
 			setPartName(pvFormula);
+			detailsPanel.changeValue(expression, pvFormula);
 		}
 
 	}
@@ -574,6 +581,7 @@ public class PVManagerProbe extends ViewPart {
 	private ChangeValuePanel changeValuePanel;
 	private Composite statusBar;
 	private MetadataPanel metadataPanel;
+	private DetailsPanel detailsPanel;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -597,6 +605,9 @@ public class PVManagerProbe extends ViewPart {
 			MenuItem metadataMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, metadataPanel);
 			metadataMenuItem.setText("Metadata");
 			metadataMenuItem.setSelection(true);
+			MenuItem detailsMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, detailsPanel);
+			detailsMenuItem.setText("Details");
+			detailsMenuItem.setSelection(true);
 			
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override

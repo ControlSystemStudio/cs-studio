@@ -13,7 +13,7 @@ import org.epics.vtype.Enum;
 import org.epics.vtype.ValueUtil;
 
 /**
- * Probe panel that allows to show the value.
+ * Probe panel that allows to show the metadata of thevalue.
  * 
  * @author carcassi
  *
@@ -144,7 +144,7 @@ public class MetadataPanel extends Composite {
 	
 	private void setType(Object obj) {
 		if (obj != null) {
-			Class type = ValueUtil.typeOf(obj);
+			Class<?> type = ValueUtil.typeOf(obj);
 			if (type == null) {
 				type = obj.getClass();
 			}
