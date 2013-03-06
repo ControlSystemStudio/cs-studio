@@ -40,10 +40,8 @@ public class MetadataPanel extends Composite {
 	private Label alarmLimitsLabel;
 	private Label labelsLabel;
 	private Label warningLimitsLabel;
-	private Composite displayLimitsSection;
-	private Composite alarmLimitsSection;
+	private Composite displaySection;
 	private Composite labelsSection;
-	private Composite warningLimitsSection;
 
 	/**
 	 * Create the composite.
@@ -72,48 +70,32 @@ public class MetadataPanel extends Composite {
 		labelsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		labelsField.setEditable(false);
 		
-		displayLimitsSection = new Composite(this, SWT.NONE);
-		GridLayout gl_displayLimitsSection = new GridLayout(2, false);
-		gl_displayLimitsSection.marginBottom = 5;
-		gl_displayLimitsSection.marginWidth = 0;
-		gl_displayLimitsSection.marginHeight = 0;
-		displayLimitsSection.setLayout(gl_displayLimitsSection);
-		displayLimitsSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		displaySection = new Composite(this, SWT.NONE);
+		GridLayout gl_displaySection = new GridLayout(2, false);
+		gl_displaySection.marginBottom = 5;
+		gl_displaySection.marginWidth = 0;
+		gl_displaySection.marginHeight = 0;
+		displaySection.setLayout(gl_displaySection);
+		displaySection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		displayLimitsLabel = new Label(displayLimitsSection, SWT.NONE);
+		displayLimitsLabel = new Label(displaySection, SWT.NONE);
 		displayLimitsLabel.setText("Display limits:");
 		
-		displayLimitsField = new Text(displayLimitsSection, SWT.BORDER);
+		displayLimitsField = new Text(displaySection, SWT.BORDER);
 		displayLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		displayLimitsField.setEditable(false);
 		
-		alarmLimitsSection = new Composite(this, SWT.NONE);
-		alarmLimitsSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		GridLayout gl_alarmLimitsSection = new GridLayout(2, false);
-		gl_alarmLimitsSection.marginBottom = 5;
-		gl_alarmLimitsSection.marginWidth = 0;
-		gl_alarmLimitsSection.marginHeight = 0;
-		alarmLimitsSection.setLayout(gl_alarmLimitsSection);
-		
-		alarmLimitsLabel = new Label(alarmLimitsSection, SWT.NONE);
+		alarmLimitsLabel = new Label(displaySection, SWT.NONE);
 		alarmLimitsLabel.setText("Alarm limits:");
 		
-		alarmLimitsField = new Text(alarmLimitsSection, SWT.BORDER);
+		alarmLimitsField = new Text(displaySection, SWT.BORDER);
 		alarmLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		alarmLimitsField.setEditable(false);
 		
-		warningLimitsSection = new Composite(this, SWT.NONE);
-		GridLayout gl_warningLimitsSection = new GridLayout(2, false);
-		gl_warningLimitsSection.marginBottom = 5;
-		gl_warningLimitsSection.marginHeight = 0;
-		gl_warningLimitsSection.marginWidth = 0;
-		warningLimitsSection.setLayout(gl_warningLimitsSection);
-		warningLimitsSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		warningLimitsLabel = new Label(warningLimitsSection, SWT.NONE);
+		warningLimitsLabel = new Label(displaySection, SWT.NONE);
 		warningLimitsLabel.setText("Warning limits:");
 		
-		warningLimitsField = new Text(warningLimitsSection, SWT.BORDER);
+		warningLimitsField = new Text(displaySection, SWT.BORDER);
 		warningLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		warningLimitsField.setEditable(false);
 
@@ -156,16 +138,12 @@ public class MetadataPanel extends Composite {
 			displayLimitsField.setText(format.format(display.getLowerDisplayLimit()) + " - " + format.format(display.getUpperDisplayLimit()));
 			alarmLimitsField.setText(format.format(display.getLowerAlarmLimit()) + " - " + format.format(display.getUpperAlarmLimit()));
 			warningLimitsField.setText(format.format(display.getLowerWarningLimit()) + " - " + format.format(display.getUpperWarningLimit()));
-			showSection(displayLimitsSection);
-			showSection(alarmLimitsSection);
-			showSection(warningLimitsSection);
+			showSection(displaySection);
 		} else {
 			displayLimitsField.setText(""); //$NON-NLS-1$
 			alarmLimitsField.setText(""); //$NON-NLS-1$
 			warningLimitsField.setText(""); //$NON-NLS-1$
-			hideSection(displayLimitsSection);
-			hideSection(alarmLimitsSection);
-			hideSection(warningLimitsSection);
+			hideSection(displaySection);
 		}
 	}
 	
