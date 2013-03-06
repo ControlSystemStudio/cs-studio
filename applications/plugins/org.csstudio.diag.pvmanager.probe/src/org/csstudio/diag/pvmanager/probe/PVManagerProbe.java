@@ -160,6 +160,7 @@ public class PVManagerProbe extends ViewPart {
 		topBox.setLayout(gl_topBox);
 
 		errorBar = new ErrorBar(parent, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		errorBar.setMarginRight(5);
 		errorBar.setMarginLeft(5);
 		errorBar.setMarginBottom(5);
