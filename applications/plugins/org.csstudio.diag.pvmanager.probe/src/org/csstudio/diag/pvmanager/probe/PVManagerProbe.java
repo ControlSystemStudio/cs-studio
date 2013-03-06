@@ -215,6 +215,9 @@ public class PVManagerProbe extends ViewPart {
 		
 		valueBox = new ValueBox(bottomBox, SWT.BORDER);
 		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		
+		changeValueBox = new ChangeValueBox(bottomBox, SWT.NONE);
+		changeValueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 		// New Row
 		newValueLabel = new Label(bottomBox, 0);
@@ -470,6 +473,7 @@ public class PVManagerProbe extends ViewPart {
 		if (pv != null) {
 			pv.close();
 			pv = null;
+			changeValueBox.setPV(null);
 		}
 
 		valueBox.changeValue(null);
@@ -519,6 +523,7 @@ public class PVManagerProbe extends ViewPart {
 						}
 					}).notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
+			changeValueBox.setPV(pv);
 			// Show the PV name as the title
 			setPartName(pvFormula);
 		}
@@ -609,6 +614,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 	
 	private Action showHideAction;
+	private ChangeValueBox changeValueBox;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -623,6 +629,12 @@ public class PVManagerProbe extends ViewPart {
 			final Menu sectionsMenu = new Menu(topBox);
 			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meter);
 			meterMenuItem.setText("Meter");
+			MenuItem valueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, valueBox);
+			valueMenuItem.setText("Value");
+			valueMenuItem.setSelection(true);
+			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValueBox);
+			changeValueMenuItem.setText("Change value");
+			changeValueMenuItem.setSelection(true);
 			
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override
