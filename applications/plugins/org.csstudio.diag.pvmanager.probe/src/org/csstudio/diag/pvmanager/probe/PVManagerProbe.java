@@ -97,23 +97,13 @@ public class PVManagerProbe extends ViewPart {
 	private MeterWidget meterPanel;
 	private Composite topBox;
 	private Composite mainSection;
-	private Button infoButton;
 	private GridLayout gl_topBox;
-
-	private boolean readOnly = true;
 
 	/** Currently displayed formula */
 	private String pvFormula;
 
 	/** Currently connected formula */
 	private PV<?, Object> pv;
-
-	/** Formatting used for the value text field */
-	private ValueFormat valueFormat = new SimpleValueFormat(3);
-
-	/** Formatting used for the time text field */
-	private TimestampFormat timeFormat = new TimestampFormat(
-			"yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
@@ -157,7 +147,6 @@ public class PVManagerProbe extends ViewPart {
 		gl_topBox = new GridLayout();
 		gl_topBox.marginWidth = 0;
 		gl_topBox.marginHeight = 0;
-		gl_topBox.numColumns = 2;
 		topBox.setLayout(gl_topBox);
 
 		errorBar = new ErrorBar(parent, SWT.NONE);
@@ -206,19 +195,6 @@ public class PVManagerProbe extends ViewPart {
 		
 		detailsPanel = new DetailsPanel(mainSection, SWT.BORDER);
 		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-				
-						infoButton = new Button(topBox, SWT.PUSH);
-						infoButton.setText(Messages.Probe_infoTitle);
-						infoButton.setToolTipText(Messages.Probe_infoButtonToolTipText);
-						
-								// Connect actions
-						
-								infoButton.addSelectionListener(new SelectionAdapter() {
-									@Override
-									public void widgetSelected(final SelectionEvent ev) {
-										showInfo();
-									}
-								});
 		
 		statusBarPanel = new Composite(parent, SWT.NONE);
 		GridLayout gl_statusBarPanel = new GridLayout(1, false);
@@ -246,7 +222,7 @@ public class PVManagerProbe extends ViewPart {
 																statusField.setSize(326, 22);
 																statusField.setText(Messages.Probe_statusWaitingForPV);
 		
-		showMeter(false);		
+		ShowHideForGridLayout.hide(meterPanel);
 		createActions();
 		initializeToolBar();
 
@@ -257,163 +233,12 @@ public class PVManagerProbe extends ViewPart {
 			final String show = memento.getString(METER_TAG);
 			if ((show != null) && show.equals("false")) //$NON-NLS-1$
 			{
-				showMeter(false);
+				ShowHideForGridLayout.hide(meterPanel);
 			}
 		} else {
 			setPVFormula(null);
 		}
 		parent.layout();
-	}
-	
-	private void hideSection(Composite section) {
-		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != 0) {
-			data.heightHint = 0;
-		}
-	}
-	
-	private void showSection(Composite section) {
-		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != -1) {
-			data.heightHint = -1;
-		}
-	}
-
-	protected void showMeter(final boolean show) {
-		if (show) {
-			showSection(meterPanel);
-		} else {
-			hideSection(meterPanel);
-		}
-		meterPanel.getParent().layout();
-//		if (show) { // Meter about to become visible
-//			// Attach bottom box to bottom of screen,
-//			// and meter stretches between top and bottom box.
-//			final FormData fd = new FormData();
-//			fd.left = new FormAttachment(0, 0);
-//			fd.right = new FormAttachment(100, 0);
-//			fd.bottom = new FormAttachment(100, 0);
-//			bottomBox.setLayoutData(fd);
-//		} else { // Meter about to be hidden.
-//			// Attach bottom box to top box.
-//			final FormData fd = new FormData();
-//			fd.left = new FormAttachment(0, 0);
-//			fd.top = new FormAttachment(topBox);
-//			fd.right = new FormAttachment(100, 0);
-//			bottomBox.setLayoutData(fd);
-//		}
-//		meter.setVisible(show);
-//		meter.getShell().layout(true, true);
-	}
-
-	private String pvNameWithDataSource() {
-		DataSource defaultDS = PVManager.getDefaultDataSource();
-		String pvName = pvFormula;
-		if (defaultDS instanceof CompositeDataSource) {
-			CompositeDataSource composite = (CompositeDataSource) defaultDS;
-			if (!pvName.contains(composite.getDelimiter())) {
-				pvName = composite.getDefaultDataSource()
-						+ composite.getDelimiter() + pvName;
-			}
-		}
-
-		return pvName;
-	}
-
-	protected void showInfo() {
-		final String nl = "\n"; //$NON-NLS-1$
-		final String space = " "; //$NON-NLS-1$
-		final String indent = "  "; //$NON-NLS-1$
-
-		final StringBuilder info = new StringBuilder();
-		if (pv == null) {
-			info.append(Messages.Probe_infoStateNotConnected).append(nl);
-		} else {
-			Object value = pv.getValue();
-			Alarm alarm = ValueUtil.alarmOf(value);
-			Display display = ValueUtil.displayOf(value);
-			Class<?> type = ValueUtil.typeOf(value);
-			ChannelHandler handler = PVManager.getDefaultDataSource()
-					.getChannels().get(pvNameWithDataSource());
-
-			if (handler != null) {
-				SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(
-						handler.getProperties());
-				if (!sortedProperties.isEmpty()) {
-					info.append("Channel details:").append(nl);
-					for (Map.Entry<String, Object> entry : sortedProperties
-							.entrySet()) {
-						info.append(indent).append(entry.getKey())
-								.append(" = ").append(entry.getValue())
-								.append(nl);
-					}
-				}
-			}
-
-			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
-			if (pv.getValue() == null) {
-				info.append(Messages.Probe_infoStateDisconnected).append(nl);
-			} else {
-				if (alarm != null
-						&& AlarmSeverity.UNDEFINED.equals(alarm
-								.getAlarmSeverity())) {
-					info.append(Messages.Probe_infoStateDisconnected)
-							.append(nl);
-				} else {
-					info.append(Messages.Probe_infoStateConnected).append(nl);
-				}
-			}
-
-			if (type != null) {
-				info.append(Messages.Probe_infoDataType).append(space)
-						.append(type.getSimpleName()).append(nl);
-			}
-
-			if (display != null) {
-				info.append(Messages.Probe_infoNumericDisplay).append(nl)
-						.append(indent)
-						.append(Messages.Probe_infoLowDisplayLimit)
-						.append(space).append(display.getLowerDisplayLimit())
-						.append(nl).append(indent)
-						.append(Messages.Probe_infoLowAlarmLimit).append(space)
-						.append(display.getLowerAlarmLimit()).append(nl)
-						.append(indent).append(Messages.Probe_infoLowWarnLimit)
-						.append(space).append(display.getLowerWarningLimit())
-						.append(nl).append(indent)
-						.append(Messages.Probe_infoHighWarnLimit).append(space)
-						.append(display.getUpperWarningLimit()).append(nl)
-						.append(indent)
-						.append(Messages.Probe_infoHighAlarmLimit)
-						.append(space).append(display.getUpperAlarmLimit())
-						.append(nl).append(indent)
-						.append(Messages.Probe_infoHighDisplayLimit)
-						.append(space).append(display.getUpperDisplayLimit())
-						.append(nl);
-			}
-
-			if (value instanceof org.epics.vtype.Enum) {
-				Enum enumValue = (Enum) value;
-				info.append(Messages.Probe_infoEnumMetadata).append(space)
-						.append(enumValue.getLabels().size()).append(space)
-						.append(Messages.Probe_infoLabels).append(nl);
-				for (String label : enumValue.getLabels()) {
-					info.append(indent).append(label).append(nl);
-				}
-			}
-
-		}
-		if (info.length() == 0) {
-			info.append(Messages.Probe_infoNoInfoAvailable);
-		}
-		final MessageBox box = new MessageBox(valuePanel.getShell(),
-				SWT.ICON_INFORMATION);
-		if (pv == null) {
-			box.setText(Messages.Probe_infoTitle);
-		} else {
-			box.setText(Messages.Probe_infoChannelInformationFor + pv.getName());
-		}
-		box.setMessage(info.toString());
-		box.open();
 	}
 
 	/**
@@ -446,7 +271,6 @@ public class PVManagerProbe extends ViewPart {
 		changeValuePanel.setPV(null);
 		metadataPanel.changeValue(null);
 		detailsPanel.changeValue(null, null);
-		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
 		// If name is blank, update status to waiting and quit
@@ -472,7 +296,6 @@ public class PVManagerProbe extends ViewPart {
 						public void pvChanged(PVReaderEvent<Object> event) {
 							Object value = event.getPvReader().getValue();
 							setLastError(event.getPvReader().lastException());
-							setTime(ValueUtil.timeOf(value));
 							setMeter(ValueUtil.numericValueOf(value),
 									ValueUtil.displayOf(value));
 							if (event.getPvReader().isConnected()) {
@@ -493,15 +316,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 	}
-
-	/**
-	 * Returns the currently displayed PV.
-	 * 
-	 * @return pv name or null
-	 */
-	// public ProcessVariable getPVName() {
-	// return this.PVName;
-	// }
 
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -545,36 +359,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 		errorBar.setException(ex);
 		lastError = ex;
-	}
-
-	/**
-	 * Displays the new alarm.
-	 * 
-	 * @param alarm
-	 *            a new alarm
-	 */
-	private String alarmToString(Alarm alarm) {
-		if (alarm == null
-				|| alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
-			return ""; //$NON-NLS-1$
-		} else {
-			return "[" + alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
-					+ alarm.getAlarmName() + "]";
-		}
-	}
-
-	/**
-	 * Displays the new time.
-	 * 
-	 * @param time
-	 *            a new time
-	 */
-	private void setTime(Time time) {
-//		if (time == null) {
-//			timestampField.setText(""); //$NON-NLS-1$
-//		} else {
-//			timestampField.setText(timeFormat.format(time.getTimestamp()));
-//		}
 	}
 	
 	private Action showHideAction;
