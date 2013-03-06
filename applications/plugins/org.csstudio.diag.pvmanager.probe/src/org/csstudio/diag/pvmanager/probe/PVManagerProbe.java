@@ -93,9 +93,9 @@ public class PVManagerProbe extends ViewPart {
 	private Label statusField;
 	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
-	private MeterWidget meter;
+	private MeterWidget meterPanel;
 	private Composite topBox;
-	private Composite bottomBox;
+	private Composite mainSection;
 	private Button infoButton;
 	private GridLayout gl_topBox;
 
@@ -152,7 +152,7 @@ public class PVManagerProbe extends ViewPart {
 
 		topBox = new Composite(parent, 0);
 		topBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		GridLayout gl_bottomBox;
+		GridLayout gl_mainSection;
 		gl_topBox = new GridLayout();
 		gl_topBox.marginWidth = 0;
 		gl_topBox.marginHeight = 0;
@@ -183,22 +183,22 @@ public class PVManagerProbe extends ViewPart {
 		pvFomulaInputBar.setLayoutData(gd);
 
 		// Button Box
-		bottomBox = new Composite(parent, 0);
-		bottomBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		gl_bottomBox = new GridLayout();
-		gl_bottomBox.numColumns = 3;
-		bottomBox.setLayout(gl_bottomBox);
+		mainSection = new Composite(parent, 0);
+		mainSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		gl_mainSection = new GridLayout();
+		gl_mainSection.numColumns = 3;
+		mainSection.setLayout(gl_mainSection);
 		
 				// New Box with only the meter
-				meter = new MeterWidget(bottomBox, 0);
-				meter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-				meter.setEnabled(false);
+				meterPanel = new MeterWidget(mainSection, 0);
+				meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+				meterPanel.setEnabled(false);
 		
-		valueBox = new ValueBox(bottomBox, SWT.BORDER);
-		valueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		valuePanel = new ValueBox(mainSection, SWT.BORDER);
+		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
-		changeValueBox = new ChangeValueBox(bottomBox, SWT.BORDER);
-		changeValueBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		changeValuePanel = new ChangeValueBox(mainSection, SWT.BORDER);
+		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 				
 						infoButton = new Button(topBox, SWT.PUSH);
 						infoButton.setText(Messages.Probe_infoTitle);
@@ -226,15 +226,15 @@ public class PVManagerProbe extends ViewPart {
 						label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 						label.setSize(64, 2);
 												
-												composite_1 = new Composite(statusBarPanel, SWT.NONE);
-												composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-												composite_1.setLayout(new GridLayout(2, false));
+												statusBar = new Composite(statusBarPanel, SWT.NONE);
+												statusBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+												statusBar.setLayout(new GridLayout(2, false));
 												
-														statusLabel = new Label(composite_1, 0);
+														statusLabel = new Label(statusBar, 0);
 														statusLabel.setSize(43, 20);
 														statusLabel.setText(Messages.Probe_statusLabelText);
 														
-																statusField = new Label(composite_1, SWT.BORDER);
+																statusField = new Label(statusBar, SWT.BORDER);
 																statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 																statusField.setSize(326, 22);
 																statusField.setText(Messages.Probe_statusWaitingForPV);
@@ -272,11 +272,11 @@ public class PVManagerProbe extends ViewPart {
 
 	protected void showMeter(final boolean show) {
 		if (show) {
-			showSection(meter);
+			showSection(meterPanel);
 		} else {
-			hideSection(meter);
+			hideSection(meterPanel);
 		}
-		meter.getParent().layout();
+		meterPanel.getParent().layout();
 //		if (show) { // Meter about to become visible
 //			// Attach bottom box to bottom of screen,
 //			// and meter stretches between top and bottom box.
@@ -396,7 +396,7 @@ public class PVManagerProbe extends ViewPart {
 		if (info.length() == 0) {
 			info.append(Messages.Probe_infoNoInfoAvailable);
 		}
-		final MessageBox box = new MessageBox(valueBox.getShell(),
+		final MessageBox box = new MessageBox(valuePanel.getShell(),
 				SWT.ICON_INFORMATION);
 		if (pv == null) {
 			box.setText(Messages.Probe_infoTitle);
@@ -431,10 +431,10 @@ public class PVManagerProbe extends ViewPart {
 		if (pv != null) {
 			pv.close();
 			pv = null;
-			changeValueBox.setPV(null);
+			changeValuePanel.setPV(null);
 		}
 
-		valueBox.changeValue(null);
+		valuePanel.changeValue(null);
 		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
@@ -468,12 +468,12 @@ public class PVManagerProbe extends ViewPart {
 							} else {
 								setStatus(Messages.Probe_statusSearching);
 							}
-							valueBox.changeValue(obj);
+							valuePanel.changeValue(obj);
 						}
 					})
 					.notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
-			changeValueBox.setPV(pv);
+			changeValuePanel.setPV(pv);
 			// Show the PV name as the title
 			setPartName(pvFormula);
 		}
@@ -515,7 +515,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	private Exception lastError = null;
-	private ValueBox valueBox;
+	private ValueBox valuePanel;
 	private Composite statusBarPanel;
 
 	/**
@@ -564,8 +564,8 @@ public class PVManagerProbe extends ViewPart {
 	}
 	
 	private Action showHideAction;
-	private ChangeValueBox changeValueBox;
-	private Composite composite_1;
+	private ChangeValueBox changeValuePanel;
+	private Composite statusBar;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -578,12 +578,12 @@ public class PVManagerProbe extends ViewPart {
 			// Drop down menu to select what to show
 			// First selection for All and then each datasource in alphabetical order
 			final Menu sectionsMenu = new Menu(topBox);
-			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meter);
+			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meterPanel);
 			meterMenuItem.setText("Meter");
-			MenuItem valueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, valueBox);
+			MenuItem valueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, valuePanel);
 			valueMenuItem.setText("Value");
 			valueMenuItem.setSelection(true);
-			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValueBox);
+			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValuePanel);
 			changeValueMenuItem.setText("Change value");
 			changeValueMenuItem.setSelection(true);
 			
@@ -635,21 +635,21 @@ public class PVManagerProbe extends ViewPart {
 	private void setMeter(Double value, Display display) {
 		if (value == null || display == null
 				|| !ValueUtil.displayHasValidDisplayLimits(display)) {
-			meter.setEnabled(false);
+			meterPanel.setEnabled(false);
 			// meter.setValue(0.0);
 		} else if (display.getUpperDisplayLimit() <= display
 				.getLowerDisplayLimit()) {
-			meter.setEnabled(false);
+			meterPanel.setEnabled(false);
 			// meter.setValue(0.0);
 		} else {
-			meter.setEnabled(true);
-			meter.setLimits(display.getLowerDisplayLimit(),
+			meterPanel.setEnabled(true);
+			meterPanel.setLimits(display.getLowerDisplayLimit(),
 					display.getLowerAlarmLimit(),
 					display.getLowerWarningLimit(),
 					display.getUpperWarningLimit(),
 					display.getUpperAlarmLimit(),
 					display.getUpperDisplayLimit(), 1);
-			meter.setValue(value);
+			meterPanel.setValue(value);
 		}
 	}
 
