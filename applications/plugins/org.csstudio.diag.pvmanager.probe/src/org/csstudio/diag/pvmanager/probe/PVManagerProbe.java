@@ -184,22 +184,21 @@ public class PVManagerProbe extends ViewPart {
 		pvFomulaInputBar.setLayoutData(gd);
 
 		// Button Box
-		mainSection = new Composite(parent, 0);
+		mainSection = new Composite(parent, SWT.NONE);
 		mainSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		gl_mainSection = new GridLayout();
-		gl_mainSection.numColumns = 3;
 		mainSection.setLayout(gl_mainSection);
 		
 				// New Box with only the meter
 				meterPanel = new MeterWidget(mainSection, 0);
-				meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+				meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 				meterPanel.setEnabled(false);
 		
 		valuePanel = new ValuePanel(mainSection, SWT.BORDER);
-		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		changeValuePanel = new ChangeValuePanel(mainSection, SWT.BORDER);
-		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				
 						infoButton = new Button(topBox, SWT.PUSH);
 						infoButton.setText(Messages.Probe_infoTitle);
