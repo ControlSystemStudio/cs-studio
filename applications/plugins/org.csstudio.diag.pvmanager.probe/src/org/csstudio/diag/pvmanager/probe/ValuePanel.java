@@ -1,11 +1,10 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.Alarm;
@@ -15,11 +14,13 @@ import org.epics.vtype.SimpleValueFormat;
 import org.epics.vtype.Time;
 import org.epics.vtype.ValueFormat;
 import org.epics.vtype.ValueUtil;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
+/**
+ * Probe panel that allows to show the value.
+ * 
+ * @author carcassi
+ *
+ */
 public class ValuePanel extends Composite {
 	
 	// TODO: we should take these from a default place
