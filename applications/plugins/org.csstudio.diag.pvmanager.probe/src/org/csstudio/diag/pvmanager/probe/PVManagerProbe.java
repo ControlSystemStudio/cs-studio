@@ -194,10 +194,10 @@ public class PVManagerProbe extends ViewPart {
 				meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
 				meterPanel.setEnabled(false);
 		
-		valuePanel = new ValueBox(mainSection, SWT.BORDER);
+		valuePanel = new ValuePanel(mainSection, SWT.BORDER);
 		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
-		changeValuePanel = new ChangeValueBox(mainSection, SWT.BORDER);
+		changeValuePanel = new ChangeValuePanel(mainSection, SWT.BORDER);
 		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 				
 						infoButton = new Button(topBox, SWT.PUSH);
@@ -515,7 +515,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	private Exception lastError = null;
-	private ValueBox valuePanel;
+	private ValuePanel valuePanel;
 	private Composite statusBarPanel;
 
 	/**
@@ -564,7 +564,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 	
 	private Action showHideAction;
-	private ChangeValueBox changeValuePanel;
+	private ChangeValuePanel changeValuePanel;
 	private Composite statusBar;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()

@@ -20,7 +20,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 
-public class ValueBox extends Composite {
+public class ValuePanel extends Composite {
 	
 	// TODO: we should take these from a default place
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
@@ -45,7 +45,7 @@ public class ValueBox extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public ValueBox(Composite parent, int style) {
+	public ValuePanel(Composite parent, int style) {
 		super(parent, style);
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 0;
