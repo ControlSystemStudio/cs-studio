@@ -12,8 +12,10 @@ public class ShowHideForGridLayout {
 	
 	public static boolean hide(Composite section) {
 		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != 0) {
+		if (data.exclude == false || data.heightHint != 0 || section.getVisible()) {
 			data.heightHint = 0;
+			data.exclude = true;
+			section.setVisible(false);
 			return true;
 		}
 		return false;
@@ -21,8 +23,10 @@ public class ShowHideForGridLayout {
 	
 	public static boolean show(Composite section) {
 		GridData data = (GridData) section.getLayoutData();
-		if (data.heightHint != -1) {
+		if (data.exclude == true || data.heightHint != -1 || !section.getVisible()) {
 			data.heightHint = -1;
+			data.exclude = false;
+			section.setVisible(true);
 			return true;
 		}
 		return false;
@@ -38,6 +42,7 @@ public class ShowHideForGridLayout {
 				} else {
 					hide(composite);
 				}
+				composite.layout();
 				composite.getParent().layout();
 			}
 		});
