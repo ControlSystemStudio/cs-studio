@@ -199,6 +199,9 @@ public class PVManagerProbe extends ViewPart {
 		
 		changeValuePanel = new ChangeValuePanel(mainSection, SWT.BORDER);
 		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		metadataPanel = new MetadataPanel(mainSection, SWT.BORDER);
+		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				
 						infoButton = new Button(topBox, SWT.PUSH);
 						infoButton.setText(Messages.Probe_infoTitle);
@@ -431,10 +434,11 @@ public class PVManagerProbe extends ViewPart {
 		if (pv != null) {
 			pv.close();
 			pv = null;
-			changeValuePanel.setPV(null);
 		}
 
 		valuePanel.changeValue(null);
+		changeValuePanel.setPV(null);
+		metadataPanel.changeValue(null);
 		setTime(null);
 		setMeter(null, null);
 		setLastError(null);
@@ -458,17 +462,18 @@ public class PVManagerProbe extends ViewPart {
 					.readListener(new PVReaderListener<Object>() {
 						@Override
 						public void pvChanged(PVReaderEvent<Object> event) {
-							Object obj = event.getPvReader().getValue();
+							Object value = event.getPvReader().getValue();
 							setLastError(event.getPvReader().lastException());
-							setTime(ValueUtil.timeOf(obj));
-							setMeter(ValueUtil.numericValueOf(obj),
-									ValueUtil.displayOf(obj));
+							setTime(ValueUtil.timeOf(value));
+							setMeter(ValueUtil.numericValueOf(value),
+									ValueUtil.displayOf(value));
 							if (event.getPvReader().isConnected()) {
 								setStatus(Messages.Probe_statusConnected);
 							} else {
 								setStatus(Messages.Probe_statusSearching);
 							}
-							valuePanel.changeValue(obj);
+							valuePanel.changeValue(value);
+							metadataPanel.changeValue(value);
 						}
 					})
 					.notifyOn(swtThread(this))
@@ -566,6 +571,7 @@ public class PVManagerProbe extends ViewPart {
 	private Action showHideAction;
 	private ChangeValuePanel changeValuePanel;
 	private Composite statusBar;
+	private MetadataPanel metadataPanel;
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -586,6 +592,9 @@ public class PVManagerProbe extends ViewPart {
 			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValuePanel);
 			changeValueMenuItem.setText("Change value");
 			changeValueMenuItem.setSelection(true);
+			MenuItem metadataMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, metadataPanel);
+			metadataMenuItem.setText("Metadata");
+			metadataMenuItem.setSelection(true);
 			
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override

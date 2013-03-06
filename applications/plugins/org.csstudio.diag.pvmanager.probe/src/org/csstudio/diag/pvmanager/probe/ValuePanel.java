@@ -89,7 +89,6 @@ public class ValuePanel extends Composite {
 		gl_labelsSection.marginBottom = 5;
 		gl_labelsSection.marginWidth = 0;
 		gl_labelsSection.marginHeight = 0;
-		gl_labelsSection.horizontalSpacing = 0;
 		labelsSection.setLayout(gl_labelsSection);
 		
 		labelsLabel = new Label(labelsSection, SWT.NONE);
