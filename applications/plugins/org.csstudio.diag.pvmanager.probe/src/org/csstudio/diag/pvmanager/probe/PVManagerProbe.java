@@ -255,6 +255,8 @@ public class PVManagerProbe extends ViewPart {
 			{
 				showMeter(false);
 			}
+		} else {
+			setPVFormula(null);
 		}
 		parent.layout();
 	}

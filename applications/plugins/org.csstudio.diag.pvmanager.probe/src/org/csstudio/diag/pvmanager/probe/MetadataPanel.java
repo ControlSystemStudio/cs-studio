@@ -27,19 +27,11 @@ import org.epics.vtype.ValueUtil;
  */
 public class MetadataPanel extends Composite {
 	
-	// TODO: we should take these from a default place
-	private ValueFormat valueFormat = new SimpleValueFormat(3);
-	private TimestampFormat timeFormat = new TimestampFormat(
-			"yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
-	
 	private Text displayLimitsField;
 	private Text alarmLimitsField;
 	private Text labelsField;
 	private Text warningLimitsField;
-	private Label displayLimitsLabel;
-	private Label alarmLimitsLabel;
 	private Label labelsLabel;
-	private Label warningLimitsLabel;
 	private Composite displaySection;
 	private Composite labelsSection;
 
@@ -78,30 +70,47 @@ public class MetadataPanel extends Composite {
 		displaySection.setLayout(gl_displaySection);
 		displaySection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		displayLimitsLabel = new Label(displaySection, SWT.NONE);
+		Label displayLimitsLabel = new Label(displaySection, SWT.NONE);
 		displayLimitsLabel.setText("Display limits:");
 		
 		displayLimitsField = new Text(displaySection, SWT.BORDER);
 		displayLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		displayLimitsField.setEditable(false);
 		
-		alarmLimitsLabel = new Label(displaySection, SWT.NONE);
+		Label alarmLimitsLabel = new Label(displaySection, SWT.NONE);
 		alarmLimitsLabel.setText("Alarm limits:");
 		
 		alarmLimitsField = new Text(displaySection, SWT.BORDER);
 		alarmLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		alarmLimitsField.setEditable(false);
 		
-		warningLimitsLabel = new Label(displaySection, SWT.NONE);
+		Label warningLimitsLabel = new Label(displaySection, SWT.NONE);
 		warningLimitsLabel.setText("Warning limits:");
 		
 		warningLimitsField = new Text(displaySection, SWT.BORDER);
 		warningLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		warningLimitsField.setEditable(false);
+		
+		Label controlLimitsLabel = new Label(displaySection, SWT.NONE);
+		controlLimitsLabel.setText("Control limits:");
+		
+		controlLimitsField = new Text(displaySection, SWT.BORDER);
+		controlLimitsField.setEditable(false);
+		controlLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		unitLabel = new Label(displaySection, SWT.NONE);
+		unitLabel.setText("Unit:");
+		
+		unitField = new Text(displaySection, SWT.BORDER);
+		unitField.setEditable(false);
+		unitField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 	}
 	
 	private boolean needsDoLayout;
+	private Text controlLimitsField;
+	private Label unitLabel;
+	private Text unitField;
 	
 	public void changeValue(Object value) {
 		needsDoLayout = false;
@@ -133,16 +142,20 @@ public class MetadataPanel extends Composite {
 		if (display != null) {
 			NumberFormat format = display.getFormat();
 			if (format == null) {
-				ValueUtil.getDefaultNumberFormat();
+				format = ValueUtil.getDefaultNumberFormat();
 			}
 			displayLimitsField.setText(format.format(display.getLowerDisplayLimit()) + " - " + format.format(display.getUpperDisplayLimit()));
 			alarmLimitsField.setText(format.format(display.getLowerAlarmLimit()) + " - " + format.format(display.getUpperAlarmLimit()));
 			warningLimitsField.setText(format.format(display.getLowerWarningLimit()) + " - " + format.format(display.getUpperWarningLimit()));
+			controlLimitsField.setText(format.format(display.getLowerCtrlLimit()) + " - " + format.format(display.getUpperCtrlLimit()));
+			unitField.setText(String.valueOf(display.getUnits()));
 			showSection(displaySection);
 		} else {
 			displayLimitsField.setText(""); //$NON-NLS-1$
 			alarmLimitsField.setText(""); //$NON-NLS-1$
 			warningLimitsField.setText(""); //$NON-NLS-1$
+			controlLimitsField.setText(""); //$NON-NLS-1$
+			unitField.setText(""); //$NON-NLS-1$
 			hideSection(displaySection);
 		}
 	}
@@ -153,36 +166,6 @@ public class MetadataPanel extends Composite {
 	
 	private void showSection(Composite section) {
 		needsDoLayout = ShowHideForGridLayout.show(section) || needsDoLayout;
-	}
-	
-	private void appendAlarm(StringBuilder builder, Alarm alarm) {
-		if (alarm == null || alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
-			return; //$NON-NLS-1$
-		} else {
-			if (builder.length() != 0) {
-				builder.append(' ');
-			}
-			builder.append('[')
-			       .append(alarm.getAlarmSeverity())
-			       .append(" - ")
-			       .append(alarm.getAlarmName())
-			       .append(']');
-		}
-	}
-	
-	private void setValue(Object value) {
-		StringBuilder formattedValue = new StringBuilder();
-		
-		if (value != null) {
-			String valueString = valueFormat.format(value);
-			if (valueString != null) {
-				formattedValue.append(valueString);
-			}
-		}
-		
-		appendAlarm(formattedValue, ValueUtil.alarmOf(value));
-
-		displayLimitsField.setText(formattedValue.toString());
 	}
 
 	@Override
