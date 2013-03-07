@@ -5,30 +5,35 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.pvfields.iter;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+package org.csstudio.pvnames.ui;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+/**
+ * Read preferences
+ * <p>
+ * See preferences.ini for explanation of supported preferences.
+ * 
+ * @author Fred Arnaud (Sopra Group)
+ */
+@SuppressWarnings("nls")
 public class Preferences {
 
-	final public static String PROVIDERS = "providers";
+	final public static String DISPLAY_SIZE = "display_size";
 
 	/**
 	 * @param setting Preference identifier
 	 * @return String from preference system, or <code>null</code>
 	 */
+	@SuppressWarnings("unused")
 	private static String getString(final String setting) {
 		return getString(setting, null);
 	}
 
 	/**
 	 * @param setting Preference identifier
-	 * @param default_value Default value when preferences unavailable
+	 * @param default_value  Default value when preferences unavailable
 	 * @return String from preference system, or <code>null</code>
 	 */
 	private static String getString(final String setting,
@@ -36,20 +41,16 @@ public class Preferences {
 		final IPreferencesService service = Platform.getPreferencesService();
 		if (service == null)
 			return default_value;
-		return service.getString(Activator.ID, setting, default_value, null);
+		return service.getString(Activator.PLUGIN_ID, setting, default_value,
+				null);
 	}
 
-	/** @return providers list */
-	public static List<String> getProviders() {
-		List<String> list = new LinkedList<String>();
-		String providers = getString(PROVIDERS);
-		if (providers != null && !providers.isEmpty()) {
-			StringTokenizer st = new StringTokenizer(providers, ",");
-			while (st.hasMoreTokens()) {
-				list.add(st.nextToken().trim());
-			}
-		}
-		return list;
+	/** @return display list max size */
+	public static int getDisplaySize() {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service == null)
+			return 100; // default
+		return service.getInt(Activator.PLUGIN_ID, DISPLAY_SIZE, 100, null);
 	}
 
 }

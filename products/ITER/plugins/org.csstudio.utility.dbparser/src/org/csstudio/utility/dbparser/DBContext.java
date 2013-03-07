@@ -9,14 +9,14 @@ package org.csstudio.utility.dbparser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.utility.dbparser.data.Record;
+import org.csstudio.pvnames.data.Record;
 import org.eclipse.core.resources.IFile;
 
 /**
@@ -32,7 +32,26 @@ public class DBContext implements Serializable {
 	private Map<String, List<Record>> records;
 
 	public DBContext() {
-		records = new HashMap<String, List<Record>>();
+		records = new TreeMap<String, List<Record>>();
+	}
+	
+	public List<String> findPV(Pattern p, int limit) {
+		List<String> result = new ArrayList<String>();
+		for (String rec : records.keySet()) {
+			Matcher m = p.matcher(rec);
+			if (m.matches()) result.add(rec);
+			if (result.size() >= limit) return result;
+		}
+		return result;
+	}
+	
+	public int countPV(Pattern p) {
+		int count = 0;
+		for (String rec : records.keySet()) {
+			Matcher m = p.matcher(rec);
+			if (m.matches()) count++;
+		}
+		return count;
 	}
 
 	public List<Record> findRecord(String name) {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.antlr.runtime.RecognitionException;
-import org.csstudio.utility.dbparser.data.Record;
+import org.csstudio.pvnames.data.Record;
 import org.csstudio.utility.dbparser.exception.DbParsingException;
 import org.csstudio.utility.dbparser.util.DbUtil;
 import org.eclipse.core.resources.IFile;
@@ -48,8 +48,9 @@ public class StartupLauncher implements IStartup {
 						try {
 							parseDB((IFile) resource);
 						} catch (Exception e) {
-							Activator.getLogger().log(Level.SEVERE,
-									"Failed to parse DB file: " + e.getMessage());
+							Activator.getLogger().log(
+									Level.WARNING,
+									"Failed to parse " + resource.getFullPath() + ": " + e.getMessage());
 						}
 					}
 					return true;
@@ -62,6 +63,7 @@ public class StartupLauncher implements IStartup {
 		IResourceChangeListener listener = new IResourceChangeListener() {
 			public void resourceChanged(IResourceChangeEvent event) {
 				try {
+					if (event == null || event.getDelta() == null) return;
 					event.getDelta().accept(new IResourceDeltaVisitor() {
 						public boolean visit(IResourceDelta delta) 
 						{
@@ -78,8 +80,8 @@ public class StartupLauncher implements IStartup {
 									try {
 										parseDB((IFile) resource);
 									} catch (Exception e) {
-										Activator.getLogger().log(Level.SEVERE,
-												"Failed to parse DB file: " + e.getMessage());
+										Activator.getLogger().log(Level.WARNING,
+												"Failed to parse " + resource.getFullPath() + ": " + e.getMessage());
 									}
 								}
 							}
