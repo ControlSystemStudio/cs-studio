@@ -93,5 +93,4 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 			}
 		}
 	}
-	
 }

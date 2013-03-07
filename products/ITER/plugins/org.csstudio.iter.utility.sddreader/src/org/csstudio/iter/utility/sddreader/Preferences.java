@@ -5,18 +5,24 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.pvfields.iter;
+package org.csstudio.iter.utility.sddreader;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
-
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+/**
+ * Read preferences
+ * <p>
+ * See preferences.ini for explanation of supported preferences.
+ * 
+ * @author Fred Arnaud (Sopra Group)
+ */
+@SuppressWarnings("nls")
 public class Preferences {
-
-	final public static String PROVIDERS = "providers";
+	final public static String RDB_URL = "rdb_url";
+	final public static String RDB_USER = "rdb_user";
+	final public static String RDB_PASSWORD = "rdb_password";
 
 	/**
 	 * @param setting Preference identifier
@@ -36,20 +42,27 @@ public class Preferences {
 		final IPreferencesService service = Platform.getPreferencesService();
 		if (service == null)
 			return default_value;
-		return service.getString(Activator.ID, setting, default_value, null);
+		return service.getString(Activator.PLUGIN_ID, setting, default_value, null);
 	}
 
-	/** @return providers list */
-	public static List<String> getProviders() {
-		List<String> list = new LinkedList<String>();
-		String providers = getString(PROVIDERS);
-		if (providers != null && !providers.isEmpty()) {
-			StringTokenizer st = new StringTokenizer(providers, ",");
-			while (st.hasMoreTokens()) {
-				list.add(st.nextToken().trim());
-			}
-		}
-		return list;
+	private static String getSecureString(final String setting) {
+		String value = SecureStorage.retrieveSecureStorage(Activator.PLUGIN_ID, setting);
+		return value;
+	}
+
+	/** @return RDB URL */
+	public static String getRDB_Url() {
+		return getString(RDB_URL);
+	}
+
+	/** @return RDB User name */
+	public static String getRDB_User() {
+		return getSecureString(RDB_USER);
+	}
+
+	/** @return RDB Password */
+	public static String getRDB_Password() {
+		return getSecureString(RDB_PASSWORD);
 	}
 
 }

@@ -5,22 +5,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.utility.dbparser;
+package org.csstudio.iter.utility.sddreader;
 
-import java.util.logging.Logger;
+public class SDDContextValueHolder {
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator {
+	private static final SDDContext context = new SDDContext();
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.dbparser"; //$NON-NLS-1$
+	/**
+	 * Singleton = private constructor
+	 */
+	private SDDContextValueHolder() {
+		// Singleton
+	}
 
-	public static final Logger logger = Logger.getLogger(PLUGIN_ID);
-
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
+	public static SDDContext get() {
+		return context;
 	}
 }
