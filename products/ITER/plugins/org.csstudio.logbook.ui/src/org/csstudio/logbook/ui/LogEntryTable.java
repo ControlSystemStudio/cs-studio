@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.csstudio.logbook.LogEntry;
@@ -37,6 +38,8 @@ import org.eclipse.wb.swt.TableViewerColumnSorter;
  * 
  */
 public class LogEntryTable extends Composite implements ISelectionProvider {
+	
+	private static final DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - HH:mm:ss");
 
 	// Model
 	Collection<LogEntry> logs;
@@ -144,14 +147,15 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 			public String getText(Object element) {
 				LogEntry item = ((LogEntry) element);
-				return item == null ? "" : DateFormat.getDateInstance().format(
+				return item == null ? "" : dateFormat.format(
 						item.getCreateDate());
 			}
 		});
 		TableColumn tblclmnDate = tableViewerColumnDate.getColumn();
-		tblclmnDate.setWidth(100);
+		tblclmnDate.setWidth(150);
 		tblclmnDate.setText("Date");
-		channelTablelayout.setColumnData(tblclmnDate, new ColumnWeightData(15));
+		channelTablelayout.setColumnData(tblclmnDate,
+				new ColumnWeightData(25));
 		// Second column is the first line of the logEntry
 
 		TableViewerColumn tableViewerColumnDescription;
@@ -170,7 +174,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		tblclmnDescription.setWidth(500);
 		tblclmnDescription.setText("Description");
 		channelTablelayout.setColumnData(tblclmnDescription,
-				new ColumnWeightData(60));
+				new ColumnWeightData(50));
 
 		// Third column is the owner of the logEntry
 
@@ -210,6 +214,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 		// Now additional Columns are created based on the selected
 		// tags/properties the users wishes to view
+		
+		composite.layout();
 	}
 
 	public Collection<LogEntry> getLogs() {
