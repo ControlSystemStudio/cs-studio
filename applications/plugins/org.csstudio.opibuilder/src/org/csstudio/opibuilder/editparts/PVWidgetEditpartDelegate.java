@@ -1,10 +1,12 @@
 package org.csstudio.opibuilder.editparts;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.csstudio.data.values.ISeverity;
@@ -35,6 +37,7 @@ import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
@@ -144,7 +147,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	private PropertyChangeListener[] pvValueListeners;
 	private AbstractBaseEditPart editpart;
-	private volatile boolean lastWriteAccess = true;
+	private volatile AtomicBoolean lastWriteAccess;
 	private Cursor savedCursor;
 
 	private Color saveForeColor, saveBackColor;
@@ -416,8 +419,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 				if(newPVName.length() <= 0)
 					return false;
 				try {
-					PV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);
-					lastWriteAccess = true;
+					lastWriteAccess = null;
+					PV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);					
 					WidgetPVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);
 					if(newPV instanceof PVManagerPV){
@@ -443,7 +446,21 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 				editpart.setPropertyChangeHandler(pvNameProperty.getPropertyID(),
 					new PVNamePropertyChangeHandler(pvNameProperty.getPropertyID()));
 		}
-
+		
+		if(editpart.getExecutionMode() ==  ExecutionMode.EDIT_MODE)
+			editpart.getWidgetModel().getProperty(IPVWidgetModel.PROP_PVNAME).addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					//reselect the widget to update feedback.
+					int selected = editpart.getSelected();		
+					if(selected != EditPart.SELECTED_NONE){
+						editpart.setSelected(EditPart.SELECTED_NONE);
+						editpart.setSelected(selected);
+					}					
+				}
+			});
+		
 //		//border alarm sensitive
 //		IWidgetPropertyChangeHandler borderAlarmSentiveHandler = new IWidgetPropertyChangeHandler() {
 //
@@ -621,10 +638,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 	private void updateWritable(final AbstractWidgetModel widgetModel, String pvPropID) {
 		if(controlPVPropId != null &&
-				controlPVPropId.equals(pvPropID) &&
-				pvMap.get(pvPropID).isWriteAllowed() != lastWriteAccess){
-			lastWriteAccess = pvMap.get(pvPropID).isWriteAllowed();
-			if(lastWriteAccess){
+				controlPVPropId.equals(pvPropID) && (lastWriteAccess == null ||
+				lastWriteAccess.get() != pvMap.get(pvPropID).isWriteAllowed())){
+			if(lastWriteAccess == null)
+				lastWriteAccess= new AtomicBoolean();
+			lastWriteAccess.set(pvMap.get(pvPropID).isWriteAllowed());
+			if(lastWriteAccess.get()){
 				UIBundlingThread.getInstance().addRunnable(
 						editpart.getViewer().getControl().getDisplay(),new Runnable(){
 					public void run() {
