@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -76,6 +77,8 @@ import com.google.common.collect.Lists;
  * 
  */
 public class LogEntryWidget extends Composite {
+	
+	private static final DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - HH:mm:ss");
 
     private boolean editable;
     // Model
@@ -118,6 +121,8 @@ public class LogEntryWidget extends Composite {
     private Composite composite;
     private ErrorBar errorBar;
     private final boolean newWindow;
+    
+    private String imageToSelect;
 
     private final String[] supportedImageTypes = new String[] { "*.png",
 	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
@@ -204,7 +209,7 @@ public class LogEntryWidget extends Composite {
 	label_horizontal.setLayoutData(fd_label_horizontal);
 
 	text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP
-		| SWT.DOUBLE_BUFFERED);
+		| SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
 	text.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(FocusEvent e) {
@@ -398,14 +403,15 @@ public class LogEntryWidget extends Composite {
 		final String filename = dlg.open();
 		if (filename != null) {
 		    try {
-			LogEntryBuilder logEntryBuilder = LogEntryBuilder
-				.logEntry(logEntryChangeset.getLogEntry())
-				.attach(AttachmentBuilder.attachment(filename)
-					.inputStream(
-						new FileInputStream(filename)));
-			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    	File imgFile = new File(filename);
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					.logEntry(logEntryChangeset.getLogEntry())
+					.attach(AttachmentBuilder.attachment(imgFile.getName())
+						.inputStream(new FileInputStream(imgFile)));
+				logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+				imageToSelect = filename;
 		    } catch (IOException e1) {
-			setLastException(e1);
+		    	setLastException(e1);
 		    }
 		}
 	    }
@@ -652,6 +658,7 @@ public class LogEntryWidget extends Composite {
 	btnAddImage.setVisible(editable);
 	btnAddScreenshot.setVisible(editable);
 	btnCSSWindow.setVisible(editable);
+	btnDeleteImage.setVisible(editable);
 	btnAddLogbook.setVisible(editable);
 	btnAddTags.setVisible(editable);
 	if (!editable) {
@@ -685,7 +692,7 @@ public class LogEntryWidget extends Composite {
 	if (logEntry != null) {
 	    // Show the logEntry
 	    text.setText(logEntry.getText());
-	    textDate.setText(DateFormat.getDateInstance().format(
+	    textDate.setText(dateFormat.format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
 	    textOwner.setText(logEntry.getOwner() == null ? "" : logEntry
@@ -711,6 +718,15 @@ public class LogEntryWidget extends Composite {
 	    }
 	    try {
 		imageStackWidget.setImageInputStreamsMap(imageInputStreamsMap);
+		if (imageToSelect != null) {
+			imageStackWidget.setSelectedImageName(imageToSelect);
+			imageToSelect = null;
+		}
+		if(imageStackWidget.getSelectedImageName() == null) {
+			btnDeleteImage.setEnabled(false);
+		} else {
+			btnDeleteImage.setEnabled(true);
+		}
 	    } catch (IOException e) {
 		setLastException(e);
 	    }
@@ -720,6 +736,7 @@ public class LogEntryWidget extends Composite {
 	    logbookList.setItems(new String[0]);
 	    tagList.setItems(new String[0]);
 	    imageStackWidget.setSelectedImageName(null);
+		btnDeleteImage.setEnabled(false);
 	}
 	if (propertyWidgetFactories != null) {
 	    for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
@@ -769,8 +786,9 @@ public class LogEntryWidget extends Composite {
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
 	    // imageStackWidget.addImage(screenshot_file.getPath(),
 	    // new FileInputStream(screenshot_file.getPath()));
+		imageToSelect = screenshot_file.getPath();
 	    return AttachmentBuilder
-		    .attachment(screenshot_file.getPath())
+		    .attachment(screenshot_file.getName())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));
 	} catch (Exception ex) {
 	    setLastException(ex);

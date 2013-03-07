@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.logbook.viewer.LogViewer"
+            icon="icons/logbook-16.png"
+            id="org.csstudio.logbook.viewer.LogViewer"
+            name="Log Viewer"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/logbook-16.png"
+               label="Log Viewer"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.logbook.viewer.LogViewer">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

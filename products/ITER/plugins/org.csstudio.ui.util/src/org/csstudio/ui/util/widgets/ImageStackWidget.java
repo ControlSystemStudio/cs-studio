@@ -148,7 +148,11 @@ public class ImageStackWidget extends Composite {
 						}
 						double scalex = (double) targetWidth / imgData.width;
 						double scaley = (double) targetHeight / imgData.height;
-						return Math.min(scalex, scaley);
+						double ratio = Math.min(scalex, scaley);
+						if (ratio > 1) {
+							return 1;
+						}
+						return ratio;
 					}
 				});
 				TableColumn tblclmnImage = tableViewerColumn.getColumn();
@@ -223,9 +227,19 @@ public class ImageStackWidget extends Composite {
 		    table.redraw();
 		    imagePreview.redraw();
 		} else if("selectedImageName".equals(evt.getPropertyName())) {
-		    imagePreview.setImage(new ByteArrayInputStream(
-			    imageInputStreamsMap.get(selectedImageName)));
-		    imagePreview.redraw();
+			byte[] imageData = imageInputStreamsMap.get(selectedImageName);
+			if (imageData != null) {
+			    imagePreview.setImage(new ByteArrayInputStream(imageData));
+			    imagePreview.redraw();
+			    for (int index = 0; index < table.getItemCount(); index++) {
+			    	if(selectedImageName.equals(
+			    			table.getItem(index).getData())) {
+			    		table.select(index);
+					    table.redraw();
+					    break;
+			    	}
+			    }
+			}
 		}
 
 	    }
