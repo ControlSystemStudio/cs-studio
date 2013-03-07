@@ -1,80 +1,48 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.TimeoutException;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
-import org.epics.vtype.Enum;
-import org.epics.vtype.SimpleValueFormat;
-import org.epics.vtype.Time;
-import org.epics.vtype.ValueFormat;
 import org.epics.vtype.ValueUtil;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.FillLayout;
 
 /**
  * Probe view.
@@ -112,8 +80,8 @@ public class PVManagerProbe extends ViewPart {
 	private IMemento memento = null;
 
 	/** Memento tags */
-	private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
-	private static final String PV_TAG = "PVName"; //$NON-NLS-1$
+	private static final String MEMENTO_PVFORMULA_LIST = "pvFormulaList"; //$NON-NLS-1$
+	private static final String MEMENTO_PVFORMULA = "pvFormula"; //$NON-NLS-1$
 	private static final String METER_TAG = "meter"; //$NON-NLS-1$
 	private static final String MEMENTO_VALUE = "showValue"; //$NON-NLS-1$
 	private static final String MEMENTO_CHANGE_VALUE = "showChangeValue"; //$NON-NLS-1$
@@ -131,7 +99,7 @@ public class PVManagerProbe extends ViewPart {
 	@Override
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
-		memento.putString(PV_TAG, pvFormula);
+		memento.putString(MEMENTO_PVFORMULA, pvFormula);
 		memento.putBoolean(METER_TAG, sectionToMenu.get(meterPanel).getSelection());
 		memento.putBoolean(MEMENTO_VALUE, sectionToMenu.get(valuePanel).getSelection());
 		memento.putBoolean(MEMENTO_CHANGE_VALUE, sectionToMenu.get(changeValuePanel).getSelection());
@@ -163,7 +131,7 @@ public class PVManagerProbe extends ViewPart {
 		errorBar.setMarginBottom(5);
 
 		pvFomulaInputBar = new PVFormulaInputBar(topBox, SWT.None, Activator
-				.getDefault().getDialogSettings(), PV_LIST_TAG);
+				.getDefault().getDialogSettings(), MEMENTO_PVFORMULA_LIST);
 		pvFomulaInputBar
 				.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -242,7 +210,7 @@ public class PVManagerProbe extends ViewPart {
 		boolean showDetails = false;
 
 		if (memento != null) {
-			initialPVFormula = memento.getString(PV_TAG);
+			initialPVFormula = memento.getString(MEMENTO_PVFORMULA);
 			showMeter = nullDefault(memento.getBoolean(METER_TAG), showMeter);
 			showValue = nullDefault(memento.getBoolean(MEMENTO_VALUE), showValue);
 			showChangeValue = nullDefault(memento.getBoolean(MEMENTO_CHANGE_VALUE), showChangeValue);
