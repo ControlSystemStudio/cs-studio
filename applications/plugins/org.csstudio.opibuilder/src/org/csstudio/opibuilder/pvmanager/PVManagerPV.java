@@ -36,7 +36,6 @@ import org.epics.pvmanager.PVWriterListener;
  * 
  */
 public class PVManagerPV implements PV {
-
 	private final static ExecutorService PMPV_THREAD = Executors
 			.newSingleThreadExecutor();
 	private String name;
@@ -154,6 +153,7 @@ public class PVManagerPV implements PV {
 						listener.pvChanged(null);
 					}
 				});
+				pvWriter.addPVWriterListener(listener);
 			}
 		}
 	}
@@ -192,7 +192,7 @@ public class PVManagerPV implements PV {
 	 * thread and must be in the same runnable to make sure no updates are
 	 * missed.
 	 */
-	private void internalStart() {
+	private synchronized void internalStart() {
 		String singleChannel = channelFromFormula(name); //null means formula
 		if(singleChannel == null)
 			valueBuffered = false;

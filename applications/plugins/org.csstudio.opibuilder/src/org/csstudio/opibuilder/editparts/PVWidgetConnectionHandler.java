@@ -42,25 +42,25 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		}
 	}
 	
-	@Override
-	protected void widgetConnectionRecovered(PV pv) {
-		if(isConnected())
-			return;
-		super.widgetConnectionRecovered(pv);
-		final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
-		if(controlPV != null && controlPV == pv){
-		UIBundlingThread.getInstance().addRunnable(
-				editPart.getRoot().getViewer().getControl().getDisplay(), 
-				new Runnable() {			
-			public void run() {
-				editPart.getFigure().setEnabled(
-						editPart.getWidgetModel().isEnabled() 
-						&& controlPV.isWriteAllowed());
-			}
-		});
-		}
-		
-	}
+//	@Override
+//	protected void widgetConnectionRecovered(PV pv) {
+//		if(isConnected())
+//			return;
+//		super.widgetConnectionRecovered(pv);
+//		final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
+//		if(controlPV != null && controlPV == pv){
+//		UIBundlingThread.getInstance().addRunnable(
+//				editPart.getRoot().getViewer().getControl().getDisplay(), 
+//				new Runnable() {			
+//			public void run() {
+//				editPart.getFigure().setEnabled(
+//						editPart.getWidgetModel().isEnabled() 
+//						&& controlPV.isWriteAllowed());
+//			}
+//		});
+//		}
+//		
+//	}
 
 	
 	
