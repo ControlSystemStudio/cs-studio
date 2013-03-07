@@ -48,45 +48,53 @@ import org.epics.vtype.ValueUtil;
  * Probe view.
  */
 public class PVManagerProbe extends ViewPart {
+	
 	public PVManagerProbe() {
 	}
 
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class
 			.getName());
 
-	/**
-	 * The ID of the view as specified by the extension point
-	 */
+	// The ID of the view as specified by the extension point
 	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
 	private static int instance = 0;
-	private Label statusLabel;
-	private Label statusField;
+	
 	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
-	private MeterWidget meterPanel;
-	private Composite topBox;
-	private Composite mainSection;
-	private GridLayout gl_topBox;
 	
+	private Composite mainPanel;
+	private MeterWidget meterPanel;
+	private ValuePanel valuePanel;
+	private Composite statusBarPanel;
+	private ChangeValuePanel changeValuePanel;
+	private MetadataPanel metadataPanel;
+	private DetailsPanel detailsPanel;
+	
+	private Composite statusBar;
+	private Label statusLabel;
+	private Label statusField;
+
+	private Action showHideAction;
+
 	private Map<Composite, MenuItem> sectionToMenu = new HashMap<>();
 
-	/** Currently displayed formula */
 	private String pvFormula;
-
-	/** Currently connected formula */
 	private PV<?, Object> pv;
+	
+	// Needed to make sure a timeout does not override an exception
+	// TODO: put this in pvmanager itself?
+	private Exception lastError = null;
 
-	/** Memento used to preserve the PV name. */
+
+	// Memento keys
 	private IMemento memento = null;
-
-	/** Memento tags */
 	private static final String MEMENTO_PVFORMULA_LIST = "pvFormulaList"; //$NON-NLS-1$
 	private static final String MEMENTO_PVFORMULA = "pvFormula"; //$NON-NLS-1$
-	private static final String METER_TAG = "meter"; //$NON-NLS-1$
-	private static final String MEMENTO_VALUE = "showValue"; //$NON-NLS-1$
-	private static final String MEMENTO_CHANGE_VALUE = "showChangeValue"; //$NON-NLS-1$
-	private static final String MEMENTO_METADATA = "showMetadata"; //$NON-NLS-1$
-	private static final String MEMENTO_DETAILS = "showDetails"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_METER = "meter"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_VALUE = "showValue"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_CHANGE_VALUE = "showChangeValue"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_METADATA = "showMetadata"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_DETAILS = "showDetails"; //$NON-NLS-1$
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -100,37 +108,33 @@ public class PVManagerProbe extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		memento.putString(MEMENTO_PVFORMULA, pvFormula);
-		memento.putBoolean(METER_TAG, sectionToMenu.get(meterPanel).getSelection());
-		memento.putBoolean(MEMENTO_VALUE, sectionToMenu.get(valuePanel).getSelection());
-		memento.putBoolean(MEMENTO_CHANGE_VALUE, sectionToMenu.get(changeValuePanel).getSelection());
-		memento.putBoolean(MEMENTO_METADATA, sectionToMenu.get(metadataPanel).getSelection());
-		memento.putBoolean(MEMENTO_DETAILS, sectionToMenu.get(detailsPanel).getSelection());
+		memento.putBoolean(MEMENTO_SHOW_METER, sectionToMenu.get(meterPanel)
+				.getSelection());
+		memento.putBoolean(MEMENTO_SHOW_VALUE, sectionToMenu.get(valuePanel)
+				.getSelection());
+		memento.putBoolean(MEMENTO_SHOW_CHANGE_VALUE,
+				sectionToMenu.get(changeValuePanel).getSelection());
+		memento.putBoolean(MEMENTO_SHOW_METADATA, sectionToMenu.get(metadataPanel)
+				.getSelection());
+		memento.putBoolean(MEMENTO_SHOW_DETAILS, sectionToMenu.get(detailsPanel)
+				.getSelection());
 	}
 
 	public void createPartControl(Composite parent) {
-		// Create the view
-		final boolean canExecute = true;
 		GridLayout gl_parent = new GridLayout(1, false);
 		gl_parent.verticalSpacing = 0;
 		gl_parent.marginWidth = 0;
 		gl_parent.marginHeight = 0;
 		parent.setLayout(gl_parent);
 
-		topBox = new Composite(parent, 0);
-		topBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		GridLayout gl_mainSection;
-		gl_topBox = new GridLayout();
-		gl_topBox.marginWidth = 0;
-		gl_topBox.marginHeight = 0;
-		topBox.setLayout(gl_topBox);
-
 		errorBar = new ErrorBar(parent, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+				1, 1));
 		errorBar.setMarginRight(5);
 		errorBar.setMarginLeft(5);
 		errorBar.setMarginBottom(5);
 
-		pvFomulaInputBar = new PVFormulaInputBar(topBox, SWT.None, Activator
+		pvFomulaInputBar = new PVFormulaInputBar(parent, SWT.None, Activator
 				.getDefault().getDialogSettings(), MEMENTO_PVFORMULA_LIST);
 		pvFomulaInputBar
 				.addPropertyChangeListener(new PropertyChangeListener() {
@@ -148,59 +152,66 @@ public class PVManagerProbe extends ViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		pvFomulaInputBar.setLayoutData(gd);
 
-		// Button Box
-		mainSection = new Composite(parent, SWT.NONE);
-		mainSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		gl_mainSection = new GridLayout();
-		mainSection.setLayout(gl_mainSection);
-		
-				// New Box with only the meter
-				meterPanel = new MeterWidget(mainSection, 0);
-				meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-				meterPanel.setEnabled(false);
-		
-		valuePanel = new ValuePanel(mainSection, SWT.BORDER);
-		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		changeValuePanel = new ChangeValuePanel(mainSection, SWT.BORDER);
-		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		metadataPanel = new MetadataPanel(mainSection, SWT.BORDER);
-		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		detailsPanel = new DetailsPanel(mainSection, SWT.BORDER);
-		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+		mainPanel = new Composite(parent, SWT.NONE);
+		mainPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				1, 1));
+		GridLayout gl_mainPanel = new GridLayout();
+		mainPanel.setLayout(gl_mainPanel);
+
+		meterPanel = new MeterWidget(mainPanel, 0);
+		meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
+				1, 1));
+		meterPanel.setEnabled(false);
+
+		valuePanel = new ValuePanel(mainPanel, SWT.BORDER);
+		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		changeValuePanel = new ChangeValuePanel(mainPanel, SWT.BORDER);
+		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		metadataPanel = new MetadataPanel(mainPanel, SWT.BORDER);
+		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		detailsPanel = new DetailsPanel(mainPanel, SWT.BORDER);
+		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		// Status bar
 		statusBarPanel = new Composite(parent, SWT.NONE);
 		GridLayout gl_statusBarPanel = new GridLayout(1, false);
 		gl_statusBarPanel.verticalSpacing = 0;
 		gl_statusBarPanel.marginWidth = 0;
 		gl_statusBarPanel.marginHeight = 0;
 		statusBarPanel.setLayout(gl_statusBarPanel);
-		statusBarPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-				
-						// Status bar
-						Label label = new Label(statusBarPanel, SWT.SEPARATOR | SWT.HORIZONTAL);
-						label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-						label.setSize(64, 2);
-												
-												statusBar = new Composite(statusBarPanel, SWT.NONE);
-												statusBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-												statusBar.setLayout(new GridLayout(2, false));
-												
-														statusLabel = new Label(statusBar, 0);
-														statusLabel.setSize(43, 20);
-														statusLabel.setText(Messages.Probe_statusLabelText);
-														
-																statusField = new Label(statusBar, SWT.BORDER);
-																statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-																statusField.setSize(326, 22);
-																statusField.setText(Messages.Probe_statusWaitingForPV);
-		
-		ShowHideForGridLayout.hide(meterPanel);
+		statusBarPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		Label label = new Label(statusBarPanel, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1,
+				1));
+		label.setSize(64, 2);
+
+		statusBar = new Composite(statusBarPanel, SWT.NONE);
+		statusBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+				1, 1));
+		statusBar.setLayout(new GridLayout(2, false));
+
+		statusLabel = new Label(statusBar, 0);
+		statusLabel.setSize(43, 20);
+		statusLabel.setText(Messages.Probe_statusLabelText);
+
+		statusField = new Label(statusBar, SWT.BORDER);
+		statusField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+		statusField.setSize(326, 22);
+		statusField.setText(Messages.Probe_statusWaitingForPV);
+
 		createActions();
 		initializeToolBar();
-		
+
 		// Determine initial state
 		String initialPVFormula = null;
 		boolean showMeter = false;
@@ -211,11 +222,15 @@ public class PVManagerProbe extends ViewPart {
 
 		if (memento != null) {
 			initialPVFormula = memento.getString(MEMENTO_PVFORMULA);
-			showMeter = nullDefault(memento.getBoolean(METER_TAG), showMeter);
-			showValue = nullDefault(memento.getBoolean(MEMENTO_VALUE), showValue);
-			showChangeValue = nullDefault(memento.getBoolean(MEMENTO_CHANGE_VALUE), showChangeValue);
-			showMetadata = nullDefault(memento.getBoolean(MEMENTO_METADATA), showMetadata);
-			showDetails = nullDefault(memento.getBoolean(MEMENTO_DETAILS), showDetails);
+			showMeter = nullDefault(memento.getBoolean(MEMENTO_SHOW_METER), showMeter);
+			showValue = nullDefault(memento.getBoolean(MEMENTO_SHOW_VALUE),
+					showValue);
+			showChangeValue = nullDefault(
+					memento.getBoolean(MEMENTO_SHOW_CHANGE_VALUE), showChangeValue);
+			showMetadata = nullDefault(memento.getBoolean(MEMENTO_SHOW_METADATA),
+					showMetadata);
+			showDetails = nullDefault(memento.getBoolean(MEMENTO_SHOW_DETAILS),
+					showDetails);
 		}
 		setPVFormula(initialPVFormula);
 		initSection(meterPanel, showMeter);
@@ -226,12 +241,12 @@ public class PVManagerProbe extends ViewPart {
 
 		parent.layout();
 	}
-	
+
 	private void initSection(Composite section, boolean show) {
 		ShowHideForGridLayout.setShow(section, show);
 		sectionToMenu.get(section).setSelection(show);
 	}
-	
+
 	private boolean nullDefault(Boolean value, boolean defaultValue) {
 		if (value == null) {
 			return defaultValue;
@@ -305,8 +320,7 @@ public class PVManagerProbe extends ViewPart {
 							valuePanel.changeValue(value);
 							metadataPanel.changeValue(value);
 						}
-					})
-					.notifyOn(swtThread(this))
+					}).notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
 			changeValuePanel.setPV(pv);
 			// Show the PV name as the title
@@ -341,9 +355,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 
-	private Exception lastError = null;
-	private ValuePanel valuePanel;
-	private Composite statusBarPanel;
 
 	/**
 	 * Displays the last error in the status.
@@ -359,12 +370,7 @@ public class PVManagerProbe extends ViewPart {
 		errorBar.setException(ex);
 		lastError = ex;
 	}
-	
-	private Action showHideAction;
-	private ChangeValuePanel changeValuePanel;
-	private Composite statusBar;
-	private MetadataPanel metadataPanel;
-	private DetailsPanel detailsPanel;
+
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -375,53 +381,63 @@ public class PVManagerProbe extends ViewPart {
 		// Create the actions
 		{
 			// Drop down menu to select what to show
-			// First selection for All and then each datasource in alphabetical order
-			final Menu sectionsMenu = new Menu(topBox);
-			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meterPanel);
+			// First selection for All and then each datasource in alphabetical
+			// order
+			final Menu sectionsMenu = new Menu(pvFomulaInputBar.getParent());
+			MenuItem meterMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, meterPanel);
 			meterMenuItem.setText("Meter");
 			sectionToMenu.put(meterPanel, meterMenuItem);
-			MenuItem valueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, valuePanel);
+			MenuItem valueMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, valuePanel);
 			valueMenuItem.setText("Value");
 			sectionToMenu.put(valuePanel, valueMenuItem);
-			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValuePanel);
+			MenuItem changeValueMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, changeValuePanel);
 			changeValueMenuItem.setText("Change value");
 			sectionToMenu.put(changeValuePanel, changeValueMenuItem);
-			MenuItem metadataMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, metadataPanel);
+			MenuItem metadataMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, metadataPanel);
 			metadataMenuItem.setText("Metadata");
 			sectionToMenu.put(metadataPanel, metadataMenuItem);
-			MenuItem detailsMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, detailsPanel);
+			MenuItem detailsMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, detailsPanel);
 			detailsMenuItem.setText("Details");
 			sectionToMenu.put(detailsPanel, detailsMenuItem);
-			
+
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override
 				public void runWithEvent(Event event) {
-					//Point point = event.
+					// Point point = event.
 					ToolItem toolItem = (ToolItem) event.widget;
-					Point point = toolItem.getParent().toDisplay(new Point(toolItem.getBounds().x, toolItem.getBounds().y + toolItem.getBounds().height));
+					Point point = toolItem.getParent().toDisplay(
+							new Point(toolItem.getBounds().x, toolItem
+									.getBounds().y
+									+ toolItem.getBounds().height));
 					sectionsMenu.setLocation(point.x, point.y); // waiting
 					sectionsMenu.setVisible(true);
 				}
 			};
-			showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/obj16/submenu.gif"));
+			showHideAction.setImageDescriptor(ResourceManager
+					.getPluginImageDescriptor("org.eclipse.ui",
+							"/icons/full/obj16/submenu.gif"));
 
-//			showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
+			// showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox",
+			// "icons/source.png"));
 			showHideAction.setToolTipText("Show/Hide");
 			showHideAction.setMenuCreator(new IMenuCreator() {
-				
-				
-				
+
 				@Override
 				public Menu getMenu(Menu parent) {
 					return sectionsMenu;
 				}
-				
+
 				@Override
 				public Menu getMenu(Control parent) {
 					// TODO Auto-generated method stub
 					return sectionsMenu;
 				}
-				
+
 				@Override
 				public void dispose() {
 					sectionsMenu.dispose();
@@ -429,7 +445,7 @@ public class PVManagerProbe extends ViewPart {
 			});
 		}
 	}
-	
+
 	/**
 	 * Displays a new value in the meter.
 	 * 

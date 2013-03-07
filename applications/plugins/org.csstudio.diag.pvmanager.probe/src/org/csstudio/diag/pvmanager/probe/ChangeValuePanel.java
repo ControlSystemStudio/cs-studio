@@ -64,6 +64,7 @@ class ChangeValuePanel extends Composite {
 		newValueField.setEditable(false);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		newValueField.addSelectionListener(new SelectionAdapter() {
 			@Override
