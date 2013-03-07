@@ -7,20 +7,20 @@
  ******************************************************************************/
 package org.csstudio.utility.dbparser;
 
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator {
+import org.csstudio.pvnames.IPVListProvider;
+import org.csstudio.pvnames.PVListResult;
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.dbparser"; //$NON-NLS-1$
+public class DBPVListProvider implements IPVListProvider {
 
-	public static final Logger logger = Logger.getLogger(PLUGIN_ID);
-
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
+	@Override
+	public PVListResult listPVs(Pattern pattern, int limit) {
+		PVListResult result = new PVListResult();
+		result.setCount(DBContextValueHolder.get().countPV(pattern));
+		for (String pv : DBContextValueHolder.get().findPV(pattern, limit))
+			result.add(pv);
+		return result;
 	}
+
 }

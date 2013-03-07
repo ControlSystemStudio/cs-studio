@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PV Autocomplete
+Bundle-SymbolicName: org.csstudio.pvnames;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.pvnames,
+ org.csstudio.pvnames.data
