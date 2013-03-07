@@ -2,9 +2,10 @@
 <introContent>
 	<extensionContent id="org.csstudio.iter.css.product.whatsnew" name="ITER CSS" style="css/style.css" path="whatsnew/@">
 		<group id="content-group" style-id="content-group">
-			<link id="iterlogo" label="Latest Release of CODAC Core System" style-id="content-link"
-			      url="http://org.eclipse.ui.intro/openBrowser?url=file:///opt/codac/doc/html/rel-notes.html" >
-			  <text>Find out about the Latest Release on the ITER CODAC Core System web page.</text>
+			<link id="cssiter" label="What's new?" style-id="content-link"
+			      url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.ui.help/html/changelog/core.html">
+			  <text> Read the "Change Log" section of the online help
+			         to learn what's new in ITER CSS</text>
 			</link>
 		</group>
 	</extensionContent>
