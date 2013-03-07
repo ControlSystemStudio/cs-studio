@@ -11,6 +11,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.AbstractBackground;
 import org.eclipse.gef.editparts.ZoomListener;
@@ -90,16 +91,19 @@ protected void bringDown() {
 protected CellEditor createCellEditorOn(Composite composite) {
 	CellEditor editor =  new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
 		@Override
-		protected void focusLost() {		
-			//in run mode, lose focus should cancel the editing except mobile.
-			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE &&
-					!OPIBuilderPlugin.isMobile(getControl().getDisplay())){
-				if (isActivated()) {
-					fireCancelEditor();
-					deactivate();
-				}
-			}else
-				super.focusLost();
+		protected void focusLost() {			
+			//in run mode, if the widget has a PV attached, 
+			//lose focus should cancel the editing except mobile.
+				if (editPart.getExecutionMode() == ExecutionMode.RUN_MODE
+						&& !OPIBuilderPlugin.isMobile(getControl().getDisplay())
+						&& editPart instanceof IPVWidgetEditpart
+						&& ((IPVWidgetEditpart) editPart).getPV() != null) {
+					if (isActivated()) {
+						fireCancelEditor();
+						deactivate();
+					}
+				} else
+					super.focusLost();
 		}
 		
 		@Override

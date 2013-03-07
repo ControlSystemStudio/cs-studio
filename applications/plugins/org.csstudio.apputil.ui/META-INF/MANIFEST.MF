@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.apputil.ui;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: Application User Interface utilities for Dialogs, ... 
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.0",
  org.eclipse.core.runtime,
  org.eclipse.jface;resolution:=optional;visibility:=reexport,
  org.eclipse.rap.jface;resolution:=optional;visibility:=reexport,

@@ -3,10 +3,10 @@
 <schema targetNamespace="org.csstudio.utility.singlesource" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.csstudio.utility.singlesource" id="resourcehelper" name="Resource Helper"/>
+         <meta.schema plugin="org.csstudio.utility.singlesource" id="helpers" name="Resource Helper"/>
       </appinfo>
       <documentation>
-         Resource Helper
+         Provide Single-Source Helpers
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ResourceHelper"/>
+            <element ref="helpers"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,20 +47,30 @@
       </complexType>
    </element>
 
-   <element name="ResourceHelper">
+   <element name="helpers">
       <annotation>
          <documentation>
-            Extension that provides a ResourceHelper
+            Extension that provides a Single-Source helpers
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="class" type="string" use="required">
+         <attribute name="resources" type="string" use="required">
             <annotation>
                <documentation>
                   Class that extends the ResourceHelper
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.csstudio.utility.singlesource.ResourceHelper:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="ui" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class that extends the UIHelper
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.csstudio.utility.singlesource.UIHelper:"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -82,10 +92,11 @@
       </appinfo>
       <documentation>
          &lt;pre&gt;
-   &lt;extension point=&quot;org.csstudio.utility.singlesource.resourcehelper&quot;&gt;
-      &lt;ResourceHelper
-            class=&quot;your.class.that.extends.ResourceHelper&quot;
-       /&gt;
+  &lt;extension point=&quot;org.csstudio.utility.singlesource.helpers&quot;&gt;
+      &lt;helpers
+            resources=&quot;your.class.that.extends.ResourceHelper&quot;
+            ui=&quot;your.class.that.extends.UIHelper&quot;&gt;
+      &lt;/helpers&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
@@ -96,7 +107,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         Must extend org.csstudio.utility.singlesource.ResourceHelper
+         Must extend org.csstudio.utility.singlesource.ResourceHelper resp. UIHelper
       </documentation>
    </annotation>
 

@@ -8,7 +8,7 @@
   <boy_version>3.2.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
-  <height>1500</height>
+  <height>1400</height>
   <name>Widgets</name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -62,12 +62,13 @@
     <width>212</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
       <color red="170" green="170" blue="170" />
     </border_color>
-    <y>983</y>
+    <y>942</y>
     <actions hook="false" hook_all="false" />
     <x>6</x>
     <tooltip></tooltip>
@@ -561,7 +562,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>-44888c80:138586b5a4b:-6fd0</wuid>
     <scripts />
-    <height>354</height>
+    <height>312</height>
     <name>Grouping Container_2</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -584,6 +585,7 @@ $(pv_value)</tooltip>
     <width>212</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -682,7 +684,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>272</y>
+      <y>233</y>
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>widgets/3_6_ChoiceWidgets.opi</path>
@@ -736,7 +738,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>310</y>
+      <y>271</y>
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>widgets/SymbolWidgets.opi</path>
@@ -847,7 +849,7 @@ $(pv_value)</tooltip>
       <y>144</y>
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
-          <path>widgets/3_4_Text_Input.opi</path>
+          <path>widgets/3_4_1_Text_Input.opi</path>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -916,60 +918,6 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
-      <wuid>-44888c80:138586b5a4b:-72c4</wuid>
-      <scripts />
-      <height>31</height>
-      <style>1</style>
-      <name>Action Button_2</name>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <scale_options>
-        <width_scalable>true</width_scalable>
-        <height_scalable>true</height_scalable>
-        <keep_wh_ratio>false</keep_wh_ratio>
-      </scale_options>
-      <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="0" green="0" blue="0" />
-      </foreground_color>
-      <widget_type>Action Button</widget_type>
-      <enabled>true</enabled>
-      <text>Native Text</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-      </font>
-      <width>164</width>
-      <border_style>0</border_style>
-      <push_action_index>0</push_action_index>
-      <image></image>
-      <rules />
-      <pv_value />
-      <toggle_button>false</toggle_button>
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <y>182</y>
-      <actions hook="false" hook_all="false">
-        <action type="OPEN_DISPLAY">
-          <path>widgets/6_2_NativeText.opi</path>
-          <macros>
-            <include_parent_macros>true</include_parent_macros>
-          </macros>
-          <replace>0</replace>
-          <description></description>
-        </action>
-      </actions>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <x>19</x>
-    </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-      <border_alarm_sensitive>false</border_alarm_sensitive>
-      <visible>true</visible>
       <wuid>-44888c80:138586b5a4b:-72c2</wuid>
       <scripts />
       <height>45</height>
@@ -1007,7 +955,7 @@ Scrollbar/Thumb Wheel</text>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>220</y>
+      <y>181</y>
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>widgets/3_5_Knob_Slider.opi</path>
@@ -1107,6 +1055,7 @@ $(pv_value)</tooltip>
     <width>212</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -1576,6 +1525,7 @@ $(pv_value)</tooltip>
     <width>212</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -1990,6 +1940,7 @@ $(pv_value)</tooltip>
     <width>214</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>

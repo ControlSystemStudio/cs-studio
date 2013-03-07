@@ -7,18 +7,14 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import org.csstudio.openfile.IOpenDisplayAction;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
-import org.csstudio.trends.databrowser2.editor.EmptyEditorInput;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.utility.singlesource.PathEditorInput;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.csstudio.utility.singlesource.ResourceHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorInput;
 
 /** Support opening Data Browser configurations from
@@ -34,28 +30,14 @@ public class OpenDisplayFile implements IOpenDisplayAction
     @Override
 	public void openDisplay(final String path, final String data) throws Exception
 	{
-        final IEditorInput input;
-        
-        // Try workspace resource
-        final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-        if (resource instanceof IFile)
-        {
-            final IFile file = (IFile) resource;
-            if (! file.exists())
-            	throw new Exception("File  '" + file + "' does not exist in workspace");
-            input = new PathEditorInput(file.getFullPath());
-        }
-        else
-        {   // Try plain file
-            final File file = new File(path);
-            if (!file.exists())
-                throw new Exception("Cannot locate file '" + path + "'");
-            // Read model from file, but don't associate a (Workspace) file
-            // with it because can't save outside of workspace
-            final Model model = new Model();
-            model.read(new FileInputStream(file));
-            input = new DataBrowserModelEditorInput(new EmptyEditorInput(), model);
-        }
+        final Model model = new Model();
+
+        // Read file
+        final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
+        final IPath ipath = resources.newPath(path);
+        model.read(resources.getInputStream(ipath));
+
+        final IEditorInput input = new DataBrowserModelEditorInput(new PathEditorInput(ipath), model);
 
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance(input);

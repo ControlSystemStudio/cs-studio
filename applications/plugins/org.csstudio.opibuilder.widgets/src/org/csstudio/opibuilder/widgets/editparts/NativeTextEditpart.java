@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
  * The editpart for native text widget.
  * 
  * @author Xihui Chen
- * 
+ * @deprecated not used anymore
  */
 public class NativeTextEditpart extends TextInputEditpart {
 
@@ -151,7 +151,6 @@ public class NativeTextEditpart extends TextInputEditpart {
 		return figure;
 	}
 	
-	@Override
 	protected void outputText(String newValue) {
 		if(getPV() == null){
 			setPropertyValue(NativeTextModel.PROP_TEXT, newValue);

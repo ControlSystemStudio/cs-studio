@@ -7,4 +7,5 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Description: Abstraction to support both RCP and RAP
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.0",
+ org.eclipse.ui.ide;bundle-version="3.7.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0"

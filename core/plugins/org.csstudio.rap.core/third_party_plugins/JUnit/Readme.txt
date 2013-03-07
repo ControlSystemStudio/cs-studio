@@ -1,0 +1,1 @@
+The JUnit file plugins are available in the Eclipse IDE for RCP (3.7.2, ..), but not in the default RAP target platform.

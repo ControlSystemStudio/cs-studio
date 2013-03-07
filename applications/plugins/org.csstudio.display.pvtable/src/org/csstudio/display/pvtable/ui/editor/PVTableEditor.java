@@ -11,22 +11,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
+import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -36,9 +35,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.FileEditorInput;
 
 /** EditorPart for the PV Table
  *  @author Kay Kasemir
@@ -64,7 +61,7 @@ public class PVTableEditor extends EditorPart
         final IWorkbenchPage page = window.getActivePage();
         try
         {
-            final EmptyEditorInput input = new EmptyEditorInput();
+            final EmptyEditorInput input = new EmptyEditorInput(Plugin.getImageDescriptor("icons/pvtable.png")); //$NON-NLS-1$
             return (PVTableEditor) page.openEditor(input, PVTableEditor.ID);
         }
         catch (Exception ex)
@@ -193,32 +190,21 @@ public class PVTableEditor extends EditorPart
     @Override
     public void doSaveAs()
     {
-        // Prompt for file name
-        final SaveAsDialog dlg = new SaveAsDialog(getEditorSite().getShell());
-        dlg.setBlockOnOpen(true);
+        final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
         
         // If there is an original file name, try to display it
-        final IFile original = (IFile) getEditorInput().getAdapter(IFile.class);
-        dlg.setOriginalFile(original);
-        if (dlg.open() != Window.OK)
-            return;
-        IPath path = dlg.getResult();
+        final IPath original = resources.getPath(getEditorInput());
+        IPath path = SingleSourcePlugin.getUIHelper()
+            .openSaveDialog(getEditorSite().getShell(), original, FILE_EXTENSION);
         if (path == null)
             return;
         
-        // Assert file extension
-        if (! FILE_EXTENSION.equals(path.getFileExtension()))
-            path = path.removeFileExtension().addFileExtension(FILE_EXTENSION);
-        
         // Get file for the new resource's path.
-        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        final IFile file = root.getFile(path);
-        
-        final IEditorInput new_input = new FileEditorInput(file);
+        final IEditorInput new_input = new PathEditorInput(path);
         try
         {
             final OutputStream stream =
-                SingleSourcePlugin.getResourceHelper().getOutputStream(new_input);
+                    resources.getOutputStream(new_input);
             saveToStream(null, stream);
         }
         catch (Exception ex)
