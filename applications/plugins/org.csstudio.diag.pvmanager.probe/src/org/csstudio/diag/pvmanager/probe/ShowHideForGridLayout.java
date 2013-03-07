@@ -10,6 +10,14 @@ import org.eclipse.swt.widgets.MenuItem;
 
 public class ShowHideForGridLayout {
 	
+	public static boolean setShow(Composite section, boolean show) {
+		if (show) {
+			return show(section);
+		} else {
+			return hide(section);
+		}
+	}
+	
 	public static boolean hide(Composite section) {
 		GridData data = (GridData) section.getLayoutData();
 		if (data.exclude == false || data.heightHint != 0 || section.getVisible()) {

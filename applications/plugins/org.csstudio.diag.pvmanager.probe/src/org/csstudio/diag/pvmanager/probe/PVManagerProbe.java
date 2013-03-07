@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -98,6 +99,8 @@ public class PVManagerProbe extends ViewPart {
 	private Composite topBox;
 	private Composite mainSection;
 	private GridLayout gl_topBox;
+	
+	private Map<Composite, MenuItem> sectionToMenu = new HashMap<>();
 
 	/** Currently displayed formula */
 	private String pvFormula;
@@ -108,12 +111,14 @@ public class PVManagerProbe extends ViewPart {
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
 
-	/** Memento tag */
+	/** Memento tags */
 	private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
-	/** Memento tag */
 	private static final String PV_TAG = "PVName"; //$NON-NLS-1$
-	/** Memento tag */
 	private static final String METER_TAG = "meter"; //$NON-NLS-1$
+	private static final String MEMENTO_VALUE = "showValue"; //$NON-NLS-1$
+	private static final String MEMENTO_CHANGE_VALUE = "showChangeValue"; //$NON-NLS-1$
+	private static final String MEMENTO_METADATA = "showMetadata"; //$NON-NLS-1$
+	private static final String MEMENTO_DETAILS = "showDetails"; //$NON-NLS-1$
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -126,10 +131,12 @@ public class PVManagerProbe extends ViewPart {
 	@Override
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
-		// Save the currently selected variable
-		if (pvFormula != null) {
-			memento.putString(PV_TAG, pvFormula);
-		}
+		memento.putString(PV_TAG, pvFormula);
+		memento.putBoolean(METER_TAG, sectionToMenu.get(meterPanel).getSelection());
+		memento.putBoolean(MEMENTO_VALUE, sectionToMenu.get(valuePanel).getSelection());
+		memento.putBoolean(MEMENTO_CHANGE_VALUE, sectionToMenu.get(changeValuePanel).getSelection());
+		memento.putBoolean(MEMENTO_METADATA, sectionToMenu.get(metadataPanel).getSelection());
+		memento.putBoolean(MEMENTO_DETAILS, sectionToMenu.get(detailsPanel).getSelection());
 	}
 
 	public void createPartControl(Composite parent) {
@@ -225,20 +232,44 @@ public class PVManagerProbe extends ViewPart {
 		ShowHideForGridLayout.hide(meterPanel);
 		createActions();
 		initializeToolBar();
+		
+		// Determine initial state
+		String initialPVFormula = null;
+		boolean showMeter = false;
+		boolean showValue = true;
+		boolean showChangeValue = true;
+		boolean showMetadata = false;
+		boolean showDetails = false;
 
-		if (memento != null && memento.getString(PV_TAG) != null) {
-			setPVFormula(memento.getString(PV_TAG));
-			// Per default, the meter is shown.
-			// Hide according to memento.
-			final String show = memento.getString(METER_TAG);
-			if ((show != null) && show.equals("false")) //$NON-NLS-1$
-			{
-				ShowHideForGridLayout.hide(meterPanel);
-			}
-		} else {
-			setPVFormula(null);
+		if (memento != null) {
+			initialPVFormula = memento.getString(PV_TAG);
+			showMeter = nullDefault(memento.getBoolean(METER_TAG), showMeter);
+			showValue = nullDefault(memento.getBoolean(MEMENTO_VALUE), showValue);
+			showChangeValue = nullDefault(memento.getBoolean(MEMENTO_CHANGE_VALUE), showChangeValue);
+			showMetadata = nullDefault(memento.getBoolean(MEMENTO_METADATA), showMetadata);
+			showDetails = nullDefault(memento.getBoolean(MEMENTO_DETAILS), showDetails);
 		}
+		setPVFormula(initialPVFormula);
+		initSection(meterPanel, showMeter);
+		initSection(valuePanel, showValue);
+		initSection(changeValuePanel, showChangeValue);
+		initSection(metadataPanel, showMetadata);
+		initSection(detailsPanel, showDetails);
+
 		parent.layout();
+	}
+	
+	private void initSection(Composite section, boolean show) {
+		ShowHideForGridLayout.setShow(section, show);
+		sectionToMenu.get(section).setSelection(show);
+	}
+	
+	private boolean nullDefault(Boolean value, boolean defaultValue) {
+		if (value == null) {
+			return defaultValue;
+		} else {
+			return value;
+		}
 	}
 
 	/**
@@ -380,18 +411,19 @@ public class PVManagerProbe extends ViewPart {
 			final Menu sectionsMenu = new Menu(topBox);
 			MenuItem meterMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, meterPanel);
 			meterMenuItem.setText("Meter");
+			sectionToMenu.put(meterPanel, meterMenuItem);
 			MenuItem valueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, valuePanel);
 			valueMenuItem.setText("Value");
-			valueMenuItem.setSelection(true);
+			sectionToMenu.put(valuePanel, valueMenuItem);
 			MenuItem changeValueMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, changeValuePanel);
 			changeValueMenuItem.setText("Change value");
-			changeValueMenuItem.setSelection(true);
+			sectionToMenu.put(changeValuePanel, changeValueMenuItem);
 			MenuItem metadataMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, metadataPanel);
 			metadataMenuItem.setText("Metadata");
-			metadataMenuItem.setSelection(true);
+			sectionToMenu.put(metadataPanel, metadataMenuItem);
 			MenuItem detailsMenuItem = ShowHideForGridLayout.createShowHideMenuItem(sectionsMenu, detailsPanel);
 			detailsMenuItem.setText("Details");
-			detailsMenuItem.setSelection(true);
+			sectionToMenu.put(detailsPanel, detailsMenuItem);
 			
 			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
 				@Override
