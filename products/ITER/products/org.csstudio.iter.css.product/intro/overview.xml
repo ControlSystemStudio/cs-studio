@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-    <extensionContent id="org.csstudio.iter.css.product.overview" name="ITER CSS" style="css/style.css" path="overview/@">
+    <extensionContent id="org.csstudio.iter.css.product.overview" name="ITER CSS Overview" style="css/style.css" path="overview/@">
         <group id="content-group" style-id="content-group">
             <link id="cssiter" label="CSS for ITER" style-id="content-link"
                   url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/html/overview.html" >
