@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <!-- Ant file for generating javadoc for scan system client API
+
+     Execute as
+     
+       ant -f javadoc.xml
+       
+     to re-create the doc/java files.
   -->
 <project name="scan.client.api" default="all">
 
@@ -36,7 +42,7 @@
             windowtitle="Scan System API"
         	overview="doc/javadoc_overview.html"
             useexternalfile="yes"
-        	additionalparam="-notimestamp">
+        	additionalparam="-notimestamp -stylesheetfile javadoc.css">
         	
             <doctitle><![CDATA[<h1>Scan System API</h1>]]></doctitle>
             <fileset dir="..">
@@ -48,11 +54,13 @@
 
             	<include name="org.csstudio.scan.client/src/org/csstudio/scan/client/*.java"/>
             	
-            	<exclude name="**/ScanCommandFactory.java"/>
+            	<exclude name="**/SimpleScanCommandFactory.java"/>
+                <exclude name="**/ScanCommandFactory.java"/>
+                <exclude name="**/ScanCommandProperty.java"/>
                 <exclude name="**/DOMHelper.java"/>
                 <exclude name="**/BeamlineDeviceInfoReader.java"/>
-            	
-            	
+                <exclude name="**/XMLCommandReader.java"/>
+                <exclude name="**/XMLCommandWriter.java"/>
             </fileset>
         	
             <group title="Scan System Packages" packages="org.csstudio.scan.*"/>
