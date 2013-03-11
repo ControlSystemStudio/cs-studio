@@ -127,13 +127,6 @@ public class PVManagerProbe extends ViewPart {
 		gl_parent.marginHeight = 0;
 		parent.setLayout(gl_parent);
 
-		errorBar = new ErrorBar(parent, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				1, 1));
-		errorBar.setMarginRight(5);
-		errorBar.setMarginLeft(5);
-		errorBar.setMarginBottom(5);
-
 		pvFomulaInputBar = new PVFormulaInputBar(parent, SWT.None, Activator
 				.getDefault().getDialogSettings(), MEMENTO_PVFORMULA_LIST);
 		pvFomulaInputBar
@@ -151,6 +144,13 @@ public class PVManagerProbe extends ViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		pvFomulaInputBar.setLayoutData(gd);
+
+		errorBar = new ErrorBar(parent, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+				1, 1));
+		errorBar.setMarginRight(5);
+		errorBar.setMarginLeft(5);
+		errorBar.setMarginBottom(5);
 
 		mainPanel = new Composite(parent, SWT.NONE);
 		mainPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
