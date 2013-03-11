@@ -24,6 +24,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -161,31 +162,41 @@ public class PVManagerProbe extends ViewPart {
 		errorBar.setMarginLeft(5);
 		errorBar.setMarginBottom(5);
 
-		mainPanel = new Composite(parent, SWT.NONE);
-		mainPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
+		ScrolledComposite mainScroll = new ScrolledComposite(parent, SWT.V_SCROLL);
+		mainScroll.setExpandHorizontal(true);
+		mainScroll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		mainPanel = new Composite(mainScroll, SWT.NONE) {
+			@Override
+			public void layout() {
+				// TODO Auto-generated method stub
+				super.layout();
+				mainPanel.setSize(mainPanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			}
+		};
 		GridLayout gl_mainPanel = new GridLayout();
 		mainPanel.setLayout(gl_mainPanel);
+		mainScroll.setContent(mainPanel);
 
 		meterPanel = new MeterWidget(mainPanel, 0);
-		meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
+		meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false,
 				1, 1));
 		meterPanel.setEnabled(false);
 
 		valuePanel = new ValuePanel(mainPanel, SWT.BORDER);
-		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false, 1, 1));
 
 		changeValuePanel = new ChangeValuePanel(mainPanel, SWT.BORDER);
-		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		changeValuePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false, 1, 1));
 
 		metadataPanel = new MetadataPanel(mainPanel, SWT.BORDER);
-		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		metadataPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false, 1, 1));
 
 		detailsPanel = new DetailsPanel(mainPanel, SWT.BORDER);
-		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		detailsPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false, 1, 1));
 
 		// Status bar
@@ -249,6 +260,7 @@ public class PVManagerProbe extends ViewPart {
 		initSection(detailsPanel, showDetails);
 
 		parent.layout();
+		mainPanel.layout();
 	}
 
 	private void initSection(Composite section, boolean show) {
