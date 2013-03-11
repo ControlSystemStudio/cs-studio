@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -25,12 +26,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class DelayCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
-    };
-
     private volatile double seconds;
 
     /** Initialize delay with 1 second */
@@ -49,9 +44,10 @@ public class DelayCommand extends ScanCommand
 
     /** {@inheritDoc} */
 	@Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(new ScanCommandProperty("seconds", "Delay (seconds)", Double.class));
+        super.configureProperties(properties);
     }
 
     /** @return Delay in seconds */
@@ -71,8 +67,12 @@ public class DelayCommand extends ScanCommand
     public void writeXML(final PrintStream out, final int level)
 	{
 	    writeIndent(out, level);
-	    out.println("<delay><address>" + getAddress() + "</address>" +
-	    		    "<seconds>" + seconds + "</seconds></delay>");
+	    out.println("<delay>");
+        writeIndent(out, level+1);
+        out.println("<seconds>" + seconds + "</seconds>");
+        super.writeXML(out, level);
+        writeIndent(out, level);
+        out.println("</delay>");
 	}
 
     /** {@inheritDoc} */
@@ -81,6 +81,7 @@ public class DelayCommand extends ScanCommand
 	{
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
+        super.readXML(factory, element);
 	}
 
     /** {@inheritDoc} */

@@ -18,7 +18,6 @@ package org.csstudio.scan.commandimpl;
 import java.io.PrintStream;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.command.SimpleScanCommandFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -40,13 +39,6 @@ public class WaitForDevicesCommand extends ScanCommand
     public Device[] getDevices()
     {
         return devices;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ScanCommandProperty[] getProperties()
-    {
-        return new ScanCommandProperty[0];
     }
 
     /** {@inheritDoc} */

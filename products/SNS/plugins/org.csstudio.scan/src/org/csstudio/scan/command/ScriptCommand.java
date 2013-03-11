@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -27,12 +28,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class ScriptCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-    	new ScanCommandProperty("script", "Script", String.class)
-    };
-
     private volatile String script;
 
     /** Initialize empty script command */
@@ -51,9 +46,10 @@ public class ScriptCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(new ScanCommandProperty("script", "Script", String.class));
+        super.configureProperties(properties);
     }
 
 	/** @return Name of script class */
@@ -80,6 +76,7 @@ public class ScriptCommand extends ScanCommand
         out.print("<path>");
         out.print(script);
         out.println("</path>");
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</script>");
     }
@@ -90,6 +87,7 @@ public class ScriptCommand extends ScanCommand
     {
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setScript(DOMHelper.getSubelementString(element, "path", ""));
+        super.readXML(factory, element);
     }
 
     /** {@inheritDoc} */

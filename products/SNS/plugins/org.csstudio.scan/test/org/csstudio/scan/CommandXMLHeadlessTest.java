@@ -56,7 +56,8 @@ public class CommandXMLHeadlessTest
 
     public void runReader(final XMLCommandReader reader) throws Exception
     {
-        assertNotNull(xml);
+        if (xml == null)
+            testWriteXML();
         assertTrue(xml.length() > 0);
 
         final List<ScanCommand> commands = reader.readXMLString(xml);

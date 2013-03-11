@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -25,12 +26,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class CommentCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        new ScanCommandProperty("comment", "Comment", String.class),
-    };
-
     private volatile String comment;
 
     /** Initialize with example comment */
@@ -49,9 +44,10 @@ public class CommentCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(new ScanCommandProperty("comment", "Comment", String.class));
+        // NOT calling super.configureProperties(properties);
     }
 
     /** @return Comment */
@@ -73,6 +69,7 @@ public class CommentCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<comment><address>" + getAddress() + "</address>" +
         		    "<text>" + comment + "</text></comment>");
+        // NOT calling super.writeXML(out, level);
     }
 
     /** {@inheritDoc} */
@@ -81,6 +78,7 @@ public class CommentCommand extends ScanCommand
     {
         setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setComment(DOMHelper.getSubelementString(element, "text", ""));
+        // NOT calling super.readXML(factory, element);
     }
 
     /** {@inheritDoc} */

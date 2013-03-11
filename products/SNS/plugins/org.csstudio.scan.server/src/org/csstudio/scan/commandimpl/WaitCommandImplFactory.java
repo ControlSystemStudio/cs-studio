@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class WaitCommandImplFactory implements ScanCommandImplFactory<WaitCommand>
 {
     @Override
-    public ScanCommandImpl<WaitCommand> createImplementation(final WaitCommand command)
+    public ScanCommandImpl<WaitCommand> createImplementation(final WaitCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new WaitCommandImpl(command);
+        return new WaitCommandImpl(command, jython);
     }
 }

@@ -17,6 +17,7 @@ package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
@@ -28,14 +29,18 @@ import org.csstudio.scan.server.SimulationContext;
 @SuppressWarnings("nls")
 public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public SetCommandImpl(final SetCommand command)
+    /** {@inheritDoc} */
+    public SetCommandImpl(final SetCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
+    /** Implemet without Jython support */
+    public SetCommandImpl(final SetCommand command) throws Exception
+    {
+        this(command, null);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames()

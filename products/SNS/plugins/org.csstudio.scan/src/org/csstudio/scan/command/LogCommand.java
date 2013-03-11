@@ -30,12 +30,6 @@ import org.w3c.dom.Node;
 @SuppressWarnings("nls")
 public class LogCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        new ScanCommandProperty("device_names", "Device Names", DeviceInfo[].class)
-    };
-
     private volatile String[] device_names;
 
     /** Initialize empty log command */
@@ -62,9 +56,11 @@ public class LogCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(
+            new ScanCommandProperty("device_names", "Device Names", DeviceInfo[].class));
+        super.configureProperties(properties);
     }
 
 	/** @return Names of devices to read and log */
@@ -96,6 +92,7 @@ public class LogCommand extends ScanCommand
         }
         writeIndent(out, level+1);
         out.println("</devices>");
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</log>");
     }
@@ -119,6 +116,7 @@ public class LogCommand extends ScanCommand
             node = DOMHelper.findNextElementNode(node, ScanCommandProperty.TAG_DEVICE);
         }
         setDeviceNames(devices.toArray(new String[devices.size()]));
+        super.readXML(factory, element);
     }
 
     /** {@inheritDoc} */
