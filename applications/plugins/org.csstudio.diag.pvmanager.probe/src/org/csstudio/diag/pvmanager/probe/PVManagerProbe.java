@@ -467,7 +467,6 @@ public class PVManagerProbe extends ViewPart {
 			                PlatformUI.getWorkbench().getDisplay());
 			            clipboard.setContents(new String[] { text },
 			                new Transfer[] { TextTransfer.getInstance() });
-			        System.out.println(text);
 				} catch (Exception ex) {
 					ExceptionDetailsErrorDialog.openError(PVManagerProbe.this.mainPanel.getShell(), "Couln't copy value to clipboard", ex);
 				}
