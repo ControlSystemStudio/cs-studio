@@ -7,19 +7,26 @@ import static org.epics.util.time.TimeDuration.ofMillis;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.text.DefaultEditorKit.PasteAction;
+
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,6 +40,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
 import org.epics.pvmanager.PV;
@@ -75,6 +83,7 @@ public class PVManagerProbe extends ViewPart {
 	private Label statusField;
 
 	private Action showHideAction;
+	private Action copyValueAction;
 
 	private Map<Composite, MenuItem> sectionToMenu = new HashMap<>();
 
@@ -374,6 +383,7 @@ public class PVManagerProbe extends ViewPart {
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
+		toolbarManager.add(copyValueAction);
 		toolbarManager.add(showHideAction);
 	}
 
@@ -444,6 +454,27 @@ public class PVManagerProbe extends ViewPart {
 				}
 			});
 		}
+		
+		copyValueAction = new Action("Copy value", SWT.NONE) {
+			SimpleDataTextExport export = new SimpleDataTextExport();
+			
+			public void runWithEvent(Event event) {
+				try {
+					StringWriter writer = new StringWriter();
+					export.export(pv.getValue(), writer);
+					String text = writer.toString();
+			        final Clipboard clipboard = new Clipboard(
+			                PlatformUI.getWorkbench().getDisplay());
+			            clipboard.setContents(new String[] { text },
+			                new Transfer[] { TextTransfer.getInstance() });
+			        System.out.println(text);
+				} catch (Exception ex) {
+					ExceptionDetailsErrorDialog.openError(PVManagerProbe.this.mainPanel.getShell(), "Couln't copy value to clipboard", ex);
+				}
+			};
+		};
+		copyValueAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/etool16/paste_edit.gif"));
+		copyValueAction.setToolTipText("Copy value to clipboard");
 	}
 
 	/**
