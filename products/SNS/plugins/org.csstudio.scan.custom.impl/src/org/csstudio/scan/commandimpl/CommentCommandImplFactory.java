@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.CommentCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class CommentCommandImplFactory implements ScanCommandImplFactory<CommentCommand>
 {
     @Override
-    public ScanCommandImpl<CommentCommand> createImplementation(final CommentCommand command)
+    public ScanCommandImpl<CommentCommand> createImplementation(final CommentCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new CommentCommandImpl(command);
+        return new CommentCommandImpl(command, jython);
     }
 }

@@ -31,12 +31,8 @@ public class JythonSupportUnitTest
     @Test(timeout=10000)
     public void testJythonSupport() throws Exception
     {
-        // Test runs in the plugin's root dir
-        System.out.println(System.getProperty("user.dir"));
-        // Setup path to other plugins within source tree
-        System.setProperty("python.path",
-                "test/org/csstudio/scan");
-
+        TestSettings.init();
+        
         // Load ScanScript
         final JythonSupport jython = new JythonSupport();
         final ScanScript script = jython.loadClass(ScanScript.class, "JythonTest");

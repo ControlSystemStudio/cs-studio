@@ -79,28 +79,30 @@ public class ScanCommandImplTool
 
     /** Get implementation
      *  @param command Command description
+     *  @param jython Jython interpreter, may be <code>null</code>
      *  @return Implementation
      *  @throws Exception if command lacks an implementation
      */
-    public ScanCommandImpl<?> implement(final ScanCommand command) throws Exception
+    public ScanCommandImpl<?> implement(final ScanCommand command, final JythonSupport jython) throws Exception
     {
         final String command_class = command.getClass().getName();
         final ScanCommandImplFactory<ScanCommand> factory = factories.get(command_class);
         if (factory == null)
             throw new Exception("Unknown command " + command.getClass().getName());
-        return factory.createImplementation(command);
+        return factory.createImplementation(command, jython);
     }
 
     /** Get implementations
      *  @param commands Command descriptions
+     *  @param jython Jython interpreter, may be <code>null</code>
      *  @return Implementations
      *  @throws Exception if a command lacks an implementation
      */
-    public List<ScanCommandImpl<?>> implement(final List<ScanCommand> commands) throws Exception
+    public List<ScanCommandImpl<?>> implement(final List<ScanCommand> commands, final JythonSupport jython) throws Exception
     {
         final List<ScanCommandImpl<?>> impl = new ArrayList<ScanCommandImpl<?>>(commands.size());
         for (ScanCommand command : commands)
-            impl.add(implement(command));
+            impl.add(implement(command, jython));
         return impl;
     }
 }

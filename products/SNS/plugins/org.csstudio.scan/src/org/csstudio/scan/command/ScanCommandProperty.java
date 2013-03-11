@@ -48,7 +48,6 @@ public class ScanCommandProperty
     final public static ScanCommandProperty TIMEOUT =
             new ScanCommandProperty(TAG_TIMEOUT, "Time out (seconds; 0 to disable)", Double.class);
 
-
     final private String name, id;
     final private Class<?> type;
 

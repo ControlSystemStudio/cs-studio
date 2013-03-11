@@ -17,6 +17,8 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
@@ -57,12 +59,26 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 abstract public class ScanCommand
 {
+    /** Configurable properties of this command */
+    final private ScanCommandProperty[] properties;
+
     /** Address of this command within command sequence.
      *  <p>The {@link CommandSequence} assigns addresses 0, 1, 2, ...
      *  to all commands in the sequence to allow identification
      *  of each command while the sequence is executed.
      */
     private long address = -1;
+
+    /** Error handler script name */
+    private volatile String error_handler = "";
+    
+    /** Initialize */
+    public ScanCommand()
+    {
+        final List<ScanCommandProperty> properties = new ArrayList<>();
+        configureProperties(properties);
+        this.properties = properties.toArray(new ScanCommandProperty[properties.size()]);
+    }
 
     /** @return Name of the command, which is the base of the class name */
     final public String getCommandName()
@@ -94,8 +110,24 @@ abstract public class ScanCommand
         return address+1;
     }
 
+    /** Declare properties of this command
+     * 
+     *  <p>Derived classes should add their properties and
+     *  call the base implementation to declare inherited properties.
+     *
+     *  @param properties List to which to add properties
+     */
+    protected void configureProperties(final List<ScanCommandProperty> properties)
+    {
+        properties.add(
+            new ScanCommandProperty("error_handler", "Error Handler", String.class));
+    }
+
     /** @return Descriptions of Properties for this command */
-    abstract public ScanCommandProperty[] getProperties();
+    final public ScanCommandProperty[] getProperties()
+    {
+        return properties;
+    }
 
     /** @param property_id ID of a property
      *  @return Property description or <code>null</code> if property ID is not supported
@@ -201,24 +233,55 @@ abstract public class ScanCommand
         return result.toString();
     }
 
+    /** @return Name of error handler class */
+    public String getErrorHandler()
+    {
+        return error_handler;
+    }
+
+    /** @param error_handler Name of the error handler class */
+    public void setErrorHandler(final String error_handler)
+    {
+        this.error_handler = error_handler;
+    }
+    
     /** Write the command (and its sub-commands) in an XML format.
      *
      *  <p>A command called AbcCommand should write itself as a tag "abc"
      *  so that the {@link XMLCommandReader} can later determine
      *  which class to use for reading the command back from XML.
+     *  
+     *  <p>Derived classes must call base class implementation
+     *  to write inherited properties.
      *
      *  @param out {@link PrintStream}
      *  @param level Indentation level
      */
-    abstract public void writeXML(PrintStream out, final int level);
+    public void writeXML(final PrintStream out, final int level)
+    {
+        if (! error_handler.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.print("<error_handler>");
+            out.print(error_handler);
+            out.println("</error_handler>");
+        }
+    }
 
     /** Read command parameters from XML element
+     *  
+     *  <p>Derived classes must call base class implementation
+     *  to read inherited properties.
+     *  
      *  @param factory ScanCommandFactory to use in case inner scan commands,
      *                 for example a loop body, need to be created
      *  @param element
      *  @throws Exception on error, for example missing essential data
      */
-    abstract public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception;
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
+    {
+        setErrorHandler(DOMHelper.getSubelementString(element, "error_handler", ""));
+    }
 
     /** Write indentation
      *  @param out Where to print

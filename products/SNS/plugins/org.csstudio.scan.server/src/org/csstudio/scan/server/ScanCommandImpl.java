@@ -16,7 +16,12 @@
 package org.csstudio.scan.server;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanErrorHandler;
+import org.csstudio.scan.command.ScanErrorHandler.Result;
+import org.csstudio.scan.command.ScanScriptContext;
+import org.csstudio.scan.commandimpl.ScriptCommandContextImpl;
 import org.csstudio.scan.server.internal.ExecutableScan;
+import org.python.core.PyException;
 
 /** Implementation of a command
  *
@@ -41,16 +46,40 @@ import org.csstudio.scan.server.internal.ExecutableScan;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class ScanCommandImpl<C extends ScanCommand>
 {
     final protected C command;
 
+    final protected JythonSupport jython;
+
+    private ScanErrorHandler error_handler;
+    
     /** Initialize
      *  @param command Command that is implemented
+     *  @param jython Jython interpreter, may be <code>null</code> 
+     *  @throws Exception on error
      */
-    public ScanCommandImpl(final C command)
+    public ScanCommandImpl(final C command, final JythonSupport jython) throws Exception
     {
         this.command = command;
+        this.jython = jython;
+        
+        // Implement error handler?
+        final String error_handler_class = command.getErrorHandler();
+        if (error_handler_class.isEmpty()  ||  jython == null)
+            error_handler = null;
+        else
+        {
+            try
+            {
+                error_handler = (ScanErrorHandler) jython.loadClass(ScanErrorHandler.class, error_handler_class);
+            }
+            catch (PyException ex)
+            {
+                throw new Exception(JythonSupport.getExceptionMessage(ex), ex);
+            }
+        }
     }
 
     /** Set the address of this command.
@@ -112,6 +141,34 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
 	 *  @see ScanContext#workPerformed(int)
 	 */
     abstract public void execute(ScanContext context) throws Exception;
+    
+    /** Invoke the command's error handler
+     * 
+     *  <p>If command has no custom error handler, 'Abort' will be returned.
+     *  
+     *  @param context {@link ScanContext}
+     *  @param error Error from call to <code>execute</code>
+     *  @return How to proceed
+     *  @throws Exception on error while trying to handle the error
+     */
+    public Result handleError(final ScanContext context, final Exception error) throws Exception
+    {
+        if (error_handler == null)
+            return ScanErrorHandler.Result.Abort;
+        else
+        {
+            try
+            {
+                final ScanScriptContext script_context = new ScriptCommandContextImpl(context);
+                return error_handler.handleError(command, error, script_context);
+            }
+            catch (PyException ex)
+            {
+                throw new Exception("Error handler for " + command.getCommandName() + ":" +
+                        JythonSupport.getExceptionMessage(ex), ex);
+            }
+        }
+    }
 
 	/** {@inheritDoc} */
     @Override
