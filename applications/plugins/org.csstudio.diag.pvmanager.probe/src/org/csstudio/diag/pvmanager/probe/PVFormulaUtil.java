@@ -7,6 +7,10 @@ import org.epics.pvmanager.PVManager;
 public class PVFormulaUtil {
 
 	public static String channelWithDataSource(String channel) {
+		if (channel == null) {
+			return null;
+		}
+		
 		DataSource defaultDS = PVManager.getDefaultDataSource();
 		String pvName = channel;
 		if (defaultDS instanceof CompositeDataSource) {
