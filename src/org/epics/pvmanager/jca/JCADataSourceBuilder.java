@@ -44,8 +44,8 @@ public class JCADataSourceBuilder {
      * @return this
      */
     public JCADataSourceBuilder jcaContextClass(String className) {
-        if (jcaContext == null) {
-            throw new IllegalStateException("You should call once either jcaContextClass or jcaContext.");
+        if (jcaContext != null) {
+            throw new IllegalStateException("You should call either jcaContextClass or jcaContext once.");
         }
         this.jcaContext = createContext(className);
         return this;
@@ -200,23 +200,12 @@ public class JCADataSourceBuilder {
                 });
                 Integer integer = (Integer) method.invoke(null, new Object[0]);
                 return (integer >= 13);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext or JNI classes can be loaded.", ex);
-            } catch (NoSuchMethodException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext or JNI._ca_getRevision found.", ex);
-            } catch (SecurityException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and no permission to access JNI._ca_getRevision.", ex);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
-            } catch (IllegalArgumentException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException("Cannot detect: no CAJContext and cannot invoke JNI._ca_getRevision.", ex);
+            } catch (Exception ex) {
+                log.log(Level.SEVERE, "Couldn't detect varArraySupported", ex);
             }
-            
         }
         
-        throw new RuntimeException("Couldn't detect");
+        return true;
     }
     
     /**
