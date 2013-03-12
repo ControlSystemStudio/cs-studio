@@ -95,6 +95,7 @@ public class PVManagerProbe extends ViewPart {
 	// TODO: put this in pvmanager itself?
 	private Exception lastError = null;
 
+	private SimpleDataTextExport export = new SimpleDataTextExport();
 
 	// Memento keys
 	private IMemento memento = null;
@@ -340,6 +341,7 @@ public class PVManagerProbe extends ViewPart {
 							}
 							valuePanel.changeValue(value);
 							metadataPanel.changeValue(value);
+							copyValueAction.setEnabled(export.canExport(value));
 						}
 					}).notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
@@ -468,7 +470,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 		
 		copyValueAction = new Action("Copy value", SWT.NONE) {
-			SimpleDataTextExport export = new SimpleDataTextExport();
 			
 			public void runWithEvent(Event event) {
 				try {
@@ -486,6 +487,7 @@ public class PVManagerProbe extends ViewPart {
 		};
 		copyValueAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/etool16/paste_edit.gif"));
 		copyValueAction.setToolTipText("Copy value to clipboard");
+		copyValueAction.setEnabled(false);
 	}
 
 	/**
