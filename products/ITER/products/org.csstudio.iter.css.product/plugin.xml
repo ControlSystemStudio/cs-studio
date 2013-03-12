@@ -117,4 +117,16 @@
          <keywordReference id="org.eclipse.ui.ide.appearance"/>
       </page>
    </extension>
+   
+    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc/toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="toc/tocChangelog.xml">
+      </toc>
+   </extension>
+   
 </plugin>

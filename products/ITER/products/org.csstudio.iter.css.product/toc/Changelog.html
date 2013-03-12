@@ -1,0 +1,66 @@
+<html>
+<head>
+	<title>ITER CSS Changelog</title>
+	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+<body>
+<h1>ITER CSS Changelog</h1>
+
+<p>Version numbers in here refer to CODAC Core System.</p>
+
+<h2>Version 4.1 - 2013-06-22</h2>
+<ul>
+  <li>In progress...</li>
+</ul>
+
+<h2>Version 4.0 - 2013-02-15</h2>
+<ul>
+  <li>Re-integration of CaSnooper - simple program to display statistics of EPICS broadcasts on the network.</li>  
+    <img src="images/image002.jpg"/>
+    
+  <li>Integration of PV Fields Viewer - diagnostic tool that displays information about a Process Variable. 
+  By default it displays data obtained by connecting to the life control system channel, 
+  which includes the name of the host that serves the channel, the underlying data type etc. 
+  ITER site-specific extension retrieves information from EPICS db files.</li>  
+    <img src="images/image004.jpg"/>
+    
+  <li>Integration of PACE Editor - this tool provides a tabular view of Process Variables (PV) names and their current values. 
+  The user can edit the values, change multiple values at once, review the changes and revert them if needed.</li>
+    <img src="images/image006.jpg"/>
+    
+  <li>Integration of the Alarm Annunciator tool – the alarm description is converted to speech and annunciated.</li>
+    <img src="images/image008.jpg"/>
+    
+  <li>Email Support Library integration - allows tools to send electronic mails with optional text and image attachments. 
+  For example, the Data Browser can email a screen-shot of the current plot.</li>
+    <img src="images/image010.png"/>
+    
+  <li>Web OPI integration - aims to provide web access to Operator Interfaces (OPI) that were created in CSS BOY. 
+  With WebOPI, the user can seamlessly access to their OPIs from anywhere in the world at any time via a web-browser-equipped device 
+  such as a PC, laptop, tablet or smart phone.</li>
+    <img src="images/image012.jpg"/>
+    
+  <li>Web Data Browser development – it is now possible to access to plotted data from a Web Navigator.</li>
+    <img src="images/image014.jpg"/>
+    
+  <li>BOY: a PID example is provided at /opt/codac/opi/boy/resources/PID_Water_Cooling.opi.</li>
+    <img src="images/image016.jpg"/>
+    
+  <li>BOY enhancements:</li>
+  <ul>
+  <li>Image widget rotation by 90 degrees:</li>
+    <img src="images/image017.png"/>
+  <li>Data Browser widget that allows to integrate a predefined plot .plt file into BOY and then access to historic data:</li>
+    <img src="images/image019.jpg"/>
+  <li>Vertical Tabbed Container and possibility to enable/disable tab according to operational states:</li>
+    <img src="images/image021.jpg"/>
+  <li>Support of waveform and setpoint via an Array Widget that allows to adjust the setpoint using sliders for example:</li>
+    <img src="images/image023.jpg"/>
+  <li>It is now possible to open OPI file directly from command line:</li>
+    <p>css <unit_name>/src/main/boy/myScreen.opi</p?
+  </ul>
+
+</ul>
+
+</body>
+</html>
