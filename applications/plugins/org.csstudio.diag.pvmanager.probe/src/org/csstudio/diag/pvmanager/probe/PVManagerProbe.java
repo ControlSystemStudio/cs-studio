@@ -309,6 +309,7 @@ public class PVManagerProbe extends ViewPart {
 		detailsPanel.changeValue(null, null);
 		setMeter(null, null);
 		setLastError(null);
+		copyValueAction.setEnabled(false);
 		// If name is blank, update status to waiting and quit
 		if ((pvFormula == null) || pvFormula.trim().isEmpty()) {
 			setStatus(Messages.Probe_statusWaitingForPV);
