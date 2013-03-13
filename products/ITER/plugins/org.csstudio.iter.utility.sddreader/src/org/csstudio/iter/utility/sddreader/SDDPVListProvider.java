@@ -11,11 +11,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.pvnames.IPVListProvider;
 import org.csstudio.pvnames.PVListResult;
+import org.csstudio.pvnames.PVNameHelper;
 
 public class SDDPVListProvider implements IPVListProvider {
 
@@ -23,6 +23,9 @@ public class SDDPVListProvider implements IPVListProvider {
 
 	private final String pv_count = "SELECT count(*) FROM functionalvariables WHERE name like ?";
 	private final String pv_get = "SELECT name FROM functionalvariables WHERE name like ?";
+	
+	private PreparedStatement statement_get = null;
+	private PreparedStatement statement_count = null;
 
 	public SDDPVListProvider() {
 		try {
@@ -38,13 +41,11 @@ public class SDDPVListProvider implements IPVListProvider {
 	}
 
 	@Override
-	public PVListResult listPVs(Pattern pattern, int limit) {
+	public PVListResult listPVs(final String name, final int limit) {
 		PVListResult pvList = new PVListResult();
 		
-		PreparedStatement statement_get = null;
-		PreparedStatement statement_count = null;
 		try {
-			String sqlPattern = convertToSQL(pattern);
+			String sqlPattern = PVNameHelper.convertToSQL(name);
 			statement_count = rdb.getConnection().prepareStatement(pv_count);
 			statement_count.setString(1, sqlPattern);
 			
@@ -64,6 +65,7 @@ public class SDDPVListProvider implements IPVListProvider {
 			Activator.getLogger().log(Level.SEVERE, e.getMessage());
 		} finally {
 			try {
+				if (statement_count != null) statement_count.close();
 				if (statement_get != null) statement_get.close();
 			} catch (SQLException e) {
 				Activator.getLogger().log(Level.SEVERE, e.getMessage());
@@ -71,12 +73,22 @@ public class SDDPVListProvider implements IPVListProvider {
 		}
 		return pvList;
 	}
-	
-	private String convertToSQL(Pattern p) {
-		String sql = p.pattern().replace(".*", "%");
-		sql = sql.replace(".+", "%");
-		sql = sql.replace(".", "_");
-		return sql;
-	}
 
+	@Override
+	public void cancel() {
+		try {
+			if (statement_count != null) statement_count.cancel();
+			if (statement_get != null) statement_get.cancel();
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+		} finally {
+			try {
+				if (statement_count != null) statement_count.close();
+				if (statement_get != null) statement_get.close();
+			} catch (SQLException e) {
+				Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			}
+		}
+	}
+	
 }

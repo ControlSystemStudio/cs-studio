@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.utility.dbparser;
+package org.csstudio.pvnames.ui;
 
 import java.util.regex.Pattern;
 
@@ -13,16 +13,24 @@ import org.csstudio.pvnames.IPVListProvider;
 import org.csstudio.pvnames.PVListResult;
 import org.csstudio.pvnames.PVNameHelper;
 
-public class DBPVListProvider implements IPVListProvider {
+public class PVContentHistoryProvider implements IPVListProvider {
 
 	@Override
-	public PVListResult listPVs(final String pattern, final int limit) {
-		PVListResult result = new PVListResult();
-		Pattern p = PVNameHelper.convertToPattern(pattern);
-		result.setCount(DBContextValueHolder.get().countPV(p));
-		for (String pv : DBContextValueHolder.get().findPV(p, limit))
-			result.add(pv);
-		return result;
+	public PVListResult listPVs(final String name, final int limit) {
+		PVListResult pvList = new PVListResult();
+		Pattern p = PVNameHelper.convertToPattern(name);
+
+		int added = 0;
+		pvList.setCount(Activator.getDefault().getHistory().size());
+		for (String entry : Activator.getDefault().getHistory()) {
+			if (p.matcher(entry).matches()) {
+				pvList.add(entry);
+				added++;
+			}
+			if (added == limit)
+				return pvList;
+		}
+		return pvList;
 	}
 
 	@Override

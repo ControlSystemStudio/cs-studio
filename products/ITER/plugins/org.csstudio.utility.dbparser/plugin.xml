@@ -7,7 +7,7 @@
    </extension>
    
    <extension point="org.csstudio.pvnames">
-      <provider name="DB Parser" class="org.csstudio.utility.dbparser.DBPVListProvider" />
+      <provider name="DB Files" class="org.csstudio.utility.dbparser.DBPVListProvider" />
    </extension>
    
 </plugin>
