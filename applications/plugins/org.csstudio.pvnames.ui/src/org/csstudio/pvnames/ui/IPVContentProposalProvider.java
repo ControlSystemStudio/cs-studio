@@ -10,4 +10,9 @@ package org.csstudio.pvnames.ui;
 public interface IPVContentProposalProvider {
 
 	public PVContentProposalList getProposals(String contents, int position, int max);
+
+	public boolean hasProviders();
+
+	public void cancel();
+
 }

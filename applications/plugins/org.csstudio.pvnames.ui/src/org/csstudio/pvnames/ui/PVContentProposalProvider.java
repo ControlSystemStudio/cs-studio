@@ -16,8 +16,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 public class PVContentProposalProvider implements IPVContentProposalProvider {
 
-	public PVContentProposalList getProposals(String contents, int position,
-			int max) {
+	public PVContentProposalList getProposals(String contents, int position, int max) {
 		ChannelNameService cns = ChannelNameService.getInstance();
 		PVListResult result = cns.get(contents, max);
 		List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
@@ -45,6 +44,16 @@ public class PVContentProposalProvider implements IPVContentProposalProvider {
 				.toArray(new IContentProposal[contentProposals.size()]));
 		cpl.setCount(result.getCount());
 		return cpl;
+	}
+
+	@Override
+	public boolean hasProviders() {
+		return ChannelNameService.getInstance().hasProviders();
+	}
+
+	@Override
+	public void cancel() {
+		ChannelNameService.getInstance().cancel();
 	}
 
 }

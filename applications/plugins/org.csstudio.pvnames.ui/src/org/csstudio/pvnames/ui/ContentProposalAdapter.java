@@ -47,6 +47,41 @@ import org.eclipse.swt.widgets.Listener;
  * @since 3.2
  */
 public class ContentProposalAdapter {
+	
+	private class SearchProposalTask implements Runnable {
+
+		private final int position;
+		private final String contents;
+		private final IContentProposalSearchHandler handler;
+
+		private boolean canceled = false;
+
+		public SearchProposalTask(String contents, int position,
+				IContentProposalSearchHandler handler) {
+			this.contents = contents;
+			this.position = position;
+			this.handler = handler;
+		}
+
+		@Override
+		public void run() {
+			final PVContentProposalList proposals = proposalProvider
+					.getProposals(contents, position, maxDisplay);
+			if (!canceled) {
+				getControl().getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						handler.handleResult(proposals);
+					}
+				});
+			}
+		}
+
+		public void cancel() {
+			canceled = true;
+			proposalProvider.cancel();
+		}
+	}
 
 	/**
 	 * Flag that controls the printing of debug info.
@@ -193,8 +228,9 @@ public class ContentProposalAdapter {
 	 */
 	private ILabelProvider labelProvider;
 	
-	private Thread searchThread;
+	private SearchProposalTask currentTask;
 	private int maxDisplay = 10;
+	
 
 	/**
 	 * Construct a content proposal adapter that can assist the user with
@@ -245,6 +281,10 @@ public class ContentProposalAdapter {
 			this.autoActivateString = new String(autoActivationCharacters);
 		}
 		addControlListener(control);
+		// TODO: find a way to activate at plugin startup...
+		if (Activator.getDefault() == null)
+			Activator.activatePlugin();
+		new PVContentHistory(control, controlContentAdapter);
 	}
 	
 	/*
@@ -505,26 +545,11 @@ public class ContentProposalAdapter {
 		} else position = insertionPos;
 		final String contents = getControlContentAdapter().getControlContents(getControl());
 		
-		if (searchThread != null && searchThread.isAlive()) {
-			searchThread.interrupt();
-			searchThread = null;
-		}
-		searchThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				final PVContentProposalList proposals = proposalProvider
-						.getProposals(contents, position, maxDisplay);
-				if (!Thread.currentThread().isInterrupted()) {
-					getControl().getDisplay().asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							listener.handleResult(proposals);
-						}
-					});
-				}
-			}
-		});
-		searchThread.start();
+		// Interrupt current search & start new
+		if (currentTask != null)
+			currentTask.cancel();
+		currentTask = new SearchProposalTask(contents, position, listener);
+		new Thread(currentTask).start();
 	}
 
 	/**

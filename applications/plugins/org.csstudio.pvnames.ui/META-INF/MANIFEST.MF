@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PV Autocomplete UI
-Bundle-SymbolicName: org.csstudio.pvnames.ui
+Bundle-SymbolicName: org.csstudio.pvnames.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.pvnames.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.pvnames

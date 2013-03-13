@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.pvnames;
 
-import java.util.regex.Pattern;
 
 
 /**
@@ -21,6 +20,7 @@ public interface IPVListProvider {
 	/** ID of the extension point, defined in plugin.xml */
     final public static String EXTENSION_POINT = "org.csstudio.pvnames";
     
-	public PVListResult listPVs(Pattern pattern, int limit);
+	public PVListResult listPVs(final String name, final int limit);
 
+	public void cancel();
 }
