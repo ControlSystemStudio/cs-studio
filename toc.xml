@@ -2,5 +2,5 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.utility.pvmanager.ui/toc.xml#pvsyntax" label="PVA DataSource">
-    <topic label="Channel Access DataSource"  href="html/pva-datasource.html"/>
+    <topic label="pvAccess DataSource"  href="html/pva-datasource.html"/>
 </toc>
