@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EPICS Plug-in
+Bundle-SymbolicName: org.epics.pvdata;singleton:=true
+Bundle-Version: 3.1.1.qualifier
+Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/pvdata-1.1.10.jar
+Export-Package: 
+ org.epics.pvdata
+Bundle-Vendor: BNL
+Bundle-Description: EPICS PV data library
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
