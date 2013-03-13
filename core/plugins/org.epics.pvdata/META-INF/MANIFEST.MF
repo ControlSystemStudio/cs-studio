@@ -1,15 +1,22 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: EPICS Plug-in
+Bundle-Name: EPICS v4 pvData Plug-in
 Bundle-SymbolicName: org.epics.pvdata;singleton:=true
 Bundle-Version: 3.1.1.qualifier
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pvdata-1.1.10.jar
+ lib/pvData-2.0.jar
 Export-Package: 
- org.epics.pvdata
-Bundle-Vendor: BNL
-Bundle-Description: EPICS PV data library
+ org.epics.pvdata.accessSecurity,
+ org.epics.pvdata.factory,
+ org.epics.pvdata.misc,
+ org.epics.pvdata.monitor,
+ org.epics.pvdata.property,
+ org.epics.pvdata.pv,
+ org.epics.pvdata.util.namedValues,
+ org.epics.pvdata.util.pvDataHelper
+Bundle-Vendor: BNL/CSL
+Bundle-Description: EPICS v4 pvData library
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
