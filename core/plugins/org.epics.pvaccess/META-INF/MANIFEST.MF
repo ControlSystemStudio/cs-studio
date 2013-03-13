@@ -1,0 +1,45 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EPICS v4 pvAccess Plug-in
+Bundle-SymbolicName: org.epics.pvaccess;singleton:=true
+Bundle-Version: 3.1.1.qualifier
+Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/pvAccess-2.0.jar
+Export-Package: 
+ org.epics.pvaccess,
+ org.epics.pvaccess.client,
+ org.epics.pvaccess.client.impl.remote,
+ org.epics.pvaccess.client.impl.remote.handlers,
+ org.epics.pvaccess.client.impl.remote.search,
+ org.epics.pvaccess.client.impl.remote.tcp,
+ org.epics.pvaccess.client.rpc,
+ org.epics.pvaccess.impl.remote,
+ org.epics.pvaccess.impl.remote.codec,
+ org.epics.pvaccess.impl.remote.codec.impl,
+ org.epics.pvaccess.impl.remote.io,
+ org.epics.pvaccess.impl.remote.io.impl,
+ org.epics.pvaccess.impl.remote.request,
+ org.epics.pvaccess.impl.remote.server,
+ org.epics.pvaccess.impl.remote.tcp,
+ org.epics.pvaccess.impl.remote.udp,
+ org.epics.pvaccess.impl.remote.utils,
+ org.epics.pvaccess.server,
+ org.epics.pvaccess.server.impl.remote,
+ org.epics.pvaccess.server.impl.remote.handlers,
+ org.epics.pvaccess.server.impl.remote.plugins,
+ org.epics.pvaccess.server.impl.remote.tcp,
+ org.epics.pvaccess.server.plugins,
+ org.epics.pvaccess.server.rpc,
+ org.epics.pvaccess.server.rpc.impl,
+ org.epics.pvaccess.util,
+ org.epics.pvaccess.util.configuration,
+ org.epics.pvaccess.util.configuration.impl,
+ org.epics.pvaccess.util.logging,
+ org.epics.pvaccess.util.sync
+Bundle-Vendor: BNL/CSL
+Bundle-Description: EPICS v4 pvData library
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.epics.pvdata;bundle-version="3.1.1"
+
