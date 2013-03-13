@@ -17,11 +17,11 @@ tokens {
 }
 
 @header {
-package org.iter.codac.sdd.platforms.epics.parsers.dbrecord;
+package org.csstudio.utility.dbparser.antlr;
 }
 
 @lexer::header {
-package org.iter.codac.sdd.platforms.epics.parsers.dbrecord;
+package org.csstudio.utility.dbparser.antlr;
 }
 
 top : program;
@@ -30,7 +30,7 @@ program : record*;
 
 record  : record_head record_block -> ^('record_instance' record_head record_block);
 
-record_head : 'record' '(' key_value ')' -> ^(RECORD key_value);
+record_head : 'record' '(' record_name ')' -> ^(RECORD record_name);
 
 record_block : '{' record_body* '}'  -> ^('record_body' record_body*);
 
@@ -44,9 +44,13 @@ alias : 'alias' '(' type ')' -> ^(ALIAS type);
 
 key_value : type ',' value -> ^(TYPE type) ^(VALUE value);
 
+record_name : type ',' name -> ^(TYPE type) ^(VALUE name);
+
 type : ID;
 
 value : String;
+
+name : String | NonQuotedString;
 
 OCTAL_ESC
   :
@@ -137,6 +141,21 @@ String
      )
   )*
   '"'
+  ;
+  
+NonQuotedString
+  :
+  (   
+    ('0'..'9')
+    |
+    ('A'..'Z')
+    |
+    ('a'..'z')
+    |
+    ':'
+    |
+    '-'
+  )+
   ;
   
   ESC_SEQ
