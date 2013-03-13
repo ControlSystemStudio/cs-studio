@@ -1,3 +1,4 @@
+javax.annotation
 org.csstudio.auth
 org.csstudio.auth.ui
 org.csstudio.csdata
@@ -10,11 +11,13 @@ org.csstudio.openfile
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.jms
 org.csstudio.remote
+org.csstudio.servicelocator
 org.csstudio.startup
 org.csstudio.ui.help
 org.csstudio.ui.menu
 org.csstudio.ui.preferences
 org.csstudio.ui.util
+org.csstudio.utility.jms
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
@@ -23,5 +26,8 @@ org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
+org.csstudio.utility.pvmanager.vtype
 org.csstudio.workspace
-
+org.epics.util
+org.epics.vtype
+org.slf4j
