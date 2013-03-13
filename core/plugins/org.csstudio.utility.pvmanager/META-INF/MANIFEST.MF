@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.utility.pvmanager.Activator
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: pvManager integration with CSS
 Require-Bundle: org.eclipse.core.runtime,
- org.epics.util;bundle-version="0.2.0"
+ org.epics.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager,

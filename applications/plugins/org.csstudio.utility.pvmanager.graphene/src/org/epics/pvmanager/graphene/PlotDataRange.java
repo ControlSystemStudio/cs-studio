@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager.graphene;
 
+import org.epics.graphene.Range;
+
 /**
  *
  * @author carcassi
@@ -23,6 +25,15 @@ public class PlotDataRange {
         this.endDataRange = endDataRange;
         this.startIntegratedDataRange = startIntegratedDataRange;
         this.endIntegratedDataRange = endIntegratedDataRange;
+    }
+
+    PlotDataRange(Range plotRange, Range dataRange, Range integratedRange) {
+        this.startPlotRange = plotRange.getMinimum().doubleValue();
+        this.endPlotRange = plotRange.getMaximum().doubleValue();
+        this.startDataRange = dataRange.getMinimum().doubleValue();
+        this.endDataRange = dataRange.getMaximum().doubleValue();
+        this.startIntegratedDataRange = integratedRange.getMinimum().doubleValue();
+        this.endIntegratedDataRange = integratedRange.getMaximum().doubleValue();
     }
     
     

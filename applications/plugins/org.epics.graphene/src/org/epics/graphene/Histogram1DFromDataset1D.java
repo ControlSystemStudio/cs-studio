@@ -4,8 +4,11 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.IteratorDouble;
 import org.epics.util.array.IteratorNumber;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -13,122 +16,86 @@ import org.epics.util.array.IteratorNumber;
  */
 class Histogram1DFromDataset1D implements Histogram1D {
     
+    private Statistics statistics;
+    private Range xRange;
+    private ListDouble xBoundaries;
+    
     private double minValueRange;
     private double maxValueRange;
     private int minCountRange;
     private int maxCountRange;
     private double[] binValueBoundary;
-    private int[] binCount;
+    
+    
+    private double[] values;
     private boolean autoValueRange = true;
     private int nBins = 100;
 
-    @Override
-    public double getMinValueRange() {
-        return minValueRange;
-    }
-
-    @Override
-    public double getMaxValueRange() {
-        return maxValueRange;
-    }
-
-    public void setMaxValueRange(double maxValueRange) {
-        this.maxValueRange = maxValueRange;
-    }
-
-    public void setMinValueRange(double minValueRange) {
-        this.minValueRange = minValueRange;
-    }
-
-    @Override
-    public int getMaxCountRange() {
-        return maxCountRange;
-    }
-
-    public void setMaxCountRange(int maxCountRange) {
-        this.maxCountRange = maxCountRange;
-    }
-
-    @Override
-    public int getMinCountRange() {
-        return minCountRange;
-    }
-
-    public void setMinCountRange(int minCountRange) {
-        this.minCountRange = minCountRange;
-    }
-
-    @Override
-    public int getNBins() {
-        return binCount.length;
-    }
-
-    @Override
-    public double getBinValueBoundary(int index) {
-        return binValueBoundary[index];
-    }
-
-    @Override
-    public int getBinCount(int index) {
-        return binCount[index];
-    }
-
-    public void setBinCount(int[] binCount) {
-        this.binCount = binCount;
-    }
-
-    public void setBinValueBoundary(double[] binValueBoundary) {
-        this.binValueBoundary = binValueBoundary;
-    }
-    
-    public void setDataset(Point1DDataset dataset) {
-        IteratorNumber values = dataset.getValues().iterator();
+    private void setDataset(Point1DDataset dataset) {
+        // TODO handle better
+        if (dataset.getStatistics() == null) {
+            return;
+        }
+        
+        IteratorNumber newValues = dataset.getValues().iterator();
         if (autoValueRange) {
-            this.minValueRange = dataset.getMinValue().doubleValue();
-            this.maxValueRange = dataset.getMaxValue().doubleValue();
+            this.minValueRange = dataset.getStatistics().getMinimum().doubleValue();
+            this.maxValueRange = dataset.getStatistics().getMaximum().doubleValue();
             binValueBoundary = RangeUtil.createBins(minValueRange, maxValueRange, nBins);
+            xBoundaries = new ArrayDouble(binValueBoundary);
+            xRange = RangeUtil.range(binValueBoundary[0], binValueBoundary[nBins]);
         }
-        binCount = new int[nBins];
-        while (values.hasNext()) {
-            addValueToBin(values.nextDouble());
+        values = new double[nBins];
+        while (newValues.hasNext()) {
+            addValueToBin(newValues.nextDouble());
         }
 
-        autoBinRange();
+        statistics = StatisticsUtil.statisticsOf(new ArrayDouble(values));
     }
     
     private void addValueToBin(double value) {
         // Discard value outsie the binning area
-        if (value < getBinValueBoundary(0) || value > getBinValueBoundary(nBins)) {
+        if (!RangeUtil.contains(xRange, value)) {
             return;
         }
         
-        int bin = (int) Math.floor(NumberUtil.scale(value, getBinValueBoundary(0), getBinValueBoundary(nBins), nBins));
+        int bin = (int) Math.floor(NumberUtil.scale(value, xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), nBins));
         if (bin == nBins) {
             bin--;
         }
         
-        binCount[bin]++;
-    }
-    
-    protected void autoBinRange() {
-        int max = NumberUtil.minMax(binCount)[1];
-        
-        if (max < 10) {
-            minCountRange = 0;
-            maxCountRange = 10;
-        } else if (max < 50) {
-            minCountRange = 0;
-            maxCountRange = 50;
-        } else {
-            minCountRange = 0;
-            maxCountRange = (max / 100) * 100 + 100;
-        }
+        values[bin]++;
     }
 
     @Override
     public void update(Histogram1DUpdate update) {
         if (update.getDataset() != null)
             setDataset(update.getDataset());
+    }
+
+    @Override
+    public double getValue(int x) {
+        return values[x];
+    }
+
+    @Override
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    @Override
+    public ListNumber getXBoundaries() {
+        return xBoundaries;
+    }
+
+    @Override
+    public Range getXRange() {
+        return xRange;
+    }
+
+    @Override
+    public int getXCount() {
+        return values.length;
     }
     
 }

@@ -28,10 +28,10 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
     private ReadFunction<? extends VNumber> xInitialOffset;
     private ReadFunction<? extends VNumber> xIncrementSize;
     
-    private LineGraphRenderer renderer = new LineGraphRenderer();
+    private LineGraph2DRenderer renderer = new LineGraph2DRenderer(300, 200);
     
     private VImage previousImage;
-    private final QueueCollector<LineGraphRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
+    private final QueueCollector<LineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     public LineGraphFunction(ReadFunction<? extends VNumberArray> argument) {
         this.yArray = argument;
@@ -48,7 +48,7 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
         this.yArray = yArray;
     }
 
-    public QueueCollector<LineGraphRendererUpdate> getRendererUpdateQueue() {
+    public QueueCollector<LineGraph2DRendererUpdate> getRendererUpdateQueue() {
         return rendererUpdateQueue;
     }
 
@@ -85,8 +85,8 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
             dataset = org.epics.graphene.Point2DDatasets.lineData(newData.getData());
         }
         // Process all renderer updates
-        List<LineGraphRendererUpdate> updates = rendererUpdateQueue.readValue();
-        for (LineGraphRendererUpdate rendererUpdate : updates) {
+        List<LineGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
+        for (LineGraph2DRendererUpdate rendererUpdate : updates) {
             renderer.update(rendererUpdate);
         }
         
@@ -99,8 +99,8 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
         
         previousImage = ValueUtil.toVImage(image);
         return new Plot2DResult(previousImage,
-                new PlotDataRange(renderer.getStartPlotX(), renderer.getEndPlotX(), dataset.getXMinValue(), dataset.getXMaxValue(), renderer.getIntegratedMinX(), renderer.getIntegratedMaxX()),
-                new PlotDataRange(renderer.getStartPlotY(), renderer.getEndPlotY(), dataset.getYMinValue(), dataset.getYMaxValue(), renderer.getIntegratedMinY(), renderer.getIntegratedMaxY()));
+                new PlotDataRange(renderer.getXPlotRange(), dataset.getXStatistics(), renderer.getXAggregatedRange()),
+                new PlotDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()));
     }
     
 }
