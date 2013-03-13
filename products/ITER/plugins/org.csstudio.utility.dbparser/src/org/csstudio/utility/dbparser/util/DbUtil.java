@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -24,6 +25,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 public class DbUtil {
+
+	private static Pattern comment_pattern = Pattern.compile("#.*");
 
 	public static List<Record> parseDb(String dbFile)
 			throws RecognitionException, DbParsingException {
@@ -42,8 +45,13 @@ public class DbUtil {
 		StringBuilder out = new StringBuilder();
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				file.getContents()));
-		for (String line = br.readLine(); line != null; line = br.readLine())
-			out.append(line);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			if (comment_pattern.matcher(line).matches()) {
+				out.append("\n"); // replace by empty line (keep line numbers)
+			} else {
+				out.append(line);
+			}
+		}
 		br.close();
 		out.append("\n"); // to avoid EOF issues
 		return out.toString();

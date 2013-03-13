@@ -138,9 +138,10 @@ public class RecordDbParser {
 			break;
 		case DbRecordParser.ID:
 		case DbRecordParser.String:
+		case DbRecordParser.NonQuotedString:
 			break;
 		default:
-			throw new DbParsingException("Unknown tree type");
+			throw new DbParsingException("Unknown tree type: " + type);
 		}
 	}
 
@@ -153,7 +154,9 @@ public class RecordDbParser {
 		}
 
 		if (value != null) {
-			value = value.substring(1, (value.length() - 1));
+			if (value.startsWith("\"")) {
+				value = value.substring(1, (value.length() - 1));
+			}
 			switch (tree_.getParent().getType()) {
 			case DbRecordParser.RECORD:
 				this.getLocalRecord().setName(value);
