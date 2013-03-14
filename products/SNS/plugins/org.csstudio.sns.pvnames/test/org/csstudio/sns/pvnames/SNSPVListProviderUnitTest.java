@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.sns.pvnames;
 
-import java.util.regex.Pattern;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.csstudio.pvnames.IPVListProvider;
 import org.csstudio.pvnames.PVListResult;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
 
 /** JUnit test of the {@link SNSPVListProvider}
  *  @author Kay Kasemir
@@ -26,7 +25,7 @@ public class SNSPVListProviderUnitTest
     public void locatePVName()
     {
         final IPVListProvider provider = new SNSPVListProvider();
-        PVListResult pvs = provider.listPVs(Pattern.compile("DTL_LLRF:IOC1:L.*"), 10);
+        PVListResult pvs = provider.listPVs("DTL_LLRF:IOC1:L*", 10);
         System.out.println("Matching PVs: " + pvs.getCount());
         System.out.println(pvs.getPvs());
         assertThat(pvs.getPvs().size(), greaterThan(1));
