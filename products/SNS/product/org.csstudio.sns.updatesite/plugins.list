@@ -85,6 +85,8 @@ org.csstudio.platform.libs.jmock/**
 org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
+org.csstudio.pvnames/**
+org.csstudio.pvnames.ui/**
 org.csstudio.scan/**
 org.csstudio.scan.client/**
 org.csstudio.scan.custom/**
@@ -103,6 +105,7 @@ org.csstudio.sns.ldapAuthorization/**
 org.csstudio.sns.ldapAuthorization.ui/**
 org.csstudio.sns.mpsbypasses/**
 org.csstudio.sns.passwordprovider/**
+org.csstudio.sns.pvnames/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
 org.csstudio.sns.updatesite/**

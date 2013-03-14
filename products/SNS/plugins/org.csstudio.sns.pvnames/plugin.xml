@@ -5,7 +5,7 @@
          point="org.csstudio.pvnames">
       <provider
             class="org.csstudio.sns.pvnames.SNSPVListProvider"
-            name="org.csstudio.sns.pvnames.provider">
+            name="SNS PVs">
       </provider>
    </extension>
 
