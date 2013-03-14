@@ -6,7 +6,7 @@
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.graphene.HistogramView"
-            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+            icon="icons/graphene-histogram-16.png"
             id="org.csstudio.graphene.HistogramView"
             name="Histogram (alpha)"
             restorable="true">
@@ -14,14 +14,14 @@
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.graphene.Line2DPlotView"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            icon="icons/graphene-line-16.png"
             id="org.csstudio.graphene.Line2DPlotView"
             name="Line2D Plot (alpha)"
             restorable="true">
       </view>
       <view
             class="org.csstudio.graphene.Scatter2DPlotView"
-            icon="icons/scatter-plot.png"
+            icon="icons/graphene-scatter-16.png"
             id="org.csstudio.graphene.Scatter2DPlotView"
             name="Scatter Plot (alpha)"
             restorable="true">
@@ -34,7 +34,7 @@
             locationURI="menu:display">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+               icon="icons/graphene-histogram-16.png"
                label="Histogram (alpha)"
                style="push">
             <parameter
@@ -44,7 +44,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+               icon="icons/graphene-line-16.png"
                label="Line2D Plot (alpha)"
                style="push">
             <parameter
@@ -54,7 +54,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/scatter-plot.png"
+               icon="icons/graphene-scatter-16.png"
                label="Scatter Plot"
                style="push">
             <parameter
