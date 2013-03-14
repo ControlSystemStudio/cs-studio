@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Data Browser Exercise">
+   <intro>
+      <description>
+  The following steps show how to <b>plot</b> a process variable.
+      </description>
+   </intro>
+   <item
+         title="Open the dedicated perspective">
+      <description>
+         Menu Window -> Open Perspective -> Other… and select <b>Data Browser</b>.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.perspectives.showPerspective"/>
+   </item>
+   <item
+         title="Open a new plot">
+      <description>
+         From the Tool bar, click on icon "new Data Browser plot" in CSS toolbar or use the menu CSS -> Trends -> Data Browser.
+      </description>
+      <command
+            required="false"
+            serialization="org.csstudio.trends.databrowser.NewDataBrowserHandler"/>
+   </item>
+   <item
+         title="Add a PV">
+      <description>
+        Right-click on the plot contextual menu, select the option "Add PV". Enter Name “sim://sine”
+       </description>
+   </item>
+   <item
+         title="Adjust the plot">
+      <description> 
+        Wait a little, use the Horizontal Zoom button.
+       </description>
+   </item>
+   <item
+         skip="true"
+         href="/org.csstudio.trends.databrowser2/doc/databrowser.html"
+         title="For more information">
+      <description>
+         Click on the <b>Question Mark</b> on the right to open related help.
+      </description>
+   </item>
+ </cheatsheet>
+   
