@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Css
 Bundle-SymbolicName: org.csstudio.iter.css.product;singleton:=true
 Bundle-Version: 3.0.3.qualifier
+Bundle-Activator: org.csstudio.iter.css.product.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.expressions,
