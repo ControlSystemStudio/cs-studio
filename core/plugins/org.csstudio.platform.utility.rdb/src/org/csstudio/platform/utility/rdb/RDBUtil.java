@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
 import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
+import org.csstudio.platform.utility.rdb.internal.RDBImpl;
 
 /** Obtain database connection for various RDB systems.
  *  <p>
@@ -41,7 +42,7 @@ import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
  *  @author Lana Abadie (PostgreSQL, autocommit)
  */
 @SuppressWarnings("nls")
-abstract public class RDBUtil
+public class RDBUtil
 {
     /** Start of MySQL URL */
     private static final String JDBC_MYSQL = "jdbc:mysql://";
@@ -83,25 +84,21 @@ abstract public class RDBUtil
         PostgreSQL
     }
 
-    /** @see Dialect */
-    final private Dialect dialect;
+    /** RDB Implementation (Oracle, MySQL, PostgreSQL) */
+    final private RDBImpl impl;
 
     /** Statement used to check the connection */
     private PreparedStatement test_query;
 
     /** Connect with only a url.
-     *  @deprecated Use the version with autoReconnect: {@link #connect(String, boolean)}
      */
-    @Deprecated
     public static RDBUtil connect(final String url) throws Exception
     {
         return connect(url, null, null, false);
     }
 
     /** Connect to the database.
-     *  @deprecated Use the version with autoReconnect: {@link #connect(String, String, String, boolean)}
      */
-    @Deprecated
     public static RDBUtil connect(final String url,
             final String user, final String password) throws Exception
     {
@@ -143,12 +140,22 @@ abstract public class RDBUtil
             final String user, final String password, final boolean autoReconnect) throws Exception
     {
         Activator.getLogger().log(Level.FINE, "RDBUtil connects to {0}", url);
+        return new RDBUtil(url, user, password, getRDBImpl(url), autoReconnect);
+    }
+    
+    /** Obtain RDB implementation based on URL
+     *  @param url RDB URL, used to determine the RDB {@link Dialect}
+     *  @return {@link RDBImpl}
+     *  @throws Exception on error
+     */
+    static RDBImpl getRDBImpl(final String url) throws Exception
+    {
         if (url.startsWith(JDBC_MYSQL) || url.startsWith(JDBC_MYSQL_REPLICATION))
-            return new MySQL_RDB(url, user, password, autoReconnect);
+            return new MySQL_RDB();
         else if (url.startsWith(JDBC_ORACLE))
-            return new OracleRDB(url, user, password, autoReconnect);
+            return new OracleRDB();
         else if (url.startsWith(JDBC_POSTGRESQL))
-        	return new PostgreSQL_RDB(url, user, password, autoReconnect);
+            return new PostgreSQL_RDB();
         else
             throw new Exception("Unsupported database dialect " + url);
     }
@@ -161,37 +168,26 @@ abstract public class RDBUtil
      *  @throws Exception on error
      *  @see #connect(String, String, String)
      */
-    protected RDBUtil(final String url, final String user, final String password,
-                      final Dialect dialect, final boolean autoReconnect) throws Exception
+    private RDBUtil(final String url, final String user, final String password,
+                    final RDBImpl impl, final boolean autoReconnect) throws Exception
     {
     	this.url = url;
     	this.user = user;
     	this.password = password;
     	this.autoReconnect = autoReconnect;
-    	this.dialect = dialect;
-    	this.connection = do_connect(url, user, password);
+    	this.impl = impl;
+    	this.connection = impl.connect(url, user, password);
     	// Auto-commit is the default, but just to make sure:
         connection.setAutoCommit(true);
-        if(autoReconnect) {
-            test_query = connection.prepareStatement(getConnectionTestQuery());
-        }
+        if(autoReconnect)
+            test_query = connection.prepareStatement(impl.getConnectionTestQuery());
     }
 
     /** @return Dialect info. */
     public Dialect getDialect()
     {
-    	return dialect;
+    	return impl.getDialect();
     }
-
-    /** Derived class must implement to create the database connection.
-     *  @param url RDB URL
-     *  @param user User name or <code>null</code> if part of url
-     *  @param password Password or <code>null</code> if part of url
-     *  @return JDBC connection
-     *  @throws Exception on error
-     */
-    abstract protected Connection do_connect(final String url,
-            final String user, final String password) throws Exception;
 
     /** Temporarily disable or later re-enable the auto-reconnect feature.
      *  @param auto_reconnect <code>false</code> to disable, <code>true</code> to re-enable
@@ -229,9 +225,9 @@ abstract public class RDBUtil
 	        Activator.getLogger().log(Level.FINE, "Connection Lost! Reconnect to {0}", url);
 	        if (connection != null)
                 close();
-            connection = do_connect(url, user, password);
+            connection = impl.connect(url, user, password);
             connection.setAutoCommit(false);
-            test_query = connection.prepareStatement(getConnectionTestQuery());
+            test_query = connection.prepareStatement(impl.getConnectionTestQuery());
 	    }
         return connection;
 	}
@@ -276,12 +272,6 @@ abstract public class RDBUtil
         return true;
     }
 
-    /** Derived classes must implement this to provide a statement that's
-     *  suitable for testing the connection state.
-     *  @return SQL for statement that gives a cheap way of testing the
-     *          connection state
-     */
-    abstract protected String getConnectionTestQuery();
 
     /** @return String representation for debugging */
     @Override

@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.platform.utility.rdb.Activator;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 import com.mysql.jdbc.ReplicationDriver;
 
@@ -25,23 +26,17 @@ import com.mysql.jdbc.ReplicationDriver;
  *  @author Laurent Philippe MySQL ReplicationDriver
  */
 @SuppressWarnings("nls")
-public class MySQL_RDB extends RDBUtil
+public class MySQL_RDB implements RDBImpl
 {
-    /** Initialize
-     *  @param url Database URL
-     *  @param user ... user
-     *  @param password ... password
-     *  @throws Exception on error
-     */
-    public MySQL_RDB(final String url, final String user, final String password,
-    		final boolean autoReconnect) throws Exception
+    /** {@inheritDoc} */
+    public Dialect getDialect()
     {
-        super(url, user, password, Dialect.MySQL, autoReconnect);
+        return RDBUtil.Dialect.MySQL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected Connection do_connect(final String url,
+    public Connection connect(final String url,
             final String user, final String password) throws Exception
     {
         final Properties props = new Properties();
@@ -86,7 +81,7 @@ public class MySQL_RDB extends RDBUtil
 
     /** {@inheritDoc} */
     @Override
-    protected String getConnectionTestQuery()
+    public String getConnectionTestQuery()
     {
         return "SELECT 1";
     }
