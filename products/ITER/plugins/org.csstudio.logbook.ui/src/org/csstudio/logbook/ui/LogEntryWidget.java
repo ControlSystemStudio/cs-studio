@@ -124,8 +124,10 @@ public class LogEntryWidget extends Composite {
     
     private String imageToSelect;
 
-    private final String[] supportedImageTypes = new String[] { "*.png",
-	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
+	private final String supportedImageTypes = "*.png;*.jpg;*.jpeg;*.tiff;*.gif"; //$NON-NLS-1$
+	private final String supportedImageName = "Images (png,jpg,jpeg,tiff,gif)"; //$NON-NLS-1$
+	private final String[] supportedImageTypesArray = supportedImageTypes
+			.split(";"); //$NON-NLS-1$
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -398,8 +400,8 @@ public class LogEntryWidget extends Composite {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
-		dlg.setFilterExtensions(supportedImageTypes); //$NON-NLS-1$
-		dlg.setFilterNames(new String[] { "PNG Image" }); //$NON-NLS-1$
+		dlg.setFilterExtensions(new String[] { supportedImageTypes });
+		dlg.setFilterNames(new String[] { supportedImageName });
 		final String filename = dlg.open();
 		if (filename != null) {
 		    try {
@@ -408,8 +410,8 @@ public class LogEntryWidget extends Composite {
 					.logEntry(logEntryChangeset.getLogEntry())
 					.attach(AttachmentBuilder.attachment(imgFile.getName())
 						.inputStream(new FileInputStream(imgFile)));
+				imageToSelect = imgFile.getName();
 				logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-				imageToSelect = filename;
 		    } catch (IOException e1) {
 		    	setLastException(e1);
 		    }
@@ -706,7 +708,7 @@ public class LogEntryWidget extends Composite {
 	    tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    for (Attachment attachment : logEntry.getAttachment()) {
-		if (Arrays.asList(supportedImageTypes).contains(
+		if (Arrays.asList(supportedImageTypesArray).contains(
 			"*"
 				+ attachment.getFileName().substring(
 					attachment.getFileName().lastIndexOf(
@@ -786,7 +788,7 @@ public class LogEntryWidget extends Composite {
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
 	    // imageStackWidget.addImage(screenshot_file.getPath(),
 	    // new FileInputStream(screenshot_file.getPath()));
-		imageToSelect = screenshot_file.getPath();
+		imageToSelect = screenshot_file.getName();
 	    return AttachmentBuilder
 		    .attachment(screenshot_file.getName())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));

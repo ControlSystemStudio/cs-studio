@@ -38,6 +38,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.csstudio.iter.logbook.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.csstudio.iter.snl.feature"
          version="0.0.0"/>
 
@@ -63,6 +67,10 @@
 
    <includes
          id="org.csstudio.iter.diag.pvfields.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.xmleditor.feature"
          version="0.0.0"/>
 
 </feature>

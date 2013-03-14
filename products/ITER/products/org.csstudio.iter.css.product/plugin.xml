@@ -128,5 +128,40 @@
             file="toc/tocChangelog.xml">
       </toc>
    </extension>
+
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.csstudio.iter.css.product.EarlyStartup"/>
+   </extension>
+
+    <extension
+          point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="org.csstudio.iter.css.product.product.cheatSheetContent"
+            name="Basic Exercises">
+      </category>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/import.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.import"
+            name="1. Import a project generated from SDD">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/probe.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.probe"
+            name="2. Probe Exercise">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/databrowser.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.databrowser"
+            name="3. Data Browser Exercise">
+      </cheatsheet>
+    </extension>
    
 </plugin>
