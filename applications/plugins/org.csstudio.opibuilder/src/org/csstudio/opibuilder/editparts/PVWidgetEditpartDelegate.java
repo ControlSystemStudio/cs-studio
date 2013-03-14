@@ -50,22 +50,23 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	}
 	private final class WidgetPVListener implements PVListener, PVWriterListener<Object>{
 		private String pvPropID;
+		private boolean isControlPV;
 
 		public WidgetPVListener(String pvPropID) {
 			this.pvPropID = pvPropID;
+			isControlPV = pvPropID.equals(controlPVPropId);
 		}
 
 		public void pvDisconnected(PV pv) {
 		}
 
 		public void pvValueUpdate(PV pv) {
-//			if(pv == null)
-//				return;
+
 			final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
 
 			//write access
-			if(! (pv instanceof PVManagerPV))
-				updateWritable(widgetModel, pvPropID);
+			if(isControlPV)
+				updateWritable(widgetModel, pv);
 			
 			if (pv.getValue() != null) {
 				if (ignoreOldPVValue) {
@@ -82,7 +83,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 		@Override
 		public void pvChanged(PVWriterEvent<Object> event) {
-			updateWritable(editpart.getWidgetModel(), pvPropID);
+			updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
 		}
 	}
 	//invisible border for no_alarm state, this can prevent the widget from resizing
@@ -636,13 +637,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		this.isAllValuesBuffered = isAllValuesBuffered;
 	}
 
-	private void updateWritable(final AbstractWidgetModel widgetModel, String pvPropID) {
-		if(controlPVPropId != null &&
-				controlPVPropId.equals(pvPropID) && (lastWriteAccess == null ||
-				lastWriteAccess.get() != pvMap.get(pvPropID).isWriteAllowed())){
+	private void updateWritable(final AbstractWidgetModel widgetModel, PV pv) {
+		if(lastWriteAccess == null || lastWriteAccess.get() != pv.isWriteAllowed()){
 			if(lastWriteAccess == null)
 				lastWriteAccess= new AtomicBoolean();
-			lastWriteAccess.set(pvMap.get(pvPropID).isWriteAllowed());
+			lastWriteAccess.set(pv.isWriteAllowed());
 			if(lastWriteAccess.get()){
 				UIBundlingThread.getInstance().addRunnable(
 						editpart.getViewer().getControl().getDisplay(),new Runnable(){

@@ -9,21 +9,11 @@ Bundle-Description: Provides EPICS v4 pvAccess connectivity to pvManager
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.epics.pvdata;bundle-version="2.0.0",
- org.epics.pvaccess;bundle-version="2.0.0",
- org.epics.vtype;bundle-version="2.0.0" 
+ org.epics.pvdata;bundle-version="3.1.1",
+ org.epics.pvaccess;bundle-version="3.1.1",
+ org.epics.vtype;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package:
- org.epics.pvmanager.pva;
-  uses:="org.epics.pvdata.monitor,
-   org.epics.pvaccess.client,
-   org.epics.pvdata.pv,
-   org.epics.pvdata.misc,
-   org.epics.pvmanager",
- org.epics.pvmanager.pva.adapters;
-  uses:="org.epics.util.array,
-   org.epics.util.time,
-   org.epics.vtype,
-   org.epics.pvdata.pv"
+Export-Package: org.epics.pvmanager.pva,
+ org.epics.pvmanager.pva.adapters
 Bundle-ClassPath: .

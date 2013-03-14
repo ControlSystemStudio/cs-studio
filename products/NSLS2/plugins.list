@@ -125,6 +125,7 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.pva
 org.csstudio.utility.pvmanager.extra
 org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.sim
@@ -142,3 +143,5 @@ org.epics.vtype
 org.python
 org.slf4j
 org.slf4j.api
+org.epics.pvdata
+org.epics.pvaccess
