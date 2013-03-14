@@ -128,5 +128,11 @@
             file="toc/tocChangelog.xml">
       </toc>
    </extension>
+
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.csstudio.iter.css.product.EarlyStartup"/>
+   </extension>
    
 </plugin>

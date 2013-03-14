@@ -1,30 +1,43 @@
 package org.csstudio.iter.css.product;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-/** A perspective for CSS at SNS
+/** Default perspective for CSS at ITER
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class CSS_Perspective implements IPerspectiveFactory
 {
-    /** The perspective ID */
-    final public static String ID = CSS_Perspective.class.getName();
+    /** Perspective ID registered in plugin.xml */
+    final public static String ID = "org.csstudio.iter.css.product.CSS_Perspective";
 
     // Other view IDs
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
-//    final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
+    final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
+    final private static String ID_PROBE2 = "org.csstudio.diag.pvmanager.probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     final private static String ID_ALARM_PERSP = "org.csstudio.alarm.beast.ui.perspective";
-//    final private static String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
-//    final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
     final private static String ID_ALARM_TREE = "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE= "org.csstudio.alarm.beast.ui.alarmtable.view";
+
+    /** Suffix for matching View IDs when multiple instances are allowed */
+    final private static String MULTIPLE = ":*";
     
+    /** Check if certain plugin is available
+     *  @param plugin_id ID of the plugin
+     *  @return <code>true</code> if available
+     */
+    private boolean isPluginAvailable(final String plugin_id)
+    {
+    	return Platform.getBundle(plugin_id) != null;
+    }
+
+    @Override
     public void createInitialLayout(IPageLayout layout)
     {
         // left | editor
@@ -37,24 +50,35 @@ public class CSS_Perspective implements IPerspectiveFactory
                         IPageLayout.LEFT, 0.25f, editor);
         IFolderLayout bottom = layout.createFolder("bottom",
                         IPageLayout.BOTTOM, 0.66f, editor);
-        
+
         // Stuff for 'left'
         left.addView("org.eclipse.ui.views.ResourceNavigator");
-//        left.addView(IPageLayout.ID_RES_NAV); // Deprecated, ID_PROJECT_EXPLORER?
-//        left.addPlaceholder(ID_SNS_PV_UTIL);
-        left.addPlaceholder(ID_ALARM_TREE);
-        
+        if (isPluginAvailable("org.csstudio.diag.pvutil"))
+            left.addPlaceholder("org.csstudio.diag.pvutil.view.PVUtilView");
+        final boolean have_alarm = isPluginAvailable("org.csstudio.alarm.beast");
+        if (have_alarm)
+        	left.addPlaceholder(ID_ALARM_TREE);
+
         // Stuff for 'bottom'
-//        bottom.addPlaceholder(ID_PROBE);
-//        bottom.addPlaceholder(ID_PROBE + ":*");
-//        bottom.addPlaceholder(ID_DATABROWSER_CONFIG);
-        bottom.addPlaceholder(ID_ALARM_TABLE);
+        if (isPluginAvailable("org.csstudio.diag.probe"))
+        {
+            bottom.addPlaceholder(ID_PROBE);
+            bottom.addPlaceholder(ID_PROBE + MULTIPLE);
+        }
+        if (isPluginAvailable("org.csstudio.diag.pvmanager.probe"))
+        {
+            bottom.addPlaceholder(ID_PROBE2);
+            bottom.addPlaceholder(ID_PROBE2 + MULTIPLE);
+        }
+        if (have_alarm)
+        	bottom.addPlaceholder(ID_ALARM_TABLE);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        
+
         // Populate the "Window/Perspectives..." menu with suggested persp.
         layout.addPerspectiveShortcut(ID);
         layout.addPerspectiveShortcut(ID_DATABROWSER_PERSP);
-        layout.addPerspectiveShortcut(ID_ALARM_PERSP);
+        if (have_alarm)
+        	layout.addPerspectiveShortcut(ID_ALARM_PERSP);
 
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_CLOCK);
