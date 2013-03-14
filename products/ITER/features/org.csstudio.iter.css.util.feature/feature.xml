@@ -69,4 +69,8 @@
          id="org.csstudio.iter.diag.pvfields.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.iter.xmleditor.feature"
+         version="0.0.0"/>
+
 </feature>
