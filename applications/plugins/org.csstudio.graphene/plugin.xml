@@ -3,8 +3,12 @@
 <plugin>
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.graphene.category"
+            name="Graphene">
+      </category>
       <view
-            category="org.csstudio.channel.application.category"
+            category="org.csstudio.graphene.category"
             class="org.csstudio.graphene.HistogramView"
             icon="icons/graphene-histogram-16.png"
             id="org.csstudio.graphene.HistogramView"
@@ -12,7 +16,7 @@
             restorable="true">
       </view>
       <view
-            category="org.csstudio.channel.application.category"
+            category="org.csstudio.graphene.category"
             class="org.csstudio.graphene.Line2DPlotView"
             icon="icons/graphene-line-16.png"
             id="org.csstudio.graphene.Line2DPlotView"
@@ -20,6 +24,7 @@
             restorable="true">
       </view>
       <view
+            category="org.csstudio.graphene.category"
             class="org.csstudio.graphene.Scatter2DPlotView"
             icon="icons/graphene-scatter-16.png"
             id="org.csstudio.graphene.Scatter2DPlotView"
@@ -55,7 +60,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/graphene-scatter-16.png"
-               label="Scatter Plot"
+               label="Scatter Plot (alpha)"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
