@@ -44,7 +44,7 @@
             class="org.csstudio.channel.views.Line2DPlotView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
             id="org.csstudio.channel.views.Line2DPlotView"
-            name="Line Plot"
+            name="Channel Line Plot"
             restorable="true">
       </view>
       <view
@@ -61,6 +61,10 @@
       <menuContribution
             allPopups="false"
             locationURI="menu:display">
+         <separator
+               name="org.csstudio.channel.views.before"
+               visible="true">
+         </separator>
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
@@ -104,7 +108,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
-               label="Line 2D Plot"
+               label="Channel Line Plot"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -121,6 +125,10 @@
                   value="org.csstudio.channel.views.ChannelOrchestratorView">
             </parameter>
          </command>
+         <separator
+               name="org.csstudio.channel.views.after"
+               visible="true">
+         </separator>
       </menuContribution>
       <menuContribution
             allPopups="false"
