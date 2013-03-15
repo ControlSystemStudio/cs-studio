@@ -67,7 +67,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.graphene.configure"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/gear-16.png"
+               icon="platform:/plugin/org.csstudio.ui.util/icons/gear-16.png"
                label="Configure..."
                style="push">
             <visibleWhen>
