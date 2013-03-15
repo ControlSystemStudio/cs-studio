@@ -54,16 +54,16 @@ import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.LineGraphPlot;
-import org.epics.pvmanager.graphene.Plot2DResult;
-import org.epics.pvmanager.graphene.PlotDataRange;
+import org.epics.pvmanager.graphene.Graph2DResult;
+import org.epics.pvmanager.graphene.GraphDataRange;
+import org.epics.pvmanager.graphene.LineGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	implements ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
-    private LineGraphPlot plot;
+    private LineGraph2DExpression plot;
     private ErrorBar errorBar;
     private boolean showRange;
     private StartEndRangeWidget yRangeControl;
@@ -252,7 +252,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	}
     }
 
-    private PVReader<Plot2DResult> pv;
+    private PVReader<Graph2DResult> pv;
     // Y values
     private Collection<String> yChannelNames;
     private String yWaveformChannelName;
@@ -522,9 +522,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		.imageWidth(imageDisplay.getSize().x)
 		.interpolation(InterpolationScheme.LINEAR));
 	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread(this))
-		.readListener(new PVReaderListener<Plot2DResult>() {
+		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
-		    public void pvChanged(PVReaderEvent<Plot2DResult> event) {
+		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
 			Exception ex = pv.lastException();
 
 			if (ex != null) {
@@ -547,9 +547,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
      * @param control
      */
     private void setRange(StartEndRangeWidget control,
-	    PlotDataRange plotDataRange) {
-	control.setRange(plotDataRange.getStartIntegratedDataRange(),
-		plotDataRange.getEndIntegratedDataRange());
+    	    GraphDataRange plotDataRange) {
+    	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
+    		plotDataRange.getIntegratedRange().getMaximum().doubleValue());
     }
 
     private void resetRange(StartEndRangeWidget control) {
