@@ -3,7 +3,7 @@ package org.csstudio.graphene;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.channel.widgets.PopupMenuUtil;
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
