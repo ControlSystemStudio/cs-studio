@@ -1,8 +1,8 @@
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
-import static org.epics.pvmanager.graphene.ExpressionLanguage.*;
-import static org.epics.util.time.TimeDuration.*;
+import static org.epics.pvmanager.graphene.ExpressionLanguage.histogramOf;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDouble;
+import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -22,18 +22,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.epics.graphene.Histogram1DUpdate;
+import org.epics.graphene.Graph2DRendererUpdate;
+import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VImage;
-import org.epics.pvmanager.graphene.Histogram1DPlot;
+import org.epics.pvmanager.graphene.AreaGraph2DExpression;
+import org.epics.pvmanager.graphene.Graph2DExpression;
+import org.epics.pvmanager.graphene.Graph2DResult;
 
 public class HistogramWidget extends Composite {
 
     private VImageDisplay imageDisplay;
-    private Histogram1DPlot plot;
+    private AreaGraph2DExpression graph;
     private ErrorBar errorBar;
     private boolean editable = true;
 
@@ -79,8 +81,8 @@ public class HistogramWidget extends Composite {
 
 	    @Override
 	    public void controlResized(ControlEvent e) {
-		changePlotSize(imageDisplay.getSize().x,
-			imageDisplay.getSize().y);
+			changePlotSize(graph, imageDisplay.getSize().x,
+				imageDisplay.getSize().y);
 	    }
 
 	    @Override
@@ -112,7 +114,7 @@ public class HistogramWidget extends Composite {
     // The pv names for multiple channels
     private List<String> scalarPVNames;
     // The pv created by pvmanager
-    private PVReader<VImage> pv;
+    private PVReader<Graph2DResult> pv;
 
     /**
      * The pv name to connect to.
@@ -195,24 +197,26 @@ public class HistogramWidget extends Composite {
 	    return;
 	}
 
-	plot = histogramOf(vDouble(getProcessVariable().getName()));
-//	plot.update(new Histogram1DUpdate().imageWidth(
-//		imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y));
-	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
-		.readListener(new PVReaderListener<VImage>() {
+	graph = histogramOf(vDouble(getProcessVariable().getName()));
+	graph.update(graph.newUpdate()
+		.imageHeight(imageDisplay.getSize().y)
+		.imageWidth(imageDisplay.getSize().x));
+	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
+		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
-		    public void pvChanged(PVReaderEvent<VImage> event) {
+		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
 			setLastError(pv.lastException());
-			imageDisplay.setVImage(pv.getValue());
+			imageDisplay.setVImage(pv.getValue().getImage());
 		    }
 		}).maxRate(ofHertz(50));
     }
 
-    private void changePlotSize(int newWidgth, int newHeight) {
-	if (plot != null) {
-//	    plot.update(new Histogram1DUpdate(). imageHeight(newHeight)
-//		    .imageWidth(newWidgth));
-	}
+    private static <T extends Graph2DRendererUpdate<T>> void changePlotSize(Graph2DExpression<T> graph, int newWidth, int newHeight) {
+		if (graph != null) {
+			graph.update(graph.newUpdate()
+					.imageHeight(newHeight)
+					.imageWidth(newWidth));
+		}
     }
 
     private ProcessVariable processVariable;

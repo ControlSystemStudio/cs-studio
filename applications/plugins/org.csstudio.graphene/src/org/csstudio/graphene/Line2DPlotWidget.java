@@ -7,8 +7,6 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.BeanComposite;
@@ -22,7 +20,6 @@ import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -44,9 +41,9 @@ import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.LineGraphPlot;
-import org.epics.pvmanager.graphene.Plot2DResult;
-import org.epics.pvmanager.graphene.PlotDataRange;
+import org.epics.pvmanager.graphene.Graph2DResult;
+import org.epics.pvmanager.graphene.GraphDataRange;
+import org.epics.pvmanager.graphene.LineGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
 /**
@@ -59,7 +56,7 @@ public class Line2DPlotWidget extends BeanComposite implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
-    private LineGraphPlot plot;
+    private LineGraph2DExpression plot;
     private ErrorBar errorBar;
     private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
@@ -186,7 +183,7 @@ public class Line2DPlotWidget extends BeanComposite implements
 	imageDisplay.setMenu(menu);
     }
 
-    private PVReader<Plot2DResult> pv;
+    private PVReader<Graph2DResult> pv;
 
     private String pvName;
     private String xPvName;
@@ -267,9 +264,9 @@ public class Line2DPlotWidget extends BeanComposite implements
 		.imageWidth(imageDisplay.getSize().x)
 		.interpolation(InterpolationScheme.LINEAR));
 	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
-		.readListener(new PVReaderListener<Plot2DResult>() {
+		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
-		    public void pvChanged(PVReaderEvent<Plot2DResult> event) {
+		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
 			Exception ex = pv.lastException();
 
 			if (ex != null) {
@@ -292,9 +289,9 @@ public class Line2DPlotWidget extends BeanComposite implements
      * @param control
      */
     private void setRange(StartEndRangeWidget control,
-	    PlotDataRange plotDataRange) {
-	control.setRange(plotDataRange.getStartIntegratedDataRange(),
-		plotDataRange.getEndIntegratedDataRange());
+	    GraphDataRange plotDataRange) {
+	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
+		plotDataRange.getIntegratedRange().getMaximum().doubleValue());
     }
 
     private void resetRange(StartEndRangeWidget control) {

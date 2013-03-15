@@ -33,8 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.epics.graphene.AxisRanges;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.ScatterGraph2DRenderer;
 import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -42,9 +40,9 @@ import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.ScatterGraphPlot;
-import org.epics.pvmanager.graphene.Plot2DResult;
-import org.epics.pvmanager.graphene.PlotDataRange;
+import org.epics.pvmanager.graphene.Graph2DResult;
+import org.epics.pvmanager.graphene.GraphDataRange;
+import org.epics.pvmanager.graphene.ScatterGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
 /**
@@ -55,7 +53,7 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
-    private ScatterGraphPlot plot;
+    private ScatterGraph2DExpression graph;
     private ErrorBar errorBar;
     private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
@@ -99,10 +97,10 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
+		if (graph != null) {
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
-		    plot.update(new ScatterGraph2DRendererUpdate()
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .yAxisRange(AxisRanges.absolute(invert
 				    - yRangeControl.getSelectedMax(), invert
 				    - yRangeControl.getSelectedMin())));
@@ -123,8 +121,8 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void controlResized(ControlEvent e) {
-		if (plot != null) {
-		    plot.update(new ScatterGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
 			    .imageWidth(imageDisplay.getSize().x));
 		}
@@ -148,8 +146,8 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
-		    plot.update(new ScatterGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .xAxisRange(AxisRanges.absolute(
 				    xRangeControl.getSelectedMin(),
 				    xRangeControl.getSelectedMax())));
@@ -181,7 +179,7 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 	imageDisplay.setMenu(menu);
     }
 
-    private PVReader<Plot2DResult> pv;
+    private PVReader<Graph2DResult> pv;
 
     private String pvName;
     private String xPvName;
@@ -236,7 +234,7 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 	    pv.close();
 	    imageDisplay.setVImage(null);
 	    setLastError(null);
-	    plot = null;
+	    graph = null;
 	    resetRange(xRangeControl);
 	    resetRange(yRangeControl);
 	}
@@ -249,19 +247,19 @@ public class Scatter2DPlotWidget extends BeanComposite implements
 	    return;
 	}
 
-	plot = ExpressionLanguage
+	graph = ExpressionLanguage
 		.scatterGraphOf(
 			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
 				.formula(getXpvName()),
 			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
 				.formula(getPvName()));
-	plot.update(new ScatterGraph2DRendererUpdate()
+	graph.update(new ScatterGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
 		.imageWidth(imageDisplay.getSize().x));
-	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
-		.readListener(new PVReaderListener<Plot2DResult>() {
+	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
+		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
-		    public void pvChanged(PVReaderEvent<Plot2DResult> event) {
+		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
 			Exception ex = pv.lastException();
 
 			if (ex != null) {
@@ -284,9 +282,9 @@ public class Scatter2DPlotWidget extends BeanComposite implements
      * @param control
      */
     private void setRange(StartEndRangeWidget control,
-	    PlotDataRange plotDataRange) {
-	control.setRange(plotDataRange.getStartIntegratedDataRange(),
-		plotDataRange.getEndIntegratedDataRange());
+	    GraphDataRange plotDataRange) {
+    	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
+    			plotDataRange.getIntegratedRange().getMaximum().doubleValue());
     }
 
     private void resetRange(StartEndRangeWidget control) {
