@@ -1,5 +1,5 @@
-/*
- * Copyright 2011 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.graphene;
@@ -21,7 +21,7 @@ import org.epics.pvmanager.ReadFunction;
  *
  * @author carcassi
  */
-class LineGraphFunction implements ReadFunction<Plot2DResult> {
+class LineGraph2DFunction implements ReadFunction<Graph2DResult> {
     
     private ReadFunction<? extends VNumberArray> yArray;
     private ReadFunction<? extends VNumberArray> xArray;
@@ -33,16 +33,16 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
     private VImage previousImage;
     private final QueueCollector<LineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
-    public LineGraphFunction(ReadFunction<? extends VNumberArray> argument) {
+    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> argument) {
         this.yArray = argument;
     }
 
-    public LineGraphFunction(ReadFunction<? extends VNumberArray> xArray, ReadFunction<? extends VNumberArray> yArray) {
+    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> xArray, ReadFunction<? extends VNumberArray> yArray) {
         this.xArray = xArray;
         this.yArray = yArray;
     }
 
-    public LineGraphFunction(ReadFunction<? extends VNumberArray> yArray, ReadFunction<? extends VNumber> xInitialOffset, ReadFunction<? extends VNumber> xIncrementSize) {
+    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> yArray, ReadFunction<? extends VNumber> xInitialOffset, ReadFunction<? extends VNumber> xIncrementSize) {
         this.xInitialOffset = xInitialOffset;
         this.xIncrementSize = xIncrementSize;
         this.yArray = yArray;
@@ -53,7 +53,7 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
     }
 
     @Override
-    public Plot2DResult readValue() {
+    public Graph2DResult readValue() {
         VNumberArray newData = yArray.readValue();
         
         // No data, no plot
@@ -98,9 +98,9 @@ class LineGraphFunction implements ReadFunction<Plot2DResult> {
         renderer.draw(image.createGraphics(), dataset);
         
         previousImage = ValueUtil.toVImage(image);
-        return new Plot2DResult(previousImage,
-                new PlotDataRange(renderer.getXPlotRange(), dataset.getXStatistics(), renderer.getXAggregatedRange()),
-                new PlotDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()));
+        return new Graph2DResult(previousImage,
+                new GraphDataRange(renderer.getXPlotRange(), dataset.getXStatistics(), renderer.getXAggregatedRange()),
+                new GraphDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()));
     }
     
 }

@@ -1,5 +1,5 @@
-/*
- * Copyright 2011 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.graphene;
@@ -19,17 +19,17 @@ import org.epics.vtype.ValueUtil;
  *
  * @author carcassi
  */
-class Histogram1DFunction implements ReadFunction<VImage> {
+class AreaGraph2DFunction implements ReadFunction<Graph2DResult> {
     
     private ReadFunction<? extends List<? extends VNumber>> argument;
     private Point1DCircularBuffer dataset = new Point1DCircularBuffer(1000000);
     private Histogram1D histogram = Histograms.createHistogram(dataset);
     private AreaGraph2DRenderer renderer = new AreaGraph2DRenderer(300, 200);
-    private VImage previousImage;
+    private Graph2DResult previousImage;
     private List<Histogram1DUpdate> histogramUpdates = Collections.synchronizedList(new ArrayList<Histogram1DUpdate>());
     private QueueCollector<AreaGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
-    public Histogram1DFunction(ReadFunction<? extends List<? extends VNumber>> argument) {
+    public AreaGraph2DFunction(ReadFunction<? extends List<? extends VNumber>> argument) {
         this.argument = argument;
     }
     
@@ -43,7 +43,7 @@ class Histogram1DFunction implements ReadFunction<VImage> {
     }
 
     @Override
-    public VImage readValue() {
+    public Graph2DResult readValue() {
         List<? extends VNumber> newData = argument.readValue();
         List<AreaGraph2DRendererUpdate> rendererUpdates = rendererUpdateQueue.readValue();
         if (newData.isEmpty() && previousImage != null && histogramUpdates.isEmpty() && rendererUpdates.isEmpty())
@@ -77,8 +77,9 @@ class Histogram1DFunction implements ReadFunction<VImage> {
         BufferedImage image = new BufferedImage(renderer.getImageWidth(), renderer.getImageHeight(), BufferedImage.TYPE_3BYTE_BGR);
         renderer.draw(image.createGraphics(), histogram);
         
-        previousImage = ValueUtil.toVImage(image);
-        return previousImage;
+        return new Graph2DResult(ValueUtil.toVImage(image),
+                new GraphDataRange(renderer.getXPlotRange(), histogram.getXRange(), renderer.getXAggregatedRange()),
+                new GraphDataRange(renderer.getYPlotRange(), histogram.getStatistics(), renderer.getYAggregatedRange()));
     }
     
 }
