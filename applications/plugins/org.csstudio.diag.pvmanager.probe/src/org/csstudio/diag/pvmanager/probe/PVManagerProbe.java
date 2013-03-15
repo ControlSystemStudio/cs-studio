@@ -20,6 +20,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
+import org.csstudio.ui.util.widgets.PVFormulaInputBar;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
