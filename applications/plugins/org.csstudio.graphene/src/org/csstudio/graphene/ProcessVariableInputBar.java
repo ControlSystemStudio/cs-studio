@@ -5,7 +5,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.channel.widgets.AbstractSelectionProviderWrapper;
+import org.csstudio.ui.util.AbstractSelectionProviderWrapper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
