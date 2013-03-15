@@ -28,6 +28,8 @@ org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.pvmanager.vtype
 org.csstudio.workspace
+org.epics.graphene
+org.epics.pvdata
 org.epics.util
 org.epics.vtype
 org.slf4j
