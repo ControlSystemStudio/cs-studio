@@ -9,20 +9,20 @@ then
 exit -1
 fi
 
-echo *** Prepare all products ***
+echo ::: Prepare all products :::
 while read PRODUCT
 do
   ./prepare-release.sh $PRODUCT $VERSION
   git commit -a -m "$PRODUCT: preparing for release $VERSION"
 done < release.products
 
-echo *** Tagging version $VERSION ***
+echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
 
-echo *** Build all products ***
+echo ::: Build all products :::
 while read PRODUCT
 do
   ./build.sh $PRODUCT
 done < release.products
 
-echo *** Release Done ***
+echo ::: Release Done :::
