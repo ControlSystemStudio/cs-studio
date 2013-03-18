@@ -4,7 +4,7 @@
 PRODUCT=$1
 VERSION=$2
 BUILD="build"
-BUILD_DIR=`pwd`
+BUILD_DIR="../../build"
 if [ -z "$PRODUCT" ]
 then 
   echo You must provide the product \(e.g. \"prepare_release.sh NSLS2 3.2.4\"\)
@@ -20,4 +20,4 @@ echo Build directory: $BUILD_DIR
 echo Product: $PRODUCT
 
 cd ../products/$PRODUCT
-java -jar \"$BUILD_DIR/ImageLabeler-1.0.jar\" $VERSION `cat splash-parameters.txt`
+java -jar $BUILD_DIR/ImageLabeler-1.0.jar $VERSION `cat splash-parameters.txt`
