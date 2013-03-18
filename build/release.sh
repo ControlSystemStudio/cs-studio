@@ -13,6 +13,6 @@ fi
 while read PRODUCT
 do
   ./prepare-release.sh $PRODUCT $VERSION
-  git commit -m "Preparing product $PRODUCT for release $VERSION"
+  git commit -a -m "Preparing product $PRODUCT for release $VERSION"
 done < release.products
 
