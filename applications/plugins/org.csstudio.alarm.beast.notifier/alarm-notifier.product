@@ -53,6 +53,8 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.epics.util"/>
+      <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
