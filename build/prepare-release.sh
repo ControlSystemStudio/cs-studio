@@ -20,4 +20,4 @@ echo Build directory: $BUILD_DIR
 echo Product: $PRODUCT
 
 cd ../products/$PRODUCT
-java -jar $BUILD_DIR/ImageLabeler-1.0.jar $VERSION `cat splash-parameters.txt`
+java -jar \"$BUILD_DIR/ImageLabeler-1.0.jar\" $VERSION `cat splash-parameters.txt`
