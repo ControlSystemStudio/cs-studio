@@ -4,7 +4,7 @@
 PRODUCT=$1
 VERSION=$2
 BUILD="build"
-BUILD_DIR=`pwd`
+BUILD_DIR="../../build"
 if [ -z "$PRODUCT" ]
 then 
   echo You must provide the product \(e.g. \"prepare_release.sh NSLS2 3.2.4\"\)
