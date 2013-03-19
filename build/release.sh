@@ -21,7 +21,7 @@ cd $BUILD_DIR
 
 echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
-#git push origin CSS-$VERSION
+git push origin CSS-$VERSION
 
 echo ::: Build all products :::
 while read PRODUCT
