@@ -12,13 +12,16 @@ fi
 echo ::: Prepare all products :::
 while read PRODUCT
 do
-  ./prepare-release.sh $PRODUCT $VERSION
+  cd ../products/$PRODUCT
+  ./prepare-release.sh $VERSION
   git commit -a -m "$PRODUCT: preparing for release $VERSION"
 done < release.products
 
+cd $BUILD_DIR
+
 echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
-git push origin CSS-$VERSION
+#git push origin CSS-$VERSION
 
 echo ::: Build all products :::
 while read PRODUCT
