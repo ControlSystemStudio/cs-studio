@@ -18,7 +18,7 @@ done < release.products
 
 echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
-git push
+git push origin CSS-$VERSION
 
 echo ::: Build all products :::
 while read PRODUCT
