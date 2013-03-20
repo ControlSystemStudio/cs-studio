@@ -85,9 +85,9 @@ public class Application implements IApplication
             return parser.getHelp();
 
         this.url = url.get();
-        this.user = user.get().isEmpty() ? null : user.get();
-        this.password = password.get().isEmpty() ? null : password.get();
-        this.schema = schema.get().isEmpty() ? "" : schema.get();
+        this.user = (user.get() == null || user.get().isEmpty()) ? null : user.get();
+        this.password = (password.get() == null || password.get().isEmpty()) ? null : password.get();
+        this.schema = (schema.get() == null || schema.get().isEmpty()) ? "" : schema.get();
         if (do_list.get())
         {
             mode = Mode.LIST;
