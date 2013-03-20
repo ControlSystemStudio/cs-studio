@@ -125,7 +125,7 @@ public class Preferences
     public static String getRDB_Schema()
     {
         final String schema = getString(RDB_SCHEMA);
-        if (schema.endsWith("."))
+        if (schema != null && schema.endsWith("."))
             return schema.substring(0, schema.length()-1);
         return schema;
     }
