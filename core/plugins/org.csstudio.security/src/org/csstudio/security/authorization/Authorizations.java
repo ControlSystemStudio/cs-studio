@@ -10,9 +10,13 @@ package org.csstudio.security.authorization;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.security.auth.Subject;
-
 /** Authorizations that a user has
+ * 
+ *  <p>Each authorization is a string.
+ *  The meaning is defined by the application that uses it.
+ *  For example, "alarm_config" may be an authorization that
+ *  the alarm system requires to permit changes.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -25,17 +29,14 @@ public class Authorizations
     final private Set<String> authorizations;
     
     /** Initialize
-     *  @param permissions Permissions that make 
+     *  @param authorizations Authorizations held by the user
      */
     public Authorizations(final Set<String> authorizations)
     {
         this.authorizations = Collections.unmodifiableSet(authorizations);
     }
     
-    /** Obtain permissions for a user
-     *  @param user JAAS {@link Subject} that describes the user
-     *  @return Permissions held by this user
-     */
+    /** @return Authorizations held by a user */
     public Set<String> getAuthorizations()
     {
         return authorizations;
@@ -46,7 +47,7 @@ public class Authorizations
      *  @param authorization Authorization to check
      *  @return <code>true</code> if user has authorization
      */
-    public boolean havePermission(final String authorization)
+    public boolean haveAuthorization(final String authorization)
     {
         return authorizations.contains(authorization)  ||  authorizations.contains(FULL);
     }

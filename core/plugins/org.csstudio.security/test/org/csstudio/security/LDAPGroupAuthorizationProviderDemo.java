@@ -53,6 +53,6 @@ public class LDAPGroupAuthorizationProviderDemo
         final Authorizations authorizations = ldap.getAuthorizations(subject);
         
         assertThat(authorizations, not(nullValue()));
-        assertThat(authorizations.havePermission("archive_config"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("archive_config"), equalTo(true));
     }
 }

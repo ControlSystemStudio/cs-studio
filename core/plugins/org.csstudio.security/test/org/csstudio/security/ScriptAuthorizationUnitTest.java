@@ -40,7 +40,7 @@ public class ScriptAuthorizationUnitTest
         Authorizations authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.havePermission("netaccounts"), equalTo(true));
-        assertThat(authorizations.havePermission("whatever"), equalTo(false));
+        assertThat(authorizations.haveAuthorization("netaccounts"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("whatever"), equalTo(false));
     }
 }

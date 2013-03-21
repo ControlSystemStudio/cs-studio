@@ -9,6 +9,8 @@ package org.csstudio.security.internal;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
 
@@ -27,6 +29,7 @@ import org.csstudio.security.authorization.Authorizations;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SecurityContext
 {
     final private static SecurityContext instance = new SecurityContext();
@@ -71,13 +74,23 @@ public class SecurityContext
     /** @param subject Currently logged-in Subject or <code>null</code> */
     public void setSubject(final Subject subject)
     {
-        synchronized (this)
+        Authorizations authorizations = null;
+        if (subject != null  &&  authorization_provider != null)
         {
-            this.subject = subject;
-            if (subject != null  &&  authorization_provider != null)
+            try
+            {
                 authorizations = authorization_provider.getAuthorizations(subject);
-            else
-                authorizations = null;
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName())
+                    .log(Level.WARNING, "Cannot obtain authorizations", ex);
+            }
+        }
+        synchronized (this)
+        {   // Lock only briefly for update
+            this.subject = subject;
+            this.authorizations = authorizations;
         }
         for (SecurityListener listener : listeners)
             listener.changedSecurity(subject, authorizations);
@@ -96,6 +109,6 @@ public class SecurityContext
      */
     public synchronized boolean havePermission(final String authorization)
     {
-        return authorizations != null  &&  authorizations.havePermission(authorization);
+        return authorizations != null  &&  authorizations.haveAuthorization(authorization);
     }
 }   

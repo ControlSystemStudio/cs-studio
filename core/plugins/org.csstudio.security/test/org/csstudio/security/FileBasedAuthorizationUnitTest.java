@@ -36,8 +36,8 @@ public class FileBasedAuthorizationUnitTest
         Authorizations authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.havePermission("alarm_acknowledge"), equalTo(true));
-        assertThat(authorizations.havePermission("alarm_config"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_acknowledge"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_config"), equalTo(true));
 
         // "linux-admin" is one of the ".*-admin". May do anything
         user = new Subject();
@@ -45,8 +45,8 @@ public class FileBasedAuthorizationUnitTest
         authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.havePermission("alarm_config"), equalTo(true));
-        assertThat(authorizations.havePermission("unspeakable-stuff"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_config"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("unspeakable-stuff"), equalTo(true));
 
         // "Egon" can ack' (because anybody may do that), but not config
         user = new Subject();
@@ -54,7 +54,7 @@ public class FileBasedAuthorizationUnitTest
         authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.havePermission("alarm_acknowledge"), equalTo(true));
-        assertThat(authorizations.havePermission("alarm_config"), equalTo(false));
+        assertThat(authorizations.haveAuthorization("alarm_acknowledge"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_config"), equalTo(false));
     }
 }
