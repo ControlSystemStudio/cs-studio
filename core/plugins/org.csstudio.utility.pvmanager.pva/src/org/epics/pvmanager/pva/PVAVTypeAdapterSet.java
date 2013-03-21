@@ -124,7 +124,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayDouble
     final static PVATypeAdapter ToVArrayDouble = new PVATypeAdapter(
     		VDoubleArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvDouble))
     	{
             @Override
@@ -136,7 +136,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayFloat
     final static PVATypeAdapter ToVArrayFloat = new PVATypeAdapter(
     		VFloatArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvFloat))
     	{
             @Override
@@ -148,7 +148,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayInt
     final static PVATypeAdapter ToVArrayInt = new PVATypeAdapter(
     		VIntArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvInt))
     	{
             @Override
@@ -160,7 +160,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayShort
     final static PVATypeAdapter ToVArrayShort = new PVATypeAdapter(
     		VShortArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvShort))
     	{
             @Override
@@ -172,7 +172,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayByte
     final static PVATypeAdapter ToVArrayByte = new PVATypeAdapter(
     		VByteArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvByte))
     	{
             @Override
@@ -184,7 +184,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VArrayString
     final static PVATypeAdapter ToVArrayString = new PVATypeAdapter(
     		VStringArray.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTArray", "scalarArray_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
     		fieldCreate.createScalarArray(ScalarType.pvString))
     	{
             @Override
