@@ -7,13 +7,9 @@
  ******************************************************************************/
 package org.csstudio.security.authorization;
 
-import java.security.Principal;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,14 +71,13 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
     }
 
     @Override
-    public Authorizations getAuthorizations(final Subject user)
+    public Authorizations getAuthorizations(final Subject user) throws Exception
     {
         final Logger logger = Logger.getLogger(getClass().getName());
         final Set<String> authorizations = new HashSet<>();
+        final DirContext context = connect();
         try
         {
-            final DirContext context = connect();
-
             // Search 'sub'
             final SearchControls ctrls = new SearchControls();
             ctrls.setReturningObjFlag(false);
@@ -91,28 +86,25 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
             // LDAP 'posixGroup' schema uses 'memberUid' to list group members
             final String filter_format = "(memberUid={0})";
             // Search all group
-            for (String name : getSubjectNames(user))
+            final String name = AuthorizationProviderTool.getSubjectName(user);
+            logger.log(Level.FINE, "Authorization lookup for {0}", name);
+            final String filter = MessageFormat.format(filter_format, name);
+            final NamingEnumeration<SearchResult> results =
+                    context.search(group_base, filter, ctrls);
+            while (results.hasMore())
             {
-                logger.log(Level.FINE, "Authorization lookup for {0}", name);
-                final String filter = MessageFormat.format(filter_format, name);
-                final NamingEnumeration<SearchResult> results =
-                        context.search(group_base, filter, ctrls);
-                while (results.hasMore())
-                {
-                    final SearchResult r = results.next();
-                    logger.log(Level.FINE, "Authorization entry {0}", r);
+                final SearchResult r = results.next();
+                logger.log(Level.FINE, "Authorization entry {0}", r);
 
-                    // LDAP 'posixGroup' schema uses 'cn' to name the group
-                    final String authorization = r.getAttributes().get("cn").get().toString();
-                    System.out.println("Found: '" + authorization +  "'");
-                    authorizations.add(authorization);
-                }
+                // LDAP 'posixGroup' schema uses 'cn' to name the group
+                final String authorization = r.getAttributes().get("cn").get().toString();
+                System.out.println("Found: '" + authorization +  "'");
+                authorizations.add(authorization);
             }
-            context.close();
         }
-        catch (Exception ex)
+        finally
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Authentication (Bind) failed:", ex);
+            context.close();
         }
         return new Authorizations(authorizations);
     }
@@ -131,21 +123,5 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
         // settings.put(Context.SECURITY_CREDENTIALS, ldap_password);
         
         return new InitialDirContext(settings);
-    }
-    
-    /** @param user Subject that describes user
-     *  @return All the names of the user
-     */
-    private Collection<String> getSubjectNames(final Subject user)
-    {
-        // A Subject can have multiple Principals
-        // Use only the first one as a "primary" Principal?
-        // Or use all?
-        // For now using every one.
-        final Set<Principal> principals = user.getPrincipals();
-        final List<String> names = new ArrayList<>(principals.size());
-        for (Principal principal : principals)
-            names.add(principal.getName());
-        return names;
     }
 }

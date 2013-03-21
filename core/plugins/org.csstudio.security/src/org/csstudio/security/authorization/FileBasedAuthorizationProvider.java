@@ -113,7 +113,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
     
     /** {@inheritDoc} */
     @Override
-    public Authorizations getAuthorizations(final Subject user)
+    public Authorizations getAuthorizations(final Subject user) throws Exception
     {
         final Set<String> authorizations = new HashSet<>();
         for (Entry<String, List<Pattern>> rule : rules.entrySet())

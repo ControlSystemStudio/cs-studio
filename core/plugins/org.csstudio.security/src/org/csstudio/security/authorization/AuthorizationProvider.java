@@ -21,6 +21,7 @@ public interface AuthorizationProvider
     /** Obtain authorizations for a user
      *  @param user JAAS {@link Subject} that describes the user
      *  @return {@link Authorizations} held by this user
+     *  @throws Exception on error
      */
-    public Authorizations getAuthorizations(final Subject user);
+    public Authorizations getAuthorizations(final Subject user) throws Exception;
 }
