@@ -7,16 +7,11 @@
  ******************************************************************************/
 package org.csstudio.security.ui.internal;
 
-import java.io.IOException;
-
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.csstudio.security.authentication.LoginJob;
+import org.csstudio.security.authentication.UnattendedCallbackHandler;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -24,7 +19,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -49,62 +43,36 @@ public class LoginDialog extends Dialog
      *  fetches name, password from dialog
      *  and displays errors in dialog as well.
      */
-    class DialogCallbackHandler implements CallbackHandler
+    class DialogCallbackHandler extends UnattendedCallbackHandler
     {
-        @Override
-        public void handle(final Callback[] callbacks) throws IOException,
-                UnsupportedCallbackException
+        /** Initialize with name, password from dialog */
+        public DialogCallbackHandler()
         {
-            final Display display = user.getDisplay();
-            for (Callback callback : callbacks)
+            super(user.getText(), password.getText());
+        }
+
+        public void handleText(final TextOutputCallback text)
+        {
+            if (user.isDisposed())
+                return;
+            user.getDisplay().syncExec(new Runnable()
             {
-                if (callback instanceof NameCallback)
+                @Override
+                public void run()
                 {
-                    final NameCallback nc = (NameCallback) callback;
-                    display.syncExec(new Runnable()
+                    if (user.isDisposed())
+                        return;
+                    if (text.getMessageType() == TextOutputCallback.INFORMATION  &&
+                        "OK".equals(text.getMessage()))
                     {
-                        @Override
-                        public void run()
-                        {
-                            nc.setName(user.getText());
-                        }
-                    });
+                        // Close dialog
+                        setReturnCode(OK);
+                        close();
+                    }
+                    else
+                        displayError(text.getMessage());
                 }
-                else if (callback instanceof PasswordCallback)
-                {
-                    final PasswordCallback pc = (PasswordCallback) callback;
-                    display.syncExec(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            pc.setPassword(password.getTextChars());
-                        }
-                    });
-                }
-                else if (callback instanceof TextOutputCallback)
-                {
-                    final TextOutputCallback tc = (TextOutputCallback) callback;
-                    display.syncExec(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if (user.isDisposed())
-                                return;
-                            if (tc.getMessageType() == TextOutputCallback.INFORMATION  &&
-                                "OK".equals(tc.getMessage()))
-                            {
-                                // Close dialog
-                                setReturnCode(OK);
-                                close();
-                            }
-                            else
-                                displayError(tc.getMessage());
-                        }
-                    });
-                }
-            }
+            });
         }
     };
     

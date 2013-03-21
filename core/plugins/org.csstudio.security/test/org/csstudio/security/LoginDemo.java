@@ -7,23 +7,19 @@
  ******************************************************************************/
 package org.csstudio.security;
 
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
 
-import java.io.IOException;
 import java.security.Principal;
 
 import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 
-import org.junit.Test;
+import org.csstudio.security.authentication.UnattendedCallbackHandler;
 import org.junit.Before;
+import org.junit.Test;
 
 import com.sun.security.auth.callback.TextCallbackHandler;
 
@@ -38,36 +34,6 @@ public class LoginDemo
 {
     final private static String USER_NAME = "fred";
     
-    private boolean asked_for_user = false;
-    private boolean asked_for_pass = false;
-    
-    private class TestCallbackHandler implements CallbackHandler
-    {
-        @Override
-        public void handle(final Callback[] callbacks) throws IOException,
-                UnsupportedCallbackException
-        {
-            for (Callback callback : callbacks)
-            {
-                if (callback instanceof NameCallback)
-                {
-                    final NameCallback nc = (NameCallback) callback;
-                    System.out.println("Providing user...");
-                    asked_for_user = true;
-                    nc.setName(USER_NAME);
-                }
-                else if (callback instanceof PasswordCallback)
-                {
-                    final PasswordCallback nc = (PasswordCallback) callback;
-                    System.out.println("Providing password...");
-                    asked_for_pass = true;
-                    nc.setPassword("$fred".toCharArray());
-                }
-            }
-        }
-    };
-    
-    
     @Before
     public void setup()
     {
@@ -78,8 +44,14 @@ public class LoginDemo
     @Test
     public void systemDemo() throws Exception
     {
-        
-        final LoginContext login = new LoginContext("unix", new TestCallbackHandler());
+        // Use UnattendedCallbackHandler without name, password,
+        // because that should not be required
+        final String jaas_config =
+            System.getProperty("os.name").contains("Windows")
+            ? "windows"
+            : "unix";
+        final LoginContext login =
+            new LoginContext(jaas_config, new UnattendedCallbackHandler());
         login.login();
         final Subject subject = login.getSubject();
         
@@ -90,21 +62,17 @@ public class LoginDemo
             if (p.getName().equals(current_user))
                 got_user = true;
         
-        // Should not ask for user, password
-        assertThat(asked_for_user, equalTo(false));
-        assertThat(asked_for_pass, equalTo(false));
-        
         assertThat(subject.getPrincipals().size(), greaterThanOrEqualTo(1));
         assertThat(got_user, equalTo(true));
     }
 
-    
     /** Should work as long as passwords.conf isn't changed */
     @Test
     public void fileDemo() throws Exception
     {
         
-        final LoginContext login = new LoginContext("file", new TestCallbackHandler());
+        final LoginContext login = new LoginContext("file",
+                new UnattendedCallbackHandler(USER_NAME, "$fred"));
         login.login();
         final Subject subject = login.getSubject();
         
@@ -113,10 +81,6 @@ public class LoginDemo
         for (Principal p : subject.getPrincipals())
             if (p.getName().equals(USER_NAME))
                 got_user = true;
-        
-        // Should have asked for user, password
-        assertThat(asked_for_user, equalTo(true));
-        assertThat(asked_for_pass, equalTo(true));
         
         // FileLoginModule should return exactly one Principal named "fred"
         assertThat(got_user, equalTo(true));

@@ -35,17 +35,28 @@ import org.eclipse.equinox.security.auth.LoginContextFactory;
 @SuppressWarnings("nls")
 public class LoginJob extends Job
 {
+    final private String jaas_name;
     final private CallbackHandler callback;
 
-    /** Initialize
+    /** Initialize login for JAAS config set in preferences
      *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
      */
     public LoginJob(final CallbackHandler callback)
     {
-        super("Log in");
-        this.callback = callback;
+        this(SecurityPreferences.getConfigName(), callback);
     }
 
+    /** Initialize
+     *  @param jaas_name JAAS config name to use for log in
+     *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
+     */
+    public LoginJob(final String jaas_name, final CallbackHandler callback)
+    {
+        super("Log in");
+        this.jaas_name = jaas_name;
+        this.callback = callback;
+    }
+    
     /** Log user out */
     public static void logout()
     {
@@ -59,7 +70,6 @@ public class LoginJob extends Job
         final Logger logger = Logger.getLogger(getClass().getName());
         try
         {
-            final String jaas_name = SecurityPreferences.getConfigName();
             final URL jaas_file = new URL(SecurityPreferences.getConfigFile());
             final ILoginContext login = LoginContextFactory.createContext(jaas_name, jaas_file, callback);
             login.login();
