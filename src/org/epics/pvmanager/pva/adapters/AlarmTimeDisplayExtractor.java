@@ -4,7 +4,11 @@
  */
 package org.epics.pvmanager.pva.adapters;
 
+import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
@@ -22,6 +26,74 @@ import org.epics.vtype.Time;
 import org.epics.util.time.Timestamp;
 
 public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
+
+    private static final Map<String, NumberFormat> formatterCache =
+            new ConcurrentHashMap<String, NumberFormat>();
+
+    private static NumberFormat createNumberFormat(String printfFormat)
+	{
+		if (printfFormat == null ||
+			printfFormat.isEmpty() ||
+			printfFormat.trim().isEmpty() ||
+			printfFormat.equals("%s"))
+			return NumberFormats.toStringFormat();
+		else
+		{
+			NumberFormat formatter = formatterCache.get(printfFormat);
+			if (formatter != null)
+				return formatter;
+			else
+			{
+				formatter = new PrintfFormat(printfFormat);
+				formatterCache.put(printfFormat, formatter);
+				return formatter;
+			}
+		}
+	}
+
+	@SuppressWarnings("serial")
+	static class PrintfFormat extends java.text.NumberFormat
+    {
+    	private final String format;
+    	public PrintfFormat(String printfFormat)
+    	{
+			// probe format
+			boolean allOK = true;
+			try {
+				String.format(printfFormat, 0.0);
+			} catch (Throwable th) {
+				allOK = false;
+			}
+			// accept it if all is OK
+			this.format = allOK ? printfFormat : null;
+    	}
+
+    	private final String internalFormat(double number)
+    	{
+    		if (format != null)
+    			return String.format(format, number);
+    		else
+    			return String.valueOf(number);
+    	}
+    	
+        @Override
+        public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
+            toAppendTo.append(internalFormat(number));
+            return toAppendTo;
+        }
+
+        @Override
+        public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
+            toAppendTo.append(internalFormat(number));
+            return toAppendTo;
+        }
+
+        @Override
+        public Number parse(String source, ParsePosition parsePosition) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    };
+	
 	
 	protected final AlarmSeverity alarmSeverity;
 	protected final String alarmStatus;
@@ -38,6 +110,11 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 	protected final Double upperAlarmLimit;
 	protected final Double upperCtrlLimit;
 	protected final Double upperDisplayLimit;
+	
+	private static final Timestamp noTimeStamp = org.epics.util.time.Timestamp.of(0,0);
+	private static final Integer noTimeUserTag = null;
+	private static final String noUnits = "";
+	private static final Double noLimit = 0.0;
 	
 	public AlarmTimeDisplayExtractor(PVStructure pvField, boolean disconnected)
 	{
@@ -83,13 +160,13 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 			PVInt nanosField = timeStampStructure.getIntField("nanoSeconds");
 			
 			if (secsField == null || nanosField == null)
-				timeStamp = null;
+				timeStamp = noTimeStamp;
 			else
 				timeStamp = org.epics.util.time.Timestamp.of(secsField.get(), nanosField.get());
 			
 			PVInt userTagField = timeStampStructure.getIntField("userTag");
 			if (userTagField == null)
-				timeUserTag = null;
+				timeUserTag = noTimeUserTag;
 			else
 				timeUserTag = userTagField.get();
 			
@@ -97,7 +174,7 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 		}
 		else
 		{
-			timeStamp = null;
+			timeStamp = noTimeStamp;
 			timeUserTag = null;
 			isTimeValid = false;
 		}
@@ -107,21 +184,18 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 		PVStructure displayStructure = pvField.getStructureField("display");
 		if (displayStructure != null)
 		{
-			lowerDisplayLimit = getDoubleValue(displayStructure, "limitLow");
-			upperDisplayLimit = getDoubleValue(displayStructure, "limitHigh");
+			lowerDisplayLimit = getDoubleValue(displayStructure, "limitLow", noLimit);
+			upperDisplayLimit = getDoubleValue(displayStructure, "limitHigh", noLimit);
 			
 			PVString formatField = displayStructure.getStringField("format");
 			if (formatField == null)
 				format = NumberFormats.toStringFormat();
 			else
-			{
-				format = NumberFormats.toStringFormat();
-				// TODO format = NumberFormat from formatField.get();
-			}
+				format = createNumberFormat(formatField.get());
 
 			PVString unitsField = displayStructure.getStringField("units");
 			if (unitsField == null)
-				units = null;
+				units = noUnits;
 			else
 				units = unitsField.get();
 		}
@@ -130,15 +204,15 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 			lowerDisplayLimit = null;	
 			upperDisplayLimit = null;
 			format = NumberFormats.toStringFormat();
-			units = null;
+			units = noUnits;
 		}
 	
 		// control_t
 		PVStructure controlStructure = pvField.getStructureField("control");
 		if (controlStructure != null)
 		{
-			lowerCtrlLimit = getDoubleValue(controlStructure, "limitLow");
-			upperCtrlLimit = getDoubleValue(controlStructure, "limitHigh");
+			lowerCtrlLimit = getDoubleValue(controlStructure, "limitLow", noLimit);
+			upperCtrlLimit = getDoubleValue(controlStructure, "limitHigh", noLimit);
 		}
 		else
 		{
@@ -151,23 +225,23 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 		PVStructure valueAlarmStructure = pvField.getStructureField("valueAlarm");
 		if (valueAlarmStructure != null)
 		{
-			lowerAlarmLimit = getDoubleValue(valueAlarmStructure, "lowAlarmLimit");
-			lowerWarningLimit = getDoubleValue(valueAlarmStructure, "lowWarningLimit");
-			upperWarningLimit = getDoubleValue(valueAlarmStructure, "highWarningLimit");
-			upperAlarmLimit = getDoubleValue(valueAlarmStructure, "highAlarmLimit");
+			lowerAlarmLimit = getDoubleValue(valueAlarmStructure, "lowAlarmLimit", Double.NaN);
+			lowerWarningLimit = getDoubleValue(valueAlarmStructure, "lowWarningLimit", Double.NaN);
+			upperWarningLimit = getDoubleValue(valueAlarmStructure, "highWarningLimit", Double.NaN);
+			upperAlarmLimit = getDoubleValue(valueAlarmStructure, "highAlarmLimit", Double.NaN);
 		}
 		else
 		{
-			lowerAlarmLimit = null;
-			lowerWarningLimit = null;
-			upperWarningLimit = null;
-			upperAlarmLimit = null;
+			lowerAlarmLimit = Double.NaN;
+			lowerWarningLimit = Double.NaN;
+			upperWarningLimit = Double.NaN;
+			upperAlarmLimit = Double.NaN;
 		}
 	}
 	
 	protected static final Convert convert = ConvertFactory.getConvert();
 	
-	protected static final Double getDoubleValue(PVStructure structure, String fieldName)
+	protected static final Double getDoubleValue(PVStructure structure, String fieldName, Double defaultValue)
 	{
 		PVField field = structure.getSubField(fieldName);
 		if (field instanceof PVScalar)
@@ -175,7 +249,7 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 			return convert.toDouble((PVScalar)field);
 		}
 		else
-			return null;
+			return defaultValue;
 	}
 	
 	// org.epics.pvdata.property.AlarmSeverity to pvmanager.AlarmSeverity

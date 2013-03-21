@@ -23,7 +23,7 @@ public class PVFieldToVDouble extends AlarmTimeDisplayExtractor implements VDoub
 	public PVFieldToVDouble(PVStructure pvField, boolean disconnected) {
 		super(pvField, disconnected);
 		
-		value = getDoubleValue(pvField, "value");
+		value = getDoubleValue(pvField, "value", null);
 	}
 
     /* (non-Javadoc)
