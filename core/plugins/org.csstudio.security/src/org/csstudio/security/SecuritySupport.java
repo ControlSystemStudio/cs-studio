@@ -7,11 +7,15 @@
  ******************************************************************************/
 package org.csstudio.security;
 
+import java.util.logging.Logger;
+
 import javax.security.auth.Subject;
 
+import org.csstudio.security.authorization.AuthorizationProvider;
 import org.csstudio.security.authorization.Authorizations;
-import org.csstudio.security.authorization.FileBasedAuthorizationProvider;
 import org.csstudio.security.internal.SecurityContext;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -25,17 +29,37 @@ public class SecuritySupport implements BundleActivator
 {
     /** Plugin ID defined in MANIFEST.MF */
     public static String ID = "org.csstudio.security";
-    
+   
+    /** Singleton {@link SecurityContext} */
     private static SecurityContext security = null;
 
     /** {@inheritDoc} */
     @Override
     public void start(final BundleContext context) throws Exception
     {
+        // Fetch (i.e. create) the SecurityContext
         security = SecurityContext.getInstance();
+
+        final Logger logger = Logger.getLogger(getClass().getName());
         
-        // TODO Obtain Authorization implementation from extension point
-        security.setAuthorizationProvider(new FileBasedAuthorizationProvider());
+        // Obtain Authorization implementation from extension point
+        final String authorization_name = SecurityPreferences.getAuthorizationProvider();
+        final IConfigurationElement[] extensions =
+            Platform.getExtensionRegistry().getConfigurationElementsFor(AuthorizationProvider.EXT_ID);
+        for (IConfigurationElement extension : extensions)
+        {
+            final String name = extension.getAttribute("name");
+            logger.finer("Found authentication provider " + name);
+            if (name.equals(authorization_name))
+            {
+                logger.fine("Using authentication provider " + name +
+                        " from " + extension.getContributor().getName());
+                final AuthorizationProvider auth_provider =
+                    (AuthorizationProvider) extension.createExecutableExtension("class");
+                security.setAuthorizationProvider(auth_provider);
+                break;
+            }
+        }
     }
 
     /** {@inheritDoc} */

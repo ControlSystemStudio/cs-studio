@@ -16,7 +16,15 @@ import org.csstudio.security.SecurityListener;
 import org.csstudio.security.authorization.AuthorizationProvider;
 import org.csstudio.security.authorization.Authorizations;
 
-/** Current authentication and authorization info
+/** Security context,
+ *  maintains current authentication and authorization info
+ *  and notifies listeners on change.
+ * 
+ *  <p>The plugin activator fetches the initial instance,
+ *  i.e. creates this, and the activator also sets the
+ *  AuthorizationProvider based on preferences and
+ *  extension points.
+ *  
  *  @author Kay Kasemir
  */
 public class SecurityContext
@@ -34,6 +42,14 @@ public class SecurityContext
         return instance;
     }
     
+    /** Define authorization provider
+     *  @param authorization
+     */
+    public synchronized void setAuthorizationProvider(final AuthorizationProvider authorization)
+    {
+        this.authorization_provider = authorization;
+    }
+
     /** @param listener Listener to add */
     public void addListener(final SecurityListener listener)
     {
@@ -51,23 +67,7 @@ public class SecurityContext
     {
         return subject;
     }
-
-    /** @return {@link Authorizations} of the currently logged-in Subject, or <code>null</code> */
-    public synchronized Authorizations getAuthorizations()
-    {
-        return authorizations;
-    }
     
-    /** Check if user may do something
-     * 
-     *  @param authorization Authorization to check
-     *  @return <code>true</code> if user has authorization
-     */
-    public synchronized boolean havePermission(final String authorization)
-    {
-        return authorizations != null  &&  authorizations.havePermission(authorization);
-    }
-
     /** @param subject Currently logged-in Subject or <code>null</code> */
     public void setSubject(final Subject subject)
     {
@@ -83,8 +83,19 @@ public class SecurityContext
             listener.changedSecurity(subject, authorizations);
     }
 
-    public synchronized void setAuthorizationProvider(final AuthorizationProvider authorization)
+    /** @return {@link Authorizations} of the currently logged-in Subject, or <code>null</code> */
+    public synchronized Authorizations getAuthorizations()
     {
-        this.authorization_provider = authorization;
+        return authorizations;
+    }
+    
+    /** Check if user may do something
+     * 
+     *  @param authorization Authorization to check
+     *  @return <code>true</code> if user has authorization
+     */
+    public synchronized boolean havePermission(final String authorization)
+    {
+        return authorizations != null  &&  authorizations.havePermission(authorization);
     }
 }   

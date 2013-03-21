@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="authorization" name="authorization" schema="schema/authorization.exsd"/>
    <extension point="org.eclipse.equinox.security.loginModule"
         id="ldapBind">
       <loginModule
             class="org.csstudio.security.authentication.LDAPBindLoginModule"
             description="LDAP Bind">
       </loginModule>
+   </extension>
+   <extension point="org.csstudio.security.authorization">
+      <provider name="FileBased"
+            class="org.csstudio.security.authorization.FileBasedAuthorizationProvider">
+      </provider>
+      <provider name="LDAPGroup"
+            class="org.csstudio.security.authorization.LDAPGroupAuthorizationProvider">
+      </provider>
+      <provider name="Script"
+            class="org.csstudio.security.authorization.ScriptAuthorizationProvider">
+      </provider>
    </extension>
 </plugin>

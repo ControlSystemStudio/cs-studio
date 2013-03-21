@@ -29,11 +29,23 @@ public class SecurityPreferences
     }
 
     /** @return Config file path for authorization */
+    public static String getAuthorizationProvider()
+    {
+        return getSetting("authorization_provider", "FileBased");
+    }
+    
+    /** @return Config file path for FileBased authorization */
     public static String getAuthorizationFile()
     {
-        return getSetting("authorization_config_file", "platform:/plugin/org.csstudio.security/authorization.conf");
+        return getSetting("authorization_file_name", "platform:/plugin/org.csstudio.security/authorization.conf");
     }
 
+    /** @return Path to command used by Script authorization */
+    public static String getAuthorizationScript()
+    {
+        return getSetting("authorization_script_name", "/usr/local/bin/id_auth");
+    }
+    
     /** @param key Preference key
      *  @param value Default value
      *  @return Preference setting
