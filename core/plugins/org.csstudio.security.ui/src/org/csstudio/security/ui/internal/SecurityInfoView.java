@@ -16,7 +16,9 @@ import javax.security.auth.Subject;
 import org.csstudio.security.SecurityListener;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.security.authorization.Authorizations;
-import org.csstudio.security.ui.AuthorizedAction;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -43,18 +45,31 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
     {
         createComponents(parent);
         
-        // Add demo action
-        final AuthorizedAction configure = new AuthorizedAction("alarm_config", "alarm_config")
+        // Add demo actions
+        final IAction configure = new Action("Test Config")
         {
             @Override
             public void runWithEvent(Event event)
             {
-                MessageDialog.openInformation(getSite().getShell(), "Test", "Test");
+                MessageDialog.openInformation(getSite().getShell(), "Test", "You have the 'alarm_config' authorization");
             }
         };
-        configure.setToolTipText("Test action that is only enabled when authorized for 'alarm_config'");
+        SecuritySupportUI.registerAction(configure, "alarm_config");
+
+        final IAction acknowledge = new Action("Test Ack'")
+        {
+            @Override
+            public void runWithEvent(Event event)
+            {
+                MessageDialog.openInformation(getSite().getShell(), "Test", "You have the 'alarm_acknowledge' authorization");
+            }
+        };
+        SecuritySupportUI.registerAction(acknowledge, "alarm_acknowledge");
+        
         getViewSite().getActionBars().getMenuManager().add(configure);
+        getViewSite().getActionBars().getMenuManager().add(acknowledge);
         getViewSite().getActionBars().getToolBarManager().add(configure);
+        getViewSite().getActionBars().getToolBarManager().add(acknowledge);
         
         // Toggle initial update
         changedSecurity(SecuritySupport.getSubject(), SecuritySupport.getAuthorizations());
@@ -66,7 +81,8 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                configure.dispose();
+                SecuritySupportUI.unregisterAction(configure, "alarm_config");
+                SecuritySupportUI.unregisterAction(acknowledge, "alarm_acknowledge");
                 SecuritySupport.removeListener(SecurityInfoView.this);
             }
         });

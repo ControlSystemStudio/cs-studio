@@ -13,4 +13,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.security;bundle-version="1.0.0";visibility:=reexport,
  org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional
 Export-Package: org.csstudio.security.ui
- 
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.security.ui.SecuritySupportUI
