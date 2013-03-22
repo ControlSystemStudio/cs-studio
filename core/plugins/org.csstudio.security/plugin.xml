@@ -20,4 +20,11 @@
             class="org.csstudio.security.authorization.ScriptAuthorizationProvider">
       </provider>
    </extension>
+   <extension point="org.eclipse.equinox.security.secureStorage"
+         id="install_location">
+      <provider class="org.csstudio.security.internal.InstallLocationPasswordProvider"
+            description="Password provider that uses Install Location"
+            priority="4">
+      </provider>
+   </extension>
 </plugin>

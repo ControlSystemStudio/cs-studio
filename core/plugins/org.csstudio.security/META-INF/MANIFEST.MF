@@ -13,4 +13,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.security.SecuritySupport
 Export-Package: org.csstudio.security,
  org.csstudio.security.authentication,
- org.csstudio.security.authorization
+ org.csstudio.security.authorization,
+ org.csstudio.security.preferences

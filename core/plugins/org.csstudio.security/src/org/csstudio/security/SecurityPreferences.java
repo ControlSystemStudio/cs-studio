@@ -7,6 +7,10 @@
  ******************************************************************************/
 package org.csstudio.security;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -45,6 +49,23 @@ public class SecurityPreferences
     {
         return getSetting("authorization_script_name", "/usr/local/bin/id_auth");
     }
+
+    /** @return {@link SecurePreferences} location type */
+    public static SecurePreferences.Type getSecurePreferenceLocation()
+    {
+        final String setting = getSetting("secure_preference_location", "Default");
+        try
+        {
+            return SecurePreferences.Type.valueOf(setting);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(SecurityPreferences.class.getName())
+                .log(Level.WARNING, "Invalid preference location {0}", setting);
+        }
+        return SecurePreferences.Type.Default;
+    }
+
     
     /** @param key Preference key
      *  @param value Default value
