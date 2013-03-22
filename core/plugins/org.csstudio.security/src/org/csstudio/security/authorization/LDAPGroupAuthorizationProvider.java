@@ -22,6 +22,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 
+import org.csstudio.security.SecuritySupport;
+
 import com.sun.security.auth.module.LdapLoginModule;
 
 /** AuthorizationProvider based on LDAP group membership.
@@ -86,7 +88,7 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
             // LDAP 'posixGroup' schema uses 'memberUid' to list group members
             final String filter_format = "(memberUid={0})";
             // Search all group
-            final String name = AuthorizationProviderTool.getSubjectName(user);
+            final String name = SecuritySupport.getSubjectName(user);
             logger.log(Level.FINE, "Authorization lookup for {0}", name);
             final String filter = MessageFormat.format(filter_format, name);
             final NamingEnumeration<SearchResult> results =

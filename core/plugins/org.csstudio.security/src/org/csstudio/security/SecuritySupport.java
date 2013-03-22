@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.security;
 
+import java.security.Principal;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
@@ -18,6 +20,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import com.sun.security.auth.NTUserPrincipal;
+import com.sun.security.auth.UnixPrincipal;
+import com.sun.security.auth.UserPrincipal;
 
 /** Plugin activator,
  *  API entry point for obtaining authentication and authorization info
@@ -85,6 +91,33 @@ public class SecuritySupport implements BundleActivator
     public static Subject getSubject()
     {
         return security.getSubject();
+    }
+    
+    /** A Subject can have multiple Principals.
+     * 
+     *  <p>Attempt to determine the 'primary' Principal
+     *  @param user Subject that describes user
+     *  @return Primary user name
+     *  @throws Exception if name cannot be determined
+     */
+    public static String getSubjectName(final Subject user) throws Exception
+    {
+        final Set<Principal> principals = user.getPrincipals();
+        for (Principal principal : principals)
+        {
+            // If there's only one, use that
+            if (principals.size() == 1)
+                return principal.getName();
+            
+            // Try to identify the 'primary' one.
+            // Not UnixNumericUserPrincipal, ..
+            // but the one that has the actual name.
+            if (principal instanceof UnixPrincipal  ||
+                principal instanceof UserPrincipal  ||
+                principal instanceof NTUserPrincipal)
+                return principal.getName();
+        }
+        throw new Exception("Cannot determine name for " + user);
     }
 
     /** @return {@link Authorizations} of the currently logged-in Subject, or <code>null</code> */

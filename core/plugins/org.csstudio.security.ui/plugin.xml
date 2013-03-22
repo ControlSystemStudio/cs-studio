@@ -16,6 +16,15 @@
             </command>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.trim.status">
+         <toolbar
+               id="org.csstudio.security.ui.infobar">
+            <control
+                  class="org.csstudio.security.ui.internal.StatusBarInfo">
+            </control>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension point="org.eclipse.ui.commands">
       <command id="org.csstudio.security.login"

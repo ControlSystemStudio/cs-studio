@@ -25,12 +25,9 @@
  *  
  *  <ol>
  *  <li> {@link org.csstudio.security.authorization.FileBasedAuthorizationProvider}: List users and their authorizations in a plain file
- *  <li> TODO Make authorization pluggable
- *  <li> TODO LDAP-based, using Linux group membership
- *  <li> TODO LDAP-based, using custom schema
  *  </ol>
  *  
  *  @author Kay Kasemir - This implementation
- *  @author Kai Meyer, Torsten Witte, Alexander Will, Sven Wende, Stefan Hofer, Xihui Chen - Original org.csstudio.auth and *platform code
+ *  @author Kai Meyer, Torsten Witte, Alexander Will, Sven Wende, Stefan Hofer, Joerg Rathlev, Xihui Chen - Original org.csstudio.auth and *platform code
  */
 package org.csstudio.security;

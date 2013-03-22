@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.csstudio.security.SecurityPreferences;
+import org.csstudio.security.SecuritySupport;
 
 /** AuthorizationProvider that invokes external command (script) to determine authorizations.
  * 
@@ -91,7 +92,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
             new String[]
             {
                 script,
-                AuthorizationProviderTool.getSubjectName(user)
+                SecuritySupport.getSubjectName(user)
             });
         
         // Read output
