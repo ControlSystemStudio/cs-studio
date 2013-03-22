@@ -60,7 +60,7 @@ public final class MediaService {
 	private IPath colorFilePath;
 	private IPath fontFilePath;
 
-	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(0, 0, 0);
+	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(67, 63, 61);
 
 	public final static FontData DEFAULT_UNKNOWN_FONT = CustomMediaFactory.FONT_ARIAL;
 
@@ -377,6 +377,14 @@ public final class MediaService {
 			result[i++] = c;
 		}
 		return result;
+	}
+	
+	/**
+	 * @param name
+	 * @return true if the OPI color is defined.
+	 */
+	public boolean isColorNameDefined(String name){
+		return colorMap.containsKey(name);
 	}
 
 }
