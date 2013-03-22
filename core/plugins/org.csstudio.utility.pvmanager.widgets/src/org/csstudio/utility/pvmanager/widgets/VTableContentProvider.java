@@ -51,7 +51,7 @@ public class VTableContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object inputElement) {
 		VTable vTable = (VTable) inputElement;
 		
-		Object[] result = new Object[((String[]) vTable.getColumnArray(0)).length];
+		Object[] result = new Object[vTable.getRowCount()];
 		
 		for (int i = 0; i < result.length; i++) {
 			result[i] = new VTableRow(vTable, i);
