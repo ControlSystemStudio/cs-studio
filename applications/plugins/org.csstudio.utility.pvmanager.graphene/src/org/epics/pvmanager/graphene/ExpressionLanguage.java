@@ -62,7 +62,7 @@ public class ExpressionLanguage {
 	return new ScatterGraph2DExpression(new DesiredRateExpressionListImpl<>().and(
 		xNumberArray).and(yNumberArray), new ScatterGraph2DFunction(
 		yNumberArray.getFunction(), xNumberArray.getFunction()),
-		"Scatter Graph");
+		"ScatterGraph");
 
     }
 
