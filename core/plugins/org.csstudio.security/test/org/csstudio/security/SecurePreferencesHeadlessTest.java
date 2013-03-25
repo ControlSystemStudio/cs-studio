@@ -12,10 +12,10 @@ import static org.junit.Assert.assertThat;
 
 import org.csstudio.security.internal.InstallLocationPasswordProvider;
 import org.csstudio.security.preferences.SecurePreferences;
+import org.csstudio.security.preferences.SecurePreferences.Type;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.junit.Test;
 
 /** JUnit Plug-in test of secure preferences
@@ -47,8 +47,8 @@ public class SecurePreferencesHeadlessTest
     @Test
     public void testSecurePreferences() throws Exception
     {
-        ISecurePreferences prefs =
-            SecurePreferences.getSecurePreferences(SecurePreferences.Type.Instance);
+    	final Type type = SecurePreferences.Type.Instance;
+		ISecurePreferences prefs = SecurePreferences.getSecurePreferences(type);
         ISecurePreferences node = prefs.node(SecuritySupport.ID);
         
         // See if there's a value written by previous run
@@ -71,7 +71,7 @@ public class SecurePreferencesHeadlessTest
         assertThat(found, equalTo(true));
         
         // Start over, read
-        prefs = SecurePreferencesFactory.getDefault();
+		prefs = SecurePreferences.getSecurePreferences(type);
         node = prefs.node(SecuritySupport.ID);
         String value = node.get("test_setting", null);
         assertThat(value, equalTo("secret_value"));
