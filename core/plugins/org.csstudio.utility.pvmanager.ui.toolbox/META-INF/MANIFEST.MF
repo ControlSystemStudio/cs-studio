@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Debug view for PVManager
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.ui.toolbox;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.ui.toolbox.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
