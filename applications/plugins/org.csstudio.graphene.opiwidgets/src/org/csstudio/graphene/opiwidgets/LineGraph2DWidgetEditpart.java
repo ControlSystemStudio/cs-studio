@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.graphene.Scatter2DPlotWidget;
+import org.csstudio.graphene.Line2DPlotWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -25,25 +25,19 @@ import org.eclipse.draw2d.IFigure;
  * @author shroffk
  * 
  */
-public class Scatter2DPlotWidgetEditPart extends AbstractWidgetEditPart
-	implements ConfigurableWidgetAdaptable, XAxisProcessVariableAdaptable,
-	YAxisProcessVariableAdaptable {
+public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
+	YAxisProcessVariableAdaptable, XAxisProcessVariableAdaptable,
+	ConfigurableWidgetAdaptable {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
-     */
     @Override
     protected IFigure doCreateFigure() {
-	Scatter2DPlotWidgetFigure figure = new Scatter2DPlotWidgetFigure(this);
+	LineGraph2DWidgetFigure figure = new LineGraph2DWidgetFigure(this);
 	configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 	return figure;
     }
 
-    private static void configure(Scatter2DPlotWidget widget,
-	    Scatter2DPlotWidgetModel model, boolean runMode) {
+    private static void configure(Line2DPlotWidget widget,
+	    LineGraph2DWidgetModel model, boolean runMode) {
 	if (runMode) {
 	    widget.setPvName(model.getProcessVariable().getName());
 	    widget.setXPvName(model.getXPvName());
@@ -53,89 +47,40 @@ public class Scatter2DPlotWidgetEditPart extends AbstractWidgetEditPart
     }
 
     @Override
-    public Scatter2DPlotWidgetModel getWidgetModel() {
-	Scatter2DPlotWidgetModel widgetModel = (Scatter2DPlotWidgetModel) super
+    public LineGraph2DWidgetModel getWidgetModel() {
+	LineGraph2DWidgetModel widgetModel = (LineGraph2DWidgetModel) super
 		.getWidgetModel();
 	return widgetModel;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#
-     * registerPropertyChangeHandlers()
-     */
     @Override
     protected void registerPropertyChangeHandlers() {
+	// The handler when PV value changed.
 	IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 	    @SuppressWarnings("unchecked")
 	    public boolean handleChange(final Object oldValue,
 		    final Object newValue, final IFigure figure) {
 		configure(
-			((AbstractSWTWidgetFigure<Scatter2DPlotWidget>) getFigure())
+			((AbstractSWTWidgetFigure<Line2DPlotWidget>) getFigure())
 				.getSWTWidget(), getWidgetModel(),
-			((Scatter2DPlotWidgetFigure) getFigure()).isRunMode());
+			((LineGraph2DWidgetFigure) getFigure()).isRunMode());
 		return false;
 	    }
 	};
 	setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-	setPropertyChangeHandler(Scatter2DPlotWidgetModel.PROP_XPVNAME,
+	setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_XPVNAME,
 		reconfigure);
-	setPropertyChangeHandler(Scatter2DPlotWidgetModel.CONFIGURABLE,
+	setPropertyChangeHandler(LineGraph2DWidgetModel.CONFIGURABLE,
 		reconfigure);
-	setPropertyChangeHandler(Scatter2DPlotWidgetModel.PROP_SHOW_AXIS,
+	setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_SHOW_AXIS,
 		reconfigure);
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.ui.util.ProcessVariableAdaptable#toProcessVariables()
-     */
     @Override
     public Collection<ProcessVariable> toProcessVariables() {
 	return selectionToType(ProcessVariable.class);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.YAxisProcessVariableAdaptable#getYAxisProcessVariables
-     * ()
-     */
-    @Override
-    public YAxisProcessVariable getYAxisProcessVariables() {
-	Collection<YAxisProcessVariable> adapted = selectionToType(YAxisProcessVariable.class);
-	if (adapted != null && adapted.size() == 1) {
-	    return adapted.iterator().next();
-	}
-	return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.XAxisProcessVariableAdaptable#getXAxisProcessVariables
-     * ()
-     */
-    @Override
-    public XAxisProcessVariable getXAxisProcessVariables() {
-	Collection<XAxisProcessVariable> adapted = selectionToType(XAxisProcessVariable.class);
-	if (adapted != null && adapted.size() == 1) {
-	    return adapted.iterator().next();
-	}
-	return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.ConfigurableWidgetAdaptable#toConfigurableWidget()
-     */
     @Override
     public ConfigurableWidget toConfigurableWidget() {
 	Collection<ConfigurableWidget> adapted = selectionToType(ConfigurableWidget.class);
@@ -145,12 +90,30 @@ public class Scatter2DPlotWidgetEditPart extends AbstractWidgetEditPart
 	return null;
     }
 
+    @Override
+    public XAxisProcessVariable getXAxisProcessVariables() {
+	Collection<XAxisProcessVariable> adapted = selectionToType(XAxisProcessVariable.class);
+	if (adapted != null && adapted.size() == 1) {
+	    return adapted.iterator().next();
+	}
+	return null;
+    }
+
+    @Override
+    public YAxisProcessVariable getYAxisProcessVariables() {
+	Collection<YAxisProcessVariable> adapted = selectionToType(YAxisProcessVariable.class);
+	if (adapted != null && adapted.size() == 1) {
+	    return adapted.iterator().next();
+	}
+	return null;
+    }
+
     private <T> Collection<T> selectionToType(Class<T> clazz) {
-	if (((Scatter2DPlotWidgetFigure) getFigure()).getSelectionProvider() == null)
+	if (((LineGraph2DWidgetFigure) getFigure()).getSelectionProvider() == null)
 	    return null;
 	return Arrays.asList(AdapterUtil.convert(
-		((Scatter2DPlotWidgetFigure) getFigure())
-			.getSelectionProvider().getSelection(), clazz));
+		((LineGraph2DWidgetFigure) getFigure()).getSelectionProvider()
+			.getSelection(), clazz));
     }
 
 }

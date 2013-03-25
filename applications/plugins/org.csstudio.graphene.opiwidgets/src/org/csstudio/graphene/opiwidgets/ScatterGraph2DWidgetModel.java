@@ -14,9 +14,9 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidgetModel extends AbstractWidgetModel {
+public class ScatterGraph2DWidgetModel extends AbstractWidgetModel {
 
-    public final String ID = "org.csstudio.graphene.opiwidgets.Line2DPlot"; //$NON-NLS-1$
+    public final String ID = "org.csstudio.graphene.opiwidgets.ScatterGraph2D"; //$NON-NLS-1$
 
     public static final String PROP_XPVNAME = "x_pv_name"; //$NON-NLS-1$
     public static final String PROP_SHOW_AXIS = "show_axis"; //$NON-NLS-1$
@@ -31,12 +31,12 @@ public class Line2DPlotWidgetModel extends AbstractWidgetModel {
     @Override
     protected void configureProperties() {
 	addProperty(new StringProperty(AbstractPVWidgetModel.PROP_PVNAME,
-		"PV Name", WidgetPropertyCategory.Basic, ""));
-	addProperty(new StringProperty(Line2DPlotWidgetModel.PROP_XPVNAME,
+		"Y PV Name", WidgetPropertyCategory.Basic, ""));
+	addProperty(new StringProperty(LineGraph2DWidgetModel.PROP_XPVNAME,
 		"X PV Name", WidgetPropertyCategory.Basic, ""));
-	addProperty(new BooleanProperty(Line2DPlotWidgetModel.CONFIGURABLE,
+	addProperty(new BooleanProperty(LineGraph2DWidgetModel.CONFIGURABLE,
 		"configurable", WidgetPropertyCategory.Basic, true));
-	addProperty(new BooleanProperty(Line2DPlotWidgetModel.PROP_SHOW_AXIS,
+	addProperty(new BooleanProperty(LineGraph2DWidgetModel.PROP_SHOW_AXIS,
 		"Show Axis", WidgetPropertyCategory.Display, true));
 
     }
@@ -47,11 +47,11 @@ public class Line2DPlotWidgetModel extends AbstractWidgetModel {
     }
 
     public String getXPvName() {
-	return (String) getCastedPropertyValue(Line2DPlotWidgetModel.PROP_XPVNAME);
+	return (String) getCastedPropertyValue(LineGraph2DWidgetModel.PROP_XPVNAME);
     }
 
     public boolean getShowAxis() {
-	return getCastedPropertyValue(Line2DPlotWidgetModel.PROP_SHOW_AXIS);
+	return getCastedPropertyValue(LineGraph2DWidgetModel.PROP_SHOW_AXIS);
     }
 
     public boolean isConfigurable() {
