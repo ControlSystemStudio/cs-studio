@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.Line2DPlotWidget;
+import org.csstudio.graphene.LineGraph2DWidget;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public class LineGraph2DWidgetFigure extends
-	AbstractSWTWidgetFigure<Line2DPlotWidget> {
+	AbstractSWTWidgetFigure<LineGraph2DWidget> {
 
     public LineGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
 	super(editpart);
@@ -22,8 +22,8 @@ public class LineGraph2DWidgetFigure extends
     }
 
     @Override
-    protected Line2DPlotWidget createSWTWidget(Composite parent, int style) {
-	return new Line2DPlotWidget(parent, style);
+    protected LineGraph2DWidget createSWTWidget(Composite parent, int style) {
+	return new LineGraph2DWidget(parent, style);
     }
 
     /**
@@ -34,7 +34,7 @@ public class LineGraph2DWidgetFigure extends
      *            the widget
      * @return the selection provider or null
      */
-    protected ISelectionProvider retrieveSelectionProvider(Line2DPlotWidget widget) {
+    protected ISelectionProvider retrieveSelectionProvider(LineGraph2DWidget widget) {
 	if (widget instanceof ISelectionProvider) {
 	    return (ISelectionProvider) widget;
 	}

@@ -23,12 +23,12 @@ import org.eclipse.ui.part.ViewPart;
  * @author shroffk
  * 
  */
-public class Scatter2DPlotView extends ViewPart {
+public class ScatterGraph2DView extends ViewPart {
 
     /**
      * The ID of the view as specified by the extension.
      */
-    public static final String ID = "org.csstudio.graphene.Scatter2DPlotView";
+    public static final String ID = "org.csstudio.graphene.ScatterGraph2DView";
 
     /** Memento */
     private IMemento memento = null;
@@ -40,7 +40,7 @@ public class Scatter2DPlotView extends ViewPart {
     /**
      * The constructor.
      */
-    public Scatter2DPlotView() {
+    public ScatterGraph2DView() {
     }
 
     /**
@@ -73,17 +73,17 @@ public class Scatter2DPlotView extends ViewPart {
 
     public void setYProcessVariable(ProcessVariable processVariable) {
 	yProcessVariableInputBar.setProcessVariable(processVariable);
-	scatter2DPlotWidget.setPvName(processVariable.getName());
+	scatterGraph2DWidget.setPvName(processVariable.getName());
     }
 
     public void setXProcessVariable(ProcessVariable processVariable) {
 	xProcessVariableInputBar.setProcessVariable(processVariable);
-	scatter2DPlotWidget.setXPvName(processVariable.getName());
+	scatterGraph2DWidget.setXPvName(processVariable.getName());
     }
 
     private ProcessVariableInputBar yProcessVariableInputBar;
     private ProcessVariableInputBar xProcessVariableInputBar;
-    private Scatter2DPlotWidget scatter2DPlotWidget;
+    private ScatterGraph2DWidget scatterGraph2DWidget;
     private Label lblXPvName;
 
     @Override
@@ -104,7 +104,7 @@ public class Scatter2DPlotView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent event) {
 			if ("processVariable".equals(event.getPropertyName())) {
-			    scatter2DPlotWidget
+			    scatterGraph2DWidget
 				    .setPvName(yProcessVariableInputBar
 					    .getProcessVariable().getName());
 			}
@@ -127,19 +127,19 @@ public class Scatter2DPlotView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent event) {
 			if ("processVariable".equals(event.getPropertyName())) {
-			    scatter2DPlotWidget
+			    scatterGraph2DWidget
 				    .setXPvName(xProcessVariableInputBar
 					    .getProcessVariable().getName());
 			}
 		    }
 		});
 
-	scatter2DPlotWidget = new Scatter2DPlotWidget(parent, SWT.NONE);
-	scatter2DPlotWidget.setConfigurable(true);
-	scatter2DPlotWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+	scatterGraph2DWidget = new ScatterGraph2DWidget(parent, SWT.NONE);
+	scatterGraph2DWidget.setConfigurable(true);
+	scatterGraph2DWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 		true, true, 2, 1));
-	PopupMenuUtil.installPopupForView(scatter2DPlotWidget, getSite(),
-		scatter2DPlotWidget);
+	PopupMenuUtil.installPopupForView(scatterGraph2DWidget, getSite(),
+		scatterGraph2DWidget);
 
 	if (memento != null && memento.getString(MEMENTO_YPVNAME) != null) {
 	    setYProcessVariable(new ProcessVariable(

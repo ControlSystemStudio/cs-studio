@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.graphene.Scatter2DPlotWidget;
+import org.csstudio.graphene.ScatterGraph2DWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -42,7 +42,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 	return figure;
     }
 
-    private static void configure(Scatter2DPlotWidget widget,
+    private static void configure(ScatterGraph2DWidget widget,
 	    ScatterGraph2DWidgetModel model, boolean runMode) {
 	if (runMode) {
 	    widget.setPvName(model.getProcessVariable().getName());
@@ -72,7 +72,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 	    public boolean handleChange(final Object oldValue,
 		    final Object newValue, final IFigure figure) {
 		configure(
-			((AbstractSWTWidgetFigure<Scatter2DPlotWidget>) getFigure())
+			((AbstractSWTWidgetFigure<ScatterGraph2DWidget>) getFigure())
 				.getSWTWidget(), getWidgetModel(),
 			((ScatterGraph2DWidgetFigure) getFigure()).isRunMode());
 		return false;

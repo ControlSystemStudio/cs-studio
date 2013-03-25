@@ -21,14 +21,14 @@ import org.eclipse.swt.events.SelectionEvent;
  * @author shroffk
  * 
  */
-public class Line2DPlotConfigurationPanel extends AbstractConfigurationPanel {
+public class LineGraph2DConfigurationPanel extends AbstractConfigurationPanel {
 
     private Text textXPv;
     private Text textYPv;
     private Combo comboInterpolationScheme;
     private Button btnShowAxis;
 
-    public Line2DPlotConfigurationPanel(Composite parent, int style) {
+    public LineGraph2DConfigurationPanel(Composite parent, int style) {
 	super(parent, style);
 	setLayout(new GridLayout(2, false));
 

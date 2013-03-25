@@ -19,28 +19,28 @@ import org.csstudio.ui.util.YAxisProcessVariableAdaptable;
  * @author shroffk
  * 
  */
-public class Scatter2DPlotSelection implements YAxisProcessVariableAdaptable,
+public class ScatterGraph2DSelection implements YAxisProcessVariableAdaptable,
 	XAxisProcessVariableAdaptable, ConfigurableWidgetAdaptable {
 
     private final Collection<ProcessVariable> YPvs;
     private final Collection<ProcessVariable> XPvs;
-    private final Scatter2DPlotWidget scatter2DPlotWidget;
+    private final ScatterGraph2DWidget scatterGraph2DWidget;
 
-    public Scatter2DPlotSelection(Collection<ProcessVariable> yPvs,
+    public ScatterGraph2DSelection(Collection<ProcessVariable> yPvs,
 	    Collection<ProcessVariable> xPvs,
-	    Scatter2DPlotWidget scatter2DPlotWidget) {
+	    ScatterGraph2DWidget scatterGraph2DWidget) {
 	super();
 	YPvs = yPvs;
 	XPvs = xPvs;
-	this.scatter2DPlotWidget = scatter2DPlotWidget;
+	this.scatterGraph2DWidget = scatterGraph2DWidget;
     }
 
-    public Scatter2DPlotSelection(ProcessVariable yPv, ProcessVariable xPv,
-	    Scatter2DPlotWidget scatter2DPlotWidget) {
+    public ScatterGraph2DSelection(ProcessVariable yPv, ProcessVariable xPv,
+	    ScatterGraph2DWidget scatterGraph2DWidget) {
 	super();
 	YPvs = new HashSet<ProcessVariable>(Arrays.asList(yPv));
 	XPvs = new HashSet<ProcessVariable>(Arrays.asList(xPv));
-	this.scatter2DPlotWidget = scatter2DPlotWidget;
+	this.scatterGraph2DWidget = scatterGraph2DWidget;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Scatter2DPlotSelection implements YAxisProcessVariableAdaptable,
 
     @Override
     public ConfigurableWidget toConfigurableWidget() {
-	return scatter2DPlotWidget;
+	return scatterGraph2DWidget;
     }
 
 }

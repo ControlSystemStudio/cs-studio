@@ -13,11 +13,11 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  * 
  */
-public class Scatter2DPlotConfigurationDialog
+public class ScatterGraph2DConfigurationDialog
 	extends
-	AbstractConfigurationDialog<Scatter2DPlotWidget, Scatter2DPlotConfigurationPanel> {
+	AbstractConfigurationDialog<ScatterGraph2DWidget, ScatterGraph2DConfigurationPanel> {
 
-    protected Scatter2DPlotConfigurationDialog(Scatter2DPlotWidget control) {
+    protected ScatterGraph2DConfigurationDialog(ScatterGraph2DWidget control) {
 	super(control, SWT.DIALOG_TRIM, "Configure Scatter2D Plot");
 	addInitialValues("showAxisScroll", getWidget().getShowAxis());
 	addInitialValues("yPv", getWidget().getPvName());
@@ -39,7 +39,7 @@ public class Scatter2DPlotConfigurationDialog
     }
 
     @Override
-    protected Scatter2DPlotConfigurationPanel createConfigurationComposite(Shell shell) {
-	return new Scatter2DPlotConfigurationPanel(shell, SWT.DIALOG_TRIM);
+    protected ScatterGraph2DConfigurationPanel createConfigurationComposite(Shell shell) {
+	return new ScatterGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
     }
 }

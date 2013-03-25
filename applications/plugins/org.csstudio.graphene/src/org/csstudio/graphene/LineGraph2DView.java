@@ -29,12 +29,12 @@ import org.eclipse.swt.layout.GridData;
  * @author shroffk
  * 
  */
-public class Line2DPlotView extends ViewPart {
+public class LineGraph2DView extends ViewPart {
 
     /**
      * The ID of the view as specified by the extension.
      */
-    public static final String ID = "org.csstudio.graphene.Line2DPlotView";
+    public static final String ID = "org.csstudio.graphene.LineGraph2DView";
 
     /** Memento */
     private IMemento memento = null;
@@ -45,7 +45,7 @@ public class Line2DPlotView extends ViewPart {
     /**
      * The constructor.
      */
-    public Line2DPlotView() {
+    public LineGraph2DView() {
     }
 
     /**
@@ -74,11 +74,11 @@ public class Line2DPlotView extends ViewPart {
 
     public void setProcessVariable(ProcessVariable processVariable) {
 	processVariableInputBar.setProcessVariable(processVariable);
-	line2DPlotWidget.setPvName(processVariable.getName());
+	lineGraph2DWidget.setPvName(processVariable.getName());
     }
 
     private ProcessVariableInputBar processVariableInputBar;
-    private Line2DPlotWidget line2DPlotWidget;
+    private LineGraph2DWidget lineGraph2DWidget;
     private Label lblXPvName;
     private ProcessVariableInputBar xProcessVariableInputBar;
 
@@ -99,7 +99,7 @@ public class Line2DPlotView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent event) {
 			if ("processVariable".equals(event.getPropertyName())) {
-			    line2DPlotWidget.setPvName(processVariableInputBar
+			    lineGraph2DWidget.setPvName(processVariableInputBar
 				    .getProcessVariable().getName());
 			}
 		    }
@@ -121,19 +121,19 @@ public class Line2DPlotView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent event) {
 			if ("processVariable".equals(event.getPropertyName())) {
-			    line2DPlotWidget
+			    lineGraph2DWidget
 				    .setXPvName(xProcessVariableInputBar
 					    .getProcessVariable().getName());
 			}
 		    }
 		});
 
-	line2DPlotWidget = new Line2DPlotWidget(parent, SWT.NONE);
-	line2DPlotWidget.setConfigurable(true);
-	line2DPlotWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+	lineGraph2DWidget = new LineGraph2DWidget(parent, SWT.NONE);
+	lineGraph2DWidget.setConfigurable(true);
+	lineGraph2DWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 		true, 2, 1));
-	PopupMenuUtil.installPopupForView(line2DPlotWidget, getSite(),
-		line2DPlotWidget);
+	PopupMenuUtil.installPopupForView(lineGraph2DWidget, getSite(),
+		lineGraph2DWidget);
 
 	if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
 	    setProcessVariable(new ProcessVariable(

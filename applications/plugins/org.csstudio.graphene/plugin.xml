@@ -17,18 +17,18 @@
       </view>
       <view
             category="org.csstudio.graphene.category"
-            class="org.csstudio.graphene.Line2DPlotView"
+            class="org.csstudio.graphene.LineGraph2DView"
             icon="icons/graphene-line-16.png"
-            id="org.csstudio.graphene.Line2DPlotView"
+            id="org.csstudio.graphene.LineGraph2DView"
             name="Line2D Plot (alpha)"
             restorable="true">
       </view>
       <view
             category="org.csstudio.graphene.category"
-            class="org.csstudio.graphene.Scatter2DPlotView"
+            class="org.csstudio.graphene.ScatterGraph2DView"
             icon="icons/graphene-scatter-16.png"
-            id="org.csstudio.graphene.Scatter2DPlotView"
-            name="Scatter Plot (alpha)"
+            id="org.csstudio.graphene.ScatterGraph2DView"
+            name="Scatter graph (alpha)"
             restorable="true">
       </view>
    </extension>
@@ -54,7 +54,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.graphene.Line2DPlotView">
+                  value="org.csstudio.graphene.LineGraph2DView">
             </parameter>
          </command>
          <command
@@ -64,7 +64,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.graphene.Scatter2DPlotView">
+                  value="org.csstudio.graphene.ScatterGraph2DView">
             </parameter>
          </command>
       </menuContribution>

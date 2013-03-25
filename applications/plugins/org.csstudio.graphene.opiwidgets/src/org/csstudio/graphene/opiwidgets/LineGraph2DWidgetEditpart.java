@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.graphene.Line2DPlotWidget;
+import org.csstudio.graphene.LineGraph2DWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -36,7 +36,7 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 	return figure;
     }
 
-    private static void configure(Line2DPlotWidget widget,
+    private static void configure(LineGraph2DWidget widget,
 	    LineGraph2DWidgetModel model, boolean runMode) {
 	if (runMode) {
 	    widget.setPvName(model.getProcessVariable().getName());
@@ -61,7 +61,7 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 	    public boolean handleChange(final Object oldValue,
 		    final Object newValue, final IFigure figure) {
 		configure(
-			((AbstractSWTWidgetFigure<Line2DPlotWidget>) getFigure())
+			((AbstractSWTWidgetFigure<LineGraph2DWidget>) getFigure())
 				.getSWTWidget(), getWidgetModel(),
 			((LineGraph2DWidgetFigure) getFigure()).isRunMode());
 		return false;

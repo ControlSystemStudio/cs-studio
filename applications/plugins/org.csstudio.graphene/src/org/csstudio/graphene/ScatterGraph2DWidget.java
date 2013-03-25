@@ -33,8 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.epics.graphene.AxisRanges;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraph2DRendererUpdate;
+import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -43,26 +42,24 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.GraphDataRange;
-import org.epics.pvmanager.graphene.LineGraph2DExpression;
+import org.epics.pvmanager.graphene.ScatterGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
 /**
- * A simple Line 2D plot which can handle both waveforms and a list of PVs
- * 
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends BeanComposite implements
+public class ScatterGraph2DWidget extends BeanComposite implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
-    private LineGraph2DExpression plot;
+    private ScatterGraph2DExpression graph;
     private ErrorBar errorBar;
     private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
-    public Line2DPlotWidget(Composite parent, int style) {
+    public ScatterGraph2DWidget(Composite parent, int style) {
 	super(parent, style);
 
 	// Close PV on dispose
@@ -100,10 +97,10 @@ public class Line2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
+		if (graph != null) {
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
-		    plot.update(new LineGraph2DRendererUpdate()
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .yAxisRange(AxisRanges.absolute(invert
 				    - yRangeControl.getSelectedMax(), invert
 				    - yRangeControl.getSelectedMin())));
@@ -124,11 +121,10 @@ public class Line2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void controlResized(ControlEvent e) {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
-			    .imageWidth(imageDisplay.getSize().x)
-			    .interpolation(InterpolationScheme.LINEAR));
+			    .imageWidth(imageDisplay.getSize().x));
 		}
 	    }
 
@@ -150,8 +146,8 @@ public class Line2DPlotWidget extends BeanComposite implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new ScatterGraph2DRendererUpdate()
 			    .xAxisRange(AxisRanges.absolute(
 				    xRangeControl.getSelectedMin(),
 				    xRangeControl.getSelectedMax())));
@@ -238,32 +234,29 @@ public class Line2DPlotWidget extends BeanComposite implements
 	    pv.close();
 	    imageDisplay.setVImage(null);
 	    setLastError(null);
-	    plot = null;
+	    graph = null;
 	    resetRange(xRangeControl);
 	    resetRange(yRangeControl);
 	}
 
+	// For ScatterPlot both x and y pvs are needed
 	if (getPvName() == null || getPvName().isEmpty()) {
 	    return;
 	}
-
-	if (getXpvName() != null && !getXpvName().isEmpty()) {
-	    plot = ExpressionLanguage
-		    .lineGraphOf(
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getXpvName()),
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getPvName()));
-	} else {
-	    plot = ExpressionLanguage
-		    .lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-			    .formula(getPvName()));
+	if (getXpvName() == null || getXpvName().isEmpty()) {
+	    return;
 	}
-	plot.update(new LineGraph2DRendererUpdate()
+
+	graph = ExpressionLanguage
+		.scatterGraphOf(
+			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				.formula(getXpvName()),
+			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
+				.formula(getPvName()));
+	graph.update(new ScatterGraph2DRendererUpdate()
 		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x)
-		.interpolation(InterpolationScheme.LINEAR));
-	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+		.imageWidth(imageDisplay.getSize().x));
+	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
 		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
@@ -290,8 +283,8 @@ public class Line2DPlotWidget extends BeanComposite implements
      */
     private void setRange(StartEndRangeWidget control,
 	    GraphDataRange plotDataRange) {
-	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
-		plotDataRange.getIntegratedRange().getMaximum().doubleValue());
+    	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
+    			plotDataRange.getIntegratedRange().getMaximum().doubleValue());
     }
 
     private void resetRange(StartEndRangeWidget control) {
@@ -318,10 +311,9 @@ public class Line2DPlotWidget extends BeanComposite implements
     @Override
     public ISelection getSelection() {
 	if (getPvName() != null) {
-	    return new StructuredSelection(new Line2DPlotSelection(
-		    new ProcessVariable(getPvName()),
-		    getXpvName() != null ? new ProcessVariable(getXpvName())
-			    : null, this));
+	    return new StructuredSelection(new ScatterGraph2DSelection(
+		    new ProcessVariable(getPvName()), new ProcessVariable(
+			    getXpvName()), this));
 	}
 	return null;
     }
@@ -340,10 +332,10 @@ public class Line2DPlotWidget extends BeanComposite implements
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
     }
-
+    
     private boolean configurable = true;
 
-    private Line2DPlotConfigurationDialog dialog;
+    private ScatterGraph2DConfigurationDialog dialog;
 
     @Override
     public boolean isConfigurable() {
@@ -362,7 +354,7 @@ public class Line2DPlotWidget extends BeanComposite implements
     public void openConfigurationDialog() {
 	if (dialog != null)
 	    return;
-	dialog = new Line2DPlotConfigurationDialog(this);
+	dialog = new ScatterGraph2DConfigurationDialog(this);
 	dialog.open();
     }
 
@@ -375,4 +367,5 @@ public class Line2DPlotWidget extends BeanComposite implements
     public void configurationDialogClosed() {
 	dialog = null;
     }
+
 }

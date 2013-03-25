@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.Scatter2DPlotWidget;
+import org.csstudio.graphene.ScatterGraph2DWidget;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public class ScatterGraph2DWidgetFigure extends
-	AbstractSWTWidgetFigure<Scatter2DPlotWidget> {
+	AbstractSWTWidgetFigure<ScatterGraph2DWidget> {
 
     private ISelectionProvider selectionProvider;
 
@@ -25,12 +25,12 @@ public class ScatterGraph2DWidgetFigure extends
     
 
     @Override
-    protected Scatter2DPlotWidget createSWTWidget(Composite parent, int style) {
-	return new Scatter2DPlotWidget(parent, style);
+    protected ScatterGraph2DWidget createSWTWidget(Composite parent, int style) {
+	return new ScatterGraph2DWidget(parent, style);
     }
 
     private ISelectionProvider retrieveSelectionProvider(
-	    Scatter2DPlotWidget widget) {
+	    ScatterGraph2DWidget widget) {
 	if (widget instanceof ISelectionProvider) {
 	    return (ISelectionProvider) widget;
 	}

@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.Listener;
  * @author shroffk
  *
  */
-public class Scatter2DPlotConfigurationPanel extends AbstractConfigurationPanel {
+public class ScatterGraph2DConfigurationPanel extends AbstractConfigurationPanel {
 	private Text textYPV;
 	private Text textXPV;
 	private Combo combo;
 	private Button btnShowAxis;
 
-    public Scatter2DPlotConfigurationPanel(Composite parent, int style) {
+    public ScatterGraph2DConfigurationPanel(Composite parent, int style) {
 	super(parent, style);
 	setLayout(new GridLayout(2, false));
 	
