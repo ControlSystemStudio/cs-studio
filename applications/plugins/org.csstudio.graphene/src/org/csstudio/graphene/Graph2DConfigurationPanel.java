@@ -3,34 +3,31 @@
  */
 package org.csstudio.graphene;
 
-import java.util.Arrays;
-
 import org.csstudio.ui.util.AbstractConfigurationPanel;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.epics.graphene.InterpolationScheme;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
  *
  */
-public class ScatterGraph2DConfigurationPanel extends AbstractConfigurationPanel {
+public class Graph2DConfigurationPanel extends AbstractConfigurationPanel {
 	private Text textYPV;
 	private Text textXPV;
 	private Combo combo;
 	private Button btnShowAxis;
 
-    public ScatterGraph2DConfigurationPanel(Composite parent, int style) {
+    public Graph2DConfigurationPanel(Composite parent, int style) {
 	super(parent, style);
 	setLayout(new GridLayout(2, false));
 	

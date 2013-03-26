@@ -4,6 +4,7 @@
 package org.csstudio.graphene;
 
 import org.csstudio.ui.util.BeanComposite;
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.graphene.GraphDataRange;
@@ -12,8 +13,9 @@ import org.epics.pvmanager.graphene.GraphDataRange;
  * @author shroffk
  * 
  */
-public abstract class AbstractGraph2DWidget extends BeanComposite {
+public abstract class AbstractGraph2DWidget extends BeanComposite implements ConfigurableWidget {
 
+    private boolean showAxis = true;
     private String pvName;
     private String xPvName;
 
@@ -59,6 +61,16 @@ public abstract class AbstractGraph2DWidget extends BeanComposite {
 	this.pvName = pvName;
 	changeSupport.firePropertyChange("processVariable", oldValue,
 		this.pvName);
+    }
+    
+    public boolean isShowAxis() {
+	return showAxis;
+    }
+
+    public void setShowAxis(boolean showAxis) {
+	boolean oldValue = this.showAxis;
+	this.showAxis = showAxis;
+	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
     }
 
 }

@@ -176,6 +176,13 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 	    }
 	});
     }
+    
+    @Override
+    public void setMenu(Menu menu) {
+	super.setMenu(menu);
+	imageDisplay.setMenu(menu);
+    }
+
 
     private PVReader<Graph2DResult> pv;
 
@@ -290,7 +297,7 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
     private boolean configurable = true;
 
-    private LineGraph2DConfigurationDialog dialog;
+    private Graph2DConfigurationDialog dialog;
 
     @Override
     public boolean isConfigurable() {
@@ -309,7 +316,7 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
     public void openConfigurationDialog() {
 	if (dialog != null)
 	    return;
-	dialog = new LineGraph2DConfigurationDialog(this);
+	dialog = new Graph2DConfigurationDialog(this, "Configure Line Graph");
 	dialog.open();
     }
 

@@ -9,7 +9,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.BeanComposite;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -41,7 +40,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
 import org.epics.pvmanager.graphene.ScatterGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
@@ -55,7 +53,6 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
     private VImageDisplay imageDisplay;
     private ScatterGraph2DExpression graph;
     private ErrorBar errorBar;
-    private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
@@ -107,7 +104,7 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 		}
 	    }
 	});
-	yRangeControl.setVisible(showAxis);
+	yRangeControl.setVisible(isShowAxis());
 
 	imageDisplay = new VImageDisplay(this);
 	FormData fd_imageDisplay = new FormData();
@@ -154,7 +151,7 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 		}
 	    }
 	});
-	xRangeControl.setVisible(showAxis);
+	xRangeControl.setVisible(isShowAxis());
 
 	addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -164,8 +161,8 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 			|| event.getPropertyName().equals("xProcessVariable")) {
 		    reconnect();
 		} else if (event.getPropertyName().equals("showAxis")) {
-		    xRangeControl.setVisible(showAxis);
-		    yRangeControl.setVisible(showAxis);
+		    xRangeControl.setVisible(isShowAxis());
+		    yRangeControl.setVisible(isShowAxis());
 		    redraw();
 		}
 
@@ -180,16 +177,6 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
     }
 
     private PVReader<Graph2DResult> pv;
-
-    public boolean isShowAxis() {
-	return showAxis;
-    }
-
-    public void setShowAxis(boolean showAxis) {
-	boolean oldValue = this.showAxis;
-	this.showAxis = showAxis;
-	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
-    }
 
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
@@ -287,7 +274,7 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 
     private boolean configurable = true;
 
-    private ScatterGraph2DConfigurationDialog dialog;
+    private Graph2DConfigurationDialog dialog;
 
     @Override
     public boolean isConfigurable() {
@@ -306,7 +293,7 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
     public void openConfigurationDialog() {
 	if (dialog != null)
 	    return;
-	dialog = new ScatterGraph2DConfigurationDialog(this);
+	dialog = new Graph2DConfigurationDialog(this, "Configure Scatter Graph");
 	dialog.open();
     }
 
