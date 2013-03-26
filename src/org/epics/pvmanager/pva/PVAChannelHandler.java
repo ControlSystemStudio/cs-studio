@@ -4,7 +4,9 @@
  */
 package org.epics.pvmanager.pva;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -174,7 +176,31 @@ public class PVAChannelHandler extends
 		return c != null && c.isConnected();
 	}
 
-	@Override
+    @Override
+    protected boolean isWriteConnected(PVAChannelHandler channel) {
+    	// NOTE: access-rights not yet supported
+		final Channel c = channel.getChannel();
+		return c != null && c.isConnected();
+    }
+
+    @Override
+    public synchronized Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        if (channel != null) {
+            properties.put("Channel name", channel.getChannelName());
+            properties.put("Connection state", channel.getConnectionState().name());
+            properties.put("Provider name", channel.getProvider().getProviderName());
+            if (channel.getConnectionState() == Channel.ConnectionState.CONNECTED) {
+                properties.put("Remote address", channel.getRemoteAddress());
+                properties.put("Channel type", channelType.getID());
+                //properties.put("Read access", channel.getReadAccess());
+                //properties.put("Write access", channel.getWriteAccess());
+            }
+        }
+        return properties;
+    }
+
+    @Override
 	public void disconnect() {
 		// Close the channel
 		try {
@@ -245,6 +271,9 @@ public class PVAChannelHandler extends
 		if (writeRequest != null)
 		{
 			try {
+				if (channelPutValueField == null)
+					throw new RuntimeException("No 'value' field");
+					
 				fromObject(channelPutValueField, writeRequest.getNewValue());
 				channelPut.put(false);
 			} catch (Exception ex) {
@@ -268,7 +297,8 @@ public class PVAChannelHandler extends
 			this.channelPutValueField = pvStructure.getSubField("value");
 			
 			// set BitSet
-			bitSet.set(channelPutValueField.getFieldOffset());
+			if (this.channelPutValueField != null)
+				bitSet.set(channelPutValueField.getFieldOffset());
 		}
 		
 		doNextWrite();
@@ -334,6 +364,8 @@ public class PVAChannelHandler extends
 			convert.fromLong((PVScalar)field, ((Long)newValue).longValue());
 		else if (newValue instanceof Float)
 			convert.fromFloat((PVScalar)field, ((Float)newValue).floatValue());
+		else if (newValue instanceof String)
+			convert.fromString((PVScalar)field, (String)newValue);
 		
 		else if (newValue instanceof byte[])
 			convert.fromByteArray((PVScalarArray)field, 0, ((byte[])newValue).length, (byte[])newValue, 0);
@@ -343,6 +375,8 @@ public class PVAChannelHandler extends
 			convert.fromLongArray((PVScalarArray)field, 0, ((long[])newValue).length, (long[])newValue, 0);
 		else if (newValue instanceof float[])
 			convert.fromFloatArray((PVScalarArray)field, 0, ((float[])newValue).length, (float[])newValue, 0);
+		else if (newValue instanceof String[])
+			convert.fromStringArray((PVScalarArray)field, 0, ((String[])newValue).length, (String[])newValue, 0);
 		
 		else
 			throw new RuntimeException("Unsupported value for pvAccess: " + newValue.getClass());
