@@ -49,7 +49,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class ScatterGraph2DWidget extends BeanComposite implements
+public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
@@ -123,8 +123,8 @@ public class ScatterGraph2DWidget extends BeanComposite implements
 	    public void controlResized(ControlEvent e) {
 		if (graph != null) {
 		    graph.update(new ScatterGraph2DRendererUpdate()
-			    .imageHeight(imageDisplay.getSize().y)
-			    .imageWidth(imageDisplay.getSize().x));
+			    .imageHeight(imageDisplay.getSize().y).imageWidth(
+				    imageDisplay.getSize().x));
 		}
 	    }
 
@@ -181,15 +181,8 @@ public class ScatterGraph2DWidget extends BeanComposite implements
 
     private PVReader<Graph2DResult> pv;
 
-    private String pvName;
-    private String xPvName;
-
     public boolean isShowAxis() {
 	return showAxis;
-    }
-
-    public boolean getShowAxis() {
-	return this.showAxis;
     }
 
     public void setShowAxis(boolean showAxis) {
@@ -198,38 +191,13 @@ public class ScatterGraph2DWidget extends BeanComposite implements
 	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
     }
 
-    public String getXpvName() {
-	return xPvName;
-    }
-
-    public void setXPvName(String xPvName) {
-	String oldValue = this.xPvName;
-	this.xPvName = xPvName;
-	changeSupport.firePropertyChange("xProcessVariable", oldValue,
-		this.xPvName);
-    }
-
-    public String getPvName() {
-	return this.pvName;
-    }
-
-    public void setPvName(String pvName) {
-	String oldValue = this.pvName;
-	this.pvName = pvName;
-	changeSupport.firePropertyChange("processVariable", oldValue,
-		this.pvName);
-    }
-
-    public void setPvs(String pvName, String xPvName) {
-
-    }
-
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private void reconnect() {
+    void reconnect() {
 	if (pv != null) {
 	    pv.close();
 	    imageDisplay.setVImage(null);
@@ -253,9 +221,8 @@ public class ScatterGraph2DWidget extends BeanComposite implements
 				.formula(getXpvName()),
 			(DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
 				.formula(getPvName()));
-	graph.update(new ScatterGraph2DRendererUpdate()
-		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x));
+	graph.update(new ScatterGraph2DRendererUpdate().imageHeight(
+		imageDisplay.getSize().y).imageWidth(imageDisplay.getSize().x));
 	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
@@ -274,21 +241,6 @@ public class ScatterGraph2DWidget extends BeanComposite implements
 			}
 		    }
 		}).maxRate(ofHertz(50));
-    }
-
-    /**
-     * A helper function to set all the appropriate
-     * 
-     * @param control
-     */
-    private void setRange(StartEndRangeWidget control,
-	    GraphDataRange plotDataRange) {
-    	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
-    			plotDataRange.getIntegratedRange().getMaximum().doubleValue());
-    }
-
-    private void resetRange(StartEndRangeWidget control) {
-	control.setRanges(0, 0, 1, 1);
     }
 
     /** Memento tag */
@@ -332,7 +284,7 @@ public class ScatterGraph2DWidget extends BeanComposite implements
     public void setSelection(ISelection selection) {
 	throw new UnsupportedOperationException("Not implemented yet");
     }
-    
+
     private boolean configurable = true;
 
     private ScatterGraph2DConfigurationDialog dialog;

@@ -19,7 +19,7 @@ public class ScatterGraph2DConfigurationDialog
 
     protected ScatterGraph2DConfigurationDialog(ScatterGraph2DWidget control) {
 	super(control, SWT.DIALOG_TRIM, "Configure Scatter2D Plot");
-	addInitialValues("showAxisScroll", getWidget().getShowAxis());
+	addInitialValues("showAxisScroll", getWidget().isShowAxis());
 	addInitialValues("yPv", getWidget().getPvName());
 	addInitialValues("xPv", getWidget().getXpvName());
     }

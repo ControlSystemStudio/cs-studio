@@ -3,6 +3,8 @@
  */
 package org.csstudio.graphene;
 
+import java.util.Arrays;
+
 import org.csstudio.ui.util.AbstractConfigurationPanel;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -16,6 +18,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.epics.graphene.InterpolationScheme;
 
 /**
  * @author shroffk

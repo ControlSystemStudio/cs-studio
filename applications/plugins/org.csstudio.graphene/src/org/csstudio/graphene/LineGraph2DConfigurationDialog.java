@@ -18,7 +18,7 @@ public class LineGraph2DConfigurationDialog extends
 
     protected LineGraph2DConfigurationDialog(LineGraph2DWidget control) {
 	super(control, SWT.DIALOG_TRIM, "Configure Line2D Plot");
-	addInitialValues("showAxisScroll", getWidget().getShowAxis());
+	addInitialValues("showAxisScroll", getWidget().isShowAxis());
 	addInitialValues("yPv", getWidget().getPvName());
 	addInitialValues("xPv", getWidget().getXpvName());
     }

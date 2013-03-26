@@ -52,7 +52,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class LineGraph2DWidget extends BeanComposite implements
+public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
@@ -177,23 +177,10 @@ public class LineGraph2DWidget extends BeanComposite implements
 	});
     }
 
-    @Override
-    public void setMenu(Menu menu) {
-	super.setMenu(menu);
-	imageDisplay.setMenu(menu);
-    }
-
     private PVReader<Graph2DResult> pv;
-
-    private String pvName;
-    private String xPvName;
 
     public boolean isShowAxis() {
 	return showAxis;
-    }
-
-    public boolean getShowAxis() {
-	return this.showAxis;
     }
 
     public void setShowAxis(boolean showAxis) {
@@ -202,38 +189,13 @@ public class LineGraph2DWidget extends BeanComposite implements
 	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
     }
 
-    public String getXpvName() {
-	return xPvName;
-    }
-
-    public void setXPvName(String xPvName) {
-	String oldValue = this.xPvName;
-	this.xPvName = xPvName;
-	changeSupport.firePropertyChange("xProcessVariable", oldValue,
-		this.xPvName);
-    }
-
-    public String getPvName() {
-	return this.pvName;
-    }
-
-    public void setPvName(String pvName) {
-	String oldValue = this.pvName;
-	this.pvName = pvName;
-	changeSupport.firePropertyChange("processVariable", oldValue,
-		this.pvName);
-    }
-
-    public void setPvs(String pvName, String xPvName) {
-
-    }
-
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private void reconnect() {
+    void reconnect() {
 	if (pv != null) {
 	    pv.close();
 	    imageDisplay.setVImage(null);
@@ -281,21 +243,6 @@ public class LineGraph2DWidget extends BeanComposite implements
 			}
 		    }
 		}).maxRate(ofHertz(50));
-    }
-
-    /**
-     * A helper function to set all the appropriate
-     * 
-     * @param control
-     */
-    private void setRange(StartEndRangeWidget control,
-	    GraphDataRange plotDataRange) {
-	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
-		plotDataRange.getIntegratedRange().getMaximum().doubleValue());
-    }
-
-    private void resetRange(StartEndRangeWidget control) {
-	control.setRanges(0, 0, 1, 1);
     }
 
     /** Memento tag */
