@@ -11,14 +11,15 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- *
+ * 
  */
-public class Line2DPlotConfigurationDialog extends
-	AbstractConfigurationDialog<Line2DPlotWidget, Line2DPlotConfigurationPanel> {
+public class Graph2DConfigurationDialog
+	extends
+	AbstractConfigurationDialog<AbstractGraph2DWidget, Graph2DConfigurationPanel> {
 
-    protected Line2DPlotConfigurationDialog(Line2DPlotWidget control) {
-	super(control, SWT.DIALOG_TRIM, "Configure Line2D Plot");
-	addInitialValues("showAxisScroll", getWidget().getShowAxis());
+    protected Graph2DConfigurationDialog(AbstractGraph2DWidget control, String title) {
+	super(control, SWT.DIALOG_TRIM, title);
+	addInitialValues("showAxisScroll", getWidget().isShowAxis());
 	addInitialValues("yPv", getWidget().getPvName());
 	addInitialValues("xPv", getWidget().getXpvName());
     }
@@ -38,8 +39,7 @@ public class Line2DPlotConfigurationDialog extends
     }
 
     @Override
-    protected Line2DPlotConfigurationPanel createConfigurationComposite(Shell shell) {
-	return new Line2DPlotConfigurationPanel(shell, SWT.DIALOG_TRIM);
+    protected Graph2DConfigurationPanel createConfigurationComposite(Shell shell) {
+	return new Graph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
     }
-
 }

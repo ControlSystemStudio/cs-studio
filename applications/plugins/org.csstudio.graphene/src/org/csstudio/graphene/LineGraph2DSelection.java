@@ -20,23 +20,23 @@ import org.csstudio.ui.util.YAxisProcessVariableAdaptable;
  * @author shroffk
  * 
  */
-public class Line2DPlotSelection implements YAxisProcessVariableAdaptable,
+public class LineGraph2DSelection implements YAxisProcessVariableAdaptable,
 	XAxisProcessVariableAdaptable, ConfigurableWidgetAdaptable {
 
     private final Collection<ProcessVariable> YPvs;
     private final Collection<ProcessVariable> XPvs;
-    private final Line2DPlotWidget line2dPlotWidget;
+    private final LineGraph2DWidget line2dPlotWidget;
 
-    public Line2DPlotSelection(Collection<ProcessVariable> yPvs,
-	    Collection<ProcessVariable> xPvs, Line2DPlotWidget line2dPlotWidget) {
+    public LineGraph2DSelection(Collection<ProcessVariable> yPvs,
+	    Collection<ProcessVariable> xPvs, LineGraph2DWidget line2dPlotWidget) {
 	super();
 	YPvs = yPvs;
 	XPvs = xPvs;
 	this.line2dPlotWidget = line2dPlotWidget;
     }
 
-    public Line2DPlotSelection(ProcessVariable yPv, ProcessVariable xPv,
-	    Line2DPlotWidget line2dPlotWidget) {
+    public LineGraph2DSelection(ProcessVariable yPv, ProcessVariable xPv,
+	    LineGraph2DWidget line2dPlotWidget) {
 	super();
 	YPvs = new HashSet<ProcessVariable>(Arrays.asList(yPv));
 	XPvs = new HashSet<ProcessVariable>(Arrays.asList(xPv));

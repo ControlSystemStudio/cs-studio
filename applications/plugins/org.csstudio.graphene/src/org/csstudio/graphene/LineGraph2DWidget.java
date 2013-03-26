@@ -9,7 +9,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.BeanComposite;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -42,7 +41,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
@@ -52,7 +50,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class Line2DPlotWidget extends BeanComposite implements
+public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 	ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
@@ -62,7 +60,7 @@ public class Line2DPlotWidget extends BeanComposite implements
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
-    public Line2DPlotWidget(Composite parent, int style) {
+    public LineGraph2DWidget(Composite parent, int style) {
 	super(parent, style);
 
 	// Close PV on dispose
@@ -176,24 +174,18 @@ public class Line2DPlotWidget extends BeanComposite implements
 	    }
 	});
     }
-
+    
     @Override
     public void setMenu(Menu menu) {
 	super.setMenu(menu);
 	imageDisplay.setMenu(menu);
     }
 
-    private PVReader<Graph2DResult> pv;
 
-    private String pvName;
-    private String xPvName;
+    private PVReader<Graph2DResult> pv;
 
     public boolean isShowAxis() {
 	return showAxis;
-    }
-
-    public boolean getShowAxis() {
-	return this.showAxis;
     }
 
     public void setShowAxis(boolean showAxis) {
@@ -202,38 +194,13 @@ public class Line2DPlotWidget extends BeanComposite implements
 	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
     }
 
-    public String getXpvName() {
-	return xPvName;
-    }
-
-    public void setXPvName(String xPvName) {
-	String oldValue = this.xPvName;
-	this.xPvName = xPvName;
-	changeSupport.firePropertyChange("xProcessVariable", oldValue,
-		this.xPvName);
-    }
-
-    public String getPvName() {
-	return this.pvName;
-    }
-
-    public void setPvName(String pvName) {
-	String oldValue = this.pvName;
-	this.pvName = pvName;
-	changeSupport.firePropertyChange("processVariable", oldValue,
-		this.pvName);
-    }
-
-    public void setPvs(String pvName, String xPvName) {
-
-    }
-
     private void setLastError(Exception lastException) {
 	errorBar.setException(lastException);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private void reconnect() {
+    void reconnect() {
 	if (pv != null) {
 	    pv.close();
 	    imageDisplay.setVImage(null);
@@ -283,21 +250,6 @@ public class Line2DPlotWidget extends BeanComposite implements
 		}).maxRate(ofHertz(50));
     }
 
-    /**
-     * A helper function to set all the appropriate
-     * 
-     * @param control
-     */
-    private void setRange(StartEndRangeWidget control,
-	    GraphDataRange plotDataRange) {
-	control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
-		plotDataRange.getIntegratedRange().getMaximum().doubleValue());
-    }
-
-    private void resetRange(StartEndRangeWidget control) {
-	control.setRanges(0, 0, 1, 1);
-    }
-
     /** Memento tag */
     private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
@@ -318,7 +270,7 @@ public class Line2DPlotWidget extends BeanComposite implements
     @Override
     public ISelection getSelection() {
 	if (getPvName() != null) {
-	    return new StructuredSelection(new Line2DPlotSelection(
+	    return new StructuredSelection(new LineGraph2DSelection(
 		    new ProcessVariable(getPvName()),
 		    getXpvName() != null ? new ProcessVariable(getXpvName())
 			    : null, this));
@@ -343,7 +295,7 @@ public class Line2DPlotWidget extends BeanComposite implements
 
     private boolean configurable = true;
 
-    private Line2DPlotConfigurationDialog dialog;
+    private Graph2DConfigurationDialog dialog;
 
     @Override
     public boolean isConfigurable() {
@@ -362,7 +314,7 @@ public class Line2DPlotWidget extends BeanComposite implements
     public void openConfigurationDialog() {
 	if (dialog != null)
 	    return;
-	dialog = new Line2DPlotConfigurationDialog(this);
+	dialog = new Graph2DConfigurationDialog(this, "Configure Line Graph");
 	dialog.open();
     }
 
