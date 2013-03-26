@@ -9,7 +9,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.BeanComposite;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
@@ -42,7 +41,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
