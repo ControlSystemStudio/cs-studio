@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * NumberFormat factory.
+ * Factory class for frequently used NumberFormats.
  *
  * @author carcassi
  */
@@ -26,10 +26,16 @@ public final class NumberFormats {
     private static volatile DecimalFormatSymbols symbols;
     
     static {
-        currentLocale = Locale.getDefault();
-        symbols = new DecimalFormatSymbols(currentLocale);
-        symbols.setNaN("NaN");
-        symbols.setInfinity("Infinity");
+        Locale newLocale = Locale.getDefault();
+        DecimalFormatSymbols newSymbols = new DecimalFormatSymbols(newLocale);
+        newSymbols.setNaN("NaN");
+        newSymbols.setInfinity("Infinity");
+        currentLocale = newLocale;
+        symbols = newSymbols;
+    }
+
+    private NumberFormats() {
+        // Prevent instances
     }
 
     /**
