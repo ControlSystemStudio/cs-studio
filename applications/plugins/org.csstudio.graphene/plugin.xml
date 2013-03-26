@@ -20,7 +20,7 @@
             class="org.csstudio.graphene.LineGraph2DView"
             icon="icons/graphene-line-16.png"
             id="org.csstudio.graphene.LineGraph2DView"
-            name="Line2D Plot (alpha)"
+            name="Line Graph (alpha)"
             restorable="true">
       </view>
       <view
@@ -28,7 +28,7 @@
             class="org.csstudio.graphene.ScatterGraph2DView"
             icon="icons/graphene-scatter-16.png"
             id="org.csstudio.graphene.ScatterGraph2DView"
-            name="Scatter graph (alpha)"
+            name="Scatter Graph (alpha)"
             restorable="true">
       </view>
    </extension>
@@ -50,7 +50,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/graphene-line-16.png"
-               label="Line2D Plot (alpha)"
+               label="Line Graph(alpha)"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -60,7 +60,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/graphene-scatter-16.png"
-               label="Scatter Plot (alpha)"
+               label="Scatter Graph(alpha)"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
