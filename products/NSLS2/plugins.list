@@ -49,6 +49,7 @@ org.csstudio.dummyauthorization
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.graphene
+org.csstudio.graphene.opiwidgets
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
