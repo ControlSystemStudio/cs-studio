@@ -20,7 +20,7 @@ import org.epics.util.array.ListInt;
  */
 public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIntArray {
 
-	private final int[] array;
+	private final ListInt size;
 	private final ListInt list;
 	
 	/**
@@ -37,23 +37,12 @@ public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIn
 			IntArrayData data = new IntArrayData();
 			valueField.get(0, valueField.getLength(), data);
 			
-			this.array = data.data;
-			this.list = new ListInt() {
-				
-				@Override
-				public int size() {
-					return array.length;
-				}
-				
-				@Override
-				public int getInt(int index) {
-					return array[index];
-				}
-			};
+			this.size = new ArrayInt(data.data.length);
+			this.list = new ArrayInt(data.data);
 		}
 		else
 		{
-			array = null;
+			size = null;
 			list = null;
 		}
 	}
@@ -63,7 +52,7 @@ public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIn
 	 */
 	@Override
 	public ListInt getSizes() {
-		return new ArrayInt(array.length);
+		return size;
 	}
 
 	/* (non-Javadoc)
