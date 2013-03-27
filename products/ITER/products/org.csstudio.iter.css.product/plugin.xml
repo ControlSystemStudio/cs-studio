@@ -105,6 +105,10 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="intro/samples.xml">
       </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/tutorials.xml">
+      </configExtension>
    </extension>
    
    <extension
