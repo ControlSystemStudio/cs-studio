@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -32,22 +32,18 @@ public class Preferences
 
     public static String getJMS_User()
     {
-       return getSecureString(JMS_USER);
+        final IPreferencesService preferences = Platform.getPreferencesService();
+        return preferences.getString(Activator.ID, JMS_USER, null, null);
     }
 
     public static String getJMS_Password()
     {
-        return getSecureString(JMS_PASSWORD);
+    	return SecurePreferences.get(Activator.ID, JMS_PASSWORD, null);        	
     }
 
     public static int getMaxMessages()
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
         return preferences.getInt(Activator.ID, MAX_MESSAGES, 500, null);
-    }
-    
-    private static String getSecureString(final String setting)
-    {
-    	return SecureStorage.retrieveSecureStorage(Activator.ID, setting);        	
     }
 }
