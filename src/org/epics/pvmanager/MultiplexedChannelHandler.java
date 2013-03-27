@@ -105,6 +105,17 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         }
     }
     
+    /**
+     * Notifies all writers of an error condition.
+     * 
+     * @param ex the exception to notify
+     */
+    protected synchronized final void reportExceptionToAllWriters(Exception ex) {
+        for (ChannelHandlerWriteSubscription subscription : writeSubscriptions.values()) {
+            subscription.getExceptionWriteFunction().writeValue(ex);
+        }
+    }
+    
     private void reportConnectionStatus(boolean connected) {
         for (MonitorHandler monitor : monitors.values()) {
             monitor.processConnection(connected);
