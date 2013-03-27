@@ -73,40 +73,41 @@ class ChangeValuePanel extends Composite {
 			}
 		});
 	}
-
-	/**
-	 * Changes the pv used to read and write value.
-	 * 
-	 * @param pv the pv to be used
-	 */
-	void setPV(PV<?, Object> pv) {
-		if (pv == null) {
-			errorBar.setException(null);
-			setValue(null);
-			newValueField.setEditable(false);
-		} else {
-			pv.addPVReaderListener(new PVReaderListener<Object>() {
 	
-				@Override
-				public void pvChanged(PVReaderEvent<Object> event) {
-					setValue(event.getPvReader().getValue());
-				}
-			});
-			pv.addPVWriterListener(new PVWriterListener<Object>() {
-	
-				@Override
-				public void pvChanged(PVWriterEvent<Object> event) {
-					errorBar.setException(event.getPvWriter().lastWriteException());
-					newValueField.setEditable(event.getPvWriter().isWriteConnected());
-				}
-				
-			});
-			errorBar.setException(pv.lastWriteException());
-			setValue(pv.getValue());
-			newValueField.setEditable(pv.isWriteConnected());
-			
-			this.pvWriter = pv;
+	PVReaderListener<Object> readerListener = new PVReaderListener<Object>() {
+		
+		@Override
+		public void pvChanged(PVReaderEvent<Object> event) {
+			setValue(event.getPvReader().getValue());
 		}
+	};
+
+    PVWriterListener<Object> writerListener = new PVWriterListener<Object>() {
+		
+		@Override
+		public void pvChanged(PVWriterEvent<Object> event) {
+			Exception ex = event.getPvWriter().lastWriteException();
+			errorBar.setException(ex);
+			newValueField.setEditable(event.getPvWriter().isWriteConnected());
+			System.out.println("W" + event + " " + ex);
+			getParent().layout();
+		}
+		
+	};
+	
+	public PVReaderListener<Object> getReaderListener() {
+		return readerListener;
+	}
+	
+	public PVWriterListener<Object> getWriterListener() {
+		return writerListener;
+	}
+	
+	public void reset() {
+		errorBar.setException(null);
+		System.out.println("Wnull");
+		setValue(null);
+		newValueField.setEditable(false);
 	}
 	
 	/**
