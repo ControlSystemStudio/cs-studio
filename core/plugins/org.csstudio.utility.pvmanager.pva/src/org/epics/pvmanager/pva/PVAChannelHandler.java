@@ -453,9 +453,4 @@ public class PVAChannelHandler extends
 	public String toString() {
 		return "PVAChannelHandler [getChannelName()=" + getChannelName() + "]";
 	}
-	
-	@Override
-	public String toString() {
-		return "PVAChannelHandler [getChannelName()=" + getChannelName() + "]";
-	}
 }
