@@ -351,6 +351,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                                     public void run() {
                                         synchronized(JCAChannelHandler.this) {
                                             processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
+                                            if (!channel.getWriteAccess()) {
+                                                reportExceptionToAllWriters(new RuntimeException("'" + getJcaChannelName() + "' is read-only"));
+                                            }
                                         }
                                     }
                                 };
