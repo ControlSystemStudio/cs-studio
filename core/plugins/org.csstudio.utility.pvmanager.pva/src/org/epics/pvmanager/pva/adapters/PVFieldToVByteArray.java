@@ -11,6 +11,7 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.vtype.VByteArray;
 import org.epics.vtype.VTypeToString;
+import org.epics.util.array.ArrayByte;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListByte;
 import org.epics.util.array.ListInt;
@@ -21,7 +22,7 @@ import org.epics.util.array.ListInt;
  */
 public class PVFieldToVByteArray extends AlarmTimeDisplayExtractor implements VByteArray {
 
-	private final byte[] array;
+	private final ListInt size;
 	private final ListByte list;
 	
 	/**
@@ -38,23 +39,12 @@ public class PVFieldToVByteArray extends AlarmTimeDisplayExtractor implements VB
 			ByteArrayData data = new ByteArrayData();
 			valueField.get(0, valueField.getLength(), data);
 			
-			this.array = data.data;
-			this.list = new ListByte() {
-				
-				@Override
-				public int size() {
-					return array.length;
-				}
-				
-				@Override
-				public byte getByte(int index) {
-					return array[index];
-				}
-			};
+			this.size = new ArrayInt(data.data.length);
+			this.list = new ArrayByte(data.data);
 		}
 		else
 		{
-			array = null;
+			size = null;
 			list = null;
 		}
 	}
@@ -64,7 +54,7 @@ public class PVFieldToVByteArray extends AlarmTimeDisplayExtractor implements VB
 	 */
 	@Override
 	public ListInt getSizes() {
-		return new ArrayInt(array.length);
+		return size;
 	}
 
 	/* (non-Javadoc)

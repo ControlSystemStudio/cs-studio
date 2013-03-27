@@ -11,6 +11,7 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VTypeToString;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
@@ -21,7 +22,7 @@ import org.epics.util.array.ListInt;
  */
 public class PVFieldToVDoubleArray extends AlarmTimeDisplayExtractor implements VDoubleArray {
 
-	private final double[] array;
+	private final ListInt size;
 	private final ListDouble list;
 	
 	/**
@@ -38,23 +39,12 @@ public class PVFieldToVDoubleArray extends AlarmTimeDisplayExtractor implements 
 			DoubleArrayData data = new DoubleArrayData();
 			valueField.get(0, valueField.getLength(), data);
 			
-			this.array = data.data;
-			this.list = new ListDouble() {
-				
-				@Override
-				public int size() {
-					return array.length;
-				}
-				
-				@Override
-				public double getDouble(int index) {
-					return array[index];
-				}
-			};
+			this.size = new ArrayInt(data.data.length);
+			this.list = new ArrayDouble(data.data);
 		}
 		else
 		{
-			array = null;
+			size = null;
 			list = null;
 		}
 	}
@@ -64,7 +54,7 @@ public class PVFieldToVDoubleArray extends AlarmTimeDisplayExtractor implements 
 	 */
 	@Override
 	public ListInt getSizes() {
-		return new ArrayInt(array.length);
+		return size;
 	}
 
 	/* (non-Javadoc)

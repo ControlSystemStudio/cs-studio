@@ -23,8 +23,8 @@ import org.epics.util.array.ListInt;
  */
 public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements VStringArray {
 
-	private final String[] array;
-	private final List<String> data;
+	private final ListInt size;
+	private final List<String> array;
 	
 	/**
 	 * @param pvField
@@ -40,13 +40,13 @@ public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements 
 			StringArrayData data = new StringArrayData();
 			valueField.get(0, valueField.getLength(), data);
 			
-			this.array = data.data;
-			this.data = Collections.unmodifiableList(Arrays.asList(array));
+			this.size = new ArrayInt(data.data.length);
+			this.array = Collections.unmodifiableList(Arrays.asList(data.data));
 		}
 		else
 		{
+			this.size = null;
 			this.array = null;
-			this.data = null;
 		}
 	}
 
@@ -55,7 +55,7 @@ public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements 
 	 */
 	@Override
 	public ListInt getSizes() {
-		return new ArrayInt(array.length);
+		return size;
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +63,7 @@ public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements 
 	 */
 	@Override
 	public List<String> getData() {
-		return data;
+		return array;
 	}
     
     @Override
