@@ -15,8 +15,10 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.TextOutputCallback;
+import javax.security.auth.login.Configuration;
 
 import org.csstudio.security.SecurityPreferences;
+import org.csstudio.security.internal.PreferenceBasedJAASConfiguration;
 import org.csstudio.security.internal.SecurityContext;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,7 +45,7 @@ public class LoginJob extends Job
      */
     public LoginJob(final CallbackHandler callback)
     {
-        this(SecurityPreferences.getConfigName(), callback);
+        this(SecurityPreferences.getJaasConfigName(), callback);
     }
 
     /** Initialize
@@ -70,10 +72,17 @@ public class LoginJob extends Job
         final Logger logger = Logger.getLogger(getClass().getName());
         try
         {
-            final URL jaas_file = new URL(SecurityPreferences.getConfigFile());
+        	final String jaas_config = SecurityPreferences.getJaasConfig();
+        	if (jaas_config != null  &&  !jaas_config.isEmpty())
+        	{	// Use complete configuration from preferences
+        		Configuration.setConfiguration(new PreferenceBasedJAASConfiguration(jaas_config));
+        	}
+        	// Get JAAS file and config name in any case.
+        	// Will actually be ignored if we set a complete preference-based config
+        	final URL jaas_file = new URL(SecurityPreferences.getJaasConfigFile());
             final ILoginContext login = LoginContextFactory.createContext(jaas_name, jaas_file, callback);
             login.login();
-            
+                        
             final Subject subject = login.getSubject();
             logger.log(Level.FINE, "Logged in as {0}", subject);
             SecurityContext.getInstance().setSubject(subject);

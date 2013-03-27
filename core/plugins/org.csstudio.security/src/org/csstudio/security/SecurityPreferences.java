@@ -21,15 +21,21 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class SecurityPreferences
 {
     /** @return JAAS config file path */
-    public static String getConfigFile()
+    public static String getJaasConfigFile()
     {
         return getSetting("jaas_config_file", "platform:/plugin/org.csstudio.security/jaas.conf");
     }
     
     /** @return JAAS config name */
-    public static String getConfigName()
+    public static String getJaasConfigName()
     {
         return getSetting("jaas_config_name", "SNS_UCAMS");
+    }
+    
+    /** @return JAAS configuration (instead of file/name) */
+    public static String getJaasConfig()
+    {
+        return getSetting("jaas_config", "");
     }
 
     /** @return Config file path for authorization */
