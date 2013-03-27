@@ -14,8 +14,8 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class RemoveComponentAction extends AbstractUserDependentAction
+public class RemoveComponentAction extends Action
 {
     final private Shell shell;
     final private AlarmClientModel model;
@@ -39,22 +39,22 @@ public class RemoveComponentAction extends AbstractUserDependentAction
             final List<AlarmTreeItem> items)
     {
         super(Messages.RemoveComponents,
-              Activator.getImageDescriptor("icons/delete.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.items = new AlarmTreeItem[items.size()];
         items.toArray(this.items);
 
-        setEnabledWithoutAuthorization(true);
-    	//authorization
-    	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
+        //authorization
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
     /** Prompt for PV name, add it to model
      *  @see org.eclipse.jface.action.Action#run()
      */
 	@Override
-	protected void doWork() {
+	public void run()
+	{
 		final StringBuilder names = new StringBuilder();
         for (AlarmTreeItem item : items)
         {

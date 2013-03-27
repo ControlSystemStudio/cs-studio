@@ -15,6 +15,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
+import javax.security.auth.Subject;
 
 import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
@@ -23,9 +24,8 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.logging.JMSLogMessage;
+import org.csstudio.security.SecuritySupport;
 
 /** Receives alarm updates, sends acknowledgments.
  *  <p>
@@ -220,11 +220,12 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         map.setString(JMSLogMessage.TEXT, text);
         map.setString(JMSLogMessage.APPLICATION_ID, APPLICATION);
         map.setString(JMSLogMessage.HOST, host);
-        User loggedUser = SecurityFacade.getInstance().getCurrentUser();
-        if (loggedUser == null)  //if no user logged in...
+        
+        final Subject subject = SecuritySupport.getSubject();
+        if (subject == null)  //if no user logged in...
             user = System.getProperty("user.name"); //$NON-NLS-1$
         else
-            user = loggedUser.getUsername();
+            user = SecuritySupport.getSubjectName(subject);
         map.setString(JMSLogMessage.USER, user);
         return map;
     }
