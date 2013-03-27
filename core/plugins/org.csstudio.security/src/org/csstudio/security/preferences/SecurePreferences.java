@@ -8,11 +8,15 @@
 package org.csstudio.security.preferences;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.csstudio.security.SecurityPreferences;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
+
+import com.sun.istack.internal.logging.Logger;
 
 /** Wrapper for Eclipse {@link ISecurePreferences}
  *  
@@ -92,5 +96,34 @@ public class SecurePreferences
         default:
             return SecurePreferencesFactory.getDefault();
         }
+    }
+    
+    /** Read preference setting from secure storage, falling back to normal preferences
+     *  @param plugin_id Plugin that holds the preferences
+     *  @param key Preference key
+     *  @param default_value Default value
+     *  @return Preference setting
+     *  @throws Exception on error
+     */
+    public static String get(final String plugin_id, final String key, final String default_value)
+    {
+    	try
+    	{
+	    	// Check secure preferences
+	    	final String value = getSecurePreferences().node(plugin_id).get(key, null);
+	    	if (value == null)
+	    	{	// Fall back to normal preferences
+	    		final IPreferencesService service = Platform.getPreferencesService();
+	    		if (service != null)
+	    			return service.getString(plugin_id, key, default_value, null);
+	    	}
+    	}
+    	catch (Exception ex)
+    	{
+    		Logger.getLogger(SecurePreferences.class.getClass())
+    			.log(Level.WARNING, "Cannot read " + plugin_id + "/" + key, ex);
+    	}
+    	// Give up
+    	return default_value;
     }
 }   

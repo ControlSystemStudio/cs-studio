@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.equinox.security.storage.ISecurePreferences;
 
 /** Read preference settings.
  *
@@ -111,7 +110,7 @@ public class Preferences
 	/** @return RDB Password */
     public static String getRDB_Password()
     {
-        return getSecureString(RDB_PASSWORD);
+        return SecurePreferences.get(Activator.ID, RDB_PASSWORD, null);
     }
 
 	/** @return RDB schema */
@@ -146,7 +145,7 @@ public class Preferences
     /** @return JMS Password */
     public static String getJMS_Password()
     {
-    	return getSecureString(JMS_PASSWORD);
+        return SecurePreferences.get(Activator.ID, JMS_PASSWORD, null);
     }
 
     /** @param config Alarm configuration name (root)
@@ -295,31 +294,5 @@ public class Preferences
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, MAX_CONTEXT_MENU_ENTRIES, 10, null);
-    }
-
-    /** Read setting from secure store.
-     *  If not defined in there, fall back to ordinary preferences
-     *  @param setting Preference key
-     *  @return Value or <code>null</code> if not defined
-     */
-    private static String getSecureString(final String setting)
-    {
-    	try
-    	{
-	    	final ISecurePreferences prefs = SecurePreferences.getSecurePreferences();
-	    	final ISecurePreferences node = prefs.node(Activator.ID);
-	    	final String value = node.get(setting, null);
-	    	if (value == null)
-	    	{	// Fall back
-	            final IPreferencesService service = Platform.getPreferencesService();
-	            return service.getString(Activator.ID, setting, null, null);
-	    	}
-	        return value;
-    	}
-    	catch (Exception ex)
-    	{
-    		Activator.getLogger().log(Level.WARNING, "Cannot read " + setting, ex);
-    	}
-    	return null;
     }
 }
