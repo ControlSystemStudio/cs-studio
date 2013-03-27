@@ -12,6 +12,7 @@ import org.epics.pvdata.pv.ScalarType;
 import org.epics.vtype.VShortArray;
 import org.epics.vtype.VTypeToString;
 import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ArrayShort;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListShort;
 
@@ -21,7 +22,7 @@ import org.epics.util.array.ListShort;
  */
 public class PVFieldToVShortArray extends AlarmTimeDisplayExtractor implements VShortArray {
 
-	private final short[] array;
+	private final ListInt size;
 	private final ListShort list;
 	
 	/**
@@ -38,23 +39,12 @@ public class PVFieldToVShortArray extends AlarmTimeDisplayExtractor implements V
 			ShortArrayData data = new ShortArrayData();
 			valueField.get(0, valueField.getLength(), data);
 			
-			this.array = data.data;
-			this.list = new ListShort() {
-				
-				@Override
-				public int size() {
-					return array.length;
-				}
-				
-				@Override
-				public short getShort(int index) {
-					return array[index];
-				}
-			};
+			this.size = new ArrayInt(data.data.length);
+			this.list = new ArrayShort(data.data);
 		}
 		else
 		{
-			array = null;
+			size = null;
 			list = null;
 		}
 	}
@@ -64,7 +54,7 @@ public class PVFieldToVShortArray extends AlarmTimeDisplayExtractor implements V
 	 */
 	@Override
 	public ListInt getSizes() {
-		return new ArrayInt(array.length);
+		return size;
 	}
 
 	/* (non-Javadoc)
