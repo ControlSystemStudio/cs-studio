@@ -89,7 +89,6 @@ class ChangeValuePanel extends Composite {
 			Exception ex = event.getPvWriter().lastWriteException();
 			errorBar.setException(ex);
 			newValueField.setEditable(event.getPvWriter().isWriteConnected());
-			System.out.println("W" + event + " " + ex);
 			getParent().layout();
 		}
 		
@@ -105,7 +104,6 @@ class ChangeValuePanel extends Composite {
 	
 	public void reset() {
 		errorBar.setException(null);
-		System.out.println("Wnull");
 		setValue(null);
 		newValueField.setEditable(false);
 	}
