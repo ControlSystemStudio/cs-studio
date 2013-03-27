@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.panda.eclipse.feature"
       label="CSS-PANDA Eclipse Plugins"
-      version="3.0.0.qualifier"
+      version="3.2.4.qualifier"
       provider-name="Florian Feldbauer &lt;florian@ep1.ruhr-uni-bochum.de&gt; - RUB">
 
    <description url="http://www.example.com/description">
@@ -646,6 +646,27 @@
 
    <plugin
          id="javax.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
