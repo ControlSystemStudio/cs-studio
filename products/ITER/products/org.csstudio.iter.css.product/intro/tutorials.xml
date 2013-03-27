@@ -23,5 +23,12 @@
 				</text>
 			</link>
 		</group>
+		<group id="content-group" style-id="content-group">
+			<link id="cssiter" label="Probe via Data Exchange Exercise" style-id="content-link"
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.iter.css.product.product.cheatSheetContent.dataexchange">
+				<text>Learn how to exchange process variable information between CSS Tools
+				</text>
+			</link>
+		</group>
 	</extensionContent>
 </introContent>

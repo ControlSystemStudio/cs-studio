@@ -166,6 +166,13 @@
             id="org.csstudio.iter.css.product.product.cheatSheetContent.databrowser"
             name="3. Data Browser Exercise">
       </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/dataexchange.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.dataexchange"
+            name="4. Probe via Data Exchange Exercise">
+      </cheatsheet>
     </extension>
    
 </plugin>
