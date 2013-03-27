@@ -319,7 +319,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                         if (ev.isConnected()) {
                             // If connected, no write access and exception was not sent, notify writers
                             if (!channel.getWriteAccess() && !sentReadOnlyException) {
-                                reportExceptionToAllWriters(new RuntimeException("'" + getJcaChannelName() + "' is read-only"));
+                                reportExceptionToAllWriters(createReadOnlyException());
                                 sentReadOnlyException = true;
                             }
                             
@@ -362,7 +362,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                                         synchronized(JCAChannelHandler.this) {
                                             processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                                             if (!sentReadOnlyException && !channel.getWriteAccess()) {
-                                                reportExceptionToAllWriters(new RuntimeException("'" + getJcaChannelName() + "' is read-only"));
+                                                reportExceptionToAllWriters(createReadOnlyException());
                                                 sentReadOnlyException = true;
                                             }
                                         }
@@ -432,6 +432,19 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     @Override
     protected boolean isWriteConnected(JCAConnectionPayload connPayload) {
         return connPayload != null && connPayload.isWriteConnected();
+    }
+
+    @Override
+    protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
+        super.addWriter(subscription);
+        // If already connected and read only, we need to notify this writer
+        if (sentReadOnlyException) {
+            subscription.getExceptionWriteFunction().writeValue(createReadOnlyException());
+        }
+    }
+    
+    private Exception createReadOnlyException() {
+        return new RuntimeException("'" + getJcaChannelName() + "' is read-only");
     }
 
     @Override
