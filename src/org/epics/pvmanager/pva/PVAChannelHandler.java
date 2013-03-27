@@ -448,5 +448,10 @@ public class PVAChannelHandler extends
 	public void unlisten(Monitor monitor) {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public String toString() {
+		return "PVAChannelHandler [getChannelName()=" + getChannelName() + "]";
+	}
 	
 }

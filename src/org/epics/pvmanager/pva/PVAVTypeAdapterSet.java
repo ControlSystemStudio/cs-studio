@@ -112,7 +112,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     //  -> VEnum
     final static PVATypeAdapter ToVEnum = new PVATypeAdapter(
     		VEnum.class,
-    		new String[] { "uri:ev4:nt/2012/pwd:NTScalar", "scalar_t" },
+    		new String[] { "uri:ev4:nt/2012/pwd:NTEnum", "enum_t" },
     		StandardFieldFactory.getStandardField().enumerated())
     	{
             @Override
