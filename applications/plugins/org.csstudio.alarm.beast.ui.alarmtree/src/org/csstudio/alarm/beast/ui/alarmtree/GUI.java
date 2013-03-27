@@ -28,7 +28,7 @@ import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
 import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
-import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -194,7 +194,7 @@ public class GUI implements AlarmClientModelListener
             @Override
             public void doubleClick(final DoubleClickEvent event)
             {
-                if (!SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false))
+                if (! SecuritySupport.havePermission(AuthIDs.CONFIGURE))
                     return;
                 final IStructuredSelection selection = (IStructuredSelection)tree_viewer.getSelection();
                 final AlarmTreeItem item = (AlarmTreeItem) selection.getFirstElement();
