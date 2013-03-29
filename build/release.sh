@@ -28,7 +28,10 @@ git push origin CSS-$VERSION
 echo ::: Build all products :::
 while read PRODUCT
 do
+  cd $BUILD_DIR
   ./build.sh $PRODUCT
+  cd ../products/$PRODUCT
+  ./publish.sh $VERSION
 done < release.products
 
 echo ::: Release Done :::

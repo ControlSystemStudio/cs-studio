@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Graphene
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.graphene
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Require-Bundle: org.epics.graphene,

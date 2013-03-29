@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: pvAccess DataSource
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.pva;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.pva.Activator
 Bundle-Vendor: Matej Sekoranja <matej.sekoranja@cosylab.com> - Cosylab, Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides EPICS v4 pvAccess connectivity to pvManager

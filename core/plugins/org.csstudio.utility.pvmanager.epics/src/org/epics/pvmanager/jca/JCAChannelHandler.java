@@ -54,6 +54,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     private volatile Channel channel;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
+    private volatile boolean sentReadOnlyException = false;
     private final boolean putCallback;
     private final boolean longString;
     
@@ -314,10 +315,19 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                             return;
                         }
 
-                        // Setup monitors on connection
                         processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                         if (ev.isConnected()) {
+                            // If connected, no write access and exception was not sent, notify writers
+                            if (!channel.getWriteAccess() && !sentReadOnlyException) {
+                                reportExceptionToAllWriters(createReadOnlyException());
+                                sentReadOnlyException = true;
+                            }
+                            
+                            // Setup monitors on connection
                             setup(channel);
+                        } else {
+                            // Next connection, resend the read only exception if that's the case
+                            sentReadOnlyException = false;
                         }
                         
                     } catch (Exception ex) {
@@ -351,8 +361,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                                     public void run() {
                                         synchronized(JCAChannelHandler.this) {
                                             processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
-                                            if (!channel.getWriteAccess()) {
-                                                reportExceptionToAllWriters(new RuntimeException("'" + getJcaChannelName() + "' is read-only"));
+                                            if (!sentReadOnlyException && !channel.getWriteAccess()) {
+                                                reportExceptionToAllWriters(createReadOnlyException());
+                                                sentReadOnlyException = true;
                                             }
                                         }
                                     }
@@ -396,6 +407,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
             channel = null;
+            sentReadOnlyException = false;
             processConnection(null);
         }
     }
@@ -420,6 +432,19 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     @Override
     protected boolean isWriteConnected(JCAConnectionPayload connPayload) {
         return connPayload != null && connPayload.isWriteConnected();
+    }
+
+    @Override
+    protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
+        super.addWriter(subscription);
+        // If already connected and read only, we need to notify this writer
+        if (sentReadOnlyException) {
+            subscription.getExceptionWriteFunction().writeValue(createReadOnlyException());
+        }
+    }
+    
+    private Exception createReadOnlyException() {
+        return new RuntimeException("'" + getJcaChannelName() + "' is read-only");
     }
 
     @Override

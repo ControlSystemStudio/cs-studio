@@ -305,7 +305,7 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		valuePanel.changeValue(null);
-		changeValuePanel.setPV(null);
+		changeValuePanel.reset();
 		metadataPanel.changeValue(null);
 		detailsPanel.changeValue(null, null);
 		setMeter(null, null);
@@ -345,9 +345,11 @@ public class PVManagerProbe extends ViewPart {
 							metadataPanel.changeValue(value);
 							copyValueAction.setEnabled(export.canExport(value));
 						}
-					}).notifyOn(swtThread(this))
+					})
+					.readListener(changeValuePanel.getReaderListener())
+					.writeListener(changeValuePanel.getWriterListener())
+					.notifyOn(swtThread(this))
 					.asynchWriteAndMaxReadRate(ofHertz(25));
-			changeValuePanel.setPV(pv);
 			// Show the PV name as the title
 			setPartName(pvFormula);
 			detailsPanel.changeValue(expression, pvFormula);
