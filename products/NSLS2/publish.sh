@@ -10,7 +10,7 @@ exit -1
 fi
 
 echo ::: Publish product to sourceforge :::
-cd $BUILD_DIR/release/BuildDirectory/I.CSS-NSLSII/
+cd $BUILD_DIR/build/BuildDirectory/I.CSS-NSLSII/
 mv CSS-NSLSII-linux.gtk.x86.zip CSS-NSLSII-linux-$VERSION.zip
 mv CSS-NSLSII-linux.gtk.x86_64.zip CSS-NSLSII-linux64-$VERSION.zip
 mv CSS-NSLSII-macosx.cocoa.x86.zip CSS-NSLSII-macosx-$VERSION.zip
