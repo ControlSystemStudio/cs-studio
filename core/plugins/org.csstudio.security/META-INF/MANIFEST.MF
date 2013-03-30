@@ -16,3 +16,6 @@ Export-Package: org.csstudio.security,
  org.csstudio.security.authentication,
  org.csstudio.security.authorization,
  org.csstudio.security.preferences
+Service-Component: OSGI-INF/auth_file.xml,
+ OSGI-INF/auth_ldap.xml,
+ OSGI-INF/auth_script.xml

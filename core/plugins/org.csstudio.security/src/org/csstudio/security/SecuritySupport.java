@@ -8,6 +8,7 @@
 package org.csstudio.security;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -16,10 +17,9 @@ import javax.security.auth.Subject;
 import org.csstudio.security.authorization.AuthorizationProvider;
 import org.csstudio.security.authorization.Authorizations;
 import org.csstudio.security.internal.SecurityContext;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import com.sun.security.auth.NTUserPrincipal;
 import com.sun.security.auth.UnixPrincipal;
@@ -43,29 +43,31 @@ public class SecuritySupport implements BundleActivator
     @Override
     public void start(final BundleContext context) throws Exception
     {
-        // Fetch (i.e. create) the SecurityContext
+    	final Logger logger = Logger.getLogger(getClass().getName());
+
+    	// Fetch (i.e. create) the SecurityContext
         security = SecurityContext.getInstance();
 
-        final Logger logger = Logger.getLogger(getClass().getName());
-        
-        // Obtain Authorization implementation from extension point
+        // Obtain AuthorizationProvider from OSGi service.
+        // Could 'inject' into the SecurityContext via DeclarativeServices
+        // if there was just one service implementation,
+        // but want to filter on a specific AuthorizationProvider based on preference setting.
         final String authorization_name = SecurityPreferences.getAuthorizationProvider();
-        final IConfigurationElement[] extensions =
-            Platform.getExtensionRegistry().getConfigurationElementsFor(AuthorizationProvider.EXT_ID);
-        for (IConfigurationElement extension : extensions)
-        {
-            final String name = extension.getAttribute("name");
-            logger.finer("Found authentication provider " + name);
-            if (name.equals(authorization_name))
-            {
-                logger.fine("Using authentication provider " + name +
-                        " from " + extension.getContributor().getName());
-                final AuthorizationProvider auth_provider =
-                    (AuthorizationProvider) extension.createExecutableExtension("class");
-                security.setAuthorizationProvider(auth_provider);
-                break;
-            }
-        }
+        final String filter = "(component.name=" + authorization_name + ")";
+        // Expect exactly one with that name
+        final Collection<ServiceReference<AuthorizationProvider>> authorization_services =
+    		context.getServiceReferences(AuthorizationProvider.class, filter);
+    	if (authorization_services.size() == 1)
+    	{
+    		final ServiceReference<AuthorizationProvider> service =
+    				authorization_services.iterator().next();
+    		security.setAuthorizationProvider(context.getService(service));
+    	}
+    	else
+        	logger.warning(
+    			"Expected 1 authorization provider, found " + authorization_services.size() +
+    			"\nList available providers on OSGi console via" +
+    			"services (objectClass=org.csstudio.security.authorization.AuthorizationProvider)");
     }
 
     /** {@inheritDoc} */
