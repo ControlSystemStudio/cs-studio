@@ -103,7 +103,6 @@ public class SecurePreferences
      *  @param key Preference key
      *  @param default_value Default value
      *  @return Preference setting
-     *  @throws Exception on error
      */
     public static String get(final String plugin_id, final String key, final String default_value)
     {
@@ -125,5 +124,31 @@ public class SecurePreferences
     	}
     	// Give up
     	return default_value;
+    }
+
+    /** Set preference setting in secure storage
+     *  @param plugin_id Plugin that holds the preferences
+     *  @param key Preference key
+     *  @param value Value to write
+     *  @throws Exception on error
+     */
+    public static void set(final String plugin_id, final String key, final String value) throws Exception
+    {
+    	getSecurePreferences().node(plugin_id).put(key, value, true);
+    }
+
+    /** Set preference setting in secure storage
+     *  @param setting Path to setting, must be "plugin_id/key"
+     *  @param value Value to write
+     *  @throws Exception on error
+     */
+    public static void set(final String setting, final String value) throws Exception
+    {
+    	final int sep = setting.indexOf("/");
+    	if (sep < 0)
+    		throw new Exception("Expecting 'plugin_id/key', got " + setting);
+    	final String plugin_id = setting.substring(0, sep);
+    	final String key = setting.substring(sep + 1);
+    	set(plugin_id, key, value);
     }
 }   
