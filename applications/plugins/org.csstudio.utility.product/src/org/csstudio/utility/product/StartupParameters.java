@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.security.PasswordInput;
 import org.csstudio.security.preferences.SecurePreferences;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.StartupParametersExtPoint;

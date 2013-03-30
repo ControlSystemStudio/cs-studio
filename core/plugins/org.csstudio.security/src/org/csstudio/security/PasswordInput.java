@@ -1,4 +1,4 @@
-package org.csstudio.utility.product;
+package org.csstudio.security;
 
 import java.io.BufferedReader;
 import java.io.Console;
