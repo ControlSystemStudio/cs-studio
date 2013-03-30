@@ -56,6 +56,18 @@ public class SecurityPreferences
         return getSetting("authorization_script_name", "/usr/local/bin/id_auth");
     }
 
+    /** @return URL of LDAP for group-based authorization */
+	public static String getLDAPGroupURL()
+	{
+        return getSetting("ldap_group_url", "ldap://localhost/dc=test,dc=ics");
+	}
+
+    /** @return LDAP Base for group-based authorization */
+	public static String getLDAPGroupBase()
+	{
+        return getSetting("ldap_group_base", "ou=Group");
+	}
+    
     /** @return {@link SecurePreferences} location type */
     public static SecurePreferences.Type getSecurePreferenceLocation()
     {
@@ -84,5 +96,4 @@ public class SecurityPreferences
             value = prefs.getString(SecuritySupport.ID, key, value, null);
         return value;
     }
-
 }

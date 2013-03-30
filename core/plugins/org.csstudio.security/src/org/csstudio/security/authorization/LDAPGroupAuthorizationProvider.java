@@ -22,6 +22,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 
+import org.csstudio.security.SecurityPreferences;
 import org.csstudio.security.SecuritySupport;
 
 import com.sun.security.auth.module.LdapLoginModule;
@@ -66,6 +67,17 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
     final private String ldap_url;
     final private String group_base;
     
+    /** Initialize based on Eclipse preferences */
+    public LDAPGroupAuthorizationProvider()
+    {
+    	this(SecurityPreferences.getLDAPGroupURL(),
+    	     SecurityPreferences.getLDAPGroupBase());
+    }
+
+    /** Initialize
+     *  @param ldap_url URL of LDAP for authorization
+     *  @param group_base Base DN for locating groups of a user
+     */
     public LDAPGroupAuthorizationProvider(final String ldap_url, final String group_base)
     {
         this.ldap_url = ldap_url;
