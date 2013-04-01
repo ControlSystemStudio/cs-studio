@@ -9,7 +9,7 @@ package org.csstudio.archive.engine.model;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.util.NumberFormats;
+import org.epics.util.text.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;

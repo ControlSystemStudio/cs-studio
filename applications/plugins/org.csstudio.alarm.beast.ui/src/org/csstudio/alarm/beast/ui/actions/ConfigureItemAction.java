@@ -13,8 +13,9 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.SecuritySupport;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -28,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class ConfigureItemAction extends AbstractUserDependentAction
+public class ConfigureItemAction extends Action
 {
     private ISelectionProvider selection_provider;
     private Shell shell;
@@ -44,14 +45,13 @@ public class ConfigureItemAction extends AbstractUserDependentAction
             final AlarmTreeItem item)
     {
         super(Messages.ConfigureItem,
-                Activator.getImageDescriptor("icons/configure.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/configure.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.item = item;
 
-        setEnabledWithoutAuthorization(true);
     	//authorization
-    	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
     /** Initialize action
@@ -60,7 +60,7 @@ public class ConfigureItemAction extends AbstractUserDependentAction
     public ConfigureItemAction(final Shell shell, final AlarmClientModel model, final ISelectionProvider selection_provider)
     {
         super(Messages.ConfigureItem,
-                Activator.getImageDescriptor("icons/configure.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/configure.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.selection_provider = selection_provider;
@@ -68,26 +68,23 @@ public class ConfigureItemAction extends AbstractUserDependentAction
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
         {
             @Override
-            public void selectionChanged(SelectionChangedEvent event)
+            public void selectionChanged(final SelectionChangedEvent event)
             {
-            	boolean oneSelected=(((IStructuredSelection)event.getSelection()).size() == 1);
-            	if(oneSelected) {
-                	setEnabledWithoutAuthorization(true);
+            	final boolean oneSelected = (((IStructuredSelection)event.getSelection()).size() == 1);
+            	if (oneSelected)
                 	//authorization
-                	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
-                }else {
-                	setEnabledWithoutAuthorization(false);
+                	setEnabled(SecuritySupport.havePermission(AuthIDs.CONFIGURE));
+                else
                 	setEnabled(false);
-                }
             }
         });
-        setEnabled(false);
-        setEnabledWithoutAuthorization(false);
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
 
 	@Override
-	protected void doWork() {
+	public void run()
+	{
 		if (selection_provider != null)
             item =
                 (AlarmTreeItem) ((IStructuredSelection)selection_provider.getSelection()).getFirstElement();
