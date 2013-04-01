@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist;
 
-import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import java.util.logging.Level;
+
+import org.csstudio.security.ui.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -47,16 +49,23 @@ public class PreferencePage extends FieldEditorPreferencePage
     @Override
     protected void createFieldEditors()
     {
-        final Composite parent = getFieldEditorParent();
-        addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Pref_URL, parent));
-        addField(new PasswordFieldEditor(Preferences.RDB_USER, Messages.Pref_User, parent, Activator.ID, false));
-        addField(new PasswordFieldEditor(Preferences.RDB_PASSWORD, Messages.Pref_Password, parent, Activator.ID));
-        addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
-        addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
-        final IntegerFieldEditor max_properties =
-        	new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
-        max_properties.setValidRange(0, Integer.MAX_VALUE);
-        addField(max_properties);
-        addField(new TableColumnsFieldEditor(parent));
+    	try
+    	{
+	        final Composite parent = getFieldEditorParent();
+	        addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Pref_URL, parent));
+	        addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_USER, Messages.Pref_User, parent));
+	        addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_PASSWORD, Messages.Pref_Password, parent));
+	        addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
+	        addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
+	        final IntegerFieldEditor max_properties =
+	        	new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
+	        max_properties.setValidRange(0, Integer.MAX_VALUE);
+	        addField(max_properties);
+	        addField(new TableColumnsFieldEditor(parent));
+    	}
+    	catch (Exception ex)
+    	{
+    		Activator.getLogger().log(Level.WARNING, "Cannot read preferences", ex);
+    	}
     }
 }

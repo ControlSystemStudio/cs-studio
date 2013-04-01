@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.display.rdbtable.ui;
 
-import org.csstudio.auth.ui.dialogs.LoginDialog;
 import org.csstudio.display.rdbtable.Messages;
 import org.csstudio.display.rdbtable.model.RDBTableModel;
 import org.csstudio.display.rdbtable.model.RDBTableModelListener;
@@ -82,16 +81,12 @@ public class Editor extends EditorPart
             // Does this configuration require a user/password prompt?
             if (model.needPassword())
             {
-                final LoginDialog login = new LoginDialog(site.getShell(),
-                        Messages.LoginTitle,
-                        NLS.bind(Messages.LoginMsg,
-                                 model.getTitle()),
-                        model.getUser());
+                final LoginDialog login = new LoginDialog(site.getShell());
                 if (login.open() == Window.CANCEL)
                     throw new Exception(Messages.LoginCancelled);
                 // Read with user/pw from dialog
-                model.read(login.getLoginCredentials().getUsername(),
-                           login.getLoginCredentials().getPassword());
+                model.read(login.getUser(),
+                           login.getPassword());
             }
             else // Read with user/pw that's in the configuration file
                 model.read();

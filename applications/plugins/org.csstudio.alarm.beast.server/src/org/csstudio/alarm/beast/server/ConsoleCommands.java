@@ -54,12 +54,12 @@ public class ConsoleCommands implements CommandProvider
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
-        buf.append("\tdump               - Dump complete alarm tree\n");
-        buf.append("\tpvs                - List PVs\n");
-        buf.append("\tpvs -d             - List disconnected PVs\n");
-        buf.append("\tls '/path/to/item' - List alarm tree based on path\n");
-        buf.append("\tpwd                - Print working 'directory'\n");
-        buf.append("\tcd '/path'         - Change working 'directory'\n");
+        buf.append("\tdump                - Dump complete alarm tree\n");
+        buf.append("\tpvs                 - List PVs\n");
+        buf.append("\tpvs -d              - List disconnected PVs\n");
+        buf.append("\tlsa '/path/to/item' - List alarm tree based on path\n");
+        buf.append("\tpwd                 - Print working 'directory'\n");
+        buf.append("\tcd '/path'          - Change working 'directory'\n");
         return buf.toString();
     }
 
@@ -121,8 +121,8 @@ public class ConsoleCommands implements CommandProvider
         return _pwd(intp);
     }
     
-    /** 'ls' command */
-    public Object _ls(final CommandInterpreter intp)
+    /** 'lsa' command */
+    public Object _lsa(final CommandInterpreter intp)
     {
         String path = intp.nextArgument();
         // No arg provided? Use pwd
