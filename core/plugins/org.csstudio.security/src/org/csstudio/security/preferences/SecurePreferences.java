@@ -110,12 +110,12 @@ public class SecurePreferences
     	{
 	    	// Check secure preferences
 	    	final String value = getSecurePreferences().node(plugin_id).get(key, null);
-	    	if (value == null)
-	    	{	// Fall back to normal preferences
-	    		final IPreferencesService service = Platform.getPreferencesService();
-	    		if (service != null)
-	    			return service.getString(plugin_id, key, default_value, null);
-	    	}
+	    	if (value != null)
+	    	    return value;
+	    	// Fall back to normal preferences
+	    	final IPreferencesService service = Platform.getPreferencesService();
+	    	if (service != null)
+	    	    return service.getString(plugin_id, key, default_value, null);
     	}
     	catch (Exception ex)
     	{
