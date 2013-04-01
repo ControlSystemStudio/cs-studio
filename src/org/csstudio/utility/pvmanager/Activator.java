@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.service.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,6 +52,8 @@ public class Activator extends Plugin {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Couldn't configure PVManager", e);
 		}
+		
+		ServiceRegistry.getDefault().registerService(new MathService());
 	}
 
 }
