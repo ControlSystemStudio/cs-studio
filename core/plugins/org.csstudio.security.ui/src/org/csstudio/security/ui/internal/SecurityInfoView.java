@@ -21,8 +21,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,7 +36,7 @@ import org.eclipse.ui.part.ViewPart;
 /** Eclipse view that displays security info
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls") // TODO Externalize strings
+@SuppressWarnings("nls") // No externalize strings, not meant for end users
 public class SecurityInfoView extends ViewPart implements SecurityListener
 {
     private List subject_detail, authorization_detail;
@@ -46,43 +48,40 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
         createComponents(parent);
         
         // Add demo actions
-        final IAction configure = new Action("Test Config")
+        final String[] demo_actions = new String[] { "alarm_config", "alarm_acknowledge" };
+        final IAction[] actions = new IAction[demo_actions.length];
+        for (int i=0; i<demo_actions.length; ++i)
         {
-            @Override
-            public void runWithEvent(Event event)
+            final String authorization = demo_actions[i];
+            actions[i] = new Action("Test " + (i+1))
             {
-                MessageDialog.openInformation(getSite().getShell(), "Test", "You have the 'alarm_config' authorization");
-            }
-        };
-        SecuritySupportUI.registerAction(configure, "alarm_config");
-
-        final IAction acknowledge = new Action("Test Ack'")
-        {
-            @Override
-            public void runWithEvent(Event event)
-            {
-                MessageDialog.openInformation(getSite().getShell(), "Test", "You have the 'alarm_acknowledge' authorization");
-            }
-        };
-        SecuritySupportUI.registerAction(acknowledge, "alarm_acknowledge");
-        
-        getViewSite().getActionBars().getMenuManager().add(configure);
-        getViewSite().getActionBars().getMenuManager().add(acknowledge);
-        getViewSite().getActionBars().getToolBarManager().add(configure);
-        getViewSite().getActionBars().getToolBarManager().add(acknowledge);
+                @Override
+                public void runWithEvent(Event event)
+                {
+                    MessageDialog.openInformation(getSite().getShell(), "Test", "You have the '" + authorization + "' authorization");
+                }
+            };
+            SecuritySupportUI.registerAction(actions[i], authorization);
+            getViewSite().getActionBars().getMenuManager().add(actions[i]);
+            getViewSite().getActionBars().getToolBarManager().add(actions[i]);
+        }
         
         // Toggle initial update
         changedSecurity(SecuritySupport.getSubject(), SecuritySupport.getAuthorizations());
 
         // Update when security info changes
         SecuritySupport.addListener(this);
+        
+        // Unregister actions and listener
         parent.addDisposeListener(new DisposeListener()
         {
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                SecuritySupportUI.unregisterAction(configure, "alarm_config");
-                SecuritySupportUI.unregisterAction(acknowledge, "alarm_acknowledge");
+                for (int i=0; i<demo_actions.length; ++i)
+                {
+                    SecuritySupportUI.unregisterAction(actions[i], demo_actions[i]);
+                }
                 SecuritySupport.removeListener(SecurityInfoView.this);
             }
         });
@@ -93,24 +92,33 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
      */
     private void createComponents(final Composite parent)
     {
-        final GridLayout layout = new GridLayout(2, false);
-        parent.setLayout(layout);
+        parent.setLayout(new FillLayout());
         
-        Label l = new Label(parent, 0);
+        final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
+
+        final Composite top = new Composite(sashes, 0);
+        top.setLayout(new GridLayout(2, false));
+        
+        Label l = new Label(top, 0);
         l.setText("Logged in User:");
         l.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false, false));
         
-        subject_detail = new List(parent, 0);
+        subject_detail = new List(top, SWT.V_SCROLL);
         subject_detail.setToolTipText("List of 'principals', names associated with the user");
         subject_detail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        final Composite bottom = new Composite(sashes, 0);
+        bottom.setLayout(new GridLayout(2, false));
         
-        l = new Label(parent, 0);
+        l = new Label(bottom, 0);
         l.setText("Authorizations:");
         l.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false, false));
         
-        authorization_detail = new List(parent, 0);
+        authorization_detail = new List(bottom, SWT.V_SCROLL);
         authorization_detail.setToolTipText("List of authorizations held by the user");
         authorization_detail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        sashes.setWeights(new int[] { 50, 50 });
     }
 
     /** {@inheritDoc} */
