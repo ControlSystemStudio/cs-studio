@@ -90,6 +90,8 @@ org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
 org.csstudio.remote
+org.csstudio.security
+org.csstudio.security.ui
 org.csstudio.servicelocator
 org.csstudio.startup
 org.csstudio.swt.chart
