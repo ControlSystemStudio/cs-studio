@@ -134,7 +134,9 @@ public class SecurePreferences
      */
     public static void set(final String plugin_id, final String key, final String value) throws Exception
     {
-    	getSecurePreferences().node(plugin_id).put(key, value, true);
+    	final ISecurePreferences prefs = getSecurePreferences();
+        prefs.node(plugin_id).put(key, value, true);
+        prefs.flush();
     }
 
     /** Set preference setting in secure storage
