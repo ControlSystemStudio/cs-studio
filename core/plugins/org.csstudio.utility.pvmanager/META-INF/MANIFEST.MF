@@ -12,5 +12,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager,
  org.epics.pvmanager.expression,
+ org.epics.pvmanager.service,
  org.epics.pvmanager.util
 Bundle-ActivationPolicy: lazy
