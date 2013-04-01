@@ -40,6 +40,25 @@ public class LoginJob extends Job
     final private String jaas_name;
     final private CallbackHandler callback;
 
+    /** Create an (unattended) login job that fetches
+     *  the current user.
+     *  
+     *  Depending on the OS, this requires an entry "windows"
+     *  or "unix" in the JAAS configuration.
+     *  
+     *  See default jaas.conf for example
+     *  
+     *  @return LoginJob
+     */
+    public static LoginJob forCurrentUser()
+    {
+        final String method =
+                System.getProperty("os.name").contains("indow")
+                ? "windows"
+                : "unix";
+         return new LoginJob(method, new UnattendedCallbackHandler());
+    }
+    
     /** Initialize login for JAAS config set in preferences
      *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
      */

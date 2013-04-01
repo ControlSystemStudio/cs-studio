@@ -14,9 +14,7 @@ import java.util.logging.Logger;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.security.authentication.LoginJob;
-import org.csstudio.security.authentication.UnattendedCallbackHandler;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
-import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
@@ -42,19 +40,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Workbench implements WorkbenchExtPoint
 {
-	/** Attempt to authenticate user.
-	 *  @param username
-	 *  @param password
-	 */
-	private static void authenticate(final String username, final String password)
-	{
-	    final String method =
-            System.getProperty("os.name").contains("indow")
-            ? "windows"
-            : "unix";
-	    new LoginJob(method, new UnattendedCallbackHandler(username, password)).schedule();
-	}
-
     /** {@inheritDoc} */
 	@Override
     public Object afterWorkbenchCreation(final Display display, final IApplicationContext context,
@@ -96,11 +81,7 @@ public class Workbench implements WorkbenchExtPoint
 	    final Logger logger = Logger.getLogger(getClass().getName());
 
         //authenticate user
-        Object o = parameters.get(LoginExtPoint.USERNAME);
-		final String username = o != null ? (String)o : null;
-		o = parameters.get(LoginExtPoint.PASSWORD);
-		final String password = o != null ? (String)o : null;
-        authenticate(username, password);
+	    LoginJob.forCurrentUser().schedule();
 
         final OpenDocumentEventProcessor openDocProcessor =
     	  (OpenDocumentEventProcessor) parameters.get(
