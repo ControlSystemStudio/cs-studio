@@ -85,19 +85,18 @@ public class ServicePanel extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String, Object> args = adaptArguments(argReader.getValue());
-				System.out.println("Arguments: " + args);
 				serviceMethod.execute(args, new WriteFunction<Map<String,Object>>() {
 					
 					@Override
 					public void writeValue(Map<String, Object> newValue) {
+						resultsField.setText(String.valueOf(newValue));
 						resultWriter.write(newValue);
 					}
 				}, new WriteFunction<Exception>() {
 
 					@Override
 					public void writeValue(Exception newValue) {
-						// Ignore for now
-						System.out.println("Error: " + newValue);
+						resultsField.setText(String.valueOf(newValue.getMessage()));
 					}
 					
 				});
