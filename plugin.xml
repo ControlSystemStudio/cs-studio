@@ -3,5 +3,12 @@
 <plugin>
    <extension-point id="org.csstudio.utility.pvmanager.datasource" name="PVManager DataSource" schema="schema/org.csstudio.utility.pvmanager.datasource.exsd"/>
    <extension-point id="org.csstudio.utility.pvmanager.service" name="PVManager Service" schema="schema/org.csstudio.utility.pvmanager.service.exsd"/>
+   <extension
+         point="org.csstudio.utility.pvmanager.service">
+      <service
+            name="org.csstudio.utility.pvmanager.mathservice"
+            service="org.csstudio.utility.pvmanager.MathService">
+      </service>
+   </extension>
 
 </plugin>
