@@ -128,13 +128,15 @@ public class ServicePanel extends Composite {
 		serviceMethod = null;
 		
 		if (serviceName == null) {
+			serviceField.setText("");
 			return;
 		}
 		
 		try {
 			serviceMethod = ServiceRegistry.getDefault().findServiceMethod(serviceName);
+			serviceField.setText(serviceName);
 		} catch(Exception ex) {
-			// Exception should be displayed
+			serviceField.setText(ex.getMessage());
 			return;
 		}
 		
