@@ -35,7 +35,12 @@ public class SecurityContext
     final private static SecurityContext instance = new SecurityContext();
     final private List<SecurityListener> listeners = new CopyOnWriteArrayList<>();
 
+    /** Subject that describes the authenticated user */
     private Subject subject = null;
+    
+    /** Is it the current, OS-authenticated user? */
+    private boolean is_current_user = false;
+    
     private AuthorizationProvider authorization_provider = null;
     private Authorizations authorizations;
     
@@ -70,9 +75,17 @@ public class SecurityContext
     {
         return subject;
     }
+
+    /** @return Is it the current, OS-authenticated user? */
+    public synchronized boolean isCurrentUser()
+    {
+        return is_current_user;
+    }
     
-    /** @param subject Currently logged-in Subject or <code>null</code> */
-    public void setSubject(final Subject subject)
+    /** @param subject Currently logged-in Subject or <code>null</code>
+     *  @param is_current_user Is it the current, OS-authenticated user?
+     */
+    public void setSubject(final Subject subject, final boolean is_current_user)
     {
         Authorizations authorizations = null;
         if (subject != null  &&  authorization_provider != null)
@@ -90,10 +103,11 @@ public class SecurityContext
         synchronized (this)
         {   // Lock only briefly for update
             this.subject = subject;
+            this.is_current_user = is_current_user;
             this.authorizations = authorizations;
         }
         for (SecurityListener listener : listeners)
-            listener.changedSecurity(subject, authorizations);
+            listener.changedSecurity(subject, is_current_user, authorizations);
     }
 
     /** @return {@link Authorizations} of the currently logged-in Subject, or <code>null</code> */

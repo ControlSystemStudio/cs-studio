@@ -72,8 +72,7 @@ public class LoginDemo
     /** Should work as long as passwords.conf isn't changed */
     @Test
     public void fileDemo() throws Exception
-    {
-        
+    {   
         final LoginContext login = new LoginContext("file",
                 new UnattendedCallbackHandler(USER_NAME, "$fred"));
         login.login();
@@ -91,16 +90,15 @@ public class LoginDemo
         assertThat(subject.getPrincipals().iterator().next().getName(), equalTo("fred"));
     }
 
-    /** Only works for SNS UCAMS, requires correct name/passwor */
+    /** Only works for SNS LDAP, requires correct name/password */
     @Test
-    public void UCAMS_Demo() throws Exception
+    public void SNS_LDAP_Demo() throws Exception
     {
-        
-        final LoginContext login = new LoginContext("Plain_JAAS_SNS_UCAMS", new TextCallbackHandler());
+        final LoginContext login = new LoginContext("SNS_LDAP", new TextCallbackHandler());
         login.login();
         final Subject subject = login.getSubject();
-        
         System.out.println(subject);
         assertThat(subject.getPrincipals().size(), greaterThan(0));
+        System.out.println("Subject name: " + SecuritySupport.getSubjectName(subject));
     }
 }

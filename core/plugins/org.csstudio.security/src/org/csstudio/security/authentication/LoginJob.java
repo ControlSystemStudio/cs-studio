@@ -39,6 +39,7 @@ public class LoginJob extends Job
 {
     final private String jaas_name;
     final private CallbackHandler callback;
+    final private boolean get_current_user;
 
     /** Create an (unattended) login job that fetches
      *  the current user.
@@ -56,7 +57,7 @@ public class LoginJob extends Job
                 System.getProperty("os.name").contains("indow")
                 ? "windows"
                 : "unix";
-         return new LoginJob(method, new UnattendedCallbackHandler());
+         return new LoginJob(method, new UnattendedCallbackHandler(), true);
     }
     
     /** Initialize login for JAAS config set in preferences
@@ -73,15 +74,27 @@ public class LoginJob extends Job
      */
     public LoginJob(final String jaas_name, final CallbackHandler callback)
     {
+        this(jaas_name, callback, false);
+    }
+    
+    /** Initialize
+     *  @param jaas_name JAAS config name to use for log in
+     *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
+     *  @param get_current_user Get the current, OS-authenticated user?
+     */
+    private LoginJob(final String jaas_name, final CallbackHandler callback,
+            final boolean get_current_user)
+    {
         super("Log in");
         this.jaas_name = jaas_name;
         this.callback = callback;
+        this.get_current_user = get_current_user;
     }
     
     /** Log user out */
     public static void logout()
     {
-        SecurityContext.getInstance().setSubject(null);
+        SecurityContext.getInstance().setSubject(null, true);
     }
 
     /** {@inheritDoc} */
@@ -104,7 +117,7 @@ public class LoginJob extends Job
                         
             final Subject subject = login.getSubject();
             logger.log(Level.FINE, "Logged in as {0}", subject);
-            SecurityContext.getInstance().setSubject(subject);
+            SecurityContext.getInstance().setSubject(subject, get_current_user);
             
             // Signal 'OK'
             callback.handle(new Callback[]
