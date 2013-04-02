@@ -195,7 +195,7 @@ public class ServicePanel extends Composite {
 			return;
 		}
 		ReadMap<Object> map = readMapOf(Object.class);
-		for (String argumentName : serviceMethod.getParameterDescriptions().keySet()) {
+		for (String argumentName : serviceMethod.getArgumentDescriptions().keySet()) {
 			map.add(latestValueOf(channel(argumentPrefix + argumentName)).as(argumentName));
 		}
 		setArgumentExpression(map);
@@ -206,7 +206,7 @@ public class ServicePanel extends Composite {
 			return;
 		}
 		WriteMap<Object> map = writeMapOf(Object.class);
-		for (String resultName : serviceMethod.getOutputDescriptions().keySet()) {
+		for (String resultName : serviceMethod.getResultDescriptions().keySet()) {
 			map.add(channel(resultPrefix + resultName).as(resultName));
 		}
 		setResultExpression(map);
@@ -219,7 +219,7 @@ public class ServicePanel extends Composite {
 		
 		Map<String, Object> newArgs = new HashMap<>();
 		for (String argName : arguments.keySet()) {
-			newArgs.put(argName, adaptValue(arguments.get(argName), serviceMethod.getParameterTypes().get(argName)));
+			newArgs.put(argName, adaptValue(arguments.get(argName), serviceMethod.getArgumentTypes().get(argName)));
 		}
 		
 		return newArgs;
