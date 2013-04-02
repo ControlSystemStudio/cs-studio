@@ -12,7 +12,14 @@ import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 
 /** Provide variables to be used in Eclipse Core Expressions
- *  to enable/disable UI items
+ *  to enable/disable UI items.
+ *  
+ *  <p>Not to be called directly.
+ *  plugin.xml registers this as a service,
+ *  and command handlers can then enable/disable based on
+ *  the value of variables
+ *  <code>org.csstudio.security.ui.authenticated</code>,
+ *  <code>org.csstudio.security.ui.current_user</code>.
  *  
  *  @author Kay Kasemir
  */

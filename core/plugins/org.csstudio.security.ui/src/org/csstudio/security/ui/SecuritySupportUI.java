@@ -27,6 +27,8 @@ import org.osgi.framework.BundleContext;
  * 
  *  <p>Actions can register to be enabled/disabled based on authorization.
  *  
+ *  @see #registerAction(IAction, String)
+ *  
  *  @author Kay Kasemir
  */
 public class SecuritySupportUI implements BundleActivator, SecurityListener
