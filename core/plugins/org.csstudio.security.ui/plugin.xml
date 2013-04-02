@@ -29,6 +29,22 @@
             </control>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:file?after=user">
+            <command
+                  commandId="org.csstudio.security.login"
+                  icon="icons/login.png"
+                  style="push"
+                  tooltip="%LoginTT">
+            </command>
+            <command
+                  commandId="org.csstudio.security.logout"
+                  icon="icons/logout.png"
+                  style="push"
+                  tooltip="%LogoutTT">
+            </command>
+      </menuContribution>
    </extension>
    <extension point="org.eclipse.ui.commands">
       <command id="org.csstudio.security.login"
