@@ -17,15 +17,15 @@ import static org.epics.pvmanager.service.Service.namePattern;
  */
 public abstract class ServiceMethod {
     private String name;
-    private final Map<String, Class<?>> parameterTypes;
-    private final Map<String, String> parameterDescriptions;
+    private final Map<String, Class<?>> argumentTypes;
+    private final Map<String, String> argumentDescriptions;
     private final Map<String, Class<?>> resultTypes;
     private final Map<String, String> resultDescriptions;
 
     public ServiceMethod(ServiceMethodDescription serviceMethodDescription) {
         this.name = serviceMethodDescription.name;
-        this.parameterTypes = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.parameterTypes));
-        this.parameterDescriptions = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.parameterDescriptions));
+        this.argumentTypes = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.argumentTypes));
+        this.argumentDescriptions = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.argumentDescriptions));
         this.resultTypes = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.resultTypes));
         this.resultDescriptions = Collections.unmodifiableMap(new HashMap<>(serviceMethodDescription.resultDescriptions));
     }
@@ -34,19 +34,19 @@ public abstract class ServiceMethod {
         return name;
     }
 
-    public final Map<String, Class<?>> getParameterTypes() {
-        return parameterTypes;
+    public final Map<String, Class<?>> getArgumentTypes() {
+        return argumentTypes;
     }
 
-    public final Map<String, String> getParameterDescriptions() {
-        return parameterDescriptions;
+    public final Map<String, String> getArgumentDescriptions() {
+        return argumentDescriptions;
     }
 
-    public final Map<String, Class<?>> getOutputTypes() {
+    public final Map<String, Class<?>> getResultTypes() {
         return resultTypes;
     }
 
-    public final Map<String, String> getOutputDescriptions() {
+    public final Map<String, String> getResultDescriptions() {
         return resultDescriptions;
     }
     
@@ -54,7 +54,7 @@ public abstract class ServiceMethod {
         for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
             String parameterName = parameter.getKey();
             Object parameterValue = parameter.getValue();
-            Class<?> parameterType = parameterTypes.get(parameterName);
+            Class<?> parameterType = argumentTypes.get(parameterName);
             if (parameterType == null) {
                 throw new IllegalArgumentException("ServiceMethod " + name + ": unexpected parameter " + parameterName);
             }
