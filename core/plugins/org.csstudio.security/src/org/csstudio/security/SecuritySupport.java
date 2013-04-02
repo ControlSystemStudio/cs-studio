@@ -10,6 +10,7 @@ package org.csstudio.security;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
@@ -94,15 +95,22 @@ public class SecuritySupport implements BundleActivator
     {
         return security.getSubject();
     }
+
+    /** @return Is it the current, OS-authenticated user?
+     *          Or is it a different user, authenticated via name/password?
+     */
+    public static boolean isCurrentUser()
+    {
+        return security.isCurrentUser();
+    }
     
     /** A Subject can have multiple Principals.
      * 
      *  <p>Attempt to determine the 'primary' Principal
      *  @param user Subject that describes user
      *  @return Primary user name
-     *  @throws Exception if name cannot be determined
      */
-    public static String getSubjectName(final Subject user) throws Exception
+    public static String getSubjectName(final Subject user)
     {
         final Set<Principal> principals = user.getPrincipals();
         for (Principal principal : principals)
@@ -119,7 +127,9 @@ public class SecuritySupport implements BundleActivator
                 principal instanceof NTUserPrincipal)
                 return principal.getName();
         }
-        throw new Exception("Cannot determine name for " + user);
+        Logger.getLogger(SecuritySupport.class.getName())
+            .log(Level.WARNING, "Cannot determine name for {0}", user);
+        return user.toString();
     }
 
     /** @return {@link Authorizations} of the currently logged-in Subject, or <code>null</code> */

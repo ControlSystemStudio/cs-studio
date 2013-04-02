@@ -34,7 +34,8 @@ public class ConsoleLoginPluginDemo implements SecurityListener
     final private CountDownLatch updates = new CountDownLatch(1);
     
     @Override
-    public void changedSecurity(final Subject subject, final Authorizations authorizations)
+    public void changedSecurity(final Subject subject,
+            final boolean is_current_user, final Authorizations authorizations)
     {
         System.out.println("Security Settings changed: ");
         System.out.println(subject);

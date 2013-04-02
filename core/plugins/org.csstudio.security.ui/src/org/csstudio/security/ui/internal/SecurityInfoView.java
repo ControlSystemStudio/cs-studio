@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse view that displays security info
@@ -39,6 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 @SuppressWarnings("nls") // No externalize strings, not meant for end users
 public class SecurityInfoView extends ViewPart implements SecurityListener
 {
+    private Text user;
     private List subject_detail, authorization_detail;
 
     /** {@inheritDoc} */
@@ -67,7 +69,9 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
         }
         
         // Toggle initial update
-        changedSecurity(SecuritySupport.getSubject(), SecuritySupport.getAuthorizations());
+        changedSecurity(SecuritySupport.getSubject(),
+                SecuritySupport.isCurrentUser(),
+                SecuritySupport.getAuthorizations());
 
         // Update when security info changes
         SecuritySupport.addListener(this);
@@ -96,23 +100,32 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
         
         final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
 
+        // Top
         final Composite top = new Composite(sashes, 0);
         top.setLayout(new GridLayout(2, false));
-        
+
         Label l = new Label(top, 0);
+        l.setText("User:");
+        l.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+
+        user = new Text(top, SWT.BORDER | SWT.READ_ONLY);
+        user.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        
+        l = new Label(top, 0);
         l.setText("Logged in User:");
-        l.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false, false));
+        l.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         
         subject_detail = new List(top, SWT.V_SCROLL);
         subject_detail.setToolTipText("List of 'principals', names associated with the user");
         subject_detail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+        // Bottom
         final Composite bottom = new Composite(sashes, 0);
         bottom.setLayout(new GridLayout(2, false));
         
         l = new Label(bottom, 0);
         l.setText("Authorizations:");
-        l.setLayoutData(new GridData(SWT.TOP, SWT.TOP, false, false));
+        l.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         
         authorization_detail = new List(bottom, SWT.V_SCROLL);
         authorization_detail.setToolTipText("List of authorizations held by the user");
@@ -125,18 +138,26 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
     @Override
     public void setFocus()
     {
-        // NOP
+        user.setFocus();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void changedSecurity(final Subject subject, final Authorizations authorizations)
+    public void changedSecurity(final Subject subject,
+            final boolean is_current_user, final Authorizations authorizations)
     {
         final Collection<String> user_info = new ArrayList<>();
+        final String user_text;
+        
         if (subject == null)
-            user_info.add("- Not logged in -");
+            user_text = "- Not logged in -";
         else
         {
+            if (is_current_user)
+                user_text = SecuritySupport.getSubjectName(subject) + " (current user)";
+            else
+                user_text = SecuritySupport.getSubjectName(subject);
+
             for (Principal p : subject.getPrincipals())
                 user_info.add(p.toString());
         }
@@ -149,6 +170,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
             @Override
             public void run()
             {
+                user.setText(user_text);
                 subject_detail.setItems(user_info.toArray(new String[user_info.size()]));
                 authorization_detail.setItems(auth_info.toArray(new String[auth_info.size()]));
             }

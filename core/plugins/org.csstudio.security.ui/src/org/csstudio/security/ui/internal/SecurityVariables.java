@@ -20,6 +20,7 @@ import org.eclipse.ui.ISources;
 public class SecurityVariables extends AbstractSourceProvider implements SecurityListener
 {
     final public static String AUTHENTICATED = "org.csstudio.security.ui.authenticated";
+    final public static String CURRENT_USER = "org.csstudio.security.ui.current_user";
     
     final private Map<String, Object> variables = new HashMap<>();
 
@@ -28,6 +29,7 @@ public class SecurityVariables extends AbstractSourceProvider implements Securit
     {
         final Boolean authenticated = SecuritySupport.getSubject() != null;
         variables.put(AUTHENTICATED, authenticated);
+        variables.put(CURRENT_USER, SecuritySupport.isCurrentUser());
         SecuritySupport.addListener(this);
     }
 
@@ -43,7 +45,7 @@ public class SecurityVariables extends AbstractSourceProvider implements Securit
     @Override
     public String[] getProvidedSourceNames()
     {
-        return new String[] { AUTHENTICATED };
+        return new String[] { AUTHENTICATED, CURRENT_USER };
     }
 
     /** {@inheritDoc} */
@@ -56,12 +58,13 @@ public class SecurityVariables extends AbstractSourceProvider implements Securit
 
     /** Update variables as security info changes */
     @Override
-    public void changedSecurity(final Subject subject, final Authorizations authorizations)
+    public void changedSecurity(final Subject subject,
+            final boolean is_current_user, final Authorizations authorizations)
     {
         final Boolean authenticated = subject != null;
         variables.put(AUTHENTICATED, authenticated);
+        variables.put(CURRENT_USER, is_current_user);
         fireSourceChanged(ISources.WORKBENCH, AUTHENTICATED, authenticated);
-        
-        // TODO Update another variable that holds list of authorizations
+        fireSourceChanged(ISources.WORKBENCH, CURRENT_USER, is_current_user);
     }
 }

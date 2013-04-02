@@ -100,7 +100,7 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
 
     /** {@inheritDoc} */
     @Override
-    public void changedSecurity(final Subject subject, final Authorizations authorizations)
+    public void changedSecurity(final Subject subject, final boolean is_current_user, final Authorizations authorizations)
     {
         synchronized (authorized_actions)
         {

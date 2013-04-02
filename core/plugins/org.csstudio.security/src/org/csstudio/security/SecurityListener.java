@@ -24,7 +24,10 @@ public interface SecurityListener
      *  <p>May be invoked from in non-GUI thread.
      *  
      *  @param subject {@link Subject} for current user or <code>null</code> when not logged in
+     *  @param is_current_user Is it the current, OS-authenticated user?
+     *                         Or is it a different user, authenticated via name/password?
      *  @param authorizations {@link Authorizations} held by the user, or <code>null</code>
      */
-    public void changedSecurity(Subject subject, Authorizations authorizations);
+    public void changedSecurity(Subject subject,
+            boolean is_current_user, Authorizations authorizations);
 }

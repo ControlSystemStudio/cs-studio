@@ -6,13 +6,17 @@
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar id="org.csstudio.security.toolbar">
-            <command commandId="org.csstudio.security.login"
+            <command
+                  commandId="org.csstudio.security.login"
                   icon="icons/login.png"
-                  style="push">
+                  style="push"
+                  tooltip="%LoginTT">
             </command>
-            <command commandId="org.csstudio.security.logout"
+            <command
+                  commandId="org.csstudio.security.logout"
                   icon="icons/logout.png"
-                  style="push">
+                  style="push"
+                  tooltip="%LogoutTT">
             </command>
          </toolbar>
       </menuContribution>
@@ -37,17 +41,12 @@
    <extension point="org.eclipse.ui.handlers">
       <handler commandId="org.csstudio.security.login"
             class="org.csstudio.security.ui.internal.LoginHandler">
-         <enabledWhen>
-            <with variable="org.csstudio.security.ui.authenticated">
-               <equals value="false"/>
-            </with>
-         </enabledWhen>
       </handler>
       <handler commandId="org.csstudio.security.logout"
             class="org.csstudio.security.ui.internal.LogoutHandler">
          <enabledWhen>
-            <with variable="org.csstudio.security.ui.authenticated">
-               <equals value="true"/>
+            <with variable="org.csstudio.security.ui.current_user">
+               <equals value="false"/>
             </with>
          </enabledWhen>
       </handler>
@@ -56,6 +55,10 @@
       <sourceProvider provider="org.csstudio.security.ui.internal.SecurityVariables">
          <variable
                name="org.csstudio.security.ui.authenticated"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="org.csstudio.security.ui.current_user"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>

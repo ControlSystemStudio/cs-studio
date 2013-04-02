@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.security.ui.internal;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.security.auth.Subject;
 
 import org.csstudio.security.SecurityListener;
@@ -44,7 +41,9 @@ public class StatusBarInfo extends WorkbenchWindowControlContribution
         user_name.setToolTipText("Name of the current user");
         
         // Trigger initial update
-        changedSecurity(SecuritySupport.getSubject(), SecuritySupport.getAuthorizations());
+        changedSecurity(SecuritySupport.getSubject(),
+                SecuritySupport.isCurrentUser(),
+                SecuritySupport.getAuthorizations());
         
         // Subscribe to changes
         SecuritySupport.addListener(this);
@@ -61,7 +60,8 @@ public class StatusBarInfo extends WorkbenchWindowControlContribution
     }
 
     @Override
-    public void changedSecurity(final Subject subject, final Authorizations authorizations)
+    public void changedSecurity(final Subject subject,
+            final boolean is_current_user, final Authorizations authorizations)
     {
         if (user_name.isDisposed())
             return;
@@ -72,18 +72,10 @@ public class StatusBarInfo extends WorkbenchWindowControlContribution
             {
                 if (user_name.isDisposed())
                     return;
-                try
-                {
-                    if (subject == null)
-                        user_name.setText("");
-                    else
-                        user_name.setText(SecuritySupport.getSubjectName(subject));
-                }
-                catch (Exception ex)
-                {
-                    Logger.getLogger(StatusBarInfo.class.getName())
-                        .log(Level.WARNING, "Cannot update user name", ex);
-                }
+                if (subject == null)
+                    user_name.setText("");
+                else
+                    user_name.setText(SecuritySupport.getSubjectName(subject));
             }
         });
     }
