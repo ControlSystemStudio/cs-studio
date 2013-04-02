@@ -90,7 +90,6 @@ public class ServicePanel extends Composite {
 					
 					@Override
 					public void writeValue(Map<String, Object> newValue) {
-						System.out.println("Result: " + newValue);
 						resultWriter.write(newValue);
 					}
 				}, new WriteFunction<Exception>() {
@@ -153,7 +152,7 @@ public class ServicePanel extends Composite {
 							
 							@Override
 							public void run() {
-								argumentField.setText(String.valueOf(event.getPvReader().getValue()));
+								argumentField.setText(String.valueOf(adaptArguments(event.getPvReader().getValue())));
 							}
 						});
 					}
