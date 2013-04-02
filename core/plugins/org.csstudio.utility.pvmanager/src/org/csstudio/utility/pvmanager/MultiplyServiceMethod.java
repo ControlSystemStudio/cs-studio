@@ -11,8 +11,8 @@ public class MultiplyServiceMethod extends ServiceMethod {
 	
 	public MultiplyServiceMethod() {
 		super(new ServiceMethodDescription("multiply", "Multiplies two numbers")
-		.addParameter("arg1", "First argument", Number.class)
-		.addParameter("arg2", "Second argument", Number.class)
+		.addArgument("arg1", "First argument", Number.class)
+		.addArgument("arg2", "Second argument", Number.class)
 		.addResult("result", "The product", Number.class));
 	}
 
