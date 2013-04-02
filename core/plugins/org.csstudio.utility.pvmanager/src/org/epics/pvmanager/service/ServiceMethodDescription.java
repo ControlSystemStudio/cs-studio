@@ -16,8 +16,8 @@ public class ServiceMethodDescription {
     
     String name;
     String description;
-    Map<String, Class<?>> parameterTypes = new HashMap<>();
-    Map<String, String> parameterDescriptions = new HashMap<>();
+    Map<String, Class<?>> argumentTypes = new HashMap<>();
+    Map<String, String> argumentDescriptions = new HashMap<>();
     Map<String, Class<?>> resultTypes = new HashMap<>();
     Map<String, String> resultDescriptions = new HashMap<>();
 
@@ -29,12 +29,12 @@ public class ServiceMethodDescription {
         }
     }
     
-    public ServiceMethodDescription addParameter(String name, String description, Class<?> type) {
+    public ServiceMethodDescription addArgument(String name, String description, Class<?> type) {
         if (!namePattern.matcher(name).matches()) {
             throw new IllegalArgumentException("Name must start by a letter and only consist of letters and numbers");
         }
-        parameterTypes.put(name, type);
-        parameterDescriptions.put(name, description);
+        argumentTypes.put(name, type);
+        argumentDescriptions.put(name, description);
         return this;
     }
     
