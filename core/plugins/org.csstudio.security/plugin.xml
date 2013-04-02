@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension point="org.eclipse.equinox.security.loginModule"
-        id="ldapBind">
-      <loginModule
-            class="org.csstudio.security.authentication.LDAPBindLoginModule"
-            description="LDAP Bind">
-      </loginModule>
-   </extension>
    <extension point="org.eclipse.equinox.security.secureStorage"
          id="install_location">
       <provider class="org.csstudio.security.internal.InstallLocationPasswordProvider"
