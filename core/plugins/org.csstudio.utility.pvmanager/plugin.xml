@@ -6,7 +6,7 @@
    <extension
          point="org.csstudio.utility.pvmanager.service">
       <service
-            name="org.csstudio.utility.pvmanager.mathservice"
+            name="math"
             service="org.csstudio.utility.pvmanager.MathService">
       </service>
    </extension>
