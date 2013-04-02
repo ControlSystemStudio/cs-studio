@@ -11,8 +11,8 @@ public class AddServiceMethod extends ServiceMethod {
 	
 	public AddServiceMethod() {
 		super(new ServiceMethodDescription("add", "Adds two numbers")
-		.addParameter("arg1", "First argument", Number.class)
-		.addParameter("arg2", "Second argument", Number.class)
+		.addArgument("arg1", "First argument", Number.class)
+		.addArgument("arg2", "Second argument", Number.class)
 		.addResult("result", "The sum", Number.class));
 	}
 
