@@ -39,11 +39,12 @@ import org.eclipse.swt.widgets.Text;
  *  @author Kay Kasemir
  *  @author Xihui Chen - Original org.csstudio.auth.ui.security.PasswordFieldEditor
  */
+@SuppressWarnings("nls")
 public class PasswordFieldEditor extends FieldEditor
 {
 	// Based on Eclipse 3.7.2 StringFieldEditor
 	
-	final private ISecurePreferences preferences;
+	private ISecurePreferences preferences;
 
 	private Text textField;
 
@@ -54,13 +55,20 @@ public class PasswordFieldEditor extends FieldEditor
 	 *  @param key Preference key
 	 *  @param label GUI Label
 	 *  @param parent Parent widget
-	 *  @throws Exception When preferences cannot be accessed
 	 */
-	public PasswordFieldEditor(final String plugin_id, final String key,
-			final String label, final Composite parent) throws Exception
+    public PasswordFieldEditor(final String plugin_id, final String key,
+			final String label, final Composite parent)
 	{
 		super(key, label, parent);
-		preferences = SecurePreferences.getSecurePreferences().node(plugin_id);
+		try
+        {
+            preferences = SecurePreferences.getSecurePreferences().node(plugin_id);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName())
+                .log(Level.WARNING, "Cannot access preferences", ex);
+        }
 	}
 
 	/** {@inheritDoc} */
@@ -121,8 +129,9 @@ public class PasswordFieldEditor extends FieldEditor
 				oldValue = "";
 			textField.setText(oldValue);
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
+            getPage().setErrorMessage("Cannot read " + getPreferenceName());
 			Logger.getLogger(getClass().getName())
 				.log(Level.WARNING, "Cannot read preferences", ex);
 		}
@@ -151,8 +160,9 @@ public class PasswordFieldEditor extends FieldEditor
 			preferences.put(getPreferenceName(), textField.getText(), true);
 			preferences.flush();
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
+		    getPage().setErrorMessage("Cannot write " + getPreferenceName());
 			Logger.getLogger(getClass().getName())
 				.log(Level.WARNING, "Cannot write preferences", ex);
 		}
