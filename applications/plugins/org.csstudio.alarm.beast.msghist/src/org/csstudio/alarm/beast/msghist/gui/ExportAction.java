@@ -17,11 +17,12 @@ import org.csstudio.alarm.beast.msghist.Messages;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.csstudio.alarm.beast.msghist.model.MessagePropertyFilter;
 import org.csstudio.alarm.beast.msghist.model.Model;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -47,10 +48,8 @@ public class ExportAction extends Action
     public void run()
     {
         // Prompt for file name
-        final FileDialog dlg = new FileDialog(shell, SWT.SAVE);
-        dlg.setText(Messages.ExportTitle);
-        dlg.setOverwrite(true);
-        final String filename = dlg.open();
+    	UIHelper uiHelper = SingleSourcePlugin.getUIHelper();
+        final String filename = uiHelper.openOutsideWorkspaceDialog(shell, SWT.SAVE, null, null);
         if (filename == null)
             return;
 

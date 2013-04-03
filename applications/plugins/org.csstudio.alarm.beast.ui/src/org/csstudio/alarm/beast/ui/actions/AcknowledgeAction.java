@@ -16,6 +16,8 @@ import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -28,7 +30,9 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class AcknowledgeAction extends AbstractUserDependentAction
 {
-    final private static boolean allow_anonymous_acknowledge = Preferences.getAllowAnonyACK();
+	final private static boolean allow_anonymous_acknowledge = Preferences
+			.getAllowAnonyACK()
+			&& SingleSourcePlugin.getUIHelper().getUI().equals(UI.RCP);
     final private boolean acknowledge;
 	private Viewer viewer = null;
 	private ISelectionProvider selection_provider;
@@ -47,6 +51,7 @@ public class AcknowledgeAction extends AbstractUserDependentAction
               acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
             		      : Activator.getImageDescriptor("icons/unacknowledge.gif"), //$NON-NLS-1$
               AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge);
+		
     	this.acknowledge = acknowledge;
     	this.selection_provider = selection_provider;
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
@@ -56,8 +61,7 @@ public class AcknowledgeAction extends AbstractUserDependentAction
             {
             	final boolean isEmpty = event.getSelection().isEmpty();
                 //authorization
-                if(!isEmpty)
-                {
+                if(!isEmpty) {
                 	setEnabledWithoutAuthorization(true);
                 	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge));
                 }

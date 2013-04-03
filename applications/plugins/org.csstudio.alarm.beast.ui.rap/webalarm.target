@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="webalarm" sequenceNumber="96">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.0.20120612-1510"/>
+<unit id="org.eclipse.rap.runtime.feature.group" version="1.5.0.20120612-1510"/>
+<repository location="http://download.eclipse.org/rt/rap/1.5/runtime"/>
+</location>
+<location path="/home/ITER/dequidd/workspaces/css-webalarm/cs-studio/core/plugins/org.csstudio.rap.core/third_party_plugins/JUnit" type="Directory"/>
+<location path="/home/ITER/dequidd/workspaces/css-webalarm/cs-studio/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
+</locations>
+<includeBundles>
+<plugin id="org.hamcrest.core"/>
+<plugin id="org.eclipse.rap.demo.databinding.source"/>
+<plugin id="org.eclipse.rap.rwt"/>
+<plugin id="org.eclipse.rap.draw2d"/>
+<plugin id="org.eclipse.rap.rwt.source"/>
+<plugin id="org.eclipse.equinox.http.jetty.source"/>
+<plugin id="com.ibm.icu.base"/>
+<plugin id="org.eclipse.core.databinding.property"/>
+<plugin id="org.eclipse.equinox.http.jetty"/>
+<plugin id="org.eclipse.equinox.registry.source"/>
+<plugin id="org.eclipse.osgi.source"/>
+<plugin id="org.eclipse.jdt.junit.runtime"/>
+<plugin id="com.ibm.icu.base.source"/>
+<plugin id="org.eclipse.equinox.ds.source"/>
+<plugin id="org.eclipse.jetty.security.source"/>
+<plugin id="org.eclipse.rap.jface.databinding"/>
+<plugin id="org.eclipse.equinox.servletbridge"/>
+<plugin id="org.eclipse.rap.jface.source"/>
+<plugin id="org.eclipse.core.runtime.source"/>
+<plugin id="org.eclipse.rap.jface.databinding.source"/>
+<plugin id="org.eclipse.rap.ui.cheatsheets"/>
+<plugin id="org.eclipse.rap.ui.source"/>
+<plugin id="org.eclipse.core.contenttype"/>
+<plugin id="org.apache.felix.gogo.command.source"/>
+<plugin id="org.eclipse.rap.ui.forms"/>
+<plugin id="org.eclipse.rap.ui.views.source"/>
+<plugin id="org.eclipse.equinox.http.registry.source"/>
+<plugin id="org.eclipse.rap.ui.workbench.source"/>
+<plugin id="org.eclipse.jetty.util"/>
+<plugin id="org.eclipse.jetty.server.source"/>
+<plugin id="org.eclipse.jetty.continuation"/>
+<plugin id="org.eclipse.rap.design.example.source"/>
+<plugin id="org.eclipse.equinox.servletbridge.extensionbundle"/>
+<plugin id="org.eclipse.help"/>
+<plugin id="org.eclipse.jetty.util.source"/>
+<plugin id="org.eclipse.equinox.util"/>
+<plugin id="org.eclipse.jetty.http.source"/>
+<plugin id="org.eclipse.rap.demo.databinding"/>
+<plugin id="org.eclipse.jetty.http"/>
+<plugin id="org.eclipse.rap.junit.runtime"/>
+<plugin id="org.eclipse.rap.ui.workbench"/>
+<plugin id="org.eclipse.core.runtime"/>
+<plugin id="org.eclipse.core.jobs.source"/>
+<plugin id="org.eclipse.equinox.security.source"/>
+<plugin id="org.eclipse.rap.draw2d.compatibility"/>
+<plugin id="org.eclipse.core.expressions"/>
+<plugin id="org.eclipse.jetty.io"/>
+<plugin id="org.apache.felix.gogo.shell"/>
+<plugin id="org.eclipse.equinox.preferences"/>
+<plugin id="org.junit4"/>
+<plugin id="org.eclipse.core.commands"/>
+<plugin id="org.eclipse.jetty.continuation.source"/>
+<plugin id="org.eclipse.rap.jface"/>
+<plugin id="org.eclipse.jetty.io.source"/>
+<plugin id="org.eclipse.rap.gef"/>
+<plugin id="org.eclipse.equinox.console.source"/>
+<plugin id="org.eclipse.rap.ui.cheatsheets.source"/>
+<plugin id="org.eclipse.core.databinding.source"/>
+<plugin id="org.eclipse.equinox.app"/>
+<plugin id="org.eclipse.rap.rwt.testfixture"/>
+<plugin id="org.eclipse.rap.ui.forms.source"/>
+<plugin id="org.eclipse.rap.junit.source"/>
+<plugin id="org.eclipse.equinox.http.servletbridge"/>
+<plugin id="org.eclipse.osgi"/>
+<plugin id="org.eclipse.core.databinding.beans.source"/>
+<plugin id="org.eclipse.equinox.http.servlet"/>
+<plugin id="org.eclipse.equinox.preferences.source"/>
+<plugin id="org.eclipse.equinox.app.source"/>
+<plugin id="org.eclipse.equinox.http.registry"/>
+<plugin id="org.eclipse.rap.junit"/>
+<plugin id="org.eclipse.rap.demo.source"/>
+<plugin id="org.eclipse.core.databinding.observable"/>
+<plugin id="org.apache.felix.gogo.command"/>
+<plugin id="org.eclipse.core.databinding"/>
+<plugin id="org.eclipse.rap.junit.runtime.source"/>
+<plugin id="org.eclipse.core.contenttype.source"/>
+<plugin id="org.eclipse.help.source"/>
+<plugin id="org.eclipse.rap.rwt.testfixture.source"/>
+<plugin id="org.eclipse.jetty.servlet.source"/>
+<plugin id="org.eclipse.core.commands.source"/>
+<plugin id="org.eclipse.rap.ui"/>
+<plugin id="org.apache.felix.gogo.shell.source"/>
+<plugin id="org.eclipse.jetty.servlet"/>
+<plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
+<plugin id="org.eclipse.equinox.security"/>
+<plugin id="org.eclipse.equinox.registry"/>
+<plugin id="org.eclipse.equinox.ds"/>
+<plugin id="org.eclipse.rap.design.example"/>
+<plugin id="org.eclipse.rap.demo"/>
+<plugin id="org.eclipse.rap.ui.views"/>
+<plugin id="org.eclipse.jdt.junit.runtime.source"/>
+<plugin id="org.eclipse.core.jobs"/>
+<plugin id="org.eclipse.jetty.server"/>
+<plugin id="org.apache.felix.gogo.runtime.source"/>
+<plugin id="javax.servlet.source"/>
+<plugin id="org.eclipse.equinox.http.servlet.source"/>
+<plugin id="org.eclipse.osgi.services.source"/>
+<plugin id="org.eclipse.rap.rwt.osgi.source"/>
+<plugin id="org.eclipse.core.databinding.beans"/>
+<plugin id="org.eclipse.jetty.security"/>
+<plugin id="org.eclipse.core.databinding.property.source"/>
+<plugin id="org.eclipse.equinox.common.source"/>
+<plugin id="org.eclipse.rap.rwt.osgi"/>
+<plugin id="org.eclipse.core.expressions.source"/>
+<plugin id="org.eclipse.equinox.console"/>
+<plugin id="org.apache.felix.gogo.runtime"/>
+<plugin id="org.junit.source"/>
+<plugin id="javax.servlet"/>
+<plugin id="org.eclipse.core.databinding.observable.source"/>
+<plugin id="org.eclipse.equinox.common"/>
+<plugin id="org.eclipse.osgi.services"/>
+<plugin id="org.eclipse.equinox.util.source"/>
+</includeBundles>
+</target>

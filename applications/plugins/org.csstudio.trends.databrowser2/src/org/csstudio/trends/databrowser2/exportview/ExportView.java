@@ -398,7 +398,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             public void widgetSelected(final SelectionEvent e)
             {
             	final String name = SingleSourcePlugin.getUIHelper()
-        	        .openSaveOutsideWorkspaceDialog(parent.getShell(), null, null);
+        	        .openOutsideWorkspaceDialog(parent.getShell(), SWT.SAVE, null, null);
                 if (name != null)
                     filename.setText(name.toString());
             }

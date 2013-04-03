@@ -30,6 +30,8 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
@@ -276,6 +278,8 @@ public class GUI implements AlarmClientModelListener
         final Shell shell = tree_viewer.getTree().getShell();
         final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
+		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+				.getUI());
 
         new ContextMenuHelper(null, manager, shell, items, model.isWriteAllowed());
         manager.add(new Separator());
@@ -310,8 +314,10 @@ public class GUI implements AlarmClientModelListener
 	        }
 		}
         manager.add(new Separator());
-        manager.add(new AlarmPerspectiveAction());
-        manager.add(new Separator());
+        if(isRcp) {
+            manager.add(new AlarmPerspectiveAction());
+            manager.add(new Separator());
+        }
         manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
