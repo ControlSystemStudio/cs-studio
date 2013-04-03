@@ -1,8 +1,5 @@
 package org.csstudio.utility.olog.ui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.security.ui.PasswordFieldEditor;
 import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -37,30 +34,23 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		try
-		{
-			urlField = new StringFieldEditor(PreferenceConstants.Olog_URL,
-					"Olog Service URL:", getFieldEditorParent());
-			// no need to override checkstate
-			urlField.setEmptyStringAllowed(false);
-			addField(urlField);
-			useAuthenticationField = new BooleanFieldEditor(
-					PreferenceConstants.Use_authentication, "use authentication",
-					getFieldEditorParent());
-			addField(useAuthenticationField);
-			usernameField = new StringFieldEditor(PreferenceConstants.Username,
-					"username:", getFieldEditorParent());
-			addField(usernameField);
-			passwordField = new PasswordFieldEditor(org.csstudio.utility.olog.Activator.PLUGIN_ID,
-					PreferenceConstants.Password,
-					"user password:", getFieldEditorParent());
-			addField(passwordField);
-			enableAuthenticationFields();
-		}
-		catch (Exception ex)
-		{
-			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot access secure preferences", ex);
-		}
+		urlField = new StringFieldEditor(PreferenceConstants.Olog_URL,
+				"Olog Service URL:", getFieldEditorParent());
+		// no need to override checkstate
+		urlField.setEmptyStringAllowed(false);
+		addField(urlField);
+		useAuthenticationField = new BooleanFieldEditor(
+				PreferenceConstants.Use_authentication, "use authentication",
+				getFieldEditorParent());
+		addField(useAuthenticationField);
+		usernameField = new StringFieldEditor(PreferenceConstants.Username,
+				"username:", getFieldEditorParent());
+		addField(usernameField);
+		passwordField = new PasswordFieldEditor(org.csstudio.utility.olog.Activator.PLUGIN_ID,
+				PreferenceConstants.Password,
+				"user password:", getFieldEditorParent());
+		addField(passwordField);
+		enableAuthenticationFields();
 	}
 
 	public void enableAuthenticationFields() {
