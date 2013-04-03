@@ -22,8 +22,6 @@ org.apache.log4j
 org.apache.xerces
 org.csstudio.apputil
 org.csstudio.apputil.ui
-org.csstudio.auth
-org.csstudio.auth.ui
 org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
@@ -74,8 +72,6 @@ org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.opi.intro
-org.csstudio.platform.jaasAuthentication
-org.csstudio.platform.jaasAuthentication.ui
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
