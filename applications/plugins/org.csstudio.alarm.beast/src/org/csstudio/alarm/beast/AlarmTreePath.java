@@ -86,7 +86,7 @@ public class AlarmTreePath
     	// and in this case the x=\ must be escaped twice:
     	// Once to get into the Java string, once more to pass to the regex.
         // Also skip the initial '/'
-        final List<String> items = new ArrayList<String>();
+        final List<String> items = new ArrayList<>();
         for (String item : path.split("(?<!\\\\)/+"))
         {
             // Skip empty items

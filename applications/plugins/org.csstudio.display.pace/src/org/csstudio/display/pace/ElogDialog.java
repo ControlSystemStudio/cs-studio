@@ -94,7 +94,7 @@ public abstract class ElogDialog extends Dialog
         l.setText(Messages.Logbook);
         l.setLayoutData(new GridData());
         
-        cmb_logbook = new MultiSelectionCombo<String>(composite, 0);
+        cmb_logbook = new MultiSelectionCombo<>(composite, 0);
         cmb_logbook.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
         l = new Label(composite, 0);

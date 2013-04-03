@@ -96,7 +96,7 @@ public class PVManagerPV implements PV {
 		this.valueBuffered = bufferAllValues;
 		this.updateDuration = updateDuration;
 		listenerMap = new LinkedHashMap<PVListener, PVReaderListener<Object>>();
-		pvWriterListeners = new LinkedList<PVWriterListener<Object>>();
+		pvWriterListeners = new LinkedList<>();
 	}
 
 	@Override
