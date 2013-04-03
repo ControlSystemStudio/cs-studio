@@ -105,6 +105,10 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="intro/samples.xml">
       </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/tutorials.xml">
+      </configExtension>
    </extension>
    
    <extension
@@ -161,6 +165,13 @@
             contentFile="cheatsheets/databrowser.xml"
             id="org.csstudio.iter.css.product.product.cheatSheetContent.databrowser"
             name="3. Data Browser Exercise">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/dataexchange.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.dataexchange"
+            name="4. Probe via Data Exchange Exercise">
       </cheatsheet>
     </extension>
    

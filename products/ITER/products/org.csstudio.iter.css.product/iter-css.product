@@ -44,7 +44,7 @@ openFile</programArgs>
       startupMessageRect="7,190,445,20"
       startupForegroundColor="0064C6" />
    <launcher name="css">
-      <linux icon="/org.csstudio.iter.product.css/icons/css48.xpm"/>
+      <linux icon="/org.csstudio.iter.css.product/icons/css48.xpm"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -165,7 +165,7 @@ of the distribution package.
       <plugin id="org.csstudio.swt.xygraph.rcp" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
-      <plugin id="org.csstudio.trends.databrowser2.rcp"/>
+      <plugin id="org.csstudio.trends.databrowser2.rcp" fragment="true"/>
       <plugin id="org.csstudio.ui.help"/>
       <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.ui.menu.app"/>
