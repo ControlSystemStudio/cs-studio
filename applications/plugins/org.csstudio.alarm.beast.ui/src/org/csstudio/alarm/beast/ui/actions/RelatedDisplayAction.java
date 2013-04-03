@@ -14,15 +14,14 @@ import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.openfile.DisplayUtil;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 /** Action that displays a related display
  *  @author Kay Kasemir, Xihui Chen
@@ -42,6 +41,11 @@ public class RelatedDisplayAction extends AbstractExecuteAction
               AlarmTreeActionIcon.createIcon("icons/related_display.gif",  //$NON-NLS-1$
                         tree_position),
               related_display.getTeaser(), related_display.getDetails());
+    	
+		// Related display actions are disabled in RAP version
+		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+			setEnabled(false);
+		}
     }
 
     /** {@inheritDoc} */
@@ -72,25 +76,18 @@ public class RelatedDisplayAction extends AbstractExecuteAction
         {
             // Use text after "file:" as filename
             final String name = command.substring(5).trim();
-
-            final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    		IPath path = SingleSourcePlugin.getResourceHelper().newPath(name);
             try
             {
-                // Copied from org.eclipse.ui.actions.OpenFileAction
-                // in org.eclipse.ui.ide
-                final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(name);
-                if (resource == null)
-                    throw new Exception(NLS.bind("Cannot find {0} in workspace", name));
-                if (!(resource instanceof IFile))
-                    throw new Exception(NLS.bind("{0} is not a workspace file", name));
-                IDE.openEditor(page, (IFile) resource);
+            	SingleSourcePlugin.getUIHelper().openEditor(page, path);
             }
-            catch (Throwable ex)
-            {
-                MessageDialog.openError(page.getWorkbenchWindow().getShell(),
-                    Messages.Error,
-                    NLS.bind("Error opening {0}:\n{1}", name, ex.getMessage()));
-            }
+	    	catch (Throwable ex)
+		    {
+		        MessageDialog.openError(page.getWorkbenchWindow().getShell(),
+		            Messages.Error,
+		            NLS.bind("Error opening {0}:\n{1}", path, ex.getMessage()));
+		    }
             return;
         }
 

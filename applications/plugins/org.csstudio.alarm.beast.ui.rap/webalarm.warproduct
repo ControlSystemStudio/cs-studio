@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="WebAlarm" uid="org.csstudio.alarm.beast.ui.rap" version="1.0.0" useFeatures="false" includeLaunchers="false">
+   <plugins>
+      <plugin id="com.ibm.icu.base"/>
+      <plugin id="javax.mail"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.msghist"/>
+      <plugin id="org.csstudio.alarm.beast.notifier"/>
+      <plugin id="org.csstudio.alarm.beast.ui"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtable"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtree"/>
+      <plugin id="org.csstudio.alarm.beast.ui.areapanel"/>
+      <plugin id="org.csstudio.alarm.beast.ui.globaltable"/>
+      <plugin id="org.csstudio.alarm.beast.ui.rap" fragment="true"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.auth.ui"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.email"/>
+      <plugin id="org.csstudio.email.ui"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.openfile"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.rap.core"/>
+      <plugin id="org.csstudio.rap.ui.util"/>
+      <plugin id="org.csstudio.ui.util"/>
+      <plugin id="org.csstudio.utility.singlesource"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.beans"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.http.servletbridge"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.servletbridge"/>
+      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jdt.junit.runtime"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.rap.draw2d"/>
+      <plugin id="org.eclipse.rap.draw2d.compatibility"/>
+      <plugin id="org.eclipse.rap.gef"/>
+      <plugin id="org.eclipse.rap.jface"/>
+      <plugin id="org.eclipse.rap.jface.databinding"/>
+      <plugin id="org.eclipse.rap.rwt"/>
+      <plugin id="org.eclipse.rap.rwt.osgi"/>
+      <plugin id="org.eclipse.rap.ui"/>
+      <plugin id="org.eclipse.rap.ui.cheatsheets"/>
+      <plugin id="org.eclipse.rap.ui.forms"/>
+      <plugin id="org.eclipse.rap.ui.views"/>
+      <plugin id="org.eclipse.rap.ui.workbench"/>
+      <plugin id="org.epics.util"/>
+      <plugin id="org.epics.vtype"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="com.ibm.icu.base" autoStart="true" startLevel="0" />
+      <plugin id="javax.mail" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.msghist" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.notifier" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtable" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtree" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.ui.areapanel" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.alarm.beast.ui.globaltable" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.auth" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.auth.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.java" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.logbook" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.logging" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.openfile" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.jms" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.utility.jms" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.rap.ui.util" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.ui.util" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.beans" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.observable" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.property" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.expressions" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.jobs" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.preferences" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jdt.junit.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.draw2d" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.draw2d.compatibility" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.gef" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.jface" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.jface.databinding" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.cheatsheets" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.forms" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.views" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.workbench" autoStart="true" startLevel="0" />
+      <plugin id="org.epics.util" autoStart="true" startLevel="0" />
+      <plugin id="org.epics.vtype" autoStart="true" startLevel="0" />
+      <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
+      <plugin id="org.junit" autoStart="true" startLevel="0" />
+      <plugin id="org.junit4" autoStart="true" startLevel="0" />
+   </configurations>
+
+   <warConfiguration webXml="/org.csstudio.alarm.beast.ui.rap/WEB-INF/web.xml" launchIni="/org.csstudio.alarm.beast.ui.rap/WEB-INF/launch.ini">
+   <libraries>
+      <library path="org.eclipse.equinox.servletbridge_1.2.200.v20120522-2049.jar" fromTarget="true"/>
+   </libraries>
+   </warConfiguration>
+</product>

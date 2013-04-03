@@ -15,6 +15,8 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -58,6 +60,8 @@ public class AlarmPanelItem extends Canvas implements PaintListener
 	
 	private void addContextMenu()
     {
+		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+				.getUI());
 		final List<AlarmTreeItem> item_as_list = new ArrayList<AlarmTreeItem>(1);
 		item_as_list.add(item);
 
@@ -71,8 +75,10 @@ public class AlarmPanelItem extends Canvas implements PaintListener
 				manager.add(new ShowInAlarmTreeAction(item));
 				new ContextMenuHelper(null, manager, getShell(), item_as_list, true);
                 manager.add(new Separator());
-                manager.add(new AlarmPerspectiveAction());
-                manager.add(new Separator());
+                if(isRcp) {
+                    manager.add(new AlarmPerspectiveAction());
+                    manager.add(new Separator());
+                }
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 			}
 		});

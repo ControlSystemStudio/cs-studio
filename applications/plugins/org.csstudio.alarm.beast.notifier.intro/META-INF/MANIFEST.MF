@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alarm Notification Application Intro
+Bundle-SymbolicName: org.csstudio.alarm.beast.notifier.intro;singleton:=true
+Bundle-Version: 3.2.0.qualifier
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-Description: BEAST Alarm Notification Intro pages
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

@@ -14,6 +14,8 @@ import org.csstudio.alarm.beast.msghist.model.Model;
 import org.csstudio.alarm.beast.msghist.model.ModelListener;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,7 +25,6 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -195,7 +196,7 @@ public class GUI implements ModelListener
         table.setLinesVisible(true);
 
         table_viewer.setContentProvider(new MessageContentProvider());
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
 
         // Columns display message properties
         final PropertyColumnPreference[] col_pref =
@@ -303,7 +304,9 @@ public class GUI implements ModelListener
         final Table table = table_viewer.getTable();
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, "Show Detail"));
-        manager.add(new ExportAction(table.getShell(), model));
+        if(SingleSourcePlugin.getUIHelper().getUI().equals(UI.RCP)) {
+        	manager.add(new ExportAction(table.getShell(), model));
+        }
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         table.setMenu(manager.createContextMenu(table));
@@ -319,7 +322,8 @@ public class GUI implements ModelListener
     @Override
     public void modelChanged(final Model model)
     {   // Can be called from background thread...
-        Display.getDefault().asyncExec(new Runnable()
+    	final Display display = table_viewer.getTable().getDisplay();
+    	display.asyncExec(new Runnable()
         {
             @Override
             public void run()

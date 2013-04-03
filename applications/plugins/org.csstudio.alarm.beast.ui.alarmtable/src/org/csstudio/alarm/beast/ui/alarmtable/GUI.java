@@ -26,6 +26,8 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -392,6 +394,8 @@ public class GUI implements AlarmClientModelListener
             final IWorkbenchPartSite site)
     {
         final Table table = table_viewer.getTable();
+		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+				.getUI());
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -415,8 +419,10 @@ public class GUI implements AlarmClientModelListener
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
                 manager.add(new Separator());
-                manager.add(new AlarmPerspectiveAction());
-                manager.add(new Separator());
+                if(isRcp) {
+                    manager.add(new AlarmPerspectiveAction());
+                    manager.add(new Separator());
+                }
                 // Placeholder for CSS PV contributions
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
