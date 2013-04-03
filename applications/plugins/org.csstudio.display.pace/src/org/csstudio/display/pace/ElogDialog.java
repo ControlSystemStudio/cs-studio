@@ -115,7 +115,7 @@ public abstract class ElogDialog extends Dialog
         try
         {
             final LogbookClient client = LogbookClientManager.getLogbookClientFactory().getClient();
-            final List<String> names = new ArrayList<String>();
+            final List<String> names = new ArrayList<>();
             for (Logbook logbook : client.listLogbooks())
                 names.add(logbook.getName());
             cmb_logbook.setItems(names);
