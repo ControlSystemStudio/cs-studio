@@ -14,8 +14,8 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class MoveItemAction extends AbstractUserDependentAction
+public class MoveItemAction extends Action
 {
     private Shell shell;
     private AlarmClientModel model;
@@ -41,18 +41,18 @@ public class MoveItemAction extends AbstractUserDependentAction
             final List<AlarmTreeItem> items)
     {
         super(Messages.MoveItem,
-                Activator.getImageDescriptor("icons/move.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/move.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.items = items;
 
-        setEnabledWithoutAuthorization(true);
     	//authorization
-    	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
 	@Override
-	protected void doWork() {
+	public void run()
+	{
 		if (items.size() <= 0)
             return;
 

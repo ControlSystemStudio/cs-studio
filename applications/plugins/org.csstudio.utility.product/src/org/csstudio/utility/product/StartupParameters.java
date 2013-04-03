@@ -11,7 +11,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.StartupParametersExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
@@ -201,9 +202,10 @@ public class StartupParameters implements StartupParametersExtPoint
                     System.exit(0);
                 }
                 System.out.println("Setting plugin " + path_key[0] + " setting " + path_key[1]);
-                final ISecurePreferences secure = SecureStorage.getNode(path_key[0]);
-                secure.put(path_key[1], password, true);
-                secure.flush();
+                
+                final ISecurePreferences sec_prefs = SecurePreferences.getSecurePreferences();
+                sec_prefs.node(path_key[0]).put(path_key[1], password, true);
+                sec_prefs.flush();
                 System.exit(0);
             }
         }

@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class DelayCommandImplFactory implements ScanCommandImplFactory<DelayCommand>
 {
     @Override
-    public ScanCommandImpl<DelayCommand> createImplementation(final DelayCommand command)
+    public ScanCommandImpl<DelayCommand> createImplementation(final DelayCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new DelayCommandImpl(command);
+        return new DelayCommandImpl(command, jython);
     }
 }

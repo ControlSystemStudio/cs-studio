@@ -18,33 +18,9 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
  * 
  * @author Xihui Chen
  * 
+ * @deprecated not used anymore. Only leave this here in case we need to reverse back.
  */
-public final class NativeTextModel extends TextInputModel {
-	public enum FOCUS_TRAVERSE {
-		LOSE("Lose Focus"),
-		KEEP("Keep Focus"),
-		NEXT ("Next Widget"),
-		PREVIOUS("Previous Widget");
-		
-		private String description;
-		private FOCUS_TRAVERSE(String description) {
-			this.description = description;
-		}
-		
-		@Override
-		public String toString() {
-			return description;
-		}
-		
-		public static String[] stringValues(){
-			String[] result = new String[values().length];
-			int i =0 ;
-			for(FOCUS_TRAVERSE f : values()){
-				result[i++] = f.toString();
-			}
-			return result;
-		}
-	}
+public final class NativeTextModel extends TextInputModel {	
 
 	public static final String PROP_SHOW_NATIVE_BORDER = "show_native_border"; //$NON-NLS-1$
 

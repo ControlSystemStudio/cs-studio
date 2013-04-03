@@ -34,6 +34,7 @@ import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -58,10 +59,7 @@ so change its order with change order action will only be reflected after reopen
 public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure {
 	
 	private class ToolTipListener extends MouseTrackAdapter {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
+
 		private Control control;
 		
 		public ToolTipListener(Control control) {
@@ -173,11 +171,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
 					
-					/**
-					 * 
-					 */
-					private static final long serialVersionUID = 1L;
-
 					@Override
 					public void menuDetected(MenuDetectEvent e) {
 						editPart.getViewer().select(editPart);								
@@ -250,6 +243,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			return wrapComposite;
 		else
 			return composite;
+	}
+	
+	@Override
+	public void setCursor(Cursor cursor) {
+		super.setCursor(cursor);
+		if (getSWTWidget() != null && !getSWTWidget().isDisposed()){
+			getSWTWidget().setCursor(cursor);
+		}
 	}
 
 	@Override

@@ -13,29 +13,27 @@ import org.epics.util.array.*;
 public class Point1DCircularBuffer implements Point1DDataset {
 
     private final CircularBufferDouble buffer;
-    private double minValue = Double.NaN;
-    private double maxValue = Double.NaN;
+    private Statistics statistics;
     
     public Point1DCircularBuffer(int capacity) {
         buffer = new CircularBufferDouble(capacity);
     }
 
     @Override
-    public CollectionNumber getValues() {
+    public ListNumber getValues() {
         return buffer;
     }
 
     @Override
-    public Number getMinValue() {
-        return minValue;
+    public int getCount() {
+        return buffer.size();
     }
 
     @Override
-    public Number getMaxValue() {
-        return maxValue;
+    public Statistics getStatistics() {
+        return statistics;
     }
 
-    @Override
     public void update(Point1DDatasetUpdate update) {
         if (update.isToClear()) {
             buffer.clear();
@@ -45,13 +43,6 @@ public class Point1DCircularBuffer implements Point1DDataset {
             buffer.addDouble(iteratorDouble.nextDouble());
         }
 
-        Statistics stats = StatisticsUtil.statisticsOf(getValues());
-        if (stats == null) {
-            minValue = Double.NaN;
-            maxValue = Double.NaN;
-        } else {
-            minValue = stats.getMinimum().doubleValue();
-            maxValue = stats.getMaximum().doubleValue();
-        }
+        statistics = StatisticsUtil.statisticsOf(getValues());
     }
 }

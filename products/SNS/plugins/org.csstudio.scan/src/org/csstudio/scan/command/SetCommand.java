@@ -16,6 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -25,17 +26,6 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class SetCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        ScanCommandProperty.DEVICE_NAME,
-        new ScanCommandProperty("value", "Value", Object.class),
-        ScanCommandProperty.WAIT,
-        ScanCommandProperty.READBACK,
-        ScanCommandProperty.TOLERANCE,
-        ScanCommandProperty.TIMEOUT,
-    };
-
     private volatile String device_name;
 	private volatile Object value;
 	private volatile String readback;
@@ -105,9 +95,15 @@ public class SetCommand extends ScanCommand
 
 	/** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(ScanCommandProperty.DEVICE_NAME);
+        properties.add(new ScanCommandProperty("value", "Value", Object.class));
+        properties.add(ScanCommandProperty.WAIT);
+        properties.add(ScanCommandProperty.READBACK);
+        properties.add(ScanCommandProperty.TOLERANCE);
+        properties.add(ScanCommandProperty.TIMEOUT);
+        super.configureProperties(properties);
     }
 
 	/** @return Name of device to set (may be "" but not <code>null</code>) */
@@ -221,6 +217,7 @@ public class SetCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</set>");
     }
@@ -236,6 +233,7 @@ public class SetCommand extends ScanCommand
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
+        super.readXML(factory, element);
     }
 
     /** @param buf If the set command uses a condition,

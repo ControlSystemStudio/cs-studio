@@ -22,6 +22,11 @@ java -showversion -XX:MaxPermSize=256m -Xms1024m -Xmx1024m -XstartOnFirstThread 
 
 See also http://stackoverflow.com/questions/10352715/how-do-i-run-eclipse-using-oracles-new-1-7-jdk-for-the-mac
 
+Before Eclipse 4.3, support for the new Oracle/Open JDK layout also requires manual creation of (empty) Classes directory:
+{{{
+sudo mkdir /Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home/Classes
+}}}
+
 == Update from P2 Repository ==
 When supporting self-updates from a P2 repository, assert that products will not attempt to update
 from for example {{{os=macosx, ws=carbon}}} to {{{ws=cocoa}}}.

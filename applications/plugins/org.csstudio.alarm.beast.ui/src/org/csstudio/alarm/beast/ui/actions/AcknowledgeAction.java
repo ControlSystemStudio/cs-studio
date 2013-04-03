@@ -9,13 +9,13 @@ package org.csstudio.alarm.beast.ui.actions;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.SecuritySupport;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,9 +26,8 @@ import org.eclipse.jface.viewers.Viewer;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class AcknowledgeAction extends AbstractUserDependentAction
+public class AcknowledgeAction extends Action
 {
-    final private static boolean allow_anonymous_acknowledge = Preferences.getAllowAnonyACK();
     final private boolean acknowledge;
 	private Viewer viewer = null;
 	private ISelectionProvider selection_provider;
@@ -45,8 +44,7 @@ public class AcknowledgeAction extends AbstractUserDependentAction
     	super(acknowledge ? Messages.Acknowledge_Action
     			          : Messages.UnacknowledgeAction,
               acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
-            		      : Activator.getImageDescriptor("icons/unacknowledge.gif"), //$NON-NLS-1$
-              AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge);
+            		      : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
     	this.acknowledge = acknowledge;
     	this.selection_provider = selection_provider;
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
@@ -57,19 +55,12 @@ public class AcknowledgeAction extends AbstractUserDependentAction
             	final boolean isEmpty = event.getSelection().isEmpty();
                 //authorization
                 if(!isEmpty)
-                {
-                	setEnabledWithoutAuthorization(true);
-                	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge));
-                }
+                	setEnabled(SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE));
                 else
-                {
-                	setEnabledWithoutAuthorization(false);
                 	setEnabled(false);
-                }
             }
-        });
-        setEnabled(false);
-        setEnabledWithoutAuthorization(false);
+        });        
+        SecuritySupportUI.registerAction(this, AuthIDs.ACKNOWLEDGE);
     }
 
     /** Initialize action
@@ -81,14 +72,12 @@ public class AcknowledgeAction extends AbstractUserDependentAction
     	super(acknowledge ? Messages.Acknowledge_Action
 		                  : Messages.UnacknowledgeAction,
               acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
-  		                  : Activator.getImageDescriptor("icons/unacknowledge.gif"), //$NON-NLS-1$
-              AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge);
+  		                  : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
     	this.acknowledge = acknowledge;
         this.alarms = alarms;
 
         //authorization
-    	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge));
-    	setEnabledWithoutAuthorization(true);
+        SecuritySupportUI.registerAction(this, AuthIDs.ACKNOWLEDGE);
     }
 
     /** @param viewer Current selection of this viewer
@@ -101,7 +90,7 @@ public class AcknowledgeAction extends AbstractUserDependentAction
 
     /** {@inheritDoc} */
     @Override
-    protected void doWork()
+	public void run()
     {
     	if (alarms != null)
         {

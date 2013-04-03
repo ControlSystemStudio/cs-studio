@@ -17,7 +17,7 @@ public class Histograms {
     
     public static Histogram1D createHistogram(Point1DDataset dataset) {
         Histogram1DFromDataset1D histogram = new Histogram1DFromDataset1D();
-        histogram.setDataset(dataset);
+        histogram.update(new Histogram1DUpdate().recalculateFrom(dataset));
         return histogram;
     }
 }

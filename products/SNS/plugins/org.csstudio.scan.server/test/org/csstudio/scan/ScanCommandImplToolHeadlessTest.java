@@ -22,6 +22,7 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.DelayCommandImpl;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.junit.Test;
@@ -35,15 +36,16 @@ public class ScanCommandImplToolHeadlessTest
     @Test
     public void testImplementScanCommand() throws Exception
     {
+        final JythonSupport jython = null; // Not used
         final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
 
         final ScanCommand delay = new DelayCommand(1.0);
-        ScanCommandImpl<?> impl = tool.implement(delay);
+        ScanCommandImpl<?> impl = tool.implement(delay, jython);
         assertSame(delay, impl.getCommand());
         assertSame(DelayCommandImpl.class, impl.getClass());
 
         final LoopCommand loop = new LoopCommand("device", 1, 10, 1, delay);
-        impl = tool.implement(loop);
+        impl = tool.implement(loop, jython);
         assertSame(loop, impl.getCommand());
         assertSame(LoopCommandImpl.class, impl.getClass());
     }

@@ -50,7 +50,7 @@ public class ScanSimulationHeadlessTest
     		);
 
         final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-        List<ScanCommandImpl<?>> scan = tool.implement(commands);
+        List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
 
         ByteArrayOutputStream simu_log = new ByteArrayOutputStream();
         final SimulationContext context = new SimulationContext(new PrintStream(simu_log));

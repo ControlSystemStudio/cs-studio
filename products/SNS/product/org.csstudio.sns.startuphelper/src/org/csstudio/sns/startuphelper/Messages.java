@@ -4,8 +4,6 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.sns.startuphelper.messages"; //$NON-NLS-1$
-	public static String StartupAuthenticationHelper_Login;
-	public static String StartupAuthenticationHelper_LoginTip;
 	public static String StartupHelper_And;
 	public static String StartupHelper_Login;
 	public static String StartupHelper_LoginTip;

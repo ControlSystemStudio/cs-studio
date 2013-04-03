@@ -9,6 +9,13 @@
             id="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView"
             name="PVManager Toolbox">
       </view>
+      <view
+            class="org.csstudio.utility.pvmanager.ui.toolbox.ServicesView"
+            icon="icons/toolbox.png"
+            id="org.csstudio.utility.pvmanager.ui.toolbox.ServicesView"
+            name="PVManager Services"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -24,6 +31,15 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/toolbox.png"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.utility.pvmanager.ui.toolbox.ServicesView">
             </parameter>
          </command>
       </menuContribution>

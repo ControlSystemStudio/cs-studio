@@ -6,9 +6,7 @@ Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.nsls2.startuphelper.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.workspace,
- org.csstudio.auth,
- org.csstudio.auth.ui
+ org.csstudio.workspace
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.nsls2.startuphelper

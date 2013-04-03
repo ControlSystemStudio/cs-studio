@@ -58,4 +58,4 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.platform.data
 Bundle-ClassPath: lib/rhino/js.jar,
  .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

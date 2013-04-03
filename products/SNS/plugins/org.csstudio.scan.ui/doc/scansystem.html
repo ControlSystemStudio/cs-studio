@@ -96,7 +96,7 @@ What follows is a description of all available commands.
 it can also wait for the device or an associated read-back device
 to actually reach the desired value.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
 <li>Value: Desired value of the device.</li>
@@ -131,7 +131,7 @@ has been commanded.
 The separate wait command can be used to wait for a <i>different</i>
 value, or to wait for a device to increase or decrease by a certain value.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
 <li>Comparison: How the current value of the device is compared to the desired value.
@@ -174,7 +174,7 @@ wait command, the value would have to grow to at least
 <p>This command changes a device from a start to an end value.
 It is at the core of most scans.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
 <li>Initial Value: Initial value of the device.</li>
@@ -227,7 +227,7 @@ the alternating scan will be faster and reduce wear on the motors.
 <h3><a name="LogCommand"><img alt="log" src="PLUGINS_ROOT/org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</a></h3>
 <p>Send values of devices to the log.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Devices: List of devices</li>
 </ul>
@@ -246,7 +246,7 @@ and was not modified since.
 <h3><a name="LogConfig"><img alt="log" src="PLUGINS_ROOT/org.csstudio.scan/icons/configcommand.gif"/>&nbsp;Log Mode Configuration</a></h3>
 <p>This command can change the log mode.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Log automatically: yes or no</li>
 </ul>
@@ -315,7 +315,7 @@ Analyze the log data that the scan has accumulated,
 perform a fit, add the fit data to the log for later review,
 and position devices to for example a 'peak' located in the fit.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Script: Jython class name</li>
 </ul>
@@ -410,7 +410,7 @@ computations, submit follow-up scans and so on.
 <p>This command simply delays the scan for a configurable
 number of seconds.
 </p>
-<p>Parameters:</p>
+<p>Properties:</p>
 <ul>
 <li>Delay: Seconds</li>
 </ul>
@@ -544,6 +544,69 @@ or via the context menu of the data display table.
 <li>Other file name endings, for example ".dat": A text file with fixed-sized columns is created.</li>
 </ul>
 
+
+<h2><a name="errors">Error Handling</a></h2> 
+
+<p>Scan commands can fail:
+A <a href="#SetCommand">Set</a>
+or <a href="#LoopCommand">Loop Command</a>
+may not be able to write to a device,
+or there may be a time-out while waiting for the read-back to match
+the written value. 
+In fact such errors are almost to be expected.
+The Scan Server will not quit when one of its commands experiences
+an error.
+Instead, it will by default abort the affected scan, and continue to
+run the next submitted scan.
+</p>
+
+<p>In some cases it can be useful to change the default behavior
+by specifying a specific error handler:
+</p>
+
+<ul>
+<li>Set the command's "Error Handler" property to the name
+of the desired error handler, for example "OnErrorContinue".
+</li>
+<li>The error handler is implemented as a Jython class, derived from
+<a href="java/org/csstudio/scan/command/ScanErrorHandler.html">ScanErrorHandler</a>.
+The scan server searches for error handlers in the same list of directories that
+is configured via its plugin customization file for the 
+or <a href="#ScriptCommand">Script Command</a>.
+</li>
+</ul>
+
+<p>Example error handlers:</p> 
+
+<ol>
+<li>ScanErrorHandler that ignores any error
+<pre>from org.csstudio.scan.command import ScanErrorHandler
+
+class OnErrorContinue(ScanErrorHandler):
+    
+    def handleError(self, command, error, context):
+        print "Ignoring error from " + str(command)
+        return ScanErrorHandler.Result.Continue
+</pre>
+</li>
+<li>ScanErrorHandler that retries several times, then aborts:
+<pre>from org.csstudio.scan.command import ScanErrorHandler
+
+class OnErrorRetryThenAbort(ScanErrorHandler):
+    def __init__(self):
+        # Initialize the number of retries 
+        self.retries = 3
+    
+    def handleError(self, command, error, context):
+        self.retries -= 1
+        if self.retries > 0:
+            print "Retrying " + str(command) + " " + str(self.retries) + " more times ..."
+            return ScanErrorHandler.Result.Retry
+        else:    
+            return ScanErrorHandler.Result.Abort
+</pre>
+</li>
+</ol>
 
 
 <h2><a name="server">Scan Server</a></h2> 

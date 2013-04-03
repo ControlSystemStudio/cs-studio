@@ -95,9 +95,42 @@ public class PVWriterEvent<T> {
      *
      * @return true if a new exception is available
      */
-    public boolean isExceptionChangesd() {
+    public boolean isExceptionChanged() {
         return (notificationMask & EXCEPTION_MASK) != 0;
     }
     
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ ");
+        boolean first = true;
+        if (isConnectionChanged()) {
+            builder.append("CONN");
+            first = false;
+        }
+        if (isWriteFailed()) {
+            if (!first) {
+                builder.append(" | ");
+            }
+            builder.append("WRITE_FAIL");
+            first = false;
+        }
+        if (isWriteSucceeded()) {
+            if (!first) {
+                builder.append(" | ");
+            }
+            builder.append("WRITE_SUCC");
+            first = false;
+        }
+        if (isExceptionChanged()) {
+            if (!first) {
+                builder.append(" | ");
+            }
+            builder.append("EXC");
+        }
+        builder.append(" ]");
+        return builder.toString();
+    }
     
 }

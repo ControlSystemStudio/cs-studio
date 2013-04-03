@@ -215,6 +215,7 @@ public class ScanServerHeadlessTest implements Runnable
     @Test(timeout=20000)
     public void runScanServer() throws Exception
     {
+        TestSettings.init();
         final ScanServerImpl server = new ScanServerImpl();
         try
         {

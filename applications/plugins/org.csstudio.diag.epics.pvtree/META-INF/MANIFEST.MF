@@ -20,4 +20,4 @@ Require-Bundle: org.junit4,
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.epics.vtype;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
