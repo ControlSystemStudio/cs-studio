@@ -143,10 +143,25 @@ public class PasswordFieldEditor extends FieldEditor
 	{
 		if (textField == null)
 			return;
+		// Load default from ordinary preferences
 		oldValue = getPreferenceStore().getDefaultString(getPreferenceName());
 		if (oldValue == null)
 			oldValue = "";
 		textField.setText(oldValue);
+		// Remove what might be in secure preferences,
+		// since that would be used instead of the default that
+		// was just requested
+		try
+        {
+            preferences.put(getPreferenceName(), null, false);
+            preferences.flush();
+        }
+        catch (Throwable ex)
+        {
+            getPage().setErrorMessage("Cannot clear value for " + getPreferenceName());
+            Logger.getLogger(getClass().getName())
+                .log(Level.WARNING, "Cannot clear value for " + getPreferenceName(), ex);
+        }
 	}
 
 	/** {@inheritDoc} */
