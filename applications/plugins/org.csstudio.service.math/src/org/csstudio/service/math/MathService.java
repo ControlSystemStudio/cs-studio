@@ -1,4 +1,4 @@
-package org.csstudio.utility.pvmanager;
+package org.csstudio.service.math;
 
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceDescription;
