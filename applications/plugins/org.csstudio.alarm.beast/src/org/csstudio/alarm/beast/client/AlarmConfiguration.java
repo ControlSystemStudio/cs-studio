@@ -610,8 +610,16 @@ public class AlarmConfiguration
      *  @param new_name New name for the item
      *  @throws Exception on error
      */
+    @SuppressWarnings("nls")
     public void rename(final AlarmTreeItem item, final String new_name) throws Exception
     {
+        // Check for existing name
+        String new_path = AlarmTreePath.update(item.getPathName(), "..");
+        new_path = AlarmTreePath.update(new_path, new_name);
+        AlarmTreeItem existing = config_tree.getItemByPath(new_path);
+        if (existing != null)
+            throw new Exception("Found existing entry " + new_path);
+        
         rdb.getConnection().setAutoCommit(false);
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.rename_item);
