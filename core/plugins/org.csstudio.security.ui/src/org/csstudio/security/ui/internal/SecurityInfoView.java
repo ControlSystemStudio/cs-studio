@@ -40,6 +40,8 @@ import org.eclipse.ui.part.ViewPart;
 @SuppressWarnings("nls") // No externalize strings, not meant for end users
 public class SecurityInfoView extends ViewPart implements SecurityListener
 {
+	// View ID
+	final public static String ID = "org.csstudio.security.info";
     private Text user;
     private List subject_detail, authorization_detail;
 
