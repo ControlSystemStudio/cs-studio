@@ -53,13 +53,9 @@ public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
 	addField(new StringFieldEditor(PreferenceConstants.Username,
 		"username:", getFieldEditorParent()));
 
-	try {
-	    addField(new PasswordFieldEditor(Activator.PLUGIN_ID,
-		    PreferenceConstants.Password, "user password: ",
-		    getFieldEditorParent()));
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+	addField(new PasswordFieldEditor(Activator.PLUGIN_ID,
+		PreferenceConstants.Password, "user password: ",
+		getFieldEditorParent()));
     }
 
     @Override
