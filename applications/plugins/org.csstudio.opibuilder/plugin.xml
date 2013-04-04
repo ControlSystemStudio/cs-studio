@@ -299,4 +299,13 @@
             file_extension="opi">
       </openDisplay>
    </extension>
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="opi"
+            id="org.csstudio.iter.xmleditor.content.opi"
+            name="OPI Files"
+            priority="low" />
+   </extension>
+
 </plugin>

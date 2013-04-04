@@ -12,7 +12,17 @@
             icon="icons/pvtable.png"
             id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             name="%PVTable">
+         <contentTypeBinding
+               contentTypeId="org.csstudio.display.pvtable" />
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type id="org.csstudio.display.pvtable"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="pvs,css-pvtable"
+            name="PV Table Editor File">
+      </content-type>
    </extension>
    <extension
          point="org.eclipse.help.toc">

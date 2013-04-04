@@ -31,6 +31,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type id="org.csstudio.display.pace"
+            base-type="org.eclipse.core.runtime.xml"
             file-extensions="pace"
             name="PACE Configuration">
       </content-type>

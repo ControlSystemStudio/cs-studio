@@ -8,7 +8,6 @@
 package org.csstudio.archive.reader.rdb;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.security.ui.PasswordFieldEditor;
@@ -78,32 +77,25 @@ public class PreferencePage extends FieldEditorPreferencePage
         setMessage(Messages.PreferenceTitle);
         final Composite parent = getFieldEditorParent();
 
-        try
+        addField(new StringFieldEditor(RDBArchivePreferences.USER, Messages.User, parent));
+        addField(new PasswordFieldEditor(org.csstudio.archive.rdb.Activator.ID, RDBArchivePreferences.PASSWORD, Messages.Password, parent));
+        addField(new StringFieldEditor(RDBArchivePreferences.SCHEMA, Messages.Schema, parent));
+
+        // FieldEditorPreferencePage will set all its
+        // editors to the 'main' pref. store.
+        // Hack around that by replacing setPreferenceStore
+        final StringFieldEditor editor =
+                new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
         {
-	        addField(new StringFieldEditor(RDBArchivePreferences.USER, Messages.User, parent));
-	        addField(new PasswordFieldEditor(org.csstudio.archive.rdb.Activator.ID, RDBArchivePreferences.PASSWORD, Messages.Password, parent));
-	        addField(new StringFieldEditor(RDBArchivePreferences.SCHEMA, Messages.Schema, parent));
-	
-	        // FieldEditorPreferencePage will set all its
-	        // editors to the 'main' pref. store.
-	        // Hack around that by replacing setPreferenceStore
-	        final StringFieldEditor editor =
-	                new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
-	        {
-	            @Override
-	            public void setPreferenceStore(final IPreferenceStore ignored)
-	            {
-	                super.setPreferenceStore(reader_prefs);
-	            }
-	        };
-	        addField(editor);
-	
-	        addField(new BooleanFieldEditor(RDBArchivePreferences.USE_ARRAY_BLOB, Messages.UseBLOB, parent));
-        }
-        catch (Exception ex)
-        {
-        	Activator.getLogger().log(Level.WARNING, "Cannot read preferences", ex);
-        }
+            @Override
+            public void setPreferenceStore(final IPreferenceStore ignored)
+            {
+                super.setPreferenceStore(reader_prefs);
+            }
+        };
+        addField(editor);
+
+        addField(new BooleanFieldEditor(RDBArchivePreferences.USE_ARRAY_BLOB, Messages.UseBLOB, parent));
     }
 
     /** FieldEditorPreferencePage will save settings
