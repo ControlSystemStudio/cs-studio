@@ -158,8 +158,15 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
             else
                 user_text = SecuritySupport.getSubjectName(subject);
 
+            user_info.add("Principals:");
             for (Principal p : subject.getPrincipals())
-                user_info.add(p.toString());
+                user_info.add(" " + p.toString());
+            user_info.add("Public Credentials:");
+            for (Object c : subject.getPublicCredentials())
+                user_info.add(" " + c.toString());
+            user_info.add("Private Credentials:");
+            for (Object c : subject.getPrivateCredentials())
+                user_info.add(" " + c.toString());
         }
         final Collection<String> auth_info = new ArrayList<>();
         if (authorizations != null)
