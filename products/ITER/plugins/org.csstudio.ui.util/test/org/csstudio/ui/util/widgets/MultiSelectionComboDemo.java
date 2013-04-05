@@ -31,7 +31,7 @@ public class MultiSelectionComboDemo
         
         shell.setLayout(new GridLayout());
         
-        final MultiSelectionCombo<String> list = new MultiSelectionCombo(shell, 0);
+        final MultiSelectionCombo<String> list = new MultiSelectionCombo<>(shell, 0);
         list.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         list.setItems(Arrays.asList(
