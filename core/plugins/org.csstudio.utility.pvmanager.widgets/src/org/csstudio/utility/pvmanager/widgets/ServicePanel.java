@@ -31,6 +31,7 @@ import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceRegistry;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
@@ -40,201 +41,240 @@ import static org.epics.pvmanager.ExpressionLanguage.*;
  * @author carcassi
  */
 public class ServicePanel extends Composite {
-	private Text serviceField;
-	private Text argumentField;
-	private Text resultsField;
-	
-	private DesiredRateExpression<Map<String, Object>> argumentExpression;
-	private WriteExpression<Map<String, Object>> resultExpression;
-	private String serviceName;
+    private Text serviceField;
+    private Text argumentField;
+    private Text resultsField;
 
-	/**
-	 * Creates a new display.
-	 * 
-	 * @param parent
-	 */
-	public ServicePanel(Composite parent) {
-		super(parent, SWT.NONE);
-		setLayout(new GridLayout(2, false));
-		
-		Label lblService = new Label(this, SWT.NONE);
-		lblService.setText("Service:");
-		
-		serviceField = new Text(this, SWT.BORDER);
-		serviceField.setEditable(false);
-		serviceField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblArguments = new Label(this, SWT.NONE);
-		lblArguments.setText("Arguments:");
-		
-		argumentField = new Text(this, SWT.BORDER);
-		argumentField.setEditable(false);
-		argumentField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblResult = new Label(this, SWT.NONE);
-		lblResult.setText("Results:");
-		
-		resultsField = new Text(this, SWT.BORDER);
-		resultsField.setEditable(false);
-		resultsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		new Label(this, SWT.NONE);
-		
-		executeButton = new Button(this, SWT.NONE);
-		executeButton.setEnabled(false);
-		executeButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Map<String, Object> args = adaptArguments(argReader.getValue());
-				serviceMethod.execute(args, new WriteFunction<Map<String,Object>>() {
-					
-					@Override
-					public void writeValue(Map<String, Object> newValue) {
-						resultsField.setText(String.valueOf(newValue));
-						resultWriter.write(newValue);
-					}
-				}, new WriteFunction<Exception>() {
+    private DesiredRateExpression<Map<String, Object>> argumentExpression;
+    private WriteExpression<Map<String, Object>> resultExpression;
+    private String serviceName;
 
-					@Override
-					public void writeValue(Exception newValue) {
-						resultsField.setText(String.valueOf(newValue.getMessage()));
-					}
-					
-				});
-			}
-		});
-		executeButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		executeButton.setText("Execute");
-	}
-	
-	private PVReader<Map<String, Object>> argReader;
-	private PVWriter<Map<String, Object>> resultWriter;
-	private ServiceMethod serviceMethod;
-	private Button executeButton;
-	
-	private void reconnect() {
-		executeButton.setEnabled(false);
-		if (argReader != null) {
-			argReader.close();
-			argReader = null;
-		}
-		
-		if (resultWriter != null) {
-			resultWriter.close();
-			resultWriter = null;
-		}
-		
-		serviceMethod = null;
-		
-		if (serviceName == null) {
-			serviceField.setText("");
-			return;
-		}
-		
-		try {
-			serviceMethod = ServiceRegistry.getDefault().findServiceMethod(serviceName);
-			serviceField.setText(serviceName);
-		} catch(Exception ex) {
-			serviceField.setText(ex.getMessage());
-			return;
-		}
-		
-		if (argumentExpression == null || resultExpression == null) {
-			return;
-		}
-		
-		argReader = PVManager.read(argumentExpression)
-				.readListener(new PVReaderListener<Map<String, Object>>() {
+    /**
+     * Creates a new display.
+     * 
+     * @param parent
+     */
+    public ServicePanel(Composite parent) {
+	super(parent, SWT.NONE);
+	setLayout(new GridLayout(2, false));
 
-					@Override
-					public void pvChanged(final PVReaderEvent<Map<String, Object>> event) {
-						SWTUtil.swtThread().execute(new Runnable() {
-							
-							@Override
-							public void run() {
-								argumentField.setText(String.valueOf(adaptArguments(event.getPvReader().getValue())));
-							}
-						});
-					}
-				}).maxRate(TimeDuration.ofHertz(25));
-		
-		resultWriter = PVManager.write(resultExpression).async();
-		executeButton.setEnabled(true);
+	Label lblService = new Label(this, SWT.NONE);
+	lblService.setText("Service:");
+
+	serviceField = new Text(this, SWT.BORDER);
+	serviceField.setEditable(false);
+	serviceField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		false, 1, 1));
+
+	Label lblArguments = new Label(this, SWT.NONE);
+	lblArguments.setText("Arguments:");
+
+	argumentField = new Text(this, SWT.BORDER);
+	argumentField.setEditable(false);
+	argumentField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		false, 1, 1));
+
+	Label lblResult = new Label(this, SWT.NONE);
+	lblResult.setText("Results:");
+
+	resultsField = new Text(this, SWT.BORDER);
+	resultsField.setEditable(false);
+	resultsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		false, 1, 1));
+	new Label(this, SWT.NONE);
+
+	executeButton = new Button(this, SWT.NONE);
+	executeButton.setEnabled(false);
+	executeButton.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		Map<String, Object> args = adaptArguments(argReader.getValue());
+		serviceMethod.execute(args,
+			new WriteFunction<Map<String, Object>>() {
+
+			    @Override
+			    public void writeValue(
+				    final Map<String, Object> newValue) {
+				SWTUtil.swtThread(ServicePanel.this).execute(
+					new Runnable() {
+
+					    @Override
+					    public void run() {
+						resultsField.setText(String
+							.valueOf(newValue));
+					    }
+					});
+				resultWriter.write(newValue);
+			    }
+			}, new WriteFunction<Exception>() {
+
+			    @Override
+			    public void writeValue(final Exception newValue) {
+				SWTUtil.swtThread(ServicePanel.this).execute(
+					new Runnable() {
+
+					    @Override
+					    public void run() {
+						resultsField.setText(String
+							.valueOf(newValue
+								.getMessage()));
+					    }
+					});
+
+			    }
+
+			});
+	    }
+	});
+	executeButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+		false, 1, 1));
+	executeButton.setText("Execute");
+    }
+
+    private PVReader<Map<String, Object>> argReader;
+    private PVWriter<Map<String, Object>> resultWriter;
+    private ServiceMethod serviceMethod;
+    private Button executeButton;
+
+    private void reconnect() {
+	executeButton.setEnabled(false);
+	if (argReader != null) {
+	    argReader.close();
+	    argReader = null;
 	}
 
-	public DesiredRateExpression<Map<String, Object>> getArgumentExpression() {
-		return argumentExpression;
+	if (resultWriter != null) {
+	    resultWriter.close();
+	    resultWriter = null;
 	}
 
-	public void setArgumentExpression(
-			DesiredRateExpression<Map<String, Object>> argumentExpression) {
-		this.argumentExpression = argumentExpression;
-		reconnect();
+	serviceMethod = null;
+
+	if (serviceName == null) {
+	    serviceField.setText("");
+	    return;
 	}
 
-	public WriteExpression<Map<String, Object>> getResultExpression() {
-		return resultExpression;
+	try {
+	    serviceMethod = ServiceRegistry.getDefault().findServiceMethod(
+		    serviceName);
+	    serviceField.setText(serviceName);
+	} catch (Exception ex) {
+	    serviceField.setText(ex.getMessage());
+	    return;
 	}
 
-	public void setResultExpression(
-			WriteExpression<Map<String, Object>> resultExpression) {
-		this.resultExpression = resultExpression;
-		reconnect();
+	if (argumentExpression == null || resultExpression == null) {
+	    return;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	argReader = PVManager.read(argumentExpression)
+		.readListener(new PVReaderListener<Map<String, Object>>() {
+
+		    @Override
+		    public void pvChanged(
+			    final PVReaderEvent<Map<String, Object>> event) {
+			SWTUtil.swtThread().execute(new Runnable() {
+
+			    @Override
+			    public void run() {
+				argumentField.setText(String
+					.valueOf(adaptArguments(event
+						.getPvReader().getValue())));
+			    }
+			});
+		    }
+		}).maxRate(TimeDuration.ofHertz(25));
+
+	resultWriter = PVManager.write(resultExpression).async();
+	executeButton.setEnabled(true);
+    }
+
+    public DesiredRateExpression<Map<String, Object>> getArgumentExpression() {
+	return argumentExpression;
+    }
+
+    public void setArgumentExpression(
+	    DesiredRateExpression<Map<String, Object>> argumentExpression) {
+	this.argumentExpression = argumentExpression;
+	reconnect();
+    }
+
+    public WriteExpression<Map<String, Object>> getResultExpression() {
+	return resultExpression;
+    }
+
+    public void setResultExpression(
+	    WriteExpression<Map<String, Object>> resultExpression) {
+	this.resultExpression = resultExpression;
+	reconnect();
+    }
+
+    public String getServiceName() {
+	return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+	this.serviceName = serviceName;
+	reconnect();
+    }
+
+    public void configureArgumentMap(String argumentPrefix) {
+	if (serviceMethod == null) {
+	    return;
+	}
+	ReadMap<Object> map = readMapOf(Object.class);
+	for (String argumentName : serviceMethod.getArgumentDescriptions()
+		.keySet()) {
+	    map.add(latestValueOf(channel(argumentPrefix + argumentName)).as(
+		    argumentName));
+	}
+	setArgumentExpression(map);
+    }
+
+    public void configureResultMap(String resultPrefix) {
+	if (serviceMethod == null) {
+	    return;
+	}
+	WriteMap<Object> map = writeMapOf(Object.class);
+	for (String resultName : serviceMethod.getResultDescriptions().keySet()) {
+	    map.add(channel(resultPrefix + resultName).as(resultName));
+	}
+	setResultExpression(map);
+    }
+
+    private Map<String, Object> adaptArguments(Map<String, Object> arguments) {
+	if (arguments.isEmpty()) {
+	    return arguments;
 	}
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-		reconnect();
+	Map<String, Object> newArgs = new HashMap<>();
+	for (String argName : arguments.keySet()) {
+	    newArgs.put(
+		    argName,
+		    adaptValue(arguments.get(argName), serviceMethod
+			    .getArgumentTypes().get(argName)));
 	}
-	
-	public void configureArgumentMap(String argumentPrefix) {
-		if (serviceMethod == null) {
-			return;
-		}
-		ReadMap<Object> map = readMapOf(Object.class);
-		for (String argumentName : serviceMethod.getArgumentDescriptions().keySet()) {
-			map.add(latestValueOf(channel(argumentPrefix + argumentName)).as(argumentName));
-		}
-		setArgumentExpression(map);
+
+	return newArgs;
+    }
+
+    private Object adaptValue(Object value, Class<?> targetType) {
+	if (targetType.isInstance(value)) {
+	    return value;
 	}
-	
-	public void configureResultMap(String resultPrefix) {
-		if (serviceMethod == null) {
-			return;
-		}
-		WriteMap<Object> map = writeMapOf(Object.class);
-		for (String resultName : serviceMethod.getResultDescriptions().keySet()) {
-			map.add(channel(resultPrefix + resultName).as(resultName));
-		}
-		setResultExpression(map);
+
+	if (Number.class.isAssignableFrom(targetType)
+		&& VNumber.class.isInstance(value)) {
+	    return ((VNumber) value).getValue();
 	}
-	
-	private Map<String, Object> adaptArguments(Map<String, Object> arguments) {
-		if (arguments.isEmpty()) {
-			return arguments;
-		}
-		
-		Map<String, Object> newArgs = new HashMap<>();
-		for (String argName : arguments.keySet()) {
-			newArgs.put(argName, adaptValue(arguments.get(argName), serviceMethod.getArgumentTypes().get(argName)));
-		}
-		
-		return newArgs;
+
+	if (String.class.isAssignableFrom(targetType)
+		&& VString.class.isInstance(value)) {
+	    return ((VString) value).getValue();
 	}
-	
-	private Object adaptValue(Object value, Class<?> targetType) {
-		if (targetType.isInstance(value)) {
-			return value;
-		}
-		
-		if (Number.class.isAssignableFrom(targetType) && VNumber.class.isInstance(value)) {
-			return ((VNumber) value).getValue();
-		}
-		
-		return null;
-	}
+
+	return null;
+    }
 
 }
