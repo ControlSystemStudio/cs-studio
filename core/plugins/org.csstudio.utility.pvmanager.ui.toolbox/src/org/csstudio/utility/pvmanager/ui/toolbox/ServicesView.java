@@ -4,6 +4,7 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
+import org.epics.pvmanager.service.ServiceRegistry;
 
 import com.google.common.base.Joiner;
 
@@ -110,21 +112,12 @@ public class ServicesView extends ViewPart {
 	trclmnNewColumn_1.setText("Description");
 	treeViewer.setContentProvider(new ServiceTreeContentProvider());
 
-	IConfigurationElement[] config = Platform.getExtensionRegistry()
-		.getConfigurationElementsFor(
-			"org.csstudio.utility.pvmanager.service");
-
+	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
+		.getDefault().listServices());
+	Collections.sort(serviceNames);
 	List<Service> services = new ArrayList<Service>();
-	for (IConfigurationElement iConfigurationElement : config) {
-	    Object o;
-	    try {
-		o = iConfigurationElement.createExecutableExtension("service");
-		if (o instanceof Service) {
-		    services.add((Service) o);
-		}
-	    } catch (CoreException e) {
-		e.printStackTrace();
-	    }
+	for (String serviceName : serviceNames) {
+	    services.add(ServiceRegistry.getDefault().findService(serviceName));
 	}
 	treeViewer.setInput(services);
     }
