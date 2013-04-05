@@ -2,36 +2,41 @@
 <feature
       id="org.csstudio.iter.display.pace.feature"
       label="CSS PACE Component"
-      version="1.0.0"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      version="4.1.1.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2013 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
 
    <requires>
-      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.3" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.epics"/>
-      <import plugin="org.csstudio.utility.pvmanager.loc"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.csstudio.data"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.platform.libs.epics"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.3" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.loc" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.epics" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

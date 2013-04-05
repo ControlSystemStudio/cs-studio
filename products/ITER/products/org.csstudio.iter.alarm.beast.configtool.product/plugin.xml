@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.alarm.beast.configtool.application"
-            name="AlarmConfigTool">
+            name="Alarm Configuration Tool">
          <property
                name="appName"
-               value="AlarmConfigTool">
+               value="Alarm Configuration Tool">
          </property>
       </product>
    </extension>
