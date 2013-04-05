@@ -115,10 +115,17 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if ("logs".equals(event.getPropertyName())) {
+				switch (event.getPropertyName()) {
+				case "logs":
 					updateTable();
 					logTableViewer.setInput(logs.toArray());
-				} else if ("logs".equals(event.getPropertyName())) {
+					break;
+				case "selectedLogEntry":
+
+					break;
+
+				default:
+					break;
 				}
 			}
 		});
