@@ -6,6 +6,8 @@ package org.csstudio.utility.pvmanager.ui.toolbox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -135,8 +137,9 @@ public class ServicesView extends ViewPart {
 	StringBuffer stringBuffer = new StringBuffer();
 	stringBuffer.append(serviceMethod.getName()).append("(");
 	List<String> arguments = new ArrayList<String>();
-	for (Entry<String, Class<?>> argument : serviceMethod
-		.getArgumentTypes().entrySet()) {
+	SortedMap<String, Class<?>> argumentTypesMap = new TreeMap<String, Class<?>>();
+	argumentTypesMap.putAll(serviceMethod.getArgumentTypes());
+	for (Entry<String, Class<?>> argument : argumentTypesMap.entrySet()) {
 	    arguments.add(argument.getValue().getSimpleName() + " "
 		    + argument.getKey());
 	}
@@ -144,8 +147,9 @@ public class ServicesView extends ViewPart {
 	stringBuffer.append(")");
 	stringBuffer.append(": ");
 	List<String> results = new ArrayList<String>();
-	for (Entry<String, Class<?>> result : serviceMethod.getResultTypes()
-		.entrySet()) {
+	SortedMap<String, Class<?>> resultTypesMap = new TreeMap<String, Class<?>>();
+	resultTypesMap.putAll(serviceMethod.getResultTypes());
+	for (Entry<String, Class<?>> result : resultTypesMap.entrySet()) {
 	    results.add(result.getValue().getSimpleName() + " "
 		    + result.getKey());
 	}

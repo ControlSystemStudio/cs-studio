@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -67,11 +68,16 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 	    });
 	    return serviceMethods.toArray();
 	} else if (parentElement instanceof ServiceMethod) {
-	    SortedMap<String, String> map = new TreeMap<String, String>();
-	    map.putAll(((ServiceMethod) parentElement)
+	    SortedMap<String, String> argumentDescriptionMap = new TreeMap<String, String>();
+	    argumentDescriptionMap.putAll(((ServiceMethod) parentElement)
 		    .getArgumentDescriptions());
-	    map.putAll(((ServiceMethod) parentElement).getResultDescriptions());
-	    return map.entrySet().toArray();
+	    SortedMap<String, String> resultDescriptionMap = new TreeMap<String, String>();
+	    resultDescriptionMap.putAll(((ServiceMethod) parentElement)
+		    .getResultDescriptions());
+	    List<Entry<String, String>> descriptionList = new ArrayList<Entry<String, String>>();
+	    descriptionList.addAll(argumentDescriptionMap.entrySet());
+	    descriptionList.addAll(resultDescriptionMap.entrySet());
+	    return descriptionList.toArray();
 	}
 	return null;
     }
