@@ -75,4 +75,20 @@
             class="org.csstudio.webopi.RedirectServlet">
       </servlet>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/"
+            class="org.csstudio.webopi.RedirectServletFilter"
+            load-on-startup="true">
+      </filter>
+   </extension>
+   
+   <!-- Disable New Plot on toolbar -->
+   <extension point="org.eclipse.ui.activities">
+   		<activity id="org.csstudio.opibuilder.rap.disablextensions" name="Hidden activities" />
+   		<activityPatternBinding
+        	activityId="org.csstudio.opibuilder.rap.disablextensions"
+        	pattern="org.csstudio.trends.databrowser.*" />
+	</extension>
 </fragment>

@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser2;
+package org.csstudio.webopi;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class RedirectServletFilter implements javax.servlet.Filter {
 
 			if ("/".equals(request.getPathInfo())) {
 				response.sendRedirect(response
-						.encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME));
+						.encodeRedirectURL(WebOPIConstants.MAIN_SERVELET_NAME));
 			} else {
 				chain.doFilter(request, response);
 			}

@@ -34,7 +34,8 @@ public class RedirectServlet extends HttpServlet {
 	static void redirect(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		if (request.getPathInfo().equals("/")) {
-			response.sendRedirect(response.encodeRedirectURL("d")); //$NON-NLS-1$
+			response.sendRedirect(response
+					.encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME)); //$NON-NLS-1$
 		} else {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}

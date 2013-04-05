@@ -60,11 +60,13 @@ public class Perspective implements IPerspectiveFactory
         left.addView(SearchView.ID);
         
 		final boolean rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+		
         if (rcp)
 			left.addView(IPageLayout.ID_RES_NAV);
 
         // Stuff for 'bottom'
         bottom.addView(IPageLayout.ID_PROP_SHEET);
+        
         if (rcp)
         	bottom.addView(ExportView.ID);
         
@@ -74,10 +76,10 @@ public class Perspective implements IPerspectiveFactory
         	bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Populate the "Window/Views..." menu with suggested views
-		if (rcp)
+		if (rcp) {
 			layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-		
-        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
-        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+	        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+	        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+		}
     }
 }

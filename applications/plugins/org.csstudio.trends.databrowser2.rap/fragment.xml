@@ -32,12 +32,21 @@
             title="DataBrowser">
       </branding>
    </extension>
+   
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
             alias="/webdatabrowser_img/loading.gif"
             base-name="html/loading.gif">
       </resource>
+   </extension>
+   
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+         alias="/"
+         class="org.csstudio.trends.databrowser2.RedirectServlet">
+      </servlet>
    </extension>
    <extension
          point="org.eclipse.equinox.http.registry.filters">

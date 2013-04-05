@@ -46,6 +46,7 @@
       <plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
       <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
       <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
@@ -126,6 +127,9 @@
       <plugin id="org.csstudio.opibuilder.widgets.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.opibuilder.widgets.symbol" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.linux" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.macosx" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.win32" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
@@ -139,6 +143,7 @@
       <plugin id="org.csstudio.trends.databrowser2" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.trends.databrowser2.opiwidget" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.ui.menu" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.ui.util" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pv" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pv.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pv.simu" autoStart="true" startLevel="0" />
@@ -149,6 +154,7 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />

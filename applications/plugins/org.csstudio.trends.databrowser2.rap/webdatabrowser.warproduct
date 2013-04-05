@@ -85,6 +85,7 @@
       <plugin id="org.hamcrest"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
       <plugin id="org.mockito"/>
    </plugins>
 
@@ -125,6 +126,7 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.test" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
