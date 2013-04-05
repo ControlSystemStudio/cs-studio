@@ -235,9 +235,11 @@ public class RunModeService {
 							OPIView.ID,secondID, IWorkbenchPage.VIEW_ACTIVATE);					
 					if(opiView instanceof OPIView){
 						((OPIView)opiView).setOPIInput(runnerInput);
-						if(position == Position.DETACHED)
-							((WorkbenchPage)page).detachView(
-									page.findViewReference(OPIView.ID, secondID));
+						
+						// TODO Port to E4
+//						if(position == Position.DETACHED)
+//							((WorkbenchPage)page).detachView(
+//									page.findViewReference(OPIView.ID, secondID));
 					}
 				} catch (PartInitException e) {
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);
