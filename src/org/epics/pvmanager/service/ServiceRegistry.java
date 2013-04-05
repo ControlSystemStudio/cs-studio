@@ -4,7 +4,11 @@
  */
 package org.epics.pvmanager.service;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,6 +26,10 @@ public class ServiceRegistry {
     
     public void registerService(Service service) {
         services.put(service.getName(), service);
+    }
+    
+    public Set<String> listServices() {
+        return Collections.unmodifiableSet(new HashSet<>(services.keySet()));
     }
     
     public Service findService(String name) {
