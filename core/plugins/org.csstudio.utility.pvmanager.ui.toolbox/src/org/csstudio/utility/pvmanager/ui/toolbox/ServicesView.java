@@ -45,7 +45,6 @@ public class ServicesView extends ViewPart {
      * 
      */
     public ServicesView() {
-	// TODO Auto-generated constructor stub
     }
 
     /*

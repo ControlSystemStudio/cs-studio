@@ -3,6 +3,9 @@
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -12,6 +15,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
+
+import sun.awt.windows.WComponentPeer;
 
 /**
  * @author shroffk
@@ -51,8 +56,16 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getChildren(Object parentElement) {
 	if (parentElement instanceof Service) {
-	    return ((Service) parentElement).getServiceMethods().values()
-		    .toArray();
+	    List<ServiceMethod> serviceMethods = new ArrayList<ServiceMethod>(
+		    ((Service) parentElement).getServiceMethods().values());
+	    Collections.sort(serviceMethods, new Comparator<ServiceMethod>() {
+
+		@Override
+		public int compare(ServiceMethod o1, ServiceMethod o2) {
+		    return o1.getName().compareTo(o2.getName());
+		}
+	    });
+	    return serviceMethods.toArray();
 	} else if (parentElement instanceof ServiceMethod) {
 	    SortedMap<String, String> map = new TreeMap<String, String>();
 	    map.putAll(((ServiceMethod) parentElement)
