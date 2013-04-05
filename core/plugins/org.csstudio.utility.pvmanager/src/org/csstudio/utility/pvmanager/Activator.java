@@ -61,22 +61,19 @@ public class Activator extends Plugin {
 	    // set as default data source
 	    PVManager.setDefaultDataSource(composite);
 
-	    // Retrieve pvmanager services
-
-	    IConfigurationElement[] config = Platform.getExtensionRegistry()
-		    .getConfigurationElementsFor(
-			    "org.csstudio.utility.pvmanager.service");
-
-	    for (IConfigurationElement iConfigurationElement : config) {
-		final Object o = iConfigurationElement
-			.createExecutableExtension("service");
-		if (o instanceof Service) {
-		    ServiceRegistry.getDefault().registerService((Service) o);
-		}
-	    }
-
 	} catch (Exception e) {
-	    log.log(Level.SEVERE, "Couldn't configure PVManager", e);
+	    log.log(Level.SEVERE,
+		    "Couldn't configure PVManager with Datasources", e);
+	}
+
+	// Retrieve pvmanager services
+	try {
+	    for (Service service : ConfigurationHelper.configuredServices()) {
+		ServiceRegistry.getDefault().registerService(service);
+	    }
+	} catch (Exception e) {
+	    log.log(Level.SEVERE, "Couldn't configure PVManager with services",
+		    e);
 	}
 
     }

@@ -110,15 +110,6 @@ public class Application implements IApplication {
 			if (ex instanceof Exception)
 				throw (Exception) ex;
 		}
-		finally
-		{
-            // On OS X, when using Command-Q to quit, the display is already
-		    // disposed.
-		    // With the menu File/Exit that doesn't happen, only Cmd-Q.
-		    // So in general, we need to close the display:
-            if (! display.isDisposed())
-		        display.close();
-		}
 		return EXIT_OK;
 	}
 

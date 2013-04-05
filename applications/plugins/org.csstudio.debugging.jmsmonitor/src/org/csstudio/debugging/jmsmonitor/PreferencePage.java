@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.security.ui.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -51,19 +48,12 @@ public class PreferencePage extends FieldEditorPreferencePage
     @Override
     protected void createFieldEditors()
     {
-    	try
-    	{
-	        final Composite parent = getFieldEditorParent();
-	        addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
-	        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent));
-	        addField(new PasswordFieldEditor(Activator.ID, Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
-	        final IntegerFieldEditor max_messages = new IntegerFieldEditor(Preferences.MAX_MESSAGES, Messages.Preferences_MAX_MESSAGES, parent);
-			max_messages.setValidRange(1, Integer.MAX_VALUE);
-	        addField(max_messages);
-    	}
-    	catch (Exception ex)
-    	{
-    		Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot read preferences", ex);
-    	}
+        final Composite parent = getFieldEditorParent();
+        addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
+        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent));
+        addField(new PasswordFieldEditor(Activator.ID, Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
+        final IntegerFieldEditor max_messages = new IntegerFieldEditor(Preferences.MAX_MESSAGES, Messages.Preferences_MAX_MESSAGES, parent);
+		max_messages.setValidRange(1, Integer.MAX_VALUE);
+        addField(max_messages);
     }
 }

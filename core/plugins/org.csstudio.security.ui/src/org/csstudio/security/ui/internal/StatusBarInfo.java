@@ -7,17 +7,27 @@
  ******************************************************************************/
 package org.csstudio.security.ui.internal;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.security.auth.Subject;
 
 import org.csstudio.security.SecurityListener;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.security.authorization.Authorizations;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 /** Display user name in status bar.
@@ -29,16 +39,34 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 public class StatusBarInfo extends WorkbenchWindowControlContribution
    implements SecurityListener
 {
-    private Label user_name;
+    private Button user_name;
 
     @Override
     protected Control createControl(final Composite parent)
     {
         final Composite top = new Composite(parent, 0);
         top.setLayout(new FillLayout());
-        user_name = new Label(top, 0);
+        user_name = new Button(top, SWT.FLAT);
         user_name.setText("Login info...");
         user_name.setToolTipText("Name of the current user");
+        user_name.addSelectionListener(new SelectionAdapter()
+        {
+			@Override
+			public void widgetSelected(final SelectionEvent e)
+			{
+		        final IWorkbench workbench = PlatformUI.getWorkbench();
+		        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		        try
+		        {
+		            final IWorkbenchPage page = window.getActivePage();
+		            page.showView(SecurityInfoView.ID);
+		        }
+		        catch (Exception ex)
+		        {
+		        	Logger.getLogger(StatusBarInfo.class.getName()).log(Level.WARNING, "Cannot open view", ex);
+		        }
+			}
+		});
         
         // Trigger initial update
         changedSecurity(SecuritySupport.getSubject(),

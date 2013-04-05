@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import java.util.logging.Level;
-
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.security.ui.PasswordFieldEditor;
@@ -59,49 +57,42 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
         
-        try
-        {
-	        // Overall configuration name
-	        addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
-	
-	        // RDB Server
-	        addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Preferences_RDB_URL, parent));
-	        addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Preferences_RDB_User, parent));
-	        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.RDB_PASSWORD, Messages.Preferences_RDB_Password, parent));
-	
-	        // JMS Connection
-	        addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
-	        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_User, parent));
-	        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.JMS_PASSWORD, Messages.Preferences_JMS_Password, parent));
-	        final IntegerFieldEditor timeout = new IntegerFieldEditor(
-	            Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
-	        timeout.setValidRange(0, 60*60);
-	        addField(timeout);
-	
-	        // Commands, related displays
-	        addField(new StringFieldEditor(Preferences.COMMAND_DIRECTORY, Messages.Preferences_CommandDirectory, parent));
-	        final IntegerFieldEditor max_entries = new IntegerFieldEditor(Preferences.MAX_CONTEXT_MENU_ENTRIES, Messages.Preferences_MaxContextEntries, parent);
-	        max_entries.setValidRange(5, 100);
-	        addField(max_entries);
-	
-	        // Colors
-	        addField(new ColorFieldEditor(Preferences.COLOR_OK, SeverityLevel.OK.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_MINOR_ACK, SeverityLevel.MINOR_ACK.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_MAJOR_ACK, SeverityLevel.MAJOR_ACK.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_INVALID_ACK, SeverityLevel.INVALID_ACK.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_MINOR, SeverityLevel.MINOR.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_MAJOR, SeverityLevel.MAJOR.getDisplayName(), parent));
-	        addField(new ColorFieldEditor(Preferences.COLOR_INVALID, SeverityLevel.INVALID.getDisplayName(), parent));
-	
-	        // Must use SEPARATE_LABEL, otherwise GUI layout is broken
-	        // (bug in BooleanFieldEditor?)
-	        addField(new BooleanFieldEditor(Preferences.READONLY, Messages.Preferences_Readonly, BooleanFieldEditor.SEPARATE_LABEL, parent));
-	        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_SELECTION, Messages.Preferences_ConfigSelection, BooleanFieldEditor.SEPARATE_LABEL, parent));
-        }
-        catch (Exception ex)
-        {
-        	Activator.getLogger().log(Level.WARNING, "Error accessing preferences", ex);
-        }
+        // Overall configuration name
+        addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
+
+        // RDB Server
+        addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Preferences_RDB_URL, parent));
+        addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Preferences_RDB_User, parent));
+        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.RDB_PASSWORD, Messages.Preferences_RDB_Password, parent));
+
+        // JMS Connection
+        addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
+        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_User, parent));
+        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.JMS_PASSWORD, Messages.Preferences_JMS_Password, parent));
+        final IntegerFieldEditor timeout = new IntegerFieldEditor(
+            Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
+        timeout.setValidRange(0, 60*60);
+        addField(timeout);
+
+        // Commands, related displays
+        addField(new StringFieldEditor(Preferences.COMMAND_DIRECTORY, Messages.Preferences_CommandDirectory, parent));
+        final IntegerFieldEditor max_entries = new IntegerFieldEditor(Preferences.MAX_CONTEXT_MENU_ENTRIES, Messages.Preferences_MaxContextEntries, parent);
+        max_entries.setValidRange(5, 100);
+        addField(max_entries);
+
+        // Colors
+        addField(new ColorFieldEditor(Preferences.COLOR_OK, SeverityLevel.OK.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_MINOR_ACK, SeverityLevel.MINOR_ACK.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_MAJOR_ACK, SeverityLevel.MAJOR_ACK.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_INVALID_ACK, SeverityLevel.INVALID_ACK.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_MINOR, SeverityLevel.MINOR.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_MAJOR, SeverityLevel.MAJOR.getDisplayName(), parent));
+        addField(new ColorFieldEditor(Preferences.COLOR_INVALID, SeverityLevel.INVALID.getDisplayName(), parent));
+
+        // Must use SEPARATE_LABEL, otherwise GUI layout is broken
+        // (bug in BooleanFieldEditor?)
+        addField(new BooleanFieldEditor(Preferences.READONLY, Messages.Preferences_Readonly, BooleanFieldEditor.SEPARATE_LABEL, parent));
+        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_SELECTION, Messages.Preferences_ConfigSelection, BooleanFieldEditor.SEPARATE_LABEL, parent));
     }
 
     /** Show restart message for any change */
