@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="4.1.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/about.gif"/>
@@ -36,7 +36,7 @@ openFile</programArgs>
 -Dpython.cachedir.skip=true</vmArgs>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.iter.product.css/icons/css16.png" i32="/org.csstudio.iter.product.css/icons/css32.png" i48="/org.csstudio.iter.product.css/icons/css48.png" i64="/org.csstudio.iter.product.css/icons/css64.png" i128="/org.csstudio.iter.product.css/icons/css128.png"/>
+   <windowImages i16="/org.csstudio.iter.css.product/icons/css16.png" i32="/org.csstudio.iter.css.product/icons/css32.png" i48="/org.csstudio.iter.css.product/icons/css48.png" i64="/org.csstudio.iter.css.product/icons/css64.png" i128="/org.csstudio.iter.css.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.iter.product.css"
@@ -293,16 +293,18 @@ of the distribution package.
    </plugins>
 
    <features>
-      <feature id="org.eclipse.iter.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.iter.core.util.feature" version="1.0.0"/>
-      <feature id="org.eclipse.iter.ui.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.iter.css.app.feature" version="1.0.0"/>
-      <feature id="org.csstudio.iter.email.feature" version="1.0.0"/>
-      <feature id="org.csstudio.iter.alarm.beast.ui.feature" version="1.0.0"/>
+      <feature id="org.eclipse.iter.feature" version="4.1.1.qualifier"/>
+      <feature id="org.eclipse.iter.ui.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.core.util.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.core.ui.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.email.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.email.ui.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.opibuilder.feature" version="4.1.1.qualifier"/>
       <feature id="org.csstudio.trends.databrowser2.feature" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.iter.opibuilder.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.iter.display.pace.feature" version="1.0.0"/>
-      <feature id="org.csstudio.iter.css.util.feature" version="1.0.0"/>
+      <feature id="org.csstudio.iter.alarm.beast.ui.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.css.util.feature" version="4.1.1.qualifier"/>
+      <feature id="org.eclipse.iter.p2.rcpupdate.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.css.app.feature" version="4.1.1.qualifier"/>
    </features>
 
    <configurations>

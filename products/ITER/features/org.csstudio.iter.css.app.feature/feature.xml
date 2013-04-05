@@ -2,92 +2,83 @@
 <feature
       id="org.csstudio.iter.css.app.feature"
       label="CSS Apps Component"
-      version="1.0.0"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      version="4.1.1.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2013 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
 
    <requires>
-      <import plugin="javax.annotation"/>
-      <import plugin="javax.mail"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="org.apache.lucene"/>
-      <import plugin="org.apache.lucene.analysis"/>
-      <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.archive.reader"/>
-      <import plugin="org.csstudio.archive.vtype"/>
-      <import plugin="org.csstudio.auth"/>
-      <import plugin="org.csstudio.auth.ui"/>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.data"/>
-      <import plugin="org.csstudio.email"/>
-      <import plugin="org.csstudio.email.ui"/>
-      <import plugin="org.csstudio.iter.startuphelper"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.ldapAuthorization"/>
-      <import plugin="org.csstudio.logbook"/>
-      <import plugin="org.csstudio.logging"/>
-      <import plugin="org.csstudio.logging.ui"/>
-      <import plugin="org.csstudio.openfile"/>
-      <import plugin="org.csstudio.opibuilder"/>
-      <import plugin="org.csstudio.opibuilder.widgets"/>
-      <import plugin="org.csstudio.platform.libs.jdbc"/>
-      <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.csstudio.startup"/>
-      <import plugin="org.csstudio.swt.widgets"/>
-      <import plugin="org.csstudio.swt.xygraph"/>
-      <import plugin="org.csstudio.trends.databrowser2"/>
-      <import plugin="org.csstudio.ui.menu"/>
-      <import plugin="org.csstudio.ui.menu.app"/>
-      <import plugin="org.csstudio.ui.util"/>
-      <import plugin="org.csstudio.utility.product"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.csstudio.workspace"/>
-      <import plugin="org.eclipse.compare.core"/>
-      <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.filebuffers"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
-      <import plugin="org.eclipse.equinox.preferences"/>
-      <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.base"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.osgi.util"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.cheatsheets"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.update.configurator"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
-      <import plugin="org.hamcrest"/>
-      <import plugin="org.jdom"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.python"/>
-      <import plugin="org.slf4j"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.logging.ui"/>
+      <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.startup"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ldapAuthorization" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="javax.annotation" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.slf4j" version="1.6.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="1.0.6" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets" version="1.0.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hamcrest" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -96,7 +87,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.csstudio.apputil.ui"
          download-size="0"
