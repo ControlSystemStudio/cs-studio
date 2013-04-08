@@ -101,6 +101,8 @@ public class ServicesView extends ViewPart {
 	    public String getText(Object element) {
 		if (element instanceof Service) {
 		    return ((Service) element).getDescription();
+		} else if (element instanceof ServiceMethod) {
+		    return ((ServiceMethod) element).getDescription();
 		} else if (element instanceof Entry) {
 		    return ((Entry<String, String>) element).getValue();
 		}
