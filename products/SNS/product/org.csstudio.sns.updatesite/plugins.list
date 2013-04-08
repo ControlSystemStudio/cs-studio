@@ -36,7 +36,6 @@ org.csstudio.debugging.jmsmonitor/**
 org.csstudio.debugging.rdbshell/**
 org.csstudio.diag.epics.pvtree/**
 org.csstudio.diag.postanalyser/**
-org.csstudio.diag.probe/**
 org.csstudio.diag.pvmanager.probe/**
 org.csstudio.diag.pvfields/**
 org.csstudio.diag.pvfields.sns/**
@@ -71,8 +70,6 @@ org.csstudio.opibuilder.pvmanager.util/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.rcp/**
 org.csstudio.opibuilder.widgets.symbol/**
-org.csstudio.platform.jaasAuthentication/**
-org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.epics.linux/**
 org.csstudio.platform.libs.epics.macosx/**
@@ -99,12 +96,8 @@ org.csstudio.scan.ui.scanmonitor/**
 org.csstudio.scan.ui.scantree/**
 org.csstudio.security/**
 org.csstudio.security.ui/**
-org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
-org.csstudio.sns.ldapAuthorization/**
-org.csstudio.sns.ldapAuthorization.ui/**
 org.csstudio.sns.mpsbypasses/**
-org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.pvnames/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
