@@ -16,29 +16,24 @@ import java.util.logging.Logger;
 
 import org.csstudio.platform.utility.rdb.Activator;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Connect to an Oracle-based RDB
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
 @SuppressWarnings("nls")
-public class OracleRDB extends RDBUtil
+public class OracleRDB implements RDBImpl
 {
-    /** Initialize
-     *  @param url Database URL
-     *  @param user ... user
-     *  @param password ... password
-     *  @throws Exception on error
-     */
-    public OracleRDB(final String url, final String user, final String password,
-    		final boolean autoReconnect) throws Exception
+    /** {@inheritDoc} */
+    public Dialect getDialect()
     {
-        super(url, user, password, Dialect.Oracle, autoReconnect);
+        return RDBUtil.Dialect.Oracle;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Connection do_connect(final String url,
+    public Connection connect(final String url,
             final String user, final String password) throws Exception
     {
         // Get class loader to find the driver
@@ -64,7 +59,7 @@ public class OracleRDB extends RDBUtil
 
     /** {@inheritDoc} */
     @Override
-    protected String getConnectionTestQuery()
+    public String getConnectionTestQuery()
     {
         return "SELECT 1 FROM DUAL";
     }

@@ -27,8 +27,9 @@ public interface ScanCommandImplFactory<C extends ScanCommand>
 {
     /** Create an executor 
      *  @param command ScanCommand for which to create an executor
+     *  @param jython Jython interpreter, may be <code>null</code>
      *  @return {@link ScanCommandExecutor}
      *  @throws Exception on error
      */
-   public ScanCommandImpl<C> createImplementation(C command) throws Exception;
+   public ScanCommandImpl<C> createImplementation(C command, JythonSupport jython) throws Exception;
 }

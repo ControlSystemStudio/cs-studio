@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -61,9 +61,10 @@ public class OlogClientFromPreferences implements OlogClient {
 									PreferenceConstants.Username, "username",
 									null))
 					.password(
-							SecureStorage.retrieveSecureStorage(
+							SecurePreferences.get(
 									Activator.PLUGIN_ID,
-									PreferenceConstants.Password));
+									PreferenceConstants.Password,
+									null));
 		} else {
 			ologClientBuilder.withHTTPAuthentication(false);
 		}

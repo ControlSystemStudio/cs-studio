@@ -26,6 +26,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -43,15 +44,24 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     /** Initialize
      *  @param command Command description
+     *  @param jython Jython interpreter, may be <code>null</code>
+     */
+    public LoopCommandImpl(final LoopCommand command, final JythonSupport jython) throws Exception
+    {
+        super(command, jython);
+        reverse = (command.getStart() <= command.getEnd()  &&  command.getStepSize() < 0) ||
+                (command.getStart() >= command.getEnd()  &&  command.getStepSize() > 0);
+        implementation = ScanCommandImplTool.getInstance().implement(command.getBody(), jython);
+    }
+
+    /** Initialize without Jython support
+     *  @param command Command description
      */
     public LoopCommandImpl(final LoopCommand command) throws Exception
     {
-        super(command);
-        reverse = (command.getStart() <= command.getEnd()  &&  command.getStepSize() < 0) ||
-                (command.getStart() >= command.getEnd()  &&  command.getStepSize() > 0);
-        implementation = ScanCommandImplTool.getInstance().implement(command.getBody());
+        this(command, null);
     }
-
+    
     /** {@inheritDoc} */
 	@Override
     public int getWorkUnits()

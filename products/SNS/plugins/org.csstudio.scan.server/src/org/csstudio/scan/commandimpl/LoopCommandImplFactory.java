@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.LoopCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class LoopCommandImplFactory implements ScanCommandImplFactory<LoopCommand>
 {
     @Override
-    public ScanCommandImpl<LoopCommand> createImplementation(final LoopCommand command)
+    public ScanCommandImpl<LoopCommand> createImplementation(final LoopCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new LoopCommandImpl(command);
+        return new LoopCommandImpl(command, jython);
     }
 }

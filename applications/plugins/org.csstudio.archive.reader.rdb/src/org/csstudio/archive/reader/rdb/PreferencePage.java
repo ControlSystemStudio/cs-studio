@@ -10,7 +10,7 @@ package org.csstudio.archive.reader.rdb;
 import java.io.IOException;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.security.ui.PasswordFieldEditor;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -78,7 +78,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         final Composite parent = getFieldEditorParent();
 
         addField(new StringFieldEditor(RDBArchivePreferences.USER, Messages.User, parent));
-        addField(new PasswordFieldEditor(RDBArchivePreferences.PASSWORD, Messages.Password, parent, org.csstudio.archive.rdb.Activator.ID));
+        addField(new PasswordFieldEditor(org.csstudio.archive.rdb.Activator.ID, RDBArchivePreferences.PASSWORD, Messages.Password, parent));
         addField(new StringFieldEditor(RDBArchivePreferences.SCHEMA, Messages.Schema, parent));
 
         // FieldEditorPreferencePage will set all its

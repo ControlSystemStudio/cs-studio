@@ -11,6 +11,7 @@ package org.csstudio.utility.singlesource.rcp;
 
 import java.io.IOException;
 
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.singlesource.UIHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
@@ -25,7 +26,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -83,20 +83,20 @@ public class RCPUIHelper extends UIHelper
         }
         return path;
     }
-    
-    /** {@inheritDoc} */
-	@Override
-	public String openOutsideWorkspaceDialog(final Shell shell,
-			final int style, final IPath original, final String extension) {
-        final FileDialog dlg = new FileDialog(shell, style);
-		if (extension != null)
-			dlg.setFilterExtensions(new String[] { extension });
-		
-        final IFile orig_file = RCPResourceHelper.getFileForPath(original);
-        if (orig_file != null)
-    		dlg.setFileName(orig_file.toString());
-        return dlg.open();
-    }
+
+	public IPath openDialog(final Shell shell, final int style,
+			final IPath original, final String extension, String title) {
+		if (title == null) {
+			title = "Select File";
+		}
+        // Prompt for file
+        final ResourceSelectionDialog res =
+                new ResourceSelectionDialog(shell, title, new String[] { extension });
+        if (res.open() != Window.OK)
+            return null;
+        
+        return res.getSelectedResource();
+	}
 
 	/** {@inheritDoc} */
 	@Override

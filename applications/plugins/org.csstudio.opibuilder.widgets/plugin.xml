@@ -311,11 +311,11 @@
       </widget>
       <widget
             category="Controls"
-            description="A native text widget which can be use as label, text update or text input."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeTextEditpart"
+            description="Will not show in palette."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
             icon="icons/nativeText.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.NativeTextModel"
-            name="Native Text"
+            model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
+            name="Native Text (Deprecated)"
             typeId="org.csstudio.opibuilder.widgets.NativeText">
       </widget>
       <widget

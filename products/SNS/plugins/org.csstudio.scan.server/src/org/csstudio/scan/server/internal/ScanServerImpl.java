@@ -40,6 +40,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
@@ -211,7 +212,7 @@ public class ScanServerImpl implements ScanServer
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-            List<ScanCommandImpl<?>> scan = tool.implement(commands);
+            List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
 
             // Setup simulation log
             ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
@@ -262,11 +263,14 @@ public class ScanServerImpl implements ScanServer
             for (String path : ScanSystemPreferences.getPostScanPaths())
                 post_commands.addAll(reader.readXMLStream(PathStreamTool.openStream(path)));
 
+            // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
+
             // Obtain implementations for the requested commands as well as pre/post scan
             final ScanCommandImplTool implementor = ScanCommandImplTool.getInstance();
-            final List<ScanCommandImpl<?>> pre_impl = implementor.implement(pre_commands);
-            final List<ScanCommandImpl<?>> main_impl = implementor.implement(commands);
-            final List<ScanCommandImpl<?>> post_impl = implementor.implement(post_commands);
+            final List<ScanCommandImpl<?>> pre_impl = implementor.implement(pre_commands, jython);
+            final List<ScanCommandImpl<?>> main_impl = implementor.implement(commands, jython);
+            final List<ScanCommandImpl<?>> post_impl = implementor.implement(post_commands, jython);
 
             // Get default devices
     		final DeviceContext devices = DeviceContext.getDefault();

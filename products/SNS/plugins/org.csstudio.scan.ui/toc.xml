@@ -17,6 +17,7 @@
     <topic label="Scan Monitor" href="doc/scansystem.html#monitor"/>
     <topic label="Scan Plot" href="doc/scansystem.html#plot"/>
     <topic label="Scan Data Display" href="doc/scansystem.html#scan_data"/>
+    <topic label="Error Handling" href="doc/scansystem.html#errors"/>
     <topic label="Scan Server" href="doc/scansystem.html#server">
         <topic label="Setup" href="doc/scansystem.html#server_setup"/>
         <topic label="Log Access" href="doc/scansystem.html#server_log"/>

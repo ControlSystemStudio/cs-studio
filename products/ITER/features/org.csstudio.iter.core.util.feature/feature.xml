@@ -42,6 +42,7 @@ of the distribution package.
       <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.2.1" match="greaterOrEqual"/>
@@ -186,6 +187,13 @@ of the distribution package.
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin

@@ -51,8 +51,8 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 
 	private static final Dimension PREFERED_SIZE = new Dimension(10, 10);
 	private static final String TIP = "<Set PV Name>";
-	private  static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(127, 127, 127);
-	private  static final Color handleFilledBackColor = CustomMediaFactory.getInstance().getColor(255, 128, 0);
+	private  static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(180, 180, 180);
+	private  static final Color handleFilledBackColor = CustomMediaFactory.getInstance().getColor(255, 200, 0);
 	
 	private Dimension textExtents;
 	private AbstractWidgetModel widgetModel;
@@ -139,13 +139,11 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 	@Override
 	protected void paintFigure(Graphics graphics) {
 		super.paintFigure(graphics);		
-		graphics.setAlpha(150);
 		if(pvName == null|| pvName.isEmpty())
 			graphics.setBackgroundColor(handleBackColor);
 		else
 			graphics.setBackgroundColor(handleFilledBackColor);
 		graphics.fillRectangle(getClientArea());
-		graphics.setAlpha(250);		
 	}
 
 

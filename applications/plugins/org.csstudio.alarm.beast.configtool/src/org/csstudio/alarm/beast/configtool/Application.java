@@ -20,6 +20,8 @@ import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -54,6 +56,8 @@ public class Application implements IApplication
                 "Database user", Preferences.getRDB_User());
         final StringOption password = new StringOption(parser, "-rdb_pass",
                 "Database password", Preferences.getRDB_Password());
+        final StringOption set_password = new StringOption(parser,
+                "-set_password", "plugin/key=value", "Set secure preferences", null);
         final StringOption schema = new StringOption(parser, "-rdb_schema",
                 "Database scheme", Preferences.getRDB_Schema());
         final BooleanOption do_list = new BooleanOption(parser, "-list",
@@ -84,10 +88,38 @@ public class Application implements IApplication
         if (help_opt.get())
             return parser.getHelp();
 
+        final String option = set_password.get();
+        if (option != null)
+        {   // Split "plugin/key=value"
+            final String pref, value;
+            final int sep = option.indexOf("=");
+            if (sep >= 0)
+            {
+                pref = option.substring(0, sep);
+                value = option.substring(sep + 1);
+            }
+            else
+            {
+                pref = option;
+                value = PasswordInput.readPassword("Value for " + pref + ":");
+            }
+            try
+            {
+                SecurePreferences.set(pref, value);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+                return ex.getMessage();
+            }
+            // Returning non-null will end the application
+            return "";
+        }
+        
         this.url = url.get();
-        this.user = user.get().isEmpty() ? null : user.get();
-        this.password = password.get().isEmpty() ? null : password.get();
-        this.schema = schema.get().isEmpty() ? "" : schema.get();
+        this.user = (user.get() == null || user.get().isEmpty()) ? null : user.get();
+        this.password = (password.get() == null || password.get().isEmpty()) ? null : password.get();
+        this.schema = (schema.get() == null || schema.get().isEmpty()) ? "" : schema.get();
         if (do_list.get())
         {
             mode = Mode.LIST;

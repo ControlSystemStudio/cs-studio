@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.platform.utility.rdb.Activator;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Connect to a PostgreSQL-based RDB
  *  @author Lana Abadie
@@ -22,23 +23,17 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
  *  @author Xihui Chen
  */
 @SuppressWarnings("nls")
-public class PostgreSQL_RDB extends RDBUtil
+public class PostgreSQL_RDB implements RDBImpl
 {
-    /** Initialize
-     *  @param url Database URL
-     *  @param user ... user
-     *  @param password ... password
-     *  @throws Exception on error
-     */
-    public PostgreSQL_RDB(final String url, final String user, final String password,
-    		final boolean autoReconnect) throws Exception
+    /** {@inheritDoc} */
+    public Dialect getDialect()
     {
-        super(url, user, password, Dialect.PostgreSQL, autoReconnect);
+        return RDBUtil.Dialect.PostgreSQL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected Connection do_connect(final String url,
+    public Connection connect(final String url,
             final String user, final String password) throws Exception
     {
         // Get class loader to find the driver
@@ -62,7 +57,7 @@ public class PostgreSQL_RDB extends RDBUtil
 
     /** {@inheritDoc} */
     @Override
-    protected String getConnectionTestQuery()
+    public String getConnectionTestQuery()
     {
         return "SELECT 1";
     }

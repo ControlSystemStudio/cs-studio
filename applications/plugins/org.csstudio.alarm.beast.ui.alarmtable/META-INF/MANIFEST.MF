@@ -18,8 +18,6 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil.ui,
  org.csstudio.alarm.beast;bundle-version="3.2.0",
  org.csstudio.alarm.beast.ui;bundle-version="3.2.0",
- org.csstudio.auth;bundle-version="1.0.0",
- org.csstudio.auth.ui;bundle-version="1.0.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

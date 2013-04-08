@@ -728,7 +728,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 * @param propID
 	 *            the property id
 	 */
-	protected final void removeAllPropertyChangeHandlers(final String propID) {
+	public final void removeAllPropertyChangeHandlers(final String propID) {
 		WidgetPropertyChangeListener listener = propertyListenerMap.get(propID);
 		if (listener != null) {
 			listener.removeAllHandlers();

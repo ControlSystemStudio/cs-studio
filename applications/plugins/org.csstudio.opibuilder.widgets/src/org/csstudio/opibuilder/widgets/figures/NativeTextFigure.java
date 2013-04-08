@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.geometry.Dimension;

@@ -13,6 +13,8 @@ import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -55,6 +57,8 @@ public class Application implements IApplication
     		"-help", "Display Help");
         final StringOption config_name = new StringOption(parser,
     		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
+        final StringOption set_password = new StringOption(parser,
+            "-set_password", "plugin/key=value", "Set secure preferences", null);
     	parser.addEclipseParameters();
         try
         {
@@ -71,6 +75,25 @@ public class Application implements IApplication
             return IApplication.EXIT_OK;
         }
 
+        final String option = set_password.get();
+        if (option != null)
+        {   // Split "plugin/key=value"
+            final String pref, value;
+            final int sep = option.indexOf("=");
+            if (sep >= 0)
+            {
+                pref = option.substring(0, sep);
+                value = option.substring(sep + 1);
+            }
+            else
+            {
+                pref = option;
+                value = PasswordInput.readPassword("Value for " + pref + ":");
+            }
+            SecurePreferences.set(pref, value);
+            return IApplication.EXIT_OK;
+        }
+        
         // Initialize logging
         LogConfigurator.configureFromPreferences();
 

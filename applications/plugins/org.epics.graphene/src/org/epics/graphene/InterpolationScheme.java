@@ -9,5 +9,5 @@ package org.epics.graphene;
  * @author carcassi
  */
 public enum InterpolationScheme {
-    NEAREST_NEIGHBOUR, LINEAR, CUBIC;
+    NONE, NEAREST_NEIGHBOUR, LINEAR, CUBIC;
 }

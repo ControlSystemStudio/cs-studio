@@ -243,8 +243,8 @@ public class PreferencesHelper {
     	if(rawString == null || rawString.trim().isEmpty())
     		rawString = "";
     	else rawString = "|"+rawString;    	
-    	//a hack to hide deprecated native button widget
-    	rawString = "org.csstudio.opibuilder.widgets.NativeButton"+ rawString; //$NON-NLS-1$
+    	//a hack to hide deprecated native widgets
+    	rawString = "org.csstudio.opibuilder.widgets.NativeButton|org.csstudio.opibuilder.widgets.NativeText"+ rawString; //$NON-NLS-1$
     				
     	try {
 			return StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);

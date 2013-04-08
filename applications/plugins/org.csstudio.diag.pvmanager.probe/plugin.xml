@@ -73,6 +73,10 @@
             file="toc.xml"
             primary="true">
       </toc>
+      <toc
+            file="changelog.xml"
+            primary="true">
+      </toc>
    </extension>
 
 </plugin>

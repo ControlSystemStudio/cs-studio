@@ -89,7 +89,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** @return Leaf items that are in alarm */
     public List<PVTreeItem> getAlarmPVs()
     {
-        final List<PVTreeItem> alarms = new ArrayList<PVTreeItem>();
+        final List<PVTreeItem> alarms = new ArrayList<>();
         addAlarmPVs(alarms, root);
         return alarms;
     }

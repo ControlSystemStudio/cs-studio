@@ -19,6 +19,7 @@ import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
@@ -29,14 +30,18 @@ import org.csstudio.scan.server.SimulationContext;
 @SuppressWarnings("nls")
 public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 {
-	/** Initialize
-	 *  @param command Command description
-	 */
-    public WaitCommandImpl(final WaitCommand command)
+    /** {@inheritDoc} */
+    public WaitCommandImpl(final WaitCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
+    /** Implement without Jython support */
+    public WaitCommandImpl(final WaitCommand command) throws Exception
+    {
+        this(command, null);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames()

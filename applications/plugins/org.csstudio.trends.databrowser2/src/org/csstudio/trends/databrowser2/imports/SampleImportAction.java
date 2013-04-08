@@ -17,11 +17,11 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.trends.databrowser2.ui.AddModelItemCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that performs a sample import
@@ -49,14 +49,10 @@ public class SampleImportAction extends Action
     @Override
     public void run()
     {
-        // Prompt for file
-        final ResourceSelectionDialog res =
-                new ResourceSelectionDialog(shell,
-                        NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description),
-                        new String[] { "*" }); //$NON-NLS-1$
-        if (res.open() != Window.OK)
-            return;
-        final IPath path = res.getSelectedResource();
+		// Prompt for file
+		final IPath path = SingleSourcePlugin.getUIHelper()
+				.openDialog(shell, SWT.OPEN, null, "*",
+						NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description));
         if (path == null)
             return;
         try

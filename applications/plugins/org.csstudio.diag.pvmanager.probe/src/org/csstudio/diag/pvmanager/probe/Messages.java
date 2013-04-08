@@ -91,6 +91,7 @@ public class Messages extends NLS
     public static String S_OK;
     public static String S_Period;
     public static String S_Seconds;
+    public static String PVManagerProbe_group_text;
     static
     {
         // initialize resource bundle

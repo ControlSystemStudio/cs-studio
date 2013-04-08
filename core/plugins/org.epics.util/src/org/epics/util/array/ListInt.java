@@ -113,5 +113,17 @@ public abstract class ListInt implements ListNumber, CollectionInt {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (; i < size() - 1; i++) {
+            builder.append(getInt(i)).append(", ");
+        }
+        builder.append(getInt(i)).append("]");
+        return builder.toString();
+    }
     
 }

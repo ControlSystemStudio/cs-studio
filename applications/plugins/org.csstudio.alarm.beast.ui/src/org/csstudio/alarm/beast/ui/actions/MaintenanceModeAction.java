@@ -13,8 +13,8 @@ import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 /** Action to control the "maintenance" mode
  *  @author Kay Kasemir
  */
-public class MaintenanceModeAction extends AbstractUserDependentAction
+public class MaintenanceModeAction extends Action
 {
     /** Images for button icon */
     private static ImageDescriptor image_on = null, image_off = null;
@@ -35,13 +35,12 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
      */
     public MaintenanceModeAction(final AlarmClientModel model)
     {
-        super(Messages.MaintenanceMode, AuthIDs.CONFIGURE, false);
+        super(Messages.MaintenanceMode);
         getIcons();
         this.model = model;
 
         //authorization
-        setEnabledWithoutAuthorization(true);
-        setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
 
         // Reflect mode of model right now, then monitor for mode changes
         reflectModelMode(model.inMaintenanceMode());
@@ -87,7 +86,7 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
     }
 
     @Override
-    protected void doWork()
+    public void run()
     {
         if (model.inMaintenanceMode())
         {

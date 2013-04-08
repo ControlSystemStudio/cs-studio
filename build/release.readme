@@ -1,0 +1,30 @@
+RELEASE.SH README
+-----------------
+
+The release script is meant to be used as part of the CSS release process.
+This script will run by the Jenkins instance at:
+https://openepics.ci.cloudbees.com/
+under the CSS - Release job.
+
+The purpose of the script is to:
+* prepare products for release (update version, update splash screen, ...)
+* tag the release in github
+* build the products
+* publish the products
+Hooking up your site build to the release process guarantees that your
+site product is built together with the others.
+
+To hook up a site product to the build, you need to:
+* make sure your site product build with the common build. That is, running
+./build.sh PRODUCT
+should succeed
+* add a prepare-release.sh script in your product directory. Make sure that starting
+the script from your product directory like this:
+./release-product.sh VERSION
+makes the appropriate changes. These changes will be committed in its own
+commit and pushed to github automatically when called by the release script.
+* add a publish.sh script in your product directory. Make sure that starting
+the script from your product directory like this:
+./publish.sh VERSION
+copies your product in the appropriate location.
+* add your product to release.products.
