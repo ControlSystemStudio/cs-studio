@@ -22,7 +22,7 @@ public class SDDPVListProvider implements IPVListProvider {
 	private RDBUtil rdb;
 
 	private final String pv_count = "SELECT count(*) FROM functionalvariables WHERE name like ?";
-	private final String pv_get = "SELECT name FROM functionalvariables WHERE name like ?";
+	private final String pv_get = "SELECT name FROM functionalvariables WHERE name like ? order by name";
 	
 	private PreparedStatement statement_get = null;
 	private PreparedStatement statement_count = null;

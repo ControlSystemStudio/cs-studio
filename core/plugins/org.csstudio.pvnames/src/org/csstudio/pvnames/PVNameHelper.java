@@ -8,6 +8,7 @@
 package org.csstudio.pvnames;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Helper to convert PV name entered in auto completed field.
@@ -17,19 +18,23 @@ import java.util.regex.Pattern;
  */
 public class PVNameHelper {
 
-	private static String SINGLE_REPLACE_CHAR = "?";
-	private static String MULTI_REPLACE_CHAR = "*";
+	private static String SINGLE_REPLACE_CHAR = "\\?";
+	private static String MULTI_REPLACE_CHAR = "\\*";
 
 	public static Pattern convertToPattern(String name) {
-		String regex = name.replace(MULTI_REPLACE_CHAR, ".+");
-		regex = regex.replace(SINGLE_REPLACE_CHAR, ".");
-		return Pattern.compile(regex);
+		String regex = name.replaceAll(MULTI_REPLACE_CHAR, ".*");
+		regex = regex.replaceAll(SINGLE_REPLACE_CHAR, ".");
+		try {
+			return Pattern.compile(regex);
+		} catch (PatternSyntaxException e) {
+			return null;
+		}
 	}
 
 	public static String convertToSQL(String name) {
-		String sql = name.replace(MULTI_REPLACE_CHAR, "%");
-		sql = sql.replace(SINGLE_REPLACE_CHAR, "_");
-		sql = sql.replace("'", "''"); // prevent SQL injection
+		String sql = name.replaceAll(MULTI_REPLACE_CHAR, "%");
+		sql = sql.replaceAll(SINGLE_REPLACE_CHAR, "_");
+		sql = sql.replaceAll("'", "''"); // prevent SQL injection
 		return sql;
 	}
 

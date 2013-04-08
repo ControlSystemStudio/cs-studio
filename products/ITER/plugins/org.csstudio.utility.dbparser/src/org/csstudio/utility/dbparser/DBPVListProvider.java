@@ -19,6 +19,9 @@ public class DBPVListProvider implements IPVListProvider {
 	public PVListResult listPVs(final String pattern, final int limit) {
 		PVListResult result = new PVListResult();
 		Pattern p = PVNameHelper.convertToPattern(pattern);
+		if (p == null)
+			return result;
+		
 		result.setCount(DBContextValueHolder.get().countPV(p));
 		for (String pv : DBContextValueHolder.get().findPV(p, limit))
 			result.add(pv);

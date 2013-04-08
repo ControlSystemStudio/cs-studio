@@ -16,33 +16,40 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 public class PVContentProposalProvider implements IPVContentProposalProvider {
 
-	public PVContentProposalList getProposals(String contents, int position, int max) {
-		ChannelNameService cns = ChannelNameService.getInstance();
-		PVListResult result = cns.get(contents, max);
-		List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-		for (final String proposal : result.getPvs()) {
-			contentProposals.add(new IContentProposal() {
-				public String getContent() {
-					return proposal;
-				}
-
-				public String getDescription() {
-					return null;
-				}
-
-				public String getLabel() {
-					return null;
-				}
-
-				public int getCursorPosition() {
-					return proposal.length();
-				}
-			});
-		}
+	public PVContentProposalList getProposals(String contents, int position,
+			int max) {
 		PVContentProposalList cpl = new PVContentProposalList();
-		cpl.setProposals((IContentProposal[]) contentProposals
-				.toArray(new IContentProposal[contentProposals.size()]));
-		cpl.setCount(result.getCount());
+
+		ChannelNameService cns = ChannelNameService.getInstance();
+		List<PVListResult> results = cns.get(contents, max);
+		for (final PVListResult result : results) {
+
+			List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
+			for (final String proposal : result.getPvs()) {
+
+				contentProposals.add(new IContentProposal() {
+					public String getContent() {
+						return proposal;
+					}
+
+					public String getDescription() {
+						return null;
+					}
+
+					public String getLabel() {
+						return null;
+					}
+
+					public int getCursorPosition() {
+						return proposal.length();
+					}
+				});
+			}
+			cpl.addProposals(result.getProvider(),
+					(IContentProposal[]) contentProposals
+							.toArray(new IContentProposal[contentProposals.size()]), 
+							result.getCount());
+		}
 		return cpl;
 	}
 

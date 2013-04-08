@@ -49,34 +49,34 @@ public class ChannelNameService {
 		return instance;
 	}
 
-	public PVListResult get(final String name, final int limit) {
+	public List<PVListResult> get(final String name, final int limit) {
 		Activator.getLogger().log(Level.FINE,
 				">> ChannelNameService get: " + name + " <<");
-		PVListResult pvList = new PVListResult();
+		List<PVListResult> pvList = new ArrayList<PVListResult>();
 		if (name == null || name.isEmpty())
 			return pvList; // Empty list
 
 		// Execute them in parallel
-		final ExecutorService executors = Executors.newFixedThreadPool(providers.size());
+		final ExecutorService executors = Executors
+				.newFixedThreadPool(providers.size());
 		final List<Future<PVListResult>> results = new ArrayList<Future<PVListResult>>();
-		for (Entry<String, IPVListProvider> entry : providers.entrySet()) 
-		{
-			// TODO: if statement to be removed when UI updated to display list by providers
-			if (!entry.getKey().equals("History") || providers.size() == 1) {
-				final IPVListProvider current_provider = entry.getValue();
-				final Callable<PVListResult> callable = new Callable<PVListResult>() {
-					@Override
-					public PVListResult call() throws Exception {
-						return current_provider.listPVs(name + "*", limit);
-					}
-				};
-				results.add(executors.submit(callable));
-			}
+		for (final Entry<String, IPVListProvider> entry : providers.entrySet()) {
+			final IPVListProvider current_provider = entry.getValue();
+			final Callable<PVListResult> callable = new Callable<PVListResult>() {
+				@Override
+				public PVListResult call() throws Exception {
+					PVListResult result = current_provider.listPVs(name + "*", limit);
+					result.setProvider(entry.getKey());
+					return result;
+				}
+			};
+			results.add(executors.submit(callable));
 		}
 		for (Future<PVListResult> result : results) {
 			try {
 				final PVListResult info = result.get();
-				pvList.merge(info, limit);
+				if (info != null)
+					pvList.add(info);
 			} catch (Exception ex) {
 				if (!(ex instanceof InterruptedException)) {
 					Activator.getLogger().log(Level.WARNING,
