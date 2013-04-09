@@ -8,6 +8,6 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public enum InterpolationScheme {
-    NONE, NEAREST_NEIGHBOUR, PREVIOUS_VALUE, LINEAR, CUBIC;
+public enum ReductionScheme {
+    NONE, FIRST_MAX_MIN_LAST;
 }
