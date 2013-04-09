@@ -14,8 +14,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.text.DefaultEditorKit.PasteAction;
-
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -134,7 +132,6 @@ public class PVManagerProbe extends ViewPart {
 		{
 			if (this_instance >= next_instance)
 				next_instance = this_instance + 1;
-			System.out.println("*** Probe instance " + this_instance + ", part " + getPartName() + ", ID " + site.getId() + ":" + site.getSecondaryId());
 		}
 		
 		// Save the memento
