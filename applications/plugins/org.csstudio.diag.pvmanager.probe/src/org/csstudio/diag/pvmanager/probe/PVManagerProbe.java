@@ -67,7 +67,10 @@ public class PVManagerProbe extends ViewPart {
 
 	// The ID of the view as specified by the extension point
 	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
-	private static int instance = 0;
+	
+	// Next secondary view ID, i.e. next instance of probe should use this number.
+	// SYNC on PVManagerProbe.class for access
+	private static int next_instance = 1;
 	
 	private PVFormulaInputBar pvFomulaInputBar;
 	private ErrorBar errorBar;
@@ -112,6 +115,28 @@ public class PVManagerProbe extends ViewPart {
 	public void init(final IViewSite site, final IMemento memento)
 			throws PartInitException {
 		super.init(site, memento);
+		
+		// For new instances opened while CSS is running,
+		// createNewInstance() tracks the secondary view ID.
+		// But if this view was 'restored' from a saved workspace,
+		// we need to adjust the instance counter to not re-use
+		// IDs of restored views.
+		int this_instance = 1;
+		try
+		{
+			this_instance = Integer.parseInt(site.getSecondaryId());
+		}
+		catch (NumberFormatException ex)
+		{
+			// Ignore, just assume 1
+		}
+		synchronized (PVManagerProbe.class)
+		{
+			if (this_instance >= next_instance)
+				next_instance = this_instance + 1;
+			System.out.println("*** Probe instance " + this_instance + ", part " + getPartName() + ", ID " + site.getId() + ":" + site.getSecondaryId());
+		}
+		
 		// Save the memento
 		this.memento = memento;
 	}
@@ -354,7 +379,6 @@ public class PVManagerProbe extends ViewPart {
 			setPartName(pvFormula);
 			detailsPanel.changeValue(expression, pvFormula);
 		}
-
 	}
 
 	/**
@@ -364,8 +388,10 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	public static String createNewInstance() {
-		++instance;
-		return Integer.toString(instance);
+		synchronized (PVManagerProbe.class)
+		{
+			return Integer.toString(next_instance++);
+		}
 	}
 
 	/**
