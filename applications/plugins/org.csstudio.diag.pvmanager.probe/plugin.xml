@@ -48,7 +48,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
                id="org.csstudio.diag.pvmanager.probe.toolbar">
             <command
