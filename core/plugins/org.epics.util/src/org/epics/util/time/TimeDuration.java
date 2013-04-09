@@ -253,6 +253,9 @@ public class TimeDuration implements Comparable<TimeDuration> {
     /**
      * Returns the duration in nanoseconds. If the duration exceeds the
      * range of a long, an exception is thrown.
+     * <p>
+     * The maximum duration is years is 2^63 / 1,000,000,000 / 60 / 60 / 24 / 365
+     * = about 292 years. Which is safe for many many cases.
      * 
      * @return the duration in nanoseconds
      */
