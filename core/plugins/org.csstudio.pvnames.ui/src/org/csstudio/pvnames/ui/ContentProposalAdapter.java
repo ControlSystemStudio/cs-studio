@@ -231,6 +231,8 @@ public class ContentProposalAdapter {
 	private SearchProposalTask currentTask;
 	private int maxDisplay = 10;
 	
+	private PVContentHistory history;
+	
 
 	/**
 	 * Construct a content proposal adapter that can assist the user with
@@ -284,7 +286,7 @@ public class ContentProposalAdapter {
 		// TODO: find a way to activate at plugin startup...
 		if (Activator.getDefault() == null)
 			Activator.activatePlugin();
-		new PVContentHistory(control, controlContentAdapter);
+		history = new PVContentHistory(control, controlContentAdapter);
 	}
 	
 	/*
@@ -483,13 +485,14 @@ public class ContentProposalAdapter {
 		}
 	}
 	
-	private void initPopup(IContentProposal[] proposals, int count, boolean autoActivated) {
-		if (proposals.length > 0) {
+	private void initPopup(PVContentProposalList proposalList,
+			boolean autoActivated) {
+		if (proposalList.length() > 0) {
 			if (DEBUG) {
 				System.out.println("POPUP OPENED BY PRECEDING EVENT"); //$NON-NLS-1$
 			}
 			recordCursorPosition();
-			popup = new ContentProposalPopup(this, null, proposals, count,
+			popup = new ContentProposalPopup(this, null, proposalList,
 					maxDisplay);
 			popup.open();
 			popup.getShell().addDisposeListener(new DisposeListener() {
@@ -522,8 +525,7 @@ public class ContentProposalAdapter {
 				getProposals(new IContentProposalSearchHandler() {
 					@Override
 					public void handleResult(PVContentProposalList proposalList) {
-						initPopup(proposalList.getProposals(),
-								proposalList.getCount(), autoActivated);
+						initPopup(proposalList, autoActivated);
 					}
 				});
 			}
@@ -952,6 +954,9 @@ public class ContentProposalAdapter {
 			// a custom way.
 			break;
 		}
+		
+		// Add entry to history
+		history.addEntry(proposal.getContent());
 
 		// In all cases, notify listeners of an accepted proposal.
 		notifyProposalAccepted(proposal);

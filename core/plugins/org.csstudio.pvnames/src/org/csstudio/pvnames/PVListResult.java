@@ -7,22 +7,23 @@
  ******************************************************************************/
 package org.csstudio.pvnames;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class PVListResult {
 
 	private Set<String> pvs;
 	private int count;
+	private String provider;
 
 	public PVListResult() {
-		this.pvs = new TreeSet<String>();
+		this.pvs = new LinkedHashSet<String>();
 		this.count = 0;
 	}
 
 	public void merge(PVListResult other, int limit) {
 		this.pvs.addAll(other.getPvs());
-		Set<String> tmpSet = new TreeSet<String>();
+		Set<String> tmpSet = new LinkedHashSet<String>();
 		for (String pv : pvs)
 			if (tmpSet.size() <= limit)
 				tmpSet.add(pv);
@@ -46,4 +47,12 @@ public class PVListResult {
 		this.count = count;
 	}
 
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+	
 }

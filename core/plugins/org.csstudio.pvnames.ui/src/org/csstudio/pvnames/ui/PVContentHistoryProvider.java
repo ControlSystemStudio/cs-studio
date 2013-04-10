@@ -15,25 +15,32 @@ import org.csstudio.pvnames.PVNameHelper;
 
 public class PVContentHistoryProvider implements IPVListProvider {
 
+	public static final String NAME = "History";
+
 	@Override
 	public PVListResult listPVs(final String name, final int limit) {
 		PVListResult pvList = new PVListResult();
 		Pattern p = PVNameHelper.convertToPattern(name);
+		if (p == null)
+			return pvList;
 
 		int added = 0;
-		pvList.setCount(Activator.getDefault().getHistory().size());
+		int count = 0;
 		for (String entry : Activator.getDefault().getHistory()) {
 			if (p.matcher(entry).matches()) {
-				pvList.add(entry);
-				added++;
+				if (added < limit) {
+					pvList.add(entry);
+					added++;
+				}
+				count++;
 			}
-			if (added == limit)
-				return pvList;
 		}
+		pvList.setCount(count);
 		return pvList;
 	}
 
 	@Override
-	public void cancel() { }
+	public void cancel() {
+	}
 
 }

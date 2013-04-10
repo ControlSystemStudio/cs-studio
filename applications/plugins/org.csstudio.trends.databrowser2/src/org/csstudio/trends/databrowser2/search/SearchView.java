@@ -10,10 +10,9 @@ package org.csstudio.trends.databrowser2.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.pvnames.ui.AutocompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -39,10 +38,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -59,14 +60,14 @@ public class SearchView extends ViewPart
 
     /** Memento tags */
     private static final String TAG_REGEX = "regex", //$NON-NLS-1$
-                                TAG_REPLACE = "replace", //$NON-NLS-1$
-                                TAG_CHANNELS = "channels"; //$NON-NLS-1$
+                                TAG_REPLACE = "replace"; //$NON-NLS-1$
+                                // TAG_CHANNELS = "channels"; //$NON-NLS-1$
 
     /** Archive URL and list of archives */
     private ArchiveListGUI archive_gui;
 
     // GUI elements
-    private Combo pattern;
+    private Text pattern;
     private Button search, result_replace, regex;
     private TableViewer channel_table;
 
@@ -161,21 +162,27 @@ public class SearchView extends ViewPart
         // ... except:
         // a) only takes effect on OS X
         // b) doesn't support drop-down for recent searches
-        pattern = new Combo(parent, SWT.DROP_DOWN);
+        pattern = new Text(parent, SWT.BORDER);
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
+		pattern.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				searchForChannels();
+			}
+		});
+        new AutocompleteWidget(pattern);
 
-        final ComboHistoryHelper pattern_history =
-            new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
-                    TAG_CHANNELS, pattern)
-        {
-            @Override
-            public void newSelection(final String entered_pattern)
-            {
-                searchForChannels();
-            }
-        };
+//        final ComboHistoryHelper pattern_history =
+//            new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+//                    TAG_CHANNELS, pattern)
+//        {
+//            @Override
+//            public void newSelection(final String entered_pattern)
+//            {
+//                searchForChannels();
+//            }
+//        };
 
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
@@ -253,7 +260,7 @@ public class SearchView extends ViewPart
         channel_table.setInput(new ChannelInfo[0]);
 
         // Load previously entered patterns
-        pattern_history.loadSettings();
+//        pattern_history.loadSettings();
         // Restore settings from memento
         if (memento != null)
         {
