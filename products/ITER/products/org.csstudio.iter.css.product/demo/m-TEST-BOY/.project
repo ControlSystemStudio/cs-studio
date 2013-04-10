@@ -12,7 +12,7 @@
 		<link>
 			<name>src/main/boy/SymbolLibrary</name>
 			<type>2</type>
-			<location>/opt/codac-4.0/opi/boy/SymbolLibrary</location>
+			<location>/opt/codac/opi/boy/SymbolLibrary</location>
 		</link>
 	</linkedResources>
 </projectDescription>
