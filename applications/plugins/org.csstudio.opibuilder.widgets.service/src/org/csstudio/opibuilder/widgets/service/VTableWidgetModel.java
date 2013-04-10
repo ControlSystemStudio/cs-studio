@@ -1,8 +1,6 @@
 package org.csstudio.opibuilder.widgets.service;
 
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
