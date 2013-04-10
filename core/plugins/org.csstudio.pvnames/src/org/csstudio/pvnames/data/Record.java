@@ -10,13 +10,13 @@ package org.csstudio.pvnames.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 
 public class Record {
 
 	private String type;
 	private String name;
-	private IFile file;
+	private IPath file;
 	private List<Field> fields;
 
 	public Record() {
@@ -62,11 +62,11 @@ public class Record {
 		this.fields = fields;
 	}
 	
-	public IFile getFile() {
+	public IPath getFile() {
 		return file;
 	}
 
-	public void setFile(IFile file) {
+	public void setFile(IPath file) {
 		this.file = file;
 	}
 

@@ -24,6 +24,8 @@
       <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.pvnames"/>
+      <plugin id="org.csstudio.pvnames.ui"/>
       <plugin id="org.csstudio.rap.core"/>
       <plugin id="org.csstudio.rap.ui.util"/>
       <plugin id="org.csstudio.swt.widgets"/>
@@ -105,6 +107,8 @@
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.pvnames" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.pvnames.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.ui.util" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.swt.widgets" autoStart="true" startLevel="0" />
@@ -118,7 +122,6 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.test" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
@@ -159,6 +162,7 @@
       <plugin id="org.hamcrest" autoStart="true" startLevel="0" />
       <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
+      <plugin id="org.junit4" autoStart="true" startLevel="0" />
       <plugin id="org.mockito" autoStart="true" startLevel="0" />
    </configurations>
 
