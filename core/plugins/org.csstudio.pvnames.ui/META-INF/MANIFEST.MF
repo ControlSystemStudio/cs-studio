@@ -4,7 +4,8 @@ Bundle-Name: PV Autocomplete UI
 Bundle-SymbolicName: org.csstudio.pvnames.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.pvnames.ui.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime,
  org.csstudio.pvnames
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER

@@ -100,7 +100,7 @@ public class ITERDataProvider implements DataProvider {
 				sb.append("\t");
 				sb.append(rec.getName());
 				sb.append(": ");
-				sb.append(rec.getFile().getFullPath());
+				sb.append(rec.getFile());
 				sb.append("\n");
 			}
 			Logger.getLogger(getClass().getName()).log(Level.WARNING,
