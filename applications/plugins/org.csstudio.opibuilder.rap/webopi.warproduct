@@ -154,7 +154,6 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
