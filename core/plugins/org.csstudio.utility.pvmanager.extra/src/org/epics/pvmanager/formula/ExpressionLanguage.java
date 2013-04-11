@@ -10,19 +10,20 @@ package org.epics.pvmanager.formula;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.antlr.runtime.*;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.formula.FormulaLexer;
-import org.epics.pvmanager.formula.FormulaParser;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
 
 /**
@@ -214,6 +215,13 @@ public class ExpressionLanguage {
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
         if ("arrayOf".equals(function)) {
             return org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf(cast(VNumber.class, args));
+        }
+        if ("columnOf".equals(function)) {
+            if (args.getDesiredRateExpressions().size() != 2) {
+                throw new IllegalArgumentException("columnOf takes 2 arguments");
+            }
+            return columnOf(cast(VTable.class, args.getDesiredRateExpressions().get(0)),
+                    cast(VString.class, args.getDesiredRateExpressions().get(1)));
         }
         if (args.getDesiredRateExpressions().size() == 1 && oneArgNumericFunction.containsKey(function)) {
             return oneArgNumbericFunction(function, args);
@@ -411,5 +419,13 @@ public class ExpressionLanguage {
     
     static <T> WriteExpression<T> readOnlyWriteExpression(String errorMessage) {
         return new ReadOnlyWriteExpression<>(errorMessage, "");
+    }
+    
+    static DesiredRateExpression<VType>
+            columnOf(DesiredRateExpression<VTable> tableExpression, DesiredRateExpression<VString> columnExpression) {
+        ColumnOfVTableConverter converter =
+                new ColumnOfVTableConverter(tableExpression.getFunction(), columnExpression.getFunction());
+        return new DesiredRateExpressionImpl<VType>(new DesiredRateExpressionListImpl<Object>()
+                .and(tableExpression).and(columnExpression), converter, "columnOf");
     }
 }
