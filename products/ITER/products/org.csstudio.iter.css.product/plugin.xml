@@ -174,5 +174,32 @@
             name="4. Probe via Data Exchange Exercise">
       </cheatsheet>
     </extension>
+    
+    <!-- Disable Activities -->
+    <extension point="org.eclipse.ui.activities">
+    	<activity id="org.csstudio.iter.css.product.disablextensions" name="Hidden activities">
+			<enabledWhen>
+				<with variable="true">
+					<equals value="false"/>
+				</with>
+			</enabledWhen>
+    	</activity>
+    	<!-- Disable New->SNL Project entry -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*de.desy.language.snl.ui.wizards.NewSNLProjectWizard"
+    	/>
+    	<!-- Disable New->Example->Shapes Diagram  -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*org.eclipse.gef.examples.shapes.ShapesCreationWizard"
+    	/>
+    	<!-- Disable New->Example->Editing and Validating XML files -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*org.eclipse.wst.xml.ui.XMLExampleProjectCreationWizard"
+    	/>
+    	
+    </extension>
    
 </plugin>
