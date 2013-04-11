@@ -67,6 +67,7 @@ org.csstudio.opibuilder.pvmanager.util
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.rcp
+org.csstudio.opibuilder.widgets.service
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.opi.intro
 org.csstudio.platform.libs.channelfinderAPI
@@ -86,6 +87,8 @@ org.csstudio.remote
 org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.servicelocator
+org.csstudio.service.channelfinder
+org.csstudio.service.math
 org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
