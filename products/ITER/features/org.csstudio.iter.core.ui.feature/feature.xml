@@ -57,6 +57,7 @@ of the distribution package.
       <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -89,6 +90,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.platform.utility.jms.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.security.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
