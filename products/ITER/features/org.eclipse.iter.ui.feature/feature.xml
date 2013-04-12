@@ -258,13 +258,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.ds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.frameworkadmin"
          download-size="0"
          install-size="0"
@@ -412,13 +405,6 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.equinox.simpleconfigurator.manipulator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
