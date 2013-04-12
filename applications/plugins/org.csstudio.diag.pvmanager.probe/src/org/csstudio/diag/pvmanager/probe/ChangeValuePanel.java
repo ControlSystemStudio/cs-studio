@@ -108,6 +108,10 @@ class ChangeValuePanel extends Composite {
 		newValueField.setEditable(false);
 	}
 	
+	public void setPvWriter(PVWriter<Object> pvWriter) {
+		this.pvWriter = pvWriter;
+	}
+	
 	/**
 	 * Changes the values, making sure not to change it while editing.
 	 * 
