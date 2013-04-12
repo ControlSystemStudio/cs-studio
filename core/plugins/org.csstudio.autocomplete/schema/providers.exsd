@@ -4,7 +4,6 @@
 <annotation>
       <appInfo>
          <meta.schema plugin="org.csstudio.autocomplete" id="provider" name="Auto-Complete Provider"/>
-      </appInfo>
       <documentation>
          Extension point that allows adding provider for auto-complete.
       </documentation>

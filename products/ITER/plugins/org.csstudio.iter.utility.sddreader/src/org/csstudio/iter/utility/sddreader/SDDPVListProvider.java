@@ -16,6 +16,9 @@ import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.pvnames.IAutoCompleteProvider;
+import org.csstudio.pvnames.AutoCompleteResult;
+import org.csstudio.pvnames.AutoCompleteHelper;
 
 public class SDDPVListProvider implements IAutoCompleteProvider {
 
