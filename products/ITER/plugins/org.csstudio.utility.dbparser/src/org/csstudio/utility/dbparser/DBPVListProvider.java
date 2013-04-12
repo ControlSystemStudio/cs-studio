@@ -9,19 +9,22 @@ package org.csstudio.utility.dbparser;
 
 import java.util.regex.Pattern;
 
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
-import org.csstudio.pvnames.PVNameHelper;
+import org.csstudio.pvnames.IAutoCompleteProvider;
+import org.csstudio.pvnames.AutoCompleteResult;
+import org.csstudio.pvnames.AutoCompleteHelper;
 
-public class DBPVListProvider implements IPVListProvider {
+public class DBPVListProvider implements IAutoCompleteProvider {
+
+	public static final String NAME = "DB Files";
 
 	@Override
-	public PVListResult listPVs(final String pattern, final int limit) {
-		PVListResult result = new PVListResult();
-		Pattern p = PVNameHelper.convertToPattern(pattern);
+	public AutoCompleteResult listResult(final String type, final String name,
+			final int limit) {
+		AutoCompleteResult result = new AutoCompleteResult();
+		Pattern p = AutoCompleteHelper.convertToPattern(name);
 		if (p == null)
 			return result;
-		
+
 		result.setCount(DBContextValueHolder.get().countPV(p));
 		for (String pv : DBContextValueHolder.get().findPV(p, limit))
 			result.add(pv);
@@ -29,6 +32,7 @@ public class DBPVListProvider implements IPVListProvider {
 	}
 
 	@Override
-	public void cancel() { }
+	public void cancel() {
+	}
 
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.pvnames.ui.AutocompleteWidget;
+import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -59,9 +59,9 @@ public class SearchView extends ViewPart
     final public static String ID = "org.csstudio.trends.databrowser.archiveview.ArchiveView"; //$NON-NLS-1$
 
     /** Memento tags */
-    private static final String TAG_REGEX = "regex", //$NON-NLS-1$
-                                TAG_REPLACE = "replace"; //$NON-NLS-1$
-                                // TAG_CHANNELS = "channels"; //$NON-NLS-1$
+	private static final String TAG_REGEX = "regex", //$NON-NLS-1$
+			TAG_REPLACE = "replace"; //$NON-NLS-1$
+	// TAG_CHANNELS = "channels"; //$NON-NLS-1$
 
     /** Archive URL and list of archives */
     private ArchiveListGUI archive_gui;
@@ -171,18 +171,18 @@ public class SearchView extends ViewPart
 				searchForChannels();
 			}
 		});
-        new AutocompleteWidget(pattern);
+		new AutoCompleteWidget(pattern, "PV");
 
-//        final ComboHistoryHelper pattern_history =
-//            new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
-//                    TAG_CHANNELS, pattern)
-//        {
-//            @Override
-//            public void newSelection(final String entered_pattern)
-//            {
-//                searchForChannels();
-//            }
-//        };
+		// final ComboHistoryHelper pattern_history =
+		// new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+		// TAG_CHANNELS, pattern)
+		// {
+		// @Override
+		// public void newSelection(final String entered_pattern)
+		// {
+		// searchForChannels();
+		// }
+		// };
 
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
@@ -259,9 +259,9 @@ public class SearchView extends ViewPart
         // searchForChannels() relies on non-null content
         channel_table.setInput(new ChannelInfo[0]);
 
-        // Load previously entered patterns
-//        pattern_history.loadSettings();
-        // Restore settings from memento
+		// Load previously entered patterns
+		// pattern_history.loadSettings();
+		// Restore settings from memento
         if (memento != null)
         {
             if (memento.getBoolean(TAG_REGEX) != null)

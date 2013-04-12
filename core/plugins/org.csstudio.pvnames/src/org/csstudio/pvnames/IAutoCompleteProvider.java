@@ -5,14 +5,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.pvnames.ui;
+package org.csstudio.pvnames;
 
-public interface IPVContentProposalProvider {
+/**
+ * Interface for providers extension point
+ * 
+ * @author Fred Arnaud (Sopra Group)
+ * 
+ */
+public interface IAutoCompleteProvider {
 
-	public PVContentProposalList getProposals(String contents, int position, int max);
+	/** ID of the extension point, defined in plugin.xml */
+	final public static String EXTENSION_POINT = "org.csstudio.pvnames";
 
-	public boolean hasProviders();
+	public AutoCompleteResult listResult(final String type, final String name, final int limit);
 
 	public void cancel();
-
 }

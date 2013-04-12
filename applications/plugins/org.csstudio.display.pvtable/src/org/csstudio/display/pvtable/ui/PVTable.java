@@ -18,6 +18,7 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
+import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;
@@ -146,10 +147,12 @@ public class PVTable implements PVTableModelListener
             }
             
             @Override
-            protected CellEditor getCellEditor(final Object element)
+			protected CellEditor getCellEditor(final Object element) 
             {
-                return new TextCellEditor(table);
-            }
+				TextCellEditor tce = new TextCellEditor(table);
+				new AutoCompleteWidget(tce, "PV");
+				return tce;
+			}
 
             @Override
             protected void setValue(final Object element, final Object value)

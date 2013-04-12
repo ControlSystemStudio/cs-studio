@@ -7,9 +7,11 @@
 ******************************************************************************/
 package org.csstudio.pvnames.ui;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
@@ -18,14 +20,26 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Enable auto complete PV content on the specified {@link Control}
  */
-public class AutocompleteWidget {
+public class AutoCompleteWidget {
 
-	private PVContentProposalProvider provider = null;
+	private AutoCompleteProposalProvider provider = null;
 	private ContentProposalAdapter adapter = null;
-	private Control control;
+	private final Control control;
+	private final String type;
 
-	public AutocompleteWidget(Control control) {
+	public AutoCompleteWidget(Control control, String type) {
+		Assert.isNotNull(type);
+		
 		this.control = control;
+		this.type = type;
+		enableContentProposal();
+	}
+
+	public AutoCompleteWidget(CellEditor cellEditor, String type) {
+		Assert.isNotNull(type);
+		
+		this.control = cellEditor.getControl();
+		this.type = type;
 		enableContentProposal();
 	}
 
@@ -66,22 +80,20 @@ public class AutocompleteWidget {
 		if (control instanceof Combo) {
 
 			Combo combo = (Combo) control;
-			provider = new PVContentProposalProvider();
+			provider = new AutoCompleteProposalProvider(type);
 			adapter = new ContentProposalAdapter(combo,
 					new ComboContentAdapter(), provider,
 					getActivationKeystroke(), getAutoactivationChars());
 			adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-			adapter.setMaxDisplay(Preferences.getDisplaySize());
 
 		} else if (control instanceof Text) {
 
 			Text text = (Text) control;
-			provider = new PVContentProposalProvider();
+			provider = new AutoCompleteProposalProvider(type);
 			adapter = new ContentProposalAdapter(text,
 					new TextContentAdapter(), provider,
 					getActivationKeystroke(), getAutoactivationChars());
 			adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-			adapter.setMaxDisplay(Preferences.getDisplaySize());
 
 		}
 	}

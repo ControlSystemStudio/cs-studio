@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 
-public class PVContentProposalList {
+public class ContentProposalList {
 
 	// provider => proposals
 	private Map<String, IContentProposal[]> proposalMap;
@@ -22,7 +22,7 @@ public class PVContentProposalList {
 	private Map<String, Integer> countMap;
 	private int lenght = 0;
 
-	public PVContentProposalList() {
+	public ContentProposalList() {
 		proposalMap = new HashMap<String, IContentProposal[]>();
 		countMap = new HashMap<String, Integer>();
 	}
@@ -46,7 +46,7 @@ public class PVContentProposalList {
 		Set<String> set = new HashSet<String>();
 
 		// Always return History first if exists
-		String history_provider = PVContentHistoryProvider.NAME;
+		String history_provider = AutoCompleteHistoryProvider.NAME;
 		if (proposalMap.containsKey(history_provider)) {
 			set.add(history_provider);
 		}

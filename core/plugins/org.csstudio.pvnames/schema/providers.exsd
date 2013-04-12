@@ -3,10 +3,10 @@
 <schema targetNamespace="org.csstudio.pvnames" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.csstudio.pvnames" id="provider" name="PV List Provider"/>
+         <meta.schema plugin="org.csstudio.pvnames" id="provider" name="Auto-Complete Provider"/>
       </appInfo>
       <documentation>
-         Extension point that allows adding provider for PV names lists.
+         Extension point that allows adding provider for auto-complete.
       </documentation>
    </annotation>
 

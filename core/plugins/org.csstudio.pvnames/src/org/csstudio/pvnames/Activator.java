@@ -9,16 +9,34 @@ package org.csstudio.pvnames;
 
 import java.util.logging.Logger;
 
-public class Activator {
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+public class Activator implements BundleActivator {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.pvautocomplete"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.csstudio.pvnames"; //$NON-NLS-1$
 
 	public static final Logger logger = Logger.getLogger(PLUGIN_ID);
+
+	private static BundleContext bundleContext;
 
 	/** @return Logger for plugin ID */
 	public static Logger getLogger() {
 		return logger;
+	}
+
+	public static BundleContext getBundleContext() {
+		return bundleContext;
+	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		bundleContext = context;
+	}
+
+	@Override
+	public void stop(BundleContext arg0) throws Exception {
 	}
 
 }

@@ -2,8 +2,10 @@
 <?eclipse version="3.2"?>
 <plugin>
 
+   <!--
    <extension point="org.csstudio.pvnames">
-      <provider name="History" class="org.csstudio.pvnames.ui.PVContentHistoryProvider" />
+      <provider name="History" class="org.csstudio.pvnames.ui.AutoCompleteHistoryProvider" />
    </extension>
+   -->
    
 </plugin>

@@ -18,7 +18,7 @@ import org.csstudio.diag.pvfields.PVHelper;
 import org.csstudio.diag.pvfields.model.PVModel;
 import org.csstudio.diag.pvfields.model.PVModelExport;
 import org.csstudio.diag.pvfields.model.PVModelListener;
-import org.csstudio.pvnames.ui.AutocompleteWidget;
+import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;
@@ -66,7 +66,7 @@ public class GUI implements PVModelListener
 	final private Composite parent;
 	private PVModel model = null;
 	private Text combo;
-//	private ComboHistoryHelper combo_history;
+	// private ComboHistoryHelper combo_history;
 	private TableViewer property_view;
 	private TableViewer field_view;
 	private Button export;
@@ -80,18 +80,18 @@ public class GUI implements PVModelListener
 	{
 		this.parent = parent;
 		createComponents();
-		
-//		combo_history = new ComboHistoryHelper(settings, "pv_name", combo)
-//		{
-//			@Override
-//			public void newSelection(final String name)
-//			{
-//				setPVName(name);
-//			}
-//		};
-//		combo_history.loadSettings();
-		
-    	// Enable 'Drop' on to combo box (entry box) and tables
+
+		// combo_history = new ComboHistoryHelper(settings, "pv_name", combo)
+		// {
+		// @Override
+		// public void newSelection(final String name)
+		// {
+		// setPVName(name);
+		// }
+		// };
+		// combo_history.loadSettings();
+
+		// Enable 'Drop' on to combo box (entry box) and tables
 		hookDrop(combo);
 		hookDrop(property_view.getControl());
 		hookDrop(field_view.getControl());
@@ -127,7 +127,7 @@ public class GUI implements PVModelListener
 				setPVName(combo.getText());
 			}
 		});
-		new AutocompleteWidget(combo);
+		new AutoCompleteWidget(combo, "PV");
 		
 		export = new Button(parent, SWT.PUSH);
 		export.setText("Export");
@@ -318,7 +318,7 @@ public class GUI implements PVModelListener
 		if (! combo.getText().equals(name))
 		{
 			combo.setText(name);
-//			combo_history.addEntry(name);
+			// combo_history.addEntry(name);
 		}
 		// Stop previous model
 		if (model != null)

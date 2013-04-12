@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.pvnames.ui;
+package org.csstudio.pvnames;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -20,20 +20,20 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences {
 
-	final public static String DISPLAY_SIZE = "display_size";
+	final public static String DEFAULT_MAX_RESULTS = "default_max_results";
+	final public static String PROVIDERS = "providers";
 
 	/**
 	 * @param setting Preference identifier
 	 * @return String from preference system, or <code>null</code>
 	 */
-	@SuppressWarnings("unused")
 	private static String getString(final String setting) {
 		return getString(setting, null);
 	}
 
 	/**
 	 * @param setting Preference identifier
-	 * @param default_value  Default value when preferences unavailable
+	 * @param default_value Default value when preferences unavailable
 	 * @return String from preference system, or <code>null</code>
 	 */
 	private static String getString(final String setting,
@@ -45,12 +45,21 @@ public class Preferences {
 				null);
 	}
 
-	/** @return display list max size */
-	public static int getDisplaySize() {
+	/** @return default list max size */
+	public static int getDefaultMaxResults() {
 		final IPreferencesService service = Platform.getPreferencesService();
 		if (service == null)
 			return 100; // default
-		return service.getInt(Activator.PLUGIN_ID, DISPLAY_SIZE, 100, null);
+		return service.getInt(Activator.PLUGIN_ID, DEFAULT_MAX_RESULTS, 10,
+				null);
+	}
+	
+	/** @return providers settings */
+	public static String getProviders() {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service == null)
+			return null; // default
+		return getString(PROVIDERS);
 	}
 
 }

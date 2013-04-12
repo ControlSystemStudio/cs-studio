@@ -16,7 +16,7 @@ import java.util.regex.PatternSyntaxException;
  * @author Fred Arnaud (Sopra Group)
  * 
  */
-public class PVNameHelper {
+public class AutoCompleteHelper {
 
 	private static String SINGLE_REPLACE_CHAR = "\\?";
 	private static String MULTI_REPLACE_CHAR = "\\*";

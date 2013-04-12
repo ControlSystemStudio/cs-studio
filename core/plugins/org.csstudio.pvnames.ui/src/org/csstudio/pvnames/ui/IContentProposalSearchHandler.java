@@ -9,5 +9,5 @@ package org.csstudio.pvnames.ui;
 
 public interface IContentProposalSearchHandler {
 
-	public void handleResult(PVContentProposalList proposalList);
+	public void handleResult(ContentProposalList proposalList);
 }

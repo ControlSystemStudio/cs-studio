@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.apputil,
- org.epics.vtype;bundle-version="2.0.0"
+ org.epics.vtype;bundle-version="2.0.0",
+ org.csstudio.pvnames.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Basic PV snapshot/compare table

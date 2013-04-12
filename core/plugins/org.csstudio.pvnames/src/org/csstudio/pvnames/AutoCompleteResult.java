@@ -10,33 +10,33 @@ package org.csstudio.pvnames;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class PVListResult {
+public class AutoCompleteResult {
 
-	private Set<String> pvs;
+	private Set<String> results;
 	private int count;
 	private String provider;
 
-	public PVListResult() {
-		this.pvs = new LinkedHashSet<String>();
+	public AutoCompleteResult() {
+		this.results = new LinkedHashSet<String>();
 		this.count = 0;
 	}
 
-	public void merge(PVListResult other, int limit) {
-		this.pvs.addAll(other.getPvs());
+	public void merge(AutoCompleteResult other, int limit) {
+		this.results.addAll(other.getResults());
 		Set<String> tmpSet = new LinkedHashSet<String>();
-		for (String pv : pvs)
+		for (String pv : results)
 			if (tmpSet.size() <= limit)
 				tmpSet.add(pv);
-		this.pvs = tmpSet;
+		this.results = tmpSet;
 		this.count = this.count + other.getCount();
 	}
 
 	public void add(String name) {
-		pvs.add(name);
+		results.add(name);
 	}
 
-	public Set<String> getPvs() {
-		return pvs;
+	public Set<String> getResults() {
+		return results;
 	}
 
 	public int getCount() {
@@ -54,5 +54,5 @@ public class PVListResult {
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
-	
+
 }

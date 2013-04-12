@@ -3,6 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: PV Autocomplete
 Bundle-SymbolicName: org.csstudio.pvnames;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.pvnames.Activator
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER

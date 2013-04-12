@@ -562,7 +562,7 @@ public class ContentProposalPopup extends PopupDialog {
 	/*
 	 * The proposals to be shown (cached to avoid repeated requests).
 	 */
-	private PVContentProposalList proposalList;
+	private ContentProposalList proposalList;
 
 	/*
 	 * Secondary popup used to show detailed information about the selected
@@ -603,7 +603,7 @@ public class ContentProposalPopup extends PopupDialog {
 	 *            there is no info area.
 	 */
 	ContentProposalPopup(ContentProposalAdapter adapter, String infoText,
-			PVContentProposalList proposalList, int maxDisplay) {
+			ContentProposalList proposalList, int maxDisplay) {
 		// IMPORTANT: Use of SWT.ON_TOP is critical here for ensuring
 		// that the target control retains focus on Mac and Linux. Without
 		// it, the focus will disappear, keystrokes will not go to the
@@ -794,7 +794,7 @@ public class ContentProposalPopup extends PopupDialog {
 	 * Caches the specified proposals and repopulates the table if it has been
 	 * created.
 	 */
-	private void setProposals(PVContentProposalList newProposalList) {
+	private void setProposals(ContentProposalList newProposalList) {
 		if (newProposalList == null || newProposalList.length() == 0) {
 			newProposalList = getEmptyProposalArray();
 		}
@@ -905,8 +905,8 @@ public class ContentProposalPopup extends PopupDialog {
 	 * Return an empty array. Used so that something always shows in the
 	 * proposal popup, even if no proposal provider was specified.
 	 */
-	private PVContentProposalList getEmptyProposalArray() {
-		return new PVContentProposalList();
+	private ContentProposalList getEmptyProposalArray() {
+		return new ContentProposalList();
 	}
 
 	/*
@@ -1089,7 +1089,7 @@ public class ContentProposalPopup extends PopupDialog {
 	 * Request the proposals from the proposal provider, and recompute any
 	 * caches. Repopulate the popup if it is open.
 	 */
-	private void recomputeProposals(PVContentProposalList newProposalList) {
+	private void recomputeProposals(ContentProposalList newProposalList) {
 		if (newProposalList == null)
 			newProposalList = getEmptyProposalArray();
 		// If the non-filtered proposal list is empty, we should close the popup.
@@ -1118,7 +1118,7 @@ public class ContentProposalPopup extends PopupDialog {
 					adapter.getProposals(new IContentProposalSearchHandler() {
 						@Override
 						public void handleResult(
-								PVContentProposalList proposalList) {
+								ContentProposalList proposalList) {
 							recomputeProposals(proposalList);
 						}
 					});
@@ -1127,7 +1127,7 @@ public class ContentProposalPopup extends PopupDialog {
 		} else {
 			adapter.getProposals(new IContentProposalSearchHandler() {
 				@Override
-				public void handleResult(PVContentProposalList proposalList) {
+				public void handleResult(ContentProposalList proposalList) {
 					recomputeProposals(proposalList);
 				}
 			});

@@ -14,23 +14,25 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 
-public class PVContentHistory {
-	
+public class AutoCompleteHistory {
+
 	private static final int MAX_HISTORY_SIZE = 100;
-	
+
 	private final Control control;
+	private final String type;
 	private final IControlContentAdapter controlContentAdapter;
-	
-	
-	public PVContentHistory(Control control, IControlContentAdapter adapter) {
+
+	public AutoCompleteHistory(Control control, String type,
+			IControlContentAdapter adapter) {
 		this.control = control;
+		this.type = type;
 		this.controlContentAdapter = adapter;
 
 		control.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				String new_entry = PVContentHistory.this.controlContentAdapter
-						.getControlContents(PVContentHistory.this.control);
+				String new_entry = AutoCompleteHistory.this.controlContentAdapter
+						.getControlContents(AutoCompleteHistory.this.control);
 				addEntry(new_entry);
 			}
 
@@ -41,13 +43,15 @@ public class PVContentHistory {
 		});
 		// TODO : handle <enter> key !
 	}
-	
+
 	public synchronized void addEntry(final String newEntry) {
 		// Avoid empty entries
 		if (newEntry.trim().isEmpty())
 			return;
-		LinkedList<String> fifo = Activator.getDefault().getHistory();
-		
+		LinkedList<String> fifo = Activator.getDefault().getHistory(type);
+		if (fifo == null)
+			return;
+
 		// Remove if present, so that is re-added on top
 		int index = -1;
 		while ((index = fifo.indexOf(newEntry)) >= 0)
@@ -60,5 +64,5 @@ public class PVContentHistory {
 		// Add at the top
 		fifo.addFirst(newEntry);
 	}
-	
+
 }

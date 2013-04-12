@@ -10,22 +10,29 @@ package org.csstudio.pvnames.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.pvnames.ChannelNameService;
-import org.csstudio.pvnames.PVListResult;
+import org.csstudio.pvnames.AutoCompleteService;
+import org.csstudio.pvnames.AutoCompleteResult;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
-public class PVContentProposalProvider implements IPVContentProposalProvider {
+public class AutoCompleteProposalProvider implements
+		IAutoCompleteProposalProvider {
 
-	public PVContentProposalList getProposals(String contents, int position,
+	private final String type;
+
+	public AutoCompleteProposalProvider(String type) {
+		this.type = type;
+	}
+
+	public ContentProposalList getProposals(String contents, int position,
 			int max) {
-		PVContentProposalList cpl = new PVContentProposalList();
+		ContentProposalList cpl = new ContentProposalList();
 
-		ChannelNameService cns = ChannelNameService.getInstance();
-		List<PVListResult> results = cns.get(contents, max);
-		for (final PVListResult result : results) {
+		AutoCompleteService cns = AutoCompleteService.getInstance();
+		List<AutoCompleteResult> results = cns.get(type, contents);
+		for (final AutoCompleteResult result : results) {
 
 			List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-			for (final String proposal : result.getPvs()) {
+			for (final String proposal : result.getResults()) {
 
 				contentProposals.add(new IContentProposal() {
 					public String getContent() {
@@ -47,20 +54,24 @@ public class PVContentProposalProvider implements IPVContentProposalProvider {
 			}
 			cpl.addProposals(result.getProvider(),
 					(IContentProposal[]) contentProposals
-							.toArray(new IContentProposal[contentProposals.size()]), 
-							result.getCount());
+							.toArray(new IContentProposal[contentProposals
+									.size()]), result.getCount());
 		}
 		return cpl;
 	}
 
 	@Override
 	public boolean hasProviders() {
-		return ChannelNameService.getInstance().hasProviders();
+		return AutoCompleteService.getInstance().hasProviders(type);
 	}
 
 	@Override
 	public void cancel() {
-		ChannelNameService.getInstance().cancel();
+		AutoCompleteService.getInstance().cancel(type);
+	}
+
+	public String getType() {
+		return type;
 	}
 
 }

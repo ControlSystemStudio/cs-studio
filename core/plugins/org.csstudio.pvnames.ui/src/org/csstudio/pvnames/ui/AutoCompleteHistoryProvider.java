@@ -7,36 +7,41 @@
  ******************************************************************************/
 package org.csstudio.pvnames.ui;
 
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
-import org.csstudio.pvnames.PVNameHelper;
+import org.csstudio.pvnames.IAutoCompleteProvider;
+import org.csstudio.pvnames.AutoCompleteResult;
+import org.csstudio.pvnames.AutoCompleteHelper;
 
-public class PVContentHistoryProvider implements IPVListProvider {
+public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 
 	public static final String NAME = "History";
 
 	@Override
-	public PVListResult listPVs(final String name, final int limit) {
-		PVListResult pvList = new PVListResult();
-		Pattern p = PVNameHelper.convertToPattern(name);
+	public AutoCompleteResult listResult(final String type, final String name,
+			final int limit) {
+		AutoCompleteResult result = new AutoCompleteResult();
+		Pattern p = AutoCompleteHelper.convertToPattern(name);
 		if (p == null)
-			return pvList;
+			return result;
 
 		int added = 0;
 		int count = 0;
-		for (String entry : Activator.getDefault().getHistory()) {
+		LinkedList<String> fifo = Activator.getDefault().getHistory(type);
+		if (fifo == null)
+			return result; // Empty result
+		for (String entry : fifo) {
 			if (p.matcher(entry).matches()) {
 				if (added < limit) {
-					pvList.add(entry);
+					result.add(entry);
 					added++;
 				}
 				count++;
 			}
 		}
-		pvList.setCount(count);
-		return pvList;
+		result.setCount(count);
+		return result;
 	}
 
 	@Override

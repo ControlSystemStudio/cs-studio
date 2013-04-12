@@ -9,10 +9,13 @@ package org.csstudio.utility.dbparser;
 
 import java.util.logging.Logger;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator {
+public class Activator implements BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.dbparser"; //$NON-NLS-1$
@@ -23,4 +26,13 @@ public class Activator {
 	public static Logger getLogger() {
 		return logger;
 	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+	}
+
+	@Override
+	public void stop(BundleContext context) throws Exception {
+	}
+
 }
