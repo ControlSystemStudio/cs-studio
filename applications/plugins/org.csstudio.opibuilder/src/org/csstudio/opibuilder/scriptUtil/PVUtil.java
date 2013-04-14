@@ -12,6 +12,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
+import org.csstudio.opibuilder.widgetActions.WritePVAction;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.gef.EditPart;
@@ -245,7 +246,35 @@ public class PVUtil{
 		return pv.getValue().getStatus();
 	}
 
+    /**Write a PV in a background job. It will first creates and connects to the PV. After
+     * PV is connected, it will set the PV with the value. If it fails to write, an error 
+ 	 * dialog will pop up. 
+     * @param pvName name of the PV.
+     * @param value value to write.
+     * @param timeout maximum time to try connection.
+     * @param confirmMessage if this is not empty, a confirm dialog will popup before writing.
+     */
+    public final static void writePV(String pvName, Object value,
+    		int timeout, String confirmMessage){
+    	WritePVAction action = new WritePVAction();
+    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
+    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
+    	action.setPropertyValue(WritePVAction.PROP_TIMEOUT, timeout);
+    	action.setPropertyValue(WritePVAction.PROP_CONFIRM_MESSAGE, confirmMessage);
+    	action.run();
+    }
 
-
+    /**Write a PV in a background job. It will first creates and connects to the PV. After
+     * PV is connected, it will set the PV with the value. If it fails to write, an error 
+ 	 * dialog will pop up. The maximum time to try connection is 10 second.
+     * @param pvName name of the PV.
+     * @param value value to write.  
+     */
+    public final static void writePV(String pvName, Object value){
+    	WritePVAction action = new WritePVAction();
+    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
+    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
+    	action.run();
+    }
 
 }

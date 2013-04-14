@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
@@ -25,12 +26,10 @@ import org.csstudio.scan.server.SimulationContext;
  */
 public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public DelayCommandImpl(final DelayCommand command)
+    /** {@inheritDoc} */
+    public DelayCommandImpl(final DelayCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
 	/** {@inheritDoc} */

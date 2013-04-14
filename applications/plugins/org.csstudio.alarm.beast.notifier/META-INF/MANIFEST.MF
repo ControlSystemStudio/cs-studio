@@ -10,7 +10,6 @@ Require-Bundle: org.junit4,
  org.csstudio.alarm.beast;bundle-version="3.2.0",
  org.csstudio.apputil,
  org.csstudio.email;bundle-version="1.2.0",
- org.csstudio.auth,
  org.csstudio.java,
  org.csstudio.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

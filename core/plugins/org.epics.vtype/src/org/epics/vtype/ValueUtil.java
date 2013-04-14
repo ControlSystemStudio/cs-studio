@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.epics.util.array.ListNumber;
+import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
 
 /**
@@ -265,7 +266,7 @@ public class ValueUtil {
     }
     
     private static volatile TimestampFormat defaultTimestampFormat = new TimestampFormat();
-    private static volatile NumberFormat defaultNumberFormat = new DecimalFormat();
+    private static volatile NumberFormat defaultNumberFormat = NumberFormats.toStringFormat();
     private static volatile ValueFormat defaultValueFormat = new SimpleValueFormat(3);
     
     /**

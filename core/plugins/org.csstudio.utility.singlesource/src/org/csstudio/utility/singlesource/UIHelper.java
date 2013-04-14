@@ -8,11 +8,9 @@
 package org.csstudio.utility.singlesource;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Drawable;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -92,6 +90,21 @@ public class UIHelper
      */
 	public IPath openDialog(final Shell shell, final int style,
 			final IPath original, final String extension) {
+		return openDialog(shell, style, original, extension, null);
+	}
+
+	/**
+	 * Prompt for file name
+     * 
+     * @param shell Parent shell
+     * @param style Style of window
+     * @param original Original file name, may be <code>null</code>
+     * @param extension Extension to enforce, without ".". May be <code>null</code>
+	 * @param title dialog tile
+	 * @return
+	 */
+	public IPath openDialog(final Shell shell, final int style,
+			final IPath original, final String extension, final String title) {
 		return null;
 	}
 

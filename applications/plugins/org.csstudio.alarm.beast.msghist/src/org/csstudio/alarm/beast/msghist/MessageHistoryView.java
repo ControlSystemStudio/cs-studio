@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.msghist;
 
 import org.csstudio.alarm.beast.msghist.gui.GUI;
 import org.csstudio.alarm.beast.msghist.model.Model;
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,9 +36,9 @@ public class MessageHistoryView extends ViewPart
             final String url =
                 service.getString(Activator.ID, "rdb_url", null, null);
             final String user =
-                SecureStorage.retrieveSecureStorage(Activator.ID, "rdb_user");           
+                SecurePreferences.get(Activator.ID, "rdb_user", null);           
             final String password =
-                SecureStorage.retrieveSecureStorage(Activator.ID, "rdb_password");          
+            		SecurePreferences.get(Activator.ID, "rdb_password", null);          
             final String schema =
                 service.getString(Activator.ID, "rdb_schema", null, null);
             

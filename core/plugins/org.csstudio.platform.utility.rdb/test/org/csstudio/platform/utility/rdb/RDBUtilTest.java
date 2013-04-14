@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.csstudio.platform.utility.rdb;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+
 import java.sql.Connection;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit Tests for RDBUtil
@@ -18,78 +22,51 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBUtilTest
 {
-    /** Must adjust these for your site! */
-//    private static final String URL = "jdbc:mysql://ics-web.sns.ornl.gov/alarm";
-//    private static final String USER = "alarm";
-//    private static final String PASSWORD = "$alarm";
-
-    @SuppressWarnings("unused")
-    private static final String URL1 =
-        "jdbc:oracle:thin:@" +
-        "(DESCRIPTION=" +
-        " (ADDRESS_LIST=(LOAD_BALANCE=OFF)" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93) (PORT=1521))" +
-        " )" +
-        " (CONNECT_DATA=(SERVICE_NAME=ics_prod_lba))" +
-        ")";
-
-    private static final String URL =
-        "jdbc:oracle:thin:@" +
-        "(DESCRIPTION=(SOURCE_ROUTE=YES)" +
-        " (ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610))" +
-        " )" +
-        " (ADDRESS_LIST=(LOAD_BALANCE=OFF)" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93) (PORT=1521))" +
-        " )" +
-        " (CONNECT_DATA=(SERVICE_NAME=ics_prod_lba))" +
-        ")";
-
-    private static final String USER = "sns_reports";
-    private static final String PASSWORD = "sns";
-
-
-    /** Basic connection */
-    @Test
-    @Ignore("Test with syso?")
-    public void testConnection() throws Exception
+    private void test(final String url) throws Exception
     {
-        final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
-        final Connection connection = rdb.getConnection();
-        System.out.println("Connection: " + connection);
+        final RDBUtil rdb = RDBUtil.connect(url);
+        try
+        {
+            final Connection connection = rdb.getConnection();
+            System.out.println("Connection: " + connection);
+            assertThat(connection, notNullValue());
+        }
+        finally
+        {
+            rdb.close();
+        }
     }
-
-
-    /** Check re-connect
-     *  Not really a test because it has no way to force a connection error.
-     *  While running this test, one needs to stop the RDB or disconnect
-     *  the network cable, see if the disconnect is noticed (after a rather
-     *  long timeout).
-     *  Then see if reconnection succeeds when the network cable or RDB are restored.
-     */
+    
     @Test
-    @Ignore("Test with syso?")
+    public void testMySQL() throws Exception
+    {
+        test(TestSetup.URL_MYSQL);
+    }
+    
+    @Test
     public void testReconnect() throws Exception
     {
-        final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
-
-        while (true)
+        final RDBUtil rdb = RDBUtil.connect(TestSetup.URL, true);
+        try
         {
-            try
-            {
-                final Connection connection = rdb.getConnection();
-                System.out.println("Connection: " + connection);
-            }
-            catch (final Exception e)
-            {
-                System.out.println("Error: " + e.getMessage());
-            }
-            Thread.sleep(5000);
+            Connection connection = rdb.getConnection();
+            assertThat(connection, notNullValue());
+
+            // Get same instance again
+            Connection connection2 = rdb.getConnection();
+            assertThat(connection2, sameInstance(connection));
+            
+            // Fake an error by closing the connection on purpose
+            connection.close();
+            
+            // Now get new instance, automatically re-connected
+            connection2 = rdb.getConnection();
+            assertThat(connection2, notNullValue());
+            assertThat(connection2, not(sameInstance(connection)));
+        }
+        finally
+        {
+            rdb.close();
         }
     }
 }

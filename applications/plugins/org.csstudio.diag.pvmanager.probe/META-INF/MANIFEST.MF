@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PvManager Probe
 Bundle-SymbolicName: org.csstudio.diag.pvmanager.probe; singleton:=true
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.csstudio.diag.pvmanager.probe.Activator
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Simple diagnostic utility to connect to any channel
@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
  org.eclipse.help,
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

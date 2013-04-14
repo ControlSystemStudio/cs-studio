@@ -85,7 +85,7 @@ public class ITERDataProvider implements DataProvider {
 			if (rec != null) {
 				properties.put("Record Name", rec.getName());
 				properties.put("Record Type", rec.getType());
-				properties.put("File Name", rec.getFile().getName());
+				properties.put("File Name", rec.getFile().lastSegment());
 				for (Field f : rec.getFields())
 					fields.add(new PVField(name + "." + f.getType(), f.getValue()));
 			}
@@ -100,7 +100,7 @@ public class ITERDataProvider implements DataProvider {
 				sb.append("\t");
 				sb.append(rec.getName());
 				sb.append(": ");
-				sb.append(rec.getFile().getFullPath());
+				sb.append(rec.getFile());
 				sb.append("\n");
 			}
 			Logger.getLogger(getClass().getName()).log(Level.WARNING,

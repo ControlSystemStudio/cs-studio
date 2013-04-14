@@ -70,10 +70,10 @@ public class MultiSelectionCombo<T> extends Composite
     private org.eclipse.swt.widgets.List list;
     
     /** Items to show in list */
-    private ArrayList<T> items = new ArrayList();
+    private ArrayList<T> items = new ArrayList<>();
  
     /** Selection indices */
-    private ArrayList<Integer> selection = new ArrayList();
+    private ArrayList<Integer> selection = new ArrayList<>();
     
     private String tool_tip = null;
 
@@ -242,7 +242,7 @@ public class MultiSelectionCombo<T> extends Composite
      */
     public List<T> getSelection()
     {
-        final List<T> result = new ArrayList(selection.size());
+        final List<T> result = new ArrayList<>(selection.size());
         for (int i : selection)
             result.add(items.get(i));
         return result;

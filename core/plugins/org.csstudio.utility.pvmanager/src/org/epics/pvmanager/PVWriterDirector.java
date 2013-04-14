@@ -98,6 +98,28 @@ public class PVWriterDirector<T> {
     }
     
     /**
+     * Simulate a static connection in which the channel name as one exception
+     * and the connection will never change.
+     * <p>
+     * This is a temporary method an will be subject to change in the future.
+     * The aim is to allow to connect expressions that are not channels
+     * but can influence exception and connection state. For example,
+     * to report problems encountered during expression creation as runtime
+     * problems through the normal exception/connection methods.
+     * <p>
+     * In the future, this should be generalized to allow fully fledged expressions
+     * that connect/disconnect and can report errors.
+     * 
+     * @param ex the exception to queue
+     * @param connection the connection flag
+     * @param channelName the channel name
+     */
+    public void connectStatic(Exception ex, boolean connection, String channelName) {
+        exceptionCollector.writeValue(ex);
+        connCollector.addChannel(channelName).writeValue(connection);
+    }
+    
+    /**
      * Connects the given expression.
      * <p>
      * This can be used for dynamic expression to add and connect child expressions.

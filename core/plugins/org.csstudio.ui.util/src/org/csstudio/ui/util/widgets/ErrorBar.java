@@ -86,7 +86,6 @@ public class ErrorBar extends Composite {
 				((GridLayout) getLayout()).marginLeft = 0;
 				((GridLayout) getLayout()).marginRight = 0;
 			} else {
-				ex.printStackTrace();
 				errorLabel.setToolTipText(ex.getMessage());
 				errorLabel.setText(ex.getMessage());
 				GridData gd = (GridData) errorLabel.getLayoutData();

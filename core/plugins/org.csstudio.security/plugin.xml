@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.equinox.security.secureStorage"
+         id="install_location">
+      <provider class="org.csstudio.security.internal.InstallLocationPasswordProvider"
+            description="Password provider that uses Install Location"
+            priority="4">
+      </provider>
+   </extension>
+   <extension point="org.eclipse.equinox.security.loginModule"
+         id="DummyLoginModule">
+      <loginModule class="org.csstudio.security.internal.DummyLoginModule" />
+   </extension>
+</plugin>

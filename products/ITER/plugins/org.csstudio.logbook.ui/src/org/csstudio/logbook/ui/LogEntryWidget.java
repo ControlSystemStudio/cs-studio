@@ -515,13 +515,19 @@ public class LogEntryWidget extends Composite {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
-		if ("editable".equals(evt.getPropertyName())) {
+		switch (evt.getPropertyName()) {
+		case "editable":
 		    // getLogEntryChangeset().setLogEntryBuilder(
 		    // LogEntryBuilder.logEntry(getLogEntry()));
-		} else if ("logEntry".equals(evt.getPropertyName())) {
+		    break;
+		case "logEntry":
 		    init();
-		} else if ("logEntryBuilder".equals(evt.getPropertyName())) {
+		    break;
+		case "logEntryBuilder":
 		    updateUI();
+		    break;
+		default:
+		    break;
 		}
 	    }
 	});

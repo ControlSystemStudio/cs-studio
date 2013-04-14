@@ -5,12 +5,10 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.StringListSelectionWidget;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;

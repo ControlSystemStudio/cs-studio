@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.CommentCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
@@ -25,12 +26,10 @@ import org.csstudio.scan.server.ScanContext;
 @SuppressWarnings("nls")
 public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public CommentCommandImpl(final CommentCommand command)
+    /** {@inheritDoc} */
+    public CommentCommandImpl(final CommentCommand command, final JythonSupport jython) throws Exception
     {
-        super(command);
+        super(command, jython);
     }
 
     /** {@inheritDoc} */

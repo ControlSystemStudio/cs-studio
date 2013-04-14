@@ -156,13 +156,16 @@ public class ColorProperty extends AbstractWidgetProperty {
 	
 	@Override
 	public String toStringInRuleScript(Object propValue) {
-		OPIColor opiColor = (OPIColor)propValue;
-		if(opiColor.isPreDefined())
-			return QUOTE + opiColor.getColorName()+QUOTE;
-		else{
-			RGB rgb = opiColor.getRGBValue();
-			return "ColorFontUtil.getColorFromRGB("+ //$NON-NLS-1$
-				rgb.red + "," + rgb.green + "," + rgb.blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		OPIColor opiColor = (OPIColor) propValue;
+		if (opiColor.isPreDefined()) {
+			if (MediaService.getInstance().isColorNameDefined(
+					opiColor.getColorName()))
+				return QUOTE + opiColor.getColorName() + QUOTE;
 		}
-	}	
+
+		RGB rgb = opiColor.getRGBValue();
+		return "ColorFontUtil.getColorFromRGB(" + //$NON-NLS-1$
+				rgb.red + "," + rgb.green + "," + rgb.blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+	}
 }

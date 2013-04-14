@@ -52,12 +52,24 @@ public class ConnectJob extends Job
                     Preferences.getThreshold());
             view.setAnnunciator(annunciator);
         }
-        catch (Exception ex)
-        {
+        catch (Throwable ex)
+        {   // May have been interrupted by cancel() -> canceling(),
+            // resulting in JMSException: Unexpected failure.
+            // Not specific enough to detect this case, so
+            // handle like any other error:
+            // Display, except after cancel the view will be disposed,
+            // so it's actually not displayed, which is OK.
             view.annunciatorError(ex);
         }
         
         monitor.done();
         return Status.OK_STATUS;
+    }
+
+	/** When Job is asked to cancel, interrupt the underlying thread */
+    @Override
+    protected void canceling()
+    {
+        getThread().interrupt();
     }
 }

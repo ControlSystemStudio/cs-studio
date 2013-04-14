@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.DisplayUtils;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -31,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterEvent;
@@ -49,6 +51,7 @@ public class WritePVAction extends AbstractWidgetAction {
 	public static final String PROP_VALUE = "value";//$NON-NLS-1$
 	public static final String PROP_TIMEOUT = "timeout";//$NON-NLS-1$
 	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
+	private Display display;
 
 	@Override
 	protected void configureProperties() {
@@ -84,7 +87,14 @@ public class WritePVAction extends AbstractWidgetAction {
 	}
 
 	@Override
-	public void run() {
+	public void run() {		
+		display = null;
+		if(getWidgetModel() !=null){
+			display = getWidgetModel().getRootDisplayModel().getViewer().getControl()
+			.getDisplay();
+		}else{
+			display = DisplayUtils.getDisplay();
+		}
 
 		if (!getConfirmMessage().isEmpty())
 			if (!GUIUtil.openConfirmDialog("PV Name: " + getPVName()
@@ -210,10 +220,9 @@ public class WritePVAction extends AbstractWidgetAction {
 	 * @param pv
 	 * @param e
 	 */
-	private void popErrorDialog(final Exception e) {
+	private void popErrorDialog(final Exception e) {					
 		UIBundlingThread.getInstance().addRunnable(
-				getWidgetModel().getRootDisplayModel().getViewer().getControl()
-						.getDisplay(), new Runnable() {
+				display, new Runnable() {
 					public void run() {
 						String message = "Failed to write PV:" + getPVName()
 								+ "\n" + 

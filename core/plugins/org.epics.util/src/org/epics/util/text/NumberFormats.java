@@ -9,20 +9,34 @@ import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * NumberFormat factory.
+ * Factory class for frequently used NumberFormats.
  *
  * @author carcassi
  */
 public final class NumberFormats {
 
     private static final Map<Integer, DecimalFormat> precisionFormat =
-            new HashMap<Integer, DecimalFormat>();
-    private static Locale currentLocale = Locale.getDefault();
+            new ConcurrentHashMap<Integer, DecimalFormat>();
+    private static volatile Locale currentLocale;
+    private static volatile DecimalFormatSymbols symbols;
+    
+    static {
+        Locale newLocale = Locale.getDefault();
+        DecimalFormatSymbols newSymbols = new DecimalFormatSymbols(newLocale);
+        newSymbols.setNaN("NaN");
+        newSymbols.setInfinity("Infinity");
+        currentLocale = newLocale;
+        symbols = newSymbols;
+    }
+
+    private NumberFormats() {
+        // Prevent instances
+    }
 
     /**
      * Returns a number format that formats a number with the given
@@ -81,13 +95,13 @@ public final class NumberFormats {
             throw new IllegalArgumentException("Precision must be non-negative");
 
         if (precision == 0)
-            return new DecimalFormat("0", new DecimalFormatSymbols(currentLocale));
+            return new DecimalFormat("0", symbols);
 
         StringBuilder sb = new StringBuilder("0.");
         for (int i = 0; i < precision; i++) {
             sb.append("0");
         }
-        return new DecimalFormat(sb.toString(), new DecimalFormatSymbols(currentLocale));
+        return new DecimalFormat(sb.toString(), symbols);
     }
 
 }

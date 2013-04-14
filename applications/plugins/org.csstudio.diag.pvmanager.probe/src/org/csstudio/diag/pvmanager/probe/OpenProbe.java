@@ -12,6 +12,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -35,7 +37,12 @@ public class OpenProbe extends AbstractHandler implements IHandler
 			final ProcessVariable[] pvs = AdapterUtil.convert(selection,
                     ProcessVariable.class);
 			
-			final IWorkbenchPage page = HandlerUtil.getActiveSite(event).getPage();
+			final IWorkbenchPage page;
+			final IWorkbenchSite site = HandlerUtil.getActiveSite(event);
+			if (site != null)
+			    page = site.getPage();
+			else // When all panels are closed, the event's site would be null
+			    page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
 			// Were PVs provided (opened from context menu?)
 			if (pvs == null  ||  pvs.length <= 0)

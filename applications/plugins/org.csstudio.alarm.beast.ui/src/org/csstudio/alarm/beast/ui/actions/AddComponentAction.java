@@ -12,8 +12,8 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.AbstractUserDependentAction;
+import org.csstudio.security.ui.SecuritySupportUI;
+import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that adds a Component or PV to the configuration.
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class AddComponentAction extends AbstractUserDependentAction
+public class AddComponentAction extends Action
 {
     final private Shell shell;
     final private AlarmClientModel model;
@@ -37,20 +37,19 @@ public class AddComponentAction extends AbstractUserDependentAction
     public AddComponentAction(final Shell shell, final AlarmClientModel model,
             final AlarmTreeItem parent)
     {
-        super(Messages.AddComponent, Activator.getImageDescriptor("icons/add.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+        super(Messages.AddComponent, Activator.getImageDescriptor("icons/add.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.parent = parent;
-        setEnabledWithoutAuthorization(true);
     	//authorization
-    	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
+        SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
     /** Prompt for PV name, add it to model.
      *  @see AbstractUserDependentAction
      */
 	@Override
-	protected void doWork()
+	public void run()
 	{
         new AddComponentDialog(shell, model, parent).open();
 	}

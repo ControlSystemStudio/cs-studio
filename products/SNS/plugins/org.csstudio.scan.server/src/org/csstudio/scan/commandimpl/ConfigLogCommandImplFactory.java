@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.ConfigLogCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class ConfigLogCommandImplFactory implements ScanCommandImplFactory<ConfigLogCommand>
 {
     @Override
-    public ScanCommandImpl<ConfigLogCommand> createImplementation(final ConfigLogCommand command)
+    public ScanCommandImpl<ConfigLogCommand> createImplementation(final ConfigLogCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new ConfigLogCommandImpl(command);
+        return new ConfigLogCommandImpl(command, jython);
     }
 }

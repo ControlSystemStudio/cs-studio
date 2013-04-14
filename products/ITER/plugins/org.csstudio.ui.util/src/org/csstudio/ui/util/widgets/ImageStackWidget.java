@@ -197,8 +197,10 @@ public class ImageStackWidget extends Composite {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
-		if("editable".equals(evt.getPropertyName())) {
-		} else if("imageInputStreamsMap".equals(evt.getPropertyName())) {
+		switch (evt.getPropertyName()) {
+		case "editable":
+		    break;
+		case "imageInputStreamsMap":
 		    if (imageInputStreamsMap != null
 			    && !imageInputStreamsMap.isEmpty()) {
 			// Populate the list on the side
@@ -226,7 +228,8 @@ public class ImageStackWidget extends Composite {
 		    tableViewer.refresh();
 		    table.redraw();
 		    imagePreview.redraw();
-		} else if("selectedImageName".equals(evt.getPropertyName())) {
+		    break;
+		case "selectedImageName":
 			byte[] imageData = imageInputStreamsMap.get(selectedImageName);
 			if (imageData != null) {
 			    imagePreview.setImage(new ByteArrayInputStream(imageData));
@@ -240,6 +243,8 @@ public class ImageStackWidget extends Composite {
 			    	}
 			    }
 			}
+		default:
+		    break;
 		}
 
 	    }

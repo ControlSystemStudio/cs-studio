@@ -68,7 +68,7 @@ public class DBContext implements Serializable {
 	}
 
 	public void addRecord(IFile file, Record record) {
-		record.setFile(file);
+		record.setFile(file.getFullPath());
 		if (records.get(record.getName()) == null)
 			records.put(record.getName(), new ArrayList<Record>());
 		records.get(record.getName()).add(record);

@@ -10,8 +10,8 @@ package org.csstudio.platform.utility.rdb;
 @SuppressWarnings("nls")
 public interface TestSetup
 {
-    /** Default database URL */
-    final public static String URL =
-    // SNS Test w/ write access
-    "jdbc:oracle:thin:chan_arch1/sns@//snsdb1.sns.ornl.gov:1521/prod";
+    /** Must adjust these for your site! */
+    final public static String URL_MYSQL =
+            "jdbc:mysql://localhost/ARCHIVE?user=archive&password=$archive";
+    final public static String URL = URL_MYSQL;
 }

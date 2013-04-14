@@ -2,7 +2,7 @@ package org.csstudio.utility.olog.ui;
 
 import java.util.logging.Logger;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -65,10 +65,10 @@ public class Activator extends AbstractUIPlugin {
 											PreferenceConstants.Username,
 											"username", null))
 							.password(
-									SecureStorage
-											.retrieveSecureStorage(
+									SecurePreferences.get(
 													org.csstudio.utility.olog.Activator.PLUGIN_ID,
-													PreferenceConstants.Password));
+													PreferenceConstants.Password,
+													null));
 				} else {
 					ologClientBuilder.withHTTPAuthentication(false);
 				}

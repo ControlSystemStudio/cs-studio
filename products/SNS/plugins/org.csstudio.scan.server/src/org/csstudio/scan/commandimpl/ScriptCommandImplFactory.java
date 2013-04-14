@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.ScriptCommand;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplFactory;
 
@@ -25,9 +26,9 @@ import org.csstudio.scan.server.ScanCommandImplFactory;
 public class ScriptCommandImplFactory implements ScanCommandImplFactory<ScriptCommand>
 {
     @Override
-    public ScanCommandImpl<ScriptCommand> createImplementation(final ScriptCommand command)
+    public ScanCommandImpl<ScriptCommand> createImplementation(final ScriptCommand command, final JythonSupport jython)
             throws Exception
     {
-        return new ScriptCommandImpl(command);
+        return new ScriptCommandImpl(command, jython);
     }
 }

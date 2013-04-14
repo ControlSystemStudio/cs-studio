@@ -40,25 +40,14 @@ import org.w3c.dom.Element;
  *
  *  <p>The loop checks if the device actually reaches the desired value
  *  with a timeout.
+ *  By default, the read-back uses the device that the loop writes,
+ *  but alternate read-back device can be configured.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class LoopCommand extends ScanCommand
 {
-    /** Configurable properties of this command */
-    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
-    {
-        ScanCommandProperty.DEVICE_NAME,
-        new ScanCommandProperty("start", "Initial Value", Double.class),
-        new ScanCommandProperty("end", "Final Value", Double.class),
-        new ScanCommandProperty("step_size", "Step Size", Double.class),
-        ScanCommandProperty.WAIT,
-        ScanCommandProperty.READBACK,
-        ScanCommandProperty.TOLERANCE,
-        ScanCommandProperty.TIMEOUT,
-    };
-
     private volatile String device_name;
     private volatile double start;
     private volatile double end;
@@ -157,9 +146,17 @@ public class LoopCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public ScanCommandProperty[] getProperties()
+    protected void configureProperties(final List<ScanCommandProperty> properties)
     {
-        return properties;
+        properties.add(ScanCommandProperty.DEVICE_NAME);
+        properties.add(new ScanCommandProperty("start", "Initial Value", Double.class));
+        properties.add(new ScanCommandProperty("end", "Final Value", Double.class));
+        properties.add(new ScanCommandProperty("step_size", "Step Size", Double.class));
+        properties.add(ScanCommandProperty.WAIT);
+        properties.add(ScanCommandProperty.READBACK);
+        properties.add(ScanCommandProperty.TOLERANCE);
+        properties.add(ScanCommandProperty.TIMEOUT);
+        super.configureProperties(properties);
     }
 
 	/** @return Device name (may be "" but not <code>null</code>) */
@@ -229,7 +226,10 @@ public class LoopCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device (may be "" but not <code>null</code>) */
+    /** @return Name of readback device
+     *          (may be "" to use the primary device of the loop,
+     *           but not <code>null</code>)
+     */
     public String getReadback()
     {
         return readback;
@@ -321,6 +321,7 @@ public class LoopCommand extends ScanCommand
             cmd.writeXML(out, level + 2);
         writeIndent(out, level+1);
         out.println("</body>");
+        super.writeXML(out, level);
         writeIndent(out, level);
         out.println("</loop>");
     }
@@ -338,11 +339,12 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
+        super.readXML(factory, element);
     }
 
     /** @param buf If the set command uses a condition,

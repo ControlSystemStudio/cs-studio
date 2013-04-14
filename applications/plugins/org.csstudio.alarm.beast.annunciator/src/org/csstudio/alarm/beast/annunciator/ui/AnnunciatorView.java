@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.ui;
 
+import java.util.logging.Level;
+
+import org.csstudio.alarm.beast.annunciator.Activator;
 import org.csstudio.alarm.beast.annunciator.Messages;
 import org.csstudio.alarm.beast.annunciator.Preferences;
 import org.csstudio.alarm.beast.annunciator.model.AnnunciationMessage;
@@ -50,6 +53,11 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     final private RingBuffer<AnnunciationMessage> messages =
         new RingBuffer<AnnunciationMessage>(Preferences.getRingBufferSize());
 
+    /** Job that handles the connection.
+     *  Will be set to <code>null</code> when connected
+     */
+    private ConnectJob connect_job;
+
     @Override
     public void createPartControl(final Composite parent)
     {
@@ -91,7 +99,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 
         // Start connection in background job because it hangs when
         // there's no JMS
-        final ConnectJob connect_job = new ConnectJob(this);
+        connect_job = new ConnectJob(this);
         connect_job.schedule();
 
         // ConnectJob would set annunciator. Cleanup when view is disposed.
@@ -100,8 +108,11 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
+                // If we were still trying to connect, give up
+                if (connect_job != null)
+                    connect_job.cancel();
                 if (annunciator != null)
-                {
+                {   // Did connect? close
                     annunciator.close();
                     annunciator = null;
                 }
@@ -214,6 +225,8 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 {
                     messages.clear();
                 }
+                // Remember that the connection is done
+                connect_job = null;
                 AnnunciatorView.this.annunciator = annunciator;
                 annunciator.start();
             }
@@ -247,7 +260,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     public void annunciatorError(final Throwable ex)
     {
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
-        ex.printStackTrace();
+        Activator.getLogger().log(Level.WARNING, "Annunciator Error", ex); //$NON-NLS-1$
     }
 
     /** @param annunciation Annunciation to add to list of messages */

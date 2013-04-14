@@ -49,6 +49,7 @@ org.csstudio.dummyauthorization
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.graphene
+org.csstudio.graphene.opiwidgets
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
@@ -89,6 +90,8 @@ org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
 org.csstudio.remote
+org.csstudio.security
+org.csstudio.security.ui
 org.csstudio.servicelocator
 org.csstudio.startup
 org.csstudio.swt.chart
@@ -125,14 +128,18 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.pva
 org.csstudio.utility.pvmanager.extra
 org.csstudio.utility.pvmanager.loc
 org.csstudio.utility.pvmanager.sim
+org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.pvmanager.graphene
 org.csstudio.utility.pvmanager.vtype
+org.csstudio.utility.singlesource
+org.csstudio.utility.singlesource.rcp
 org.csstudio.utility.speech
 org.csstudio.workspace
 org.epics.graphene
@@ -141,3 +148,5 @@ org.epics.vtype
 org.python
 org.slf4j
 org.slf4j.api
+org.epics.pvdata
+org.epics.pvaccess
