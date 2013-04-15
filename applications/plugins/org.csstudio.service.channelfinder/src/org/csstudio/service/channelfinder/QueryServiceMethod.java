@@ -11,6 +11,8 @@ import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,9 @@ import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceMethodDescription;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
@@ -59,6 +64,14 @@ public class QueryServiceMethod extends ServiceMethod {
 
 		    List<Channel> channels = new ArrayList<Channel>(
 			    result.channels);
+		    Collections.sort(channels, new Comparator<Channel>() {
+
+			@Override
+			public int compare(Channel o1, Channel o2) {
+			    return o1.getName().compareTo(o2.getName());
+			}
+
+		    });
 
 		    List<String> names = new ArrayList<>();
 		    List<Class<?>> types = new ArrayList<Class<?>>();
@@ -67,23 +80,45 @@ public class QueryServiceMethod extends ServiceMethod {
 		    // Add Channel Name column
 		    names.add("Channel Name");
 		    types.add(String.class);
-		    values.add(ChannelUtil.getChannelNames(channels).toArray(
-			    new String[channels.size()]));
+		    values.add(Lists.transform(channels,
+			    new Function<Channel, String>() {
+				@Override
+				public String apply(Channel input) {
+				    return input.getName();
+				}
+			    }).toArray(new String[channels.size()]));
 
 		    // Add Property Columns
 		    Collection<String> propertyNames = ChannelUtil
 			    .getPropertyNames(channels);
-		    for (String propertyName : propertyNames) {
+		    for (final String propertyName : propertyNames) {
 			names.add(propertyName);
 			types.add(String.class);
+			values.add(Lists.transform(channels,
+				new Function<Channel, String>() {
+				    @Override
+				    public String apply(Channel input) {
+					return input.getProperty(propertyName) != null ? input
+						.getProperty(propertyName)
+						.getValue() : "";
+				    }
+				}).toArray(new String[channels.size()]));
 		    }
 
 		    // Add Tag Columns
 		    Collection<String> tagNames = ChannelUtil
 			    .getAllTagNames(channels);
-		    for (String tagName : tagNames) {
+		    for (final String tagName : tagNames) {
 			names.add(tagName);
 			types.add(String.class);
+			values.add(Lists.transform(channels,
+				new Function<Channel, String>() {
+				    @Override
+				    public String apply(Channel input) {
+					return input.getTag(tagName) != null ? "tagged"
+						: "";
+				    }
+				}).toArray(new String[channels.size()]));
 		    }
 
 		    Map<String, Object> resultMap = new HashMap<>();
@@ -96,5 +131,4 @@ public class QueryServiceMethod extends ServiceMethod {
 	});
 	channelQuery.refresh();
     }
-
 }
