@@ -3,17 +3,23 @@
  */
 package org.csstudio.service.channelfinder;
 
+import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.WriteFunction;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceMethodDescription;
+import org.epics.vtype.VTable;
+import org.epics.vtype.ValueFactory;
 
 /**
  * @author shroffk
@@ -25,8 +31,9 @@ public class QueryServiceMethod extends ServiceMethod {
      */
     public QueryServiceMethod() {
 	super(new ServiceMethodDescription("find", "Find Channels")
-		.addArgument("query", "Query String", String.class).addResult(
-			"result", "Query Result", String.class));
+		.addArgument("query", "Query String", String.class)
+		.addResult("result", "Query Result", VTable.class)
+		.addResult("result_size", "Query Result size", Number.class));
     }
 
     /*
@@ -49,9 +56,40 @@ public class QueryServiceMethod extends ServiceMethod {
 		if (result.exception != null) {
 		    errorCallback.writeValue(result.exception);
 		} else {
+
+		    List<Channel> channels = new ArrayList<Channel>(
+			    result.channels);
+
+		    List<String> names = new ArrayList<>();
+		    List<Class<?>> types = new ArrayList<Class<?>>();
+		    List<Object> values = new ArrayList<Object>();
+
+		    // Add Channel Name column
+		    names.add("Channel Name");
+		    types.add(String.class);
+		    values.add(ChannelUtil.getChannelNames(channels).toArray(
+			    new String[channels.size()]));
+
+		    // Add Property Columns
+		    Collection<String> propertyNames = ChannelUtil
+			    .getPropertyNames(channels);
+		    for (String propertyName : propertyNames) {
+			names.add(propertyName);
+			types.add(String.class);
+		    }
+
+		    // Add Tag Columns
+		    Collection<String> tagNames = ChannelUtil
+			    .getAllTagNames(channels);
+		    for (String tagName : tagNames) {
+			names.add(tagName);
+			types.add(String.class);
+		    }
+
 		    Map<String, Object> resultMap = new HashMap<>();
-		    resultMap.put("result", result.channels.size()
-			    + "-channels found");
+		    resultMap.put("result",
+			    ValueFactory.newVTable(types, names, values));
+		    resultMap.put("result_size", result.channels.size());
 		    callback.writeValue(resultMap);
 		}
 	    }

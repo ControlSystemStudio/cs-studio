@@ -7,5 +7,6 @@ Bundle-Activator: org.csstudio.service.channelfinder.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager,
  gov.bnl.channelfinder.api,
- org.csstudio.utility.pvmanager.ui
+ org.csstudio.utility.pvmanager.ui,
+ org.epics.vtype
 Bundle-ActivationPolicy: lazy
