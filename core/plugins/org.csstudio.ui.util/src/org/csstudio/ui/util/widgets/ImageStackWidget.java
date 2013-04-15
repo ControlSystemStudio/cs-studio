@@ -6,54 +6,42 @@ package org.csstudio.ui.util.widgets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StyledCellLabelProvider;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * A widget to display a set of Images
@@ -72,6 +60,8 @@ public class ImageStackWidget extends Composite {
     private Table table;
     private TableViewer tableViewer;
     private Map<String, byte[]> imageInputStreamsMap = new HashMap<String, byte[]>();
+    private Button buttonRemove;
+    private TransparentImageLabel transparentImageLabel;
 
     /**
      * Adds a listener, notified a porperty has been changed.
@@ -95,81 +85,119 @@ public class ImageStackWidget extends Composite {
 
     public ImageStackWidget(final Composite parent, int style) {
 	super(parent, SWT.NONE);
-	setLayout(new GridLayout(3, false));
-	imagePreview = new ImagePreview(this);
-	imagePreview.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-	
+	setLayout(new FormLayout());
+
 	Label label = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
-	label.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 2));
-	
+	FormData fd_label = new FormData();
+	fd_label.bottom = new FormAttachment(100, 5);
+	fd_label.top = new FormAttachment(0, 5);
+	fd_label.right = new FormAttachment(100, 100, -125);
+	label.setLayoutData(fd_label);
+
 	Label lblImages = new Label(this, SWT.NONE);
+	FormData fd_lblImages = new FormData();
+	fd_lblImages.left = new FormAttachment(label, 5);
+	fd_lblImages.top = new FormAttachment(0, 5);
+	lblImages.setLayoutData(fd_lblImages);
 	lblImages.setText("Images:");
-		
-			tableViewer = new TableViewer(this, SWT.DOUBLE_BUFFERED);
-			table = tableViewer.getTable();
-			table.addMouseTrackListener(new MouseTrackAdapter() {
-				@Override
-				public void mouseHover(MouseEvent e) {
-				}
-			});
-			table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
-			table.setBackground(SWTResourceManager
-				.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-			
-				TableViewerColumn tableViewerColumn = new TableViewerColumn(
-					tableViewer, SWT.NONE);
-				tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
-				    @Override
-				    public void update(ViewerCell cell) {
-					// TODO does not center
-					// TODO does not preserve aspect ratio
-					// use the OwnerDrawLabelProvider
-					String imageName = cell.getElement() == null ? "" : cell
-						.getElement().toString();
-					ImageData imageData = new ImageData(new ByteArrayInputStream(
-						imageInputStreamsMap.get(imageName)));
-					cell.setImage(new Image(getDisplay(), imageData
-						.scaledTo(90, 90)));
-				    }
-				});
-				TableColumn tblclmnImage = tableViewerColumn.getColumn();
-				tblclmnImage.setResizable(false);
-				tblclmnImage.setWidth(90);
-				tableViewer.setContentProvider(new IStructuredContentProvider() {
 
-				    @Override
-				    public void inputChanged(Viewer viewer, Object oldInput,
-					    Object newInput) {
+	tableViewer = new TableViewer(this, SWT.DOUBLE_BUFFERED);
+	table = tableViewer.getTable();
+	FormData fd_table = new FormData();
+	fd_table.left = new FormAttachment(label, 5);
+	fd_table.right = new FormAttachment(100, -5);
+	fd_table.bottom = new FormAttachment(100, -5);
+	fd_table.top = new FormAttachment(0, 30);
+	table.setLayoutData(fd_table);
+	table.addMouseTrackListener(new MouseTrackAdapter() {
+	    @Override
+	    public void mouseHover(MouseEvent e) {
+	    }
+	});
+	table.setBackground(SWTResourceManager
+		.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
-				    }
+	TableViewerColumn tableViewerColumn = new TableViewerColumn(
+		tableViewer, SWT.NONE);
+	tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
+	    @Override
+	    public void update(ViewerCell cell) {
+		// TODO does not center
+		// TODO does not preserve aspect ratio
+		// use the OwnerDrawLabelProvider
+		String imageName = cell.getElement() == null ? "" : cell
+			.getElement().toString();
+		ImageData imageData = new ImageData(new ByteArrayInputStream(
+			imageInputStreamsMap.get(imageName)));
+		cell.setImage(new Image(getDisplay(), imageData
+			.scaledTo(90, 90)));
+	    }
+	});
+	TableColumn tblclmnImage = tableViewerColumn.getColumn();
+	tblclmnImage.setResizable(false);
+	tblclmnImage.setWidth(90);
+	tableViewer.setContentProvider(new IStructuredContentProvider() {
 
-				    @Override
-				    public void dispose() {
+	    @Override
+	    public void inputChanged(Viewer viewer, Object oldInput,
+		    Object newInput) {
 
-				    }
+	    }
 
-				    @Override
-				    public Object[] getElements(Object inputElement) {
-					return (Object[]) inputElement;
-				    }
-				});
-				
-					tableViewer
-						.addSelectionChangedListener(new ISelectionChangedListener() {
-				
-						    @Override
-						    public void selectionChanged(SelectionChangedEvent event) {
-							ISelection selection = event.getSelection();
-							if (selection != null
-								&& selection instanceof IStructuredSelection) {
-							    IStructuredSelection sel = (IStructuredSelection) selection;
-							    if (sel.size() == 1) {
-								setSelectedImageName((String) sel.iterator()
-									.next());
-							    }
-							}
-						    }
-						});
+	    @Override
+	    public void dispose() {
+
+	    }
+
+	    @Override
+	    public Object[] getElements(Object inputElement) {
+		return (Object[]) inputElement;
+	    }
+	});
+
+	tableViewer
+		.addSelectionChangedListener(new ISelectionChangedListener() {
+
+		    @Override
+		    public void selectionChanged(SelectionChangedEvent event) {
+			ISelection selection = event.getSelection();
+			if (selection != null
+				&& selection instanceof IStructuredSelection) {
+			    IStructuredSelection sel = (IStructuredSelection) selection;
+			    if (sel.size() == 1) {
+				setSelectedImageName((String) sel.iterator()
+					.next());
+			    }
+			}
+		    }
+		});
+
+	buttonRemove = new Button(this, SWT.NONE);
+	buttonRemove.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		try {
+		    removeImage(getSelectedImageName());
+		} catch (IOException e1) {
+		}
+	    }
+	});
+	buttonRemove.setImage(ResourceManager.getPluginImage(
+		"org.csstudio.ui.util", "icons/remove-16.gif"));
+	FormData fd_lblNewLabel = new FormData();
+	fd_lblNewLabel.right = new FormAttachment(label, -5);
+	fd_lblNewLabel.top = new FormAttachment(0, 5);
+	buttonRemove.setLayoutData(fd_lblNewLabel);
+	buttonRemove.setText("Remove");
+	buttonRemove.setVisible(false);
+	
+	imagePreview = new ImagePreview(this);
+	FormData fd_imagePreview = new FormData();
+	fd_imagePreview.right = new FormAttachment(label, -5);
+	fd_imagePreview.bottom = new FormAttachment(100, -5);
+	fd_imagePreview.top = new FormAttachment(0, 5);
+	fd_imagePreview.left = new FormAttachment(0, 5);
+	imagePreview.setLayoutData(fd_imagePreview);
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
@@ -192,9 +220,10 @@ public class ImageStackWidget extends Composite {
 					    imageInputStreamsMap
 						    .get(selectedImageName)));
 			} else {
-			    imagePreview.setImage(new ByteArrayInputStream(
-				    imageInputStreamsMap.values().iterator()
-					    .next()));
+			    Entry<String, byte[]> next = imageInputStreamsMap.entrySet().iterator().next();
+			    imagePreview.setImage(new ByteArrayInputStream(next.getValue()));
+			    selectedImageName = next.getKey();
+			    buttonRemove.setVisible(true);
 			}
 		    } else {
 			tableViewer.setInput(null);
@@ -206,6 +235,7 @@ public class ImageStackWidget extends Composite {
 		case "selectedImageName":
 		    imagePreview.setImage(new ByteArrayInputStream(
 			    imageInputStreamsMap.get(selectedImageName)));
+		    buttonRemove.setVisible(true);
 		    imagePreview.redraw();
 		    break;
 		default:
@@ -263,6 +293,16 @@ public class ImageStackWidget extends Composite {
 	this.imageInputStreamsMap.put(name, read2byteArray(imageInputStream));
 	changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		this.imageInputStreamsMap);
+    }
+
+    public void removeImage(String name) throws IOException {
+	if (imageInputStreamsMap.containsKey(name)) {
+	    Map<String, byte[]> oldValue = new HashMap<String, byte[]>(
+		    this.imageInputStreamsMap);
+	    this.imageInputStreamsMap.remove(name);
+	    changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
+		    this.imageInputStreamsMap);
+	}
     }
 
     /**
