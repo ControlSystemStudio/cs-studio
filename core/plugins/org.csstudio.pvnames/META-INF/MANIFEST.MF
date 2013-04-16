@@ -5,9 +5,8 @@ Bundle-SymbolicName: org.csstudio.pvnames;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.pvnames.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources
+Require-Bundle: org.eclipse.core.runtime
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.pvnames,
  org.csstudio.pvnames.data

@@ -5,12 +5,11 @@ Bundle-SymbolicName: org.csstudio.pvnames.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.pvnames.ui.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.ui,
-Require-Bundle: org.eclipse.ui;resolution:=optional,
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
- org.eclipse.core.runtime,
  org.csstudio.pvnames
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.pvnames.ui
 Service-Component: OSGI-INF/*.xml
