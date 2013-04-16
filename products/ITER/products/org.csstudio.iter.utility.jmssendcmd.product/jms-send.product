@@ -8,7 +8,10 @@
 
    <launcherArgs>
       <programArgs>--launcher.suppressErrors</programArgs>
-      <vmArgs>-Declipse.exitdata=</vmArgs>
+      <vmArgs>-Djava.awt.headless=true
+-Xms64m
+-Xmx256m
+-Declipse.exitdata=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -40,25 +43,6 @@ of the distribution package.
    </license>
 
    <plugins>
-      <plugin id="org.csstudio.apputil"/>
-      <plugin id="org.csstudio.iter.utility.jmssendcmd.product"/>
-      <plugin id="org.csstudio.java"/>
-      <plugin id="org.csstudio.logging"/>
-      <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.utility.jms"/>
-      <plugin id="org.csstudio.utility.jmssendcmd"/>
-      <plugin id="org.eclipse.core.contenttype"/>
-      <plugin id="org.eclipse.core.jobs"/>
-      <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
-      <plugin id="org.eclipse.equinox.app"/>
-      <plugin id="org.eclipse.equinox.common"/>
-      <plugin id="org.eclipse.equinox.preferences"/>
-      <plugin id="org.eclipse.equinox.registry"/>
-      <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.hamcrest.core"/>
-      <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
    </plugins>
 
    <features>
