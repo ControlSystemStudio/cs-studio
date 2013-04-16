@@ -26,12 +26,13 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -53,6 +54,7 @@ public class ImageStackWidget extends Composite {
 
     private boolean editable;
     private String selectedImageName;
+    private boolean scrollBarVisble;
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
@@ -61,7 +63,8 @@ public class ImageStackWidget extends Composite {
     private TableViewer tableViewer;
     private Map<String, byte[]> imageInputStreamsMap = new HashMap<String, byte[]>();
     private Button buttonRemove;
-    private TransparentImageLabel transparentImageLabel;
+    private TableViewerColumn tableViewerColumn;
+    private TableColumn tblclmnImage;
 
     /**
      * Adds a listener, notified a porperty has been changed.
@@ -101,7 +104,8 @@ public class ImageStackWidget extends Composite {
 	lblImages.setLayoutData(fd_lblImages);
 	lblImages.setText("Images:");
 
-	tableViewer = new TableViewer(this, SWT.DOUBLE_BUFFERED);
+	tableViewer = new TableViewer(this, SWT.DOUBLE_BUFFERED | SWT.NO_SCROLL
+		| SWT.V_SCROLL);
 	table = tableViewer.getTable();
 	FormData fd_table = new FormData();
 	fd_table.left = new FormAttachment(label, 5);
@@ -109,16 +113,10 @@ public class ImageStackWidget extends Composite {
 	fd_table.bottom = new FormAttachment(100, -5);
 	fd_table.top = new FormAttachment(0, 30);
 	table.setLayoutData(fd_table);
-	table.addMouseTrackListener(new MouseTrackAdapter() {
-	    @Override
-	    public void mouseHover(MouseEvent e) {
-	    }
-	});
 	table.setBackground(SWTResourceManager
 		.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
-	TableViewerColumn tableViewerColumn = new TableViewerColumn(
-		tableViewer, SWT.NONE);
+	tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 	tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
 	    @Override
 	    public void update(ViewerCell cell) {
@@ -129,13 +127,28 @@ public class ImageStackWidget extends Composite {
 			.getElement().toString();
 		ImageData imageData = new ImageData(new ByteArrayInputStream(
 			imageInputStreamsMap.get(imageName)));
-		cell.setImage(new Image(getDisplay(), imageData
-			.scaledTo(90, 90)));
+		int width = scrollBarVisble ? 90 : 100;
+		System.out.println("redrawing : " + width + " "  + tableViewerColumn.getColumn().getWidth());
+		cell.setImage(new Image(getDisplay(), imageData.scaledTo(width,
+			width)));
 	    }
 	});
-	TableColumn tblclmnImage = tableViewerColumn.getColumn();
+
+	table.addPaintListener(new PaintListener() {
+
+	    public void paintControl(PaintEvent e) {
+		Rectangle rect = table.getClientArea();
+		int itemHeight = table.getItemHeight();
+		int headerHeight = table.getHeaderHeight();
+		int visibleCount = (rect.height - headerHeight + itemHeight - 1)
+			/ itemHeight;
+		setScrollBarVisble(table.getItemCount() >= visibleCount);
+	    }
+	});
+
+	tblclmnImage = tableViewerColumn.getColumn();
 	tblclmnImage.setResizable(false);
-	tblclmnImage.setWidth(90);
+	tblclmnImage.setWidth(104);
 	tableViewer.setContentProvider(new IStructuredContentProvider() {
 
 	    @Override
@@ -190,7 +203,7 @@ public class ImageStackWidget extends Composite {
 	buttonRemove.setLayoutData(fd_lblNewLabel);
 	buttonRemove.setText("Remove");
 	buttonRemove.setVisible(false);
-	
+
 	imagePreview = new ImagePreview(this);
 	FormData fd_imagePreview = new FormData();
 	fd_imagePreview.right = new FormAttachment(label, -5);
@@ -220,8 +233,10 @@ public class ImageStackWidget extends Composite {
 					    imageInputStreamsMap
 						    .get(selectedImageName)));
 			} else {
-			    Entry<String, byte[]> next = imageInputStreamsMap.entrySet().iterator().next();
-			    imagePreview.setImage(new ByteArrayInputStream(next.getValue()));
+			    Entry<String, byte[]> next = imageInputStreamsMap
+				    .entrySet().iterator().next();
+			    imagePreview.setImage(new ByteArrayInputStream(next
+				    .getValue()));
 			    selectedImageName = next.getKey();
 			    buttonRemove.setVisible(true);
 			}
@@ -238,6 +253,11 @@ public class ImageStackWidget extends Composite {
 		    buttonRemove.setVisible(true);
 		    imagePreview.redraw();
 		    break;
+		case "scrollBarVisible":
+		    System.out.println("scrollbar event");
+		    tblclmnImage.setWidth(scrollBarVisble? 94 : 104);
+		    tableViewer.getTable().layout();
+		    tableViewer.refresh();
 		default:
 		    break;
 		}
@@ -303,6 +323,17 @@ public class ImageStackWidget extends Composite {
 	    changeSupport.firePropertyChange("imageInputStreamsMap", oldValue,
 		    this.imageInputStreamsMap);
 	}
+    }
+
+    /**
+     * @param scrollBarVisble
+     *            the scrollBarVisble to set
+     */
+    private void setScrollBarVisble(boolean scrollBarVisble) {
+	boolean oldValue = this.scrollBarVisble;
+	this.scrollBarVisble = scrollBarVisble;
+	changeSupport.firePropertyChange("scrollBarVisible", oldValue,
+		this.scrollBarVisble);
     }
 
     /**
