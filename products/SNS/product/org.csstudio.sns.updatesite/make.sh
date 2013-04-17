@@ -9,7 +9,7 @@
 #
 # Kay Kasemir
 
-source settings.sh
+source ./settings.sh
 
 type javac
 java -version
