@@ -128,7 +128,6 @@ public class ImageStackWidget extends Composite {
 		ImageData imageData = new ImageData(new ByteArrayInputStream(
 			imageInputStreamsMap.get(imageName)));
 		int width = scrollBarVisble ? 90 : 100;
-		System.out.println("redrawing : " + width + " "  + tableViewerColumn.getColumn().getWidth());
 		cell.setImage(new Image(getDisplay(), imageData.scaledTo(width,
 			width)));
 	    }
@@ -254,7 +253,6 @@ public class ImageStackWidget extends Composite {
 		    imagePreview.redraw();
 		    break;
 		case "scrollBarVisible":
-		    System.out.println("scrollbar event");
 		    tblclmnImage.setWidth(scrollBarVisble? 94 : 104);
 		    tableViewer.getTable().layout();
 		    tableViewer.refresh();
