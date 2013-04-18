@@ -69,8 +69,8 @@ import org.eclipse.wb.swt.ResourceManager;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-
 import static org.csstudio.logbook.LogEntryBuilder.logEntry;
+
 /**
  * @author shroffk
  * 
@@ -83,7 +83,7 @@ public class LogEntryWidget extends Composite {
 
     // Model
     private LogEntryChangeset logEntryChangeset = new LogEntryChangeset();
-//    private LogEntry logEntry;
+    // private LogEntry logEntry;
 
     private LogbookClient logbookClient;
     // List of all the possible logbooks and tags which may be added to a
@@ -548,7 +548,8 @@ public class LogEntryWidget extends Composite {
 
     private void init() {
 	try {
-	    logEntryChangeset = new LogEntryChangeset();
+	    final LogEntry logEntry = this.logEntryChangeset.getLogEntry();
+	    // logEntryChangeset = new LogEntryChangeset();
 	    logEntryChangeset
 		    .addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -795,9 +796,16 @@ public class LogEntryWidget extends Composite {
     }
 
     public void setLogEntry(LogEntry logEntry) {
-	LogEntry oldValue = this.logEntry;
-	this.logEntry = logEntry;
-	changeSupport.firePropertyChange("logEntry", oldValue, this.logEntry);
+
+	try {
+	    LogEntry oldValue = this.logEntryChangeset.getLogEntry();
+	    this.logEntryChangeset = new LogEntryChangeset(logEntry);
+	    changeSupport.firePropertyChange("logEntry", oldValue,
+		    this.logEntryChangeset.getLogEntry());
+	} catch (IOException e) {
+	    setLastException(e);
+	}
+
     }
 
     public java.util.List<String> getLogbookNames() {
