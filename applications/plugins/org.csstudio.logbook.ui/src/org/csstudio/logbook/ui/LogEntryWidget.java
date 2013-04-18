@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.ExpandBar;
@@ -91,8 +92,8 @@ public class LogEntryWidget extends Composite {
     private LogbookClient logbookClient;
     // List of all the possible logbooks and tags which may be added to a
     // logEntry.
-    private List<String> logbookNames;
-    private List<String> tagNames;
+    private List<String> logbookNames = Collections.emptyList();
+    private List<String> tagNames = Collections.emptyList();
 
     // TODO
     private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
@@ -449,12 +450,50 @@ public class LogEntryWidget extends Composite {
 
 	imageStackWidget = new ImageStackWidget(tbtmAttachmentsComposite,
 		SWT.NONE);
+	imageStackWidget.setEditable(editable);
 	FormData fd_imageStackWidget = new FormData();
 	fd_imageStackWidget.bottom = new FormAttachment(btnAddImage, -2);
 	fd_imageStackWidget.right = new FormAttachment(100, -2);
 	fd_imageStackWidget.top = new FormAttachment(0, 2);
 	fd_imageStackWidget.left = new FormAttachment(0, 2);
 	imageStackWidget.setLayoutData(fd_imageStackWidget);
+	imageStackWidget
+		.addPropertyChangeListener(new PropertyChangeListener() {
+
+		    @SuppressWarnings("unchecked")
+		    @Override
+		    public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName()
+				.equals("imageInputStreamsMap")) {
+			    Collection<String> oldImages = ((Map<String, byte[]>) evt
+				    .getOldValue()).keySet();
+			    Collection<String> newImages = (((Map<String, byte[]>) evt
+				    .getNewValue()).keySet());
+			    if (!oldImages.equals(newImages)) {
+				Collection<String> removedImages = new ArrayList<String>(
+					oldImages);
+				removedImages.removeAll(newImages);
+				Collection<String> addedImages = new ArrayList<String>(
+					newImages);
+				addedImages.removeAll(oldImages);
+
+				try {
+				    LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					    .logEntry(logEntryChangeset
+						    .getLogEntry());
+				    for (String removedImage : removedImages) {
+					logEntryBuilder
+						.removeAttachment(removedImage);
+				    }
+				    logEntryChangeset
+					    .setLogEntryBuilder(logEntryBuilder);
+				} catch (IOException e) {
+				    setLastException(e);
+				}
+			    }
+			}
+		    }
+		});
 
 	empty = new FormData();
 	empty.top = new FormAttachment(0);
@@ -471,15 +510,9 @@ public class LogEntryWidget extends Composite {
 		    FormData fd = ((FormData) label.getLayoutData());
 		    if (expanded) {
 			fd.top = new FormAttachment(60);
-//			btnNewButton.setImage(ResourceManager.getPluginImage(
-//				"org.csstudio.logbook.ui",
-//				"icons/expanded-16.png"));
 			btnNewButton.setText("Hide details");
 		    } else {
 			fd.top = new FormAttachment(100, -28);
-//			btnNewButton.setImage(ResourceManager.getPluginImage(
-//				"org.csstudio.logbook.ui",
-//				"icons/collapsed-16.png"));
 			btnNewButton.setText("Show Details");
 		    }
 		    label.setLayoutData(fd);
@@ -562,8 +595,6 @@ public class LogEntryWidget extends Composite {
 			}
 		    };
 		    Executors.newCachedThreadPool().execute(retriveAttachments);
-		    // BusyIndicator.showWhile(getDisplay(),
-		    // retriveAttachments);
 		}
 		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 	    }
@@ -733,8 +764,6 @@ public class LogEntryWidget extends Composite {
 	    image.dispose();
 	    // Save
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-	    // imageStackWidget.addImage(screenshot_file.getPath(),
-	    // new FileInputStream(screenshot_file.getPath()));
 	    return AttachmentBuilder
 		    .attachment(screenshot_file.getPath())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));
