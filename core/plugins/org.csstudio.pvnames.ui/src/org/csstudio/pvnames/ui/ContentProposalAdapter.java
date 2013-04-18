@@ -68,6 +68,8 @@ public class ContentProposalAdapter {
 			final PVContentProposalList proposals = proposalProvider
 					.getProposals(contents, position, maxDisplay);
 			if (!canceled) {
+				if (getControl().isDisposed())
+					return;
 				getControl().getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
