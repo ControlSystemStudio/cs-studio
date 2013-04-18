@@ -544,6 +544,62 @@ public class LogEntryWidget extends Composite {
 	    fd.bottom = new FormAttachment(btnAddImage, -2);
 	    imageStackWidget.setLayoutData(fd);
 	}
+	Runnable initialize = new Runnable() {
+
+	    @Override
+	    public void run() {
+		if (logbookClient != null) {
+		    try {
+			logbookNames = Lists.transform(new ArrayList<Logbook>(
+				logbookClient.listLogbooks()),
+				new Function<Logbook, String>() {
+				    public String apply(Logbook input) {
+					return input.getName();
+				    };
+				});
+			tagNames = Lists.transform(new ArrayList<Tag>(
+				logbookClient.listTags()),
+				new Function<Tag, String>() {
+				    public String apply(Tag input) {
+					return input.getName();
+				    };
+				});
+			getDisplay().asyncExec(new Runnable() {
+
+			    @Override
+			    public void run() {
+				updateUI();
+			    }
+			});
+		    } catch (final Exception e) {
+			setLastException(e);
+		    }
+		}
+	    }
+	};
+	Executors.newCachedThreadPool().execute(initialize);
+	try {
+	    // get the list of properties and extensions to handle these
+	    // properties.
+	    IConfigurationElement[] config = Platform.getExtensionRegistry()
+		    .getConfigurationElementsFor(
+			    "org.csstudio.logbook.ui.propertywidget");
+	    if (config.length > 0) {
+		propertyWidgetFactories = new HashMap<String, PropertyWidgetFactory>();
+		for (IConfigurationElement iConfigurationElement : config) {
+		    propertyWidgetFactories
+			    .put(iConfigurationElement
+				    .getAttribute("propertyName"),
+				    (PropertyWidgetFactory) iConfigurationElement
+					    .createExecutableExtension("propertywidgetfactory"));
+		}
+	    } else {
+		propertyWidgetFactories = Collections.emptyMap();
+	    }
+	} catch (Exception e) {
+	    propertyWidgetFactories = Collections.emptyMap();
+	    setLastException(e);
+	}
     }
 
     private void init() {
@@ -594,67 +650,6 @@ public class LogEntryWidget extends Composite {
 		    Executors.newCachedThreadPool().execute(retriveAttachments);
 		}
 		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-	    }
-
-	    if (isEditable()) {
-		Runnable initialize = new Runnable() {
-
-		    @Override
-		    public void run() {
-			if (logbookClient != null) {
-			    try {
-				logbookNames = Lists.transform(
-					new ArrayList<Logbook>(logbookClient
-						.listLogbooks()),
-					new Function<Logbook, String>() {
-					    public String apply(Logbook input) {
-						return input.getName();
-					    };
-					});
-				tagNames = Lists.transform(new ArrayList<Tag>(
-					logbookClient.listTags()),
-					new Function<Tag, String>() {
-					    public String apply(Tag input) {
-						return input.getName();
-					    };
-					});
-				getDisplay().asyncExec(new Runnable() {
-
-				    @Override
-				    public void run() {
-					updateUI();
-				    }
-				});
-			    } catch (final Exception e) {
-				setLastException(e);
-			    }
-			}
-		    }
-		};
-		Executors.newCachedThreadPool().execute(initialize);
-	    }
-
-	    try {
-		// get the list of properties and extensions to handle these
-		// properties.
-		IConfigurationElement[] config = Platform
-			.getExtensionRegistry().getConfigurationElementsFor(
-				"org.csstudio.logbook.ui.propertywidget");
-		if (config.length > 0) {
-		    propertyWidgetFactories = new HashMap<String, PropertyWidgetFactory>();
-		    for (IConfigurationElement iConfigurationElement : config) {
-			propertyWidgetFactories
-				.put(iConfigurationElement
-					.getAttribute("propertyName"),
-					(PropertyWidgetFactory) iConfigurationElement
-						.createExecutableExtension("propertywidgetfactory"));
-		    }
-		} else {
-		    propertyWidgetFactories = Collections.emptyMap();
-		}
-	    } catch (Exception e) {
-		propertyWidgetFactories = Collections.emptyMap();
-		setLastException(e);
 	    }
 	} catch (Exception ex) {
 	    // Failed to get a client to the logbook
