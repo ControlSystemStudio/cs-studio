@@ -313,6 +313,12 @@ public class ImageStackWidget extends Composite {
 		this.imageInputStreamsMap);
     }
 
+    /**
+     * Remove the Image identified by name
+     * 
+     * @param name - the name of the Image to be removed
+     * @throws IOException
+     */
     public void removeImage(String name) throws IOException {
 	if (imageInputStreamsMap.containsKey(name)) {
 	    Map<String, byte[]> oldValue = new HashMap<String, byte[]>(
