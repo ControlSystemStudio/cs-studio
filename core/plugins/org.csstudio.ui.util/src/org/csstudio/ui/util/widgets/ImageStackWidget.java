@@ -237,7 +237,7 @@ public class ImageStackWidget extends Composite {
 			    imagePreview.setImage(new ByteArrayInputStream(next
 				    .getValue()));
 			    selectedImageName = next.getKey();
-			    buttonRemove.setVisible(true);
+			    buttonRemove.setVisible(true && editable);
 			}
 		    } else {
 			tableViewer.setInput(null);
@@ -249,11 +249,11 @@ public class ImageStackWidget extends Composite {
 		case "selectedImageName":
 		    imagePreview.setImage(new ByteArrayInputStream(
 			    imageInputStreamsMap.get(selectedImageName)));
-		    buttonRemove.setVisible(true);
+		    buttonRemove.setVisible(true && editable);
 		    imagePreview.redraw();
 		    break;
 		case "scrollBarVisible":
-		    tblclmnImage.setWidth(scrollBarVisble? 94 : 104);
+		    tblclmnImage.setWidth(scrollBarVisble ? 94 : 104);
 		    tableViewer.getTable().layout();
 		    tableViewer.refresh();
 		default:
@@ -316,7 +316,8 @@ public class ImageStackWidget extends Composite {
     /**
      * Remove the Image identified by name
      * 
-     * @param name - the name of the Image to be removed
+     * @param name
+     *            - the name of the Image to be removed
      * @throws IOException
      */
     public void removeImage(String name) throws IOException {
