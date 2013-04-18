@@ -36,6 +36,7 @@ import org.csstudio.logbook.util.LogEntryUtil;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.ImageStackWidget;
+import org.csstudio.ui.util.widgets.MultiSelectionCombo;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -46,8 +47,6 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -59,6 +58,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -67,14 +67,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.ExpandBar;
-import org.eclipse.swt.widgets.ExpandItem;
-import org.csstudio.ui.util.widgets.MultiSelectionCombo;
-import org.eclipse.jface.viewers.ListViewer;
 
+
+import static org.csstudio.logbook.LogEntryBuilder.logEntry;
 /**
  * @author shroffk
  * 
@@ -87,7 +83,7 @@ public class LogEntryWidget extends Composite {
 
     // Model
     private LogEntryChangeset logEntryChangeset = new LogEntryChangeset();
-    private LogEntry logEntry;
+//    private LogEntry logEntry;
 
     private LogbookClient logbookClient;
     // List of all the possible logbooks and tags which may be added to a
@@ -201,7 +197,7 @@ public class LogEntryWidget extends Composite {
 	    public void focusLost(FocusEvent e) {
 
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).setText(
 			    text.getText());
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
@@ -410,7 +406,7 @@ public class LogEntryWidget extends Composite {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).attach(
 			    addScreenshot(true, newWindow));
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
@@ -432,7 +428,7 @@ public class LogEntryWidget extends Composite {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).attach(
 			    addScreenshot(false, newWindow));
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
