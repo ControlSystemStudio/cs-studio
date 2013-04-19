@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -125,11 +126,22 @@ public class ImageStackWidget extends Composite {
 		// use the OwnerDrawLabelProvider
 		String imageName = cell.getElement() == null ? "" : cell
 			.getElement().toString();
-		ImageData imageData = new ImageData(new ByteArrayInputStream(
-			imageInputStreamsMap.get(imageName)));
-		int width = scrollBarVisble ? 90 : 100;
-		cell.setImage(new Image(getDisplay(), imageData.scaledTo(width,
-			width)));
+		InputStream stream = new ByteArrayInputStream(
+			imageInputStreamsMap.get(imageName));
+		ImageData imageData = null;
+		try {
+		    imageData = new ImageData(stream);
+		    int width = scrollBarVisble ? 90 : 100;
+		    cell.setImage(new Image(getDisplay(), imageData.scaledTo(
+			    width, width)));
+		} catch (SWTException ex) {
+		} finally {
+		    try {
+			stream.close();
+		    } catch (IOException ex) {
+		    }
+		}
+
 	    }
 	});
 
