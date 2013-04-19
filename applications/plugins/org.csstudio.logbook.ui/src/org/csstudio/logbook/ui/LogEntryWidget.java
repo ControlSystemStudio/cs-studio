@@ -47,6 +47,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -154,28 +156,27 @@ public class LogEntryWidget extends Composite {
 	composite.setLayout(new FormLayout());
 
 	label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-	// label.addMouseMoveListener(new MouseMoveListener() {
-	// public void mouseMove(MouseEvent e) {
-	// FormData fd = (FormData) label.getLayoutData();
-	// long calNumerator = fd.top.numerator + (e.y * 100)
-	// / e.display.getActiveShell().getClientArea().height;
-	// System.out.println(calNumerator);
-	// fd.top = new FormAttachment((int) calNumerator);
-	// label.setLayoutData(fd);
-	// label.getParent().layout();
-	// }
-	// });
-	label.setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZENS));
-
 	FormData fd_label = new FormData();
 	fd_label.left = new FormAttachment(0, 1);
 	fd_label.right = new FormAttachment(100, -1);
 	if (expanded) {
-	    fd_label.top = new FormAttachment(60);
+	    fd_label.top = new FormAttachment(60, -28);
 	} else {
 	    fd_label.top = new FormAttachment(100, -28);
 	}
 	label.setLayoutData(fd_label);
+	label.addMouseMoveListener(new MouseMoveListener() {
+	    // TODO add upper and lower bounds
+	    public void mouseMove(MouseEvent e) {
+		FormData fd = (FormData) label.getLayoutData();
+		int calNumerator = (int) (fd.top.numerator + (e.y * 100)
+			/ e.display.getActiveShell().getClientArea().height);
+		fd.top = new FormAttachment(calNumerator <= 100 ? calNumerator : 100, fd.top.offset);
+		label.setLayoutData(fd);
+		label.getParent().layout();
+	    }
+	});
+	label.setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZENS));
 
 	Label lblDate = new Label(composite, SWT.NONE);
 	FormData fd_lblDate = new FormData();
