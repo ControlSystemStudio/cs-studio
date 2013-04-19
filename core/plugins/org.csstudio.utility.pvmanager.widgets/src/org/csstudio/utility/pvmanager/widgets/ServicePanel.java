@@ -32,6 +32,7 @@ import org.epics.pvmanager.service.ServiceRegistry;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
+import org.epics.vtype.VTable;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
@@ -272,6 +273,11 @@ public class ServicePanel extends Composite {
 	if (String.class.isAssignableFrom(targetType)
 		&& VString.class.isInstance(value)) {
 	    return ((VString) value).getValue();
+	}
+
+	if (VTable.class.isAssignableFrom(targetType)
+		&& VTable.class.isInstance(value)) {
+	    return ((VTable) value);
 	}
 
 	return null;

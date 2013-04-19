@@ -342,8 +342,19 @@ public class Axis extends LinearScale{
 	    // Anything to do? Autoscale not enabled nor forced?
 		if (traceList.size() <= 0  ||  !(force || autoScale))
 		    return false;
-		if(!force && xyGraph.getZoomType() != ZoomType.NONE)
-			return false;
+		
+		// Idea: Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled!
+		// Seems reasonable, but doesn't work:
+		// User may have selected HORIZONTAL_ZOOM to configure a time range,
+		// but still expects the vertical value axes to auto-zoom.
+		// Or user selected a VERTICAL_ZOOM to adjust _one_ axis,
+		// but still expects _other_ vertical axes to auto-zoom
+		// -> Since the zoom type is not specific to a certain axis,
+		//    it is impossible to determine if maybe _this_ axis
+		//    should suspend auto-zoom.
+		//    -> Just to the auto-zoom, don't second-guess.
+		//(!force && xyGraph.getZoomType() != ZoomType.NONE)
+		//  return false;
 
 	    // Get range of data in all traces
         final Range range = getTraceDataRange();
