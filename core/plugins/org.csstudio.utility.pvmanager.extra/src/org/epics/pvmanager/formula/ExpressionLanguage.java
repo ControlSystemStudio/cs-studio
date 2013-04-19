@@ -8,6 +8,7 @@
  */
 package org.epics.pvmanager.formula;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.antlr.runtime.*;
@@ -20,6 +21,7 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
+import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -62,6 +64,7 @@ public class ExpressionLanguage {
     }
     
     public static DesiredRateReadWriteExpression<?, Object> formula(String formula) {
+        RuntimeException parsingError;
         try {
             DesiredRateExpression<?> exp = createParser(formula).formula();
             if (exp == null) {
@@ -74,10 +77,11 @@ public class ExpressionLanguage {
                 return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
             }
         } catch (RecognitionException ex) {
-            throw new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
+            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
         } catch (Exception ex) {
-            throw new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
+            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
         }
+        return new DesiredRateReadWriteExpressionImpl<>(errorDesiredRateExpression(parsingError), readOnlyWriteExpression("Parsing error")); 
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
@@ -213,9 +217,24 @@ public class ExpressionLanguage {
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
-        if ("arrayOf".equals(function)) {
-            return org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf(cast(VNumber.class, args));
+        Collection<FormulaFunction> matchedFunctions = FormulaRegistry.getDefault().findFunctions(function, args.getDesiredRateExpressions().size());
+        if (matchedFunctions.size() > 0) {
+            FormulaReadFunction readFunction = new FormulaReadFunction(Expressions.functionsOf(args), matchedFunctions);
+            StringBuilder sb = new StringBuilder();
+            sb.append(function).append('(');
+            boolean first = true;
+            for (DesiredRateExpression<?> arg : args.getDesiredRateExpressions()) {
+                if (!first) {
+                    sb.append(", ");
+                } else {
+                    first = false;
+                }
+                sb.append(arg.getName());
+            }
+            sb.append(')');
+            return new DesiredRateExpressionImpl<>(args, readFunction, sb.toString());
         }
+        
         if ("columnOf".equals(function)) {
             if (args.getDesiredRateExpressions().size() != 2) {
                 throw new IllegalArgumentException("columnOf takes 2 arguments");
@@ -233,46 +252,6 @@ public class ExpressionLanguage {
     
     static {
         Map<String, OneArgNumericFunction> map = new HashMap<>();
-        
-        map.put("abs", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.abs(arg);
-            }
-        });
-        
-        map.put("acos", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.acos(arg);
-            }
-        });
-        
-        map.put("asin", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.asin(arg);
-            }
-        });
-        
-        map.put("atan", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.atan(arg);
-            }
-        });
-        
-        map.put("cbrt", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.cbrt(arg);
-            }
-        });
         
         map.put("ceil", new OneArgNumericFunction() {
 
@@ -419,6 +398,10 @@ public class ExpressionLanguage {
     
     static <T> WriteExpression<T> readOnlyWriteExpression(String errorMessage) {
         return new ReadOnlyWriteExpression<>(errorMessage, "");
+    }
+    
+    static <T> DesiredRateExpression<T> errorDesiredRateExpression(RuntimeException error) {
+        return new ErrorDesiredRateExpression<>(error, "");
     }
     
     static DesiredRateExpression<VType>
