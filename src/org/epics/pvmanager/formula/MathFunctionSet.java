@@ -42,12 +42,85 @@ public class MathFunctionSet extends FormulaFunctionSet {
                         return Math.cbrt(arg);
                     }
                 })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("ceil", "Ceiling function", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.ceil(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("cos", "Cosine", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.cos(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("cosh", "Hyperbolic cosine", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.cosh(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("exp", "Exponential", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.exp(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("floor", "Floor function", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.floor(arg);
+                    }
+                })
                 .addFormulaFunction(new OneArgNumericFormulaFunction("log", "Natural logarithm", "arg") {
                     @Override
                     double calculate(double arg) {
                         return Math.log(arg);
                     }
-                }));
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("log10", "Base 10 logarithm", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.log10(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("signum", "Sign function", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.signum(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("sin", "Sine", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.sin(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("sinh", "Hyperbolic sine", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.sinh(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("sqrt", "Square root", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.sqrt(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("tan", "Tangent", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.tan(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("tanh", "Hyperbolic tangent", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.tanh(arg);
+                    }
+                })
+                );
     }
 
 
