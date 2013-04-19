@@ -134,24 +134,25 @@ public class FunctionsView extends ViewPart {
 		treeViewer.getControl().setFocus();
 	}
 
-	private String formulaToString(FormulaFunction funtion) {
+	private String formulaToString(FormulaFunction function) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(funtion.getName()).append("(");
+		stringBuffer.append(function.getName()).append("(");
 		List<String> arguments = new ArrayList<String>();
-		for (int i = 0; i < funtion.getArgumentTypes().size() - 1; i++) {
-			arguments.add(funtion.getArgumentTypes().get(i).getSimpleName() + " "
-					+ funtion.getArgumentNames().get(i));
+		for (int i = 0; i < function.getArgumentTypes().size() - 1; i++) {
+			arguments.add(function.getArgumentTypes().get(i).getSimpleName() + " "
+					+ function.getArgumentNames().get(i));
 		}
 		StringBuilder lastArgument = new StringBuilder();
-		lastArgument.append(funtion.getArgumentTypes().get(funtion.getArgumentTypes().size() - 1).getSimpleName());
-		if (funtion.isVarargs()) {
+		lastArgument.append(function.getArgumentTypes().get(function.getArgumentTypes().size() - 1).getSimpleName());
+		if (function.isVarargs()) {
 			lastArgument.append("...");
 		}
-		lastArgument.append(" ").append(funtion.getArgumentNames().get(funtion.getArgumentTypes().size() - 1));
+		lastArgument.append(" ").append(function.getArgumentNames().get(function.getArgumentTypes().size() - 1));
 		arguments.add(lastArgument.toString());
 		stringBuffer.append(Joiner.on(", ").join(arguments));
 		stringBuffer.append(")");
 		stringBuffer.append(": ");
+		stringBuffer.append(function.getReturnType().getSimpleName());
 		return stringBuffer.toString();
 	}
 }
