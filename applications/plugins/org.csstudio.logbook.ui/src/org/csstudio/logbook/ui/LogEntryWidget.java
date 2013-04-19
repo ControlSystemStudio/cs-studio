@@ -171,7 +171,8 @@ public class LogEntryWidget extends Composite {
 		FormData fd = (FormData) label.getLayoutData();
 		int calNumerator = (int) (fd.top.numerator + (e.y * 100)
 			/ e.display.getActiveShell().getClientArea().height);
-		fd.top = new FormAttachment(calNumerator <= 100 ? calNumerator : 100, fd.top.offset);
+		fd.top = new FormAttachment(calNumerator <= 100 ? calNumerator
+			: 100, fd.top.offset);
 		label.setLayoutData(fd);
 		label.getParent().layout();
 	    }
@@ -506,7 +507,7 @@ public class LogEntryWidget extends Composite {
 		case "expand":
 		    FormData fd = ((FormData) label.getLayoutData());
 		    if (expanded) {
-			fd.top = new FormAttachment(60);
+			fd.top = new FormAttachment(60, -28);
 			btnNewButton.setText("Hide details");
 		    } else {
 			fd.top = new FormAttachment(100, -28);
@@ -695,8 +696,15 @@ public class LogEntryWidget extends Composite {
 					attachment.getFileName().lastIndexOf(
 						"."),
 					attachment.getFileName().length()))) {
-		    imageInputStreamsMap.put(attachment.getFileName(),
-			    attachment.getInputStream());
+		    try {
+			if (attachment.getInputStream().available() > 0) {
+			    imageInputStreamsMap.put(attachment.getFileName(),
+				    attachment.getInputStream());
+			}
+		    } catch (IOException e) {
+			setLastException(e);
+		    }
+
 		}
 	    }
 	    try {
