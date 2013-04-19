@@ -60,6 +60,11 @@ abstract class OneArgNumericFormulaFunction implements FormulaFunction {
     }
 
     @Override
+    public Class<?> getReturnType() {
+        return VNumber.class;
+    }
+
+    @Override
     public Object calculate(List<Object> args) {
         return ValueFactory.newVDouble(calculate(((VNumber) args.get(0)).getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
     }

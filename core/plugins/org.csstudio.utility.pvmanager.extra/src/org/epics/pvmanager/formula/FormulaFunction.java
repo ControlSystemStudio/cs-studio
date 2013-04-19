@@ -24,5 +24,7 @@ public interface FormulaFunction {
     
     public List<String> getArgumentNames();
     
+    public Class<?> getReturnType();
+    
     public Object calculate(List<Object> args);
 }

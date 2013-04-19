@@ -9,6 +9,7 @@ import java.util.List;
 import org.epics.util.array.ListDouble;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
 import static org.epics.vtype.ValueFactory.*;
 
@@ -46,6 +47,11 @@ class ArrayOfFormulaFunction implements FormulaFunction {
     @Override
     public List<String> getArgumentNames() {
         return Arrays.asList("args");
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+        return VNumberArray.class;
     }
 
     @Override
