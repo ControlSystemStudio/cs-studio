@@ -8,8 +8,10 @@
  */
 package org.epics.pvmanager.formula;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.antlr.runtime.*;
 import org.epics.vtype.VDouble;
@@ -118,121 +120,43 @@ public class ExpressionLanguage {
         return fun + "(" + arg.getName()+ ")";
     }
     
-    static DesiredRateExpression<VDouble> add(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
+    static DesiredRateExpression<?> addCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("+", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    }
+    
+    static DesiredRateExpression<?> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("^", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    }
+    
+    static DesiredRateExpression<?> subtractCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    }
+    
+    static DesiredRateExpression<?> negateCast(DesiredRateExpression<?> arg) {
+        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg));
+    }
+    
+    static DesiredRateExpression<?> multiplyCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("*", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    }
 
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 + arg2;
-            }
-        }, arg1, arg2, opName(" + ", arg1, arg2));
+    static DesiredRateExpression<?> divideCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("/", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
     
-    static DesiredRateExpression<VDouble> addCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return add(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> pow(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return Math.pow(arg1, arg2);
-            }
-        }, arg1, arg2, opName(" ^ ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return pow(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> subtract(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 - arg2;
-            }
-        }, arg1, arg2, opName(" - ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> subtractCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return subtract(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> negate(DesiredRateExpression<? extends VNumber> arg) {
-        return resultOf(new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return - arg;
-            }
-        }, arg, opName("-", arg));
-    }
-    
-    static DesiredRateExpression<VDouble> negateCast(DesiredRateExpression<?> arg) {
-        return negate(cast(VNumber.class, arg));
-    }
-    
-    static DesiredRateExpression<VDouble> multiply(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 * arg2;
-            }
-        }, arg1, arg2, opName(" * ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> multiplyCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return multiply(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> divide(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 / arg2;
-            }
-        }, arg1, arg2, opName(" / ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> divideCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return divide(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> reminder(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 % arg2;
-            }
-        }, arg1, arg2);
-    }
-    
-    static DesiredRateExpression<VDouble> reminderCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return reminder(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
+    static DesiredRateExpression<?> remainderCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("%", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
         Collection<FormulaFunction> matchedFunctions = FormulaRegistry.getDefault().findFunctions(function, args.getDesiredRateExpressions().size());
         if (matchedFunctions.size() > 0) {
             FormulaReadFunction readFunction = new FormulaReadFunction(Expressions.functionsOf(args), matchedFunctions);
-            StringBuilder sb = new StringBuilder();
-            sb.append(function).append('(');
-            boolean first = true;
-            for (DesiredRateExpression<?> arg : args.getDesiredRateExpressions()) {
-                if (!first) {
-                    sb.append(", ");
-                } else {
-                    first = false;
-                }
-                sb.append(arg.getName());
+            List<String> argNames = new ArrayList<>(args.getDesiredRateExpressions().size());
+            for (DesiredRateExpression<? extends Object> arg : args.getDesiredRateExpressions()) {
+                argNames.add(arg.getName());
             }
-            sb.append(')');
-            return new DesiredRateExpressionImpl<>(args, readFunction, sb.toString());
+            return new DesiredRateExpressionImpl<>(args, readFunction, FormulaFunctions.format(function, argNames));
         }
         
         if ("columnOf".equals(function)) {
