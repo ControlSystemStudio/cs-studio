@@ -21,6 +21,7 @@ class FormulaReadFunction implements ReadFunction<Object> {
     public final List<Object> argumentValues;
     public final String functionName;
     public FormulaFunction lastFormula;
+    public Object lastValue;
 
     FormulaReadFunction(List<ReadFunction<?>> argumentFunctions, Collection<FormulaFunction> formulaMatches) {
         this.argumentFunctions = argumentFunctions;
@@ -34,8 +35,12 @@ class FormulaReadFunction implements ReadFunction<Object> {
 
     @Override
     public Object readValue() {
+        List<Object> previousValues = new ArrayList<>(argumentValues);
         for (int i = 0; i < argumentFunctions.size(); i++) {
             argumentValues.set(i, argumentFunctions.get(i).readValue());
+        }
+        if (previousValues.equals(argumentValues) && lastFormula != null && lastFormula.isPure()) {
+            return lastValue;
         }
         
         if (lastFormula == null || !FormulaFunctions.matchArgumentTypes(argumentValues, lastFormula)) {
@@ -54,7 +59,8 @@ class FormulaReadFunction implements ReadFunction<Object> {
             throw new RuntimeException("Can't find match for function '" + functionName + "'  and arguments " + typeNames);
         }
         
-        return lastFormula.calculate(argumentValues);
+        lastValue = lastFormula.calculate(argumentValues);
+        return lastValue;
     }
     
 }
