@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  Final product can override in plugin_preferences.ini.
  *  @author Kay Kasemir
  *  @author Xihui Chen
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
 public class Preferences
@@ -53,6 +54,8 @@ public class Preferences
     final public static String MAX_CONTEXT_MENU_ENTRIES = "max_context_menu_entries";
     final public static String GUI_UPDATE_SUPPRESSION_MILLIS = "gui_update_suppression_millis";
     final public static String GUI_UPDATE_INITIAL_MILLIS = "gui_update_initial_millis";
+    final public static String BATCH_UPDATE_PERIOD = "batch_update_period";
+    final public static String BATCH_SIZE = "batch_size";
 
     final private static String SERVER_SUFFIX = "_SERVER";
     final private static String CLIENT_SUFFIX = "_CLIENT";
@@ -294,5 +297,23 @@ public class Preferences
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, MAX_CONTEXT_MENU_ENTRIES, 10, null);
+    }
+    
+    /** @return the batch update period for rdb updates (the interval how often 
+     * 			the alarm state updates are inserted into the database in seconds)
+     */
+    public static double getBatchUpdatePeriod()
+    {
+    	final IPreferencesService service = Platform.getPreferencesService();
+        return service.getDouble(Activator.ID, BATCH_UPDATE_PERIOD, 1., null);
+    }
+    
+    /** @return the batch size for rdb updates (the number of sql statements in 
+     * 				a single batch)
+     */
+    public static int getBatchSize()
+    {
+    	final IPreferencesService service = Platform.getPreferencesService();
+        return service.getInt(Activator.ID, BATCH_SIZE, 3000, null);
     }
 }
