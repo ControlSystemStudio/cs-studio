@@ -99,77 +99,6 @@ public class WorkQueueUnitTest
         assertEquals(0.0, seconds, 0.01);
     }
     
-    @Test
-    public void testReplacableRunnable()
-    {
-        final WorkQueue queue = new WorkQueue();
-        assertEquals(0, queue.size());
-
-        // Add ordinary runnables that will be executed from queue
-        queue.execute(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("1");
-                result += "1";
-            }
-        });
-        assertEquals(1, queue.size());
-        queue.execute(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("2");
-                result += "2";
-            }
-        });
-        assertEquals(2, queue.size());
-        
-        // Add ReplacableRunnable for PV A, will be executed
-        String name = "A";
-        queue.executeReplacable(new ReplacableRunnable<String>(name)
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("A1");
-                result += "A1";
-            }
-        });
-        assertEquals(3, queue.size());
-
-        // Add ReplacableRunnable for PV B, will be replaced
-        name = "B";
-        queue.executeReplacable(new ReplacableRunnable<String>(name)
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("Should not see this");
-                result += "Should not see this";
-            }
-        });
-        assertEquals(4, queue.size());
-
-        // The replacement
-        queue.executeReplacable(new ReplacableRunnable<String>(name)
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("B2");
-                result += "B2";
-            }
-        });
-        assertEquals(4, queue.size());
-    
-        // Execute queued commands
-        queue.performQueuedCommands(10);
-        assertEquals("12A1B2", result);
-    }
-
     // Meant to run in JProfiler, used to
     // determine queue performance
     // @Ignore
@@ -183,8 +112,7 @@ public class WorkQueueUnitTest
 	        for (int dup=0; dup<5; ++dup)
 		        for (int i=0; i<10; ++i)
 		        {
-//			        queue.execute(new Runnable()
-			        queue.executeReplacable(new ReplacableRunnable<String>("Test" + i)
+			        queue.execute(new Runnable()
 			        {
 			            @Override
 			            public void run()

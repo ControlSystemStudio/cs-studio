@@ -28,6 +28,7 @@ import org.epics.util.time.Timestamp;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
 public class ServerCommunicator extends JMSCommunicationWorkQueueThread
@@ -257,7 +258,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         idle_timer.reset();
     }
 
-    /** Notify clients of new alarm state
+    /** Notify clients of new alarm state. The update is sent on the same thread 
+     *  as this method is called.
      *  @param pv PV that changes alarm state
      *  @param current_severity Current severity of the PV
      *  @param current_message Current message of the PV
@@ -273,37 +275,30 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             final String value,
             final Timestamp timestamp)
     {
-        execute(new Runnable()
+    	try
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    final MapMessage map = createAlarmMessage(
-                            AlarmLogic.getMaintenanceMode()
-                            ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
-                            : JMSAlarmMessage.TEXT_STATE);
-                    map.setString(JMSLogMessage.NAME, pv.getName());
-                    map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
-                    map.setString(JMSAlarmMessage.STATUS,  alarm_message);
-                    if (value != null)
-                        map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
-                    map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
-                    map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
-                    server_producer.send(map);
-                }
-                catch (Exception ex)
-                {
-                    Activator.getLogger().log(Level.WARNING, "Cannot send state update message", ex);
-                }
-            }
-        });
+            final MapMessage map = createAlarmMessage(
+                    AlarmLogic.getMaintenanceMode()
+                    ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
+                    : JMSAlarmMessage.TEXT_STATE);
+            map.setString(JMSLogMessage.NAME, pv.getName());
+            map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
+            map.setString(JMSAlarmMessage.STATUS,  alarm_message);
+            if (value != null)
+                map.setString(JMSAlarmMessage.VALUE, value);
+            map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+            map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
+            map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
+            server_producer.send(map);
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING, "Cannot send state update message", ex);
+        }
         idle_timer.reset();
     }
 
-    /** Notify 'global' clients of new alarm state
+    /** Notify 'global' clients of new alarm state. The notification is sent on the caller's thread.
      *  @param pv PV that changes alarm state
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
@@ -315,30 +310,23 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             final String value,
             final Timestamp timestamp)
     {
-        execute(new Runnable()
+    	try
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
-                    map.setString(JMSLogMessage.NAME, pv.getPathName());
-                    map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
-                    map.setString(JMSAlarmMessage.STATUS,  alarm_message);
-                    if (value != null)
-                        map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
-                    global_producer.send(map);
-                }
-                catch (Exception ex)
-                {
-                    Activator.getLogger().log(Level.WARNING, "Cannot send global update", ex);
-                }
-            }
-        });
+            final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
+            map.setString(JMSLogMessage.NAME, pv.getPathName());
+            map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
+            map.setString(JMSAlarmMessage.STATUS,  alarm_message);
+            if (value != null)
+                map.setString(JMSAlarmMessage.VALUE, value);
+            map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));  
+            global_producer.send(map);
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING, "Cannot send global update", ex);
+        }
     }
-
+    
     /** Notify clients of enablement state
      *  @param pv PV that is now enabled/disabled
      *  @param enabled Enabled?
