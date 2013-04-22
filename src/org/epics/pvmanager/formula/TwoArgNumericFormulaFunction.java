@@ -45,7 +45,7 @@ abstract class TwoArgNumericFormulaFunction implements FormulaFunction {
     }
 
     @Override
-    public boolean isVarargs() {
+    public boolean isVarArgs() {
         return false;
     }
 
