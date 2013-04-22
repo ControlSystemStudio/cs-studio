@@ -23,40 +23,41 @@ import java.util.logging.Level;
  *  happen on the same thread.
  *
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
 public class WorkQueue implements Executor
 {
     /** Task queue */
-	final Queue<Runnable> tasks = new LinkedList<Runnable>();
-	
-	// Compared these data structures for 'tasks':
-	//
-	// final Queue<Runnable> tasks = new LinkedList<Runnable>();
-	// final LinkedHashMap<Object, Runnable> tasks = new LinkedHashMap<Object, Runnable>();
-	//
-	// Considered LinkedHashSet, but didn't work:
-	// Inserting a 'new' ReplacableRunnable would simply keep
-	// an older entry, not update it.
+    final Queue<Runnable> tasks = new LinkedList<Runnable>();
+    
+    // Compared these data structures for 'tasks':
+    //
+    // final Queue<Runnable> tasks = new LinkedList<Runnable>();
+    // final LinkedHashMap<Object, Runnable> tasks = new LinkedHashMap<Object, Runnable>();
+    //
+    // Considered LinkedHashSet, but didn't work:
+    // Inserting a 'new' ReplacableRunnable would simply keep
+    // an older entry, not update it.
 
-	// JProfile results for 100 tasks, replaced 4 times:
-	//
-	//                     LinkedList  LinkedHashMap
-	// execute                 4us         10us
-	// executeReplacable      44us         10us
-	// getOldestRunnable       1us         12us
-	//
-	// Linked list is obviously slower when asked to replaced an existing
-	// runnable for the same object because of the linear lookup.
-	// But how long is the list going to be?
-	// Usually only a few noisy PVs, so maybe just 2 or 3 entries
-	// that keep getting replaced.
-	// If the test is run with only 10 tasks in the queue,
-	// executeReplacable for the LinkedList takes only 11us,
-	// i.e. similar to LinkedHashMap
-	//
-	// -> Simple linked list is probably good enough for the
-	// common use case, plus uses less memory.
+    // JProfile results for 100 tasks, replaced 4 times:
+    //
+    //                     LinkedList  LinkedHashMap
+    // execute                 4us         10us
+    // executeReplacable      44us         10us
+    // getOldestRunnable       1us         12us
+    //
+    // Linked list is obviously slower when asked to replaced an existing
+    // runnable for the same object because of the linear lookup.
+    // But how long is the list going to be?
+    // Usually only a few noisy PVs, so maybe just 2 or 3 entries
+    // that keep getting replaced.
+    // If the test is run with only 10 tasks in the queue,
+    // executeReplacable for the LinkedList takes only 11us,
+    // i.e. similar to LinkedHashMap
+    //
+    // -> Simple linked list is probably good enough for the
+    // common use case, plus uses less memory.
 
     /** Thread that executes the queue. Set on first access */
     private Thread thread;
@@ -64,9 +65,9 @@ public class WorkQueue implements Executor
     /** @return Number of currently queued commands on the work queue */
     public int size()
     {
-    	synchronized (tasks)
+        synchronized (tasks)
         {
-        	return tasks.size();
+            return tasks.size();
         }
     }
     
@@ -79,38 +80,30 @@ public class WorkQueue implements Executor
     {
         synchronized (tasks)
         {
-        	// Hash: Use dummy key to add a new element
+            // Hash: Use dummy key to add a new element
             // tasks.put(new Object(), command);
-        	
-        	// Queue:
-        	tasks.add(command);
-        	
+            
+            // Queue:
+            tasks.add(command);
+            
             tasks.notifyAll();
         }
     }
-
-    /** Add a replaceable command to the queue.
+    
+    /** Add a command to the queue but only if that same command is not already in the queue.
+     *  If it is, do nothing.
      * 
-     *  <p>If there is already a replaceable command
-     *  on the queue for the same object, it will
-     *  be replaced with this one.
-     *  
-     *  @param command Command to be executed
-     *  @see Executor#execute(Runnable)
+     *  @param command the command to be added to the queue
      */
-    public void executeReplacable(final ReplacableRunnable<?> command)
+    public void executeIfNotPending(final Runnable command)
     {
         synchronized (tasks)
-        {	// Hash: Adding a ReplacableRunnable will
-        	// use that class's equals() to replace
-        	// an existing entry for the same object
-        	// tasks.put(command, command);
-        	
-        	// List: Replace old, then add new
-        	tasks.remove(command);
-        	tasks.add(command);
-        	
-            tasks.notifyAll();
+        {
+            if (!tasks.contains(command))
+            {
+                tasks.add(command);
+                tasks.notifyAll();
+            }
         }
     }
 
@@ -119,21 +112,22 @@ public class WorkQueue implements Executor
     {
         synchronized (tasks)
         {
-        	// Hash: Need iterator to get oldest
-        	//final Iterator<Runnable> iter = tasks.values().iterator();
-        	//if (iter.hasNext())
-        	//{
-        	//	final Runnable result = iter.next();
-        	//	iter.remove();
-			//	return result;
-        	//}
-        	//return null;
-        	
-        	// Queue was designed for this
-        	return tasks.poll();
+            // Hash: Need iterator to get oldest
+            //final Iterator<Runnable> iter = tasks.values().iterator();
+            //if (iter.hasNext())
+            //{
+            //    final Runnable result = iter.next();
+            //    iter.remove();
+            //    return result;
+            //}
+            //return null;
+            
+            // Queue was designed for this
+            return tasks.poll();
         }
     }
-	/** Perform queued commands, return when done.
+
+    /** Perform queued commands, return when done.
      *  Returns 'immediately' if there are no queued commands.
      */
     public void performQueuedCommands()
@@ -170,7 +164,7 @@ public class WorkQueue implements Executor
         // a notify.
         synchronized (tasks)
         {
-        	task = getOldestRunnable();
+            task = getOldestRunnable();
             if (task == null)
             {
                 try
