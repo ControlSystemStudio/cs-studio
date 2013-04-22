@@ -46,6 +46,13 @@ public class ExpressionLanguage {
         return new FormulaParser(tokenStream);
     }
     
+    /**
+     * If the formula represents a single channels it returns the name,
+     * null otherwise.
+     * 
+     * @param formula the formula to parse
+     * @return the channel it represents or null
+     */
     public static String channelFromFormula(String formula) {
         try {
             FormulaParser parser = createParser(formula);
@@ -64,7 +71,14 @@ public class ExpressionLanguage {
             return null;
         }
     }
-    
+
+    /**
+     * Returns the expression that will return the live value of the
+     * given formula.
+     * 
+     * @param formula the formula to parse
+     * @return an expression for the formula
+     */
     public static DesiredRateReadWriteExpression<?, Object> formula(String formula) {
         RuntimeException parsingError;
         try {

@@ -12,16 +12,27 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * The registry to add functions that will be used by the formula parser.
  *
  * @author carcassi
  */
 public class FormulaRegistry {
     private final static FormulaRegistry registry = new FormulaRegistry();
 
+    /**
+     * Returns the default formula registry.
+     * 
+     * @return the default registry
+     */
     public static FormulaRegistry getDefault() {
         return registry;
     }
-    
+
+    /**
+     * Registers a formula set.
+     * 
+     * @param functionSet a formula set
+     */
     public void registerFormulaFunctionSet(FormulaFunctionSet functionSet) {
         functionSets.put(functionSet.getName(), functionSet);
         for (FormulaFunction formulaFunction : functionSet.getFunctions()) {
@@ -50,15 +61,34 @@ public class FormulaRegistry {
         // Add formula
         functionsForNArguments.add(formulaFunction);
     }
-    
+
+    /**
+     * Returns the names of all the registered function sets.
+     * 
+     * @return the names of the registered function sets
+     */
     public Set<String> listFunctionSets() {
         return Collections.unmodifiableSet(new HashSet<>(functionSets.keySet()));
     }
     
+    /**
+     * Returns the registered function set with the given name.
+     * 
+     * @param name the function set name
+     * @return the set or null
+     */
     public FormulaFunctionSet findFunctionSet(String name) {
         return functionSets.get(name);
     }
-    
+
+    /**
+     * Finds the registered function with the given name and that can
+     * accept the given number of arguments.
+     * 
+     * @param functionName the name of the function
+     * @param nArguments the number of the arguments
+     * @return the matched functions
+     */
     public Collection<FormulaFunction> findFunctions(String functionName, Integer nArguments) {
         Set<FormulaFunction> functions = new HashSet<>();
         for (FormulaFunctionSet formulaFunctionSet : functionSets.values()) {

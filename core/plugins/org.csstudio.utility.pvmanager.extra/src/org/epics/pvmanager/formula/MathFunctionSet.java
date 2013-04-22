@@ -5,11 +5,15 @@
 package org.epics.pvmanager.formula;
 
 /**
+ * A function set that corresponds to all methods in {@link Math}.
  *
  * @author carcassi
  */
 public class MathFunctionSet extends FormulaFunctionSet {
 
+    /**
+     * Creates a new set.
+     */
     public MathFunctionSet() {
         super(new FormulaFunctionSetDescription("math", "Basic mathematical functions, wrapped from java.lang.Math")
                 .addFormulaFunction(new OneArgNumericFormulaFunction("abs", "Absolute value", "arg") {

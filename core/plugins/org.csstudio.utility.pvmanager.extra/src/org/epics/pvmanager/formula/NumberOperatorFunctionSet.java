@@ -5,11 +5,15 @@
 package org.epics.pvmanager.formula;
 
 /**
+ * A set of function for the number scalar operators.
  *
  * @author carcassi
  */
 public class NumberOperatorFunctionSet extends FormulaFunctionSet {
 
+    /**
+     * Creates a new set.
+     */
     public NumberOperatorFunctionSet() {
         super(new FormulaFunctionSetDescription("numericOperators", "Operators for numeric scalar")
                 .addFormulaFunction(new TwoArgNumericFormulaFunction("+", "Numeric addition", "arg1", "arg2") {

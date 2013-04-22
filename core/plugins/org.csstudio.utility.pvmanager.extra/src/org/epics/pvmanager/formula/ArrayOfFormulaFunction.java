@@ -25,7 +25,7 @@ class ArrayOfFormulaFunction implements FormulaFunction {
     }
 
     @Override
-    public boolean isVarargs() {
+    public boolean isVarArgs() {
         return true;
     }
 
