@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.formula.FormulaFunction;
 import org.epics.pvmanager.formula.FormulaFunctionSet;
+import org.epics.pvmanager.formula.FormulaFunctions;
 import org.epics.pvmanager.formula.FormulaRegistry;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
@@ -82,7 +83,7 @@ public class FunctionsView extends ViewPart {
 				if (element instanceof FormulaFunctionSet) {
 					return ((FormulaFunctionSet) element).getName();
 				} else if (element instanceof FormulaFunction) {
-					return formulaToString((FormulaFunction) element);
+					return FormulaFunctions.formatSignature((FormulaFunction) element);
 				}
 				return "";
 			}
@@ -132,27 +133,5 @@ public class FunctionsView extends ViewPart {
 	@Override
 	public void setFocus() {
 		treeViewer.getControl().setFocus();
-	}
-
-	private String formulaToString(FormulaFunction function) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(function.getName()).append("(");
-		List<String> arguments = new ArrayList<String>();
-		for (int i = 0; i < function.getArgumentTypes().size() - 1; i++) {
-			arguments.add(function.getArgumentTypes().get(i).getSimpleName() + " "
-					+ function.getArgumentNames().get(i));
-		}
-		StringBuilder lastArgument = new StringBuilder();
-		lastArgument.append(function.getArgumentTypes().get(function.getArgumentTypes().size() - 1).getSimpleName());
-		if (function.isVarargs()) {
-			lastArgument.append("...");
-		}
-		lastArgument.append(" ").append(function.getArgumentNames().get(function.getArgumentTypes().size() - 1));
-		arguments.add(lastArgument.toString());
-		stringBuffer.append(Joiner.on(", ").join(arguments));
-		stringBuffer.append(")");
-		stringBuffer.append(": ");
-		stringBuffer.append(function.getReturnType().getSimpleName());
-		return stringBuffer.toString();
 	}
 }
