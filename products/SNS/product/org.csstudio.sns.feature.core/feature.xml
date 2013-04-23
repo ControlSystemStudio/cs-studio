@@ -38,7 +38,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.platform.libs.epics" version="3.1.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit" version="4.8.1" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jdbc" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
@@ -83,6 +83,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.6" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
