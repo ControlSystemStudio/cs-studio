@@ -17,28 +17,6 @@ import org.hamcrest.Matcher;
 @SuppressWarnings("nls")
 public class HamcrestMatchers
 {
-	/** @param segment Segment to find within {@link String}
-	 *  @return {@link Matcher}
-	 */
-	public static Matcher<String> containsString(final String segment)
-	{
-		return new BaseMatcher<String>()
-		{
-            @Override
-			public void describeTo(final Description descr)
-			{
-				descr.appendText("text that contains \"").appendText(segment).appendText("\"");
-			}
-
-			@Override
-			public boolean matches(final Object obj)
-			{
-				return obj instanceof String
-					&& ((String) obj).contains(segment);
-			}
-		};
-	}
-	
 	/** @param goal Desired value
 	 *  @param tolerance Allowed tolerance
      *  @return {@link Matcher}

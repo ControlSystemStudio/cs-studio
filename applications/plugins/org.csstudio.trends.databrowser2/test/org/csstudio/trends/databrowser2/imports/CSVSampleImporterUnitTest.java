@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
