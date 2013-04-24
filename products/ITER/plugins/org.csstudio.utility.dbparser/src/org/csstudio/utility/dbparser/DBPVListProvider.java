@@ -9,9 +9,9 @@ package org.csstudio.utility.dbparser;
 
 import java.util.regex.Pattern;
 
-import org.csstudio.pvnames.IAutoCompleteProvider;
-import org.csstudio.pvnames.AutoCompleteResult;
-import org.csstudio.pvnames.AutoCompleteHelper;
+import org.csstudio.autocomplete.AutoCompleteHelper;
+import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.IAutoCompleteProvider;
 
 public class DBPVListProvider implements IAutoCompleteProvider {
 

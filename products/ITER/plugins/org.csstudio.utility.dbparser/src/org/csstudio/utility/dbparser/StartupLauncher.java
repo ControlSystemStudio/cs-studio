@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.antlr.runtime.RecognitionException;
-import org.csstudio.pvnames.data.Record;
+import org.csstudio.autocomplete.data.Record;
 import org.csstudio.utility.dbparser.exception.DbParsingException;
 import org.csstudio.utility.dbparser.util.DbUtil;
 import org.eclipse.core.resources.IFile;

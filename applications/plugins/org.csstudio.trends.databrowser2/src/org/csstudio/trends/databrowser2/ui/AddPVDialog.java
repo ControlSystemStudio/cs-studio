@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.HashMap;
 
-import org.csstudio.pvnames.ui.AutoCompleteWidget;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;

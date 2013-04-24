@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.iter.utility.sddreader.Activator
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.pvnames,
+ org.csstudio.autocomplete,
  org.csstudio.platform.utility.rdb,
  org.csstudio.auth
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER

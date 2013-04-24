@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVHelper;
 import org.csstudio.diag.pvfields.model.PVModel;
 import org.csstudio.diag.pvfields.model.PVModelExport;
 import org.csstudio.diag.pvfields.model.PVModelListener;
-import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;
