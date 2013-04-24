@@ -19,7 +19,6 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
-import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;

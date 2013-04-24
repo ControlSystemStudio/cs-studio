@@ -2,10 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="SDD Database">
    <implementation class="org.csstudio.iter.utility.sddreader.SDDPVListProvider"/>
    <service>
-<<<<<<< HEAD
       <provide interface="org.csstudio.autocomplete.IAutoCompleteProvider"/>
-=======
-      <provide interface="org.csstudio.pvnames.IAutoCompleteProvider"/>
->>>>>>> 37ae293... Auto-Complete:
    </service>
 </scr:component>
