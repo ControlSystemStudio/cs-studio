@@ -40,6 +40,7 @@ public class PVModel
     final private PVModelListener listener;
     private Map<String, String> properties;
     private List<PVField> fields;
+    private Thread lookupThread;
     
     public PVModel(final String name, final PVModelListener listener)
     {
@@ -55,7 +56,8 @@ public class PVModel
 				performLookup(name);
 			}
         };
-        new Thread(lookup, "Lookup").start();
+		lookupThread = new Thread(lookup, "Lookup");
+		lookupThread.start();
     }
     
     /** Locate all DataProviders in registry
@@ -133,6 +135,7 @@ public class PVModel
         	}
         	catch (Exception ex)
         	{
+				if (ex instanceof InterruptedException) return;
         		Activator.getLogger().log(Level.WARNING, "DataProvider error", ex);
         	}
         }
@@ -199,5 +202,9 @@ public class PVModel
 		if (old_fields != null)
 			for (PVField field : old_fields)
 				field.stop();
+		if (lookupThread != null && lookupThread.isAlive()) {
+			lookupThread.interrupt();
+			lookupThread = null;
+		}
 	}
 }
