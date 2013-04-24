@@ -138,7 +138,9 @@ public class View extends ViewPart implements AreaAlarmModelListener
 		fd.bottom = new FormAttachment(100);
 		panel_box.setLayoutData(fd);
 
-		setErrorMessage(Messages.WaitingForServer);
+		if (!model.isServerAlive()) {
+			setErrorMessage(Messages.WaitingForServer);
+		}
 		fillPanelBox();
     }
 	
