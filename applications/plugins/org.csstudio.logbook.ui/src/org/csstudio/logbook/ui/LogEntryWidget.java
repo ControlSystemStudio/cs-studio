@@ -255,14 +255,12 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	btnAddLogbook.setImage(ResourceManager.getPluginImage(
-		"org.csstudio.logbook.ui", "icons/logbook-16.png"));
+	btnAddLogbook.setImage(ResourceManager.getPluginImage("org.csstudio.logbook.ui", "icons/logbook-add-16.png"));
 	FormData fd_btnAddLogbook = new FormData();
 	fd_btnAddLogbook.bottom = new FormAttachment(label, -46);
 	fd_btnAddLogbook.left = new FormAttachment(100, -40);
 	fd_btnAddLogbook.right = new FormAttachment(100, -5);
 	btnAddLogbook.setLayoutData(fd_btnAddLogbook);
-	btnAddLogbook.setText("Add Logbook");
 
 	lblTags = new Label(composite, SWT.NONE);
 	FormData fd_lblTags = new FormData();
@@ -271,6 +269,7 @@ public class LogEntryWidget extends Composite {
 	lblTags.setText("Tags:");
 
 	btnAddTags = new Button(composite, SWT.NONE);
+	btnAddTags.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_tag.png"));
 	btnAddTags.setEnabled(editable);
 	fd_lblTags.top = new FormAttachment(btnAddTags, 5, SWT.TOP);
 	btnAddTags.addSelectionListener(new SelectionAdapter() {
@@ -296,7 +295,6 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	btnAddTags.setText("Add Tags");
 	FormData fd_btnAddTags = new FormData();
 	fd_btnAddTags.bottom = new FormAttachment(label, -6);
 	fd_btnAddTags.right = new FormAttachment(100, -5);
