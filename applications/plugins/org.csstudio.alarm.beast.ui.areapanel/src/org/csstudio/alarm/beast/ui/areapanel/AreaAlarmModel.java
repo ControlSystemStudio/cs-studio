@@ -112,4 +112,12 @@ public class AreaAlarmModel implements AlarmClientModelListener
 		model.removeListener(this);
 		model.release();
     }
+
+    /** @return <code>true</code> if we received updates from server,
+     *          <code>false</code> after server communication timeout
+     */
+    public boolean isServerAlive()
+    {
+        return model.isServerAlive();
+    }
 }
