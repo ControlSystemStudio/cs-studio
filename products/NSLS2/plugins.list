@@ -48,6 +48,7 @@ org.csstudio.graphene.opiwidgets
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
+org.csstudio.logbook.olog.properties
 org.csstudio.logbook.ui
 org.csstudio.logbook.viewer
 org.csstudio.logging
