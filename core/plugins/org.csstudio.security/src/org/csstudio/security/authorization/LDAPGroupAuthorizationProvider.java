@@ -112,7 +112,7 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
 
                 // LDAP 'posixGroup' schema uses 'cn' to name the group
                 final String authorization = r.getAttributes().get("cn").get().toString();
-                System.out.println("Found: '" + authorization +  "'");
+                logger.log(Level.FINE, "Found: '" + authorization +  "'");
                 authorizations.add(authorization);
             }
         }

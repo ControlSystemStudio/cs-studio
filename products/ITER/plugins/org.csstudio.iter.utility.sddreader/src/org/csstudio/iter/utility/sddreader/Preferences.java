@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.iter.utility.sddreader;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -46,8 +46,7 @@ public class Preferences {
 	}
 
 	private static String getSecureString(final String setting) {
-		String value = SecureStorage.retrieveSecureStorage(Activator.PLUGIN_ID, setting);
-		return value;
+		return SecurePreferences.get(Activator.PLUGIN_ID, setting, "");
 	}
 
 	/** @return RDB URL */

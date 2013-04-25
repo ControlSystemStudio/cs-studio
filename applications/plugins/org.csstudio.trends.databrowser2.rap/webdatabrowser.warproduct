@@ -12,8 +12,6 @@
       <plugin id="org.csstudio.archive.reader"/>
       <plugin id="org.csstudio.archive.reader.rdb"/>
       <plugin id="org.csstudio.archive.vtype"/>
-      <plugin id="org.csstudio.auth"/>
-      <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
@@ -99,8 +97,6 @@
       <plugin id="org.csstudio.archive.reader" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.reader.rdb" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.vtype" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
@@ -147,6 +143,7 @@
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />

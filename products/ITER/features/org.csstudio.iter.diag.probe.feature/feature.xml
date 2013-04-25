@@ -33,7 +33,6 @@ of the distribution package.
       <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

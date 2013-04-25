@@ -1,12 +1,13 @@
 package org.csstudio.iter.utility.ologauth;
 
+import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
-import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
+import javax.security.auth.Subject;
+
+import org.csstudio.security.SecurityListener;
+import org.csstudio.security.authorization.Authorizations;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -15,21 +16,20 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import edu.msu.nscl.olog.api.Olog;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 
-public class OlogAuthAdapter implements IUserManagementListener {
+public class OlogAuthAdapter implements SecurityListener {
 
 	private static final Logger log = Logger.getLogger(OlogAuthAdapter.class
 			.getName());
 
 	public OlogAuthAdapter() {
-		SecurityFacade.getInstance().addUserManagementListener(this);
-		handleUserManagementEvent(null);
+		changedSecurity(null, false, null);
 	}
 
 	@Override
-	public void handleUserManagementEvent(UserManagementEvent event) {
+	public void changedSecurity(Subject subject, boolean is_current_user,
+			Authorizations authorizations) {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 
-		final User user = SecurityFacade.getInstance().getCurrentUser();
 		final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
 				InstanceScope.INSTANCE,
 				org.csstudio.utility.olog.Activator.PLUGIN_ID);
@@ -39,7 +39,19 @@ public class OlogAuthAdapter implements IUserManagementListener {
 						true);
 		String username;
 		String password;
-		if (user == null) {
+		String connectedOlogUsername = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.connected_olog_user, null, null);
+		boolean anonymousLogin = true;
+		if (subject != null) {
+			for (Principal principal : subject.getPrincipals()) {
+				if (principal != null && principal.getName() != null
+						&& principal.getName().equals(connectedOlogUsername)) {
+					anonymousLogin = false;
+					break;
+				}
+			}
+		}
+		if(anonymousLogin) {
 			// Set default olog user to anonymous
 			username = prefs.getString(Activator.PLUGIN_ID,
 					PreferenceConstants.anonymous_olog_user, null, null);
@@ -53,11 +65,9 @@ public class OlogAuthAdapter implements IUserManagementListener {
 						org.csstudio.utility.olog.PreferenceConstants.Password,
 						password);
 			}
-
 		} else {
 			// Set default olog user to tagmod
-			username = prefs.getString(Activator.PLUGIN_ID,
-					PreferenceConstants.connected_olog_user, null, null);
+			username = connectedOlogUsername;
 			password = prefs.getString(Activator.PLUGIN_ID,
 					PreferenceConstants.connected_olog_password, null, null);
 			if (username != null) {
@@ -78,7 +88,8 @@ public class OlogAuthAdapter implements IUserManagementListener {
 			ologClientBuilder = OlogClientBuilder.serviceURL(url);
 			ologClientBuilder.withHTTPAuthentication(true).username(username)
 					.password(password);
-			log.info("Creating Olog client : " + url);
+			log.log(Level.INFO, "Creating Olog client : " + url
+					+ " with user '" + username + "'");
 			try {
 				Olog.setClient(ologClientBuilder.create());
 			} catch (Exception e) {

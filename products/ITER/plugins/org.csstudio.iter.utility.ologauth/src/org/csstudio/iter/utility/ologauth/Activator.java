@@ -1,6 +1,6 @@
 package org.csstudio.iter.utility.ologauth;
 
-import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.security.SecuritySupport;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -34,7 +34,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
 		ologAuthAdapter = new OlogAuthAdapter();
-		SecurityFacade.getInstance().addUserManagementListener(ologAuthAdapter);
+		SecuritySupport.addListener(ologAuthAdapter);
 	}
 
 	/*
@@ -45,8 +45,7 @@ public class Activator implements BundleActivator {
 	 * )
 	 */
 	public void stop(BundleContext context) throws Exception {
-		SecurityFacade.getInstance().removeUserManagementListener(
-				ologAuthAdapter);
+		SecuritySupport.removeListener(ologAuthAdapter);
 		ologAuthAdapter = null;
 		plugin = null;
 	}
