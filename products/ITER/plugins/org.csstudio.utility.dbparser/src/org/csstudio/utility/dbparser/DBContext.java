@@ -16,7 +16,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.pvnames.data.Record;
+import org.csstudio.autocomplete.data.Record;
 import org.eclipse.core.resources.IFile;
 
 /**

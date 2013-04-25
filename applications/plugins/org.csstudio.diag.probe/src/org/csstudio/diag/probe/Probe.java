@@ -12,11 +12,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.pvnames.ui.AutoCompleteWidget;
 import org.csstudio.util.swt.meter.MeterWidget;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;

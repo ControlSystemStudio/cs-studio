@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="DB Files">
    <implementation class="org.csstudio.utility.dbparser.DBPVListProvider"/>
    <service>
-      <provide interface="org.csstudio.pvnames.IAutoCompleteProvider"/>
+      <provide interface="org.csstudio.autocomplete.IAutoCompleteProvider"/>
    </service>
 </scr:component>

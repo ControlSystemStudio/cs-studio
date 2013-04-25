@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.pvnames.ui.AutoCompleteWidget;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
