@@ -83,13 +83,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.jaasAuthentication"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.easymock"
          download-size="0"
          install-size="0"
@@ -186,6 +179,13 @@ of the distribution package.
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin

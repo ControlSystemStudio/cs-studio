@@ -38,9 +38,8 @@ of the distribution package.
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.csstudio.logbook" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth"/>
-      <import plugin="org.csstudio.auth" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth.ui" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
    </requires>
 

@@ -19,8 +19,6 @@
       <plugin id="org.csstudio.alarm.beast.ui.rap" fragment="true"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
-      <plugin id="org.csstudio.auth"/>
-      <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
@@ -100,8 +98,6 @@
       <plugin id="org.csstudio.alarm.beast.ui.globaltable" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
@@ -140,6 +136,7 @@
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jdt.junit.runtime" autoStart="true" startLevel="0" />

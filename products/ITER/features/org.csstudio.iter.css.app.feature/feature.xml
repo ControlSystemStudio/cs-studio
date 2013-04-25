@@ -47,13 +47,10 @@ of the distribution package.
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ldapAuthorization" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="javax.annotation" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.slf4j" version="1.6.1" match="greaterOrEqual"/>
@@ -72,13 +69,13 @@ of the distribution package.
       <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.hamcrest" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -125,20 +122,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.iter.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.ldapAuthorization"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.ldapAuthorization.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -216,6 +199,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.httpd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.authorizationprovider"
          download-size="0"
          install-size="0"
          version="0.0.0"
