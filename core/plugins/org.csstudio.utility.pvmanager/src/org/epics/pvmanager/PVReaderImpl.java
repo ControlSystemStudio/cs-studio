@@ -77,6 +77,7 @@ class PVReaderImpl<T> implements PVReader<T> {
     private boolean exceptionToNotify = false;
     private boolean connectionToNotify = false;
     private boolean valueToNotify = false;
+    private boolean sentFirstEvent = false;
 
     void setReaderForNotification(PVReader<T> readerForNotification) {
         synchronized(lock) {
@@ -100,6 +101,7 @@ class PVReaderImpl<T> implements PVReader<T> {
             connectionToNotify = false;
             valueToNotify = false;
             exceptionToNotify = false;
+            sentFirstEvent = true;
             event = new PVReaderEvent<>(notificationMask, readerForNotification);
         }
         
@@ -323,6 +325,12 @@ class PVReaderImpl<T> implements PVReader<T> {
     public boolean isConnected() {
         synchronized(lock) {
             return connected;
+        }
+    }
+
+    public boolean isSentFirsEvent() {
+        synchronized(lock) {
+            return sentFirstEvent;
         }
     }
 }

@@ -84,6 +84,8 @@ org.csstudio.platform.libs.log4j
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
+org.csstudio.pvnames
+org.csstudio.pvnames.ui
 org.csstudio.remote
 org.csstudio.security
 org.csstudio.security.ui
