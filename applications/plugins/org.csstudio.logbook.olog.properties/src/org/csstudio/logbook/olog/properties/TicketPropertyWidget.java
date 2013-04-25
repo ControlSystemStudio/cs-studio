@@ -1,7 +1,5 @@
-package org.csstudio.logbook.olog.ui;
+package org.csstudio.logbook.olog.properties;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import org.csstudio.logbook.LogEntryBuilder;
@@ -19,13 +17,13 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-class TracPropertyWidget extends AbstractPropertyWidget {
+class TicketPropertyWidget extends AbstractPropertyWidget {
     private static final Property widgetProperty = PropertyBuilder
-	    .property("Trac").attribute("TicketId").attribute("TicketURL")
+	    .property("Ticket").attribute("TicketId").attribute("TicketURL")
 	    .build();
 
     private Text textId;
@@ -34,7 +32,7 @@ class TracPropertyWidget extends AbstractPropertyWidget {
     private Link link;
     private Label lblAttached;
 
-    public TracPropertyWidget(Composite parent, int style,
+    public TicketPropertyWidget(Composite parent, int style,
 	    LogEntryChangeset logEntryChangeset) {
 	super(parent, style, logEntryChangeset);
 	setLayout(new FormLayout());
@@ -128,7 +126,7 @@ class TracPropertyWidget extends AbstractPropertyWidget {
 	Property property = null;
 	try {
 	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
-	    	.getLogEntry(), TracPropertyWidget.widgetProperty.getName());
+	    	.getLogEntry(), TicketPropertyWidget.widgetProperty.getName());
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();

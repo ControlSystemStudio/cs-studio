@@ -1,28 +1,18 @@
 /**
  * 
  */
-package org.csstudio.logbook.olog.ui;
+package org.csstudio.logbook.olog.properties;
 
-import org.csstudio.logbook.Property;
 import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-
-import edu.msu.nscl.olog.api.PropertyBuilder;
-
-import static org.csstudio.logbook.olog.OlogLogbookClient.OlogProperty;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author shroffk

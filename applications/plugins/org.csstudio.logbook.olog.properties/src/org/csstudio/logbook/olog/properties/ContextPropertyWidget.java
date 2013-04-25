@@ -1,4 +1,4 @@
-package org.csstudio.logbook.olog.ui;
+package org.csstudio.logbook.olog.properties;
 
 import java.io.File;
 import java.io.FileInputStream;
