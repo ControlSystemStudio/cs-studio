@@ -45,10 +45,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -66,6 +70,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -382,12 +387,33 @@ public class DataBrowserEditor extends EditorPart
 				mm.add(new SendEMailAction(shell, plot.getXYGraph()));
 		}
 		mm.add(new PrintAction(shell, plot.getXYGraph()));
-
+		
+		mm.add(new Separator());
+		mm.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
 
 		if (is_rcp) {
 			getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
+		} else {
+			getSite().registerContextMenu(mm, new ISelectionProvider() {
+				// Null Selection Provider
+				@Override
+				public void setSelection(ISelection selection) {
+				}
+				@Override
+				public void removeSelectionChangedListener(
+						ISelectionChangedListener listener) {
+				}
+				@Override
+				public ISelection getSelection() {
+					return null;
+				}
+				@Override
+				public void addSelectionChangedListener(ISelectionChangedListener listener) {
+				}
+			});
 		}
     }
 

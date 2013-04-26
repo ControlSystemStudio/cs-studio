@@ -65,4 +65,26 @@
       </filter>
    </extension>
    
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.alarm.beast.ui.AboutWebPopup"
+               icon="icons/about.png"
+               label="%AboutTitle"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.alarm.beast.ui.rap.actions.AboutWebAlarmHandler"
+            id="org.csstudio.alarm.beast.ui.AboutWebPopup"
+            name="%AboutTitle">
+      </command>
+   </extension>
+   
 </fragment>

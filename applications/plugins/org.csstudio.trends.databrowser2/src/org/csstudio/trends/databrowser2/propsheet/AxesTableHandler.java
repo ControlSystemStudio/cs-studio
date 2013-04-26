@@ -17,9 +17,11 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -33,6 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchActionConstants;
 
 /** Helper for a 'Axes' TableViewer that handles the Model's axes.
  *  Each 'row' in the table is an AxisConfig.
@@ -432,6 +435,8 @@ public class AxesTableHandler implements ILazyContentProvider
                     menu.add(new DeleteAxesAction(operations_manager, axes_table, model));
                 if (model.getEmptyAxis() != null)
                     menu.add(new RemoveUnusedAxesAction(operations_manager, model));
+        		menu.add(new Separator());
+        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         final Table table = axes_table.getTable();
