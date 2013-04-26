@@ -29,8 +29,17 @@
             favicon="icons/DataBrowserRunner.png"
             id="org.csstudio.trends.databrowser2.branding.workbench"
             servletName="d"
+            themeId="org.csstudio.trends.databrowser2.rap.theme"
             title="DataBrowser">
       </branding>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <theme
+            file="theme/default-extensions.css"
+            id="org.csstudio.trends.databrowser2.rap.theme"
+            name="WebDatabrowserTheme">
+      </theme>
    </extension>
    
    <extension
