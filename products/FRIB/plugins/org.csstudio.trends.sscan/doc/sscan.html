@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<title>Sscan</title>
+</head>
+<body>
+
+<a name=top><h1>Sscan</h1></a>
+
+<span class="index">
+- <a href="#overview">Overview</a>
+- <a href="#101">Getting Started</a>
+- <a href="#common">Common Tasks</a>
+- <a href="#perspective">Perspective</a>
+- <a href="#toolbar">Toolbar</a>
+- <a href="#config">Properties Panel</a>
+- <a href="#annotate">Annotations</a>
+- <a href="#sscanview">SscanView</a>
+- <a href="#export">Export</a>
+- <a href="#preferences">Preferences</a>
+-
+</span>
+
+
+<h2><a name=overview>Overview</a></h2> 
+<p>
+The Sscan is a visual guide for the EPICS SynApps sscan record.
+<a href="http://www.aps.anl.gov/bcda/synApps/sscan/sscan.html">sscan homepage</a>
+
+</p>
+<div class='figure'>
+   <img src="SscanSnapshot.png" width="90%"/>
+   <p>
+   Fig. 1: Sscan Screenshot
+   </p>
+</div>
+
+
+<h2><a name=101>Getting Started</a></h2>
+<p>
+To create a new plot:
+<ol>
+<li>Click on the <img src="../icons/scanner_plus.png" width=16 height=16/>
+    "Open new Sscan plot" icon in the CSS tool bar (top row of the CSS window).
+<li>Open the plot's context menu by right-clicking into the plot.
+    Select <img src="../icons/add.gif" width=16 height=16/> "Add PV".
+<li>Enter the desired sscan PV name, press "OK"
+<li>Use the <a href="#toolbar">Toolbar</a> or <a href="#config">Properties Panel</a>
+    to change the displayed time range, zoom in/out etc. 
+</ol>
+</p>
+
+
+<h2><a name=common>Common Tasks</a></h2>
+<ul>
+<li>Add sscan PV or Formula: Right-click on plot or trace table in 
+    <a href="#config">Properties Panel</a>,
+    select "Add PV" or "Add Formula".
+<li>Delete sscan PVs or Formulas:
+    In <a href="#config">Properties Panel</a>,
+    right-click on selected item in trace table and select "Delete Item".
+<li>Enter Sscan PV name in Sscan View Panel <a href="#sscanview">Sscan View</a>
+</ul>
+
+
+<h2><a name=perspective>Sscan Perspective</a></h2>
+<p>
+In addition to the plot window itself, you typically use the
+<a href="#config">Properties Panel</a> to change colors etc.,
+or the <a href="#sscanview">SscanView</a> to start/modify scans.
+</p>
+The Sscan "Perspective" provides a suggested arrangement of these
+additional panels around the plot window, similar to the screenshot in
+Fig. 1 where the Properties and <a href="#export">Export</a> panels are
+below the plot, and a SscanView panel is to its right.
+</p>
+<p>
+To switch to the Sscan Perspective in case it is not currently
+selected, right-click on the Sscan plot and select "Sscan Perspective".
+</p>
+<p>
+While in the perspective, you can then close the search panel, move the
+properties panel around as desired.
+If you later want to restore the default arrangement, 
+again right-click on the Sscan plot and select "Ssccan Perspective".
+Since it's already active, it will ask if you want to <em>reset</em> the perspective
+to its original state.
+</p>
+
+
+<h2><a name=toolbar>Plot Toolbar</a></h2>
+<p>
+The toolbar is displayed on top of a Sscan plot.
+If it is not visible, right-click on the plot to open the context menu,
+then select "Show Toolbar".
+</p>
+<div class='figure'>
+   <img src="toolbar.png" width="463" height="27"/>
+   <p>
+   Fig. 2: Sscan Plot Toolbar
+   </p>
+</div>
+<p>
+Tool tips with brief explanations will appear if you hover the mouse pointer
+over a toolbar button for a few seconds. Explanation of toolbar buttons:
+<ul class="plain_icons">
+<li><img src="Configure.png" width=16 height=16/> Configure Settings:
+    Opens dialog for configuring the plot.<br>
+    Note that these are runtime settings which include things like font settings
+    that will not be saved as part of the Data Browser configuration.
+<li><img src="Add_Annotation.png" width=16 height=16/> Add <a href="#annotate">Annotation</a>:
+    After configuring the annotation to for example 'snap' to a selected trace,
+    the next mouse click into the plot will add an annotation.
+<li><img src="Del_Annotation.png" width=16 height=16/> Remove <a href="#annotate">Annotation</a>:
+    Prompts for an annotation to remove from the plot.
+</ul>
+</p>
+<p>
+<ul class="plain_icons">
+<li><img src="stagger.png" width=16 height=16/> Stagger Axes:
+    Arranges the value axes such that the traces on different axes don't
+    overlap.
+<li><img src="RubberbandZoom.png" width=16 height=16/> Rubberband Zoom:
+    Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
+    release to zoom into that area.<br>
+    Can also be used on a y axis or the x axis to select a start/end
+    range on the axis.
+<li><img src="HorizontalZoom.png" width=16 height=16/> Horizontal Zoom:
+    Click into plot at desired start x value, hold mouse pointer to drag a
+    'rubberband' rectangle to the desired end x value,
+    release to zoom into that area.<br>
+    Can also be used on the time axis to select a start/end time.
+<li><img src="VerticalZoom.png" width=16 height=16/> Vertical Zoom:
+    Like Vertical Zoom for vertical (y) axes.<br>
+    Can also be used on a y axis to select a start/end range for the x axis.
+<li><img src="ZoomInHoriz.png" width=16 height=16/> Zoom In Horizontally:
+    Click and hold mouse pointer to zoom into x axis.
+<li><img src="ZoomOutHoriz.png" width=16 height=16/> Zoom Out ...:
+    Click and hold mouse pointer to zoom out of x axis.
+<li><img src="ZoomInVert.png" width=16 height=16/> Zoom In Vertically:
+    Click and hold mouse pointer to zoom into y axes.<br>
+    Can also be used on a particular y axis zoom into that y axis.
+<li><img src="ZoomOutVert.png" width=16 height=16/> Zoom Out ...:
+    Click and hold mouse pointer to zoom out of y axes.
+<li><img src="Panning.png" width=16 height=16/> Panning:
+    Click into plot or axes, hold and drag to desired position, release mouse button.
+<li><img src="MouseArrow.png" width=16 height=16/> None:
+    For most of the other toolbar buttons, clicking or holding the (left) mouse
+    button will for example activate a zoom operation.
+    The "None" option returns the mouse pointer to an inactive state so that
+    clicking into the plot has no effect.
+</ul>
+</p>
+<p>
+<ul class="plain_icons">
+<li><img src="Undo.png" width=16 height=16/> Undo:
+    Undo the last operation. Click again to undo the previous operation, the one
+    before that and so on.
+<li><img src="Redo.png" width=16 height=16/> Redo:
+    Un-do the last undo, i.e. re-do.
+</ul>
+<ul class="plain_icons">
+<li><img src="Camera.png" width=16 height=16/> Save Snapshot:
+    Prompts for file name under which an image of the current plot is saved.
+</p>
+</ul>
+
+<h2><a name=config>Properties Panel</a></h2>
+<p>
+The Properties panel allows configuration of the plot, its axes and traces.
+</p>
+<p>
+The same Properties panel is shared with other Sscan plots or even
+other CSS tools. When you have multiple Sscan plots open, the Properties
+panel will show the configuration of the plot that was last selected via a mouse
+click. When no Sscan plot is the active window, the Properties panel
+will be empty or even show the configuration of a different CSS tool.
+</p>
+<p>
+You can force the Properties panel to stay attached to a specific Sscan
+plot by selecting the "<img src="pin.gif" width=16 height=16/> pin" icon,
+or open more than one Properties panel (which you can then 'pin' to specific
+Sscan plots) via the "<img src="view_menu.png" width=18 height=15/> drop-down"
+menu of the panel.
+</p>
+
+
+<h3>Subsection 'Traces'</h3>
+
+<div class='figure'>
+   <img src="prop_traces.png"/>
+   <p>
+   Fig. 3: Properties panel, subseciton 'Traces'
+   </p>
+</div>
+
+<p>
+Configure the individual traces in the plot via the table of traces.
+Right-click in the table to open a context menu for adding sscan PVs or Formulas,
+deleting selected items, or adding sscan data sources (mda files) to .
+<ul>
+<li>Trace: Allows to <i>temporarily</i> hide a trace from the plot.
+    If the trace is really not needed any more, consider deleting it.
+<li>Item: Edit the item's name. For a sscan PV, this would be the control system
+    process variable. For a formula, this is the name under which the formula
+    can appear as an input to other formulas.
+<li>Display Name: The name shown in the plot legend.
+<li>Color: Click to select the trace color
+<li>X: Available positioners set in the sscan record, that can be ploted.
+<li>Y: Available detectors set in the sscan record, that can be ploted.
+<li>Width: The line widths of the trace in the plot. Also used for the size of markers. 
+<li>Axis: Click to select the axis on which to plot the trace.
+<li>Trace Type: Click to select how the trace should be displayed: Line, markers like "Square" etc.
+    The size of the lines respectively markers is controlled by the "Width".
+</ul>
+</p>
+
+<h3>Subsection 'Axes'</h3>
+<p>
+Add/remove/configure the X and Y axes; name, color, min, max, auto scale, scale type (linear, log).
+</p>
+
+<h3>Subsection 'Misc.'</h3>
+<p>
+General plot settings: Background color.
+</p>
+
+
+<h2><a name=annotate>Annotations</a></h2>
+<p>
+The <a href="#toolbar">Toolbar</a> contains buttons to 
+<img src="Add_Annotation.png" width=16 height=16/> add and
+<img src="Del_Annotation.png" width=16 height=16/> remove Annotations.
+</p>
+<p>
+When you <img src="Add_Annotation.png" width=16 height=16/> add an Annotation,
+you select if and to which trace it should "snap".
+You can enter an arbitrary annotation text ("Name") and show that with the
+Annotation, and/or have it display the plotposition or Sample Information.
+</p>
+<p>
+Move Annotation around the plot in the 
+<img src="Panning.png" width=16 height=16/> Panning or 
+<img src="MouseArrow.png" width=16 height=16/> inactive zoom modes.
+</p>
+<p>
+Change the Name, color, "snap" behavior of existing Annotations
+via the 
+<img src="Configure.png" width=16 height=16/> Configure Settings button
+in the toolbar.
+</p>
+
+
+
+<h2><a name=ssccanview>Sscan View Panel</a></h2>
+<p>
+The Sscan View Panel is part of the default
+<a href="#perspective">Perspective</a>. If you cannot find it,
+try to reset the perspective, or open a new one by right-clicking
+into the plot and selecting "Open Sscan View Panel".
+</p>
+<p>
+Enter sscan Process Variable name (PV) in the top Scan Control
+Here you can set positioner and detector PVs and configure your scan.
+</p>
+
+<h2><a name=export>Data Export</a></h2>
+<p>
+Use the "Export Samples" panel to write data into files suitable for spreadsheet
+programs or Matlab.
+</p>
+<h3>Excel Spreadsheets</h3>
+<p>
+The exported data files are in a text format with TAB-delimited columns
+suitable for import into spreadsheet programs like Microsoft Excel.
+</p>
+<p>
+Assume you chose a filename of "test.dat" on your Desktop, follow these
+steps for import into Excel:
+<ol>
+<li>In Excel, use File/Open to open the file "test.dat".<br>
+    You might have to select "Files of type: All Files (*.*)"
+    in the file "Open" dialog to do this.
+<li>A "Text Import Wizard" should appear, and the default settings
+    should already be set to
+   <ul>
+   <li>"Delimited - Characters such as ... tabs ..."
+   <li>"Delimiters: Tab"
+   </ul>
+<li>Excel will default to a less useful format for the first column,
+    the "Time" column, and only show time down to minutes, omitting the
+    seconds or microseconds.<br>
+    Fix this by clicking on the "A" table header,
+    i.e. selecting the whole first column; right-click to get
+    the "Format Cells..." dialog, and enter a "Custom" format:
+    <pre>  m/d/yy h:mm:ss.000</pre>
+</ol>
+</p>
+<p>
+When performing computations on the data, values marked "#N/A"
+which have non numerical value because they represent a status or error
+should be ignored by Excel.
+</p>
+<p>
+For plots, the "X/Y scatter" plot type using time as the X
+axis and the value column for the Y axis tends to work best.
+</p>
+<p>
+Note that Excel is limited to about 65000 lines. If your data
+file includes more lines, those will be lost in the import.
+You can work around this by exporting a smaller time range
+into separate files, or by exporting averaged data.
+</p>
+<p>
+The value columns for averaged data will contain text like
+"5 [0 ... 10]" to indicate that the average value for that time
+was 5, with a minimum/maximum range of 0 to 10.
+To perform computations in excel, it might be useful to
+select the column and perform a text replacement of
+"[*]" with "" (nothing) to delete the min/max info.
+</p>
+
+<h3>OpenOffice.org/LibreOffice Calc (Spreadsheets)</h3>
+<p>
+As long as the exported data file has a ".csv" suffix,
+OpenOffice.org/LibreOffice should open the file with an "import" dialog
+similar to MS Excel, where you select "tab" delimited columns
+as explained above.
+</p>
+<p>
+File names ending in ".dat", ".txt" etc. might only
+open in the OpenOffice.org/LibreOffice Writer (word processor), so you have
+to use the correct file suffix.
+</p>
+
+<h3>Matlab</h3>
+<p>
+The generated data file is suitable for loading (executing) in Matlab R2006b
+or newer, creating one 'sscan' object per trace.
+With previous Matlab releases, you will have to edit the generated file
+to suit your needs, for example use simply "plot(v);" to show the values.
+</p>
+
+
+<h2><a name=preferences>Preference Settings</a></h2>
+Use the menu CSS/Preferences/CSS Applications/Trends/Sscan
+to change various settings. 
+
+<address>
+Eric Berryman, berryman@frib.msu.edu
+</address>
+
+</body>
+</html>

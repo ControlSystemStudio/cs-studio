@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: dummyAuthorization Plug-in
+Bundle-SymbolicName: org.csstudio.sns.dummyAuthorization;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.auth;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Description: Dummy authorization, allows authenticated user to do anything

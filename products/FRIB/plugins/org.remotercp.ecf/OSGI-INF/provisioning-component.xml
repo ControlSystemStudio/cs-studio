@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.remotercp.ecf">
+   <implementation class="org.remotercp.ecf.session.impl.SessionServiceImpl"/>
+   <service>
+      <provide interface="org.remotercp.ecf.session.ISessionService"/>
+   </service>
+</scr:component>

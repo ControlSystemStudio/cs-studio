@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Plug-in
+Bundle-SymbolicName: org.remotercp.common;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.common.CommonActivator
+Bundle-ActivationPolicy: lazy
+Export-Package: org.remotercp.common.tracker
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.osgi.framework;version="1.5.0",
+ org.osgi.util.tracker;version="1.4.0"

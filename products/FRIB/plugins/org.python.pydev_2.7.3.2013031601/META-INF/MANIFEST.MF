@@ -1,0 +1,787 @@
+Manifest-Version: 1.0
+Bundle-Name: Pydev - Python Development Environment
+Bundle-ClassPath: pydev.jar,libs/WinRegistry-4.4.jar
+Bundle-Activator: org.python.pydev.plugin.PydevPlugin
+Bundle-Vendor: Aptana
+Bundle-ManifestVersion: 2
+Bundle-Localization: plugin
+Bundle-SymbolicName: org.python.pydev; singleton:=true
+Export-Package: org.python.copiedfromeclipsesrc,org.python.pydev.build
+ er,org.python.pydev.builder.pycremover,org.python.pydev.builder.pylin
+ t,org.python.pydev.builder.syntaxchecker,org.python.pydev.builder.tod
+ o,org.python.pydev.codingstd,org.python.pydev.dltk.console.codegen,or
+ g.python.pydev.eclipseresourcestubs,org.python.pydev.editor,org.pytho
+ n.pydev.editor.actions,org.python.pydev.editor.actions.codefolding,or
+ g.python.pydev.editor.actions.refactoring,org.python.pydev.editor.aut
+ oedit,org.python.pydev.editor.codecompletion,org.python.pydev.editor.
+ codecompletion.revisited,org.python.pydev.editor.codecompletion.revis
+ ited.javaintegration,org.python.pydev.editor.codecompletion.revisited
+ .jython,org.python.pydev.editor.codecompletion.revisited.modules,org.
+ python.pydev.editor.codecompletion.revisited.visitors,org.python.pyde
+ v.editor.codecompletion.shell,org.python.pydev.editor.codecompletion.
+ templates,org.python.pydev.editor.codefolding,org.python.pydev.editor
+ .commentblocks,org.python.pydev.editor.correctionassist,org.python.py
+ dev.editor.correctionassist.docstrings,org.python.pydev.editor.correc
+ tionassist.heuristics,org.python.pydev.editor.hover,org.python.pydev.
+ editor.model,org.python.pydev.editor.preferences,org.python.pydev.edi
+ tor.refactoring,org.python.pydev.editor.scripting,org.python.pydev.ed
+ itor.simpleassist,org.python.pydev.editor.templates,org.python.pydev.
+ editorinput,org.python.pydev.logging,org.python.pydev.navigator,org.p
+ ython.pydev.navigator.actions,org.python.pydev.navigator.actions.copi
+ ed,org.python.pydev.navigator.elements,org.python.pydev.navigator.fil
+ ters,org.python.pydev.navigator.properties,org.python.pydev.navigator
+ .sorter,org.python.pydev.navigator.ui,org.python.pydev.outline,org.py
+ thon.pydev.plugin,org.python.pydev.plugin.nature,org.python.pydev.plu
+ gin.preferences,org.python.pydev.pyunit.preferences,org.python.pydev.
+ runners,org.python.pydev.tree,org.python.pydev.ui,org.python.pydev.ui
+ .actions.container,org.python.pydev.ui.actions.project,org.python.pyd
+ ev.ui.actions.resources,org.python.pydev.ui.dialogs,org.python.pydev.
+ ui.editors,org.python.pydev.ui.filetypes,org.python.pydev.ui.importsc
+ onf,org.python.pydev.ui.interpreters,org.python.pydev.ui.perspective,
+ org.python.pydev.ui.pythonpathconf,org.python.pydev.ui.wizards.files,
+ org.python.pydev.ui.wizards.gettingstarted,org.python.pydev.ui.wizard
+ s.project,org.python.pydev.utils
+Require-Bundle: org.eclipse.ui,org.eclipse.ui.ide,org.eclipse.core.run
+ time,org.eclipse.core.resources,org.eclipse.jface.text,org.eclipse.ui
+ .editors,org.eclipse.ui.views,org.eclipse.ui.workbench.texteditor,org
+ .eclipse.debug.core,org.eclipse.core.variables,org.eclipse.jdt.launch
+ ing;resolution:=optional,org.python.pydev.ast,org.python.pydev.parser
+ ,org.python.pydev.core,org.eclipse.search,org.eclipse.debug.ui,org.ec
+ lipse.ui.console,org.python.pydev.jython,org.eclipse.ltk.core.refacto
+ ring,org.eclipse.ltk.ui.refactoring,org.eclipse.ui.navigator,org.ecli
+ pse.ui.navigator.resources,org.eclipse.core.filesystem,org.eclipse.co
+ re.expressions,org.junit;bundle-version="[3.8.0,3.9.9]";resolution:=o
+ ptional,org.eclipse.jdt.core;resolution:=optional,org.eclipse.jdt.ui;
+ resolution:=optional,org.eclipse.compare,org.python.pydev.shared_inte
+ ractive_console,org.python.pydev.shared_ui
+Bundle-Version: 2.7.3.2013031601
+Eclipse-LazyStart: true
+
+Name: icons/python_logo.png
+SHA1-Digest: om2fGBXnAo08GWQHViDzq0s2DaA=
+
+Name: pysrc/pydev_runfiles_parallel.py
+SHA1-Digest: Pq1ah0EjxiXUtVZsf0fY9YmwGcg=
+
+Name: icons/custom_python_file.png
+SHA1-Digest: RdNgS6FPj5KXW7XlJMI2rekuXwU=
+
+Name: schema/pydev_hover.exsd
+SHA1-Digest: d2/F4v08q1zDs7EjzXG/ShLJTPg=
+
+Name: icons/new/create_python_module.png
+SHA1-Digest: b2ne26GvUnIJamULGD4By0zuv6E=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/non_test_file.py
+SHA1-Digest: gIcW+ZgB1M1G+9HgKKgz4Kj0pxg=
+
+Name: icons/relaunch.png
+SHA1-Digest: 4vMOsbfoc0uRSJFf8THeZahTc/I=
+
+Name: pysrc/pydev_coverage.py
+SHA1-Digest: iZG6KX/UGWAvn/IKxSGb/WSDelI=
+
+Name: pysrc/tests_runfiles/not_in_default_pythonpath.txt
+SHA1-Digest: +z3S1qdSclDnbdiU34XPOAmhmkw=
+
+Name: icons/environment_obj.gif
+SHA1-Digest: SmIqbQXHiX9b14/dGkXc/9G0Rhc=
+
+Name: icons/alphab_sort_co.gif
+SHA1-Digest: Y2O6FSV61/jR/OYtKgFvn4/wTe4=
+
+Name: pysrc/pydevd_psyco_stub.py
+SHA1-Digest: v+tq6T9b4NAnH+9krxSEAHnUnMI=
+
+Name: pysrc/pydev_runfiles_nose.py
+SHA1-Digest: BYK3dRtH5/bW0sdOEXkwiO7i/OM=
+
+Name: pysrc/runfiles.py
+SHA1-Digest: EWET0UPoTniIo0RuPLVXNCzCJNY=
+
+Name: icons/remove_nature.png
+SHA1-Digest: /283w0YWq9fxSgQgWFrvH5Yn0AI=
+
+Name: icons/python_comment.png
+SHA1-Digest: UwJz4jE+/aNSOgOnUZPORU7C9o4=
+
+Name: icons/jar_nonexist_obj.gif
+SHA1-Digest: IS3mLGmTi5O/89lKtnBEU+0BSr4=
+
+Name: pysrc/_pydev_jy_imports_tipper.py
+SHA1-Digest: 9Ja37DYTnuuDFyXg13Kie+ilTGI=
+
+Name: icons/cython.png
+SHA1-Digest: tlfoC29ttGYM6HLrQCzW9esv42Y=
+
+Name: pysrc/tests_python/_debugger_case89.py
+SHA1-Digest: WDKDt9l1+iMS3N5TkgD9qKmABL0=
+
+Name: libs/WinRegistry-4.4.jar
+SHA1-Digest: zxkuVwCSmML2Ecfh4+CYNKSAbj4=
+
+Name: icons/error_small.gif
+SHA1-Digest: 837WZOYq5P1nCsjer7IptxeeAX0=
+
+Name: pysrc/pydev_runfiles_unittest.py
+SHA1-Digest: smBc0uS+qJw8eRhU8F8ipqcgJ9Y=
+
+Name: icons/tabs_inactive.png
+SHA1-Digest: nnhHbY60Nx5Z2sa6YHS2LlnoQ0Y=
+
+Name: pysrc/pydev_override.py
+SHA1-Digest: IUBg+kM6I97WjiESE7eer+jZn1Y=
+
+Name: pysrc/pydevd_reload.py
+SHA1-Digest: FyPBQCQYtfuy6z0jtn/4TWmk2iY=
+
+Name: schema/pydev_refactoring.exsd
+SHA1-Digest: J9ZoyatMT2mo/rUYTdk8JZftWHc=
+
+Name: LICENSE.txt
+SHA1-Digest: p+9tB+uCL9D+iYG9D8zDHITgqgU=
+
+Name: pysrc/_pydev_xmlrpclib.py
+SHA1-Digest: pGevdN5X5JMWOaMvhASBkZbXLeA=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/__init__.py
+SHA1-Digest: rcg7GeeTSRscbqD9i0bNnzLlkvw=
+
+Name: pysrc/tests_runfiles/samples/__init__.py
+SHA1-Digest: 2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+
+Name: icons/field_public_obj.gif
+SHA1-Digest: bjWOapJp/YWwX8oq2eOgvJzLZlI=
+
+Name: icons/new/__imp_obj.gif
+SHA1-Digest: /nQXywKT313wxl8hq6XJsDvEu0Q=
+
+Name: schema/pydev_pythonpath_contrib.exsd
+SHA1-Digest: YpjK+/fDaGEm86T62unGoH41pVE=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/_ctypes.dll
+SHA1-Digest: fsTkOp+V8ZnxaOrM9Y1unfM79EA=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/simple4_test.py
+SHA1-Digest: MutfUShYrrwJTigZI1hrWXdTcsc=
+
+Name: pysrc/third_party/wrapped_for_pydev/not_in_default_pythonpath.tx
+ t
+SHA1-Digest: y8jzYFAUSvEnaepAFoVvSpftm0E=
+
+Name: plugin.properties
+SHA1-Digest: /HYf2E+ukATbjwt2KXGy1GAj9Mw=
+
+Name: icons/file.gif
+SHA1-Digest: HK0Nc7o77dkH2q0RNHOYSbmBodA=
+
+Name: icons/protected_obj.gif
+SHA1-Digest: ZVwaiUy5p9pqZE7uGbZcPp5YMO8=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/_endian.py
+SHA1-Digest: fPtyLcPNMlM1k5saOOu0YVnT85M=
+
+Name: icons/new/method_obj.gif
+SHA1-Digest: mqtTIDs8TRiQpa8iAsZwWm6iUw4=
+
+Name: icons/gotten_from.txt
+SHA1-Digest: 02WFfkEe03F9hyXcMIZPmBgYOZA=
+
+Name: schema/pydev_builder.exsd
+SHA1-Digest: 4ZK9sqKEoISj3SPR2otogBLSzsc=
+
+Name: pysrc/pydevd_vm_type.py
+SHA1-Digest: D/TKtUa6OdFrfkx+VR9i+HM4k0o=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/macholib/framework.py
+SHA1-Digest: ztWSKy28mk93yc5Nv2Gm2H262Xc=
+
+Name: icons/error_decoration.gif
+SHA1-Digest: P6tABf1xezsyBapSVbypjgTECpo=
+
+Name: pysrc/tests_python/_debugger_case7.py
+SHA1-Digest: PwXitiai9wlSf2t93eZqz9S76Ns=
+
+Name: icons/new/create_attrpub_obj.png
+SHA1-Digest: mXi87r4HCw8W2Sr0g13vRdvsa+g=
+
+Name: icons/warning.png
+SHA1-Digest: u9FVin0QtWAKiW/1q9EBH3zFKF4=
+
+Name: pysrc/pydev_runfiles_pytest.py
+SHA1-Digest: /A/yb3woTWjTFjNr2/e34wzGWHQ=
+
+Name: pysrc/_pydev_inspect.py
+SHA1-Digest: HD/BdbjlZWfCMBHr6wz1pJJjISU=
+
+Name: icons/python_nature.png
+SHA1-Digest: Rbnn74+QTphcW6hciZF0K5gk5lk=
+
+Name: pysrc/_pydev_tipper_common.py
+SHA1-Digest: am8oNH3MwhnUk9GGxx6N343EBz0=
+
+Name: schema/pydev_interpreter_observer.exsd
+SHA1-Digest: Z+XzJsmWlOqttf0vmP7KiGtYQlc=
+
+Name: pysrc/pydev_ipython_console_011.py
+SHA1-Digest: BydghfG/JugVL+m/pxuxyP9n8M0=
+
+Name: pysrc/pydevconsole_code_for_ironpython.py
+SHA1-Digest: 8yI7wR1YoaCOc+SfT+5RgAp16qM=
+
+Name: schema/pydev_debug_preferences_page.exsd
+SHA1-Digest: PulBKCLAlYqQVQs7Mt2piEniI5Q=
+
+Name: icons/builtin_obj.gif
+SHA1-Digest: qAgWNXvmEa0s8NY3u5Ck8H4+sfc=
+
+Name: icons/static_co.gif
+SHA1-Digest: xl9AySqbSXQvb4N6HmOZpXeq6nc=
+
+Name: icons/cython_file.png
+SHA1-Digest: TTjhRcEYdpnjbQCZDg45J0nruQQ=
+
+Name: pysrc/pydevd_file_utils.py
+SHA1-Digest: gGqBfMHQebnP+1dtuvFyrE3d+ds=
+
+Name: pysrc/third_party/pep8/pep8.py
+SHA1-Digest: z8b6UDApqkYBdvxfqQHw2mjhAMw=
+
+Name: pysrc/tests_runfiles/test_pydevdio.py
+SHA1-Digest: +cAFiR6C5MXrxCqSJ5NlHaaqo8c=
+
+Name: pysrc/pycompletion.py
+SHA1-Digest: FdR9RqiugwRN2V1kOQobQ4kaLPc=
+
+Name: pysrc/tests_python/_debugger_case13.py
+SHA1-Digest: gEQJoJAVB7oMJu7XrVhg4+qSRFE=
+
+Name: icons/close.gif
+SHA1-Digest: DSSFTjyRcxXD9CzA7eqt9vK6ikM=
+
+Name: pysrc/pydevd_comm.py
+SHA1-Digest: rWZhWooeIh4khgIeRHvFcZw6JJU=
+
+Name: icons/sample.gif
+SHA1-Digest: AFju2Q2+1Vh+Fu1wE08m60Jwc0g=
+
+Name: Pydev.gif
+SHA1-Digest: 1wlRfKNNE02CH3cJ/2Cm0IQcT8s=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/macholib/dylib.py
+SHA1-Digest: 3APhFpiTOIk/jblVxZZHGn9prFk=
+
+Name: icons/python_comment_black.png
+SHA1-Digest: 9bcdWUYQLtfma6Gzbk9CX4Y37y4=
+
+Name: pysrc/tests_runfiles/test_pydevd_property.py
+SHA1-Digest: SYmtGHkZVH9t1LZCBv26U4FIF7k=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/__init__.py
+SHA1-Digest: gqIcust5GB7CwyKAT02XWUAcQ/c=
+
+Name: icons/pylint.png
+SHA1-Digest: bE0LxBNYEWRUZ8f/e7ZXYsmNSmk=
+
+Name: pysrc/pydevd_exec2.py
+SHA1-Digest: vduX4znJa8C+FAXfyrf/2vk8zsY=
+
+Name: pysrc/tests/test_jysimpleTipper.py
+SHA1-Digest: NTvl/UjBjZ3jDLWzqSwyJFrvHhc=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/wintypes.py
+SHA1-Digest: oRkee15SntMfVaiUCTqYpoEVjtQ=
+
+Name: icons/fields_co.gif
+SHA1-Digest: +Qm9iCoSepPKMWbROQB0mLkaNVY=
+
+Name: pysrc/pydev_sitecustomize/__not_in_default_pythonpath.txt
+SHA1-Digest: +z3S1qdSclDnbdiU34XPOAmhmkw=
+
+Name: icons/magic_co.gif
+SHA1-Digest: lYm/O0eyEyYNv2uMN5J/AWIpk2s=
+
+Name: pysrc/_pydev_completer.py
+SHA1-Digest: YxiYKsPL6tpcYwkLPqgnZ0k31Xs=
+
+Name: pysrc/tests/test_pydevconsole.py
+SHA1-Digest: DhdAP1haUwvdtDVA5LauoUQ5bMg=
+
+Name: icons/new/imp_obj.gif
+SHA1-Digest: CV6qXURwyDBl5oit9ALC/bSKQto=
+
+Name: icons/save.gif
+SHA1-Digest: 4fl7ShbxVcq60UhHKDRDMSPO8Rw=
+
+Name: pysrc/_pydev_imports_tipper.py
+SHA1-Digest: O+nH5oWa0SK9qOkN0iQknrtU4JY=
+
+Name: icons/relaunch_errors.png
+SHA1-Digest: OZ91i3yPGNxVL6nj15ZgvQVdKBw=
+
+Name: pysrc/tests_python/_debugger_case10.py
+SHA1-Digest: uxs0LYBM5tq9qJz7pgYgXPBM5NM=
+
+Name: icons/old/method_obj.gif
+SHA1-Digest: Mk0rYenlNQNHUVt8nzckUh0jnE4=
+
+Name: pysrc/pydevd_resolver.py
+SHA1-Digest: jK0sXPUvbQ4eRM44jPN91PhGFkI=
+
+Name: pysrc/tests_runfiles/test_runfiles.py
+SHA1-Digest: QxD8V9smyMURxmPLJ3Mksr/NPyA=
+
+Name: icons/tabs_active.png
+SHA1-Digest: vPi4lDWr+uTpQOb9P1lIw8I+bEU=
+
+Name: icons/mainfunction.gif
+SHA1-Digest: ZwHP7eLMSG/rQxdKOq5+Om5wxng=
+
+Name: pysrc/pydevd_frame.py
+SHA1-Digest: jZp+PowkLhnmx8/YqfPEK+uLs0M=
+
+Name: icons/jython_run.png
+SHA1-Digest: Dt2BQDCFkbSVkNVoB0h8vXf0X68=
+
+Name: schema/pydev_ctrl_1.exsd
+SHA1-Digest: 0NW/2FIVnaLYiV+XQusaFgi7lBw=
+
+Name: icons/add_correction.gif
+SHA1-Digest: yoxjmqMtVphUpFQAd45TKQuy8gU=
+
+Name: pysrc/_pydev_execfile.py
+SHA1-Digest: 0rWCJwnUWgRzpzcXOJtUd95ijy0=
+
+Name: icons/python_file.gif
+SHA1-Digest: 9ZUEGRb5vzwt5eB3MZCuY0oapfo=
+
+Name: icons/new/class_obj.gif
+SHA1-Digest: 5iSIu2apFjsCYcKPM9JhXQ6MMMM=
+
+Name: icons/field_private_obj.gif
+SHA1-Digest: qAgWNXvmEa0s8NY3u5Ck8H4+sfc=
+
+Name: pysrc/pydevd_exec.py
+SHA1-Digest: GRclgr514eLMpRARdJAi4drPkFQ=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested3/__init__.py
+SHA1-Digest: rcg7GeeTSRscbqD9i0bNnzLlkvw=
+
+Name: pydev.jar
+SHA1-Digest: 7w0oMFxEtfMKwZdrz7OcF1mXdIk=
+
+Name: schema/pydev_globals_browser.exsd
+SHA1-Digest: R0MfAU2XpQCICzj42N0fYKXbytM=
+
+Name: pysrc/interpreterInfo.py
+SHA1-Digest: 9V2TwecJ7/el2WpyWD7xNohYByg=
+
+Name: pysrc/tests_python/_debugger_case3.py
+SHA1-Digest: r9X3zu0PtsrSxHKiuzikJ7jJAxE=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested2/non_test_file.py
+SHA1-Digest: gIcW+ZgB1M1G+9HgKKgz4Kj0pxg=
+
+Name: icons/old/class_obj.gif
+SHA1-Digest: j1GF4RNi5VkZfQllqQbnJO+VoF8=
+
+Name: pysrc/pydev_runfiles_xml_rpc.py
+SHA1-Digest: 7L+YAMWArNWH+dexLYCWNU5lH5s=
+
+Name: pysrc/pydev_ipython_console_010.py
+SHA1-Digest: irJ4cxn96Bxs3gD4VJif/xSctU0=
+
+Name: icons/relaunch_background_enabled.png
+SHA1-Digest: TNUadCIn3ap1jzr2ladIsHUX/bY=
+
+Name: icons/python_coverage.png
+SHA1-Digest: +BH3w4WJE2wDNKBALWlMGDABnlw=
+
+Name: pysrc/pydevd_constants.py
+SHA1-Digest: 0JgsGSVz204fnFxf2QkVTYIJWRI=
+
+Name: icons/home_nav.gif
+SHA1-Digest: 6ZkfXx5mGrHfp+Vr+YCQGGUsRIQ=
+
+Name: pysrc/tests_runfiles/samples/simple3_test.py
+SHA1-Digest: 5MvsXoW9M+ZNQZFwfbnnQz8QcmU=
+
+Name: icons/failures.gif
+SHA1-Digest: CHTaqGkl7UXVZovBik/tJ6XZUCI=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested2/__init__.py
+SHA1-Digest: rcg7GeeTSRscbqD9i0bNnzLlkvw=
+
+Name: schema/pydev_quick_outline.exsd
+SHA1-Digest: BZqdvP+hSM6A0XMoaH+QFXhn5T8=
+
+Name: pysrc/_pydev_log.py
+SHA1-Digest: ttrx9KJD1u3cEcUbO9ZKraprs6A=
+
+Name: pysrc/pydevd_vars.py
+SHA1-Digest: aUkSAtiyPDfVWTG8cDUDbqO6PBo=
+
+Name: icons/old/method_obj_imp.gif
+SHA1-Digest: kdCWTlBwjhpdOw56xI8s7rZb+2c=
+
+Name: pysrc/pydevd_additional_thread_info.py
+SHA1-Digest: oTISuxiC45H24MuF1yCVu2Dh/mk=
+
+Name: icons/packagefolder_obj.gif
+SHA1-Digest: lUwMuDmTEvmiqtkgC+kWyrYAkVk=
+
+Name: icons/cpyqual_menu.gif
+SHA1-Digest: FxS04XnhBsCIh+72EwYT+85sO3g=
+
+Name: pysrc/tests_python/__not_in_default_pythonpath.txt
+SHA1-Digest: +z3S1qdSclDnbdiU34XPOAmhmkw=
+
+Name: about.ini
+SHA1-Digest: Ow3rBBpHGp9VH+db1CmRHn95+bs=
+
+Name: pysrc/tests_python/_debugger_case1.py
+SHA1-Digest: NodoKWNKhZAPWGMJe4XhcrvCLu4=
+
+Name: icons/python_perspective.png
+SHA1-Digest: Rbnn74+QTphcW6hciZF0K5gk5lk=
+
+Name: icons/new/imp_dec.gif
+SHA1-Digest: MlJOvkWMu9cMu+ABi30BhjjH6CY=
+
+Name: icons/pythonNature.gif
+SHA1-Digest: 4wTcyxiqOBIGjYzpJ17V+qyCxCU=
+
+Name: schema/pydev_pyedit_listener.exsd
+SHA1-Digest: xLG8nxtqR3pqdn7K8mgsVl4YCA4=
+
+Name: pysrc/tests_runfiles/samples/simple_test.py
+SHA1-Digest: D1z2QG9zXizX646DGkso9Ld4U/8=
+
+Name: icons/terminate_all.gif
+SHA1-Digest: XjZbhPfvHvREaNoccJ8P2t/pne0=
+
+Name: pysrc/pydev_ipython_console.py
+SHA1-Digest: zEwygfIyHMu3t3GYaTMqmMTWzKM=
+
+Name: pysrc/tests_python/_debugger_case56.py
+SHA1-Digest: EP8CTdwo3N2EZIYfaKfa7Av0snw=
+
+Name: plugin.xml
+SHA1-Digest: 0bTuvqHKKl9Ku2Js/kL9FW+ynmI=
+
+Name: icons/correction_move.gif
+SHA1-Digest: DqTe+2VYmmxEUBb2xCYsVNJMi1U=
+
+Name: pysrc/pydevd_io.py
+SHA1-Digest: iKMo/KhFPqWYgVH+LufopT6kDtA=
+
+Name: pysrc/tests_python/_debugger_case14.py
+SHA1-Digest: nc8+frmYgl41bpzN0f+fItE25bY=
+
+Name: icons/annotation_obj.gif
+SHA1-Digest: LL4Q/r6hF8pgvg6rm9R9KzWoQlI=
+
+Name: pysrc/tests/test_pydev_ipython.py
+SHA1-Digest: 0gprz9avqAEYeKrAT2br+jhCriU=
+
+Name: pysrc/_pydev_getopt.py
+SHA1-Digest: kraoiGOG0wIORr9K6QtpPn7gS0g=
+
+Name: icons/new/create_method_obj.png
+SHA1-Digest: xVF7jMeUoC+42EFSBwYAuX08PBs=
+
+Name: icons/search_docs.gif
+SHA1-Digest: 5jRQrd5WOnDpF9/3geNBAAto9+k=
+
+Name: icons/warning_decoration.gif
+SHA1-Digest: KmtINYlwTqc3cDLljZdq8gbw8jI=
+
+Name: pysrc/pydevd.py
+SHA1-Digest: VRCLzu2OqOqKriHQvxHP7EEb+ek=
+
+Name: icons/jar_desc_obj.gif
+SHA1-Digest: HZeVdvBIiFNzeiNBzsADEKvkTMQ=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/ctypes-README.txt
+SHA1-Digest: +2/1MXFxaj6l7baPuLwtJqKDDxg=
+
+Name: pysrc/tests/test_simpleTipper.py
+SHA1-Digest: niB7UN/hV578cXsfpapBY0+mMWw=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/util.py
+SHA1-Digest: uKwm4LqsESHzJz78AxNOtQQlWjo=
+
+Name: icons/sync_ed.gif
+SHA1-Digest: Ghj9SQaJ6vJj8hRCpmwiAfHF1uI=
+
+Name: icons/relaunch1.png
+SHA1-Digest: SNm0aJtXYlt9D7TQ41LAQElkudM=
+
+Name: icons/template.gif
+SHA1-Digest: K39DWhLktJvVDGoDDF9+I/glmCI=
+
+Name: icons/folder.gif
+SHA1-Digest: qPXEOt7QeufR5PxSeaNT6BIDmKQ=
+
+Name: icons/jar_l_obj.gif
+SHA1-Digest: /bV7+TXHbt+/TPGLVyrx0wbhz2g=
+
+Name: icons/jar_src_obj.gif
+SHA1-Digest: AJ01GBNn2kt/Wjo+qEKdUKTexgI=
+
+Name: icons/search.gif
+SHA1-Digest: hsF1ouYvxetq7HD5eUjQqBW45cM=
+
+Name: icons/filter.gif
+SHA1-Digest: ngfJGJ/lz7Cm/kX5JfpR2rcfKXc=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested3/junk.txt
+SHA1-Digest: coYrvTEQVBpAvlTlTvf5rBQgYo8=
+
+Name: icons/jar_obj.gif
+SHA1-Digest: gaxhmXCc42P8IH7O+DrlGM4E29Q=
+
+Name: pysrc/pydev_console_utils.py
+SHA1-Digest: TzS5jB8teE0LAynD2B8XSsEYhqI=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested3/non_test_file.py
+SHA1-Digest: gIcW+ZgB1M1G+9HgKKgz4Kj0pxg=
+
+Name: pysrc/pydevd_traceproperty.py
+SHA1-Digest: Vessji5O6B3eGwBZZjUiYzOJlBc=
+
+Name: pysrc/tests_python/_debugger_case4.py
+SHA1-Digest: oVn5+cwGu50i+EeB+y/GZOogS2Q=
+
+Name: icons/python_unit.png
+SHA1-Digest: zlRe7Ai5OlvRCtad5dX8HZ0pS7Y=
+
+Name: pysrc/tests/__not_in_default_pythonpath.txt
+SHA1-Digest: +z3S1qdSclDnbdiU34XPOAmhmkw=
+
+Name: icons/old/imp_obj.gif
+SHA1-Digest: duTNmVJS9WxKhutB+eD9R0NULfw=
+
+Name: icons/old/attrpub_obj.gif
+SHA1-Digest: x4KcODHFq0V1N32Op9X/F+CCCQc=
+
+Name: schema/pydev_completion.exsd
+SHA1-Digest: VXQsuKraI1bHkgFdHjwEc0qwoLg=
+
+Name: icons/new/old_imp_rel_obj.gif
+SHA1-Digest: jtHhfcE+msv3EcRAS/SGrPn04JI=
+
+Name: icons/python_16x16.png
+SHA1-Digest: Rbnn74+QTphcW6hciZF0K5gk5lk=
+
+Name: pysrc/pydev_imports.py
+SHA1-Digest: Y4iJn2TwsdMYtM9YEBMoQV/KQyc=
+
+Name: icons/showerr_tsk.gif
+SHA1-Digest: J8GwoP/Od825KxLSOi9D+JtwICc=
+
+Name: icons/decoration_static_obj.png
+SHA1-Digest: gZYjBRp2GdNLxLq9XtR1j5PXx0o=
+
+Name: icons/python_module.png
+SHA1-Digest: Ms2h4XsQhjSjMaWg8OlV3Si6B1w=
+
+Name: schema/pydev_simpleassist.exsd
+SHA1-Digest: 4UMYwdTrR48N8XwlVhLhH4bTiao=
+
+Name: pysrc/tests_runfiles/samples/nested_dir/nested2/deep_nest_test.p
+ y
+SHA1-Digest: AfUCh8TjRs0KNiCDsroQ34LT+hg=
+
+Name: schema/pydev_view_created_observer.exsd
+SHA1-Digest: LbCHUoDPG4/gSLwbpjHy/XAWZHI=
+
+Name: pysrc/tests_python/test_additional_thread_info.py
+SHA1-Digest: hX7nP91UdFfURGSp+o1q88RANEk=
+
+Name: icons/python_run.png
+SHA1-Digest: WC84M7kgiw+xD7/8JCU1w6tm2Z0=
+
+Name: icons/package_obj.gif
+SHA1-Digest: TAzEv4kYyock9dC9OENnoK2FF1Y=
+
+Name: schema/pydev_interpreter_info_builder.exsd
+SHA1-Digest: fMC+V2jzTQy7req5KSUN4sNHt/Y=
+
+Name: pysrc/tests_runfiles/test_pydevd_reload.py
+SHA1-Digest: hkgtBkSTarRx1Z7Gzj6O01V/d8I=
+
+Name: icons/copy.gif
+SHA1-Digest: L5EIwEiHljLtdqvlXjMWdRa+lgs=
+
+Name: pysrc/tests_python/_debugger_case2.py
+SHA1-Digest: pm6+IZrbNnGOIV1GbE+A5vEK8h8=
+
+Name: icons/old/attr_obj_imp.gif
+SHA1-Digest: bjT3IJTX5KJ9HmITwwxmuBivVrE=
+
+Name: icons/build_var_obj.gif
+SHA1-Digest: v5l9ou5Sdzln3+TklMk35nv2xiw=
+
+Name: pysrc/pydev_runfiles_coverage.py
+SHA1-Digest: Bc9HnwVgbfPVgw9rKJ8d7AwskvA=
+
+Name: pysrc/tests_runfiles/samples/non_test_file.py
+SHA1-Digest: gIcW+ZgB1M1G+9HgKKgz4Kj0pxg=
+
+Name: pysrc/pydevd_tracing.py
+SHA1-Digest: K8/btE+N4y32QFgbAmFIm7m9Ag8=
+
+Name: icons/history_list.gif
+SHA1-Digest: SCeVr68Cq8tQcs0kY5zKkmjpE9c=
+
+Name: pysrc/pydev_runfiles_parallel_client.py
+SHA1-Digest: /GWm4IeYIHN8RW+wVCD/cm0C1og=
+
+Name: icons/pydev_package_explorer.gif
+SHA1-Digest: ZAqrWnaNsiYm5BYdlXsJggezfCA=
+
+Name: pysrc/pydev_sitecustomize/sitecustomize.py
+SHA1-Digest: wmsqVNQ/IoRbStw9cz59NRK/bII=
+
+Name: schema/pydev_interpreter_new_custom_entries.exsd
+SHA1-Digest: 4J75VRpUqDJ6j+xfejMsH1u1lhc=
+
+Name: icons/python_refactor.png
+SHA1-Digest: 0GMTlASC70e8vsWxYWm3SMfvIzA=
+
+Name: pysrc/tests/check_pydevconsole.py
+SHA1-Digest: W4LzfP0PxzxL+77tEI99oIeIN4A=
+
+Name: pysrc/pydev_runfiles.py
+SHA1-Digest: KGfs0pWUrYwAkTKfzQEVnhbo2dY=
+
+Name: icons/terminate.gif
+SHA1-Digest: kqo+0YlPPDIPH/JIX/czNHDae7Q=
+
+Name: icons/backward_nav.gif
+SHA1-Digest: qx89HZcOfCNP8URrsbXsnJSbNro=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/macholib/dyld.py
+SHA1-Digest: mfQawwuka0U6m0eW7abQCNDNTrs=
+
+Name: icons/collapseall.gif
+SHA1-Digest: oICakRZZ54+RiuRfzGHeYbnvsRo=
+
+Name: pysrc/pydevconsole.py
+SHA1-Digest: cyyDJFJemzo3+/5U+8vw/79llyE=
+
+Name: pysrc/pydev_localhost.py
+SHA1-Digest: tlwgQICCpau7KWQkruZ+FRS0Ao4=
+
+Name: icons/forward_nav.gif
+SHA1-Digest: bN/y8M/Ncwa3MBNzDC7XuGQf4xc=
+
+Name: icons/decoration_class_obj.png
+SHA1-Digest: QvX38c8f3v6urgyd4pmxjhBlNnM=
+
+Name: icons/project_source_folder.gif
+SHA1-Digest: tknyo4A+ofe57dirgOs/huK2T0I=
+
+Name: icons/old/imp_rel_obj.gif
+SHA1-Digest: jtHhfcE+msv3EcRAS/SGrPn04JI=
+
+Name: icons/expand.gif
+SHA1-Digest: 3vD5w93xwdFdiWUZkCkGj3M5ea8=
+
+Name: icons/field_protected_obj.gif
+SHA1-Digest: b2fjuZX3M4Cg30zVaPzh7r0B7zI=
+
+Name: icons/toggle_tabs.png
+SHA1-Digest: 3+6MU/vlE/j7Bdo7OkNlo/9gH8M=
+
+Name: schema/pydev_formatter.exsd
+SHA1-Digest: ItqRbWrmonQ2fidUA9Q+I6aSTks=
+
+Name: about.mappings
+SHA1-Digest: G0r1Xa++bkasgap9AnIKFnc4sgM=
+
+Name: schema/pydev_preferences_provider.exsd
+SHA1-Digest: anODQWIT8M8iWaalUtDm9d7ZwxU=
+
+Name: schema/pydev_manager_observer.exsd
+SHA1-Digest: 8SnuRBXFx3vASeCuE3kbQlWsBXg=
+
+Name: schema/pydev_organize_imports.exsd
+SHA1-Digest: Pyyq34KqcrwssazSGs6qxLt+oKs=
+
+Name: icons/new/create_class_obj.png
+SHA1-Digest: GSbpkgecCHoozRpq16pWlyFX0XQ=
+
+Name: schema/pydev_modules_observer.exsd
+SHA1-Digest: KR2vzmHI8b1mfj2qdjcS2DH29Wg=
+
+Name: pysrc/tests/test_jyserver.py
+SHA1-Digest: ad2mZorh0ZHuee4KG5ET8ft1oNM=
+
+Name: pysrc/_pydev_SimpleXMLRPCServer.py
+SHA1-Digest: afk75WMwqzOFDeKU7hV7yXfgYLA=
+
+Name: icons/library_obj.gif
+SHA1-Digest: 3lu2gKEXQLVmBFdpSKX7LIP1paU=
+
+Name: icons/refresh_nav.gif
+SHA1-Digest: q18GA/yOw/0tzCGP5qMz+TE4oSM=
+
+Name: icons/new/imp_rel_obj.gif
+SHA1-Digest: DD9eT2Kwn6jEH8yc4++CPW2ZGUc=
+
+Name: pysrc/tests_runfiles/samples/simple2_test.py
+SHA1-Digest: FlAj7gvqY6fDrbanMaOMsOK4Xl8=
+
+Name: pysrc/pycompletionserver.py
+SHA1-Digest: e1TPB0dbtQctGE7YhAhLDlWrLIU=
+
+Name: pysrc/pydevd_console.py
+SHA1-Digest: b3t5RMKWqGRgVEfq/7l/6JRiIXg=
+
+Name: pysrc/pydevd_import_class.py
+SHA1-Digest: g3+MmzRdiuxpXI6DPJpGHNxcR/Q=
+
+Name: pysrc/third_party/wrapped_for_pydev/ctypes/macholib/__init__.py
+SHA1-Digest: D7wCapdx2WdecJR5C1uUUzTTy1M=
+
+Name: icons/new/imp_obj.png
+SHA1-Digest: 3i0GFFpKvwHkLgM2qgAIj8hl8ZA=
+
+Name: icons/relaunch_background_disabled.png
+SHA1-Digest: 2kfNfItwZ84RKZUCy4Lag+ZzRTU=
+
+Name: icons/custom_init.png
+SHA1-Digest: 3VUrjO/PeUgTVPlmwoG/ZbliPcY=
+
+Name: icons/jar_lsrc_obj.gif
+SHA1-Digest: JriGxGcxM4xyf85HcXm3bu7VoC8=
+
+Name: icons/private_obj.gif
+SHA1-Digest: e2Sxh0XNFVlgDj3hX2VpFaZhB0E=
+
+Name: icons/remove.gif
+SHA1-Digest: ORJe0sG1BDPf20zkd9DI+HUjfk8=
+
+Name: pysrc/tests_python/test_debugger.py
+SHA1-Digest: PWB4LjWTOBoGtFyl11OyENv/dYw=
+
+Name: icons/parameters_obj.gif
+SHA1-Digest: 6a5VvPJ8LDHqaS/B5srpjDWcNTE=
+
+Name: icons/old/class_obj_imp.gif
+SHA1-Digest: 3TbONf9vOlmo973fvlCqZ7xLOqQ=
+
+Name: pysrc/_pydevd_re.py
+SHA1-Digest: CuAYFaKHRTa5RdRYs4c8AzfRv7U=
+
+Name: pysrc/tests/test_pyserver.py
+SHA1-Digest: wlzANARJaHvXn4Hnhj8/3b07jAg=
+
+Name: icons/new/attrpub_obj.gif
+SHA1-Digest: T/arGKEHCqhhI7jwMjUn7eIhX+s=
+
+Name: pysrc/third_party/__init__.py
+SHA1-Digest: rcg7GeeTSRscbqD9i0bNnzLlkvw=
+
