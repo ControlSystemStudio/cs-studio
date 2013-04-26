@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css-frib" id="org.csstudio.frib.product.product" application="org.csstudio.frib.product.application" version="3.2.4.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css-frib" id="org.csstudio.frib.product.product" application="org.csstudio.frib.product.application" version="3.2.5.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.frib.product/icons/about.png"/>
@@ -40,17 +40,16 @@ openFile</programArgs>
    <vm>
    </vm>
 
-
    <plugins>
    </plugins>
 
    <features>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
-      <feature id="org.csstudio.frib.applications.feature" version="3.2.1.qualifier"/>
-      <feature id="org.csstudio.frib.core.feature" version="3.2.1.qualifier"/>
       <feature id="org.csstudio.frib.eclipse.feature" version="3.2.1.qualifier"/>
       <feature id="org.csstudio.frib.fribcore.feature" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.frib.core.feature" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.frib.applications.feature" version="3.2.1.qualifier"/>
    </features>
 
    <configurations>
