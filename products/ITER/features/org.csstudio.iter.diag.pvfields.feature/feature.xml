@@ -38,6 +38,8 @@ of the distribution package.
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.diag.pvfields" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -70,20 +72,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.iter.utility.sddreader"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

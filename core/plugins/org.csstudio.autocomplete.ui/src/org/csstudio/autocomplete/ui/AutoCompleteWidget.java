@@ -49,7 +49,7 @@ public class AutoCompleteWidget {
 	 * 
 	 * @return - character array of trigger chars
 	 */
-	private char[] getAutoactivationChars() {
+	protected static char[] getAutoactivationChars() {
 		String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
 		String uppercaseLetters = lowercaseLetters.toUpperCase();
 		String numbers = "0123456789";
@@ -69,7 +69,7 @@ public class AutoCompleteWidget {
 	 * 
 	 * @return - the activation keystroke
 	 */
-	private KeyStroke getActivationKeystroke() {
+	protected static KeyStroke getActivationKeystroke() {
 		// keyStroke = KeyStroke.getInstance("Ctrl+Space");
 		// Activate on <ctrl><space>
 		return KeyStroke.getInstance(new Integer(SWT.CTRL).intValue(),

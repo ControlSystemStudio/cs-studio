@@ -38,7 +38,6 @@ public class AutoCompleteHistory {
 
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		});
 		// TODO : handle <enter> key !
