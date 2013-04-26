@@ -28,7 +28,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setShowMenuBar(false);
 		configurer.setShowStatusLine(false);
-		configurer.setShowCoolBar(false);
+		configurer.setShowCoolBar(true);
 		configurer.setTitle("Web Alarm");
 
 		configurer.setShellStyle(SWT.NO_TRIM);
