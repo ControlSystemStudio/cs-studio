@@ -35,7 +35,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.python.pydev" version="2.2.2.2011082312" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -44,7 +43,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
       <import plugin="org.eclipse.ltk.ui.refactoring"/>
-      <import plugin="org.python.pydev.refactoring" version="0.9.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.ui.navigator.resources"/>
