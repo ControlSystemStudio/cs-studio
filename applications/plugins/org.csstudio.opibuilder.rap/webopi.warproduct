@@ -13,8 +13,6 @@
       <plugin id="org.csstudio.archive.reader"/>
       <plugin id="org.csstudio.archive.reader.rdb"/>
       <plugin id="org.csstudio.archive.vtype"/>
-      <plugin id="org.csstudio.auth"/>
-      <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.email"/>
@@ -112,8 +110,6 @@
       <plugin id="org.csstudio.archive.reader" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.reader.rdb" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.vtype" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.auth.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.data" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
@@ -123,7 +119,6 @@
       <plugin id="org.csstudio.openfile" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.opibuilder" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.opibuilder.widgets" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.opibuilder.widgets.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.opibuilder.widgets.symbol" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
@@ -168,6 +163,7 @@
       <plugin id="org.eclipse.equinox.preferences" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
