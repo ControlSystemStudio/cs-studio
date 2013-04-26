@@ -38,6 +38,8 @@ of the distribution package.
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.diag.pvfields" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.csstudio.autocomplete.ui.AutoCompleteWidget;
+import org.csstudio.autocomplete.ui.AutoCompleteHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -149,9 +148,8 @@ public class PVTable implements PVTableModelListener
             @Override
 			protected CellEditor getCellEditor(final Object element) 
             {
-				TextCellEditor tce = new TextCellEditor(table);
-				new AutoCompleteWidget(tce, "PV");
-				return tce;
+				return AutoCompleteHelper
+						.createAutoCompleteTextCellEditor(table, "PV");
 			}
 
             @Override
