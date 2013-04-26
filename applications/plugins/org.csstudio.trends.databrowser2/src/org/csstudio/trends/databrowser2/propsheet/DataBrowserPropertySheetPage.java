@@ -23,6 +23,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -365,11 +366,12 @@ public class DataBrowserPropertySheetPage extends Page
                 menu.add(delete_pv);
                 menu.add(new RemoveUnusedAxesAction(operations_manager, model));
                 final PVItem pvs[] = getSelectedPVs();
-                if (pvs.length <= 0)
-                    return;
-                menu.add(new AddArchiveAction(operations_manager, shell, pvs));
-                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
-                menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+                if (pvs.length > 0) {
+	                menu.add(new AddArchiveAction(operations_manager, shell, pvs));
+	                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
+                }
+        		menu.add(new Separator());
+        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
 
@@ -406,20 +408,21 @@ public class DataBrowserPropertySheetPage extends Page
                 menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
 
                 // Only allow removal of archives from single PV
-                if (pvs.length != 1)
-                    return;
-
-                // Determine selected archives
-                final IStructuredSelection arch_sel =
-                    (IStructuredSelection)archive_table.getSelection();
-                if (arch_sel.isEmpty())
-                    return;
-                final Object[] objects =
-                    arch_sel.toArray();
-                final ArchiveDataSource archives[] = new ArchiveDataSource[objects.length];
-                for (int i = 0; i < archives.length; i++)
-                    archives[i] = (ArchiveDataSource) objects[i];
-                menu.add(new DeleteArchiveAction(operations_manager, pvs[0], archives));
+                if (pvs.length == 1) {
+	                // Determine selected archives
+	                final IStructuredSelection arch_sel =
+	                    (IStructuredSelection)archive_table.getSelection();
+	                if (!arch_sel.isEmpty()) {
+		                final Object[] objects =
+		                    arch_sel.toArray();
+		                final ArchiveDataSource archives[] = new ArchiveDataSource[objects.length];
+		                for (int i = 0; i < archives.length; i++)
+		                    archives[i] = (ArchiveDataSource) objects[i];
+		                menu.add(new DeleteArchiveAction(operations_manager, pvs[0], archives));
+	                }
+                }
+        		menu.add(new Separator());
+        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         final Table table = archive_table.getTable();

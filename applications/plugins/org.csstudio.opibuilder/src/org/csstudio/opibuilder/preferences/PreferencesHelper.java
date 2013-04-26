@@ -79,7 +79,8 @@ public class PreferencesHelper {
 	private static final char MACRO_SEPARATOR = '='; 
 	
 	final public static String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
-
+	
+	final public static String ABOUT_SHOW_LINKS="about_show_links"; //$NON-NLS-1$
 
 	 /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
@@ -419,6 +420,14 @@ public class PreferencesHelper {
     public static boolean isWholeSiteSecured(){
       	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SECURE_WHOLE_SITE, false, null);
+    }
+    
+    /**
+     * @return true if whole site is secured.
+     */
+    public static boolean isAboutShowLinks(){
+      	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, ABOUT_SHOW_LINKS, true, null);
     }
 
 }

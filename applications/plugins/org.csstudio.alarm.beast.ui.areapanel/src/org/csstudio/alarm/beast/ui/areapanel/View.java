@@ -13,8 +13,18 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
+import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -26,6 +36,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse ViewPart for the AreaPanel
@@ -142,6 +154,37 @@ public class View extends ViewPart implements AreaAlarmModelListener
 			setErrorMessage(Messages.WaitingForServer);
 		}
 		fillPanelBox();
+
+		final MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		manager.addMenuListener(new IMenuListener()
+		{
+			@Override
+			public void menuAboutToShow(IMenuManager manager)
+			{
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
+		panel_box.setMenu(manager.createContextMenu(panel_box));
+
+		// Allow extensions to add to the context menu
+		getSite().registerContextMenu(manager, new ISelectionProvider() {
+			// Null selection provider
+			@Override
+			public void setSelection(ISelection selection) {
+			}
+			@Override
+			public void removeSelectionChangedListener(
+					ISelectionChangedListener listener) {
+			}
+			@Override
+			public ISelection getSelection() {
+				return null;
+			}
+			@Override
+			public void addSelectionChangedListener(ISelectionChangedListener listener) {
+			}
+		});
     }
 	
 	/** Update the error messages
