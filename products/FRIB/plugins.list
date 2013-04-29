@@ -15,8 +15,6 @@ org.csstudio.alarm.beast.ui
 org.csstudio.alarm.beast.ui.alarmtable
 org.csstudio.alarm.beast.ui.alarmtree
 org.csstudio.alarm.beast.ui.areapanel
-org.csstudio.auth
-org.csstudio.auth.ui
 org.apache.commons.collections
 org.apache.commons.httpclient
 org.apache.jackrabbit
