@@ -17,7 +17,7 @@ This Script
    if these dependencies are resolved/included in the features of the product
 '''
 
-def readManifests(repoDir):
+def createDependencyMap(repoDir):
     '''
     Read the manifest file create the dependency tree
     It will get all the Manifest files in the repoDir and create tree
@@ -41,20 +41,25 @@ def readManifests(repoDir):
                     name = m.group(1).split(';')[0].strip()                  
                 m2 = re.match('Require-Bundle: (.*)', line)
                 if m2:
-                    for dependency in m2.group(1).split(','):
-                        dependencies.append(dependency.split(';')[0].strip())
+                    for dependency in m2.group(1).split(','):                        
                         dependencyDetails = dependency.split(';')
+                        details = {}
                         for detail in dependencyDetails:
                             matchVersion = re.match('bundle-version="(.*)"', detail.strip())
                             if matchVersion:
-                                version = matchVersion.group(1)
+                                details['version'] = matchVersion.group(1)
                             matchResolution = re.match('resolution:=(.*)', detail.strip())
                             if matchResolution:
-                                resolution = matchResolution.group(1)                                                                                                
+                                details['resolution'] = matchResolution.group(1)
+                        '''
+                        Ignore optional dependencies, if resolution is not specified it is assumed to be required
+                        '''
+                        if 'resolution' not in details.keys() or details['resolution'] != 'optional':
+                            dependencies.append(dependency.split(';')[0].strip())                                                                                                                  
             dependencyStack[name] = {'name':name, 'file':completefilename, 'dependencies':dependencies}
     return dependencyStack
 
-def dependantPluginMap(dependencyMap):
+def createDependantPluginMap(dependencyMap):
     '''
     {id:[, ,]}
     pluginId and list of dependent plugins
@@ -65,6 +70,19 @@ def dependantPluginMap(dependencyMap):
         d[id] = [id2 for id2 in dependencyMap.keys() if id in dependencyMap[id2]['dependencies']]
     return d    
 
+def getAllDependencies(pluginId, dependencyMap):
+    '''
+    Given a pluginId, return a complete list of plugin dependencies
+    '''
+    l = []
+    if pluginId in dependencyMap.keys():
+        l.append(pluginId)
+        if dependencyMap[pluginId]['dependencies']:
+            for id in dependencyMap[pluginId]['dependencies']:
+                l = l + getAllDependencies(id)
+    return l
+                
+    
 def readFeatures(repoDir):
     '''
     Read the all feature.xml
@@ -128,6 +146,7 @@ def ifNoneReturnDefault(object, default):
 if __name__ == '__main__':
     repoDir = 'C:\git\cs-studio'
     productFile = 'C:\git\cs-studio\products\NSLS2\plugins\org.csstudio.nsls2.product\css-nsls2.product'
+    productPlugin = 'org.csstudio.nsls2.product'
     
     usage = 'usage: %prog -r /git/cs-studio -p /git/cs-studio/products/NSLS2/plugins/org.csstudio.nsls2.product/css-nsls2.product'
     parser = OptionParser(usage=usage)
@@ -145,7 +164,7 @@ if __name__ == '__main__':
     TODO: handle optional dependencies
     '''
     try:
-        dependencyMap = readManifests(repoDir=repoDir)
+        dependencyMap = createDependencyMap(repoDir=repoDir)
         featureMap = readFeatures(repoDir=repoDir)
     
         '''
@@ -156,15 +175,13 @@ if __name__ == '__main__':
         *.product
         '''
         
-        features = []
-        plugins = []
         xmldoc = minidom.parse(productFile)
+        reqFeatures = []
         for features in xmldoc.getElementsByTagName('features'):
-            reqFeatures = []
             for feature in features.getElementsByTagName('feature'):
                 reqFeatures.append(feature._attrs[u'id'].value)
+        reqPlugins = []
         for plugins in xmldoc.getElementsByTagName('plugins'):
-            reqPlugins = []
             for plugin in plugins.getElementsByTagName('plugin'):
                 reqPlugins.append(plugin._attrs[u'id'].value)
              
@@ -189,16 +206,22 @@ if __name__ == '__main__':
             pluginList = pluginList + getPluginList(featureId=featureId, featureMap=featureMap)
         pluginList = list(set(pluginList))
         pluginList.sort()
-        '''this is the exhaustive plugin.list'''
+        '''
+        This is the exhaustive plugin.list
+        It includes all the plugins included in any of the feature/ included features used by the product'''
 #        print pluginList
-        '''this is the plugin.list consisting of source plugins from the cs-studio repo'''
+        '''
+        sourcePluginList:
+        This is the plugin.list consisting of source plugins from the cs-studio repo
+        '''
         sourcePluginList = [ plugin for plugin in pluginList if plugin in dependencyMap.keys() ]
         print len(sourcePluginList), sourcePluginList
                 
         '''
-        Now we try to resolve the required plugins
-        META-INF/MANIFEST.MF
-        we use the pluginList         
+        Now we try to resolve the required plugins by those listed in the pluginList 
+        with those defined in the META-INF/MANIFEST.MF       
+        
+        We shall output the missing dependencies and also a list of plugins that need them.  
         '''
         manifestDependencyList = []
         for plugin in pluginList:
@@ -209,8 +232,7 @@ if __name__ == '__main__':
         manifestDependencyList.sort()
         print len(manifestDependencyList), manifestDependencyList
                 
-        dependentPlugins = dependantPluginMap(dependencyMap=dependencyMap)
-        print dependentPlugins
+        dependentPlugins = createDependantPluginMap(dependencyMap=dependencyMap)
         for missingDependency in [ plugin for plugin in manifestDependencyList if plugin not in sourcePluginList ]:
             print 'Missing dependency: ' + missingDependency
             if missingDependency in dependentPlugins.keys():
