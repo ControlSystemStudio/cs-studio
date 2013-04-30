@@ -15,11 +15,14 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.pvmanager.PMObjectValue;
+import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.TotalBits;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 
@@ -80,6 +83,19 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
+				if(newValue instanceof PMObjectValue){
+					switch (PVManagerHelper.getDataType(((PMObjectValue)newValue).getLatestValue())) {
+					case SHORT:
+						figure.setTotalBits(TotalBits.BITS_16);
+						break;
+					case INT:
+					case ENUM:
+						figure.setTotalBits(TotalBits.BITS_32);
+						break;
+					default:
+						break;
+					};
+				}
 				updateFromValue(newValue, figure);
 				return true;
 			}
