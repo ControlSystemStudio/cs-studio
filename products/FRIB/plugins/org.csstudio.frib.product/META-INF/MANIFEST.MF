@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.logging.ui;bundle-version="0.0.1",
  org.csstudio.logging;bundle-version="0.0.1",
  org.eclipse.ui.ide;bundle-version="3.6.1",
- org.csstudio.ui.menu.app;bundle-version="3.0.0"
+ org.csstudio.ui.menu.app;bundle-version="3.0.0",
+ org.csstudio.security;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Eric Berryman
