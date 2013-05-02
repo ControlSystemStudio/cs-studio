@@ -3,11 +3,11 @@ package org.csstudio.frib.product.startupmodule;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.frib.product.ApplicationWorkbenchAdvisor;
 import org.csstudio.frib.product.Messages;
-import org.csstudio.logging.LogConfigurator;
-import org.csstudio.frib.startuphelper.StartupAuthenticationHelper;
 import org.csstudio.platform.workspace.RelaunchConstants;
+import org.csstudio.security.authentication.LoginJob;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.ProjectExtPoint;
@@ -94,14 +94,9 @@ public class Workbench implements WorkbenchExtPoint {
 		}
 		final Logger logger = Logger.getLogger(getClass().getName());
 
-		Object o = parameters.get(LoginExtPoint.USERNAME);
-		String username = o != null ? (String) o : null;
-		o = parameters.get(LoginExtPoint.PASSWORD);
-		String password = o != null ? (String) o : null;
-
-		// authenticate user
-		StartupAuthenticationHelper.authenticate(username, password);
-
+        //authenticate user
+        LoginJob.forCurrentUser().schedule();
+		
 		OpenDocumentEventProcessor openDocProcessor = (OpenDocumentEventProcessor) parameters
 				.get(OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
 

@@ -20,6 +20,8 @@ org.apache.commons.httpclient
 org.apache.jackrabbit
 org.apache.log4j
 org.apache.xerces
+org.csstudio.auth
+org.csstudio.auth.ui
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive.rdb
