@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
@@ -35,6 +36,7 @@ import org.csstudio.logbook.util.LogEntryUtil;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.ImageStackWidget;
+import org.csstudio.ui.util.widgets.MultiSelectionCombo;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -58,16 +60,18 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import static org.csstudio.logbook.LogEntryBuilder.logEntry;
 
 /**
  * @author shroffk
@@ -76,15 +80,18 @@ import com.google.common.collect.Lists;
 public class LogEntryWidget extends Composite {
 
     private boolean editable;
+    // SWT.DOWN is collapsed which SWT.UP is expanded
+    private boolean expanded = false;
+
     // Model
     private LogEntryChangeset logEntryChangeset = new LogEntryChangeset();
-    private LogEntry logEntry;
+    // private LogEntry logEntry;
 
     private LogbookClient logbookClient;
     // List of all the possible logbooks and tags which may be added to a
     // logEntry.
-    private java.util.List<String> logbookNames;
-    private java.util.List<String> tagNames;
+    private List<String> logbookNames = Collections.emptyList();
+    private List<String> tagNames = Collections.emptyList();
 
     // TODO
     private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
@@ -93,16 +100,12 @@ public class LogEntryWidget extends Composite {
     // UI components
     private Text text;
     private Text textDate;
-    private Text textOwner;
-    private List logbookList;
-    private List tagList;
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
     private Button btnAddLogbook;
     private Button btnAddTags;
     final private FormData empty;
-    private Label label_vertical;
     private CTabItem tbtmAttachments;
     private CTabFolder tabFolder;
     private Composite tbtmAttachmentsComposite;
@@ -111,13 +114,17 @@ public class LogEntryWidget extends Composite {
     private Button btnAddScreenshot;
     private Button btnCSSWindow;
     private Label lblTags;
-    private Label label_horizontal;
     private Composite composite;
     private ErrorBar errorBar;
     private final boolean newWindow;
 
     private final String[] supportedImageTypes = new String[] { "*.png",
 	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
+    private Label lblNewLabel;
+    private MultiSelectionCombo<String> multiSelectionComboLogbook;
+    private MultiSelectionCombo<String> multiSelectionComboTag;
+    private Button btnNewButton;
+    private Label label;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -144,70 +151,55 @@ public class LogEntryWidget extends Composite {
 	composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
 	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 		1);
-	gd_composite.heightHint = 500;
+	gd_composite.heightHint = 638;
 	composite.setLayoutData(gd_composite);
 	composite.setLayout(new FormLayout());
 
+	label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+	FormData fd_label = new FormData();
+	fd_label.left = new FormAttachment(0, 1);
+	fd_label.right = new FormAttachment(100, -1);
+	if (expanded) {
+	    fd_label.top = new FormAttachment(60, -28);
+	} else {
+	    fd_label.top = new FormAttachment(100, -28);
+	}
+	label.setLayoutData(fd_label);
+	label.addMouseMoveListener(new MouseMoveListener() {
+	    // TODO add upper and lower bounds
+	    public void mouseMove(MouseEvent e) {
+		FormData fd = (FormData) label.getLayoutData();
+		int calNumerator = (int) (fd.top.numerator + (e.y * 100)
+			/ e.display.getActiveShell().getClientArea().height);
+		fd.top = new FormAttachment(calNumerator <= 100 ? calNumerator
+			: 100, fd.top.offset);
+		label.setLayoutData(fd);
+		label.getParent().layout();
+	    }
+	});
+	label.setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZENS));
+
 	Label lblDate = new Label(composite, SWT.NONE);
 	FormData fd_lblDate = new FormData();
-	fd_lblDate.top = new FormAttachment(0, 5);
-	fd_lblDate.left = new FormAttachment(0, 5);
+	fd_lblDate.left = new FormAttachment(0, 4);
 	lblDate.setLayoutData(fd_lblDate);
 	lblDate.setText("Date:");
 
 	textDate = new Text(composite, SWT.NONE);
 	textDate.setEditable(false);
 	FormData fd_textDate = new FormData();
-	fd_textDate.top = new FormAttachment(0, 5);
-	fd_textDate.left = new FormAttachment(lblDate, 5);
+	fd_textDate.left = new FormAttachment(lblDate, 6);
 	textDate.setLayoutData(fd_textDate);
 
-	label_vertical = new Label(composite, SWT.SEPARATOR | SWT.VERTICAL);
-	label_vertical.addMouseMoveListener(new MouseMoveListener() {
-	    public void mouseMove(MouseEvent e) {
-		FormData fd = (FormData) label_vertical.getLayoutData();
-		long calNumerator = fd.left.numerator + (e.x * 100)
-			/ e.display.getActiveShell().getClientArea().width;
-		fd.left = new FormAttachment((int) calNumerator);
-		label_vertical.setLayoutData(fd);
-		label_vertical.getParent().layout();
-	    }
-	});
-	label_vertical.setCursor(Display.getCurrent().getSystemCursor(
-		SWT.CURSOR_SIZEWE));
-	FormData fd_label_vertical = new FormData();
-	fd_label_vertical.top = new FormAttachment(0, 2);
-	fd_label_vertical.bottom = new FormAttachment(100, -2);
-	fd_label_vertical.left = new FormAttachment(70);
-	label_vertical.setLayoutData(fd_label_vertical);
-
-	label_horizontal = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-	label_horizontal.addMouseMoveListener(new MouseMoveListener() {
-	    public void mouseMove(MouseEvent e) {
-		FormData fd = (FormData) label_horizontal.getLayoutData();
-		long calNumerator = fd.top.numerator + (e.y * 100)
-			/ e.display.getActiveShell().getClientArea().height;
-		fd.top = new FormAttachment((int) calNumerator);
-		label_horizontal.setLayoutData(fd);
-		label_horizontal.getParent().layout();
-	    }
-	});
-	label_horizontal.setCursor(Display.getCurrent().getSystemCursor(
-		SWT.CURSOR_SIZENS));
-	FormData fd_label_horizontal = new FormData();
-	fd_label_horizontal.top = new FormAttachment(20, 50);
-	fd_label_horizontal.right = new FormAttachment(label_vertical, 2);
-	fd_label_horizontal.left = new FormAttachment(0, 5);
-	label_horizontal.setLayoutData(fd_label_horizontal);
-
 	text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP
-		| SWT.DOUBLE_BUFFERED);
+		| SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
+	text.setEditable(editable);
 	text.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(FocusEvent e) {
 
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).setText(
 			    text.getText());
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
@@ -225,77 +217,28 @@ public class LogEntryWidget extends Composite {
 	    }
 	});
 	FormData fd_text = new FormData();
-	fd_text.bottom = new FormAttachment(label_horizontal, -2);
-	fd_text.right = new FormAttachment(label_vertical, -2);
-	fd_text.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
+	fd_text.right = new FormAttachment(100, -5);
 	fd_text.left = new FormAttachment(0, 5);
 	text.setLayoutData(fd_text);
 
-	Label lblOwner = new Label(composite, SWT.NONE);
-	FormData fd_lblOwner = new FormData();
-	fd_lblOwner.left = new FormAttachment(label_vertical, 2);
-	fd_lblOwner.top = new FormAttachment(0, 5);
-	lblOwner.setLayoutData(fd_lblOwner);
-	lblOwner.setText("Owner:");
-
-	textOwner = new Text(composite, SWT.BORDER);
-	textOwner.addFocusListener(new FocusAdapter() {
-	    @Override
-	    public void focusLost(FocusEvent e) {
-		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
-			    logEntryChangeset.getLogEntry()).owner(
-			    textOwner.getText());
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		} catch (IOException e1) {
-		    setLastException(e1);
-		}
-	    }
-	});
-	textOwner.addKeyListener(new KeyAdapter() {
-	    @Override
-	    public void keyReleased(KeyEvent e) {
-		if (e.keyCode == SWT.CR) {
-		    try {
-			LogEntryBuilder logEntryBuilder = LogEntryBuilder
-				.logEntry(logEntryChangeset.getLogEntry())
-				.owner(textOwner.getText());
-			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		    } catch (IOException e1) {
-			setLastException(e1);
-		    }
-		}
-	    }
-	});
-	FormData fd_textOwner = new FormData();
-	fd_textOwner.top = new FormAttachment(0, 5);
-	fd_textOwner.right = new FormAttachment(100, -5);
-	fd_textOwner.left = new FormAttachment(lblOwner, 2);
-	textOwner.setLayoutData(fd_textOwner);
-
 	Label lblLogbooks = new Label(composite, SWT.NONE);
 	FormData fd_lblLogbooks = new FormData();
-	fd_lblLogbooks.left = new FormAttachment(label_vertical, 2);
-	fd_lblLogbooks.top = new FormAttachment(lblDate, 10, SWT.BOTTOM);
+	fd_lblLogbooks.left = new FormAttachment(0, 5);
 	lblLogbooks.setLayoutData(fd_lblLogbooks);
 	lblLogbooks.setText("Logbooks:");
 
-	logbookList = new List(composite, SWT.BORDER | SWT.V_SCROLL
-		| SWT.DOUBLE_BUFFERED);
-	FormData fd_logbookList = new FormData();
-	fd_logbookList.left = new FormAttachment(label_vertical, 2);
-	fd_logbookList.right = new FormAttachment(100, -5);
-	fd_logbookList.top = new FormAttachment(lblLogbooks, 2, SWT.BOTTOM);
-	logbookList.setLayoutData(fd_logbookList);
-
 	btnAddLogbook = new Button(composite, SWT.NONE);
+	btnAddLogbook.setEnabled(editable);
+	fd_text.bottom = new FormAttachment(btnAddLogbook, -4);
+	fd_lblLogbooks.top = new FormAttachment(btnAddLogbook, 5, SWT.TOP);
 	btnAddLogbook.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		// Open a dialog which allows users to select logbooks
 		StringListSelectionDialog dialog = new StringListSelectionDialog(
-			parent.getShell(), logbookNames, Arrays
-				.asList(logbookList.getItems()), "Add Logbooks");
+			parent.getShell(), logbookNames,
+			multiSelectionComboLogbook.getSelection(),
+			"Add Logbooks");
 		if (dialog.open() == IDialogConstants.OK_ID) {
 		    try {
 			LogEntryBuilder logEntryBuilder = LogEntryBuilder
@@ -312,38 +255,30 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	btnAddLogbook.setImage(ResourceManager.getPluginImage(
-		"org.csstudio.logbook.ui", "icons/logbook-16.png"));
+	btnAddLogbook.setImage(ResourceManager.getPluginImage("org.csstudio.logbook.ui", "icons/logbook-add-16.png"));
 	FormData fd_btnAddLogbook = new FormData();
-	fd_btnAddLogbook.left = new FormAttachment(label_vertical, 2);
-	fd_btnAddLogbook.top = new FormAttachment(logbookList, 5);
+	fd_btnAddLogbook.bottom = new FormAttachment(label, -46);
+	fd_btnAddLogbook.left = new FormAttachment(100, -40);
 	fd_btnAddLogbook.right = new FormAttachment(100, -5);
 	btnAddLogbook.setLayoutData(fd_btnAddLogbook);
-	btnAddLogbook.setText("Add Logbook");
 
 	lblTags = new Label(composite, SWT.NONE);
 	FormData fd_lblTags = new FormData();
-	fd_lblTags.left = new FormAttachment(label_vertical, 2);
-	fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
+	fd_lblTags.left = new FormAttachment(0, 5);
 	lblTags.setLayoutData(fd_lblTags);
 	lblTags.setText("Tags:");
 
-	tagList = new List(composite, SWT.BORDER | SWT.V_SCROLL
-		| SWT.DOUBLE_BUFFERED);
-	FormData fd_tagList = new FormData();
-	fd_tagList.left = new FormAttachment(label_vertical, 2);
-	fd_tagList.top = new FormAttachment(lblTags, 2);
-	fd_tagList.right = new FormAttachment(100, -5);
-	tagList.setLayoutData(fd_tagList);
-
 	btnAddTags = new Button(composite, SWT.NONE);
+	btnAddTags.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_tag.png"));
+	btnAddTags.setEnabled(editable);
+	fd_lblTags.top = new FormAttachment(btnAddTags, 5, SWT.TOP);
 	btnAddTags.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		// Open a dialog which allows users to select tags
 		StringListSelectionDialog dialog = new StringListSelectionDialog(
-			parent.getShell(), tagNames, Arrays.asList(tagList
-				.getItems()), "Add Tags");
+			parent.getShell(), tagNames, multiSelectionComboTag
+				.getSelection(), "Add Tags");
 		if (dialog.open() == IDialogConstants.OK_ID) {
 		    try {
 			LogEntryBuilder logEntryBuilder = LogEntryBuilder
@@ -360,19 +295,69 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	btnAddTags.setText("Add Tags");
 	FormData fd_btnAddTags = new FormData();
-	fd_btnAddTags.left = new FormAttachment(label_vertical, 2);
-	fd_btnAddTags.top = new FormAttachment(tagList, 5);
+	fd_btnAddTags.bottom = new FormAttachment(label, -6);
 	fd_btnAddTags.right = new FormAttachment(100, -5);
+	fd_btnAddTags.left = new FormAttachment(100, -40);
 	btnAddTags.setLayoutData(fd_btnAddTags);
+
+	Combo combo = new Combo(composite, SWT.NONE);
+	fd_text.top = new FormAttachment(combo, 6);
+	fd_lblDate.top = new FormAttachment(combo, 4, SWT.TOP);
+	fd_textDate.top = new FormAttachment(combo, 4, SWT.TOP);
+	FormData fd_combo = new FormData();
+	fd_combo.top = new FormAttachment(0, 5);
+	combo.setLayoutData(fd_combo);
+
+	lblNewLabel = new Label(composite, SWT.NONE);
+	fd_combo.left = new FormAttachment(lblNewLabel, 6);
+	FormData fd_lblNewLabel = new FormData();
+	fd_lblNewLabel.top = new FormAttachment(combo, 4, SWT.TOP);
+	fd_lblNewLabel.right = new FormAttachment(100, -108);
+	lblNewLabel.setLayoutData(fd_lblNewLabel);
+	lblNewLabel.setText("Level:");
+
+	multiSelectionComboLogbook = new MultiSelectionCombo<String>(composite,
+		SWT.NONE);
+	FormData fd_multiSelectionCombo = new FormData();
+	fd_multiSelectionCombo.top = new FormAttachment(text, 4);
+	fd_multiSelectionCombo.right = new FormAttachment(btnAddLogbook, -5);
+	fd_multiSelectionCombo.left = new FormAttachment(lblLogbooks, 6);
+	multiSelectionComboLogbook.setLayoutData(fd_multiSelectionCombo);
+
+	multiSelectionComboTag = new MultiSelectionCombo<String>(composite,
+		SWT.NONE);
+	FormData fd_multiSelectionCombo_1 = new FormData();
+	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3,
+		SWT.TOP);
+	fd_multiSelectionCombo_1.right = new FormAttachment(
+		multiSelectionComboLogbook, 0, SWT.RIGHT);
+	fd_multiSelectionCombo_1.left = new FormAttachment(
+		multiSelectionComboLogbook, 0, SWT.LEFT);
+	multiSelectionComboTag.setLayoutData(fd_multiSelectionCombo_1);
+
+	btnNewButton = new Button(composite, SWT.FLAT | SWT.LEFT);
+	btnNewButton.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		// Toggle the expand/collapse
+		setExpanded(!isExpanded());
+	    }
+	});
+	FormData fd_btnNewButton = new FormData();
+	fd_btnNewButton.left = new FormAttachment(label, 0, SWT.LEFT);
+	fd_btnNewButton.right = new FormAttachment(100, -2);
+	fd_btnNewButton.top = new FormAttachment(label, 0);
+	fd_btnNewButton.bottom = new FormAttachment(label, 24, SWT.BOTTOM);
+	btnNewButton.setLayoutData(fd_btnNewButton);
+	btnNewButton.setText("Details");
 
 	tabFolder = new CTabFolder(composite, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 	FormData fd_tabFolder = new FormData();
-	fd_tabFolder.top = new FormAttachment(label_horizontal, 2);
-	fd_tabFolder.right = new FormAttachment(label_vertical, -2);
-	fd_tabFolder.left = new FormAttachment(0, 5);
-	fd_tabFolder.bottom = new FormAttachment(100, -5);
+	fd_tabFolder.bottom = new FormAttachment(100, -2);
+	fd_tabFolder.right = new FormAttachment(100, -2);
+	fd_tabFolder.left = new FormAttachment(0, 2);
+	fd_tabFolder.top = new FormAttachment(btnNewButton, 2);
 	tabFolder.setLayoutData(fd_tabFolder);
 	tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(
 		SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
@@ -386,6 +371,7 @@ public class LogEntryWidget extends Composite {
 	tbtmAttachmentsComposite.setLayout(new FormLayout());
 
 	btnAddImage = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnAddImage.setVisible(editable);
 	btnAddImage.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
@@ -413,12 +399,14 @@ public class LogEntryWidget extends Composite {
 	fd_btnAddImage.right = new FormAttachment(32);
 	btnAddImage.setLayoutData(fd_btnAddImage);
 	btnAddImage.setText("Add Image");
+
 	btnAddScreenshot = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnAddScreenshot.setVisible(editable);
 	btnAddScreenshot.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).attach(
 			    addScreenshot(true, newWindow));
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
@@ -435,11 +423,12 @@ public class LogEntryWidget extends Composite {
 	btnAddScreenshot.setText("Screenshot");
 
 	btnCSSWindow = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnCSSWindow.setVisible(editable);
 	btnCSSWindow.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		try {
-		    LogEntryBuilder logEntryBuilder = LogEntryBuilder.logEntry(
+		    LogEntryBuilder logEntryBuilder = logEntry(
 			    logEntryChangeset.getLogEntry()).attach(
 			    addScreenshot(false, newWindow));
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
@@ -457,12 +446,50 @@ public class LogEntryWidget extends Composite {
 
 	imageStackWidget = new ImageStackWidget(tbtmAttachmentsComposite,
 		SWT.NONE);
+	imageStackWidget.setEditable(editable);
 	FormData fd_imageStackWidget = new FormData();
 	fd_imageStackWidget.bottom = new FormAttachment(btnAddImage, -2);
 	fd_imageStackWidget.right = new FormAttachment(100, -2);
 	fd_imageStackWidget.top = new FormAttachment(0, 2);
 	fd_imageStackWidget.left = new FormAttachment(0, 2);
 	imageStackWidget.setLayoutData(fd_imageStackWidget);
+	imageStackWidget
+		.addPropertyChangeListener(new PropertyChangeListener() {
+
+		    @SuppressWarnings("unchecked")
+		    @Override
+		    public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName()
+				.equals("imageInputStreamsMap")) {
+			    Collection<String> oldImages = ((Map<String, byte[]>) evt
+				    .getOldValue()).keySet();
+			    Collection<String> newImages = (((Map<String, byte[]>) evt
+				    .getNewValue()).keySet());
+			    if (!oldImages.equals(newImages)) {
+				Collection<String> removedImages = new ArrayList<String>(
+					oldImages);
+				removedImages.removeAll(newImages);
+				Collection<String> addedImages = new ArrayList<String>(
+					newImages);
+				addedImages.removeAll(oldImages);
+
+				try {
+				    LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					    .logEntry(logEntryChangeset
+						    .getLogEntry());
+				    for (String removedImage : removedImages) {
+					logEntryBuilder
+						.removeAttachment(removedImage);
+				    }
+				    logEntryChangeset
+					    .setLogEntryBuilder(logEntryBuilder);
+				} catch (IOException e) {
+				    setLastException(e);
+				}
+			    }
+			}
+		    }
+		});
 
 	empty = new FormData();
 	empty.top = new FormAttachment(0);
@@ -475,9 +502,17 @@ public class LogEntryWidget extends Composite {
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
-		case "editable":
-		    // getLogEntryChangeset().setLogEntryBuilder(
-		    // LogEntryBuilder.logEntry(getLogEntry()));
+		case "expand":
+		    FormData fd = ((FormData) label.getLayoutData());
+		    if (expanded) {
+			fd.top = new FormAttachment(60, -28);
+			btnNewButton.setText("Hide details");
+		    } else {
+			fd.top = new FormAttachment(100, -28);
+			btnNewButton.setText("Show Details");
+		    }
+		    label.setLayoutData(fd);
+		    label.getParent().layout();
 		    break;
 		case "logEntry":
 		    init();
@@ -497,82 +532,53 @@ public class LogEntryWidget extends Composite {
 	} catch (Exception e1) {
 	    setLastException(e1);
 	}
-    }
+	// Attachment buttons need to be enabled/disabled
+	if (!editable) {
+	    // Attachment Tab Layout
+	    FormData fd = ((FormData) imageStackWidget.getLayoutData());
+	    fd.bottom = new FormAttachment(100, -2);
+	    imageStackWidget.setLayoutData(fd);
+	} else {
+	    // Attachment Tab Layout
+	    FormData fd = ((FormData) imageStackWidget.getLayoutData());
+	    fd.bottom = new FormAttachment(btnAddImage, -2);
+	    imageStackWidget.setLayoutData(fd);
+	}
+	Runnable initialize = new Runnable() {
 
-    private void init() {
-	try {
-	    logEntryChangeset = new LogEntryChangeset();
-	    if (logEntry != null) {
-		LogEntryBuilder logEntryBuilder = LogEntryBuilder
-			.logEntry(logEntry);
-		// TODO temporary fix, in future releases the attachments will
-		// be listed with the logEntry itself
-		if (logEntry.getId() != null && logbookClient != null) {
-		    Runnable retriveAttachments = new Runnable() {
-			@Override
-			public void run() {
-			    try {
-				LogEntryBuilder logEntryBuilder = LogEntryBuilder
-					.logEntry(logEntryChangeset
-						.getLogEntry());
-				Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
-				for (Attachment attachment : logbookClient
-					.listAttachments(logEntry.getId())) {
-				    attachments.add(AttachmentBuilder.attachment(attachment));
-				}
-				logEntryBuilder.setAttachments(attachments);
-				logEntryChangeset
-					.setLogEntryBuilder(logEntryBuilder);
-			    } catch (Exception ex) {
-
-			    }
-			}
-		    };
-		    Executors.newCachedThreadPool().execute(retriveAttachments);
-		    // BusyIndicator.showWhile(getDisplay(),
-		    // retriveAttachments);
-		}
-		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-	    }
-
-	    if (isEditable()) {
-		Runnable initialize = new Runnable() {
-
-		    @Override
-		    public void run() {
-			if (logbookClient != null) {
-			    try {
-				logbookNames = Lists.transform(
-					new ArrayList<Logbook>(logbookClient
-						.listLogbooks()),
-					new Function<Logbook, String>() {
-					    public String apply(Logbook input) {
-						return input.getName();
-					    };
-					});
-				tagNames = Lists.transform(new ArrayList<Tag>(
-					logbookClient.listTags()),
-					new Function<Tag, String>() {
-					    public String apply(Tag input) {
-						return input.getName();
-					    };
-					});
-				getDisplay().asyncExec(new Runnable() {
-
-				    @Override
-				    public void run() {
-					updateUI();
-				    }
+	    @Override
+	    public void run() {
+		if (logbookClient != null) {
+		    try {
+			logbookNames = Lists.transform(new ArrayList<Logbook>(
+				logbookClient.listLogbooks()),
+				new Function<Logbook, String>() {
+				    public String apply(Logbook input) {
+					return input.getName();
+				    };
 				});
-			    } catch (final Exception e) {
-				setLastException(e);
-			    }
-			}
-		    }
-		};
-		Executors.newCachedThreadPool().execute(initialize);
-	    }
+			tagNames = Lists.transform(new ArrayList<Tag>(
+				logbookClient.listTags()),
+				new Function<Tag, String>() {
+				    public String apply(Tag input) {
+					return input.getName();
+				    };
+				});
+			getDisplay().asyncExec(new Runnable() {
 
+			    @Override
+			    public void run() {
+				updateUI();
+			    }
+			});
+		    } catch (final Exception e) {
+			setLastException(e);
+		    }
+		}
+	    }
+	};
+	Executors.newCachedThreadPool().execute(initialize);
+	try {
 	    // get the list of properties and extensions to handle these
 	    // properties.
 	    IConfigurationElement[] config = Platform.getExtensionRegistry()
@@ -590,25 +596,66 @@ public class LogEntryWidget extends Composite {
 	    } else {
 		propertyWidgetFactories = Collections.emptyMap();
 	    }
+	} catch (Exception e) {
+	    propertyWidgetFactories = Collections.emptyMap();
+	    setLastException(e);
+	}
+    }
+
+    private void init() {
+	try {
+	    final LogEntry logEntry = this.logEntryChangeset.getLogEntry();
+	    // logEntryChangeset = new LogEntryChangeset();
+	    logEntryChangeset
+		    .addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+			    getDisplay().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+				    updateUI();
+				}
+			    });
+			}
+		    });
+	    if (logEntry != null) {
+		LogEntryBuilder logEntryBuilder = LogEntryBuilder
+			.logEntry(logEntry);
+		// TODO temporary fix, in future releases the attachments will
+		// be listed with the logEntry itself
+		if (logEntry.getId() != null && logbookClient != null) {
+		    Runnable retriveAttachments = new Runnable() {
+			@Override
+			public void run() {
+			    try {
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					.logEntry(logEntryChangeset
+						.getLogEntry());
+				Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
+				for (Attachment attachment : logbookClient
+					.listAttachments(logEntry.getId())) {
+				    attachments.add(AttachmentBuilder
+					    .attachment(attachment));
+				}
+				logEntryBuilder.setAttachments(attachments);
+				logEntryChangeset
+					.setLogEntryBuilder(logEntryBuilder);
+			    } catch (Exception ex) {
+
+			    }
+			}
+		    };
+		    Executors.newCachedThreadPool().execute(retriveAttachments);
+		}
+		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+	    }
 	} catch (Exception ex) {
 	    // Failed to get a client to the logbook
 	    // Display exception and disable editing.
 	    setLastException(ex);
 	}
-	logEntryChangeset
-		.addPropertyChangeListener(new PropertyChangeListener() {
-
-		    @Override
-		    public void propertyChange(PropertyChangeEvent evt) {
-			getDisplay().asyncExec(new Runnable() {
-
-			    @Override
-			    public void run() {
-				updateUI();
-			    }
-			});
-		    }
-		});
     }
 
     private void updateUI() {
@@ -618,37 +665,6 @@ public class LogEntryWidget extends Composite {
 		cTabItem.dispose();
 	    }
 	}
-
-	text.setEditable(editable);
-	textOwner.setEditable(editable);
-	// Attachment buttons need to be enabled/disabled
-	btnAddImage.setVisible(editable);
-	btnAddScreenshot.setVisible(editable);
-	btnCSSWindow.setVisible(editable);
-	btnAddLogbook.setVisible(editable);
-	btnAddTags.setVisible(editable);
-	if (!editable) {
-	    btnAddLogbook.setSize(btnAddLogbook.getSize().x, 0);
-	    btnAddTags.setSize(btnAddTags.getSize().x, 0);
-	    FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
-	    fd_lblTags.top = new FormAttachment(logbookList, 5);
-	    lblTags.setLayoutData(fd_lblTags);
-	    // Attachment Tab Layout
-	    FormData fd = ((FormData) imageStackWidget.getLayoutData());
-	    fd.bottom = new FormAttachment(100, -2);
-	    imageStackWidget.setLayoutData(fd);
-	} else {
-	    btnAddLogbook.setSize(btnAddLogbook.getSize().x, SWT.DEFAULT);
-	    btnAddTags.setSize(btnAddTags.getSize().x, SWT.DEFAULT);
-	    FormData fd_lblTags = ((FormData) lblTags.getLayoutData());
-	    fd_lblTags.top = new FormAttachment(btnAddLogbook, 5);
-	    lblTags.setLayoutData(fd_lblTags);
-	    // Attachment Tab Layout
-	    FormData fd = ((FormData) imageStackWidget.getLayoutData());
-	    fd.bottom = new FormAttachment(btnAddImage, -2);
-	    imageStackWidget.setLayoutData(fd);
-	}
-
 	LogEntry logEntry = null;
 	try {
 	    logEntry = this.logEntryChangeset.getLogEntry();
@@ -661,16 +677,16 @@ public class LogEntryWidget extends Composite {
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
-	    textOwner.setText(logEntry.getOwner() == null ? "" : logEntry
-		    .getOwner());
-	    java.util.List<String> logbookNames = LogEntryUtil
-		    .getLogbookNames(logEntry);
-	    logbookList.setItems(logbookNames.toArray(new String[logbookNames
-		    .size()]));
-	    java.util.List<String> tagNames = LogEntryUtil
-		    .getTagNames(logEntry);
-	    tagList.setItems(tagNames.toArray(new String[tagNames.size()]));
+	    multiSelectionComboLogbook.setItems(logbookNames);
+	    multiSelectionComboLogbook.setSelection(LogEntryUtil
+		    .getLogbookNames(logEntry));
+	    multiSelectionComboTag.setItems(tagNames);
+	    multiSelectionComboTag.setSelection(LogEntryUtil
+		    .getTagNames(logEntry));
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
+	    if (logEntry.getAttachment().size() > 0) {
+		setExpanded(true);
+	    }
 	    for (Attachment attachment : logEntry.getAttachment()) {
 		if (Arrays.asList(supportedImageTypes).contains(
 			"*"
@@ -678,8 +694,15 @@ public class LogEntryWidget extends Composite {
 					attachment.getFileName().lastIndexOf(
 						"."),
 					attachment.getFileName().length()))) {
-		    imageInputStreamsMap.put(attachment.getFileName(),
-			    attachment.getInputStream());
+		    try {
+			if (attachment.getInputStream().available() > 0) {
+			    imageInputStreamsMap.put(attachment.getFileName(),
+				    attachment.getInputStream());
+			}
+		    } catch (IOException e) {
+			setLastException(e);
+		    }
+
 		}
 	    }
 	    try {
@@ -689,9 +712,9 @@ public class LogEntryWidget extends Composite {
 	    }
 	} else {
 	    text.setText("");
-	    textOwner.setText("");
-	    logbookList.setItems(new String[0]);
-	    tagList.setItems(new String[0]);
+	    multiSelectionComboLogbook.setItems(Collections
+		    .<String> emptyList());
+	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
 	}
 	if (propertyWidgetFactories != null) {
@@ -740,8 +763,6 @@ public class LogEntryWidget extends Composite {
 	    image.dispose();
 	    // Save
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-	    // imageStackWidget.addImage(screenshot_file.getPath(),
-	    // new FileInputStream(screenshot_file.getPath()));
 	    return AttachmentBuilder
 		    .attachment(screenshot_file.getPath())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));
@@ -777,9 +798,16 @@ public class LogEntryWidget extends Composite {
     }
 
     public void setLogEntry(LogEntry logEntry) {
-	LogEntry oldValue = this.logEntry;
-	this.logEntry = logEntry;
-	changeSupport.firePropertyChange("logEntry", oldValue, this.logEntry);
+
+	try {
+	    LogEntry oldValue = this.logEntryChangeset.getLogEntry();
+	    this.logEntryChangeset = new LogEntryChangeset(logEntry);
+	    changeSupport.firePropertyChange("logEntry", oldValue,
+		    this.logEntryChangeset.getLogEntry());
+	} catch (IOException e) {
+	    setLastException(e);
+	}
+
     }
 
     public java.util.List<String> getLogbookNames() {
@@ -801,5 +829,22 @@ public class LogEntryWidget extends Composite {
 	java.util.List<String> oldValue = this.tagNames;
 	this.tagNames = tagNames;
 	changeSupport.firePropertyChange("tagNames", oldValue, this.tagNames);
+    }
+
+    /**
+     * @return the expanded
+     */
+    public boolean isExpanded() {
+	return expanded;
+    }
+
+    /**
+     * @param expanded
+     *            the expanded to set
+     */
+    public void setExpanded(boolean expanded) {
+	boolean oldValue = this.expanded;
+	this.expanded = expanded;
+	changeSupport.firePropertyChange("expand", oldValue, this.expanded);
     }
 }

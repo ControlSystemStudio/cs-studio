@@ -22,8 +22,6 @@ org.apache.log4j
 org.apache.xerces
 org.csstudio.apputil
 org.csstudio.apputil.ui
-org.csstudio.auth
-org.csstudio.auth.ui
 org.csstudio.archive.rdb
 org.csstudio.archive.reader
 org.csstudio.archive.reader.channelarchiver
@@ -39,13 +37,10 @@ org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.postanalyser
-org.csstudio.diag.probe
-org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
 org.csstudio.display.multichannelviewer
 org.csstudio.display.waterfall
-org.csstudio.dummyauthorization
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.graphene
@@ -53,6 +48,7 @@ org.csstudio.graphene.opiwidgets
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
+org.csstudio.logbook.olog.properties
 org.csstudio.logbook.ui
 org.csstudio.logbook.viewer
 org.csstudio.logging
@@ -72,10 +68,9 @@ org.csstudio.opibuilder.pvmanager.util
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.rcp
+org.csstudio.opibuilder.widgets.service
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.opi.intro
-org.csstudio.platform.jaasAuthentication
-org.csstudio.platform.jaasAuthentication.ui
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
@@ -89,10 +84,14 @@ org.csstudio.platform.libs.log4j
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
+org.csstudio.pvnames
+org.csstudio.pvnames.ui
 org.csstudio.remote
 org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.servicelocator
+org.csstudio.service.channelfinder
+org.csstudio.service.math
 org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets

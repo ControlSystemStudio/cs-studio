@@ -4,7 +4,10 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +30,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
+import org.epics.pvmanager.service.ServiceRegistry;
 
 import com.google.common.base.Joiner;
 
@@ -43,7 +47,6 @@ public class ServicesView extends ViewPart {
      * 
      */
     public ServicesView() {
-	// TODO Auto-generated constructor stub
     }
 
     /*
@@ -98,6 +101,8 @@ public class ServicesView extends ViewPart {
 	    public String getText(Object element) {
 		if (element instanceof Service) {
 		    return ((Service) element).getDescription();
+		} else if (element instanceof ServiceMethod) {
+		    return ((ServiceMethod) element).getDescription();
 		} else if (element instanceof Entry) {
 		    return ((Entry<String, String>) element).getValue();
 		}
@@ -110,21 +115,12 @@ public class ServicesView extends ViewPart {
 	trclmnNewColumn_1.setText("Description");
 	treeViewer.setContentProvider(new ServiceTreeContentProvider());
 
-	IConfigurationElement[] config = Platform.getExtensionRegistry()
-		.getConfigurationElementsFor(
-			"org.csstudio.utility.pvmanager.service");
-
+	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
+		.getDefault().listServices());
+	Collections.sort(serviceNames);
 	List<Service> services = new ArrayList<Service>();
-	for (IConfigurationElement iConfigurationElement : config) {
-	    Object o;
-	    try {
-		o = iConfigurationElement.createExecutableExtension("service");
-		if (o instanceof Service) {
-		    services.add((Service) o);
-		}
-	    } catch (CoreException e) {
-		e.printStackTrace();
-	    }
+	for (String serviceName : serviceNames) {
+	    services.add(ServiceRegistry.getDefault().findService(serviceName));
 	}
 	treeViewer.setInput(services);
     }
@@ -143,8 +139,9 @@ public class ServicesView extends ViewPart {
 	StringBuffer stringBuffer = new StringBuffer();
 	stringBuffer.append(serviceMethod.getName()).append("(");
 	List<String> arguments = new ArrayList<String>();
-	for (Entry<String, Class<?>> argument : serviceMethod
-		.getArgumentTypes().entrySet()) {
+	SortedMap<String, Class<?>> argumentTypesMap = new TreeMap<String, Class<?>>();
+	argumentTypesMap.putAll(serviceMethod.getArgumentTypes());
+	for (Entry<String, Class<?>> argument : argumentTypesMap.entrySet()) {
 	    arguments.add(argument.getValue().getSimpleName() + " "
 		    + argument.getKey());
 	}
@@ -152,8 +149,9 @@ public class ServicesView extends ViewPart {
 	stringBuffer.append(")");
 	stringBuffer.append(": ");
 	List<String> results = new ArrayList<String>();
-	for (Entry<String, Class<?>> result : serviceMethod.getResultTypes()
-		.entrySet()) {
+	SortedMap<String, Class<?>> resultTypesMap = new TreeMap<String, Class<?>>();
+	resultTypesMap.putAll(serviceMethod.getResultTypes());
+	for (Entry<String, Class<?>> result : resultTypesMap.entrySet()) {
 	    results.add(result.getValue().getSimpleName() + " "
 		    + result.getKey());
 	}

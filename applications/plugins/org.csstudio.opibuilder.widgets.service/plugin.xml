@@ -6,10 +6,32 @@
       <widget
             category="Monitors"
             editpart_class="org.csstudio.opibuilder.widgets.service.ServicePanelEditPart"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
             model_class="org.csstudio.opibuilder.widgets.service.ServicePanelModel"
             name="Service panel"
             typeId="org.csstudio.opibuilder.widgets.service.ServicePanel">
+      </widget>
+   </extension>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.opibuilder.widgets.service.VTableWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/table-16.png"
+            model_class="org.csstudio.opibuilder.widgets.service.VTableWidgetModel"
+            name="VTable"
+            typeId="org.csstudio.opibuilder.widgets.service.VTableWidget">
+      </widget>
+   </extension>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.opibuilder.widgets.service.VImageWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/image-16.png"
+            model_class="org.csstudio.opibuilder.widgets.service.VImageWidgetModel"
+            name="VImage"
+            typeId="org.csstudio.opibuilder.widgets.service.VImageWidget">
       </widget>
    </extension>
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#trends" label="Sscan">
+	<topic label="Sscan"  href="doc/sscan.html">
+		<topic label="Overview" href="doc/sscan.html#overview"/>
+        <topic label="Getting Started" href="doc/sscan.html#101"/>
+        <topic label="Common Tasks" href="doc/sscan.html#common"/>
+        <topic label="Perspective" href="doc/sscan.html#perspective"/>
+        <topic label="Toolbar" href="doc/sscan.html#toolbar"/>
+        <topic label="Properties Panel" href="doc/sscan.html#config"/>
+        <topic label="Annotations" href="doc/sscan.html#annotate"/>
+        <topic label="Sscan View" href="doc/sscan.html#sscanview"/>
+        <topic label="Export" href="doc/sscan.html#export"/>
+        <topic label="Preferences" href="doc/sscan.html#preferences"/>
+	</topic>
+</toc>

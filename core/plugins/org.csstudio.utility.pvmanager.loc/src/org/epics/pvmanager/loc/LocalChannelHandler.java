@@ -14,6 +14,7 @@ import org.epics.pvmanager.*;
 import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
+import org.epics.vtype.VType;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
@@ -64,7 +65,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
     
     private Object wrapValue(Object value) {
-        if (value instanceof Number) {
+        if (value instanceof VType) {
+            return value;
+        } else if (value instanceof Number) {
             // Special support for numbers
             return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
                     displayNone());

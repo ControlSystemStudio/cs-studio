@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.HashMap;
 
+import org.csstudio.pvnames.ui.AutocompleteWidget;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
@@ -51,7 +52,7 @@ public class AddPVDialog  extends TitleAreaDialog
     final private boolean formula;
 
     // GUI elements
-    private Text txt_name;
+	private Text txt_name;
     private Text txt_period;
     private Button btn_monitor;
     private Combo axis;
@@ -129,7 +130,8 @@ public class AddPVDialog  extends TitleAreaDialog
         txt_name = new Text(box, SWT.BORDER);
         txt_name.setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
         txt_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
-
+        new AutocompleteWidget(txt_name);
+        
         if (! formula)
         {
             // Scan Period [seconds]: _____   [x] on change

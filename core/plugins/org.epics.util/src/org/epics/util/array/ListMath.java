@@ -39,6 +39,31 @@ public class ListMath {
     
     /**
      * Returns a sublist of the given data.
+     * <p>
+     * TODO: this should go as a member method
+     * 
+     * @param data a list
+     * @param start start point for the sublist
+     * @param end end point (exclusive) for the sublist
+     * @return the sublist
+     */
+    public static ListNumber limit(final ListNumber data, final int start, final int end) {
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                return data.getDouble(index + start);
+            }
+
+            @Override
+            public int size() {
+                return end - start;
+            }
+        };
+    }
+    
+    /**
+     * Returns a sublist of the given data.
      * 
      * @param data a list
      * @param start start point for the sublist
