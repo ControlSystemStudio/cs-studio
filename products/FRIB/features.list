@@ -2,8 +2,8 @@ org.csstudio.alarm.beast.ui.feature
 org.csstudio.channel.feature
 org.csstudio.frib.applications.feature
 org.csstudio.frib.basic.applications.feature
-org.csstudio.frib.core.feature
-org.csstudio.frib.eclipse.feature
+org.csstudio.frib.feature.core
+org.csstudio.frib.feature.eclipse
 org.csstudio.frib.fribcore.feature
 org.csstudio.frib.product.feature
 org.csstudio.olog.feature
@@ -11,8 +11,3 @@ org.csstudio.opibuilder.feature
 org.csstudio.scan.ui.feature
 org.csstudio.trends.databrowser2.feature
 org.csstudio.trends.databrowser2.opiwidget.feature
-org.eclipse.equinox.p2.core.feature
-org.eclipse.equinox.p2.extras.feature
-org.eclipse.equinox.p2.rcp.feature
-org.eclipse.equinox.p2.user.ui
-org.eclipse.rcp
