@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
