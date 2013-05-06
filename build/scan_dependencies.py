@@ -240,7 +240,7 @@ if __name__ == '__main__':
         featureList.sort()
         '''this is feature.list'''
         print featureList     
-        featureListFile = open(os.path.join(productDir, 'feature.list'), 'w')
+        featureListFile = open(os.path.join(productDir, 'features.list'), 'w')
         for feature in featureList:
             '''
             This additional step is to check id feature folder name is different from feature id
@@ -269,7 +269,7 @@ if __name__ == '__main__':
         This is the plugin.list consisting of source plugins from the cs-studio repo
         '''
         sourcePluginList = [ plugin for plugin in pluginList if plugin in dependencyMap.keys() ]
-        pluginListFile = open(os.path.join(productDir, 'plugin.list'), 'w')
+        pluginListFile = open(os.path.join(productDir, 'plugins.list'), 'w')
         for plugin in sourcePluginList:
             '''
             This additional step is to check id plugin folder name is different from plugin id
