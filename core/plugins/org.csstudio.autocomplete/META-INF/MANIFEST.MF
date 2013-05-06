@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.csstudio.autocomplete;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.autocomplete.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.100"
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.autocomplete,
