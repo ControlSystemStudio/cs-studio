@@ -36,7 +36,7 @@ class IVTable implements VTable {
             return ((ListNumber) data).size();
         }
         
-        throw new IllegalArgumentException("Object " + data + " is not an array");
+        throw new IllegalArgumentException("Object " + data + " is not supported");
     }
 
     @Override
