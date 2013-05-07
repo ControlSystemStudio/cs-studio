@@ -8,16 +8,5 @@
             name="org.csstudio.logbook.olog.logbookclientfactory">
       </logbookclientfactory>
    </extension>
-   <extension
-         point="org.csstudio.logbook.ui.propertywidget">
-      <propertywidgetfactory
-            propertyName="Context"
-            propertywidgetfactory="org.csstudio.logbook.olog.ui.ContextPropertyWidgetFactory">
-      </propertywidgetfactory>
-      <propertywidgetfactory
-            propertyName="Trac"
-            propertywidgetfactory="org.csstudio.logbook.olog.ui.TracPropertyWidgetFactory">
-      </propertywidgetfactory>
-   </extension>
 
 </plugin>

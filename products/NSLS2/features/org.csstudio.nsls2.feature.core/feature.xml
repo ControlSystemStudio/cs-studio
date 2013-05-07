@@ -523,14 +523,21 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.pvnames"
+         id="org.csstudio.logbook.olog.properties"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.pvnames.ui"
+         id="org.csstudio.autocomplete.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.autocomplete"
          download-size="0"
          install-size="0"
          version="0.0.0"

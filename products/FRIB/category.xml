@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.csstudio.frib.applications.feature_3.1.0.qualifier.jar" id="org.csstudio.frib.applications.feature" version="3.1.0.qualifier">
+      <category name="Applications"/>
+   </feature>
+   <feature url="features/org.csstudio.frib.basic.applications.feature_3.1.0.qualifier.jar" id="org.csstudio.frib.basic.applications.feature" version="3.1.0.qualifier">
+      <category name="Applications"/>
+   </feature>
+   <feature url="features/org.csstudio.frib.core.feature_3.1.0.qualifier.jar" id="org.csstudio.frib.core.feature" version="3.1.0.qualifier">
+      <category name="Core"/>
+   </feature>
+   <feature url="features/org.csstudio.frib.nslscore.feature_3.1.0.qualifier.jar" id="org.csstudio.frib.nslscore.feature" version="3.1.0.qualifier">
+      <category name="Core"/>
+   </feature>
+   <category-def name="Core" label="Core"/>
+   <category-def name="Applications" label="Applications"/>
+</site>

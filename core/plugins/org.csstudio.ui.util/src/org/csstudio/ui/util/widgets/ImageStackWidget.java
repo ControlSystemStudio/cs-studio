@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -125,12 +126,22 @@ public class ImageStackWidget extends Composite {
 		// use the OwnerDrawLabelProvider
 		String imageName = cell.getElement() == null ? "" : cell
 			.getElement().toString();
-		ImageData imageData = new ImageData(new ByteArrayInputStream(
-			imageInputStreamsMap.get(imageName)));
-		int width = scrollBarVisble ? 90 : 100;
-		System.out.println("redrawing : " + width + " "  + tableViewerColumn.getColumn().getWidth());
-		cell.setImage(new Image(getDisplay(), imageData.scaledTo(width,
-			width)));
+		InputStream stream = new ByteArrayInputStream(
+			imageInputStreamsMap.get(imageName));
+		ImageData imageData = null;
+		try {
+		    imageData = new ImageData(stream);
+		    int width = scrollBarVisble ? 90 : 100;
+		    cell.setImage(new Image(getDisplay(), imageData.scaledTo(
+			    width, width)));
+		} catch (SWTException ex) {
+		} finally {
+		    try {
+			stream.close();
+		    } catch (IOException ex) {
+		    }
+		}
+
 	    }
 	});
 
@@ -238,7 +249,7 @@ public class ImageStackWidget extends Composite {
 			    imagePreview.setImage(new ByteArrayInputStream(next
 				    .getValue()));
 			    selectedImageName = next.getKey();
-			    buttonRemove.setVisible(true);
+			    buttonRemove.setVisible(true && editable);
 			}
 		    } else {
 			tableViewer.setInput(null);
@@ -250,12 +261,11 @@ public class ImageStackWidget extends Composite {
 		case "selectedImageName":
 		    imagePreview.setImage(new ByteArrayInputStream(
 			    imageInputStreamsMap.get(selectedImageName)));
-		    buttonRemove.setVisible(true);
+		    buttonRemove.setVisible(true && editable);
 		    imagePreview.redraw();
 		    break;
 		case "scrollBarVisible":
-		    System.out.println("scrollbar event");
-		    tblclmnImage.setWidth(scrollBarVisble? 94 : 104);
+		    tblclmnImage.setWidth(scrollBarVisble ? 94 : 104);
 		    tableViewer.getTable().layout();
 		    tableViewer.refresh();
 		default:
@@ -315,6 +325,13 @@ public class ImageStackWidget extends Composite {
 		this.imageInputStreamsMap);
     }
 
+    /**
+     * Remove the Image identified by name
+     * 
+     * @param name
+     *            - the name of the Image to be removed
+     * @throws IOException
+     */
     public void removeImage(String name) throws IOException {
 	if (imageInputStreamsMap.containsKey(name)) {
 	    Map<String, byte[]> oldValue = new HashMap<String, byte[]>(

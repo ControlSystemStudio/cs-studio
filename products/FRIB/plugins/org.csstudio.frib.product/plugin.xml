@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.csstudio.frib.product.application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.frib.product.CSSPerspective"
+            icon="icons/css16.png"
+            id="org.csstudio.frib.product.CSSPerspective"
+            name="CSS perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.frib.product.application"
+            name="Css-frib">
+         <property
+               name="appName"
+               value="Css-frib">
+         </property>
+         <property
+               name="introTitle"
+               value="Welcome to Control System Studio&lt;/h1&gt;&lt;p&gt;Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community.&lt;/p&gt;&lt;p&gt;New users: click on First Steps&lt;/p&gt;&lt;h1&gt;">
+         </property>
+         <property
+               name="introBrandingImage"
+               value="product:icons/welcome.png">
+         </property>
+         <property
+               name="introBrandingImageText"
+               value="Control System Studio">
+         </property>
+         <property
+               name="introDescription"
+               value="org.csstudio.frib.product.property5">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,230,457,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,250,461,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="introDescription-overview "
+               value="An overview of the various CSS applications which are part of the css-frib product">
+         </property>
+         <property
+               name="introDescription-firststeps"
+               value="The following documents....">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/about.png">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.startup.module">
+      <startupParameters
+            class="org.csstudio.frib.product.startupmodule.StartupParameters">
+      </startupParameters>
+      <workspace
+            class="org.csstudio.frib.product.startupmodule.WorkspacePrompt">
+      </workspace>
+      <workbench
+            class="org.csstudio.frib.product.startupmodule.Workbench">
+      </workbench>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.frib.product.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.internal.intro.universal.WelcomeCustomizationPreferencePage"
+            id="org.csstudio.frib.product.introCustomization"
+            name="introCustomizationPreference">
+      </page>
+   </extension>
+
+</plugin>
