@@ -37,7 +37,7 @@ public class Table extends SimFunction<VTable> {
 
     @Override
     VTable nextValue() {
-        return newVTable(types, Arrays.asList("text", "value", "index"),
+        return newVTable(types, Arrays.asList("Text", "Value", "Index"),
                 Arrays.asList((Object) generateStringColumn(10), generateDoubleColumn(10), generateIntegerColumn(10)));
     }
     
