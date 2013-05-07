@@ -65,7 +65,7 @@ public class ContentProposalAdapter {
 
 		@Override
 		public void run() {
-			final PVContentProposalList proposals = proposalProvider
+			final ContentProposalList proposals = proposalProvider
 					.getProposals(contents, position, maxDisplay);
 			if (!canceled) {
 				if (getControl().isDisposed())
@@ -125,7 +125,7 @@ public class ContentProposalAdapter {
 	/*
 	 * The object that provides content proposals.
 	 */
-	private IPVContentProposalProvider proposalProvider;
+	private IAutoCompleteProposalProvider proposalProvider;
 
 	/*
 	 * The control for which content proposals are provided.
@@ -233,6 +233,8 @@ public class ContentProposalAdapter {
 	private SearchProposalTask currentTask;
 	private int maxDisplay = 10;
 	
+	private AutoCompleteHistory history;
+	
 
 	/**
 	 * Construct a content proposal adapter that can assist the user with
@@ -267,7 +269,7 @@ public class ContentProposalAdapter {
 	 */
 	public ContentProposalAdapter(Control control,
 			IControlContentAdapter controlContentAdapter,
-			IPVContentProposalProvider proposalProvider, KeyStroke keyStroke,
+			IAutoCompleteProposalProvider proposalProvider, KeyStroke keyStroke,
 			char[] autoActivationCharacters) {
 		super();
 		// We always assume the control and content adapter are valid.
@@ -283,10 +285,9 @@ public class ContentProposalAdapter {
 			this.autoActivateString = new String(autoActivationCharacters);
 		}
 		addControlListener(control);
-		// TODO: find a way to activate at plugin startup...
-		if (Activator.getDefault() == null)
-			Activator.activatePlugin();
-		new PVContentHistory(control, controlContentAdapter);
+		
+		history = new AutoCompleteHistory(control, proposalProvider.getType(),
+				controlContentAdapter);
 	}
 	
 	/*
@@ -478,6 +479,13 @@ public class ContentProposalAdapter {
 		control.addListener(SWT.KeyDown, controlListener);
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
+		
+		control.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				history.addEntry(getControlContentAdapter()
+						.getControlContents(getControl()));
+			}
+		});
 
 		if (DEBUG) {
 			System.out
@@ -485,13 +493,14 @@ public class ContentProposalAdapter {
 		}
 	}
 	
-	private void initPopup(IContentProposal[] proposals, int count, boolean autoActivated) {
-		if (proposals.length > 0) {
+	private void initPopup(ContentProposalList proposalList,
+			boolean autoActivated) {
+		if (proposalList.length() > 0) {
 			if (DEBUG) {
 				System.out.println("POPUP OPENED BY PRECEDING EVENT"); //$NON-NLS-1$
 			}
 			recordCursorPosition();
-			popup = new ContentProposalPopup(this, null, proposals, count,
+			popup = new ContentProposalPopup(this, null, proposalList,
 					maxDisplay);
 			popup.open();
 			popup.getShell().addDisposeListener(new DisposeListener() {
@@ -523,9 +532,8 @@ public class ContentProposalAdapter {
 				recordCursorPosition(); // must be done before getting proposals
 				getProposals(new IContentProposalSearchHandler() {
 					@Override
-					public void handleResult(PVContentProposalList proposalList) {
-						initPopup(proposalList.getProposals(),
-								proposalList.getCount(), autoActivated);
+					public void handleResult(ContentProposalList proposalList) {
+						initPopup(proposalList, autoActivated);
 					}
 				});
 			}
@@ -600,10 +608,10 @@ public class ContentProposalAdapter {
 	 * current content of the field. A value of <code>null</code> indicates that
 	 * there are no content proposals available for the field.
 	 * 
-	 * @return the {@link IPVContentProposalProvider} used to show proposals. May
+	 * @return the {@link IAutoCompleteProposalProvider} used to show proposals. May
 	 *         be <code>null</code>.
 	 */
-	public IPVContentProposalProvider getContentProposalProvider() {
+	public IAutoCompleteProposalProvider getContentProposalProvider() {
 		return proposalProvider;
 	}
 
@@ -611,10 +619,10 @@ public class ContentProposalAdapter {
 	 * Set the content proposal provider that is used to show proposals.
 	 * 
 	 * @param proposalProvider
-	 *            the {@link IPVContentProposalProvider} used to show proposals
+	 *            the {@link IAutoCompleteProposalProvider} used to show proposals
 	 */
 	public void setPVContentProposalProvider(
-			IPVContentProposalProvider proposalProvider) {
+			IAutoCompleteProposalProvider proposalProvider) {
 		this.proposalProvider = proposalProvider;
 	}
 
@@ -954,6 +962,9 @@ public class ContentProposalAdapter {
 			// a custom way.
 			break;
 		}
+		
+		// Add entry to history
+		history.addEntry(proposal.getContent());
 
 		// In all cases, notify listeners of an accepted proposal.
 		notifyProposalAccepted(proposal);

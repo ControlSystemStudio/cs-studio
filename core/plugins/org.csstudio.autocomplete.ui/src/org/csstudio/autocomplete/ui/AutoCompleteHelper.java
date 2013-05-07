@@ -7,7 +7,17 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
-public interface IContentProposalSearchHandler {
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.widgets.Composite;
 
-	public void handleResult(ContentProposalList proposalList);
+/**
+ * Auto complete Widget helper to manage with special field editor
+ */
+public class AutoCompleteHelper {
+
+	public static TextCellEditor createAutoCompleteTextCellEditor(
+			Composite parent, String type) {
+		return new AutoCompleteTextCellEditor(parent, type);
+	}
+
 }
