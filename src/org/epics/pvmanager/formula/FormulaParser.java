@@ -1,9 +1,9 @@
-// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2013-04-22 14:10:23
+// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2013-05-07 11:27:12
 
   package org.epics.pvmanager.formula;
   import org.epics.pvmanager.expression.*;
   import static org.epics.pvmanager.ExpressionLanguage.*;
-  import static org.epics.pvmanager.util.StringUtil.*;
+  import static org.epics.util.text.StringUtil.*;
   import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
   import static org.epics.pvmanager.formula.ExpressionLanguage.*;
 
