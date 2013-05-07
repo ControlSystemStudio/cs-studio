@@ -63,5 +63,10 @@ class IVTable implements VTable {
     public Object getColumnData(int column) {
         return values.get(column);
     }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
+    }
     
 }
