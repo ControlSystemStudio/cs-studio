@@ -26,131 +26,134 @@ import org.eclipse.draw2d.IFigure;
  * 
  */
 public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
-	implements ConfigurableWidgetAdaptable, XAxisProcessVariableAdaptable,
-	YAxisProcessVariableAdaptable {
+		implements ConfigurableWidgetAdaptable, XAxisProcessVariableAdaptable,
+		YAxisProcessVariableAdaptable {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
-     */
-    @Override
-    protected IFigure doCreateFigure() {
-	ScatterGraph2DWidgetFigure figure = new ScatterGraph2DWidgetFigure(this);
-	configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-	return figure;
-    }
-
-    private static void configure(ScatterGraph2DWidget widget,
-	    ScatterGraph2DWidgetModel model, boolean runMode) {
-	if (runMode) {
-	    widget.setPvName(model.getProcessVariable().getName());
-	    widget.setXPvName(model.getXPvName());
-	    widget.setShowAxis(model.getShowAxis());
-	    widget.setConfigurable(model.isConfigurable());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
+	 */
+	@Override
+	protected IFigure doCreateFigure() {
+		ScatterGraph2DWidgetFigure figure = new ScatterGraph2DWidgetFigure(this);
+		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		return figure;
 	}
-    }
 
-    @Override
-    public ScatterGraph2DWidgetModel getWidgetModel() {
-	ScatterGraph2DWidgetModel widgetModel = (ScatterGraph2DWidgetModel) super
-		.getWidgetModel();
-	return widgetModel;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#
-     * registerPropertyChangeHandlers()
-     */
-    @Override
-    protected void registerPropertyChangeHandlers() {
-	IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-	    @SuppressWarnings("unchecked")
-	    public boolean handleChange(final Object oldValue,
-		    final Object newValue, final IFigure figure) {
-		configure(
-			((AbstractSWTWidgetFigure<ScatterGraph2DWidget>) getFigure())
-				.getSWTWidget(), getWidgetModel(),
-			((ScatterGraph2DWidgetFigure) getFigure()).isRunMode());
-		return false;
-	    }
-	};
-	setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-	setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_XPVNAME,
-		reconfigure);
-	setPropertyChangeHandler(ScatterGraph2DWidgetModel.CONFIGURABLE,
-		reconfigure);
-	setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_SHOW_AXIS,
-		reconfigure);
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.ui.util.ProcessVariableAdaptable#toProcessVariables()
-     */
-    @Override
-    public Collection<ProcessVariable> toProcessVariables() {
-	return selectionToType(ProcessVariable.class);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.YAxisProcessVariableAdaptable#getYAxisProcessVariables
-     * ()
-     */
-    @Override
-    public YAxisProcessVariable getYAxisProcessVariables() {
-	Collection<YAxisProcessVariable> adapted = selectionToType(YAxisProcessVariable.class);
-	if (adapted != null && adapted.size() == 1) {
-	    return adapted.iterator().next();
+	private static void configure(ScatterGraph2DWidget widget,
+			ScatterGraph2DWidgetModel model, boolean runMode) {
+		if (runMode) {
+			widget.setDataFormula(model.getDataFormula());
+			widget.setXColumnFormula(model.getXColumnFormula());
+			widget.setYColumnFormula(model.getYColumnFormula());
+			widget.setTooltipFormula(model.getTooltipFormula());
+			widget.setShowAxis(model.getShowAxis());
+			widget.setConfigurable(model.isConfigurable());
+		}
 	}
-	return null;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.XAxisProcessVariableAdaptable#getXAxisProcessVariables
-     * ()
-     */
-    @Override
-    public XAxisProcessVariable getXAxisProcessVariables() {
-	Collection<XAxisProcessVariable> adapted = selectionToType(XAxisProcessVariable.class);
-	if (adapted != null && adapted.size() == 1) {
-	    return adapted.iterator().next();
+	@Override
+	public ScatterGraph2DWidgetModel getWidgetModel() {
+		ScatterGraph2DWidgetModel widgetModel = (ScatterGraph2DWidgetModel) super
+				.getWidgetModel();
+		return widgetModel;
 	}
-	return null;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.ui.util.ConfigurableWidgetAdaptable#toConfigurableWidget()
-     */
-    @Override
-    public ConfigurableWidget toConfigurableWidget() {
-	Collection<ConfigurableWidget> adapted = selectionToType(ConfigurableWidget.class);
-	if (adapted != null && adapted.size() == 1) {
-	    return adapted.iterator().next();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#
+	 * registerPropertyChangeHandlers()
+	 */
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				configure(
+						((AbstractSWTWidgetFigure<ScatterGraph2DWidget>) getFigure())
+								.getSWTWidget(), getWidgetModel(),
+						((ScatterGraph2DWidgetFigure) getFigure()).isRunMode());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_DATA_FORMULA, reconfigure);
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_X_FORMULA, reconfigure);
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_Y_FORMULA, reconfigure);
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.CONFIGURABLE,
+				reconfigure);
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_SHOW_AXIS,
+				reconfigure);
+
 	}
-	return null;
-    }
 
-    private <T> Collection<T> selectionToType(Class<T> clazz) {
-	if (((ScatterGraph2DWidgetFigure) getFigure()).getSelectionProvider() == null)
-	    return null;
-	return Arrays.asList(AdapterUtil.convert(
-		((ScatterGraph2DWidgetFigure) getFigure())
-			.getSelectionProvider().getSelection(), clazz));
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.csstudio.ui.util.ProcessVariableAdaptable#toProcessVariables()
+	 */
+	@Override
+	public Collection<ProcessVariable> toProcessVariables() {
+		return selectionToType(ProcessVariable.class);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.csstudio.ui.util.YAxisProcessVariableAdaptable#getYAxisProcessVariables
+	 * ()
+	 */
+	@Override
+	public YAxisProcessVariable getYAxisProcessVariables() {
+		Collection<YAxisProcessVariable> adapted = selectionToType(YAxisProcessVariable.class);
+		if (adapted != null && adapted.size() == 1) {
+			return adapted.iterator().next();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.csstudio.ui.util.XAxisProcessVariableAdaptable#getXAxisProcessVariables
+	 * ()
+	 */
+	@Override
+	public XAxisProcessVariable getXAxisProcessVariables() {
+		Collection<XAxisProcessVariable> adapted = selectionToType(XAxisProcessVariable.class);
+		if (adapted != null && adapted.size() == 1) {
+			return adapted.iterator().next();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.csstudio.ui.util.ConfigurableWidgetAdaptable#toConfigurableWidget()
+	 */
+	@Override
+	public ConfigurableWidget toConfigurableWidget() {
+		Collection<ConfigurableWidget> adapted = selectionToType(ConfigurableWidget.class);
+		if (adapted != null && adapted.size() == 1) {
+			return adapted.iterator().next();
+		}
+		return null;
+	}
+
+	private <T> Collection<T> selectionToType(Class<T> clazz) {
+		if (((ScatterGraph2DWidgetFigure) getFigure()).getSelectionProvider() == null)
+			return null;
+		return Arrays.asList(AdapterUtil.convert(
+				((ScatterGraph2DWidgetFigure) getFigure())
+						.getSelectionProvider().getSelection(), clazz));
+	}
 
 }
