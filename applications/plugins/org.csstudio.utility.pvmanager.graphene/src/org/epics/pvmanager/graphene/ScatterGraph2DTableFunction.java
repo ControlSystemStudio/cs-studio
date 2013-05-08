@@ -12,9 +12,7 @@ import org.epics.graphene.ScatterGraph2DRenderer;
 import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
-import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.vtype.VImage;
-import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
@@ -35,14 +33,14 @@ public class ScatterGraph2DTableFunction implements ReadFunction<Graph2DResult> 
     private final QueueCollector<ScatterGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(
             100);
 
-    public ScatterGraph2DTableFunction(ReadFunction<? extends VTable> tableData,
-	    ReadFunction<? extends VString> xColumnName,
-	    ReadFunction<? extends VString> yColumnName,
-	    ReadFunction<? extends VString> tooltipColumnName) {
-        this.tableData = tableData;
-        this.xColumnName = xColumnName;
-        this.yColumnName = yColumnName;
-        this.tooltipColumnName = tooltipColumnName;
+    public ScatterGraph2DTableFunction(ReadFunction<?> tableData,
+	    ReadFunction<?> xColumnName,
+	    ReadFunction<?> yColumnName,
+	    ReadFunction<?> tooltipColumnName) {
+        this.tableData = new CheckedReadFunction<>(VTable.class, tableData, "Data");
+        this.xColumnName = new CheckedReadFunction<>(VString.class, xColumnName, "X Column");
+        this.yColumnName = new CheckedReadFunction<>(VString.class, yColumnName, "Y Column");
+        this.tooltipColumnName = new CheckedReadFunction<>(VString.class, tooltipColumnName, "Tooltip Column");
     }
 
     public QueueCollector<ScatterGraph2DRendererUpdate> getRendererUpdateQueue() {

@@ -69,10 +69,10 @@ public class ExpressionLanguage {
     }
 
     public static ScatterGraph2DExpression scatterGraphOf(
-	    DesiredRateExpression<? extends VTable> tableData,
-	    DesiredRateExpression<? extends VString> xColumnName,
-	    DesiredRateExpression<? extends VString> yColumnName,
-	    DesiredRateExpression<? extends VString> tooltipColumnName) {
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName,
+	    DesiredRateExpression<?> tooltipColumnName) {
 	return new ScatterGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
     }
 
