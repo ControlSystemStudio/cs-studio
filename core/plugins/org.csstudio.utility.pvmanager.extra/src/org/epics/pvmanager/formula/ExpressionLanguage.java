@@ -18,6 +18,7 @@ import org.epics.vtype.VDouble;
 import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
@@ -29,6 +30,7 @@ import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /**
  *
@@ -98,6 +100,33 @@ public class ExpressionLanguage {
             parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
         }
         return new DesiredRateReadWriteExpressionImpl<>(errorDesiredRateExpression(parsingError), readOnlyWriteExpression("Parsing error")); 
+    }
+    
+    /**
+     * An expression that returns the value of the formula making sure
+     * it's of the given type.
+     * 
+     * @param <T> the type to read
+     * @param formula the formula
+     * @param readType the type to read
+     * @return an expression of the given type
+     */
+    public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
+        // TODO: refactor better; make sure it does check the final type
+        RuntimeException parsingError;
+        try {
+            DesiredRateExpression<?> exp = createParser(formula).formula();
+            if (exp == null) {
+                throw new NullPointerException("Parsing failed");
+            }
+            
+            return checkReturnType(readType, exp);
+        } catch (RecognitionException ex) {
+            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
+        }
+        return errorDesiredRateExpression(parsingError); 
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
@@ -183,14 +212,6 @@ public class ExpressionLanguage {
         throw new IllegalArgumentException("No function named '" + function + "' is defined");
     }
     
-    static <R, A> DesiredRateExpression<R> function(String name, OneArgFunction<R, A> function, Class<A> argClazz, DesiredRateExpressionList<?> args) {
-        if (args.getDesiredRateExpressions().size() != 1) {
-            throw new IllegalArgumentException(name + " function accepts only one argument");
-        }
-        DesiredRateExpression<A> arg = cast(argClazz, args.getDesiredRateExpressions().get(0));
-        return resultOf(function, arg, funName(name, arg));
-    }
-    
     static <T> WriteExpression<T> readOnlyWriteExpression(String errorMessage) {
         return new ReadOnlyWriteExpression<>(errorMessage, "");
     }
@@ -205,5 +226,24 @@ public class ExpressionLanguage {
                 new ColumnOfVTableConverter(tableExpression.getFunction(), columnExpression.getFunction());
         return new DesiredRateExpressionImpl<VType>(new DesiredRateExpressionListImpl<Object>()
                 .and(tableExpression).and(columnExpression), converter, "columnOf");
+    }
+    
+    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final DesiredRateExpression<?> arg1) {
+        return new DesiredRateExpressionImpl<T>(arg1, new ReadFunction<T>() {
+
+            @Override
+            public T readValue() {
+                Object obj = arg1.getFunction().readValue();
+                if (obj == null) {
+                    return null;
+                }
+                
+                if (clazz.isInstance(obj)) {
+                    return clazz.cast(obj);
+                } else {
+                    throw new RuntimeException("Formula does not return " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
+                }
+            }
+        }, arg1.getName());
     }
 }
