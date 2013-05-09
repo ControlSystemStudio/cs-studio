@@ -200,20 +200,16 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 		}
 
 		graph = ExpressionLanguage.scatterGraphOf(formula(getDataFormula()),
-				formula(getXColumnFormula()),
-				formula(getYColumnFormula()),
-				formula(getTooltipFormula()));
+				formulaArg(getXColumnFormula()),
+				formulaArg(getYColumnFormula()),
+				formulaArg(getTooltipFormula()));
 		graph.update(new ScatterGraph2DRendererUpdate().imageHeight(
 				imageDisplay.getSize().y).imageWidth(imageDisplay.getSize().x));
 		pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 				.readListener(new PVReaderListener<Graph2DResult>() {
 					@Override
 					public void pvChanged(PVReaderEvent<Graph2DResult> event) {
-						Exception ex = pv.lastException();
-
-						if (ex != null) {
-							setLastError(ex);
-						}
+						setLastError(pv.lastException());
 						if (pv.getValue() != null) {
 							setRange(xRangeControl, pv.getValue().getxRange());
 							setRange(yRangeControl, pv.getValue().getyRange());
