@@ -221,21 +221,9 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 				}).maxRate(ofHertz(50));
 	}
 
-	private String dataFormula;
 	private String xColumnFormula;
 	private String yColumnFormula;
 	private String tooltipFormula;
-
-    public String getDataFormula() {
-    	return this.dataFormula;
-    }
-
-    public void setDataFormula(String dataFormula) {
-		String oldValue = this.dataFormula;
-		this.dataFormula = dataFormula;
-		changeSupport.firePropertyChange("dataFormula", oldValue,
-			this.dataFormula);
-    }
 
     public String getXColumnFormula() {
     	return this.xColumnFormula;

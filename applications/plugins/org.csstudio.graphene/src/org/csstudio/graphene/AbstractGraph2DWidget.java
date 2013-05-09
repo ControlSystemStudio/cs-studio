@@ -73,4 +73,16 @@ public abstract class AbstractGraph2DWidget extends BeanComposite implements Con
 	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
     }
 
+	private String dataFormula;
+    public String getDataFormula() {
+    	return this.dataFormula;
+    }
+
+    public void setDataFormula(String dataFormula) {
+		String oldValue = this.dataFormula;
+		this.dataFormula = dataFormula;
+		changeSupport.firePropertyChange("dataFormula", oldValue,
+			this.dataFormula);
+    }
+
 }
