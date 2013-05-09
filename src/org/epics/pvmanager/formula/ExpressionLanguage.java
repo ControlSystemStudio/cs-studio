@@ -103,6 +103,39 @@ public class ExpressionLanguage {
     }
     
     /**
+     * An expression that returns the value of the formula and return null
+     * for empty or null formula.
+     * <p>
+     * Some expressions allow for null expression arguments to handle
+     * optional elements. In those cases, using this method makes
+     * undeclared arguments fall through.
+     * 
+     * @param formula the formula, can be null
+     * @return an expression of the given type; null if formula is null or empty
+     */
+    public static DesiredRateExpression<?> formulaArg(String formula) {
+        if (formula == null || formula.trim().isEmpty()) {
+            return null;
+        }
+        
+        // TODO: refactor better; make sure it does check the final type
+        RuntimeException parsingError;
+        try {
+            DesiredRateExpression<?> exp = createParser(formula).formula();
+            if (exp == null) {
+                throw new NullPointerException("Parsing failed");
+            }
+            
+            return exp;
+        } catch (RecognitionException ex) {
+            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
+        }
+        return errorDesiredRateExpression(parsingError); 
+    }
+    
+    /**
      * An expression that returns the value of the formula making sure
      * it's of the given type.
      * 
