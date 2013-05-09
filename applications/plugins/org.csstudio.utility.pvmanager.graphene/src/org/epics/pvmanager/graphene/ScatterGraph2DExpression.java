@@ -12,7 +12,8 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
-
+import static org.epics.pvmanager.graphene.ExpressionLanguage.*;
+        
 /**
  * @author shroffk
  *
@@ -28,10 +29,9 @@ public class ScatterGraph2DExpression extends DesiredRateExpressionImpl<Graph2DR
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {
-        super(new DesiredRateExpressionListImpl<>().and(tableData)
-                .and(xColumnName).and(yColumnName).and(tooltipColumnName),
-                new ScatterGraph2DTableFunction(tableData.getFunction(),
-                xColumnName.getFunction(), yColumnName.getFunction(), tooltipColumnName.getFunction()),
+        super(ExpressionLanguage.<Object>createList(tableData, xColumnName, yColumnName, tooltipColumnName),
+                new ScatterGraph2DFunction(functionOf(tableData),
+                functionOf(xColumnName), functionOf(yColumnName), functionOf(tooltipColumnName)),
                 "Scatter Graph");
     }
 
@@ -39,9 +39,6 @@ public class ScatterGraph2DExpression extends DesiredRateExpressionImpl<Graph2DR
     public void update(ScatterGraph2DRendererUpdate update) {
         if (getFunction() instanceof ScatterGraph2DFunction) {
             ((ScatterGraph2DFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
-        }
-        if (getFunction() instanceof ScatterGraph2DTableFunction) {
-            ((ScatterGraph2DTableFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
         }
     }
 

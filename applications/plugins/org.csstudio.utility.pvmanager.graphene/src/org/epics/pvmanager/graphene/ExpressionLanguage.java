@@ -8,11 +8,13 @@ import java.util.List;
 import org.epics.pvmanager.BasicTypeSupport;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.TypeSupport;
 import org.epics.pvmanager.vtype.DataTypeSupport;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.SourceRateExpression;
 import org.epics.vtype.VString;
@@ -57,23 +59,32 @@ public class ExpressionLanguage {
         return new LineGraph2DExpression(new DesiredRateExpressionListImpl<Object>().and(xVDoubleArray).and(yVDoubleArray),
                 new LineGraph2DFunction(xVDoubleArray.getFunction(), yVDoubleArray.getFunction()), "lineGraph");
     }
-
-    public static ScatterGraph2DExpression scatterGraphOf(
-	    DesiredRateExpression<? extends VNumberArray> xNumberArray,
-	    DesiredRateExpression<? extends VNumberArray> yNumberArray) {
-	return new ScatterGraph2DExpression(new DesiredRateExpressionListImpl<>().and(
-		xNumberArray).and(yNumberArray), new ScatterGraph2DFunction(
-		yNumberArray.getFunction(), xNumberArray.getFunction()),
-		"Scatter Graph");
-
-    }
-
+    
     public static ScatterGraph2DExpression scatterGraphOf(
 	    DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {
 	return new ScatterGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
+    }
+
+    @SafeVarargs
+    static <T> DesiredRateExpressionList<T> createList(DesiredRateExpressionList<? extends T>... expressions) {
+        DesiredRateExpressionList<T> list = new DesiredRateExpressionListImpl<T>();
+        for (DesiredRateExpressionList<? extends T> exp : expressions) {
+            if (exp != null) {
+                list.and(exp);
+            }
+        }
+        return list;
+    }
+    
+    static <T> ReadFunction<T> functionOf(DesiredRateExpression<T> exp) {
+        if (exp == null) {
+            return null;
+        } else {
+            return exp.getFunction();
+        }
     }
 
 }
