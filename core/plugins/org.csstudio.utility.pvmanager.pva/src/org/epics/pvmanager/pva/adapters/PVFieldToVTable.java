@@ -5,6 +5,7 @@
 package org.epics.pvmanager.pva.adapters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.epics.pvdata.pv.ByteArrayData;
@@ -23,6 +24,11 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.StringArrayData;
+import org.epics.util.array.ArrayByte;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayFloat;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ArrayShort;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
@@ -79,7 +85,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	DoubleArrayData data = new DoubleArrayData();
 		        	((PVDoubleArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(new ArrayDouble(data.data));
 	        	}
 	        	else if (scalarArray instanceof PVIntArray)
 	        	{
@@ -87,7 +93,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	IntArrayData data = new IntArrayData();
 		        	((PVIntArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(new ArrayInt(data.data));
 	        	}
 	        	else if (scalarArray instanceof PVStringArray)
 	        	{
@@ -95,7 +101,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	StringArrayData data = new StringArrayData();
 		        	((PVStringArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(Arrays.asList(data.data));
 	        	}
 	        	else if (scalarArray instanceof PVFloatArray)
 	        	{
@@ -103,7 +109,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	FloatArrayData data = new FloatArrayData();
 		        	((PVFloatArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(new ArrayFloat(data.data));
 	        	}
 	        	else if (scalarArray instanceof PVByteArray)
 	        	{
@@ -111,7 +117,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	ByteArrayData data = new ByteArrayData();
 		        	((PVByteArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(new ArrayByte(data.data));
 	        	}
 	        	else if (scalarArray instanceof PVShortArray)
 	        	{
@@ -119,7 +125,7 @@ public class PVFieldToVTable implements VTable {
 		        	
 		        	ShortArrayData data = new ShortArrayData();
 		        	((PVShortArray)scalarArray).get(0, len, data);
-		        	values.add(data.data);
+		        	values.add(new ArrayShort(data.data));
 	        	}
 	        	else
 	        		skipped = true;
@@ -165,7 +171,7 @@ public class PVFieldToVTable implements VTable {
     }
 
     @Override
-    public Object getColumnArray(int column) {
+    public Object getColumnData(int column) {
         return values.get(column);
     }
 

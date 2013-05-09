@@ -323,4 +323,31 @@ public class ValueUtil {
         ValueUtil.defaultValueFormat = defaultValueFormat;
     }
     
+    /**
+     * Extracts the values of a column, making sure it contains
+     * numeric values.
+     * 
+     * @param table a table
+     * @param columnName the name of the column to extract
+     * @return the values; null if the columnName is null or is not found
+     * @throws IllegalArgumentException if the column is found but does not contain numeric values
+     */
+    public static ListNumber numericColumnOf(VTable table, String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (columnName.equals(table.getColumnName(i))) {
+                if (table.getColumnType(i).isPrimitive()) {
+                    return (ListNumber) table.getColumnData(i);
+                } else {
+                    throw new IllegalArgumentException("Column '" + columnName +"' is not numeric (contains " + table.getColumnType(i).getSimpleName() + ")");
+                }
+            }
+        }
+        
+        throw new IllegalArgumentException("Column '" + columnName +"' was not found");
+    }
+    
 }

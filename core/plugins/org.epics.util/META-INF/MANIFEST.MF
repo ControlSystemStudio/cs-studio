@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: EPICS utility classes
 Bundle-SymbolicName: org.epics.util
 Bundle-Version: 0.2.2.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Export-Package: org.epics.util.array,
  org.epics.util.exceptions,

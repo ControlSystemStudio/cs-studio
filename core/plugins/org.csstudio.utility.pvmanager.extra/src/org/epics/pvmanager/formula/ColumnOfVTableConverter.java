@@ -6,10 +6,13 @@ package org.epics.pvmanager.formula;
 
 import org.epics.vtype.ValueFactory;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListInt;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
@@ -52,21 +55,25 @@ class ColumnOfVTableConverter implements ReadFunction<VType> {
             throw new RuntimeException("Table does not contain column '" + columnName.getValue() + "'");
         }
         
-        Object data = table.getColumnArray(index);
+        Class<?> type = table.getColumnType(index);
         
-        if (data instanceof String[]) {
-            return ValueFactory.newVStringArray(Arrays.asList((String[]) data), ValueFactory.alarmNone(), ValueFactory.timeNow());
+        if (String.class.isAssignableFrom(type)) {
+            @SuppressWarnings("unchecked")
+            List<String> data = (List<String>) table.getColumnData(index);
+            return ValueFactory.newVStringArray(data, ValueFactory.alarmNone(), ValueFactory.timeNow());
         }
         
-        if (data instanceof double[]) {
-            return ValueFactory.newVDoubleArray(new ArrayDouble((double[]) data), ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+        if (Double.TYPE.isAssignableFrom(type)) {
+            ListDouble data = (ListDouble) table.getColumnData(index);
+            return ValueFactory.newVDoubleArray(data, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
         }
         
-        if (data instanceof int[]) {
-            return ValueFactory.newVIntArray(new ArrayInt((int[]) data), ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+        if (Integer.TYPE.isAssignableFrom(type)) {
+            ListInt data = (ListInt) table.getColumnData(index);
+            return ValueFactory.newVIntArray(data, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
         }
         
-        throw new RuntimeException("Unsupported type " + data.getClass().getSimpleName());
+        throw new RuntimeException("Unsupported type " + type.getSimpleName());
     }
     
 }
