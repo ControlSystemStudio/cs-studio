@@ -5,6 +5,12 @@
 package org.epics.pvmanager.jms.beast;
 
 import org.epics.pvmanager.jms.beast.*;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Connection;
@@ -29,30 +35,47 @@ public class BeastDataSource extends DataSource {
     }
     private Connection connection;
     private final BeastTypeSupport typeSupport;
-    private String topicName;
-    private String url;
+    private final String topicName;
+    private final String url;
 
     /**
      *
      */
-    public BeastDataSource(String topicName, String url) throws JMSException, Exception {
+    public BeastDataSource(String topicName, String url) {
         super(true);
         this.topicName = topicName;
         this.url = url;
-        typeSupport = new BeastTypeSupport(new BeastVTypeAdapterSet());
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, url);
-        connection = factory.createConnection();
-        connection.start();
+        this.typeSupport = new BeastTypeSupport(new BeastVTypeAdapterSet());
     }
     
-    public BeastDataSource(BeastDataSource datasource) throws JMSException, Exception {
+    public BeastDataSource(BeastDataSource datasource) {
     	super(true);
+        //final CountDownLatch startCommenced = new CountDownLatch(1);
+        //final CountDownLatch startDone = new CountDownLatch(1);
+        
     	this.topicName = datasource.topicName;
     	this.url = datasource.url;
-        typeSupport = new BeastTypeSupport(new BeastVTypeAdapterSet());
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, url);
-        connection = factory.createConnection();
-        connection.start();
+        this.typeSupport = datasource.typeSupport;
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            public void run() {
+            	//startCommenced.countDown();
+                try {
+
+                	ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, url);
+         			connection = factory.createConnection();
+                    connection.start();
+                   // startDone.countDown();
+                } catch (Exception ex) {
+                	Logger.getLogger(BeastTypeSupport.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }});
+       // try {
+			//startCommenced.await(5, TimeUnit.SECONDS);
+			//startDone.await(10, TimeUnit.SECONDS);
+		//} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
     	
     }
 

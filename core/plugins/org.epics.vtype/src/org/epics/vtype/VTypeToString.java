@@ -4,6 +4,7 @@
  */
 package org.epics.vtype;
 
+import java.util.AbstractList;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.Time;
 import org.epics.vtype.VString;
@@ -164,6 +165,36 @@ public class VTypeToString {
                 .append(vEnumArray.getData().size());
         appendAlarm(builder, vEnumArray);
         appendTime(builder, vEnumArray);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    /**
+     * Default toString implementation for VTable.
+     *
+     * @param vTable the object
+     * @return the string representation
+     */
+    public static String toString(final VTable vTable) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("VTable")
+                .append("[")
+                .append(vTable.getColumnCount())
+                .append("x")
+                .append(vTable.getRowCount())
+                .append(", ");
+        builder.append(format.format(ValueFactory.newVStringArray(new AbstractList<String>() {
+
+            @Override
+            public String get(int index) {
+                return vTable.getColumnName(index);
+            }
+
+            @Override
+            public int size() {
+                return vTable.getColumnCount();
+            }
+        }, ValueFactory.alarmNone(), ValueFactory.timeNow())));
         builder.append(']');
         return builder.toString();
     }

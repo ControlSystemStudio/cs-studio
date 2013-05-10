@@ -30,6 +30,7 @@ import org.epics.util.array.ArrayFloat;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayShort;
 import org.epics.vtype.VTable;
+import org.epics.vtype.VTypeToString;
 import org.epics.vtype.ValueUtil;
 
 /**
@@ -177,16 +178,7 @@ public class PVFieldToVTable implements VTable {
 
 	@Override
     public String toString() {
-		// NOTE this can be improved to actually output a table
-        StringBuilder builder = new StringBuilder();
-        Class<?> type = ValueUtil.typeOf(this);
-        builder.append(type.getSimpleName())
-                .append("[columns=")
-                .append(getColumnCount())
-                .append(", rows=")
-                .append(getRowCount());
-        builder.append(']');
-        return builder.toString();
+	return VTypeToString.toString(this);
     }
 
 }

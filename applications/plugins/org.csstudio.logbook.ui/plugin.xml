@@ -16,6 +16,13 @@
             name="%MakeLogEntry"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.test"
+            class="org.csstudio.logbook.ui.AutoCompleteSearchProviderView"
+            id="org.csstudio.logbook.ui.AutoCompleteSearchProviderView"
+            name="AutoCompleteSearch"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

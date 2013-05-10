@@ -4,8 +4,6 @@
  */
 package org.epics.util.array;
 
-import java.util.Arrays;
-
 /**
  * Utilities for manipulating ListNumbers.
  *
@@ -37,6 +35,7 @@ public class ListNumbers {
                 SortedListView.quicksort(view);
                 return view;
             }
+            value = newValue;
         }
 
         return view;
