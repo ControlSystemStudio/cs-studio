@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.1.0",
  com.google.common;bundle-version="10.0.1",
  org.eclipse.core.resources;bundle-version="3.7.100",
- org.csstudio.apputil.ui;bundle-version="3.2.0"
+ org.csstudio.apputil.ui;bundle-version="3.2.0",
+ org.csstudio.autocomplete.logbook;bundle-version="1.0.0",
+ org.csstudio.autocomplete.ui;bundle-version="1.0.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui,

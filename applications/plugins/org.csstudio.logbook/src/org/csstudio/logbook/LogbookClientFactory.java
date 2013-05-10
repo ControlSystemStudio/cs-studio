@@ -1,6 +1,8 @@
 package org.csstudio.logbook;
 
 /**
+ * A Factory to create clients to the Logbook service
+ * 
  * @author shroffk
  * 
  */
