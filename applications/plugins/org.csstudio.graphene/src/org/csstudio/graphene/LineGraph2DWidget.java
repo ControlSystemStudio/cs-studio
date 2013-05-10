@@ -3,6 +3,8 @@
  */
 package org.csstudio.graphene;
 
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
@@ -34,6 +36,7 @@ import org.eclipse.ui.IMemento;
 import org.epics.graphene.AxisRanges;
 import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraph2DRendererUpdate;
+import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -50,11 +53,11 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class LineGraph2DWidget extends AbstractGraph2DWidget implements
-	ISelectionProvider, ConfigurableWidget {
+public class LineGraph2DWidget extends AbstractPointDatasetGraph2DWidget implements
+	 ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
-    private LineGraph2DExpression plot;
+    private LineGraph2DExpression graph;
     private ErrorBar errorBar;
     private boolean showAxis = true;
     private StartEndRangeWidget yRangeControl;
@@ -98,10 +101,10 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
+		if (graph != null) {
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
-		    plot.update(new LineGraph2DRendererUpdate()
+		    graph.update(new LineGraph2DRendererUpdate()
 			    .yAxisRange(AxisRanges.absolute(invert
 				    - yRangeControl.getSelectedMax(), invert
 				    - yRangeControl.getSelectedMin())));
@@ -122,8 +125,8 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
 	    @Override
 	    public void controlResized(ControlEvent e) {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new LineGraph2DRendererUpdate()
 			    .imageHeight(imageDisplay.getSize().y)
 			    .imageWidth(imageDisplay.getSize().x)
 			    .interpolation(InterpolationScheme.LINEAR));
@@ -148,8 +151,8 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
 	    @Override
 	    public void rangeChanged() {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
+		if (graph != null) {
+		    graph.update(new LineGraph2DRendererUpdate()
 			    .xAxisRange(AxisRanges.absolute(
 				    xRangeControl.getSelectedMin(),
 				    xRangeControl.getSelectedMax())));
@@ -162,9 +165,11 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("processVariable")
-			|| event.getPropertyName().equals("xProcessVariable")) {
-		    reconnect();
+			if (event.getPropertyName().equals("dataFormula")
+					|| event.getPropertyName().equals("xColumnFormula")
+					|| event.getPropertyName().equals("yColumnFormula")
+					|| event.getPropertyName().equals("tooltipFormula")) {
+				reconnect();
 		} else if (event.getPropertyName().equals("showAxis")) {
 		    xRangeControl.setVisible(showAxis);
 		    yRangeControl.setVisible(showAxis);
@@ -205,32 +210,19 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 	    pv.close();
 	    imageDisplay.setVImage(null);
 	    setLastError(null);
-	    plot = null;
+	    graph = null;
 	    resetRange(xRangeControl);
 	    resetRange(yRangeControl);
 	}
-
-	if (getPvName() == null || getPvName().isEmpty()) {
-	    return;
-	}
-
-	if (getXpvName() != null && !getXpvName().isEmpty()) {
-	    plot = ExpressionLanguage
-		    .lineGraphOf(
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getXpvName()),
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getPvName()));
-	} else {
-	    plot = ExpressionLanguage
-		    .lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-			    .formula(getPvName()));
-	}
-	plot.update(new LineGraph2DRendererUpdate()
-		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x)
-		.interpolation(InterpolationScheme.LINEAR));
-	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+	graph = ExpressionLanguage.lineGraphOf(formula(getDataFormula()),
+			formulaArg(getXColumnFormula()),
+			formulaArg(getYColumnFormula()),
+			formulaArg(getTooltipFormula()));
+	graph.update(graph.newUpdate()
+	        .imageHeight(imageDisplay.getSize().y)
+	        .imageWidth(imageDisplay.getSize().x)
+			.interpolation(InterpolationScheme.LINEAR));
+	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
 		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
@@ -252,46 +244,46 @@ public class LineGraph2DWidget extends AbstractGraph2DWidget implements
 
     /** Memento tag */
     private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+//
+//    public void saveState(IMemento memento) {
+//	if (getPvName() != null) {
+//	    memento.putString(MEMENTO_PVNAME, getPvName());
+//	}
+//    }
+//
+//    public void loadState(IMemento memento) {
+//	if (memento != null) {
+//	    if (memento.getString(MEMENTO_PVNAME) != null) {
+//		setPvName(memento.getString(MEMENTO_PVNAME));
+//	    }
+//	}
+//    }
 
-    public void saveState(IMemento memento) {
-	if (getPvName() != null) {
-	    memento.putString(MEMENTO_PVNAME, getPvName());
-	}
-    }
-
-    public void loadState(IMemento memento) {
-	if (memento != null) {
-	    if (memento.getString(MEMENTO_PVNAME) != null) {
-		setPvName(memento.getString(MEMENTO_PVNAME));
-	    }
-	}
-    }
-
-    @Override
-    public ISelection getSelection() {
-	if (getPvName() != null) {
-	    return new StructuredSelection(new LineGraph2DSelection(
-		    new ProcessVariable(getPvName()),
-		    getXpvName() != null ? new ProcessVariable(getXpvName())
-			    : null, this));
-	}
-	return null;
-    }
-
-    @Override
-    public void addSelectionChangedListener(
-	    final ISelectionChangedListener listener) {
-    }
-
-    @Override
-    public void removeSelectionChangedListener(
-	    ISelectionChangedListener listener) {
-    }
-
-    @Override
-    public void setSelection(ISelection selection) {
-	throw new UnsupportedOperationException("Not implemented yet");
-    }
+//    @Override
+//    public ISelection getSelection() {
+//	if (getPvName() != null) {
+//	    return new StructuredSelection(new LineGraph2DSelection(
+//		    new ProcessVariable(getPvName()),
+//		    getXpvName() != null ? new ProcessVariable(getXpvName())
+//			    : null, this));
+//	}
+//	return null;
+//    }
+//
+//    @Override
+//    public void addSelectionChangedListener(
+//	    final ISelectionChangedListener listener) {
+//    }
+//
+//    @Override
+//    public void removeSelectionChangedListener(
+//	    ISelectionChangedListener listener) {
+//    }
+//
+//    @Override
+//    public void setSelection(ISelection selection) {
+//	throw new UnsupportedOperationException("Not implemented yet");
+//    }
 
     private boolean configurable = true;
 

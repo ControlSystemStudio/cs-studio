@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.epics.util.text.StringUtil;
 import org.epics.util.array.ArrayDouble;
 
 /**
@@ -20,7 +21,7 @@ import org.epics.util.array.ArrayDouble;
 public class FunctionParser {
 
     static final Pattern doubleParameter = Pattern.compile("\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*");
-    static final Pattern stringParameter = Pattern.compile("\\s*(" + StringUtil.quotedStringRegex + ")\\s*");
+    static final Pattern stringParameter = Pattern.compile("\\s*(" + StringUtil.QUOTED_STRING_REGEX + ")\\s*");
     static final Pattern commaSeparatedDoubles = Pattern.compile(doubleParameter + "(," + doubleParameter + ")*");
     static final Pattern commaSeparatedStrings = Pattern.compile(stringParameter + "(," + stringParameter + ")*");
     static final Pattern functionAndParameter = Pattern.compile("(\\w+)(\\(((" + commaSeparatedDoubles + ")?)\\))?");

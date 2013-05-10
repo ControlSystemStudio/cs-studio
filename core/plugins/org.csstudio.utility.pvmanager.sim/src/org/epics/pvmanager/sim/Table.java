@@ -7,6 +7,10 @@ package org.epics.pvmanager.sim;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListInt;
 import org.epics.vtype.VTable;
 import static org.epics.vtype.ValueFactory.*;
 
@@ -33,34 +37,34 @@ public class Table extends SimFunction<VTable> {
 
     @Override
     VTable nextValue() {
-        return newVTable(types, Arrays.asList("text", "value", "index"),
+        return newVTable(types, Arrays.asList("Text", "Value", "Index"),
                 Arrays.asList((Object) generateStringColumn(10), generateDoubleColumn(10), generateIntegerColumn(10)));
     }
     
     private final Random rand = new Random();
     
-    int[] generateIntegerColumn(int size) {
+    ListInt generateIntegerColumn(int size) {
         int[] column = new int[size];
         for (int i = 0; i < column.length; i++) {
             column[i] = i;
         }
-        return column;
+        return new ArrayInt(column);
     }
     
-    double[] generateDoubleColumn(int size) {
+    ListDouble generateDoubleColumn(int size) {
         double[] column = new double[size];
         for (int i = 0; i < column.length; i++) {
             column[i] = rand.nextGaussian();
         }
-        return column;
+        return new ArrayDouble(column);
     }
     
-    String[] generateStringColumn(int size) {
+    List<String> generateStringColumn(int size) {
         String[] column = new String[size];
         for (int i = 0; i < column.length; i++) {
             column[i] = generateString(i);
         }
-        return column;
+        return Arrays.asList(column);
     }
     
     String generateString(int id) {
