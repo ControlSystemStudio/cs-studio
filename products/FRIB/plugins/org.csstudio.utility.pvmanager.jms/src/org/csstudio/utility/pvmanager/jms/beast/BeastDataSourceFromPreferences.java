@@ -47,18 +47,13 @@ public class BeastDataSourceFromPreferences extends BeastDataSource {
 
 	private static BeastDataSource builder() {
 
-		BeastDataSource source = null;
-		try {
-			source = new BeastDataSource(topic_name, server);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		 BeastDataSource source = new BeastDataSource(topic_name, server);
+
 		return source;
 		
 	}
 
-	public BeastDataSourceFromPreferences() throws JMSException, Exception {
+	public BeastDataSourceFromPreferences() {
 		super(builder());
 	}
 
