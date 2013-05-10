@@ -15,19 +15,19 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class Graph2DConfigurationDialog
 	extends
-	AbstractConfigurationDialog<AbstractGraph2DWidget, Graph2DConfigurationPanel> {
+	AbstractConfigurationDialog<AbstractPointDatasetGraph2DWidget, Graph2DConfigurationPanel> {
 
-    protected Graph2DConfigurationDialog(AbstractGraph2DWidget control, String title) {
+    protected Graph2DConfigurationDialog(AbstractPointDatasetGraph2DWidget control, String title) {
 	super(control, SWT.DIALOG_TRIM, title);
 	addInitialValues("showAxisScroll", getWidget().isShowAxis());
-	addInitialValues("yPv", getWidget().getPvName());
-	addInitialValues("xPv", getWidget().getXpvName());
+//	addInitialValues("yPv", getWidget().getPvName());
+//	addInitialValues("xPv", getWidget().getXpvName());
     }
 
     @Override
     protected void onPropertyChange(PropertyChangeEvent evt) {
-	getWidget().setPvName(getConfigurationComposite().getYPv());
-	getWidget().setXPvName(getConfigurationComposite().getXPv());
+//	getWidget().setPvName(getConfigurationComposite().getYPv());
+//	getWidget().setXPvName(getConfigurationComposite().getXPv());
 	getWidget().setShowAxis(getConfigurationComposite().getShowAxis());
     }
 

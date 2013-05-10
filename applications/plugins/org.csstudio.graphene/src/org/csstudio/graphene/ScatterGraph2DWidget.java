@@ -51,8 +51,8 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.*;
  * @author shroffk
  * 
  */
-public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
-		ISelectionProvider, ConfigurableWidget {
+public class ScatterGraph2DWidget extends AbstractPointDatasetGraph2DWidget implements
+		ConfigurableWidget {
 
 	private VImageDisplay imageDisplay;
 	private ScatterGraph2DExpression graph;
@@ -220,85 +220,48 @@ public class ScatterGraph2DWidget extends AbstractGraph2DWidget implements
 					}
 				}).maxRate(ofHertz(50));
 	}
-
-	private String xColumnFormula;
-	private String yColumnFormula;
-	private String tooltipFormula;
-
-    public String getXColumnFormula() {
-    	return this.xColumnFormula;
-    }
-
-    public void setXColumnFormula(String xColumnFormula) {
-		String oldValue = this.xColumnFormula;
-		this.xColumnFormula = xColumnFormula;
-		changeSupport.firePropertyChange("xColumnFormula", oldValue,
-			this.xColumnFormula);
-    }
-
-    public String getYColumnFormula() {
-    	return this.yColumnFormula;
-    }
-
-    public void setYColumnFormula(String yColumnFormula) {
-		String oldValue = this.yColumnFormula;
-		this.yColumnFormula = yColumnFormula;
-		changeSupport.firePropertyChange("yColumnFormula", oldValue,
-			this.yColumnFormula);
-    }
-
-    public String getTooltipFormula() {
-    	return this.tooltipFormula;
-    }
-
-    public void setTooltipFormula(String tooltipFormula) {
-		String oldValue = this.tooltipFormula;
-		this.tooltipFormula = tooltipFormula;
-		changeSupport.firePropertyChange("tooltipFormula", oldValue,
-			this.tooltipFormula);
-    }
 	
 	/** Memento tag */
 	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
 	public void saveState(IMemento memento) {
-		if (getPvName() != null) {
-			memento.putString(MEMENTO_PVNAME, getPvName());
+		if (getDataFormula() != null) {
+			memento.putString(MEMENTO_PVNAME, getDataFormula());
 		}
 	}
 
 	public void loadState(IMemento memento) {
 		if (memento != null) {
 			if (memento.getString(MEMENTO_PVNAME) != null) {
-				setPvName(memento.getString(MEMENTO_PVNAME));
+				setDataFormula(memento.getString(MEMENTO_PVNAME));
 			}
 		}
 	}
-
-	@Override
-	public ISelection getSelection() {
-		if (getPvName() != null) {
-			return new StructuredSelection(new ScatterGraph2DSelection(
-					new ProcessVariable(getPvName()), new ProcessVariable(
-							getXpvName()), this));
-		}
-		return null;
-	}
-
-	@Override
-	public void addSelectionChangedListener(
-			final ISelectionChangedListener listener) {
-	}
-
-	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-	}
-
-	@Override
-	public void setSelection(ISelection selection) {
-		throw new UnsupportedOperationException("Not implemented yet");
-	}
+//
+//	@Override
+//	public ISelection getSelection() {
+//		if (getDataFormula() != null) {
+//			return new StructuredSelection(new ScatterGraph2DSelection(
+//					new ProcessVariable(getPvName()), new ProcessVariable(
+//							getXpvName()), this));
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public void addSelectionChangedListener(
+//			final ISelectionChangedListener listener) {
+//	}
+//
+//	@Override
+//	public void removeSelectionChangedListener(
+//			ISelectionChangedListener listener) {
+//	}
+//
+//	@Override
+//	public void setSelection(ISelection selection) {
+//		throw new UnsupportedOperationException("Not implemented yet");
+//	}
 
 	private boolean configurable = true;
 

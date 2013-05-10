@@ -25,7 +25,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author shroffk
  * 
  */
-public abstract class AbstractGraph2DView<Widget extends AbstractGraph2DWidget & ISelectionProvider>
+public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGraph2DWidget>
 		extends ViewPart {
 	public AbstractGraph2DView() {
 	}
@@ -67,7 +67,7 @@ public abstract class AbstractGraph2DView<Widget extends AbstractGraph2DWidget &
 
 	public void setDataFormula(String dataFormula) {
 		dataFormulaInputBar.setPVFormula(dataFormula);
-		widget.setXPvName(dataFormula);
+		widget.setDataFormula(dataFormula);
 	}
 
 	private PVFormulaInputBar dataFormulaInputBar;
@@ -97,7 +97,7 @@ public abstract class AbstractGraph2DView<Widget extends AbstractGraph2DWidget &
 		widget.setConfigurable(true);
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		PopupMenuUtil.installPopupForView(widget, getSite(), widget);
+		//PopupMenuUtil.installPopupForView(widget, getSite(), widget);
 
 		if (memento != null && memento.getString(MEMENTO_DATA_FORMULA) != null) {
 			setDataFormula(memento.getString(MEMENTO_DATA_FORMULA));
