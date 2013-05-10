@@ -56,6 +56,11 @@ public class ExpressionLanguage {
      * @return the channel it represents or null
      */
     public static String channelFromFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            return formula;
+        } else {
+            formula = formula.substring(1);
+        }
         try {
             FormulaParser parser = createParser(formula);
             DesiredRateExpression<?> exp = parser.singlePv();
@@ -82,24 +87,37 @@ public class ExpressionLanguage {
      * @return an expression for the formula
      */
     public static DesiredRateReadWriteExpression<?, Object> formula(String formula) {
+        DesiredRateExpression<?> exp = parseFormula(formula);
+            
+        if (exp instanceof LastOfChannelExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
+        } else if (exp instanceof ErrorDesiredRateExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Parsing error")); 
+        } else {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
+        }
+    }
+    
+    private static DesiredRateExpression<?> parseFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            return latestValueOf(channel(formula));
+        } else {
+            formula = formula.substring(1);
+        }
+        
         RuntimeException parsingError;
         try {
             DesiredRateExpression<?> exp = createParser(formula).formula();
             if (exp == null) {
                 throw new NullPointerException("Parsing failed");
             }
-            
-            if (exp instanceof LastOfChannelExpression) {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
-            } else {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
-            }
+            return exp;
         } catch (RecognitionException ex) {
             parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
         } catch (Exception ex) {
             parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
         }
-        return new DesiredRateReadWriteExpressionImpl<>(errorDesiredRateExpression(parsingError), readOnlyWriteExpression("Parsing error")); 
+        return errorDesiredRateExpression(parsingError); 
     }
     
     /**
@@ -118,21 +136,7 @@ public class ExpressionLanguage {
             return null;
         }
         
-        // TODO: refactor better; make sure it does check the final type
-        RuntimeException parsingError;
-        try {
-            DesiredRateExpression<?> exp = createParser(formula).formula();
-            if (exp == null) {
-                throw new NullPointerException("Parsing failed");
-            }
-            
-            return exp;
-        } catch (RecognitionException ex) {
-            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
-        } catch (Exception ex) {
-            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
-        }
-        return errorDesiredRateExpression(parsingError); 
+        return parseFormula(formula);
     }
     
     /**
