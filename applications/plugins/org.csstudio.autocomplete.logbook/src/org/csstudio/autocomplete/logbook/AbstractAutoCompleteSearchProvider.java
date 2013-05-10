@@ -3,8 +3,9 @@
  */
 package org.csstudio.autocomplete.logbook;
 
-import java.util.ArrayList;
+import java.lang.instrument.UnmodifiableClassException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,24 +21,24 @@ import com.google.common.base.Joiner;
  * @author shroffk
  * 
  */
-public class AutoCompleteSearchProvider implements IAutoCompleteProvider {
+public abstract class AbstractAutoCompleteSearchProvider implements
+	IAutoCompleteProvider {
 
     // The keys represent the supported keywords and the values represent
     // possible values
-    private Map<String, List<String>> keyValueMap = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> keyValueMap;
 
-    public AutoCompleteSearchProvider() {
-	// TODO Auto-generated constructor stub
-	System.out.println("creating");
-	keyValueMap.put(
-		"logbooks",
-		new ArrayList<String>(Arrays.asList("Operations",
-			"Commissioning", "Deployment")));
-	keyValueMap.put(
-		"tags",
-		new ArrayList<String>(Arrays
-			.asList("LOTO", "Timing", "shroffk")));
+    public AbstractAutoCompleteSearchProvider() {
+	this.keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
     }
+
+    /**
+     * Configure the KeyValueMap to be used to provide the search proposals.
+     * 
+     * @return Map<String, List<String>> where the keys are the search Keywords
+     *         and the values are the list of possible values
+     */
+    abstract Map<String, List<String>> initializeKeyValueMap();
 
     @Override
     public AutoCompleteResult listResult(String type, String name, int limit) {
@@ -72,7 +73,8 @@ public class AutoCompleteSearchProvider implements IAutoCompleteProvider {
 			keyValue[1].length() - 1);
 	    }
 	    for (String value : keyValueMap.get(key)) {
-		Set<String> proposedValues = new LinkedHashSet<String>(includedValues);
+		Set<String> proposedValues = new LinkedHashSet<String>(
+			includedValues);
 		if (value.startsWith(valuePattern)) {
 		    proposedValues.add(value);
 		    result.add(fixedFirstPart + ' ' + key + ':'
@@ -88,8 +90,6 @@ public class AutoCompleteSearchProvider implements IAutoCompleteProvider {
 
     @Override
     public void cancel() {
-	// TODO Auto-generated method stub
-
     }
 
 }
