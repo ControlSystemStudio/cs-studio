@@ -43,21 +43,13 @@ public class ExpressionLanguage {
     public static AreaGraph2DExpression histogramOf(DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
         return new AreaGraph2DExpression(vDoubles, new AreaGraph2DFunction(vDoubles.getFunction()), "histogram");
     }
-
-    public static LineGraph2DExpression lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
-        return new LineGraph2DExpression(vDoubleArray, new LineGraph2DFunction(vDoubleArray.getFunction()), "lineGraph");
-    }
-
-    public static LineGraph2DExpression lineGraphOf(DesiredRateExpression<? extends VNumberArray> yArray,
-            DesiredRateExpression<? extends VNumber> xInitialOffset,
-            DesiredRateExpression<? extends VNumber> xIncrementSize) {
-        return new LineGraph2DExpression(new DesiredRateExpressionListImpl<Object>().and(yArray).and(xInitialOffset).and(xIncrementSize),
-                new LineGraph2DFunction(yArray.getFunction(), xInitialOffset.getFunction(), xIncrementSize.getFunction()), "lineGraph");
-    }
-
-    public static LineGraph2DExpression lineGraphOf(DesiredRateExpression<? extends VNumberArray> xVDoubleArray, DesiredRateExpression<? extends VNumberArray> yVDoubleArray) {
-        return new LineGraph2DExpression(new DesiredRateExpressionListImpl<Object>().and(xVDoubleArray).and(yVDoubleArray),
-                new LineGraph2DFunction(xVDoubleArray.getFunction(), yVDoubleArray.getFunction()), "lineGraph");
+    
+    public static LineGraph2DExpression lineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName,
+	    DesiredRateExpression<?> tooltipColumnName) {
+	return new LineGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
     }
     
     public static ScatterGraph2DExpression scatterGraphOf(

@@ -16,7 +16,7 @@ public class ArgumentExpressions {
         if (function == null) {
             return new ReadFunctionArgument<>();
         } else {
-            return new ReadFunctionArgument<>(new VStringToStringReadFunction(new CheckedReadFunction<>(VString.class, function, argumentName)));
+            return new ReadFunctionArgument<>(new VStringToStringReadFunction(new CheckedReadFunction<>(function, argumentName, VString.class)));
         }
     }
 }

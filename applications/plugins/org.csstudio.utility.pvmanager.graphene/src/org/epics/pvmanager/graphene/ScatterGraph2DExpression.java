@@ -20,12 +20,12 @@ import static org.epics.pvmanager.graphene.ExpressionLanguage.*;
  */
 public class ScatterGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<ScatterGraph2DRendererUpdate> {
 
-    public ScatterGraph2DExpression(DesiredRateExpressionList<?> childExpressions,
+    ScatterGraph2DExpression(DesiredRateExpressionList<?> childExpressions,
             ReadFunction<Graph2DResult> function, String defaultName) {
         super(childExpressions, function, defaultName);
     }
 
-    public ScatterGraph2DExpression(DesiredRateExpression<?> tableData,
+    ScatterGraph2DExpression(DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {

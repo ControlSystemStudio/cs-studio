@@ -39,7 +39,7 @@ public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
 	    ReadFunction<?> xColumnName,
 	    ReadFunction<?> yColumnName,
 	    ReadFunction<?> tooltipColumnName) {
-        this.tableData = new CheckedReadFunction<>(VTable.class, tableData, "Data");
+        this.tableData = new CheckedReadFunction<>(tableData, "Data", VTable.class);
         this.xColumnName = stringArgument(xColumnName, "X Column");
         this.yColumnName = stringArgument(yColumnName, "Y Column");
         this.tooltipColumnName = stringArgument(tooltipColumnName, "Tooltip Column");

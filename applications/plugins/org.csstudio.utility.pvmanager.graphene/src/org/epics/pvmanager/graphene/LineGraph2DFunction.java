@@ -16,6 +16,9 @@ import java.util.List;
 import org.epics.graphene.*;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
+import static org.epics.pvmanager.graphene.ArgumentExpressions.stringArgument;
+import org.epics.vtype.VTable;
+import org.epics.vtype.VType;
 
 /**
  *
@@ -23,29 +26,24 @@ import org.epics.pvmanager.ReadFunction;
  */
 class LineGraph2DFunction implements ReadFunction<Graph2DResult> {
     
-    private ReadFunction<? extends VNumberArray> yArray;
-    private ReadFunction<? extends VNumberArray> xArray;
-    private ReadFunction<? extends VNumber> xInitialOffset;
-    private ReadFunction<? extends VNumber> xIncrementSize;
+    private ReadFunction<VType> tableData;
+    private ReadFunctionArgument<String> xColumnName;
+    private ReadFunctionArgument<String> yColumnName;
+    private ReadFunctionArgument<String> tooltipColumnName;
     
     private LineGraph2DRenderer renderer = new LineGraph2DRenderer(300, 200);
     
     private VImage previousImage;
     private final QueueCollector<LineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
-    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> argument) {
-        this.yArray = argument;
-    }
-
-    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> xArray, ReadFunction<? extends VNumberArray> yArray) {
-        this.xArray = xArray;
-        this.yArray = yArray;
-    }
-
-    public LineGraph2DFunction(ReadFunction<? extends VNumberArray> yArray, ReadFunction<? extends VNumber> xInitialOffset, ReadFunction<? extends VNumber> xIncrementSize) {
-        this.xInitialOffset = xInitialOffset;
-        this.xIncrementSize = xIncrementSize;
-        this.yArray = yArray;
+    LineGraph2DFunction(ReadFunction<?> tableData,
+	    ReadFunction<?> xColumnName,
+	    ReadFunction<?> yColumnName,
+	    ReadFunction<?> tooltipColumnName) {
+        this.tableData = new CheckedReadFunction<VType>(tableData, "Data", VTable.class, VNumberArray.class);
+        this.xColumnName = stringArgument(xColumnName, "X Column");
+        this.yColumnName = stringArgument(yColumnName, "Y Column");
+        this.tooltipColumnName = stringArgument(tooltipColumnName, "Tooltip Column");
     }
 
     public QueueCollector<LineGraph2DRendererUpdate> getRendererUpdateQueue() {
@@ -54,36 +52,24 @@ class LineGraph2DFunction implements ReadFunction<Graph2DResult> {
 
     @Override
     public Graph2DResult readValue() {
-        VNumberArray newData = yArray.readValue();
+        VType vType = tableData.readValue();
+        xColumnName.readNext();
+        yColumnName.readNext();
+        tooltipColumnName.readNext();
         
-        // No data, no plot
-        if (newData == null || newData.getData() == null)
+        // Table and columns must be available
+        if (vType == null || xColumnName.isMissing() || yColumnName.isMissing()) {
             return null;
-        
-        // Re-create the dataset
-        Point2DDataset dataset = null;
-        if (xArray != null) {
-            // Plot with two arrays
-            VNumberArray xData = xArray.readValue();
-            if (xData != null && newData.getData() != null) {
-                dataset = org.epics.graphene.Point2DDatasets.lineData(xData.getData(), newData.getData());
-            }
-            
-        } else if (xInitialOffset != null && xIncrementSize != null) {
-            // Plot with one array rescaled
-            VNumber initialOffet = xInitialOffset.readValue();
-            VNumber incrementSize = xIncrementSize.readValue();
-            
-            if (initialOffet != null && initialOffet.getValue() != null &&
-                    incrementSize != null && incrementSize.getValue() != null) {
-                dataset = org.epics.graphene.Point2DDatasets.lineData(newData.getData(), initialOffet.getValue().doubleValue(), incrementSize.getValue().doubleValue());
-            }
+        }
+
+        // Prepare new dataset
+        Point2DDataset dataset;
+        if (vType instanceof VNumberArray) {
+            dataset = Point2DDatasets.lineData(((VNumberArray) vType).getData());
+        } else {
+            dataset = DatasetConversions.point2DDatasetFromVTable((VTable) vType, xColumnName.getValue(), yColumnName.getValue());
         }
         
-        if (dataset == null) {
-            // Default to single array not rescaled
-            dataset = org.epics.graphene.Point2DDatasets.lineData(newData.getData());
-        }
         // Process all renderer updates
         List<LineGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
         for (LineGraph2DRendererUpdate rendererUpdate : updates) {
