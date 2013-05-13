@@ -4,9 +4,8 @@
 package org.csstudio.logbook.viewer;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
@@ -18,19 +17,16 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author shroffk
@@ -95,6 +91,9 @@ public class LogViewer extends ViewPart {
 	fd_text.top = new FormAttachment(0, 5);
 	fd_text.right = new FormAttachment(100, -3);
 	text.setLayoutData(fd_text);
+	
+	// Add AutoComplete support, use type logEntrySearch
+	new AutoCompleteWidget(text, "LogentrySearch");
 
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 	label.addMouseMoveListener(new MouseMoveListener() {
