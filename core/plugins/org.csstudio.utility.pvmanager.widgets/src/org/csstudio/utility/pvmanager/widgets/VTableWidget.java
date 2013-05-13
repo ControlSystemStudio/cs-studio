@@ -55,7 +55,7 @@ public class VTableWidget extends Composite {
 			pv= null;
 		}
 
-		if (pvFormula == null) {
+		if (pvFormula == null || pvFormula.trim().equals("")) {
 			return;
 		}
 
