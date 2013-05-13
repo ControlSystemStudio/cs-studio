@@ -7,19 +7,19 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.draw2d.IFigure;
 
-public class VTableWidgetEditPart extends AbstractWidgetEditPart {
+public class VTableDisplayEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * Create and initialize figure.
 	 */
 	@Override
-	protected VTableWidgetFigure doCreateFigure() {
-		VTableWidgetFigure figure = new VTableWidgetFigure(this);
+	protected VTableDisplayFigure doCreateFigure() {
+		VTableDisplayFigure figure = new VTableDisplayFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
 
-	private static void configure(VTableWidget widget, VTableWidgetModel model,
+	private static void configure(VTableWidget widget, VTableDisplayModel model,
 			boolean runMode) {
 		if (runMode) {
 			widget.setPvFormula(model.getPvFormula());
@@ -27,8 +27,8 @@ public class VTableWidgetEditPart extends AbstractWidgetEditPart {
 	}
 
 	@Override
-	public VTableWidgetModel getWidgetModel() {
-		VTableWidgetModel widgetModel = (VTableWidgetModel) super
+	public VTableDisplayModel getWidgetModel() {
+		VTableDisplayModel widgetModel = (VTableDisplayModel) super
 				.getWidgetModel();
 		return widgetModel;
 	}
@@ -43,7 +43,7 @@ public class VTableWidgetEditPart extends AbstractWidgetEditPart {
 				configure(
 						((AbstractSWTWidgetFigure<VTableWidget>) getFigure())
 								.getSWTWidget(), getWidgetModel(),
-						((VTableWidgetFigure) getFigure()).isRunMode());
+						((VTableDisplayFigure) getFigure()).isRunMode());
 				return false;
 			}
 		};

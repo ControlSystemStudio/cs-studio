@@ -6,9 +6,9 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
-public class VTableWidgetModel extends AbstractWidgetModel {
+public class VTableDisplayModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.opibuilder.widgets.service.VTableWidget"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.opibuilder.widgets.service.VTableDisplay"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

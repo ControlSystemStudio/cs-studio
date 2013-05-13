@@ -5,9 +5,9 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.swt.widgets.Composite;
 
-public class VTableWidgetFigure extends AbstractSWTWidgetFigure<VTableWidget> {
+public class VTableDisplayFigure extends AbstractSWTWidgetFigure<VTableWidget> {
 
-    public VTableWidgetFigure(AbstractBaseEditPart editPart) {
+    public VTableDisplayFigure(AbstractBaseEditPart editPart) {
 	super(editPart);
     }
 
