@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.service;
+package org.csstudio.opibuilder.widgets.model;
 
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -8,7 +8,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 public class VTableDisplayModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.opibuilder.widgets.service.VTableDisplay"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.opibuilder.widgets.VTableDisplay"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

@@ -1,7 +1,6 @@
-package org.csstudio.opibuilder.widgets.service;
+package org.csstudio.opibuilder.widgets.figures;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.swt.widgets.Composite;
 
