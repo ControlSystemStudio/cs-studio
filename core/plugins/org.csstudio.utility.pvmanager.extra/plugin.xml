@@ -24,6 +24,10 @@
             functionset="org.epics.pvmanager.formula.NumberOperatorFunctionSet"
             name="org.csstudio.utility.pvmanager.extra.numberOperator">
       </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.TableFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.table">
+      </functionset>
    </extension>
 
 </plugin>
