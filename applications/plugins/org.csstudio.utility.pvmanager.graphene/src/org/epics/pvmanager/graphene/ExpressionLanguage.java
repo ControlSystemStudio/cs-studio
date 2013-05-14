@@ -6,7 +6,6 @@ package org.epics.pvmanager.graphene;
 
 import java.util.Arrays;
 import java.util.List;
-import org.epics.graphene.ListNumbers;
 import org.epics.pvmanager.BasicTypeSupport;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.NotificationSupport;
@@ -20,7 +19,7 @@ import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.vtype.VString;
+import org.epics.util.array.ListNumbers;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 
