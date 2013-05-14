@@ -100,7 +100,7 @@ public class ExpressionLanguage {
     
     private static DesiredRateExpression<?> parseFormula(String formula) {
         if (!formula.startsWith("=")) {
-            return latestValueOf(channel(formula));
+            return cachedPv(formula);
         } else {
             formula = formula.substring(1);
         }
