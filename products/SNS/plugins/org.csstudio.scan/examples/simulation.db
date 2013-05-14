@@ -13,8 +13,8 @@ record(calc, "beam_sim")
 record(bi, "beam_on")
 {
     field(INP,  "beam_sim")
-    field(ZNAM, "Beam On")
-    field(ONAM, "Beam Off")
+    field(ZNAM, "Beam Off")
+    field(ONAM, "Beam On")
 }
 
 # Shutter, received neutrons
@@ -68,16 +68,6 @@ record(calc, "neutrons")
     field(SCAN, ".1 second")
 }
 
-# Scan 'active'?
-record(bi, "active")
-{
-    field(DESC, "Take data?")
-    field(INP,  "0")
-    field(PINI, "YES")
-    field(ZNAM, "Idle")
-    field(ONAM, "Scanning")
-}
-
 # X, Y motor
 record(ai, "motor_x")
 {
@@ -127,3 +117,27 @@ record(waveform, "text")
     field(FTVL, "CHAR")
     field(NELM, "100")
 }
+
+#
+# Scan Server status PVs
+#
+
+record(bi, "Demo:Scan:Active")
+{
+    field(DESC, "Scan Server Active")
+    field(INP,  "0")
+    field(PINI, "YES")
+    field(ZNAM, "Idle")
+    field(ONAM, "Scanning")
+}
+
+record(waveform, "Demo:Scan:Status")
+{
+    field(DESC, "Scan Server Status")
+    field(PINI, "YES")
+    field(FTVL, "CHAR")
+    field(NELM, "100")
+}
+
+
+

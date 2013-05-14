@@ -76,7 +76,6 @@
                  to Scan Server, Aggregator, maybe more:
                  Name, optional alias, scannable? loggable?
              -->            
-            <pv><name>active</name><alias>active</alias><scan/></pv>
             <pv><name>neutrons</name><log/></pv>
             <pv><name>pcharge</name><log/></pv>
             <pv><name>shutter</name><log/><scan/></pv>
