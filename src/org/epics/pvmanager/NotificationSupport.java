@@ -38,6 +38,9 @@ public abstract class NotificationSupport<T> extends TypeSupport<T> {
         NotificationSupport<T> support =
             (NotificationSupport<T>) findTypeSupportFor(NotificationSupport.class,
                                                               typeClass);
+        if (support == null) {
+            throw new RuntimeException("Values for type " + typeClass.getSimpleName() + " are not setup for notification.");
+        }
         return support.prepareNotification(oldValue, newValue);
     }    
     
