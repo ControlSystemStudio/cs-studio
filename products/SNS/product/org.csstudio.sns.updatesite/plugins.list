@@ -29,6 +29,7 @@ org.csstudio.archive.writer.rdb/**
 org.csstudio.archive.writer.test/**
 org.csstudio.archive.vtype/**
 org.csstudio.autocomplete/**
+org.csstudio.autocomplete.logbook/**
 org.csstudio.autocomplete.ui/**
 org.csstudio.basic.epics.product/**
 org.csstudio.csdata/**
