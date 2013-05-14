@@ -255,7 +255,8 @@ public class LogEntryWidget extends Composite {
 		}
 	    }
 	});
-	btnAddLogbook.setImage(ResourceManager.getPluginImage("org.csstudio.logbook.ui", "icons/logbook-add-16.png"));
+	btnAddLogbook.setImage(ResourceManager.getPluginImage(
+		"org.csstudio.logbook.ui", "icons/logbook-add-16.png"));
 	FormData fd_btnAddLogbook = new FormData();
 	fd_btnAddLogbook.bottom = new FormAttachment(label, -46);
 	fd_btnAddLogbook.left = new FormAttachment(100, -40);
@@ -269,7 +270,8 @@ public class LogEntryWidget extends Composite {
 	lblTags.setText("Tags:");
 
 	btnAddTags = new Button(composite, SWT.NONE);
-	btnAddTags.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_tag.png"));
+	btnAddTags.setImage(ResourceManager.getPluginImage(
+		"org.csstudio.utility.channel", "icons/add_tag.png"));
 	btnAddTags.setEnabled(editable);
 	fd_lblTags.top = new FormAttachment(btnAddTags, 5, SWT.TOP);
 	btnAddTags.addSelectionListener(new SelectionAdapter() {
@@ -324,6 +326,31 @@ public class LogEntryWidget extends Composite {
 	fd_multiSelectionCombo.right = new FormAttachment(btnAddLogbook, -5);
 	fd_multiSelectionCombo.left = new FormAttachment(lblLogbooks, 6);
 	multiSelectionComboLogbook.setLayoutData(fd_multiSelectionCombo);
+	multiSelectionComboLogbook
+		.addPropertyChangeListener(new PropertyChangeListener() {
+
+		    @Override
+		    public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("Selection")) {
+			    try {
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					.logEntry(logEntryChangeset
+						.getLogEntry());
+				Collection<LogbookBuilder> newLogbooks = new ArrayList<LogbookBuilder>();
+				for (String logbookName : multiSelectionComboLogbook
+					.getSelection()) {
+				    newLogbooks.add(LogbookBuilder
+					    .logbook(logbookName));
+				}
+				logEntryBuilder.setLogbooks(newLogbooks);
+				logEntryChangeset
+					.setLogEntryBuilder(logEntryBuilder);
+			    } catch (IOException e1) {
+				setLastException(e1);
+			    }
+			}
+		    }
+		});
 
 	multiSelectionComboTag = new MultiSelectionCombo<String>(composite,
 		SWT.NONE);
@@ -335,6 +362,31 @@ public class LogEntryWidget extends Composite {
 	fd_multiSelectionCombo_1.left = new FormAttachment(
 		multiSelectionComboLogbook, 0, SWT.LEFT);
 	multiSelectionComboTag.setLayoutData(fd_multiSelectionCombo_1);
+	multiSelectionComboTag
+		.addPropertyChangeListener(new PropertyChangeListener() {
+
+		    @Override
+		    public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("Selection")) {
+			    try {
+				LogEntryBuilder logEntryBuilder = LogEntryBuilder
+					.logEntry(logEntryChangeset
+						.getLogEntry());
+				Collection<TagBuilder> newTags = new ArrayList<TagBuilder>();
+				for (String tagName : multiSelectionComboTag
+					.getSelection()) {
+				    newTags.add(TagBuilder.tag(tagName));
+				}
+				logEntryBuilder.setTags(newTags);
+				logEntryChangeset
+					.setLogEntryBuilder(logEntryBuilder);
+			    } catch (IOException e1) {
+				setLastException(e1);
+			    }
+			}
+
+		    }
+		});
 
 	btnNewButton = new Button(composite, SWT.FLAT | SWT.LEFT);
 	btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -677,10 +729,14 @@ public class LogEntryWidget extends Composite {
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
-	    multiSelectionComboLogbook.setItems(logbookNames);
+	    if (!multiSelectionComboLogbook.getItems().equals(logbookNames)) {
+		multiSelectionComboLogbook.setItems(logbookNames);
+	    }
 	    multiSelectionComboLogbook.setSelection(LogEntryUtil
 		    .getLogbookNames(logEntry));
-	    multiSelectionComboTag.setItems(tagNames);
+	    if (!multiSelectionComboTag.getItems().equals(tagNames)) {
+		multiSelectionComboTag.setItems(tagNames);
+	    }
 	    multiSelectionComboTag.setSelection(LogEntryUtil
 		    .getTagNames(logEntry));
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();

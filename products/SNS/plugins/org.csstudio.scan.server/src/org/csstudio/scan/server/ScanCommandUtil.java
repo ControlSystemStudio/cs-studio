@@ -21,7 +21,22 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class ScanCommandUtil
 {
-    /** Write to device with optional readback, logging if the context
+    /** Write to device with readback, waiting forever, logging if the context
+     *  was configured to auto-log
+     *
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param tolerance Numeric tolerance when checking value
+     *  @throws Exception on error
+     */
+    public static void write(final ScanContext context,
+            final String device_name, final Object value,
+            final double tolerance) throws Exception
+    {
+    	write(context, device_name, value, device_name, true, tolerance, 0.0);
+    }
+	
+	/** Write to device with optional readback, logging if the context
      *  was configured to auto-log
      *
      *  @param device_name Name of device

@@ -6,11 +6,11 @@
 export VERSION=3.2.0I
 
 # Must use Java 7
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_13.jdk/Contents/Home
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_21.jdk/Contents/Home
 
 if [ ! -d $JAVA_HOME/Classes ]
 then
-   echo "On OS X, to make new Oracle JDK look like old Apple JDK"
+   echo "On OS X, to make new Oracle JDK look like old Apple JDK for Eclipse 3.x"
    echo "that RCP headless build still expects, do this:"
    echo "ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
    exit -1
@@ -19,19 +19,17 @@ fi
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Top of repository tree
-export TOP=/Users/ky9/git/cs-studio
+export TOP=/Users/ky9/git/cs-studio_3
 
 # Workspace that might have 'local' sources beyond repository
-export WORKSPACE=/Kram/Eclipse/Workspace_cs-studio_4.2
+export WORKSPACE=/Users/ky9/Eclipse/Workspace4.3_3.7_target
 
 # Location of Eclipse and Delta pack, the 'target' platform
-export ECLIPSE_BASE=/Kram/Eclipse/3_7_2/rcp
+export ECLIPSE=/Users/ky9/Eclipse/3.7.2/rcp
 # Deltapack can list several sites: delta pack;PyDev;...
-export DELTAPACK="/Kram/Eclipse/3_7_2/rcp/delta/eclipse:/Kram/Eclipse/CSS_Additions/PyDev2.6.0"
-export ECLIPSE=$ECLIPSE_BASE/eclipse
+export DELTAPACK="/Users/ky9/Eclipse/3.7.2/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
 
-export JRE_Macosx64=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/jre
-export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
+export JRE_Win64=/Users/ky9/Eclipse/CSS_Additions/Win64/jre
 
 # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
 export BUILDDIR=/Kram/build

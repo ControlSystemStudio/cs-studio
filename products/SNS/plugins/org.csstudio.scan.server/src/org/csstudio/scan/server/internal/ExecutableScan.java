@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
@@ -40,6 +41,7 @@ import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -91,6 +93,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
     private volatile transient Future<Object> future = null;
+
+    /** Devices for status PVs */
+	private String device_active = null, device_status = null;
 
     /** Initialize
      *  @param name User-provided name for this scan
@@ -365,6 +370,17 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 	        state = ScanState.Running;
     	}
     	start_ms = System.currentTimeMillis();
+    	
+        // Locate devices for status PVs
+        final String prefix = ScanSystemPreferences.getStatusPvPrefix();
+        if (prefix != null   &&   !prefix.isEmpty())
+        {
+        	device_active = prefix + "Active";
+	        devices.addPVDevice(new DeviceInfo(device_active, device_active, false, false));
+	        
+	        device_status = prefix + "Status";
+	        devices.addPVDevice(new DeviceInfo(device_status, device_status, false, false));
+        }
 
         // Inspect all commands before executing them:
         // Add devices that are not available (via alias)
@@ -401,11 +417,19 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
         // Start Devices
         devices.startDevices();
-
+        
         // Execute commands
         try
         {
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
+            
+            // TODO Initialize scan status PVs
+            if (device_active != null)
+            {
+            	getDevice(device_status).write("Starting " + getName());
+            	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1);
+            }
+            
             try
             {
                 // Execute pre-scan commands
@@ -447,6 +471,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         finally
         {
+        	// TODO Update status PVs: Done
+            if (device_active != null)
+            {
+            	getDevice(device_status).write("Idle");
+            	ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1);
+            }
+
+        	
             current_command = null;
             end_ms = System.currentTimeMillis();
             // Stop devices
@@ -515,6 +547,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                     retry = true;
                 }
             }
+            
+            // TODO Update Scan PVs on progress
+            final ScanInfo info = getScanInfo();
+			if (device_status != null)
+	        {
+            	getDevice(device_status).write("Finish: " + info.getFinishTime());
+	        }
         }
         while (retry);
     }
