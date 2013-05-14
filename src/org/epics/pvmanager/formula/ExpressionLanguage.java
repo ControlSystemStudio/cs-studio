@@ -239,13 +239,6 @@ public class ExpressionLanguage {
             return new DesiredRateExpressionImpl<>(args, readFunction, FormulaFunctions.format(function, argNames));
         }
         
-        if ("columnOf".equals(function)) {
-            if (args.getDesiredRateExpressions().size() != 2) {
-                throw new IllegalArgumentException("columnOf takes 2 arguments");
-            }
-            return columnOf(cast(VTable.class, args.getDesiredRateExpressions().get(0)),
-                    cast(VString.class, args.getDesiredRateExpressions().get(1)));
-        }
         throw new IllegalArgumentException("No function named '" + function + "' is defined");
     }
     
@@ -255,14 +248,6 @@ public class ExpressionLanguage {
     
     static <T> DesiredRateExpression<T> errorDesiredRateExpression(RuntimeException error) {
         return new ErrorDesiredRateExpression<>(error, "");
-    }
-    
-    static DesiredRateExpression<VType>
-            columnOf(DesiredRateExpression<VTable> tableExpression, DesiredRateExpression<VString> columnExpression) {
-        ColumnOfVTableConverter converter =
-                new ColumnOfVTableConverter(tableExpression.getFunction(), columnExpression.getFunction());
-        return new DesiredRateExpressionImpl<VType>(new DesiredRateExpressionListImpl<Object>()
-                .and(tableExpression).and(columnExpression), converter, "columnOf");
     }
     
     static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final DesiredRateExpression<?> arg1) {
