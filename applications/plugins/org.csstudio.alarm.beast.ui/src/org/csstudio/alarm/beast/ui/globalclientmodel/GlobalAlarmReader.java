@@ -94,7 +94,7 @@ public class GlobalAlarmReader
         {
             path_statement.close();
             statement.close();
-            connection.commit();
+//            connection.commit();
         }
 
         return alarms;
