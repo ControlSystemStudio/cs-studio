@@ -19,6 +19,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
@@ -94,8 +96,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
     private volatile transient Future<Object> future = null;
 
-    /** Devices for status PVs */
-	private String device_active = null, device_status = null;
+    /** Device Names for status PVs */
+	private String device_active = null, device_status = null, device_progress = null, device_finish = null;
 
     /** Initialize
      *  @param name User-provided name for this scan
@@ -380,6 +382,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 	        
 	        device_status = prefix + "Status";
 	        devices.addPVDevice(new DeviceInfo(device_status, device_status, false, false));
+
+	        device_progress = prefix + "Progress";
+	        devices.addPVDevice(new DeviceInfo(device_progress, device_progress, false, false));
+
+	        device_finish = prefix + "Finish";
+	        devices.addPVDevice(new DeviceInfo(device_finish, device_finish, false, false));
         }
 
         // Inspect all commands before executing them:
@@ -423,11 +431,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
             
-            // TODO Initialize scan status PVs
+            // Initialize scan status PVs
             if (device_active != null)
             {
-            	getDevice(device_status).write("Starting " + getName());
+            	getDevice(device_status).write(getName());
             	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1);
+            	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1);
+            	getDevice(device_finish).write("Starting ...");
             }
             
             try
@@ -471,13 +481,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         finally
         {
-        	// TODO Update status PVs: Done
+        	// Update status PVs: Done
             if (device_active != null)
             {
-            	getDevice(device_status).write("Idle");
+            	getDevice(device_status).write("");
+            	getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
+            	ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1);
             	ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1);
             }
-
         	
             current_command = null;
             end_ms = System.currentTimeMillis();
@@ -548,11 +559,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 }
             }
             
-            // TODO Update Scan PVs on progress
+            // Update Scan PVs on progress
             final ScanInfo info = getScanInfo();
 			if (device_status != null)
 	        {
-            	getDevice(device_status).write("Finish: " + info.getFinishTime());
+            	ScanCommandUtil.write(this, device_progress, Double.valueOf(info.getPercentage()), 0.1);
+            	getDevice(device_finish).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
 	        }
         }
         while (retry);

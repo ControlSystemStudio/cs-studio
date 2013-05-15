@@ -117,27 +117,3 @@ record(waveform, "text")
     field(FTVL, "CHAR")
     field(NELM, "100")
 }
-
-#
-# Scan Server status PVs
-#
-
-record(bi, "Demo:Scan:Active")
-{
-    field(DESC, "Scan Server Active")
-    field(INP,  "0")
-    field(PINI, "YES")
-    field(ZNAM, "Idle")
-    field(ONAM, "Scanning")
-}
-
-record(waveform, "Demo:Scan:Status")
-{
-    field(DESC, "Scan Server Status")
-    field(PINI, "YES")
-    field(FTVL, "CHAR")
-    field(NELM, "100")
-}
-
-
-

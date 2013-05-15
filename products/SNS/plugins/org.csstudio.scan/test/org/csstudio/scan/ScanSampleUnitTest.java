@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 
@@ -37,16 +37,39 @@ public class ScanSampleUnitTest
 	{
 	    ScanSample sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14 });
 	    System.out.println(sample);
-	    assertTrue(sample.toString().endsWith("3.14"));
+	    assertThat(sample.toString().endsWith("3.14"), equalTo(true));
 
 	    sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14, 42.0 });
 	    System.out.println(sample);
-	    assertTrue(sample.toString().endsWith("42.0]"));
+	    assertThat(sample.toString().endsWith("42.0]"), equalTo(true));
+
 
 	    sample = ScanSampleFactory.createSample(new Date(), 0, 1, 2, 3, 4);
         System.out.println(sample);
-        assertTrue(sample.toString().endsWith("3, 4]"));
+        assertThat(sample.toString().endsWith("3, 4]"), equalTo(true));
 
-        assertEquals(1, ScanSampleFormatter.asDouble(sample), 0.001);
+        assertThat(ScanSampleFormatter.asDouble(sample), equalTo(1.0));
 	}
+
+    @Test
+    public void testTimeFormatting() throws Exception
+    {
+        // 'now', today
+        Date date = new Date();
+        String text = ScanSampleFormatter.formatCompactDateTime(date);
+        System.out.println(text);
+        assertThat(text.length(), equalTo(8));
+        
+        // Different day
+        date = new Date(date.getTime() + 25l*60*60*1000);
+        text = ScanSampleFormatter.formatCompactDateTime(date);
+        System.out.println(text);
+        assertThat("HH:MM separator", text.charAt(8), equalTo(':'));
+
+        // Different year
+        date = new Date(date.getTime() + 366l*24*60*60*1000);
+        text = ScanSampleFormatter.formatCompactDateTime(date);
+        System.out.println(text);
+        assertThat(text.length(), equalTo(10));
+    }
 }
