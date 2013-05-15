@@ -209,8 +209,8 @@ public class LineGraph2DWidget extends AbstractPointDatasetGraph2DWidget
 			imageDisplay.setVImage(null);
 			setLastError(null);
 			graph = null;
-			//resetRange(xRangeControl);
-			//resetRange(yRangeControl);
+			resetRange(xRangeControl);
+			resetRange(yRangeControl);
 		}
 		
 		if (getDataFormula() == null) {
