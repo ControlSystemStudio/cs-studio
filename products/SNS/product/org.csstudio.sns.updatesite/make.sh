@@ -29,7 +29,7 @@ do
     echo $PROD
 
 	$ECLIPSE_ANT \
-	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/productBuild/productBuild.xml \
+	  -buildfile $ECLIPSE_BASE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/productBuild/productBuild.xml \
 	  -Dbuilder=`pwd`/$PROD \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
@@ -46,7 +46,7 @@ do
     echo $FEAT
 
 	$ECLIPSE_ANT \
-	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/build.xml \
+	  -buildfile $ECLIPSE_BASE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/build.xml \
 	  -Dbuilder=`pwd`/$FEAT \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
