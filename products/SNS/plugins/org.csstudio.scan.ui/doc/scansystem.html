@@ -669,8 +669,11 @@ For maintenance, see Readme.txt in the plugin <code>org.csstudio.scan.log.derby<
 
 <h3><a name="server_network">Network Details</a></h3>
 
-<p>The network communication between the scan server and clients like CSS
-is based on Java RMI and currently uses two TCP network ports:</p>
+<p>The original network communication between the scan server and clients like CSS
+is based on Java RMI and currently uses two TCP network ports.
+A RESTful interface is being added, but at this time not used by
+the CSS clients.
+</p>
 <ol>
 <li>The port number configured via the <code>ScanServerPort</code>
     or associated Eclipse preference is used by the RMI <u>Registry</u>.
@@ -680,8 +683,30 @@ is based on Java RMI and currently uses two TCP network ports:</p>
 <li>The next port number, i.e. <code>ScanServerPort+1</code>,
     is where the actual scan server binding is exported to clients.
 </li>
+<li>The following port number, i.e. <code>ScanServerPort+2</code>,
+    offers a web server with REST-ful access to key scan server features.
+    Point an interactive web browser to this port for viewing the associated
+    documentation.
+</li>
 </ol>
 
+<p>The scan server can also update PVs with basic status information.
+The base name of these PVs is configured via the scan server preferences.
+The PVs must be made available by an IOC on the network, for example using
+the <code>examples/scan.db</code>.
+The scan server will update the following PVs:
+</p>
+
+<ol>
+<li>{prefix}Active - Set to 1 when the scan server is actively executing a scan, else 0.
+</li>
+<li>{prefix}Status - Set to the name of the active scan.
+</li>
+<li>{prefix}Progress - Set to 0...100 to indicate progress of active scan.
+</li>
+<li>{prefix}Finish - Updated to the (estimated) finish time of the active scan.
+</li>
+</ol>
 
 <h4>Firewalls</h4>
 

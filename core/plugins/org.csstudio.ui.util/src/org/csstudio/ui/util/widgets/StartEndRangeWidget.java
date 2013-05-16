@@ -234,16 +234,15 @@ public class StartEndRangeWidget extends Canvas {
 				&& selectedMax <= max) {
 			this.min = min;
 			this.selectedMin = selectedMin;
-			if (selectedMin == this.min) {
+			this.max = max;
+			this.selectedMax = selectedMax;
+			if (selectedMin == min) {
 				followMin = true;
 			}
-			this.selectedMax = selectedMax;
-			if (selectedMax == this.max) {
+			if (selectedMax == max) {
 				followMax = true;
 			}
-			this.max = max;
 			recalculateDistancePerPx();
-			// fireRangeChanged();
 		} else {
 			throw new IllegalArgumentException();
 		}

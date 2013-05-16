@@ -307,7 +307,7 @@ public class PVManagerProbe extends ViewPart {
 	 *            the new pv name or null
 	 */
 	public void setPVName(ProcessVariable pvName) {
-		setPVFormula("'" + pvName.getName() + "'");
+		setPVFormula(pvName.getName());
 	}
 
 	public void setPVFormula(String pvFormula) {

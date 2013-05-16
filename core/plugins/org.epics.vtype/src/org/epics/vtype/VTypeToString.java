@@ -5,18 +5,6 @@
 package org.epics.vtype;
 
 import java.util.AbstractList;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.Time;
-import org.epics.vtype.VString;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.ValueFormat;
-import org.epics.vtype.SimpleValueFormat;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.ValueUtil;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.Alarm;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
 

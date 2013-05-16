@@ -103,7 +103,17 @@ public class ScanSystemPreferences extends SystemSettings
     	return period;
 	}
 
-    /** Set system properties (which are in the end what's actually used)
+    /** @return Prefix to scan server status PVs */
+	public static String getStatusPvPrefix()
+	{
+		String prefix = "Demo:Scan:";
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	if (service != null)
+    		prefix = service.getString(Activator.ID, "status_pv_prefix", prefix, null);
+    	return prefix;
+	}
+	
+	/** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)
      */

@@ -4,10 +4,10 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.graphene.ListNumbers;
 import org.epics.graphene.Point2DDataset;
 import org.epics.graphene.Point2DDatasets;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 

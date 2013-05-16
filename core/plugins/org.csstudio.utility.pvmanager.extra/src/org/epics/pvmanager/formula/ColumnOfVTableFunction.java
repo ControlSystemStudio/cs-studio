@@ -8,9 +8,6 @@ import org.epics.vtype.ValueFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import org.epics.pvmanager.ReadFunction;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.vtype.VString;
@@ -18,29 +15,52 @@ import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
 
 /**
- * Converts numeric types to VDouble.
+ * Extracts a columns from a VTable.
  *
  * @author carcassi
  */
-class ColumnOfVTableConverter implements ReadFunction<VType> {
-    
-    private final ReadFunction<VTable> tableArg;
-    private final ReadFunction<VString> columnNameArg;
+class ColumnOfVTableFunction implements FormulaFunction {
 
-    /**
-     * Creates a new converter from the given function.
-     * 
-     * @param argument the argument function
-     */
-    public ColumnOfVTableConverter(ReadFunction<VTable> tableArg, ReadFunction<VString> columnNameArg) {
-        this.tableArg = tableArg;
-        this.columnNameArg = columnNameArg;
+    @Override
+    public boolean isPure() {
+        return true;
     }
 
     @Override
-    public VType readValue() {
-        final VTable table = tableArg.readValue();
-        final VString columnName = columnNameArg.readValue();
+    public boolean isVarArgs() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return "columnOf";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Extracts a column from the given table";
+    }
+
+    @Override
+    public List<Class<?>> getArgumentTypes() {
+        return Arrays.<Class<?>>asList(VTable.class, VString.class);
+    }
+
+    @Override
+    public List<String> getArgumentNames() {
+        return Arrays.asList("table", "columName");
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+        return VType.class;
+    }
+
+    @Override
+    public Object calculate(final List<Object> args) {
+        VTable table = (VTable) args.get(0);
+        VString columnName = (VString) args.get(1);
+        
         if (columnName == null || table == null) {
             return null;
         }

@@ -94,6 +94,7 @@ public class Application implements IApplication
 
 	        // Keep running...
 	        run.await();
+	        server.stop();
 
 	        httpd.stop();
 	        // Release commands

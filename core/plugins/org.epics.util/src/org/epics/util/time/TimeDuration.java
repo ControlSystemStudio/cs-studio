@@ -50,9 +50,9 @@ public class TimeDuration implements Comparable<TimeDuration> {
     }
     
     /**
-     * True if the duration is zero or positive.
+     * True if the duration is non-zero and negative.
      * 
-     * @return true if non negative
+     * @return true if negative
      */
     public boolean isNegative() {
         return getSec() < 0;

@@ -121,4 +121,67 @@ public class ListNumbers {
         
         return low - 1;  // key not found.
     }
+    
+    /**
+     * Creates a list of equally spaced values given the range and the number of
+     * elements.
+     * <p>
+     * Note that, due to rounding errors in double precision, the difference
+     * between the elements may not be exactly the same.
+     * 
+     * @param minValue the first value in the list
+     * @param maxValue the last value in the list
+     * @param size the size of the list
+     * @return a new list
+     */
+    public static ListNumber linearListFromRange(final double minValue, final double maxValue, final int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size must be positive (was " + size + " )");
+        }
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                if (index < 0 || index >= size) {
+                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+                }
+                return minValue + (index * (maxValue - minValue)) / (size - 1);
+            }
+
+            @Override
+            public int size() {
+                return size;
+            }
+        };
+    }
+    
+    /**
+     * Creates a list of equally spaced values given the first value, the
+     * step between element and the size of the list.
+     * 
+     * @param initialValue the first value in the list
+     * @param increment the difference between elements
+     * @param size the size of the list
+     * @return a new list
+     */
+    public static ListNumber linearList(final double initialValue, final double increment, final int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size must be positive (was " + size + " )");
+        }
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                if (index < 0 || index >= size) {
+                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+                }
+                return initialValue + index * increment;
+            }
+
+            @Override
+            public int size() {
+                return size;
+            }
+        };
+    }
 }

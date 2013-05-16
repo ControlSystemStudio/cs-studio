@@ -1,0 +1,35 @@
+# Scan Server status PVs
+#
+#  softIoc -s -m "P=Demo:Scan:" -d scan.db
+
+record(bi, "$(P)Active")
+{
+    field(DESC, "Scan Server Active?")
+    field(INP,  "0")
+    field(PINI, "YES")
+    field(ZNAM, "Idle")
+    field(ONAM, "Scanning")
+}
+
+record(waveform, "$(P)Status")
+{
+    field(DESC, "Scan Status")
+    field(PINI, "YES")
+    field(FTVL, "CHAR")
+    field(NELM, "100")
+}
+
+record(ai, "$(P)Progress")
+{
+    field(DESC, "Percentage done")
+    field(PINI, "YES")
+    field(INP,  "0")
+    field(HOPR, "100")
+    field(EGU,  "%")
+}
+
+record(stringin, "$(P)Finish")
+{
+    field(DESC, "Estimated Finish")
+    field(PINI, "YES")
+}

@@ -8,6 +8,7 @@ import org.epics.util.array.CollectionDouble;
 import org.epics.util.array.CollectionNumber;
 import org.epics.util.array.IteratorDouble;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
 
 /**
  * Factory methods for wrapper datasets.
@@ -23,8 +24,8 @@ public class Cell2DDatasets {
     }
 
     public static Cell2DDataset linearRange(final Function2D function, final Range xRange, final int xCount, final Range yRange, final int yCount) {
-        final ListNumber xBoundaries = ListNumbers.linearRange(xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), xCount + 1);
-        final ListNumber yBoundaries = ListNumbers.linearRange(yRange.getMinimum().doubleValue(), yRange.getMaximum().doubleValue(), yCount + 1);
+        final ListNumber xBoundaries = ListNumbers.linearListFromRange(xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), xCount + 1);
+        final ListNumber yBoundaries = ListNumbers.linearListFromRange(yRange.getMinimum().doubleValue(), yRange.getMaximum().doubleValue(), yCount + 1);
         final double xHalfStep = (xBoundaries.getDouble(1) - xBoundaries.getDouble(0)) / 2.0;
         final double yHalfStep = (yBoundaries.getDouble(1) - yBoundaries.getDouble(0)) / 2.0;
         CollectionNumber data = new CollectionDouble() {
