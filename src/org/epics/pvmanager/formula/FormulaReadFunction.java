@@ -51,10 +51,14 @@ class FormulaReadFunction implements ReadFunction<Object> {
             List<String> typeNames = new ArrayList<>(argumentValues.size());
             for (Object object : argumentValues) {
                 Class<?> clazz = ValueUtil.typeOf(object);
-                if (clazz == null || Object.class.equals(clazz)) {
+                if (Object.class.equals(clazz)) {
                     clazz = object.getClass();
                 }
-                typeNames.add(clazz.getSimpleName());
+                if (clazz != null) {
+                    typeNames.add(clazz.getSimpleName());
+                } else {
+                    typeNames.add("null");
+                }
             }
             throw new RuntimeException("Can't find match for function '" + functionName + "'  and arguments " + typeNames);
         }
