@@ -98,7 +98,8 @@ public class PVDevice extends Device
 					{
 						value = pv.getValue();
 						final Alarm alarm = ValueUtil.alarmOf(value);
-						if (alarm != null   &&  alarm.getAlarmSeverity() == AlarmSeverity.UNDEFINED)
+						if (!pv.isConnected()  ||
+						    (alarm != null   &&  alarm.getAlarmSeverity() == AlarmSeverity.UNDEFINED))
 						{
 						    value = DISCONNECTED;
 						    Logger.getLogger(getClass().getName()).log(Level.WARNING,
