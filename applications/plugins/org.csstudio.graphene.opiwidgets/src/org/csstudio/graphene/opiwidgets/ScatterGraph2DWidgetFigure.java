@@ -14,40 +14,39 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public class ScatterGraph2DWidgetFigure extends
-	AbstractSWTWidgetFigure<ScatterGraph2DWidget> {
+		AbstractSWTWidgetFigure<ScatterGraph2DWidget> {
 
-    private ISelectionProvider selectionProvider;
+	private ISelectionProvider selectionProvider;
 
-    public ScatterGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
-	super(editpart);
-	selectionProvider = retrieveSelectionProvider(getSWTWidget());
-    }
-    
-
-    @Override
-    protected ScatterGraph2DWidget createSWTWidget(Composite parent, int style) {
-	return new ScatterGraph2DWidget(parent, style);
-    }
-
-    private ISelectionProvider retrieveSelectionProvider(
-	    ScatterGraph2DWidget widget) {
-	if (widget instanceof ISelectionProvider) {
-	    return (ISelectionProvider) widget;
+	public ScatterGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
+		super(editpart);
+		selectionProvider = retrieveSelectionProvider(getSWTWidget());
 	}
-	return null;
-    }
 
-    /**
-     * The selection provider to be used for the pop-up.
-     * 
-     * @return the selection provider or null
-     */
-    public ISelectionProvider getSelectionProvider() {
-	return selectionProvider;
-    }
+	@Override
+	protected ScatterGraph2DWidget createSWTWidget(Composite parent, int style) {
+		return new ScatterGraph2DWidget(parent, style);
+	}
 
-    public boolean isRunMode() {
-	return runmode;
-    }
+	private ISelectionProvider retrieveSelectionProvider(
+			ScatterGraph2DWidget widget) {
+		if (widget instanceof ISelectionProvider) {
+			return (ISelectionProvider) widget;
+		}
+		return null;
+	}
+
+	/**
+	 * The selection provider to be used for the pop-up.
+	 * 
+	 * @return the selection provider or null
+	 */
+	public ISelectionProvider getSelectionProvider() {
+		return selectionProvider;
+	}
+
+	public boolean isRunMode() {
+		return runmode;
+	}
 
 }
