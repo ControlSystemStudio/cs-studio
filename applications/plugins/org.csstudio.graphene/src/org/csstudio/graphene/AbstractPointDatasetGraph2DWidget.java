@@ -43,7 +43,6 @@ import org.epics.pvmanager.graphene.GraphDataRange;
 public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>> extends BeanComposite
 		implements ConfigurableWidget {
 
-
 	private VImageDisplay imageDisplay;
 	private T graph;
 	private ErrorBar errorBar;
@@ -262,36 +261,36 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 	}
 
     public String getXColumnFormula() {
-    	return this.xColumnFormula;
+	return this.xColumnFormula;
     }
 
     public void setXColumnFormula(String xColumnFormula) {
-		String oldValue = this.xColumnFormula;
-		this.xColumnFormula = xColumnFormula;
-		changeSupport.firePropertyChange("xColumnFormula", oldValue,
-			this.xColumnFormula);
+	String oldValue = this.xColumnFormula;
+	this.xColumnFormula = xColumnFormula;
+	changeSupport.firePropertyChange("xColumnFormula", oldValue,
+		this.xColumnFormula);
     }
 
     public String getYColumnFormula() {
-    	return this.yColumnFormula;
+	return this.yColumnFormula;
     }
 
     public void setYColumnFormula(String yColumnFormula) {
-		String oldValue = this.yColumnFormula;
-		this.yColumnFormula = yColumnFormula;
-		changeSupport.firePropertyChange("yColumnFormula", oldValue,
-			this.yColumnFormula);
+	String oldValue = this.yColumnFormula;
+	this.yColumnFormula = yColumnFormula;
+	changeSupport.firePropertyChange("yColumnFormula", oldValue,
+		this.yColumnFormula);
     }
 
     public String getTooltipFormula() {
-    	return this.tooltipFormula;
+	return this.tooltipFormula;
     }
 
     public void setTooltipFormula(String tooltipFormula) {
-		String oldValue = this.tooltipFormula;
-		this.tooltipFormula = tooltipFormula;
-		changeSupport.firePropertyChange("tooltipFormula", oldValue,
-			this.tooltipFormula);
+	String oldValue = this.tooltipFormula;
+	this.tooltipFormula = tooltipFormula;
+	changeSupport.firePropertyChange("tooltipFormula", oldValue,
+		this.tooltipFormula);
     }
 
 }

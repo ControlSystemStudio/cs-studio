@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
+import org.epics.util.time.TimeDuration;
 
 /** Condition that waits for a Device to reach a certain value.
  *
@@ -48,8 +49,8 @@ public class DeviceValueCondition implements DeviceListener
     /** Tolerance to use for Comparison.EQUALS */
     final private double tolerance;
 
-    /** Timeout in seconds, 0.0 to "wait forever" */
-    final private double timeout;
+    /** Timeout in seconds, <code>null</code> to "wait forever" */
+    final private TimeDuration timeout;
 
     /** Initial value to await Comparison.INCREASE_BY/DECREASE_BY */
     private volatile double initial_value = Double.NaN;
@@ -65,11 +66,11 @@ public class DeviceValueCondition implements DeviceListener
      *  @param comparison Comparison to use
      *  @param desired_value Desired numeric value of device
      *  @param tolerance Tolerance, e.g. 0.1
-     *  @param timeout Time out in seconds, or 0.0 for "wait forever"
+     *  @param timeout Time out in seconds, or <code>null</code> for "wait forever"
      */
     public DeviceValueCondition(final Device device, final Comparison comparison,
             final double desired_value, final double tolerance,
-            final double timeout)
+            final TimeDuration timeout)
     {
         this.device = device;
         this.comparison = comparison;
@@ -91,7 +92,11 @@ public class DeviceValueCondition implements DeviceListener
      */
     public void await() throws TimeoutException, Exception
     {
-        final long end_ms = System.currentTimeMillis() + Math.round(timeout * 1000.0);
+        final long end_ms;
+        if (timeout != null  &&  timeout.isPositive())
+            end_ms = System.currentTimeMillis() + Math.round(timeout.toSeconds() * 1000.0);
+        else
+            end_ms = 0;
 
         // Set initial value (null if device is disconnected)
         initial_value = device.readDouble();
@@ -108,7 +113,7 @@ public class DeviceValueCondition implements DeviceListener
                 is_condition_met = isConditionMet();
                 while (! is_condition_met)
                 {   // Wait for update from device
-                    if (timeout > 0.0)
+                    if (end_ms > 0)
                     {   // With timeout, see how much time is left
                         final long ms_left = end_ms - System.currentTimeMillis();
                         if (ms_left > 0)

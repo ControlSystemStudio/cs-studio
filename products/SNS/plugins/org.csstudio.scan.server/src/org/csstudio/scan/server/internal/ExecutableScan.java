@@ -48,6 +48,7 @@ import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
+import org.epics.util.time.TimeDuration;
 
 /** Scan that can be executed: Commands, device context, state
  *
@@ -99,7 +100,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Device Names for status PVs */
 	private String device_active = null, device_status = null, device_progress = null, device_finish = null;
 
-    /** Initialize
+	/** Timeout for updating the status PVs */
+	final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
+
+	/** Initialize
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
@@ -431,12 +435,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
             
-            // Initialize scan status PVs
+            // Initialize scan status PVs. Error will prevent scan from starting.
             if (device_active != null)
             {
             	getDevice(device_status).write(getName());
-            	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1);
-            	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1);
+            	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1, timeout);
             	getDevice(device_finish).write("Starting ...");
             }
             
@@ -478,18 +482,18 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 	state = saved_state;
                 }
             }
+            
+            // Final status PV update. Error will be reported via exception.
+            if (device_active != null)
+            {
+                getDevice(device_status).write("");
+                getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
+                ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
+                ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
+            }            
         }
         finally
         {
-        	// Update status PVs: Done
-            if (device_active != null)
-            {
-            	getDevice(device_status).write("");
-            	getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
-            	ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1);
-            	ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1);
-            }
-        	
             current_command = null;
             end_ms = System.currentTimeMillis();
             // Stop devices
@@ -559,12 +563,19 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 }
             }
             
-            // Update Scan PVs on progress
-            final ScanInfo info = getScanInfo();
+            // Try to update Scan PVs on progress. Log errors, but continue scan
 			if (device_status != null)
 	        {
-            	ScanCommandUtil.write(this, device_progress, Double.valueOf(info.getPercentage()), 0.1);
-            	getDevice(device_finish).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
+			    final ScanInfo info = getScanInfo();
+			    try
+			    {
+                	ScanCommandUtil.write(this, device_progress, Double.valueOf(info.getPercentage()), 0.1, timeout);
+                	getDevice(device_finish).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
+			    }
+			    catch (Exception ex)
+			    {
+                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating status PVs", ex);
+			    }
 	        }
         }
         while (retry);
