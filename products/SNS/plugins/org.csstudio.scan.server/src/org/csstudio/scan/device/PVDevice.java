@@ -33,6 +33,7 @@ import org.epics.vtype.Time;
 import org.epics.vtype.VByteArray;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV
@@ -87,26 +88,41 @@ public class PVDevice extends Device
 				synchronized (PVDevice.this)
 				{					
 					if (error != null)
+					{
 						value = DISCONNECTED;
+                        Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                            "PV " + getInfo().getName() + " error",
+                            error);
+					}
 					else
 					{
 						value = pv.getValue();
-						Logger.getLogger(getClass().getName()).log(Level.FINER,
-					        "PV {0} received {1}", new Object[] { getInfo().getName(), value });
-						
-						if (value == null)
-							value = DISCONNECTED;
-						
-						if (TREAD_BYTES_AS_STRING  &&
-						    value instanceof VByteArray)
+						final Alarm alarm = ValueUtil.alarmOf(value);
+						if (alarm != null   &&  alarm.getAlarmSeverity() == AlarmSeverity.UNDEFINED)
 						{
-						    is_byte_array = true;
-						    final VByteArray barray = (VByteArray) value;
-						    value = ValueFactory.newVString(
-					            ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
-
-						    Logger.getLogger(getClass().getName()).log(Level.FINER,
-	                              "PV BYTE[] converted to {0}", value);
+						    value = DISCONNECTED;
+						    Logger.getLogger(getClass().getName()).log(Level.WARNING,
+						            "PV {0} disconnected", getInfo().getName());
+						}
+						else
+						{
+    						Logger.getLogger(getClass().getName()).log(Level.FINER,
+    					        "PV {0} received {1}", new Object[] { getInfo().getName(), value });
+    						
+    						if (value == null)
+    							value = DISCONNECTED;
+    						
+    						if (TREAD_BYTES_AS_STRING  &&
+    						    value instanceof VByteArray)
+    						{
+    						    is_byte_array = true;
+    						    final VByteArray barray = (VByteArray) value;
+    						    value = ValueFactory.newVString(
+    					            ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
+    
+    						    Logger.getLogger(getClass().getName()).log(Level.FINER,
+    	                              "PV BYTE[] converted to {0}", value);
+    						}
 						}
 					}
 				}
@@ -115,7 +131,10 @@ public class PVDevice extends Device
 		};
 		synchronized (this)
 		{
-			pv = PVManager.readAndWrite(latestValueOf(vType(getInfo().getName()))).readListener(listener).asynchWriteAndMaxReadRate(ofSeconds(0.1));
+			pv = PVManager
+		        .readAndWrite(latestValueOf(vType(getInfo().getName())))
+		        .readListener(listener)
+		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
 		}
 	}
 
