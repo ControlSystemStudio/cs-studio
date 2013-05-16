@@ -213,7 +213,7 @@ public class LineGraph2DWidget extends AbstractPointDatasetGraph2DWidget
 			resetRange(yRangeControl);
 		}
 		
-		if (getDataFormula() == null) {
+		if (getDataFormula() == null || getDataFormula().trim().isEmpty()) {
 			return;
 		}
 		
