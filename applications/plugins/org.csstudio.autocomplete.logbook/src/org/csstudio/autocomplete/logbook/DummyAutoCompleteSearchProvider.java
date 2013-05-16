@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.logbook.util.LogEntrySearchUtil;
+
 /**
  * @author shroffk
  * 
@@ -20,10 +22,10 @@ public class DummyAutoCompleteSearchProvider extends
     Map<String, List<String>> initializeKeyValueMap() {
 	Map<String, List<String>> result = new HashMap<String, List<String>>();
 	result.put(
-		"logbooks",
+		LogEntrySearchUtil.SEARCH_KEYWORD_LOGBOOKS,
 		new ArrayList<String>(Arrays.asList("Operations", "Test",
 			"Controls")));
-	result.put("tags",
+	result.put(LogEntrySearchUtil.SEARCH_KEYWORD_TAGS,
 		new ArrayList<String>(Arrays.asList("Timming", "Bumps", "RF")));
 	return result;
     }

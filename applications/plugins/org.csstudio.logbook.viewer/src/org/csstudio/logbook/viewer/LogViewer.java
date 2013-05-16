@@ -141,7 +141,7 @@ public class LogViewer extends ViewPart {
 				FormData fd = (FormData) label.getLayoutData();
 				fd.top = new FormAttachment(100);
 				label.setLayoutData(fd);
-				logEntryWidget.setLogEntry(null);
+//				logEntryWidget.setLogEntry(null);
 			    }
 			    parent.layout();
 			}

@@ -16,87 +16,95 @@ import org.epics.pvmanager.graphene.GraphDataRange;
 public abstract class AbstractPointDatasetGraph2DWidget extends BeanComposite
 		implements ConfigurableWidget {
 
-	private boolean showAxis = true;
+    private boolean showAxis = true;
 
-	public AbstractPointDatasetGraph2DWidget(Composite parent, int style) {
-		super(parent, style);
-	}
+    public AbstractPointDatasetGraph2DWidget(Composite parent, int style) {
+	super(parent, style);
+    }
 
-	abstract void reconnect();
+    abstract void reconnect();
 
-	/**
-	 * A helper function to set all the appropriate
-	 * 
-	 * @param control
-	 */
-	public void setRange(StartEndRangeWidget control,
-			GraphDataRange plotDataRange) {
-		control.setRange(plotDataRange.getIntegratedRange().getMinimum()
-				.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
+    /**
+     * A helper function to set all the appropriate
+     * 
+     * @param control
+     */
+    public void setRange(StartEndRangeWidget control,
+	    GraphDataRange plotDataRange) {
+	System.out.println(control.getMin() + " - " + control.getMax());
+	System.out
+		.println("Setting"
+			+ plotDataRange.getIntegratedRange().getMinimum()
+				.doubleValue()
+			+ " "
+			+ plotDataRange.getIntegratedRange().getMaximum()
 				.doubleValue());
-	}
+	control.setRange(plotDataRange.getIntegratedRange().getMinimum()
+		.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
+		.doubleValue());
+    }
 
-	public void resetRange(StartEndRangeWidget control) {
-		control.setRanges(0, 0, 1, 1);
-	}
+    public void resetRange(StartEndRangeWidget control) {
+	control.setRanges(0, 0, 1, 1);
+    }
 
-	public boolean isShowAxis() {
-		return showAxis;
-	}
+    public boolean isShowAxis() {
+	return showAxis;
+    }
 
-	public void setShowAxis(boolean showAxis) {
-		boolean oldValue = this.showAxis;
-		this.showAxis = showAxis;
-		changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
-	}
+    public void setShowAxis(boolean showAxis) {
+	boolean oldValue = this.showAxis;
+	this.showAxis = showAxis;
+	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
+    }
 
-	private String dataFormula;
-	private String xColumnFormula;
-	private String yColumnFormula;
-	private String tooltipFormula;
+    private String dataFormula;
+    private String xColumnFormula;
+    private String yColumnFormula;
+    private String tooltipFormula;
 
-	public String getDataFormula() {
-		return this.dataFormula;
-	}
+    public String getDataFormula() {
+	return this.dataFormula;
+    }
 
-	public void setDataFormula(String dataFormula) {
-		String oldValue = this.dataFormula;
-		this.dataFormula = dataFormula;
-		changeSupport.firePropertyChange("dataFormula", oldValue,
-				this.dataFormula);
-	}
+    public void setDataFormula(String dataFormula) {
+	String oldValue = this.dataFormula;
+	this.dataFormula = dataFormula;
+	changeSupport.firePropertyChange("dataFormula", oldValue,
+		this.dataFormula);
+    }
 
     public String getXColumnFormula() {
-    	return this.xColumnFormula;
+	return this.xColumnFormula;
     }
 
     public void setXColumnFormula(String xColumnFormula) {
-		String oldValue = this.xColumnFormula;
-		this.xColumnFormula = xColumnFormula;
-		changeSupport.firePropertyChange("xColumnFormula", oldValue,
-			this.xColumnFormula);
+	String oldValue = this.xColumnFormula;
+	this.xColumnFormula = xColumnFormula;
+	changeSupport.firePropertyChange("xColumnFormula", oldValue,
+		this.xColumnFormula);
     }
 
     public String getYColumnFormula() {
-    	return this.yColumnFormula;
+	return this.yColumnFormula;
     }
 
     public void setYColumnFormula(String yColumnFormula) {
-		String oldValue = this.yColumnFormula;
-		this.yColumnFormula = yColumnFormula;
-		changeSupport.firePropertyChange("yColumnFormula", oldValue,
-			this.yColumnFormula);
+	String oldValue = this.yColumnFormula;
+	this.yColumnFormula = yColumnFormula;
+	changeSupport.firePropertyChange("yColumnFormula", oldValue,
+		this.yColumnFormula);
     }
 
     public String getTooltipFormula() {
-    	return this.tooltipFormula;
+	return this.tooltipFormula;
     }
 
     public void setTooltipFormula(String tooltipFormula) {
-		String oldValue = this.tooltipFormula;
-		this.tooltipFormula = tooltipFormula;
-		changeSupport.firePropertyChange("tooltipFormula", oldValue,
-			this.tooltipFormula);
+	String oldValue = this.tooltipFormula;
+	this.tooltipFormula = tooltipFormula;
+	changeSupport.firePropertyChange("tooltipFormula", oldValue,
+		this.tooltipFormula);
     }
 
 }
