@@ -16,8 +16,8 @@ export WORKSPACE=/Users/ky9/Eclipse/Workspace_SNS_3.1.x
 
 # Location of Eclipse and Delta pack, the 'target' platform
 export ECLIPSE_BASE=/Users/ky9/Eclipse/3.7.2/rcp
-# Deltapack can list several sites: delta pack;SVN support;...
-export DELTAPACK="/Users/ky9/Eclipse/3.7.2/delta:/Users/ky9/Eclipse/CSS_Additions/site-1.6.18"
+# Deltapack can list several sites: delta pack;PyDev
+export DELTAPACK="/Users/ky9/Eclipse/3.7.2/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
 
 export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
 
