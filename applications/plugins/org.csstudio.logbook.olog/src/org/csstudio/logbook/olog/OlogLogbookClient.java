@@ -26,6 +26,9 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.util.LogEntrySearchUtil;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.TimeParser;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -132,8 +135,31 @@ public class OlogLogbookClient implements LogbookClient {
 
     @Override
     public Collection<LogEntry> findLogEntries(String search) throws Exception {
-	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();	
-	Collection<Log> logs = reader.findLogsBySearch(search);
+	Map<String, String> searchParameters = LogEntrySearchUtil
+		.parseSearchString(search);
+	if (searchParameters
+		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_START)) {
+	    TimeInterval timeInterval;
+	    // Check if both start and end are specified.
+	    if (searchParameters
+		    .containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_END)) {
+		timeInterval = TimeParser.getTimeInterval(searchParameters
+			.get(LogEntrySearchUtil.SEARCH_KEYWORD_START),
+			searchParameters
+				.get(LogEntrySearchUtil.SEARCH_KEYWORD_END));
+		searchParameters.remove(LogEntrySearchUtil.SEARCH_KEYWORD_END);
+	    } else {
+		timeInterval = TimeParser.getTimeInterval(searchParameters
+			.get(LogEntrySearchUtil.SEARCH_KEYWORD_START), "now");
+	    }
+	    searchParameters.remove(LogEntrySearchUtil.SEARCH_KEYWORD_START);
+	    searchParameters.put("start",
+		    String.valueOf(timeInterval.getStart().getSec()));
+	    searchParameters.put("end",
+		    String.valueOf(timeInterval.getEnd().getSec()));
+	}
+	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
+	Collection<Log> logs = reader.findLogs(searchParameters);
 	for (Log log : logs) {
 	    logEntries.add(new OlogEntry(log));
 	}
@@ -300,7 +326,7 @@ public class OlogLogbookClient implements LogbookClient {
     private class OlogAttachment implements Attachment {
 
 	private final edu.msu.nscl.olog.api.Attachment attachment;
-	private byte[] byteArray = new byte[]{};
+	private byte[] byteArray = new byte[] {};
 
 	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
 		InputStream inputStream) throws IOException {
