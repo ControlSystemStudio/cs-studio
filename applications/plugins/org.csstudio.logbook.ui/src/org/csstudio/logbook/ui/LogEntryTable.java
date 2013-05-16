@@ -292,20 +292,11 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		logTableViewer, SWT.DOUBLE_BUFFERED);
 	tableViewerColumnAttachments
 		.setLabelProvider(new ColumnLabelProvider() {
-
 		    @Override
-		    public Image getImage(Object element) {
+		    public String getText(Object element) {
 			LogEntry item = ((LogEntry) element);
-			if (item.getAttachment().size() > 0) {
-			    return ResourceManager.getPluginImage(
-				    "org.csstudio.logbook.ui",
-				    "icons/attachment-16.png");
-			} else {
-			    // TODO empty image
-			    return new Image(getDisplay(), 1, 1);
-			}
+			return String.valueOf(item.getAttachment().size());
 		    }
-
 		});
 	TableColumn tblclmnAttachment = tableViewerColumnAttachments
 		.getColumn();
@@ -316,6 +307,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	// Now additional Columns are created based on the selected
 	// tags/properties the users wishes to view
+	logTableViewer.getTable().layout();
     }
 
     public Collection<LogEntry> getLogs() {
