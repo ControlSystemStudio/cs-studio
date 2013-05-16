@@ -27,12 +27,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
 import org.eclipse.wb.swt.ResourceManager;
 
@@ -41,6 +45,8 @@ import org.eclipse.wb.swt.ResourceManager;
  * 
  */
 public class LogEntryTable extends Composite implements ISelectionProvider {
+
+    final int TEXT_MARGIN = 2;
 
     // Model
     Collection<LogEntry> logs;
@@ -78,9 +84,43 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	TableColumnLayout tcl_composite = new TableColumnLayout();
 	composite.setLayout(tcl_composite);
 
-	logTableViewer = new TableViewer(composite, SWT.BORDER
+	logTableViewer = new TableViewer(composite, SWT.MULTI | SWT.BORDER
 		| SWT.FULL_SELECTION);
 	logTable = logTableViewer.getTable();
+	/*
+	 * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
+	 * Therefore, it is critical for performance that these methods be as
+	 * efficient as possible.
+	 */
+	logTable.addListener(SWT.MeasureItem, new Listener() {
+	    public void handleEvent(Event event) {
+		TableItem item = (TableItem) event.item;
+		String text = item.getText(event.index);
+		Point size = event.gc.textExtent(text);
+		event.width = size.x + 2 * TEXT_MARGIN;
+		event.height = Math.max(event.height, size.y + TEXT_MARGIN);
+	    }
+	});
+	logTable.addListener(SWT.EraseItem, new Listener() {
+	    public void handleEvent(Event event) {
+		event.detail &= ~SWT.FOREGROUND;
+	    }
+	});
+	logTable.addListener(SWT.PaintItem, new Listener() {
+	    public void handleEvent(Event event) {
+		TableItem item = (TableItem) event.item;
+		String text = item.getText(event.index);
+		/* center column 1 vertically */
+		int yOffset = 0;
+		if (event.index == 1) {
+		    Point size = event.gc.textExtent(text);
+		    yOffset = Math.max(0, (event.height - size.y) / 2);
+		}
+		event.gc.drawText(text, event.x + TEXT_MARGIN, event.y
+			+ yOffset, true);
+	    }
+	});
+
 	logTable.setHeaderVisible(true);
 	logTable.setLinesVisible(true);
 
@@ -156,7 +196,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
-		return item == null ? "" : DateFormat.getDateInstance().format(
+		return item == null ? "" : DateFormat.getDateTimeInstance(
+			DateFormat.SHORT, DateFormat.SHORT).format(
 			item.getCreateDate());
 	    }
 	});
@@ -187,7 +228,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	// Third column is the owner of the logEntry
 
 	TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(
-		logTableViewer, SWT.DOUBLE_BUFFERED);
+		logTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
 	tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
@@ -209,7 +250,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	// Forth column lists the logbooks
 	TableViewerColumn tableViewerColumnLogbooks = new TableViewerColumn(
-		logTableViewer, SWT.DOUBLE_BUFFERED);
+		logTableViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
 	tableViewerColumnLogbooks.setLabelProvider(new ColumnLabelProvider() {
 
 	    public String getText(Object element) {
@@ -260,7 +301,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 				    "org.csstudio.logbook.ui",
 				    "icons/attachment-16.png");
 			} else {
-			    //TODO empty image
+			    // TODO empty image
 			    return new Image(getDisplay(), 1, 1);
 			}
 		    }
