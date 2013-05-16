@@ -19,6 +19,7 @@ import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
@@ -97,7 +98,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     /** {@inheritDoc} */
 	@Override
 	public void write(final String device_name, final Object value, final String readback,
-	        final boolean wait, final double tolerance, final double timeout) throws Exception
+	        final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
 	{
 	    ScanCommandUtil.write(context, device_name, value, readback, wait, tolerance, timeout);
 	}

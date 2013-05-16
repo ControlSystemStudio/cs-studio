@@ -21,6 +21,7 @@ import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.log.MemoryDataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.junit.Test;
+import org.epics.util.time.TimeDuration;
 
 /** JUnit test of {@link JythonSupport}
  *  @author Kay Kasemir
@@ -62,7 +63,7 @@ public class JythonSupportUnitTest
 
             @Override
             public void write(String device_name, Object value, String readback,
-                    boolean wait, double tolerance, double timeout) throws Exception
+                    boolean wait, double tolerance, TimeDuration timeout) throws Exception
             {
                 // NOP
             }

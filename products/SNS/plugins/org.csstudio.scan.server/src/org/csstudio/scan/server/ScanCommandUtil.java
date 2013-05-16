@@ -12,6 +12,7 @@ import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VType;
 
 /** Utilities for command implementations
@@ -27,13 +28,14 @@ public class ScanCommandUtil
      *  @param device_name Name of device
      *  @param value Value to write to the device
      *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
             final String device_name, final Object value,
-            final double tolerance) throws Exception
+            final double tolerance, final TimeDuration timeout) throws Exception
     {
-    	write(context, device_name, value, device_name, true, tolerance, 0.0);
+    	write(context, device_name, value, device_name, true, tolerance, timeout);
     }
 	
 	/** Write to device with optional readback, logging if the context
@@ -44,12 +46,12 @@ public class ScanCommandUtil
      *  @param readback Readback device
      *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, 0 as "forever"
+     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
             final String device_name, final Object value, final String readback_name,
-            final boolean wait, final double tolerance, final double timeout) throws Exception
+            final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
     {
         final Device device = context.getDevice(device_name);
 
