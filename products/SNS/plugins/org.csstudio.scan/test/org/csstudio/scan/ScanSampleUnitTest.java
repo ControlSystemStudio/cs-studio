@@ -57,19 +57,19 @@ public class ScanSampleUnitTest
         // 'now', today
         Date date = new Date();
         String text = ScanSampleFormatter.formatCompactDateTime(date);
-        System.out.println(text);
+        System.out.println(date + " -> " + text);
         assertThat(text.length(), equalTo(8));
         
         // Different day
         date = new Date(date.getTime() + 25l*60*60*1000);
         text = ScanSampleFormatter.formatCompactDateTime(date);
-        System.out.println(text);
+        System.out.println(date + " -> " + text);
         assertThat("HH:MM separator", text.charAt(8), equalTo(':'));
 
         // Different year
         date = new Date(date.getTime() + 366l*24*60*60*1000);
         text = ScanSampleFormatter.formatCompactDateTime(date);
-        System.out.println(text);
+        System.out.println(date + " -> " + text);
         assertThat(text.length(), equalTo(10));
     }
 }
