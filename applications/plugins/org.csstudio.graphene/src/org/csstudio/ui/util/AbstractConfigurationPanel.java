@@ -2,6 +2,7 @@ package org.csstudio.ui.util;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -77,10 +78,18 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
 	protected void forwardTextEvents(final Text widget, final String propertyName) {
 		widget.addModifyListener(new ModifyListener() {
 			
+			private DelayedNotificator notificator = new DelayedNotificator(750, TimeUnit.MILLISECONDS);
+			
 			@Override
 			public void modifyText(ModifyEvent e) {
-				changeSupport.firePropertyChange(propertyName, null,
-						widget.getText());
+				notificator.delayedExec(widget, new Runnable() {
+					
+					@Override
+					public void run() {
+						changeSupport.firePropertyChange(propertyName, null,
+								widget.getText());
+					}
+				});
 			}
 		});
 	}
