@@ -79,7 +79,7 @@ public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
         renderer.draw(image.createGraphics(), dataset);
 
         previousImage = ValueUtil.toVImage(image);
-        return new Graph2DResult(previousImage,
+        return new Graph2DResult(vTable, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), renderer.getXPlotRange(), renderer.getXAggregatedRange()), new GraphDataRange(
                 renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()));
 

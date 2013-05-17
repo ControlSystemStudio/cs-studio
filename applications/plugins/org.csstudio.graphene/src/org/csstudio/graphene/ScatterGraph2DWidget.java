@@ -30,28 +30,12 @@ public class ScatterGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Scat
 		ScatterGraph2DExpression graph = ExpressionLanguage.scatterGraphOf(formula(getDataFormula()),
 				formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()),
-				formulaArg(getTooltipFormula()));
+				formulaArg(getTooltipColumnFormula()));
 		graph.update(graph.newUpdate()
 				.interpolation(InterpolationScheme.LINEAR));
 		return graph;
 	}
-	
-	/** Memento tag */
-	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 
-	public void saveState(IMemento memento) {
-		if (getDataFormula() != null) {
-			memento.putString(MEMENTO_PVNAME, getDataFormula());
-		}
-	}
-
-	public void loadState(IMemento memento) {
-		if (memento != null) {
-			if (memento.getString(MEMENTO_PVNAME) != null) {
-				setDataFormula(memento.getString(MEMENTO_PVNAME));
-			}
-		}
-	}
 //
 //	@Override
 //	public ISelection getSelection() {

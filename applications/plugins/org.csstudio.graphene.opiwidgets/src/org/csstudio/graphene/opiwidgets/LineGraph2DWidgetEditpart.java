@@ -42,7 +42,7 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 			widget.setDataFormula(model.getDataFormula());
 			widget.setXColumnFormula(model.getXColumnFormula());
 			widget.setYColumnFormula(model.getYColumnFormula());
-			widget.setTooltipFormula(model.getTooltipFormula());
+			widget.setTooltipColumnFormula(model.getTooltipFormula());
 			widget.setShowAxis(model.getShowAxis());
 			widget.setConfigurable(model.isConfigurable());
 		}

@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
 import org.epics.graphene.AxisRanges;
 import org.epics.graphene.Graph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
@@ -40,8 +41,8 @@ import org.epics.pvmanager.graphene.GraphDataRange;
  * @author shroffk
  * 
  */
-public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>> extends BeanComposite
-		implements ConfigurableWidget {
+public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>>
+		extends BeanComposite implements ConfigurableWidget {
 
 	private VImageDisplay imageDisplay;
 	private T graph;
@@ -91,10 +92,10 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 				if (graph != null) {
 					double invert = yRangeControl.getMin()
 							+ yRangeControl.getMax();
-					graph.update(graph.newUpdate()
-							.yAxisRange(AxisRanges.absolute(invert
-									- yRangeControl.getSelectedMax(), invert
-									- yRangeControl.getSelectedMin())));
+					graph.update(graph.newUpdate().yAxisRange(
+							AxisRanges.absolute(
+									invert - yRangeControl.getSelectedMax(),
+									invert - yRangeControl.getSelectedMin())));
 				}
 			}
 		});
@@ -138,9 +139,8 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 			@Override
 			public void rangeChanged() {
 				if (graph != null) {
-					graph.update(graph.newUpdate()
-							.xAxisRange(AxisRanges.absolute(
-									xRangeControl.getSelectedMin(),
+					graph.update(graph.newUpdate().xAxisRange(
+							AxisRanges.absolute(xRangeControl.getSelectedMin(),
 									xRangeControl.getSelectedMax())));
 				}
 			}
@@ -174,6 +174,14 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 
 	private PVReader<Graph2DResult> pv;
 	
+	Graph2DResult getCurrentResult() {
+		if (pv == null) {
+			return null;
+		} else {
+			return pv.getValue();
+		}
+	}
+
 	public T getGraph() {
 		return graph;
 	}
@@ -201,11 +209,11 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 			resetRange(xRangeControl);
 			resetRange(yRangeControl);
 		}
-		
+
 		if (getDataFormula() == null || getDataFormula().trim().isEmpty()) {
 			return;
 		}
-		
+
 		graph = createGraph();
 		graph.update(graph.newUpdate().imageHeight(imageDisplay.getSize().y)
 				.imageWidth(imageDisplay.getSize().x));
@@ -222,32 +230,32 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 							imageDisplay.setVImage(null);
 						}
 					}
-					
+
 				}).maxRate(ofHertz(50));
 	}
-	
+
 	protected abstract T createGraph();
 
-	/**
-	 * A helper function to set all the appropriate
-	 * 
-	 * @param control
-	 */
-	public void setRange(StartEndRangeWidget control,
+	private void setRange(StartEndRangeWidget control,
 			GraphDataRange plotDataRange) {
 		control.setRange(plotDataRange.getIntegratedRange().getMinimum()
 				.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
 				.doubleValue());
 	}
 
-	public void resetRange(StartEndRangeWidget control) {
+	private void resetRange(StartEndRangeWidget control) {
 		control.setRanges(0, 0, 1, 1);
 	}
 
 	private String dataFormula;
 	private String xColumnFormula;
 	private String yColumnFormula;
-	private String tooltipFormula;
+	private String tooltipColumnFormula;
+
+	private static final String MEMENTO_DATA_FORMULA = "dataFormula"; //$NON-NLS-1$
+	private static final String MEMENTO_X_COLUMN_FORMULA = "xColumnFormula"; //$NON-NLS-1$
+	private static final String MEMENTO_Y_COLUMN_FORMULA = "yColumnFormula"; //$NON-NLS-1$
+	private static final String MEMENTO_TOOLTIP_COLUMN_FORMULA = "tooltipFormula"; //$NON-NLS-1$
 
 	public String getDataFormula() {
 		return this.dataFormula;
@@ -260,37 +268,69 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 				this.dataFormula);
 	}
 
-    public String getXColumnFormula() {
-	return this.xColumnFormula;
-    }
+	public String getXColumnFormula() {
+		return this.xColumnFormula;
+	}
 
-    public void setXColumnFormula(String xColumnFormula) {
-	String oldValue = this.xColumnFormula;
-	this.xColumnFormula = xColumnFormula;
-	changeSupport.firePropertyChange("xColumnFormula", oldValue,
-		this.xColumnFormula);
-    }
+	public void setXColumnFormula(String xColumnFormula) {
+		String oldValue = this.xColumnFormula;
+		this.xColumnFormula = xColumnFormula;
+		changeSupport.firePropertyChange("xColumnFormula", oldValue,
+				this.xColumnFormula);
+	}
 
-    public String getYColumnFormula() {
-	return this.yColumnFormula;
-    }
+	public String getYColumnFormula() {
+		return this.yColumnFormula;
+	}
 
-    public void setYColumnFormula(String yColumnFormula) {
-	String oldValue = this.yColumnFormula;
-	this.yColumnFormula = yColumnFormula;
-	changeSupport.firePropertyChange("yColumnFormula", oldValue,
-		this.yColumnFormula);
-    }
+	public void setYColumnFormula(String yColumnFormula) {
+		String oldValue = this.yColumnFormula;
+		this.yColumnFormula = yColumnFormula;
+		changeSupport.firePropertyChange("yColumnFormula", oldValue,
+				this.yColumnFormula);
+	}
 
-    public String getTooltipFormula() {
-	return this.tooltipFormula;
-    }
+	public String getTooltipColumnFormula() {
+		return this.tooltipColumnFormula;
+	}
 
-    public void setTooltipFormula(String tooltipFormula) {
-	String oldValue = this.tooltipFormula;
-	this.tooltipFormula = tooltipFormula;
-	changeSupport.firePropertyChange("tooltipFormula", oldValue,
-		this.tooltipFormula);
-    }
+	public void setTooltipColumnFormula(String tooltipColumnFormula) {
+		String oldValue = this.tooltipColumnFormula;
+		this.tooltipColumnFormula = tooltipColumnFormula;
+		changeSupport.firePropertyChange("tooltipFormula", oldValue,
+				this.tooltipColumnFormula);
+	}
+
+	public void saveState(IMemento memento) {
+		if (getDataFormula() != null) {
+			memento.putString(MEMENTO_DATA_FORMULA, getDataFormula());
+		}
+		if (getXColumnFormula() != null) {
+			memento.putString(MEMENTO_X_COLUMN_FORMULA, getXColumnFormula());
+		}
+		if (getYColumnFormula() != null) {
+			memento.putString(MEMENTO_Y_COLUMN_FORMULA, getYColumnFormula());
+		}
+		if (getTooltipColumnFormula() != null) {
+			memento.putString(MEMENTO_TOOLTIP_COLUMN_FORMULA, getTooltipColumnFormula());
+		}
+	}
+
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_DATA_FORMULA) != null) {
+				setDataFormula(memento.getString(MEMENTO_DATA_FORMULA));
+			}
+			if (memento.getString(MEMENTO_X_COLUMN_FORMULA) != null) {
+				setXColumnFormula(memento.getString(MEMENTO_X_COLUMN_FORMULA));
+			}
+			if (memento.getString(MEMENTO_Y_COLUMN_FORMULA) != null) {
+				setYColumnFormula(memento.getString(MEMENTO_Y_COLUMN_FORMULA));
+			}
+			if (memento.getString(MEMENTO_TOOLTIP_COLUMN_FORMULA) != null) {
+				setTooltipColumnFormula(memento.getString(MEMENTO_TOOLTIP_COLUMN_FORMULA));
+			}
+		}
+	}
 
 }

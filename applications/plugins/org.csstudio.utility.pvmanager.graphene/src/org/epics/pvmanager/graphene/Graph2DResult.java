@@ -5,20 +5,27 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.vtype.VImage;
+import org.epics.vtype.VType;
 
 /**
  *
  * @author carcassi
  */
 public class Graph2DResult {
+    private final VType data;
     private final VImage image;
     private final GraphDataRange xRange;
     private final GraphDataRange yRange;
 
-    Graph2DResult(VImage image, GraphDataRange xRange, GraphDataRange yRange) {
+    Graph2DResult(VType data, VImage image, GraphDataRange xRange, GraphDataRange yRange) {
+        this.data = data;
         this.image = image;
         this.xRange = xRange;
         this.yRange = yRange;
+    }
+    
+    public VType getData() {
+        return data;
     }
 
     public VImage getImage() {

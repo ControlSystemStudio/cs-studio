@@ -6,7 +6,7 @@
       <widget
             category="Monitors"
             editpart_class="org.csstudio.graphene.opiwidgets.LineGraph2DWidgetEditpart"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-line-16.png"
             model_class="org.csstudio.graphene.opiwidgets.LineGraph2DWidgetModel"
             name="Line Graph"
             typeId="org.csstudio.graphene.opiwidgets.LineGraph2D">
