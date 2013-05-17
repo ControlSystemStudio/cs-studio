@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.scan.ui.feature"
       label="Scan UI Feature"
-      version="3.1.4.qualifier"
+      version="3.2.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -32,26 +32,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.python.pydev" version="2.2.2.2011082312" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring"/>
-      <import plugin="org.python.pydev.refactoring" version="0.9.7.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.ui.navigator.resources"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.core.filebuffers"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
@@ -106,6 +86,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
       <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
@@ -120,7 +101,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
@@ -130,6 +110,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.draw2d"/>
    </requires>
 
    <plugin
