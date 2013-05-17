@@ -84,7 +84,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 		@Override
 		public void pvChanged(PVWriterEvent<Object> event) {
-			updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
+			if(isControlPV)
+				updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
 		}
 	}
 	//invisible border for no_alarm state, this can prevent the widget from resizing
