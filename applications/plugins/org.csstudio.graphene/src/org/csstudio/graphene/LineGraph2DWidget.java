@@ -64,7 +64,7 @@ public class LineGraph2DWidget
 
 	private boolean configurable = true;
 
-	private Graph2DConfigurationDialog dialog;
+	private LineGraph2DConfigurationDialog dialog;
 
 	@Override
 	public boolean isConfigurable() {
@@ -83,7 +83,7 @@ public class LineGraph2DWidget
 	public void openConfigurationDialog() {
 		if (dialog != null)
 			return;
-		dialog = new Graph2DConfigurationDialog(this, "Configure Line Graph");
+		dialog = new LineGraph2DConfigurationDialog(this, "Configure Line Graph");
 		dialog.open();
 	}
 

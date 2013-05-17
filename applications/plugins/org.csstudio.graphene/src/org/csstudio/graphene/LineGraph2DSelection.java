@@ -17,15 +17,15 @@ import org.epics.vtype.VType;
 public class LineGraph2DSelection implements VTypeAdaptable,
 		ConfigurableWidgetAdaptable {
 
-	private final LineGraph2DWidget line2dPlotWidget;
+	private final LineGraph2DWidget widget;
 
-	public LineGraph2DSelection(LineGraph2DWidget line2dPlotWidget) {
-		this.line2dPlotWidget = line2dPlotWidget;
+	public LineGraph2DSelection(LineGraph2DWidget widget) {
+		this.widget = widget;
 	}
 	
 	@Override
 	public VType toVType() {
-		Graph2DResult result = line2dPlotWidget.getCurrentResult();
+		Graph2DResult result = widget.getCurrentResult();
 		if (result != null) {
 			return result.getData();
 		}
@@ -34,7 +34,7 @@ public class LineGraph2DSelection implements VTypeAdaptable,
 
 	@Override
 	public ConfigurableWidget toConfigurableWidget() {
-		return line2dPlotWidget;
+		return widget;
 	}
 
 }
