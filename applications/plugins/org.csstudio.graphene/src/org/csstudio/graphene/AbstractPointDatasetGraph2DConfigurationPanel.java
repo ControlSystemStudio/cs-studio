@@ -42,15 +42,7 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 		textDataFormula = new Text(this, SWT.BORDER);
 		textDataFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		textDataFormula.addListener(SWT.DefaultSelection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				changeSupport.firePropertyChange("dataFormula", null,
-						textDataFormula.getText());
-
-			}
-		});
+		forwardTextEvents(textDataFormula, "dataFormula");
 
 		Label lblXColumnFormula = new Label(this, SWT.NONE);
 		lblXColumnFormula.setText("X Column Formula:");
@@ -66,14 +58,7 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 		textYColumnFormula = new Text(this, SWT.BORDER);
 		textYColumnFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, false, 1, 1));
-		textYColumnFormula.addListener(SWT.DefaultSelection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				changeSupport.firePropertyChange("yColumnFormula", null,
-						textYColumnFormula.getText());
-			}
-		});
+		forwardTextEvents(textYColumnFormula, "yColumnFormula");
 		
 		new Label(this, SWT.NONE);
 
