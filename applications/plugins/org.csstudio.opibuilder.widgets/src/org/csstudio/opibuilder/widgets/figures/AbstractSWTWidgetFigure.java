@@ -509,11 +509,9 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				}
 			};
 		}
-//		UIBundlingThread.getInstance().addRunnable(composite.getDisplay(), task);
-		if (composite.getDisplay().getThread() == Thread.currentThread()) {
-			task.run();
-		} else
-			composite.getDisplay().asyncExec(task);
+		//On windows, dispose the widget right away will cause a redraw which may redraw some widgets that
+		//have been deactivated, so this should be called in next UI event.
+		composite.getDisplay().asyncExec(task);
 	}
 
 }
