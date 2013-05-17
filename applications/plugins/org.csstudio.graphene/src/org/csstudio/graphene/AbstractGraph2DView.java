@@ -68,6 +68,7 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 		parent.setLayout(new GridLayout(1, false));
 
 		dataFormulaInputBar = new PVFormulaInputBar(parent, SWT.NONE, Activator.getDefault().getDialogSettings(), "graphene");
+		dataFormulaInputBar.setLabelText("Data Formula:");
 		dataFormulaInputBar.setLayoutData(new GridData(SWT.FILL,
 				SWT.CENTER, true, false, 1, 1));
 		dataFormulaInputBar
