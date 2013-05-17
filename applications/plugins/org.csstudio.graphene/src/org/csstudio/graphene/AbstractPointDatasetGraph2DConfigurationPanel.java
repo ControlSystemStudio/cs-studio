@@ -58,14 +58,7 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 		textXColumnFormula = new Text(this, SWT.BORDER);
 		textXColumnFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, false, 1, 1));
-		textXColumnFormula.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				changeSupport.firePropertyChange("xColumnFormula", null,
-						textXColumnFormula.getText());
-			}
-		});
+		forwardTextEvents(textXColumnFormula, "xColumnFormula");
 
 		Label lblYColumnFormula = new Label(this, SWT.NONE);
 		lblYColumnFormula.setText("Y Column Formula:");

@@ -3,9 +3,12 @@ package org.csstudio.ui.util;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * The root for all the composites that are meant to be used as panels to configure
@@ -69,6 +72,17 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
 				widgetSelected(e);
 			}
 		};
+	}
+	
+	protected void forwardTextEvents(final Text widget, final String propertyName) {
+		widget.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				changeSupport.firePropertyChange(propertyName, null,
+						widget.getText());
+			}
+		});
 	}
 	
 }
