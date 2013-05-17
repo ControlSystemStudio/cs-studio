@@ -10,9 +10,5 @@ public class ScatterGraph2DConfigurationPanel extends
 	public ScatterGraph2DConfigurationPanel(Composite parent,
 			int style) {
 		super(parent, style);
-		
-		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText("Scatter");
-		new Label(this, SWT.NONE);
 	}
 }

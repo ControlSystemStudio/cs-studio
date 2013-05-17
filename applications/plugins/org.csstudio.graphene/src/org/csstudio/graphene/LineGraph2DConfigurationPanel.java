@@ -10,9 +10,5 @@ public class LineGraph2DConfigurationPanel extends
 	public LineGraph2DConfigurationPanel(Composite parent,
 			int style) {
 		super(parent, style);
-		
-		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText("New Label");
-		new Label(this, SWT.NONE);
 	}
 }

@@ -60,17 +60,17 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 				true, false, 1, 1));
 		forwardTextEvents(textYColumnFormula, "yColumnFormula");
 		
-		new Label(this, SWT.NONE);
-
-		btnShowAxis = new Button(this, SWT.CHECK);
-		btnShowAxis.setText("Show Axis Scroll");
-		btnShowAxis.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				changeSupport.firePropertyChange("showAxisScroll", null,
-						getShowAxis());
-			}
-		});
+//		new Label(this, SWT.NONE);
+//
+//		btnShowAxis = new Button(this, SWT.CHECK);
+//		btnShowAxis.setText("Show Axis Scroll");
+//		btnShowAxis.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				changeSupport.firePropertyChange("showAxisScroll", null,
+//						getShowAxis());
+//			}
+//		});
 	}
 
 	public String getDataFormula() {
