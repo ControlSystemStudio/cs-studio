@@ -30,28 +30,11 @@ public class LineGraph2DWidget extends AbstractPointDatasetGraph2DWidget<LineGra
 		LineGraph2DExpression graph = ExpressionLanguage.lineGraphOf(formula(getDataFormula()),
 				formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()),
-				formulaArg(getTooltipFormula()));
+				formulaArg(getTooltipColumnFormula()));
 		graph.update(graph.newUpdate()
 				.interpolation(InterpolationScheme.LINEAR));
 		return graph;
 	}
-
-	/** Memento tag */
-	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
-	//
-	// public void saveState(IMemento memento) {
-	// if (getPvName() != null) {
-	// memento.putString(MEMENTO_PVNAME, getPvName());
-	// }
-	// }
-	//
-	// public void loadState(IMemento memento) {
-	// if (memento != null) {
-	// if (memento.getString(MEMENTO_PVNAME) != null) {
-	// setPvName(memento.getString(MEMENTO_PVNAME));
-	// }
-	// }
-	// }
 
 	// @Override
 	// public ISelection getSelection() {
