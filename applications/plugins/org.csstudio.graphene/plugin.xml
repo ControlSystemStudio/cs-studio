@@ -38,6 +38,15 @@
             </separator>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.value">
+         <command
+               commandId="org.csstudio.graphene.CopyValueToClipboardHandler"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/paste_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -223,6 +232,14 @@
                type="org.csstudio.ui.util.XAxisProcessVariable">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.graphene.CopyValueToClipboardHandler"
+            id="org.csstudio.graphene.CopyValueToClipboardHandler"
+            name="Copy Value to Clipboard">
+      </command>
    </extension>
 
 </plugin>
