@@ -23,6 +23,7 @@ import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.epics.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
@@ -102,7 +103,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         final DeviceValueCondition condition =
             new DeviceValueCondition(device, command.getComparison(),
                     command.getDesiredValue(), command.getTolerance(),
-                    command.getTimeout());
+                    TimeDuration.ofSeconds(command.getTimeout()));
         condition.await();
         context.workPerformed(1);
     }

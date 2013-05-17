@@ -22,6 +22,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.epics.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that sets a device to a value
  *  @author Kay Kasemir
@@ -89,7 +90,8 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	    ScanCommandUtil.write(context,
 	            command.getDeviceName(), command.getValue(),
 				command.getReadback(), command.getWait(),
-				command.getTolerance(), command.getTimeout());
+				command.getTolerance(),
+				TimeDuration.ofSeconds(command.getTimeout()));
 		context.workPerformed(1);
     }
 }
