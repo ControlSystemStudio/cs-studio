@@ -70,6 +70,9 @@ public class ValueUtil {
      * @return the alarm information for the object
      */
     public static Alarm alarmOf(Object obj) {
+        if (obj == null) {
+            return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "UNDEFINED");
+        }
         if (obj instanceof Alarm)
             return (Alarm) obj;
         return null;

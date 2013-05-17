@@ -18,6 +18,7 @@ package org.csstudio.scan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.epics.util.time.TimeDuration.ofSeconds;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
@@ -88,7 +89,7 @@ public class DeviceValueConditionHeadlessTest
 
         // Wait for values on ramp
         final DeviceValueCondition condition =
-                new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.5, 0.0);
+                new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.5, null);
         condition.await();
         System.out.println("Value reached 3!");
 
@@ -121,7 +122,7 @@ public class DeviceValueConditionHeadlessTest
 
         // EQUALS
         {
-            final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001, 0.0);
+            final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001, null);
             assertFalse(equals.isConditionMet());
             device.write(2.0);
             synchronized (device) { device.wait(500); }
@@ -138,7 +139,7 @@ public class DeviceValueConditionHeadlessTest
         {
             device.write(0.0);
             synchronized (device) { device.wait(500); }
-            final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0, 0.0);
+            final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0, null);
             assertFalse(above.isConditionMet());
             device.write(1.0);
             synchronized (device) { device.wait(500); }
@@ -161,7 +162,7 @@ public class DeviceValueConditionHeadlessTest
         {
             device.write(4.0);
             synchronized (device) { device.wait(500); }
-            final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0, 0.0);
+            final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0, null);
             assertFalse(below.isConditionMet());
             device.write(2.0);
             synchronized (device) { device.wait(500); }
@@ -218,7 +219,7 @@ public class DeviceValueConditionHeadlessTest
 
         // Wait for values on ramp
         final DeviceValueCondition condition =
-                new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, 0.0);
+                new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, null);
         assertFalse(condition.isConditionMet());
         System.out.println("Initial value: " + device.readDouble());
         condition.await();
@@ -244,7 +245,7 @@ public class DeviceValueConditionHeadlessTest
 
         // Wait for 1 second, never happens
         DeviceValueCondition condition =
-            new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, 1.0);
+            new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, ofSeconds(1.0));
         try
         {
             condition.await();
@@ -257,7 +258,7 @@ public class DeviceValueConditionHeadlessTest
         }
 
         condition =
-            new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.1, 1.0);
+            new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.1, ofSeconds(1.0));
         try
         {
             condition.await();

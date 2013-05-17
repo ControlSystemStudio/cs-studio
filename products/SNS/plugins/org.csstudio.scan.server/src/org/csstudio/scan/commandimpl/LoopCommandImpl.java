@@ -31,6 +31,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.epics.util.time.TimeDuration;
 
 /** Command that performs a loop
  *  @author Kay Kasemir
@@ -176,7 +177,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         if (command.getWait())
             condition = new DeviceValueCondition(readback, Comparison.EQUALS,
                         command.getStart(),
-                        command.getTolerance(), command.getTimeout());
+                        command.getTolerance(),
+                        TimeDuration.ofSeconds(command.getTimeout()));
         else
             condition = null;
 
