@@ -13,11 +13,11 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  * 
  */
-public class LineGraph2DConfigurationDialog
+public class ScatterGraph2DConfigurationDialog
 		extends
-		AbstractPointDatasetGraph2DConfigurationDialog<LineGraph2DWidget, LineGraph2DConfigurationPanel> {
+		AbstractPointDatasetGraph2DConfigurationDialog<ScatterGraph2DWidget, ScatterGraph2DConfigurationPanel> {
 
-	protected LineGraph2DConfigurationDialog(LineGraph2DWidget control, String title) {
+	protected ScatterGraph2DConfigurationDialog(ScatterGraph2DWidget control, String title) {
 		super(control, title);
 	}
 
@@ -32,8 +32,8 @@ public class LineGraph2DConfigurationDialog
 	}
 
 	@Override
-	protected LineGraph2DConfigurationPanel createConfigurationComposite(
+	protected ScatterGraph2DConfigurationPanel createConfigurationComposite(
 			Shell shell) {
-		return new LineGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
+		return new ScatterGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
 	}
 }

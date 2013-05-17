@@ -42,7 +42,7 @@ import org.epics.pvmanager.graphene.GraphDataRange;
  * 
  */
 public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>>
-		extends BeanComposite {
+		extends BeanComposite implements ConfigurableWidget {
 
 	private VImageDisplay imageDisplay;
 	private T graph;

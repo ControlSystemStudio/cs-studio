@@ -61,39 +61,39 @@ public class ScatterGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Scat
 //		throw new UnsupportedOperationException("Not implemented yet");
 //	}
 
-//	private boolean configurable = true;
-//
-//	private Graph2DConfigurationDialog dialog;
-//
-//	@Override
-//	public boolean isConfigurable() {
-//		return this.configurable;
-//	}
-//
-//	@Override
-//	public void setConfigurable(boolean configurable) {
-//		boolean oldValue = this.configurable;
-//		this.configurable = configurable;
-//		changeSupport.firePropertyChange("configurable", oldValue,
-//				this.configurable);
-//	}
-//
-//	@Override
-//	public void openConfigurationDialog() {
-//		if (dialog != null)
-//			return;
-//		dialog = new Graph2DConfigurationDialog(this, "Configure Scatter Graph");
-//		dialog.open();
-//	}
-//
-//	@Override
-//	public boolean isConfigurationDialogOpen() {
-//		return dialog != null;
-//	}
-//
-//	@Override
-//	public void configurationDialogClosed() {
-//		dialog = null;
-//	}
+	private boolean configurable = true;
+
+	private ScatterGraph2DConfigurationDialog dialog;
+
+	@Override
+	public boolean isConfigurable() {
+		return this.configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldValue = this.configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldValue,
+				this.configurable);
+	}
+
+	@Override
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new ScatterGraph2DConfigurationDialog(this, "Configure Scatter Graph");
+		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
+	}
 
 }
