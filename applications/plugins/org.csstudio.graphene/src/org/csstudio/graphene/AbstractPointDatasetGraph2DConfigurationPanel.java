@@ -5,6 +5,8 @@ package org.csstudio.graphene;
 
 import org.csstudio.ui.util.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -56,10 +58,10 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 		textXColumnFormula = new Text(this, SWT.BORDER);
 		textXColumnFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, false, 1, 1));
-		textXColumnFormula.addListener(SWT.DefaultSelection, new Listener() {
-
+		textXColumnFormula.addModifyListener(new ModifyListener() {
+			
 			@Override
-			public void handleEvent(Event event) {
+			public void modifyText(ModifyEvent e) {
 				changeSupport.firePropertyChange("xColumnFormula", null,
 						textXColumnFormula.getText());
 			}
