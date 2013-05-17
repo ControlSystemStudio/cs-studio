@@ -6,7 +6,9 @@ package org.csstudio.graphene;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -85,7 +87,9 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 		widget.setConfigurable(true);
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		//PopupMenuUtil.installPopupForView(widget, getSite(), widget);
+		if (widget instanceof ISelectionProvider) {
+			PopupMenuUtil.installPopupForView(widget, getSite(), (ISelectionProvider) widget);
+		}
 
 		widget.loadState(memento);
 		if (widget.getDataFormula() != null) {

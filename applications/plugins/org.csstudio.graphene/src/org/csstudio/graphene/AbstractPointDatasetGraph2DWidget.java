@@ -173,6 +173,14 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 	}
 
 	private PVReader<Graph2DResult> pv;
+	
+	Graph2DResult getCurrentResult() {
+		if (pv == null) {
+			return null;
+		} else {
+			return pv.getValue();
+		}
+	}
 
 	public T getGraph() {
 		return graph;
