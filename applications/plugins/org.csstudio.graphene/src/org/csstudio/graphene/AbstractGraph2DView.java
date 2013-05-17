@@ -6,6 +6,7 @@ package org.csstudio.graphene;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -84,7 +85,9 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 //				dataFormulaInputBar);
 
 		widget = createAbstractGraph2DWidget(parent, SWT.NONE);
-		widget.setConfigurable(true);
+		if (widget instanceof ConfigurableWidget) {
+			((ConfigurableWidget) widget).setConfigurable(true);
+		}
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 		if (widget instanceof ISelectionProvider) {

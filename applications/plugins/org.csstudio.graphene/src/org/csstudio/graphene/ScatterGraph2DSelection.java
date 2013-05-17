@@ -64,7 +64,7 @@ public class ScatterGraph2DSelection implements YAxisProcessVariableAdaptable,
 
     @Override
     public ConfigurableWidget toConfigurableWidget() {
-	return scatterGraph2DWidget;
+	return null;
     }
 
 }

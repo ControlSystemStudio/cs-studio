@@ -50,7 +50,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 			widget.setYColumnFormula(model.getYColumnFormula());
 			widget.setTooltipColumnFormula(model.getTooltipFormula());
 			widget.setShowAxis(model.getShowAxis());
-			widget.setConfigurable(model.isConfigurable());
+			//widget.setConfigurable(model.isConfigurable());
 		}
 	}
 
