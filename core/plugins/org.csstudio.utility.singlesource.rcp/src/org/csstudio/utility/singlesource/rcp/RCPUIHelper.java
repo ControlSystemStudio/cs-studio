@@ -104,7 +104,7 @@ public class RCPUIHelper extends UIHelper
 		// Copy as text to clipboard
 		final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
 				.getDisplay());
-		clipboard.setContents(new Object[] { contents },
+		clipboard.setContents(contents,
 				new Transfer[] { TextTransfer.getInstance() });
 	}
 
