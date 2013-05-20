@@ -84,7 +84,7 @@ class LineGraph2DFunction implements ReadFunction<Graph2DResult> {
         renderer.draw(image.createGraphics(), dataset);
         
         previousImage = ValueUtil.toVImage(image);
-        return new Graph2DResult(previousImage,
+        return new Graph2DResult(vType, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), dataset.getXStatistics(), renderer.getXAggregatedRange()),
                 new GraphDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()));
     }

@@ -742,6 +742,8 @@ public class LogEntryWidget extends Composite {
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
+	    }else{
+		setExpanded(false);
 	    }
 	    for (Attachment attachment : logEntry.getAttachment()) {
 		if (Arrays.asList(supportedImageTypes).contains(

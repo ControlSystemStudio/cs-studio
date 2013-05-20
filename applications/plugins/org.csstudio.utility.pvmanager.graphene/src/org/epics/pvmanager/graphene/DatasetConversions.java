@@ -31,19 +31,13 @@ public class DatasetConversions {
         // Extract x and y using column names
         ListNumber xValues = ValueUtil.numericColumnOf(vTable, xColumn);
         ListNumber yValues = ValueUtil.numericColumnOf(vTable, yColumn);
-
-        // If one column name was null, fill it with the index
-        if (xValues == null && yValues != null) {
-            xValues = ListNumbers.linearList(0, 1, yValues.size());
-        }
-        if (yValues == null && xValues != null) {
-            yValues = ListNumbers.linearList(0, 1, xValues.size());
-        }
-
-        // If both column names were null, use the first two numeric columns
-        if (xValues == null && yValues == null) {
-            for (int i = 0; i < vTable.getColumnCount(); i++) {
-                if (vTable.getColumnType(i).isPrimitive()) {
+        
+        // Fill the missing columns with the first available columns
+        for (int i = 0; i < vTable.getColumnCount(); i++) {
+            if (vTable.getColumnType(i).isPrimitive()) {
+                // Don't reuse the same column
+                if (!vTable.getColumnName(i).equals(xColumn) &&
+                        !vTable.getColumnName(i).equals(yColumn)) {
                     if (xValues == null) {
                         xValues = (ListNumber) vTable.getColumnData(i);
                     } else if (yValues == null) {
@@ -51,10 +45,10 @@ public class DatasetConversions {
                     }
                 }
             }
+        }
             
-            if (yValues == null) {
-                throw new IllegalArgumentException("Couldn't find two numeric columns");
-            }
+        if (xValues == null || yValues == null) {
+            throw new IllegalArgumentException("Couldn't find two numeric columns");
         }
         
         return Point2DDatasets.lineData(xValues, yValues);

@@ -126,6 +126,14 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 		super.setMenu(menu);
 		combo.setMenu(menu);
 	}
+	
+	public String getLabelText() {
+		return lblPvFormula.getText();
+	}
+	
+	public void setLabelText(String text) {
+		lblPvFormula.setText(text);
+	}
 
 	// private AbstractSelectionProviderWrapper selectionProvider;
 	//

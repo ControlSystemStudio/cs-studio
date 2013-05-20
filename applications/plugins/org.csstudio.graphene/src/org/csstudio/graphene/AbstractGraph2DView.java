@@ -6,16 +6,14 @@ package org.csstudio.graphene;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -25,7 +23,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author shroffk
  * 
  */
-public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGraph2DWidget>
+public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGraph2DWidget<?,?>>
 		extends ViewPart {
 	public AbstractGraph2DView() {
 	}
@@ -34,9 +32,6 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 
 	/** Memento */
 	private IMemento memento = null;
-
-	/** Memento tag */
-	private static final String MEMENTO_DATA_FORMULA = "DataFormul"; //$NON-NLS-1$
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -58,11 +53,7 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 	@Override
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
-		// Save the currently selected variable
-		if (dataFormulaInputBar.getPVFormula() != null) {
-			memento.putString(MEMENTO_DATA_FORMULA, dataFormulaInputBar
-					.getPVFormula());
-		}
+		widget.saveState(memento);
 	}
 
 	public void setDataFormula(String dataFormula) {
@@ -77,6 +68,7 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 		parent.setLayout(new GridLayout(1, false));
 
 		dataFormulaInputBar = new PVFormulaInputBar(parent, SWT.NONE, Activator.getDefault().getDialogSettings(), "graphene");
+		dataFormulaInputBar.setLabelText("Data Formula:");
 		dataFormulaInputBar.setLayoutData(new GridData(SWT.FILL,
 				SWT.CENTER, true, false, 1, 1));
 		dataFormulaInputBar
@@ -94,13 +86,18 @@ public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGra
 //				dataFormulaInputBar);
 
 		widget = createAbstractGraph2DWidget(parent, SWT.NONE);
-		widget.setConfigurable(true);
+		if (widget instanceof ConfigurableWidget) {
+			((ConfigurableWidget) widget).setConfigurable(true);
+		}
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		//PopupMenuUtil.installPopupForView(widget, getSite(), widget);
+		if (widget instanceof ISelectionProvider) {
+			PopupMenuUtil.installPopupForView(widget, getSite(), (ISelectionProvider) widget);
+		}
 
-		if (memento != null && memento.getString(MEMENTO_DATA_FORMULA) != null) {
-			setDataFormula(memento.getString(MEMENTO_DATA_FORMULA));
+		widget.loadState(memento);
+		if (widget.getDataFormula() != null) {
+			setDataFormula(widget.getDataFormula());
 		}
 	}
 
