@@ -45,6 +45,10 @@ import org.eclipse.swt.widgets.Text;
  * 
  * <p>
  * The <code>toString()</code> of each Object is displayed in a drop-down list.
+ * Overriding the stringRepresention() method, the user can define an
+ * alternative way to convert T to String.
+ * 
+ * <p>
  * One or more items can be selected, they're also displayed in the text field.
  * 
  * <p>
@@ -57,7 +61,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * TODO Auto-completion while typing?
  * 
- * @author Kay Kasemir
+ * @author Kay Kasemir, Kunal Shroff
  */
 public class MultipleSelectionCombo<T> extends Composite {
     final private static String SEPARATOR = ", "; //$NON-NLS-1$
@@ -120,7 +124,6 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    public void propertyChange(PropertyChangeEvent e) {
 		switch (e.getPropertyName()) {
 		case "selection":
-		    validateSelection();
 		    updateText();
 		    break;
 		case "items":
@@ -176,16 +179,6 @@ public class MultipleSelectionCombo<T> extends Composite {
 	});
     }
 
-    private void validateSelection() {
-	// if (items.containsAll(selection)) {
-	// text.setForeground(text_color);
-	// text.setToolTipText(tool_tip);
-	// } else {
-	// text.setForeground(display.getSystemColor(SWT.COLOR_RED));
-	// text.setToolTipText("Text contains invalid items");
-	// }
-    }
-
     /** {@inheritDoc} */
     @Override
     public void setForeground(final Color color) {
@@ -224,24 +217,46 @@ public class MultipleSelectionCombo<T> extends Composite {
     }
 
     /**
-     * Define items that should be selected.
+     * Set items that should be selected.
      * 
      * <p>
      * Selected items must be on the list of items provided via
      * <code>setItems</code>
      * 
+     * @param sel_items
+     *            Items to select in the list
+     */
+    public void setSelection(final List<T> selection) {
+	List<Integer> oldValue = this.selectionIndex;
+	List<Integer> newSelectionIndex = new ArrayList<Integer>(
+		selection.size());
+	for (T t : selection) {
+	    newSelectionIndex.add(items.indexOf(t));
+	}
+	this.selectionIndex = newSelectionIndex;
+	changeSupport.firePropertyChange("selection", oldValue,
+		this.selectionIndex);
+    }
+
+    /**
+     * set the items to be selected, the selection is specified as a string with
+     * values separated by {@value MultipleSelectionCombo.SEPARATOR}
+     * 
      * @param selection_text
      *            Items to select in the list as comma-separated string
-     * @return <code>true</code> if all requested items could be selected,
-     *         <code>false</code> if some are not in the list
      */
     public void setSelection(final String selection) {
 	setSelection("".equals(selection) ? new String[0] : selection
 		.split(SEPERATOR_PATTERN));
     }
 
+    /**
+     * Set the items to be selected
+     * 
+     * @param selections
+     */
     public void setSelection(final String[] selections) {
-	List<T> oldValue = getSelection();
+	List<Integer> oldValue = this.selectionIndex;
 	List<Integer> newSelectionIndex;
 	if (selections.length > 0) {
 	    newSelectionIndex = new ArrayList<Integer>(selections.length);
@@ -262,60 +277,31 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    newSelectionIndex = Collections.emptyList();
 	}
 	this.selectionIndex = newSelectionIndex;
-	changeSupport.firePropertyChange("selection", oldValue, getSelection());
+	changeSupport.firePropertyChange("selection", oldValue,
+		this.selectionIndex);
     }
 
     /**
+     * return the index of the object in items with the string representation
+     * _string_
      * 
      * @param string
      * @return
      */
     private Integer getIndex(String string) {
 	for (T item : items) {
-	    if (item.toString().equals(string)) {
-
+	    if (stringRepresention(item).equals(string)) {
 		return items.indexOf(item);
 	    }
 	}
-
 	return -1;
     }
 
     /**
-     * Define items that should be selected.
+     * get the list of items currently selected. Note: this does not return the
+     * list in the order of selection.
      * 
-     * <p>
-     * Selected items must be on the list of items provided via
-     * <code>setItems</code>
-     * 
-     * @param sel_items
-     *            Items to select in the list
-     * @return <code>true</code> if all requested items could be selected,
-     *         <code>false</code> if some are not in the list
-     */
-    public void setSelection(final List<T> selection) {
-	List<T> oldValue = getSelection();
-	List<Integer> newSelectionIndex = new ArrayList<Integer>(
-		selection.size());
-	for (T t : selection) {
-	    newSelectionIndex.add(items.indexOf(t));
-	}
-	this.selectionIndex = newSelectionIndex;
-	changeSupport.firePropertyChange("selection", oldValue, getSelection());
-    }
-
-    /**
-     * Obtain currently selected items
-     * 
-     * <p>
-     * The order of selected items is not guaranteed. In the current
-     * implementation, it will match the order of items provided to
-     * <code>setItems()</code>. It does <u>not</u> reflect the order in which
-     * items were selected inside the GUI's drop-down list. That may change in
-     * the future, so treat the result as a <code>Collection</code> rather than
-     * ordered <code>List</code>.
-     * 
-     * @return Currently selected items
+     * @return the list of selected items
      */
     public List<T> getSelection() {
 	List<T> selection = new ArrayList<T>(this.selectionIndex.size());
@@ -336,7 +322,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 	for (Integer index : selectionIndex) {
 	    if (buf.length() > 0)
 		buf.append(SEPARATOR);
-	    buf.append(items.get(index));
+	    buf.append(stringRepresention(items.get(index)));
 	}
 	text.setText(buf.toString());
 	text.setSelection(buf.length());
@@ -396,7 +382,11 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    }
 	});
 
-	list.setItems(items.toArray(new String[items.size()]));
+	String[] stringItems = new String[items.size()];
+	for (int i = 0; i < items.size(); i++) {
+	    stringItems[i] = stringRepresention(items.get(i));
+	}
+	list.setItems(stringItems);
 	int[] intSelectionIndex = new int[selectionIndex.size()];
 	for (int i = 0; i < intSelectionIndex.length; i++) {
 	    intSelectionIndex[i] = selectionIndex.get(i);
@@ -407,7 +397,9 @@ public class MultipleSelectionCombo<T> extends Composite {
 
 	    @Override
 	    public void keyReleased(KeyEvent e) {
-		System.out.println("key event:" + e.keyCode);
+		if (e.keyCode == SWT.CR) {
+		    hidePopup();
+		}
 	    }
 	});
 	// Hide popup when loosing focus
@@ -431,11 +423,33 @@ public class MultipleSelectionCombo<T> extends Composite {
 	text.setFocus();
     }
 
+    /**
+     * Register a PropertyChangeListener on this widget. the listener will be
+     * notified when the items or the selection is changed.
+     * 
+     * @param listener
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
     }
 
+    /**
+     * remove the PropertyChangeListner
+     * 
+     * @param listener
+     */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * Override this method to define the how the object should be represented
+     * as a string.
+     * 
+     * @param object
+     * @return the string representation of the object
+     */
+    public String stringRepresention(T object) {
+	return object.toString();
     }
 }

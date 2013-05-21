@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * SWT Demo of the {@link MultiSelectionCombo}
@@ -41,6 +42,9 @@ public class MultipleSelectionComboDemo {
 	Shell shell = new Shell(display);
 
 	shell.setLayout(new GridLayout());
+
+	Label lblNewLabel = new Label(shell, SWT.NONE);
+	lblNewLabel.setText("Basic");
 
 	final MultipleSelectionCombo<String> list = new MultipleSelectionCombo<>(
 		shell, 0);
@@ -74,7 +78,7 @@ public class MultipleSelectionComboDemo {
 	    }
 	});
 
-	shell.setSize(400, 300);
+	shell.setSize(400, 500);
 
 	Button btnNewButton = new Button(shell, SWT.NONE);
 	btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -108,6 +112,22 @@ public class MultipleSelectionComboDemo {
 
 	list.setItems(itemSet1);
 	list.setSelection("One, Four  , Five");
+
+	Label lblUserSpecifiedDisplay = new Label(shell, SWT.NONE);
+	lblUserSpecifiedDisplay.setText("User Specified display");
+
+	MultipleSelectionCombo<String> list2 = new MultipleSelectionCombo<String>(
+		shell, SWT.NONE) {
+	    @Override
+	    public String stringRepresention(String object) {
+		return "~" + object.toString() + "~";
+	    }
+	};
+	list2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+		1));
+
+	list2.setToolTipText("Enter items");
+	list2.setItems(itemSet2);
 
 	shell.open();
 	while (!shell.isDisposed())
