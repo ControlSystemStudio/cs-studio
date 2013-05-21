@@ -69,7 +69,8 @@ public class PreferencesHelper {
 	
 	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
 	public static final String SECURE_WHOLE_SITE = "secure_whole_site"; //$NON-NLS-1$	
-	public static final String SECURED_OPI_DIRECTORY = "secured_opi_directory"; //$NON-NLS-1$
+	public static final String UNSECURED_OPI_PATHS = "unsecured_opi_paths"; //$NON-NLS-1$
+	public static final String SECURED_OPI_PATHS = "secured_opi_paths"; //$NON-NLS-1$
 	
 	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
 	public static final String MOBILE_STARTUP_OPI = "mobile_startup_opi"; //$NON-NLS-1$
@@ -405,12 +406,32 @@ public class PreferencesHelper {
 	
     /**
      * @return the opi directory that needs to be secured. null if not configured.
+     * @throws Exception 
      */
-    public static String getSecuredOpiDirectory(){
-    	String s = getString(SECURED_OPI_DIRECTORY);
+    public static String[] getSecuredOpiPaths() throws Exception{
+    	String s = getString(SECURED_OPI_PATHS);
     	if(s == null || s.trim().isEmpty())
     		return null;
-    	return getAbsolutePathOnRepo(s).toString();
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(s, ROW_SEPARATOR, true);
+    	for(int i=0; i<rows.length; i++){
+    		rows[i] = getAbsolutePathOnRepo(rows[i]).toString();
+    	}
+    	return rows;
+    }
+    
+    /**
+     * @return the opi directory that don't need to be secured if whole site is secured. null if not configured.
+     * @throws Exception 
+     */
+    public static String[] getUnSecuredOpiPaths() throws Exception{
+    	String s = getString(UNSECURED_OPI_PATHS);
+    	if(s == null || s.trim().isEmpty())
+    		return null;
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(s, ROW_SEPARATOR, true);
+    	for(int i=0; i<rows.length; i++){
+    		rows[i] = getAbsolutePathOnRepo(rows[i]).toString();
+    	}
+    	return rows;
     }
     
     /**
