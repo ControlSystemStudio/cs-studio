@@ -78,6 +78,14 @@
             name="Scatter Graph (alpha)"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.graphene.category"
+            class="org.csstudio.graphene.BubbleGraph2DView"
+            icon="icons/graphene-scatter-16.png"
+            id="org.csstudio.graphene.BubbleGraph2DView"
+            name="Bubble Graph"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -112,6 +120,16 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.graphene.ScatterGraph2DView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/graphene-scatter-16.png"
+               label="Bubble Graph"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.graphene.BubbleGraph2DView">
             </parameter>
          </command>
       </menuContribution>
