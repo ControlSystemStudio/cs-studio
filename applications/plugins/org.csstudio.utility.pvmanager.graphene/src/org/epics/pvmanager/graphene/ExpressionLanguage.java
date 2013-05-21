@@ -99,7 +99,7 @@ public class ExpressionLanguage {
         }, "data");
         
         return lineGraphOf(data, null, null, null);
-    }    
+    }
     public static LineGraph2DExpression lineGraphOf(
 	    DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
@@ -114,6 +114,15 @@ public class ExpressionLanguage {
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {
 	return new ScatterGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
+    }
+    
+    public static BubbleGraph2DExpression bubbleGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName,
+	    DesiredRateExpression<?> sizeColumnName,
+	    DesiredRateExpression<?> tooltipColumnName) {
+	return new BubbleGraph2DExpression(tableData, xColumnName, yColumnName, sizeColumnName, tooltipColumnName);
     }
 
     @SafeVarargs
