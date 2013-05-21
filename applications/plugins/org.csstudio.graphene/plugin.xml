@@ -67,7 +67,7 @@
             class="org.csstudio.graphene.LineGraph2DView"
             icon="icons/graphene-line-16.png"
             id="org.csstudio.graphene.LineGraph2DView"
-            name="Line Graph (alpha)"
+            name="Line Graph"
             restorable="true">
       </view>
       <view
@@ -75,13 +75,13 @@
             class="org.csstudio.graphene.ScatterGraph2DView"
             icon="icons/graphene-scatter-16.png"
             id="org.csstudio.graphene.ScatterGraph2DView"
-            name="Scatter Graph (alpha)"
+            name="Scatter Graph"
             restorable="true">
       </view>
       <view
             category="org.csstudio.graphene.category"
             class="org.csstudio.graphene.BubbleGraph2DView"
-            icon="icons/graphene-scatter-16.png"
+            icon="icons/graphene-bubble-16.png"
             id="org.csstudio.graphene.BubbleGraph2DView"
             name="Bubble Graph"
             restorable="true">
@@ -105,7 +105,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/graphene-line-16.png"
-               label="Line Graph(alpha)"
+               label="Line Graph"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -115,7 +115,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/graphene-scatter-16.png"
-               label="Scatter Graph(alpha)"
+               label="Scatter Graph"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -124,7 +124,7 @@
          </command>
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/graphene-scatter-16.png"
+               icon="icons/graphene-bubble-16.png"
                label="Bubble Graph"
                style="push">
             <parameter

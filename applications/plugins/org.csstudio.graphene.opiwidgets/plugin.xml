@@ -27,6 +27,14 @@
             name="Scatter Graph"
             typeId="org.csstudio.graphene.opiwidgets.ScatterGraph2D">
       </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-bubble-16.png"
+            model_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetModel"
+            name="Scatter Graph"
+            typeId="org.csstudio.graphene.opiwidgets.BubbleGraph2D">
+      </widget>
    </extension>
 
 </plugin>

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.graphene.ScatterGraph2DWidget;
+import org.csstudio.graphene.BubbleGraph2DWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
@@ -24,7 +24,7 @@ import org.eclipse.draw2d.IFigure;
  * @author shroffk
  * 
  */
-public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
+public class BubbleGraph2DWidgetEditPart extends AbstractWidgetEditPart
 		implements ConfigurableWidgetAdaptable, XAxisProcessVariableAdaptable,
 		YAxisProcessVariableAdaptable {
 
@@ -36,13 +36,13 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		ScatterGraph2DWidgetFigure figure = new ScatterGraph2DWidgetFigure(this);
+		BubbleGraph2DWidgetFigure figure = new BubbleGraph2DWidgetFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
 
-	private static void configure(ScatterGraph2DWidget widget,
-			ScatterGraph2DWidgetModel model, boolean runMode) {
+	private static void configure(BubbleGraph2DWidget widget,
+			BubbleGraph2DWidgetModel model, boolean runMode) {
 		if (runMode) {
 			widget.setDataFormula(model.getDataFormula());
 			widget.setXColumnFormula(model.getXColumnFormula());
@@ -54,8 +54,8 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 	}
 
 	@Override
-	public ScatterGraph2DWidgetModel getWidgetModel() {
-		ScatterGraph2DWidgetModel widgetModel = (ScatterGraph2DWidgetModel) super
+	public BubbleGraph2DWidgetModel getWidgetModel() {
+		BubbleGraph2DWidgetModel widgetModel = (BubbleGraph2DWidgetModel) super
 				.getWidgetModel();
 		return widgetModel;
 	}
@@ -73,9 +73,9 @@ public class ScatterGraph2DWidgetEditPart extends AbstractWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				configure(
-						((AbstractSWTWidgetFigure<ScatterGraph2DWidget>) getFigure())
+						((AbstractSWTWidgetFigure<BubbleGraph2DWidget>) getFigure())
 								.getSWTWidget(), getWidgetModel(),
-						((ScatterGraph2DWidgetFigure) getFigure()).isRunMode());
+						((BubbleGraph2DWidgetFigure) getFigure()).isRunMode());
 				return false;
 			}
 		};

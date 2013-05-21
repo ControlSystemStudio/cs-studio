@@ -166,13 +166,38 @@ public class XMLUtil {
 		IPath opiPath = displayModel.getOpiFilePath();
 		if (OPIBuilderPlugin.isRAP() && opiPath != null
 				&& !SingleSourceHelper.rapIsLoggedIn(display)) {
-			String securedPath = PreferencesHelper.getSecuredOpiDirectory();
-			if (securedPath != null && opiPath.toString().startsWith(securedPath)) {
-				if (!SingleSourceHelper.rapAuthenticate(display)) {
-					inputStream.close();
-					throw new FailedLoginException();
+			//check secured opi paths
+			String[] securedPaths = PreferencesHelper.getSecuredOpiPaths();
+			if (securedPaths != null){
+				for(String securedPath : securedPaths){
+					if(opiPath.toString().startsWith(securedPath)) {
+						if (!SingleSourceHelper.rapAuthenticate(display)) {
+							inputStream.close();
+							throw new FailedLoginException();
+						}
+					}
+				}				
+			}
+			//check unsecured opi paths
+			if(PreferencesHelper.isWholeSiteSecured()){
+				String[] unSecuredPaths = PreferencesHelper.getUnSecuredOpiPaths();
+				if (unSecuredPaths != null){
+					boolean shouldBeSecured=true;
+					for(String unSecuredPath : unSecuredPaths){
+						if(opiPath.toString().startsWith(unSecuredPath)) {
+							shouldBeSecured=false;
+							break;
+						}
+					}				
+					if(shouldBeSecured){
+						if (!SingleSourceHelper.rapAuthenticate(display)) {
+							inputStream.close();
+							throw new FailedLoginException();
+						}
+					}
 				}
 			}
+			
 		}
 		
 		SAXBuilder saxBuilder = new SAXBuilder();
