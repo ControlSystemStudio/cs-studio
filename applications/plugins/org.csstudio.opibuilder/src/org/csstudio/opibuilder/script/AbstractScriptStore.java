@@ -170,7 +170,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	 */
 	protected abstract void compileString(String string) throws Exception;
 
-	/**Compile reader with script engine.
+	/**Compile InputStream with script engine.
 	 * @param reader
 	 * @throws Exception
 	 */

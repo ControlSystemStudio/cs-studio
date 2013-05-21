@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.InputStream;
 import java.io.Reader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -31,10 +32,14 @@ public class JythonScriptStore extends AbstractScriptStore{
 
 	
 	public static CombinedJythonClassLoader COMBINDED_CLASS_LOADER = new CombinedJythonClassLoader();
+	
+	private ScriptData scriptData;
 
 	public JythonScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final PV[] pvArray) throws Exception {	
+			final PV[] pvArray) throws Exception {
 		super(scriptData, editpart, pvArray);
+		
+		this.scriptData = scriptData;
 		
 	}
 
@@ -66,7 +71,8 @@ public class JythonScriptStore extends AbstractScriptStore{
 
 	@Override
 	protected void compileReader(Reader reader) throws Exception {
-		code = interpreter.compile(reader);
+		// Do nothing. This python script will be executed in execScript() by reading 
+		// the file directly from InputStream.
 	}
 
 	@Override
@@ -77,7 +83,14 @@ public class JythonScriptStore extends AbstractScriptStore{
 		interpreter.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
 		interpreter.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
 		interpreter.set(ScriptService.TRIGGER_PV, triggerPV);
-		interpreter.exec(code);		
+		if (scriptData.isEmbedded() || scriptData instanceof RuleScriptData) {
+			interpreter.exec(code);
+		} else {
+			// Execute the file directly from InputStream.
+			InputStream in = ResourceUtil.pathToInputStream(getAbsoluteScriptPath(), false);
+			interpreter.execfile(in);
+			in.close();
+		}
 	}
 	
 
