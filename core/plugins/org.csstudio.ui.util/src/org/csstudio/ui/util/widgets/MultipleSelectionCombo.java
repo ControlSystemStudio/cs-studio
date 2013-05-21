@@ -77,10 +77,10 @@ public class MultipleSelectionCombo<T> extends Composite {
     private org.eclipse.swt.widgets.List list;
 
     /** Items to show in list */
-    private List<String> items = new ArrayList<String>();
+    private List<T> items = new ArrayList<T>();
 
     /** Selection indices */
-    private List<String> selection = new ArrayList<String>();
+    private List<Integer> selectionIndex = new ArrayList<Integer>();
 
     private String tool_tip = null;
     private Color text_color = null;
@@ -124,7 +124,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 		    updateText();
 		    break;
 		case "items":
-		    setSelection(Collections.<String> emptyList());
+		    setSelection(Collections.<T> emptyList());
 		    break;
 		default:
 		    break;
@@ -177,13 +177,13 @@ public class MultipleSelectionCombo<T> extends Composite {
     }
 
     private void validateSelection() {
-	if (items.containsAll(selection)) {
-	    text.setForeground(text_color);
-	    text.setToolTipText(tool_tip);
-	} else {
-	    text.setForeground(display.getSystemColor(SWT.COLOR_RED));
-	    text.setToolTipText("Text contains invalid items");
-	}
+	// if (items.containsAll(selection)) {
+	// text.setForeground(text_color);
+	// text.setToolTipText(tool_tip);
+	// } else {
+	// text.setForeground(display.getSystemColor(SWT.COLOR_RED));
+	// text.setToolTipText("Text contains invalid items");
+	// }
     }
 
     /** {@inheritDoc} */
@@ -208,8 +208,8 @@ public class MultipleSelectionCombo<T> extends Composite {
      * @param new_items
      *            Items to display in the list
      */
-    public void setItems(final List<String> items) {
-	List<String> oldValue = this.items;
+    public void setItems(final List<T> items) {
+	List<T> oldValue = this.items;
 	this.items = items;
 	changeSupport.firePropertyChange("items", oldValue, this.items);
     }
@@ -219,7 +219,7 @@ public class MultipleSelectionCombo<T> extends Composite {
      * 
      * @return list of selectable items
      */
-    public List<String> getItems() {
+    public List<T> getItems() {
 	return this.items;
     }
 
@@ -236,9 +236,49 @@ public class MultipleSelectionCombo<T> extends Composite {
      *         <code>false</code> if some are not in the list
      */
     public void setSelection(final String selection) {
-	List<String> oldValue = this.selection;
-	this.selection = convert2List(selection);
-	changeSupport.firePropertyChange("selection", oldValue, this.selection);
+	setSelection("".equals(selection) ? new String[0] : selection
+		.split(SEPERATOR_PATTERN));
+    }
+
+    public void setSelection(final String[] selections) {
+	List<T> oldValue = getSelection();
+	List<Integer> newSelectionIndex;
+	if (selections.length > 0) {
+	    newSelectionIndex = new ArrayList<Integer>(selections.length);
+	    // Locate index for each item
+	    for (String item : selections) {
+		int index = getIndex(item);
+		if (index >= 0 && index < items.size()) {
+		    newSelectionIndex.add(getIndex(item));
+		    text.setForeground(text_color);
+		    text.setToolTipText(tool_tip);
+		} else {
+		    text.setForeground(display.getSystemColor(SWT.COLOR_RED));
+		    text.setToolTipText("Text contains invalid items");
+		}
+
+	    }
+	} else {
+	    newSelectionIndex = Collections.emptyList();
+	}
+	this.selectionIndex = newSelectionIndex;
+	changeSupport.firePropertyChange("selection", oldValue, getSelection());
+    }
+
+    /**
+     * 
+     * @param string
+     * @return
+     */
+    private Integer getIndex(String string) {
+	for (T item : items) {
+	    if (item.toString().equals(string)) {
+
+		return items.indexOf(item);
+	    }
+	}
+
+	return -1;
     }
 
     /**
@@ -253,10 +293,15 @@ public class MultipleSelectionCombo<T> extends Composite {
      * @return <code>true</code> if all requested items could be selected,
      *         <code>false</code> if some are not in the list
      */
-    public void setSelection(final List<String> selection) {
-	List<String> oldValue = this.selection;
-	this.selection = new ArrayList<String>(selection);
-	changeSupport.firePropertyChange("selection", oldValue, this.selection);
+    public void setSelection(final List<T> selection) {
+	List<T> oldValue = getSelection();
+	List<Integer> newSelectionIndex = new ArrayList<Integer>(
+		selection.size());
+	for (T t : selection) {
+	    newSelectionIndex.add(items.indexOf(t));
+	}
+	this.selectionIndex = newSelectionIndex;
+	changeSupport.firePropertyChange("selection", oldValue, getSelection());
     }
 
     /**
@@ -272,40 +317,26 @@ public class MultipleSelectionCombo<T> extends Composite {
      * 
      * @return Currently selected items
      */
-    public List<String> getSelection() {
-	return Collections.unmodifiableList(this.selection);
-    }
-
-    /**
-     * Set indices of <code>selection</code> based on desired selection.
-     * 
-     * @param selection_text
-     *            Items to select in the list as comma-separated string
-     * @return <code>true</code> if all requested items could be selected,
-     *         <code>false</code> if some are not in the list
-     */
-    private List<String> convert2List(final String selection_text) {
-	final String[] item_texts = selection_text.split(SEPERATOR_PATTERN);
-	List<String> selection = new ArrayList<String>();
-	// Locate index for each item
-	for (String text : item_texts) {
-	    selection.add(text);
+    public List<T> getSelection() {
+	List<T> selection = new ArrayList<T>(this.selectionIndex.size());
+	for (int index : this.selectionIndex) {
+	    selection.add(items.get(index));
 	}
-	return selection;
+	return Collections.unmodifiableList(selection);
     }
 
     /** Update <code>selection</code> from <code>list</code> */
     private void updateSelectionFromList() {
-	setSelection(Arrays.asList(list.getSelection()));
+	setSelection(list.getSelection());
     }
 
     /** Update <code>text</code> to reflect <code>selection</code> */
     private void updateText() {
 	final StringBuilder buf = new StringBuilder();
-	for (String i : selection) {
+	for (Integer index : selectionIndex) {
 	    if (buf.length() > 0)
 		buf.append(SEPARATOR);
-	    buf.append(i);
+	    buf.append(items.get(index));
 	}
 	text.setText(buf.toString());
 	text.setSelection(buf.length());
@@ -323,7 +354,6 @@ public class MultipleSelectionCombo<T> extends Composite {
     private void drop(boolean drop) {
 	if (drop == isDropped())
 	    return;
-
 	if (drop)
 	    createPopup();
 	else
@@ -367,7 +397,11 @@ public class MultipleSelectionCombo<T> extends Composite {
 	});
 
 	list.setItems(items.toArray(new String[items.size()]));
-	list.setSelection(selection.toArray(new String[selection.size()]));
+	int[] intSelectionIndex = new int[selectionIndex.size()];
+	for (int i = 0; i < intSelectionIndex.length; i++) {
+	    intSelectionIndex[i] = selectionIndex.get(i);
+	}
+	list.setSelection(intSelectionIndex);
 
 	list.addKeyListener(new KeyAdapter() {
 

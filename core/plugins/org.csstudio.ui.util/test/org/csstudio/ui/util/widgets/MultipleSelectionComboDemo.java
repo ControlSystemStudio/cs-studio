@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class StringMultiSelectionComboDemo {
+public class MultipleSelectionComboDemo {
     private static Text text;
     private final static List<String> itemSet1 = Arrays.asList("Zero", "One",
 	    "Two", "Three", "Four", "Five", "Six");
