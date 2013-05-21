@@ -5,7 +5,6 @@ package org.csstudio.graphene;
 
 import java.beans.PropertyChangeEvent;
 
-import org.csstudio.ui.util.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
