@@ -117,6 +117,15 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
 		}
 	}
 
+	/**
+	 * Get raw InputStream of the script file. Make sure to call close() of the returned instance.
+	 * @return InputStream of the script file.
+	 * @throws Exception
+	 */
+	protected InputStream getInputStream() throws Exception{
+		return ResourceUtil.pathToInputStream(getAbsolutePath(), false);
+	}
+	
 	protected abstract String getFileExtension();
 	
 	protected abstract String getScriptHeader();

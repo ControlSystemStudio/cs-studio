@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
+import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -113,10 +114,6 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 				//compile
 				if(isEmbedded())
 					code = interpreter.compile(getScriptText());
-				else{
-					code = interpreter.compile(getReader()); //$NON-NLS-1$
-					closeReader();
-				}
 			}
 
 
@@ -126,8 +123,16 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
 						try {
 							interpreter.set(ScriptService.WIDGET, widgetEditPart);
-							interpreter.set(ScriptService.DISPLAY, displayEditpart);	
-							interpreter.exec(code);
+							interpreter.set(ScriptService.DISPLAY, displayEditpart);
+							if (isEmbedded()) {
+								// execute compiled code
+								interpreter.exec(code);
+							} else {
+								// execute a file
+								InputStream inputStream  = getInputStream();
+								interpreter.execfile(inputStream);
+								inputStream.close();
+							}
 						} catch (Exception e) {
 							final String message =  "Error exists in script " + getPath();
 		                    OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
