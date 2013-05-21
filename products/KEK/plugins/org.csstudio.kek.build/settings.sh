@@ -6,7 +6,7 @@
 #
 
 # Version number of CSS
-export VERSION=3.1.1
+export VERSION=3.1.2
 
 # Build host name (lcba03, abco4 or JCSL_WS001).
 # Current official build machine is lcba03.
