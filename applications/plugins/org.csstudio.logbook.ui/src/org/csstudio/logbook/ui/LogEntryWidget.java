@@ -36,7 +36,7 @@ import org.csstudio.logbook.util.LogEntryUtil;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.ImageStackWidget;
-import org.csstudio.ui.util.widgets.MultiSelectionCombo;
+import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -121,8 +121,8 @@ public class LogEntryWidget extends Composite {
     private final String[] supportedImageTypes = new String[] { "*.png",
 	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
     private Label lblNewLabel;
-    private MultiSelectionCombo<String> multiSelectionComboLogbook;
-    private MultiSelectionCombo<String> multiSelectionComboTag;
+    private MultipleSelectionCombo<String> multiSelectionComboLogbook;
+    private MultipleSelectionCombo<String> multiSelectionComboTag;
     private Button btnNewButton;
     private Label label;
 
@@ -319,8 +319,8 @@ public class LogEntryWidget extends Composite {
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Level:");
 
-	multiSelectionComboLogbook = new MultiSelectionCombo<String>(composite,
-		SWT.NONE);
+	multiSelectionComboLogbook = new MultipleSelectionCombo<String>(
+		composite, SWT.NONE);
 	FormData fd_multiSelectionCombo = new FormData();
 	fd_multiSelectionCombo.top = new FormAttachment(text, 4);
 	fd_multiSelectionCombo.right = new FormAttachment(btnAddLogbook, -5);
@@ -331,7 +331,7 @@ public class LogEntryWidget extends Composite {
 
 		    @Override
 		    public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals("Selection")) {
+			if (evt.getPropertyName().equals("selection")) {
 			    try {
 				LogEntryBuilder logEntryBuilder = LogEntryBuilder
 					.logEntry(logEntryChangeset
@@ -352,7 +352,7 @@ public class LogEntryWidget extends Composite {
 		    }
 		});
 
-	multiSelectionComboTag = new MultiSelectionCombo<String>(composite,
+	multiSelectionComboTag = new MultipleSelectionCombo<String>(composite,
 		SWT.NONE);
 	FormData fd_multiSelectionCombo_1 = new FormData();
 	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3,
@@ -367,7 +367,7 @@ public class LogEntryWidget extends Composite {
 
 		    @Override
 		    public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals("Selection")) {
+			if (evt.getPropertyName().equals("selection")) {
 			    try {
 				LogEntryBuilder logEntryBuilder = LogEntryBuilder
 					.logEntry(logEntryChangeset
@@ -742,7 +742,7 @@ public class LogEntryWidget extends Composite {
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
-	    }else{
+	    } else {
 		setExpanded(false);
 	    }
 	    for (Attachment attachment : logEntry.getAttachment()) {
