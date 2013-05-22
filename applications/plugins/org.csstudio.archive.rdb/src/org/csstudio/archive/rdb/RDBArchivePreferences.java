@@ -65,7 +65,7 @@ public class RDBArchivePreferences
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
-            return true;
+            return false;
         return prefs.getBoolean(Activator.ID, USE_ARRAY_BLOB, true, null);
     }
 

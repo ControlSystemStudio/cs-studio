@@ -6,18 +6,13 @@ package org.epics.graphene;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Path2D.Double;
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import org.epics.util.array.ListInt;
-import org.epics.util.array.ListNumber;
 
 /**
  *
  * @author carcassi
  */
-public class BubbleGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpdate> {
+public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRendererUpdate> {
     
     private Range zAggregatedRange;
     private AxisRange zAxisRange = AxisRanges.integrated();
@@ -92,7 +87,7 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpdate
     }
 
     @Override
-    public Graph2DRendererUpdate newUpdate() {
-        return new Graph2DRendererUpdate();
+    public BubbleGraph2DRendererUpdate newUpdate() {
+        return new BubbleGraph2DRendererUpdate();
     }
 }

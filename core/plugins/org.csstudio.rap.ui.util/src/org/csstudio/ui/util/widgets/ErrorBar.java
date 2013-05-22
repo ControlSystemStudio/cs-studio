@@ -2,6 +2,7 @@ package org.csstudio.ui.util.widgets;
 
 
 import org.csstudio.ui.util.Activator;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -57,7 +58,7 @@ public class ErrorBar extends Composite {
 		errorImage = new Label(this, SWT.NONE);
 		GridData gd_errorImage = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		errorImage.setLayoutData(gd_errorImage);
-		errorImage.setImage(Activator.getImageDescriptor("icons/error-16.png").createImage());
+		errorImage.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.ID, "icons/error-16.png"));
 		errorImage.setCursor(handCursor);
 		errorImage.addMouseListener(listener);
 		

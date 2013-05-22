@@ -118,6 +118,13 @@ public class RequestUtil {
 	 */
 	public static void login(Display display) {
 		if (PreferencesHelper.isWholeSiteSecured()) {
+			try {
+				//authentication will be done at loading opi
+				if(PreferencesHelper.getUnSecuredOpiPaths() != null)
+					return;
+			} catch (Exception e) {
+			}
+			
 			if (!SecurityService.authenticate(display)){
 				display.dispose();
 				throw new RuntimeException("Failed to login.");

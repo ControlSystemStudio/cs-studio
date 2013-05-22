@@ -12,11 +12,11 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  * 
  */
-public class LineGraph2DConfigurationDialog
+public class BubbleGraph2DConfigurationDialog
 		extends
-		AbstractPointDatasetGraph2DConfigurationDialog<LineGraph2DWidget, LineGraph2DConfigurationPanel> {
+		AbstractPointDatasetGraph2DConfigurationDialog<BubbleGraph2DWidget, BubbleGraph2DConfigurationPanel> {
 
-	protected LineGraph2DConfigurationDialog(LineGraph2DWidget control, String title) {
+	protected BubbleGraph2DConfigurationDialog(BubbleGraph2DWidget control, String title) {
 		super(control, title);
 	}
 
@@ -31,8 +31,8 @@ public class LineGraph2DConfigurationDialog
 	}
 
 	@Override
-	protected LineGraph2DConfigurationPanel createConfigurationComposite(
+	protected BubbleGraph2DConfigurationPanel createConfigurationComposite(
 			Shell shell) {
-		return new LineGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
+		return new BubbleGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
 	}
 }

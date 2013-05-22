@@ -503,8 +503,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		return text;
 	}
 
-	private Integer[] parseCharArray(final String text, int currentLength) {
-		Integer[] iString = new Integer[currentLength];
+	private int[] parseCharArray(final String text, int currentLength) {
+		int[] iString = new int[currentLength];
 		char[] textChars = text.toCharArray();
 
 		for (int ii = 0; ii < text.length(); ii++) {
