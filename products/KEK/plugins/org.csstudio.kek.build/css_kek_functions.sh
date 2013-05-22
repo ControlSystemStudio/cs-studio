@@ -79,32 +79,26 @@ function unique_urls {
 }
 
 # =========================================================================
-# Append sub archive names with the given URL to SUB_ARCHIVES.
+# Append sub archive name with the given URL to SUB_ARCHIVES.
 # SUB_ARCHIVES will finally be a string in the following form:
-#  NAME1|1|URL*NAME2|2|URL*NAME3|3|URL*...
+#  NAME1|1|URL1*NAME2|1|URL2*NAME3|1|URL3*...
 # This string can be passed to org.csstudio.trends.databrowser2/archives
 # property of CSS.
 #
 # Parameters
 #  1: Archive URL
-#  2: Sub archive names separated by a white space
+#  2: Sub archive name
 # =========================================================================
 function append_sub_archives {
     local URL=$1
-    local NAMES=$2
-    local i=1
-    local SUB_ARCHIVE=
+    local NAME=$2
+    local SUB_ARCHIVE="${NAME}|1|${URL}"
 
-    for NAME in ${NAMES}; do
-        SUB_ARCHIVE="${NAME}|$i|${URL}"
-
-        if [ -z "${SUB_ARCHIVES}" ]; then
-            SUB_ARCHIVES="${SUB_ARCHIVE}"
-        else
-            SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
-        fi
-        i=$(expr $i + 1)
-    done
+    if [ -z "${SUB_ARCHIVES}" ]; then
+        SUB_ARCHIVES="${SUB_ARCHIVE}"
+    else
+        SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+    fi
 }
 
 # =========================================================================
@@ -137,8 +131,8 @@ function css_kek_settings {
         # Set sub archive names for each archiver URL
             i=1
             for URL in ${URLS}; do
-                NAMES=$(eval 'echo $'$a'_ARCHIVE_NAMES_'$i)
-                append_sub_archives "${URL}" "${NAMES}"
+                NAME=$(eval 'echo $'$a'_ARCHIVE_NAMES_'$i)
+                append_sub_archives "${URL}" "${NAME}"
                 i=$(expr $i + 1)
             done
 
