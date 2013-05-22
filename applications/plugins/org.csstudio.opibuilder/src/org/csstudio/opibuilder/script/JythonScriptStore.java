@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IPath;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.util.PythonInterpreter;
 
 /**
  * This is the implementation of {@link AbstractScriptStore} for Jython PythonInterpreter. 
@@ -70,9 +69,8 @@ public class JythonScriptStore extends AbstractScriptStore{
 	}
 
 	@Override
-	protected void compileReader(Reader reader) throws Exception {
-		// Do nothing. This python script will be executed in execScript() by reading 
-		// the file directly from InputStream.
+	protected void compileInputStream(InputStream s) throws Exception {
+		code = interpreter.compile(s);
 	}
 
 	@Override
@@ -83,14 +81,7 @@ public class JythonScriptStore extends AbstractScriptStore{
 		interpreter.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
 		interpreter.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
 		interpreter.set(ScriptService.TRIGGER_PV, triggerPV);
-		if (scriptData.isEmbedded() || scriptData instanceof RuleScriptData) {
-			interpreter.exec(code);
-		} else {
-			// Execute the file directly from InputStream.
-			InputStream in = ResourceUtil.pathToInputStream(getAbsoluteScriptPath(), false);
-			interpreter.execfile(in);
-			in.close();
-		}
+		interpreter.exec(code);
 	}
 	
 

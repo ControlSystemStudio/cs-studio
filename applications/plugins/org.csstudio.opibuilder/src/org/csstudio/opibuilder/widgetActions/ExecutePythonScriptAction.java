@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.script.JythonScriptStore;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
+import org.csstudio.opibuilder.script.PythonInterpreter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
@@ -30,7 +31,6 @@ import org.eclipse.swt.widgets.Display;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.util.PythonInterpreter;
 
 /**The action executing python script.
  * @author Xihui Chen
@@ -114,8 +114,12 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 				//compile
 				if(isEmbedded())
 					code = interpreter.compile(getScriptText());
+				else {
+					InputStream inputStream = getInputStream();
+					code = interpreter.compile(inputStream);
+					inputStream.close();
+				}
 			}
-
 
 			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
@@ -124,15 +128,8 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 						try {
 							interpreter.set(ScriptService.WIDGET, widgetEditPart);
 							interpreter.set(ScriptService.DISPLAY, displayEditpart);
-							if (isEmbedded()) {
-								// execute compiled code
-								interpreter.exec(code);
-							} else {
-								// execute a file
-								InputStream inputStream  = getInputStream();
-								interpreter.execfile(inputStream);
-								inputStream.close();
-							}
+							// execute compiled code
+							interpreter.exec(code);
 						} catch (Exception e) {
 							final String message =  "Error exists in script " + getPath();
 		                    OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);

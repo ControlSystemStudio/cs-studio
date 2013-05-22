@@ -88,13 +88,10 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		else{			
 			//read file
 			InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(inputStream));
 
 			//compile
-			compileReader(reader); //$NON-NLS-1$
+			compileInputStream(inputStream); //$NON-NLS-1$
 			inputStream.close();
-			reader.close();
 		}		
 
 
@@ -170,11 +167,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	 */
 	protected abstract void compileString(String string) throws Exception;
 
-	/**Compile InputStream with script engine.
+	/**Compile InputStream with script engine. The stream will be closed by this method.
 	 * @param reader
 	 * @throws Exception
 	 */
-	protected abstract void compileReader(Reader reader) throws Exception;
+	protected abstract void compileInputStream(InputStream s) throws Exception;
 	
 	/**
 	 * Execute the script with script engine.

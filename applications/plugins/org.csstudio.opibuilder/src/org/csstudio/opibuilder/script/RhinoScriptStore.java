@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -63,8 +66,11 @@ public class RhinoScriptStore extends AbstractScriptStore{
 	}
 
 	@Override
-	protected void compileReader(Reader reader) throws IOException {
-		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$		
+	protected void compileInputStream(InputStream s) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
+		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
+		s.close();
+		reader.close();
 	}
 
 	@Override
