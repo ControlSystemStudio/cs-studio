@@ -93,6 +93,8 @@ public class MultipleSelectionCombo<T> extends Composite {
      */
     private int lost_focus = 0;
 
+    private volatile boolean modify = false;
+
     /**
      * Initialize
      * 
@@ -122,8 +124,12 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    public void propertyChange(PropertyChangeEvent e) {
 		switch (e.getPropertyName()) {
 		case "selection":
-		    updateText();
-		    break;
+		    if (modify) {
+			break;
+		    } else {
+			updateText();
+			break;
+		    }
 		case "items":
 		    setSelection(Collections.<T> emptyList());
 		    break;
@@ -141,7 +147,9 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    public void modifyText(ModifyEvent e) {
 		// Analyze text, update selection
 		final String items_text = text.getText();
+		modify = true;
 		setSelection(items_text);
+		modify = false;
 	    }
 	});
 	text.addKeyListener(new KeyAdapter() {
@@ -154,6 +162,9 @@ public class MultipleSelectionCombo<T> extends Composite {
 		case SWT.ARROW_UP:
 		    drop(false);
 		    return;
+		case SWT.CR:
+		    modify =false;
+		    updateText();
 		}
 	    }
 	});

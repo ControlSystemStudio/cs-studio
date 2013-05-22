@@ -57,7 +57,7 @@ public class MultipleSelectionComboDemo
         new MyItem("Zero"), new MyItem("One"),
         new MyItem("Two"), new MyItem("Three"),
         new MyItem("Four"), new MyItem("Five"),
-        new MyItem("Six"));
+        new MyItem("Six"), new MyItem("Sixty"));
     private final static List<MyItem> itemSet2 = Arrays.asList(
         new MyItem("1"), new MyItem("2"), new MyItem("3"),
         new MyItem("4"), new MyItem("5"), new MyItem("6"));
