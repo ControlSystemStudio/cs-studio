@@ -19,23 +19,48 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * SWT Demo of the {@link MultiSelectionCombo}
  * 
- * @author Kay Kasemir
+ * @author Kay Kasemir, Kunal Shroff
  */
 @SuppressWarnings("nls")
-public class MultipleSelectionComboDemo {
+public class MultipleSelectionComboDemo
+{
+    /** Custom item to demonstrate that
+     *  {@link MultipleSelectionCombo}
+     *  can handle any type of Object as long
+     *  as it defines <code>toString()</code>.
+     */
+    static class MyItem
+    {
+        final private String name;
+
+        public MyItem(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name;
+        }
+    };
+    
     private static Text text;
-    private final static List<String> itemSet1 = Arrays.asList("Zero", "One",
-	    "Two", "Three", "Four", "Five", "Six");
-    private final static List<String> itemSet2 = Arrays.asList("1", "2", "3",
-	    "4", "5", "6");
+    private final static List<MyItem> itemSet1 = Arrays.asList(
+        new MyItem("Zero"), new MyItem("One"),
+        new MyItem("Two"), new MyItem("Three"),
+        new MyItem("Four"), new MyItem("Five"),
+        new MyItem("Six"));
+    private final static List<MyItem> itemSet2 = Arrays.asList(
+        new MyItem("1"), new MyItem("2"), new MyItem("3"),
+        new MyItem("4"), new MyItem("5"), new MyItem("6"));
 
     public static void main(String[] args) {
 	Display display = new Display();
@@ -46,7 +71,7 @@ public class MultipleSelectionComboDemo {
 	Label lblNewLabel = new Label(shell, SWT.NONE);
 	lblNewLabel.setText("Basic");
 
-	final MultipleSelectionCombo<String> list = new MultipleSelectionCombo<>(
+	final MultipleSelectionCombo<MyItem> list = new MultipleSelectionCombo<>(
 		shell, 0);
 	list.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -55,7 +80,7 @@ public class MultipleSelectionComboDemo {
 		if (evt.getPropertyName().equals("selection")) {
 		    StringBuilder sb = new StringBuilder();
 		    String loopDelim = "";
-		    for (String s : list.getSelection()) {
+		    for (MyItem s : list.getSelection()) {
 			sb.append(loopDelim);
 			sb.append(s);
 			loopDelim = ", ";
@@ -116,10 +141,10 @@ public class MultipleSelectionComboDemo {
 	Label lblUserSpecifiedDisplay = new Label(shell, SWT.NONE);
 	lblUserSpecifiedDisplay.setText("User Specified display");
 
-	MultipleSelectionCombo<String> list2 = new MultipleSelectionCombo<String>(
+	MultipleSelectionCombo<MyItem> list2 = new MultipleSelectionCombo<MyItem>(
 		shell, SWT.NONE) {
 	    @Override
-	    public String stringRepresention(String object) {
+	    public String stringRepresention(MyItem object) {
 		return "~" + object.toString() + "~";
 	    }
 	};
