@@ -16,7 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.WaitCommand;
-import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.JythonSupport;
@@ -100,8 +100,8 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     {
         final Device device = context.getDevice(command.getDeviceName());
 
-        final DeviceValueCondition condition =
-            new DeviceValueCondition(device, command.getComparison(),
+        final NumericValueCondition condition =
+            new NumericValueCondition(device, command.getComparison(),
                     command.getDesiredValue(), command.getTolerance(),
                     TimeDuration.ofSeconds(command.getTimeout()));
         condition.await();

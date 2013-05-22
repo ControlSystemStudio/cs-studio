@@ -18,11 +18,11 @@ package org.csstudio.scan.condition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 
-/** {@link Condition} that delays the scan until all {@link Device}s are 'ready'
+/** {@link DeviceCondition} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitForDevicesCondition implements Condition, DeviceListener
+public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
 {
     final private Device[] devices;
     private volatile boolean all_ready;

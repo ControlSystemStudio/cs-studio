@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="3.2.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -37,9 +37,6 @@
       <plugin id="org.csstudio.ndarray"/>
       <plugin id="org.csstudio.numjy"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
-      <plugin id="org.csstudio.platform.libs.epics.macosx" fragment="true"/>
-      <plugin id="org.csstudio.platform.libs.epics.win32" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.scan"/>
       <plugin id="org.csstudio.scan.custom"/>

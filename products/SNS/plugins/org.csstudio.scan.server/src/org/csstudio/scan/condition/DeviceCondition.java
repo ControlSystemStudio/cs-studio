@@ -22,7 +22,7 @@ package org.csstudio.scan.condition;
  *
  *  @author Kay Kasemir
  */
-public interface Condition
+public interface DeviceCondition
 {
 	/** Wait for the condition to be met
 	 *  @throws Exception on error

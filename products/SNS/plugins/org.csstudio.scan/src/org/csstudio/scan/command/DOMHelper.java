@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -180,7 +183,12 @@ public class DOMHelper
         }
         catch (NumberFormatException ex)
         {
-            throw new Exception("Missing numeric value for '" + element_name + "'");
+            // String should be quoted, non-string should be a number,
+            // but older clients might send unquoted text, so
+            // treat non-parsable number as text.
+            Logger.getLogger(DOMHelper.class.getName())
+                .log(Level.WARNING, "Expected numeric value for <" + element_name + ">, treating as string \"" + text + "\"");
+            return text;
         }
     }
     

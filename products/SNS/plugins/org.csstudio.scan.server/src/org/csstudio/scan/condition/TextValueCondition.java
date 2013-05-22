@@ -20,22 +20,18 @@ import java.util.concurrent.TimeoutException;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
+import org.csstudio.scan.device.VTypeHelper;
 import org.epics.util.time.TimeDuration;
 
-/** Condition that waits for a Device to reach a certain value.
+/** Condition that waits for a Device to reach a certain string value.
  *
- *  <p>For absolute checks (Comparison.EQUALS, ABOVE, ...) the current
- *  value of the device is monitored.
- *
- *  <p>For relative checks (INCREASED_BY, DECREASED_BY), the reference
- *  point is the initial value of the device when await() was called,
- *  resetting in case the desired value is changed while await() is
- *  pending.
+ *  <p>The current value of the device is monitored,
+ *  and not all {@link Comparison} types are supported.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DeviceValueCondition implements DeviceListener
+public class TextValueCondition implements DeviceCondition, DeviceListener
 {
     /** Device to monitor */
     final private Device device;
@@ -44,16 +40,10 @@ public class DeviceValueCondition implements DeviceListener
     final private Comparison comparison;
 
     /** Desired value of device */
-    private double desired_value;
-
-    /** Tolerance to use for Comparison.EQUALS */
-    final private double tolerance;
+    private String desired_value;
 
     /** Timeout in seconds, <code>null</code> to "wait forever" */
     final private TimeDuration timeout;
-
-    /** Initial value to await Comparison.INCREASE_BY/DECREASE_BY */
-    private volatile double initial_value = Double.NaN;
 
     /** Updated by device listener */
     private volatile boolean is_condition_met;
@@ -65,24 +55,21 @@ public class DeviceValueCondition implements DeviceListener
      *  @param device {@link Device} where values should be read
      *  @param comparison Comparison to use
      *  @param desired_value Desired numeric value of device
-     *  @param tolerance Tolerance, e.g. 0.1
      *  @param timeout Time out in seconds, or <code>null</code> for "wait forever"
      */
-    public DeviceValueCondition(final Device device, final Comparison comparison,
-            final double desired_value, final double tolerance,
+    public TextValueCondition(final Device device, final Comparison comparison,
+            final String desired_value,
             final TimeDuration timeout)
     {
         this.device = device;
         this.comparison = comparison;
-        this.tolerance = Math.abs(tolerance);
         this.timeout = timeout;
         setDesiredValue(desired_value);
     }
 
     /** @param desired_value (New) desired value, replacing the one set at initialization time */
-    public void setDesiredValue(final double desired_value)
-    {   // Invalidate initial value
-        initial_value = Double.NaN;
+    public void setDesiredValue(final String desired_value)
+    {
         this.desired_value = desired_value;
     }
 
@@ -97,9 +84,6 @@ public class DeviceValueCondition implements DeviceListener
             end_ms = System.currentTimeMillis() + Math.round(timeout.toSeconds() * 1000.0);
         else
             end_ms = 0;
-
-        // Set initial value (null if device is disconnected)
-        initial_value = device.readDouble();
 
         device.addListener(this);
         try
@@ -141,26 +125,21 @@ public class DeviceValueCondition implements DeviceListener
      */
     public boolean isConditionMet() throws Exception
     {
-        final double value = device.readDouble();
-        // Note that these need to fail "safe" if any of the values are NaN
+        final String value = VTypeHelper.toString(device.read());
         switch (comparison)
         {
         case EQUALS:
-            return Math.abs(desired_value - value) <= tolerance;
+            return desired_value.equals(value);
         case AT_LEAST:
-            return value >= desired_value;
+            return value.compareTo(desired_value) >= 0;
         case ABOVE:
-            return value > desired_value;
+            return value.compareTo(desired_value) > 0;
         case AT_MOST:
-            return value <= desired_value;
+            return value.compareTo(desired_value) <= 0;
         case BELOW:
-            return value < desired_value;
-        case INCREASE_BY:
-            return value >= initial_value + desired_value;
-        case DECREASE_BY:
-            return value <= initial_value - desired_value;
+            return value.compareTo(desired_value) < 0;
         default:
-            throw new Error("Condition not implemented: " + comparison);
+            throw new Error("Condition not implemented for strings: " + comparison);
         }
     }
 
@@ -174,8 +153,6 @@ public class DeviceValueCondition implements DeviceListener
         {
             try
             {
-                if (Double.isNaN(initial_value))
-                    initial_value = device.readDouble();
                 is_condition_met = isConditionMet();
             }
             catch (Exception ex)
@@ -193,7 +170,7 @@ public class DeviceValueCondition implements DeviceListener
     public String toString()
     {
         return "Wait for '" + device + "' "
-                + comparison + " " + desired_value
-                + ", tolerance=" + tolerance + ", timeout=" + timeout;
+                + comparison + " '" + desired_value
+                + "', timeout=" + timeout;
     }
 }

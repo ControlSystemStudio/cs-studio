@@ -8,7 +8,9 @@
 package org.csstudio.scan.server;
 
 import org.csstudio.scan.command.Comparison;
-import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.condition.DeviceCondition;
+import org.csstudio.scan.condition.NumericValueCondition;
+import org.csstudio.scan.condition.TextValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
@@ -63,17 +65,20 @@ public class ScanCommandUtil
             readback = context.getDevice(readback_name);
 
         //  Wait for the device to reach the value?
-        final DeviceValueCondition condition;
+        final DeviceCondition condition;
         if (wait)
         {
-            final double desired;
             if (value instanceof Number)
-                desired = ((Number)value).doubleValue();
+            {
+                final double desired = ((Number)value).doubleValue();
+                condition = new NumericValueCondition(readback, Comparison.EQUALS, desired,
+                        tolerance, timeout);
+            }
             else
-                throw new Exception("Value must be numeric to support 'wait'");
-
-            condition = new DeviceValueCondition(readback, Comparison.EQUALS, desired,
-                    tolerance, timeout);
+            {
+                final String desired = value.toString();
+                condition = new TextValueCondition(readback, Comparison.EQUALS, desired, timeout);
+            }
         }
         else
             condition = null;

@@ -20,24 +20,24 @@ import java.util.Date;
 
 import org.csstudio.scan.server.ScanServer;
 
-/** Scan sample for numbers
+/** Scan sample for strings
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class NumberScanSample extends ScanSample
+public class StringScanSample extends ScanSample
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private Number[] values;
+    final private String[] values;
 
     /** Initialize
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
-     *  @param number Number
+     *  @param values Values
      */
-	public NumberScanSample(final Date timestamp,
-	        final long serial, final Number... values)
+	public StringScanSample(final Date timestamp,
+	        final long serial, final String... values)
 	{
 		super(timestamp, serial);
 		this.values = values;
@@ -50,9 +50,9 @@ public class NumberScanSample extends ScanSample
 	}
 
 	/** @param index Array index
-	 *  @return Number for that array index
+	 *  @return String for that array index
 	 */
-	public Number getNumber(final int index)
+	public String getString(final int index)
     {
     	return values[index];
     }
