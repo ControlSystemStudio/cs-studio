@@ -314,10 +314,8 @@
       <path pathString="scripts/CubiclesTableSelectionMonitor.py" checkConnect="true" sfe="false" seoe="false">
         <pv trig="true">1</pv>
       </path>
-      <path pathString="scripts/DisplayPVValuesInCubicleOverview.py" checkConnect="true" sfe="false" seoe="false">
+      <path pathString="scripts/DisplayPVValuesInCubicleOverview.py" checkConnect="false" sfe="false" seoe="false">
               </path>
-      <path pathString="scripts/DisplayPVValuesInPLCOverview.py" checkConnect="false" sfe="false" seoe="false">
-            </path>
     </scripts>
     <height>175</height>
     <name>Table</name>

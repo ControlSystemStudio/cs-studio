@@ -1,0 +1,85 @@
+  <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+    <level_lo>20.0</level_lo>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <color_fillbackground>
+      <color name="IO PV OFF" red="77" green="77" blue="77" />
+    </color_fillbackground>
+    <color_hihi>
+      <color name="Major" red="255" green="0" blue="0" />
+    </color_hihi>
+    <show_lo>true</show_lo>
+    <scripts />
+    <height>75</height>
+    <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <background_color>
+      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Progress Bar</widget_type>
+    <show_minor_ticks>true</show_minor_ticks>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+    </font>
+    <width>80</width>
+    <show_lolo>true</show_lolo>
+    <border_style>5</border_style>
+    <effect_3d>true</effect_3d>
+    <pv_value />
+    <show_markers>true</show_markers>
+    <show_hi>true</show_hi>
+    <maximum>100.0</maximum>
+    <border_width>2</border_width>
+    <horizontal>true</horizontal>
+    <log_scale>false</log_scale>
+    <minimum>0.0</minimum>
+    <wuid>67ae2b7d:13cce663b99:-7d7c</wuid>
+    <show_hihi>true</show_hihi>
+    <scale_format></scale_format>
+    <show_scale>true</show_scale>
+    <color_lo>
+      <color name="Minor" red="255" green="255" blue="0" />
+    </color_lo>
+    <name>Progress Bar Template</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+    <color_hi>
+      <color name="Minor" red="255" green="255" blue="0" />
+    </color_hi>
+    <origin_ignored>true</origin_ignored>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+    </foreground_color>
+    <show_label>true</show_label>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <level_hi>80.0</level_hi>
+    <scale_font>
+      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+    </scale_font>
+    <level_hihi>90.0</level_hihi>
+    <origin>0.0</origin>
+    <color_lolo>
+      <color name="Major" red="255" green="0" blue="0" />
+    </color_lolo>
+    <fill_color>
+      <color name="IO PV ON" red="0" green="0" blue="225" />
+    </fill_color>
+    <value_label_format></value_label_format>
+    <transparent_background>false</transparent_background>
+    <limits_from_pv>true</limits_from_pv>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <level_lolo>10.0</level_lolo>
+    <y>10</y>
+    <actions hook="false" hook_all="false" />
+    <x>15</x>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <indicator_mode>false</indicator_mode>
+  </widget>

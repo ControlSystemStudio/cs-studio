@@ -7,13 +7,17 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
@@ -40,12 +44,21 @@ public class SeverityIconProvider
     public SeverityIconProvider(final Composite parent)
     {
         final Display display = parent.getDisplay();
-        disabled = new Image(display, ICON_SIZE, ICON_SIZE);
-        final GC gc = new GC(disabled);
-        gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
-        gc.fillRoundRectangle(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-        gc.dispose();
 
+        RGB gray = display.getSystemColor(SWT.COLOR_GRAY).getRGB();
+        final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,
+        				BufferedImage.TYPE_INT_RGB);
+		Graphics g = awtImage.getGraphics();
+        g.setColor(new Color(255,255,255));
+        g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
+
+        // Left rectangle for 'latched', right for 'current' indicator
+        g.setColor(new Color(gray.red,gray.green,gray.blue));
+        g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
+        
+        disabled = makeSWTImage(display, awtImage);
+        g.dispose();
+        
         icons = createIcons(display);
         parent.addDisposeListener(new DisposeListener()
         {
@@ -61,38 +74,61 @@ public class SeverityIconProvider
         });
     }
 
+    /**
+     * Convert AWT image to SWT Image (usefull for RAP)
+     * 
+     * @param display
+     * @param awtImage
+     * @return
+     */
+	private static Image makeSWTImage(final Display display, final java.awt.Image awtImage) {
+		final int width = awtImage.getWidth(null);
+		final int height = awtImage.getHeight(null);
+		final BufferedImage bufferedImage = new BufferedImage(width, height,
+				BufferedImage.TYPE_INT_RGB);
+		final Graphics2D g2d = bufferedImage.createGraphics();
+		g2d.drawImage(awtImage, 0, 0, null);
+		g2d.dispose();
+		
+		return new Image(display,
+				AWT2SWTImageConverter.convertToSWT(bufferedImage));
+	}
+
     /** @return Array of icons */
     private Image[][] createIcons(final Display display)
     {
         final SeverityLevel[] severities = SeverityLevel.values();
         final Image icons[][] = new Image[severities.length][severities.length];
+        // Use AWT to be able to draw icon in RAP version
         for (int c = 0; c < severities.length; c++)
         {
-            final Color c_col = new Color(display,
-                    severities[c].getRed(),
-                    severities[c].getGreen(),
-                    severities[c].getBlue());
-            for (int s = 0; s < severities.length; s++)
-            {
-                icons[c][s] = new Image(display, ICON_SIZE, ICON_SIZE);
-                final Color s_col = new Color(display,
-                        severities[s].getRed(),
-                        severities[s].getGreen(),
-                        severities[s].getBlue());
-                final GC gc = new GC(icons[c][s]);
+			final Color c_col = new Color(
+					severities[c].getRed(),
+					severities[c].getGreen(),
+					severities[c].getBlue());
+			for (int s = 0; s < severities.length; s++) {
+				final Color s_col = new Color(
+						severities[s].getRed(),
+						severities[s].getGreen(),
+						severities[s].getBlue());
+				final BufferedImage awtImage = new BufferedImage(ICON_SIZE,
+						ICON_SIZE, BufferedImage.TYPE_INT_RGB);
+        		final Graphics g = awtImage.getGraphics();
+                g.setColor(new Color(255,255,255));
+                g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
 
                 // Left rectangle for 'latched', right for 'current' indicator
-                gc.setBackground(s_col);
-                gc.setClipping(0, 0, ICON_SIZE/2, ICON_SIZE);
-                gc.fillRoundRectangle(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-                gc.setBackground(c_col);
-                gc.setClipping(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
-                gc.fillRoundRectangle(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
+                g.setColor(s_col);
+                g.setClip(0, 0, ICON_SIZE/2, ICON_SIZE);
+                g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
+                
+                g.setColor(c_col);
+                g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
+                g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
 
-                gc.dispose();
-                s_col.dispose();
+                icons[c][s] = makeSWTImage(display, awtImage);
+                g.dispose();
             }
-            c_col.dispose();
         }
         return icons;
     }

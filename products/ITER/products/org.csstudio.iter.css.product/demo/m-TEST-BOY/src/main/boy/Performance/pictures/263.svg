@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EF0103.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.728731in"
+		height="0.376492in" viewBox="0 0 52.4687 27.1075" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:0.720001}
+		.st2 {fill:none}
+		.st3 {stroke:#000000;stroke-dasharray:1.44,0.720001;stroke-linecap:butt;stroke-width:0.720001}
+		.st4 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.720001}
+		.st5 {fill:#000000;font-family:Arial;font-size:0.499992em}
+		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50395"
+				v:shadowOffsetY="-8.50395"/>
+		<g id="group1-1" transform="translate(0.720901,-0.720001)" v:mID="1" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="MOTEUR" v:lbl="MOTEUR" v:prompt="Moteur" v:type="1" v:format="Continu;Monophasé;Triphasé"
+						v:sortKey="A06" v:langID="1036" v:val="VT4(Monophasé)"/>
+				<v:cp v:nameU="TYPE_MESURE" v:lbl="TYPE MESURE" v:prompt="Type de mesure" v:type="1" v:format="CONTINU;SEUIL"
+						v:sortKey="A07" v:langID="1036" v:val="VT4(CONTINU)"/>
+				<v:cp v:nameU="PREFIXE" v:lbl="PREFIXE" v:prompt="PREFIXE" v:type="0" v:format="@" v:sortKey="A1" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4(PRE)"/>
+				<v:cp v:nameU="CODE" v:lbl="CODE" v:prompt="CODE" v:type="0" v:format="@" v:sortKey="A2" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="ITEM" v:lbl="ITEM" v:prompt="ITEM" v:type="0" v:format="@" v:sortKey="A3" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="SUFFIXE" v:lbl="SUFFIXE" v:prompt="SUFFIXE" v:type="0" v:format="@" v:sortKey="A4" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="LOC" v:lbl="LOCAL" v:prompt="Nom du Local" v:type="0" v:format="@" v:sortKey="A5" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="REMPLISSAGE" v:lbl="REMPLISSAGE" v:prompt="REMPLISSAGE" v:type="0" v:format="@" v:sortKey="G1"
+						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="COULEUR" v:lbl="COULEUR" v:prompt="COULEUR" v:type="0" v:format="@" v:sortKey="G2" v:invis="false"
+						v:ask="false" v:langID="1036" v:val="VT4(1)"/>
+				<v:cp v:nameU="EPAISSEUR" v:lbl="EPAISSEUR" v:prompt="EPAISSEUR" v:type="0" v:format="@" v:sortKey="G3"
+						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="GISEMENT_" v:lbl="GISEMENT_" v:prompt="Sous Localisation" v:type="0" v:format="@" v:sortKey="A5b"
+						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="DESCRIPTION" v:lbl="DESCRIPTION" v:prompt="DESCRIPTION" v:type="0" v:format="@" v:sortKey="A4b"
+						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="TYPE_ACTIONNEUR" v:lbl="TYPE_ACTIONNEUR" v:prompt="Type de l&#39;Actionneur" v:type="0" v:format="@"
+						v:sortKey="A7" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="SOUS_TYPE_ACTIONNEUR" v:lbl="SOUS_TYPE_ACTIONNEUR" v:prompt="Sous Type de l&#39;Actionneur"
+						v:type="0" v:format="@" v:sortKey="A8" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="TENSION_ALIM" v:lbl="TENSION_ALIM" v:prompt="Niveau de tension d&#39;alimentation" v:type="0"
+						v:format="@" v:sortKey="C1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="NATURE_ALIM" v:lbl="NATURE_ALIM" v:prompt="Nature réseau d&#39;alimentation" v:type="0" v:format="@"
+						v:sortKey="C2" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="PUISSANCE" v:lbl="PUISSANCE" v:prompt="Puissance électrique nominale" v:type="0" v:format="@"
+						v:sortKey="C3" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="CCDE" v:lbl="CCDE" v:prompt="Contrôle-Commande d&#39;appartenance" v:type="0" v:format="@"
+						v:sortKey="D1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="REDONDANCE" v:lbl="REDONDANCE" v:prompt="Niveau de redondance du contrôle-commande" v:type="0"
+						v:format="@" v:sortKey="D2" v:invis="false" v:ask="false" v:langID="1036" v:val="VT0(1):26"/>
+				<v:cp v:nameU="FILE_" v:lbl="FILE_" v:prompt="File du contrôle-commande" v:type="0" v:format="@" v:sortKey="D3"
+						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="CLASSE_ALIMENTATION" v:lbl="CLASSE_ALIMENTATION" v:prompt="Classe de l&#39;alimentation" v:type="0"
+						v:format="@" v:sortKey="D4" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="BORD_SERVITUDE" v:lbl="BORD_SERVITUDE" v:prompt="Bord de servitudes d&#39;appartenance" v:type="0"
+						v:format="@" v:sortKey="D5" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
+				<v:cp v:nameU="A_CITER" v:lbl="A_CITER" v:prompt="Objet à Citer (en cas de copie)" v:type="3" v:format="@"
+						v:sortKey="X1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT0(0):26"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="guid" v:val="VT4({533CE869-FE13-11D2-B36C-00AA0012CC3E})"/>
+				<v:ud v:nameU="GUID_M" v:val="VT4({533CE869-FE13-11D2-B36C-00AA0012CC3E})"/>
+				<v:ud v:nameU="Repere" v:val="VT4(PRE)"/>
+				<v:ud v:nameU="VersionApplication" v:val="VT4(102A)"/>
+				<v:ud v:nameU="VersionClient" v:val="VT4( )"/>
+			</v:userDefs>
+			<title>E_AC_VM.468</title>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape">
+				<title>forme1</title>
+				<path d="M0 14.2 A12.7559 12.7559 0 0 1 25.51 14.2 A12.7559 12.7559 0 1 1 -0 14.2 Z" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(38.2677,-0.157425)">
+				<title>forme6</title>
+				<path d="M0 1.6 L12.76 1.6 L0 27.11 L12.76 27.11 L0 1.6 Z" class="st1"/>
+			</g>
+			<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(25.5118,-12.9133)">
+				<title>forme5</title>
+				<path d="M0 27.11 L18.88 27.11 L0 27.11 Z" class="st2"/>
+				<path d="M0 27.11 L18.88 27.11" class="st3"/>
+			</g>
+			<g id="shape5-9" v:mID="5" v:groupContext="shape" transform="translate(7.14332,-14.9526)">
+				<title>forme2</title>
+				<desc>M</desc>
+				<v:userDefs/>
+				<v:textBlock v:margins="rect(4,0,4,0)" v:tabSpace="42.5197"/>
+				<v:textRect cx="5.61261" cy="23.6634" width="11.29" height="6.8882"/>
+				<rect x="0" y="20.2193" width="11.2252" height="6.8882" class="st4"/>
+				<text x="3.11" y="25.46" class="st5" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>M</text>			</g>
+		</g>
+	</g>
+</svg>

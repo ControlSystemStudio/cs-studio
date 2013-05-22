@@ -105,6 +105,101 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="intro/samples.xml">
       </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro/tutorials.xml">
+      </configExtension>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.intro.universal.ExtensionFactory:welcomeCustomization"
+            id="org.csstudio.iter.css.product.product.introCustomization"
+            name="Welcome">
+         <keywordReference id="org.eclipse.ui.ide.appearance"/>
+      </page>
+   </extension>
+   
+    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc/toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="toc/tocChangelog.xml">
+      </toc>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.csstudio.iter.css.product.EarlyStartup"/>
+   </extension>
+
+    <extension
+          point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="org.csstudio.iter.css.product.product.cheatSheetContent"
+            name="Basic Exercises">
+      </category>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/import.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.import"
+            name="1. Import a project generated from SDD">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/probe.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.probe"
+            name="2. Probe Exercise">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/databrowser.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.databrowser"
+            name="3. Data Browser Exercise">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio.iter.css.product.product.cheatSheetContent"
+            composite="false"
+            contentFile="cheatsheets/dataexchange.xml"
+            id="org.csstudio.iter.css.product.product.cheatSheetContent.dataexchange"
+            name="4. Probe via Data Exchange Exercise">
+      </cheatsheet>
+    </extension>
+    
+    <!-- Disable Activities -->
+    <extension point="org.eclipse.ui.activities">
+    	<activity id="org.csstudio.iter.css.product.disablextensions" name="Hidden activities">
+			<enabledWhen>
+				<with variable="true">
+					<equals value="false"/>
+				</with>
+			</enabledWhen>
+    	</activity>
+    	<!-- Disable New->SNL Project entry -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*de.desy.language.snl.ui.wizards.NewSNLProjectWizard"
+    	/>
+    	<!-- Disable New->Example->Shapes Diagram  -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*org.eclipse.gef.examples.shapes.ShapesCreationWizard"
+    	/>
+    	<!-- Disable New->Example->Editing and Validating XML files -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern=".*org.eclipse.wst.xml.ui.XMLExampleProjectCreationWizard"
+    	/>
+    	
+    </extension>
+   
 </plugin>

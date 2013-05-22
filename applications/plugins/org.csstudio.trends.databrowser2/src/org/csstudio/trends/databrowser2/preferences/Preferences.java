@@ -51,7 +51,8 @@ public class Preferences
 			PROMPT_FOR_ERRORS = "prompt_for_errors",
 			ARCHIVE_RESCALE = "archive_rescale",
 			USE_AUTO_SCALE = "use_auto_scale",
-			EMAIL_DEFAULT_SENDER = "email_default_sender";
+			EMAIL_DEFAULT_SENDER = "email_default_sender",
+			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view";
 
     public static double getTimeSpan()
     {
@@ -206,4 +207,14 @@ public class Preferences
 			return null;
 		return prefs.getString(Activator.PLUGIN_ID, EMAIL_DEFAULT_SENDER, null, null);
 	}
+    
+    /** @return <code>true</code> to hide search view on rap version.
+     */
+    static public boolean hideSearchView()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
+    }
 }

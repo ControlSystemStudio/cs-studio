@@ -8,8 +8,14 @@
 package org.csstudio.utility.singlesource;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Drawable;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
 
 /** Helper for accessing UI.
  * 
@@ -51,6 +57,17 @@ public class UIHelper
         return ui;
     }
     
+    /**
+     * Open the file into the default editor
+     * @param page Target page
+     * @param path Path of the file to open
+     * @throws Exception 
+     */
+	public void openEditor(final IWorkbenchPage page, IPath path)
+			throws Exception {
+		return;
+	}
+    
     /** Prompt for file name to save data
      * 
      *  @param shell Parent shell
@@ -60,18 +77,80 @@ public class UIHelper
      */
     public IPath openSaveDialog(final Shell shell, final IPath original, final String extension)
     {
-        return null;
+        return openDialog(shell, SWT.SAVE, original, extension);
     }
-    
-    /** Prompt for file name to save data outside of workspace
+
+    /** Prompt for file name
      * 
      *  @param shell Parent shell
+     *  @param style Style of window
      *  @param original Original file name, may be <code>null</code>
      *  @param extension Extension to enforce, without ".". May be <code>null</code>
      *  @return
      */
-    public String openSaveOutsideWorkspaceDialog(final Shell shell, final IPath original, final String extension)
-    {
+	public IPath openDialog(final Shell shell, final int style,
+			final IPath original, final String extension) {
+		return openDialog(shell, style, original, extension, null);
+	}
+
+	/**
+	 * Prompt for file name
+     * 
+     * @param shell Parent shell
+     * @param style Style of window
+     * @param original Original file name, may be <code>null</code>
+     * @param extension Extension to enforce, without ".". May be <code>null</code>
+	 * @param title dialog tile
+	 * @return
+	 */
+	public IPath openDialog(final Shell shell, final int style,
+			final IPath original, final String extension, final String title) {
+		return null;
+	}
+
+	/**
+	 * Prompt for file name
+	 * 
+	 * @param shell Parent shell
+	 * @param style open dialog style
+	 * @param original Original file name, may be <code>null</code>
+	 * @param extension Extension to enforce, without ".". May be <code>null</code>
+	 * @return
+	 */
+	public String openOutsideWorkspaceDialog(final Shell shell,
+			final int style, final IPath original, final String extension) {
+		return null;
+	}
+    
+    /**
+     * Copy contents to clipboard
+     * @param contents
+     */
+    public void copyToClipboard(String[] contents) {
+	}
+
+	/**
+	 * Write the message into console named consoleName
+	 * 
+	 * @param consoleName Console name
+	 * @param imageDescriptor
+	 * @param message Message to write
+	 */
+	public void writeToConsole(final String consoleName,
+			final ImageDescriptor imageDescriptor, final String message) {
+		return;
+    }
+	
+	/** @param display Display
+	 *  @param drawable Drawable
+	 *  @param bounds bounds of that drawable
+	 *  @return Image with screenshot of the drawable
+	 */
+	public Image getScreenshot(
+			final Display display,
+			final Drawable drawable,
+			final Rectangle bounds) {
+        
         return null;
     }
 }

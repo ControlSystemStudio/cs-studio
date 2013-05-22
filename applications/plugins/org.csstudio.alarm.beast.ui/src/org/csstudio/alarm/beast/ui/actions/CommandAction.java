@@ -10,6 +10,8 @@ package org.csstudio.alarm.beast.ui.actions;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that executes some command (reset, open valve, ...).
@@ -31,5 +33,10 @@ public class CommandAction extends AbstractExecuteAction
                                                tree_position),
               command.getTeaser(),
               command.getDetails());
+        
+		// Related display action are disabled in RAP version
+		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+			setEnabled(false);
+		}
     }
 }

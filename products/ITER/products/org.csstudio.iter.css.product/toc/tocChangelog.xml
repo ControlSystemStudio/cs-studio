@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="ITER CSS" link_to="../org.csstudio.ui.help/tocChangelog.xml#changelog">
+	<topic href="toc/Changelog.html" label="ITER CSS">
+    <anchor id="changelog"/>
+ </topic>
+</toc>

@@ -2,6 +2,8 @@
 echo "start"
 outputFile=$1
 ioc=TEST-BOY1:rndm$2x
+pref=pictures/
+ext=.svg
 count=$3
 x=0
 y=25
@@ -18,7 +20,7 @@ echo "x"
 #
 while [[ $x -lt $xtotal && $y -lt $ytotal ]]
 do	
-	awk -f generic-filter xposition=$x yposition=$y width=$w height=$h pv=$ioc$count $6 >> $1
+	awk -f generic-filter xposition=$x yposition=$y width=$w height=$h pv=$ioc$count svg=$pref$count$ext $6 >> $1
 	x=$(($x+$w))
 	if [ $x -ge $xtotal ]; then 
 		x=0

@@ -4,6 +4,7 @@ yposition
 width
 height
 pv
+svg
 }
 {
 	if(/<pv_name/){
@@ -16,6 +17,8 @@ pv
 		printf("<width>%d</width>\n",width)
 	}else if(/<height>/){
 		printf("<height>%d</height>\n",height)
+	}else if(/<image_file>/){
+		printf("<image_file>%s</image_file>\n",svg)
 	}else{
 		print
 	}

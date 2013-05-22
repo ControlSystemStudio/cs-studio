@@ -12,6 +12,7 @@ org.csstudio.alarm.beast
 org.csstudio.alarm.beast.annunciator
 org.csstudio.alarm.beast.msghist
 org.csstudio.alarm.beast.notifier
+org.csstudio.alarm.beast.notifier.intro
 org.csstudio.alarm.beast.ui
 org.csstudio.alarm.beast.ui.alarmtable
 org.csstudio.alarm.beast.ui.alarmtree
@@ -130,4 +131,5 @@ org.epics.util
 org.epics.vtype
 org.jdom
 org.junit_4.8.2.v4_8_2_v20110321-1705
+org.junit4_4.8.1.v20100525
 org.python

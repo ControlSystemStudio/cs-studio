@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.apputil.time.StartEndTimeParser;
+import org.eclipse.swt.widgets.Shell;
 
 /** Model of CSS log messages.
  *  <p>
@@ -35,22 +36,26 @@ public class Model
     private MessagePropertyFilter filters[] = new MessagePropertyFilter[0];
     private int max_properties;
     private GetMessagesJob message_job;
+    private Shell shell;
 
     /** Constructor
      *  @param url URL for RDB that holds log messages
      *  @param user RDB user name
      *  @param password RDB password
      *  @param schema Database schema ending in "." or "" if not used
+     *  @param shell UI shell to display error dialog
      *  @throws Exception on error
      */
-    public Model(final String url, final String user, final String password,
-            final String schema, final int max_properties) throws Exception
+	public Model(final String url, final String user, final String password,
+			final String schema, final int max_properties, final Shell shell)
+			throws Exception
     {
         this.url = url;
         this.user = user;
         this.password = password;
         this.schema = schema;
         this.max_properties = max_properties;
+        this.shell = shell;
     }
 
     /** Add Model Listener */
@@ -131,7 +136,7 @@ public class Model
         message_job = new GetMessagesJob(
                 url, user, password, schema,
                 times.getStart(), times.getEnd(),
-                filters, max_properties)
+                filters, max_properties, shell)
         {
             @Override
             void gotMessages(final Message[] messages)

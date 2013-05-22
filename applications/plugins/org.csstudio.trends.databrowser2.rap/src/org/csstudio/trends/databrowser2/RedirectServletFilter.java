@@ -20,7 +20,8 @@ public class RedirectServletFilter implements javax.servlet.Filter {
 			HttpServletResponse response = (HttpServletResponse) res;
 
 			if ("/".equals(request.getPathInfo())) {
-				response.sendRedirect(response.encodeRedirectURL("d"));
+				response.sendRedirect(response
+						.encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME));
 			} else {
 				chain.doFilter(request, response);
 			}

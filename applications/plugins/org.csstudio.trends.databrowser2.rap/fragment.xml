@@ -29,15 +29,33 @@
             favicon="icons/DataBrowserRunner.png"
             id="org.csstudio.trends.databrowser2.branding.workbench"
             servletName="d"
+            themeId="org.csstudio.trends.databrowser2.rap.theme"
             title="DataBrowser">
       </branding>
    </extension>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <theme
+            file="theme/default-extensions.css"
+            id="org.csstudio.trends.databrowser2.rap.theme"
+            name="WebDatabrowserTheme">
+      </theme>
+   </extension>
+   
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
             alias="/webdatabrowser_img/loading.gif"
             base-name="html/loading.gif">
       </resource>
+   </extension>
+   
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+         alias="/"
+         class="org.csstudio.trends.databrowser2.RedirectServlet">
+      </servlet>
    </extension>
    <extension
          point="org.eclipse.equinox.http.registry.filters">
@@ -47,4 +65,27 @@
             load-on-startup="true">
       </filter>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.trends.databrowser2.rap.AboutWebPopup"
+               icon="icons/about.png"
+               label="%AboutTitle"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.trends.databrowser2.AboutWebDataBrowserHandler"
+            id="org.csstudio.trends.databrowser2.rap.AboutWebPopup"
+            name="%AboutTitle">
+      </command>
+   </extension>
+   
 </fragment>
