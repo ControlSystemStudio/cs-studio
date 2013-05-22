@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
-import org.csstudio.ui.util.widgets.MeterWidget;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
@@ -49,8 +48,6 @@ import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.TimeoutException;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
-import org.epics.vtype.Display;
-import org.epics.vtype.ValueUtil;
 
 /**
  * Probe view.
@@ -74,7 +71,7 @@ public class PVManagerProbe extends ViewPart {
 	private ErrorBar errorBar;
 	
 	private Composite mainPanel;
-	private MeterWidget meterPanel;
+	private ViewerPanel viewerPanel;
 	private ValuePanel valuePanel;
 	private Composite statusBarPanel;
 	private ChangeValuePanel changeValuePanel;
@@ -103,7 +100,7 @@ public class PVManagerProbe extends ViewPart {
 	private IMemento memento = null;
 	private static final String MEMENTO_PVFORMULA_LIST = "pvFormulaList"; //$NON-NLS-1$
 	private static final String MEMENTO_PVFORMULA = "pvFormula"; //$NON-NLS-1$
-	private static final String MEMENTO_SHOW_METER = "meter"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_VIEWER = "showViewer"; //$NON-NLS-1$
 	private static final String MEMENTO_SHOW_VALUE = "showValue"; //$NON-NLS-1$
 	private static final String MEMENTO_SHOW_CHANGE_VALUE = "showChangeValue"; //$NON-NLS-1$
 	private static final String MEMENTO_SHOW_METADATA = "showMetadata"; //$NON-NLS-1$
@@ -142,7 +139,7 @@ public class PVManagerProbe extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		memento.putString(MEMENTO_PVFORMULA, pvFormula);
-		memento.putBoolean(MEMENTO_SHOW_METER, sectionToMenu.get(meterPanel)
+		memento.putBoolean(MEMENTO_SHOW_VIEWER, sectionToMenu.get(viewerPanel)
 				.getSelection());
 		memento.putBoolean(MEMENTO_SHOW_VALUE, sectionToMenu.get(valuePanel)
 				.getSelection());
@@ -202,10 +199,10 @@ public class PVManagerProbe extends ViewPart {
 		mainPanel.setLayout(gl_mainPanel);
 		mainScroll.setContent(mainPanel);
 
-		meterPanel = new MeterWidget(mainPanel, 0);
-		meterPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false,
+		viewerPanel = new ViewerPanel(mainPanel, SWT.BORDER);
+		viewerPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false,
 				1, 1));
-		meterPanel.setEnabled(false);
+		viewerPanel.setEnabled(false);
 
 		valuePanel = new ValuePanel(mainPanel, SWT.BORDER);
 		valuePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
@@ -258,7 +255,7 @@ public class PVManagerProbe extends ViewPart {
 
 		// Determine initial state
 		String initialPVFormula = null;
-		boolean showMeter = false;
+		boolean showViewer = false;
 		boolean showValue = true;
 		boolean showChangeValue = true;
 		boolean showMetadata = false;
@@ -266,7 +263,7 @@ public class PVManagerProbe extends ViewPart {
 
 		if (memento != null) {
 			initialPVFormula = memento.getString(MEMENTO_PVFORMULA);
-			showMeter = nullDefault(memento.getBoolean(MEMENTO_SHOW_METER), showMeter);
+			showViewer = nullDefault(memento.getBoolean(MEMENTO_SHOW_VIEWER), showViewer);
 			showValue = nullDefault(memento.getBoolean(MEMENTO_SHOW_VALUE),
 					showValue);
 			showChangeValue = nullDefault(
@@ -277,7 +274,7 @@ public class PVManagerProbe extends ViewPart {
 					showDetails);
 		}
 		setPVFormula(initialPVFormula);
-		initSection(meterPanel, showMeter);
+		initSection(viewerPanel, showViewer);
 		initSection(valuePanel, showValue);
 		initSection(changeValuePanel, showChangeValue);
 		initSection(metadataPanel, showMetadata);
@@ -330,7 +327,7 @@ public class PVManagerProbe extends ViewPart {
 		changeValuePanel.reset();
 		metadataPanel.changeValue(null);
 		detailsPanel.changeValue(null, null);
-		setMeter(null, null);
+		viewerPanel.changeValue(null);
 		setLastError(null);
 		copyValueAction.setEnabled(false);
 		// If name is blank, update status to waiting and quit
@@ -356,8 +353,7 @@ public class PVManagerProbe extends ViewPart {
 						public void pvChanged(PVReaderEvent<Object> event) {
 							Object value = event.getPvReader().getValue();
 							setLastError(event.getPvReader().lastException());
-							setMeter(ValueUtil.numericValueOf(value),
-									ValueUtil.displayOf(value));
+							viewerPanel.changeValue(value);
 							if (event.getPvReader().isConnected()) {
 								setStatus(Messages.Probe_statusConnected);
 							} else {
@@ -436,10 +432,10 @@ public class PVManagerProbe extends ViewPart {
 			// First selection for All and then each datasource in alphabetical
 			// order
 			final Menu sectionsMenu = new Menu(pvFomulaInputBar.getParent());
-			MenuItem meterMenuItem = ShowHideForGridLayout
-					.createShowHideMenuItem(sectionsMenu, meterPanel);
-			meterMenuItem.setText("Meter");
-			sectionToMenu.put(meterPanel, meterMenuItem);
+			MenuItem viewerMenuItem = ShowHideForGridLayout
+					.createShowHideMenuItem(sectionsMenu, viewerPanel);
+			viewerMenuItem.setText("Viewer");
+			sectionToMenu.put(viewerPanel, viewerMenuItem);
 			MenuItem valueMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, valuePanel);
 			valueMenuItem.setText("Value");
@@ -516,35 +512,6 @@ public class PVManagerProbe extends ViewPart {
 		copyValueAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/etool16/paste_edit.gif"));
 		copyValueAction.setToolTipText("Copy value to clipboard");
 		copyValueAction.setEnabled(false);
-	}
-
-	/**
-	 * Displays a new value in the meter.
-	 * 
-	 * @param value
-	 *            the new value
-	 * @param display
-	 *            the display information
-	 */
-	private void setMeter(Double value, Display display) {
-		if (value == null || display == null
-				|| !ValueUtil.displayHasValidDisplayLimits(display)) {
-			meterPanel.setEnabled(false);
-			// meter.setValue(0.0);
-		} else if (display.getUpperDisplayLimit() <= display
-				.getLowerDisplayLimit()) {
-			meterPanel.setEnabled(false);
-			// meter.setValue(0.0);
-		} else {
-			meterPanel.setEnabled(true);
-			meterPanel.setLimits(display.getLowerDisplayLimit(),
-					display.getLowerAlarmLimit(),
-					display.getLowerWarningLimit(),
-					display.getUpperWarningLimit(),
-					display.getUpperAlarmLimit(),
-					display.getUpperDisplayLimit(), 1);
-			meterPanel.setValue(value);
-		}
 	}
 
 	/**
