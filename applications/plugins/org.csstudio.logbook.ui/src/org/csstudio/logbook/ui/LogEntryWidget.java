@@ -117,6 +117,8 @@ public class LogEntryWidget extends Composite {
     private Composite composite;
     private ErrorBar errorBar;
     private final boolean newWindow;
+    
+    private String imageToSelect;
 
     private final String[] supportedImageTypes = new String[] { "*.png",
 	    "*.jpg", "*.jpeg", "*.tiff", "*.gif" };
@@ -433,11 +435,13 @@ public class LogEntryWidget extends Composite {
 		final String filename = dlg.open();
 		if (filename != null) {
 		    try {
+		    File imgFile = new File(filename);
 			LogEntryBuilder logEntryBuilder = LogEntryBuilder
 				.logEntry(logEntryChangeset.getLogEntry())
-				.attach(AttachmentBuilder.attachment(filename)
+				.attach(AttachmentBuilder.attachment(imgFile.getName())
 					.inputStream(
-						new FileInputStream(filename)));
+						new FileInputStream(imgFile)));
+			imageToSelect = imgFile.getName();
 			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		    } catch (IOException e1) {
 			setLastException(e1);
@@ -765,6 +769,10 @@ public class LogEntryWidget extends Composite {
 	    }
 	    try {
 		imageStackWidget.setImageInputStreamsMap(imageInputStreamsMap);
+		if (imageToSelect != null) {
+			imageStackWidget.setSelectedImageName(imageToSelect);
+			imageToSelect = null;
+		}
 	    } catch (IOException e) {
 		setLastException(e);
 	    }
@@ -821,8 +829,9 @@ public class LogEntryWidget extends Composite {
 	    image.dispose();
 	    // Save
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+		imageToSelect = screenshot_file.getName();
 	    return AttachmentBuilder
-		    .attachment(screenshot_file.getPath())
+		    .attachment(screenshot_file.getName())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));
 	} catch (Exception ex) {
 	    setLastException(ex);

@@ -139,12 +139,16 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	btnCurrentContext.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		IEditorInput input = PlatformUI.getWorkbench()
-			.getActiveWorkbenchWindow().getActivePage()
-			.getActiveEditor().getEditorInput();
-		file = new File(((IFile) input.getAdapter(IFile.class))
-			.getLocationURI());
-		textFileName.setText(file.getName());
+			IEditorInput input = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor().getEditorInput();
+			IFile editorFile = (IFile) input.getAdapter(IFile.class);
+			if (editorFile != null) {
+				file = new File(editorFile.getLocationURI());
+				if (file != null) {
+					textFileName.setText(file.getName());
+				}
+			}
 	    }
 	});
 	FormData fd_btnCurrentContext = new FormData();
@@ -174,7 +178,8 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
 	lblNewLabel_2.setText("FileName:");
 
-	textFileDescription = new Text(this, SWT.BORDER);
+	textFileDescription = new Text(this, SWT.BORDER | SWT.WRAP
+			| SWT.V_SCROLL);
 	FormData fd_textFileDescription = new FormData();
 	fd_textFileDescription.bottom = new FormAttachment(lblNewLabel_2, -6);
 	fd_textFileDescription.left = new FormAttachment(0, 10);

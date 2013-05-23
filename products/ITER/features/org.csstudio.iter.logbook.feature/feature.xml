@@ -41,6 +41,7 @@ of the distribution package.
       <import plugin="org.csstudio.security" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security.ui" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -72,6 +73,13 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.autocomplete.logbook"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.logbook"
          download-size="0"
          install-size="0"
@@ -80,6 +88,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.logbook.olog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logbook.olog.properties"
          download-size="0"
          install-size="0"
          version="0.0.0"

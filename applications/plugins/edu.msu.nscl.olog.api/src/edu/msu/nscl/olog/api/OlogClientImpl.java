@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -869,7 +870,7 @@ public class OlogClientImpl implements OlogClient {
 
 		@Override
 		public Collection<Log> call() throws Exception {
-			Collection<Log> logs = new HashSet<Log>();
+			Collection<Log> logs = new LinkedHashSet<Log>();
 			XmlLogs xmlLogs = service.path("logs").queryParams(map)
 					.accept(MediaType.APPLICATION_XML)
 					.accept(MediaType.APPLICATION_JSON).get(XmlLogs.class);
