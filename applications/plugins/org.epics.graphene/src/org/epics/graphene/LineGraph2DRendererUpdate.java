@@ -12,6 +12,8 @@ public class LineGraph2DRendererUpdate extends Graph2DRendererUpdate<LineGraph2D
 
     private InterpolationScheme interpolation;
     private ReductionScheme reduction;
+    private Integer focusPixelX;
+    private Boolean highlightFocusValue;
     
     public LineGraph2DRendererUpdate interpolation(InterpolationScheme scheme) {
         if (scheme == null) {
@@ -35,12 +37,30 @@ public class LineGraph2DRendererUpdate extends Graph2DRendererUpdate<LineGraph2D
         return this;
     }
     
+    public LineGraph2DRendererUpdate focusPixel(int x) {
+        this.focusPixelX = x;
+        return this;
+    }
+    
+    public LineGraph2DRendererUpdate highlightFocusValue(boolean highlightFocusValue) {
+        this.highlightFocusValue = highlightFocusValue;
+        return this;
+    }
+    
     public InterpolationScheme getInterpolation() {
         return interpolation;
     }
 
     public ReductionScheme getDataReduction() {
         return reduction;
+    }
+
+    public Integer getFocusPixelX() {
+        return focusPixelX;
+    }
+
+    public Boolean getHighlightFocusValue() {
+        return highlightFocusValue;
     }
     
 }
