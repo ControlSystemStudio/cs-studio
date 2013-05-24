@@ -5,13 +5,9 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VNumber;
 import org.epics.vtype.VImage;
 import org.epics.vtype.ValueUtil;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
 import org.epics.pvmanager.QueueCollector;
@@ -86,7 +82,8 @@ class LineGraph2DFunction implements ReadFunction<Graph2DResult> {
         previousImage = ValueUtil.toVImage(image);
         return new Graph2DResult(vType, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), dataset.getXStatistics(), renderer.getXAggregatedRange()),
-                new GraphDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()));
+                new GraphDataRange(renderer.getYPlotRange(), dataset.getYStatistics(), renderer.getYAggregatedRange()),
+                renderer.getFocusValueIndex());
     }
     
 }
