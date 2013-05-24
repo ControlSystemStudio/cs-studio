@@ -97,5 +97,9 @@ public class AutoCompleteWidget {
 
 		}
 	}
+	
+	public ContentProposalAdapter getContentProposalAdapter() {
+		return adapter;
+	}
 
 }
