@@ -4,9 +4,11 @@
  */
 package org.epics.vtype.table;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
@@ -129,5 +131,38 @@ public class VTableFactory {
             }
         };
     }
-
+    
+    public static VTable extractRow(VTable vTable, int row) {
+        if (vTable == null || row >= vTable.getRowCount() || row < 0) {
+            return null;
+        }
+        List<String> columnNames = new ArrayList<>(vTable.getColumnCount());
+        List<Class<?>> columnTypes = new ArrayList<>(vTable.getColumnCount());
+        List<Object> columnData = new ArrayList<>(vTable.getColumnCount());
+        for (int nCol = 0; nCol < vTable.getColumnCount(); nCol++) {
+            columnNames.add(vTable.getColumnName(nCol));
+            columnTypes.add(vTable.getColumnType(nCol));
+            columnData.add(extractColumnData(vTable.getColumnData(nCol), row));
+        }
+        return ValueFactory.newVTable(columnTypes, columnNames, columnData);
+    }
+    
+    private static Object extractColumnData(Object columnData, int... rows) {
+        if (columnData instanceof List) {
+            List<Object> data = new ArrayList<>(rows.length);
+            for (int i = 0; i < rows.length; i++) {
+                int j = rows[i];
+                data.add(((List<?>) columnData).get(j));
+            }
+            return data;
+        } else if (columnData instanceof ListNumber) {
+            double[] data = new double[rows.length];
+            for (int i = 0; i < rows.length; i++) {
+                int j = rows[i];
+                data[i] = ((ListNumber) columnData).getDouble(j);
+            }
+            return new ArrayDouble(data);
+        }
+        return null;
+    }
 }
