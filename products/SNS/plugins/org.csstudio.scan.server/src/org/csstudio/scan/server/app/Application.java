@@ -83,7 +83,9 @@ public class Application implements IApplication
 	        final int port = ScanSystemPreferences.getServerPort();
 	        server = new ScanServerImpl(port);
 	        server.start();
-	        log.info("Scan Server running on ports " + port + " (RMI Registry) and " + (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface)");
+	        log.info("Scan Server running on ports " + port + " (RMI Registry), " +
+	                (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface), " +
+	                (port + 2) + " (REST interface)");
 
 	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port + 2);
 	        
