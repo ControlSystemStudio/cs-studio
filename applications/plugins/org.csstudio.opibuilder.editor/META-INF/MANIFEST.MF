@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.2.0";visibility:=r
  org.csstudio.opibuilder,
  org.eclipse.core.runtime,
  org.eclipse.search,
- org.apache.batik
+ org.apache.batik,
+ org.csstudio.autocomplete.ui;bundle-version="1.0.0"
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.opibuilder.editor.Activator
