@@ -208,6 +208,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 			graph = null;
 			resetRange(xRangeControl);
 			resetRange(yRangeControl);
+			processInit();
 		}
 
 		if (getDataFormula() == null || getDataFormula().trim().isEmpty()) {
@@ -229,9 +230,18 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 						} else {
 							imageDisplay.setVImage(null);
 						}
+						processValue();
 					}
 
 				}).maxRate(ofHertz(50));
+	}
+	
+	protected void processInit() {
+		// To be extended if needed
+	}
+	
+	protected void processValue() {
+		// To be extended if needed
 	}
 
 	protected abstract T createGraph();
