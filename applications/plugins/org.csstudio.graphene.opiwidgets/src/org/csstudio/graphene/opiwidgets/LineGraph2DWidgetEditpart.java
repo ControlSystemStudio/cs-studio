@@ -46,6 +46,7 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 			widget.setShowAxis(model.getShowAxis());
 			widget.setConfigurable(model.isConfigurable());
 			widget.setHighlightFocusValue(model.isHighlightFocusValue());
+			widget.setFocusValuePv(model.getFocusValuePv());
 		}
 	}
 
