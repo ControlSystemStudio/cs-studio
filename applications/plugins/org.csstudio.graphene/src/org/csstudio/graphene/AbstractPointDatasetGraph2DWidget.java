@@ -332,5 +332,9 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 			}
 		}
 	}
+	
+	protected VImageDisplay getImageDisplay() {
+		return imageDisplay;
+	}
 
 }

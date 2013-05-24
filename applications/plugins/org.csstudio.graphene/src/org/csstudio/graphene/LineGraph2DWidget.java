@@ -6,12 +6,18 @@ package org.csstudio.graphene;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
 import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
@@ -30,6 +36,25 @@ public class LineGraph2DWidget
 
 	public LineGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("highlightFocusValue") && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+				}
+				
+			}
+		});
+		getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
+			
+			@Override
+			public void mouseMove(MouseEvent e) {
+				if (isHighlightFocusValue() && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+				}
+			}
+		});
 	}
 
 	protected LineGraph2DExpression createGraph() {
@@ -38,8 +63,39 @@ public class LineGraph2DWidget
 				formulaArg(getYColumnFormula()),
 				formulaArg(getTooltipColumnFormula()));
 		graph.update(graph.newUpdate()
-				.interpolation(InterpolationScheme.LINEAR));
+				.interpolation(InterpolationScheme.LINEAR)
+				.highlightFocusValue(isHighlightFocusValue()));
 		return graph;
+	}
+	
+	private boolean highlightFocusValue = false;
+	
+	public boolean isHighlightFocusValue() {
+		return highlightFocusValue;
+	}
+	
+	public void setHighlightFocusValue(boolean highlightFocusValue) {
+		boolean oldValue = this.highlightFocusValue;
+		this.highlightFocusValue = highlightFocusValue;
+		changeSupport.firePropertyChange("highlightFocusValue", oldValue, this.highlightFocusValue);
+	}
+	
+	private static final String MEMENTO_HIGHLIGHT_FOCUS_VALUE = "highlightFocusValue"; //$NON-NLS-1$
+	
+	@Override
+	public void loadState(IMemento memento) {
+		super.loadState(memento);
+		if (memento != null) {
+			if (memento.getBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE) != null) {
+				setHighlightFocusValue(memento.getBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE));
+			}
+		}
+	}
+	
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		memento.putBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE, isHighlightFocusValue());
 	}
 
 	@Override
