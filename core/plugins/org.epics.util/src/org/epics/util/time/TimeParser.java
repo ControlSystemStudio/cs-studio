@@ -1,6 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (C) 2012 Brookhaven National Laboratory
+ * All rights reserved. Use is subject to license terms.
  */
 package org.epics.util.time;
 
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * A helper class to parse user defined time strings to absolute or relative
  * time durations
  * 
- * The following return a TimeInterval â†� absolute
+ * The following return a TimeInterval - absolute
  * 
  * "last min", "last hour", "last day", "last week"
  * 
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * 
  * The following returns a Timestamp "now"
  * 
- * The following returns a TimeDuration â†� relative
+ * The following returns a TimeDuration - relative
  * 
  * "last min", "last hour", "last day", "last week"
  * 
