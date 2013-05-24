@@ -29,6 +29,16 @@ public class SilenceAction extends Action
 
         this.view = view;
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+    	super.setEnabled(enabled);
+
+        if (enabled)
+            setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ICON_ACTIVE));
+        else
+            setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ICON_SILENCE));
+    }
 
     @Override
     public void run()
