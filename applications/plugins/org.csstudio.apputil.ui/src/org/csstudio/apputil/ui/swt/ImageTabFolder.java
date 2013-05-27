@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.ImagePreview;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -31,7 +32,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -249,11 +249,9 @@ public class ImageTabFolder
     /** Prompt for image file to add */
     protected void addImage()
     {
-        final FileDialog dlg = new FileDialog(getControl().getShell(), SWT.OPEN);
-        dlg.setFilterExtensions(new String [] { "*.png" }); //$NON-NLS-1$
-        dlg.setFilterNames(new String [] { "PNG Image" }); //$NON-NLS-1$
-        final String filename = dlg.open();
-        if (filename != null)
-            addImage(filename);
+		final String filename = SingleSourcePlugin.getUIHelper().openOutsideWorkspaceDialog(
+				getControl().getShell(), SWT.OPEN, null, "*.png");
+		if (filename != null)
+			addImage(filename);
     }
 }
