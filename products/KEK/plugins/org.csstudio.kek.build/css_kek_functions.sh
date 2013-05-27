@@ -87,18 +87,36 @@ function unique_urls {
 #
 # Parameters
 #  1: Archive URL
-#  2: Sub archive name
+#  2: Sub archive names separated by white spaces
 # =========================================================================
 function append_sub_archives {
     local URL=$1
-    local NAME=$2
-    local SUB_ARCHIVE="${NAME}|1|${URL}"
+    local NAMES=$2
+    local i=1
+    local SUB_ARCHIVE=
+    local TAIL=
+    local NAME=
+    local POS=
 
-    if [ -z "${SUB_ARCHIVES}" ]; then
-        SUB_ARCHIVES="${SUB_ARCHIVE}"
-    else
-        SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
-    fi
+    for S in ${NAMES}; do
+        TAIL=$(echo ${S} | cut -c ${#S})
+        if [ "${TAIL}" = "\\" ]; then
+            echo "OK!!!"
+            POS=$(expr ${#S} - 1)
+            NAME="${NAME}"$(echo ${S} | cut -c 1-${POS})" "
+        else
+            NAME="${NAME}${S}"
+            SUB_ARCHIVE="${NAME}|$i|${URL}"
+            if [ -z "${SUB_ARCHIVES}" ]; then
+                SUB_ARCHIVES="${SUB_ARCHIVE}"
+            else
+                SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+            fi
+
+            NAME=""
+            i=$(expr $i + 1)
+        fi
+    done
 }
 
 # =========================================================================
@@ -131,8 +149,8 @@ function css_kek_settings {
         # Set sub archive names for each archiver URL
             i=1
             for URL in ${URLS}; do
-                NAME=$(eval 'echo $'$a'_ARCHIVE_NAMES_'$i)
-                append_sub_archives "${URL}" "${NAME}"
+                NAMES=$(eval 'echo $'$a'_ARCHIVE_NAMES_'$i)
+                append_sub_archives "${URL}" "${NAMES}"
                 i=$(expr $i + 1)
             done
 
