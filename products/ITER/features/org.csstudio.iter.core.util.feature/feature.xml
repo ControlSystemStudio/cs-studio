@@ -24,8 +24,6 @@ of the distribution package.
       <import plugin="org.eclipse.osgi" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.slf4j" version="1.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jms" version="5.4.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.servicelocator" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.jms" version="1.0.0" match="greaterOrEqual"/>
@@ -38,18 +36,37 @@ of the distribution package.
       <import plugin="org.csstudio.platform.libs.jms" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.util" version="1.0.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.ds" version="1.3.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.2.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="com.google.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -70,56 +87,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="javax.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.servicelocator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.easymock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jmock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.remote"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jms"
+         id="org.csstudio.apputil"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -133,21 +101,15 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.java"
+         id="org.csstudio.autocomplete"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.utility.jms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.utility.rdb"
+         id="org.csstudio.csdata"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -161,6 +123,13 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.logging"
          download-size="0"
          install-size="0"
@@ -168,7 +137,14 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv"
+         id="org.csstudio.servicelocator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.easymock"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -190,11 +166,45 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.autocomplete"
+         id="org.csstudio.platform.libs.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jmock"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.utility.jms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.utility.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.remote"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -206,6 +216,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.jms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pv"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -247,6 +264,13 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.utility.pvmanager.file"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.utility.pvmanager.loc"
          download-size="0"
          install-size="0"
@@ -254,7 +278,21 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.utility.pvmanager.pva"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sys"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -282,6 +320,27 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.workspace"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.epics.util"
          download-size="0"
          install-size="0"
@@ -290,20 +349,6 @@ of the distribution package.
 
    <plugin
          id="org.epics.vtype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.csdata"
          download-size="0"
          install-size="0"
          version="0.0.0"

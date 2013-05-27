@@ -21,20 +21,14 @@ of the distribution package.
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.equinox.http.jetty"/>
       <import plugin="javax.servlet"/>
-      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.1.4" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.csstudio.iter.jms2rdb.product"
+         id="org.csstudio.apputil"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -55,7 +49,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.apputil"
+         id="org.csstudio.iter.jms2rdb.product"
          download-size="0"
          install-size="0"
          version="0.0.0"
