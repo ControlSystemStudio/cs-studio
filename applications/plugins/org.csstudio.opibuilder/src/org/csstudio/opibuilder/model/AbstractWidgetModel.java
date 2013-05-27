@@ -44,6 +44,7 @@ import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.ComplexDataProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.properties.ScriptProperty;
@@ -304,7 +305,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 * @param pvNameProperty
 	 * @param pvValueProperty
 	 */
-	public void addPVProperty(final StringProperty pvNameProperty, 
+	public void addPVProperty(final PVNameProperty pvNameProperty, 
 			final PVValueProperty pvValueProperty){
 		addProperty(pvNameProperty);
 		addProperty(pvValueProperty);

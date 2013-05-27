@@ -8,6 +8,8 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -58,7 +60,17 @@ public class PropertiesEditingSupport extends EditingSupport {
 		protected CellEditor getCellEditor(final Object element) {
 			AbstractWidgetProperty property;
 			if((property = getSelectedProperty()) != null){
-				return property.getPropertyDescriptor().createPropertyEditor(table);				
+				final CellEditor cellEditor= property.getPropertyDescriptor().createPropertyEditor(table);
+				if(cellEditor instanceof PVNameTextCellEditor){
+					((PVNameTextCellEditor)cellEditor).addContentProposalListener(new IContentProposalListener() {
+						
+						@Override
+						public void proposalAccepted(IContentProposal proposal) {
+							setValue(element, cellEditor.getValue());
+						}
+					});
+				}
+				return cellEditor;
 			}			
 			return null;
 		}
