@@ -45,6 +45,8 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 			widget.setTooltipColumnFormula(model.getTooltipFormula());
 			widget.setShowAxis(model.getShowAxis());
 			widget.setConfigurable(model.isConfigurable());
+			widget.setHighlightFocusValue(model.isHighlightFocusValue());
+			widget.setFocusValuePv(model.getFocusValuePv());
 		}
 	}
 
@@ -76,6 +78,7 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.CONFIGURABLE, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_SHOW_AXIS, reconfigure);
+		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_HIGHLIGHT_FOCUS_VALUE, reconfigure);
 	}
 
 	@Override

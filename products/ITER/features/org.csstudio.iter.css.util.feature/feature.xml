@@ -40,11 +40,19 @@ of the distribution package.
          version="0.0.0"/>
 
    <includes
+         id="org.csstudio.iter.diag.pvfields.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.csstudio.iter.display.pace.feature"
          version="0.0.0"/>
 
    <includes
          id="org.csstudio.iter.display.pvtable.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.display.rdbtable.feature"
          version="0.0.0"/>
 
    <includes
@@ -73,10 +81,6 @@ of the distribution package.
 
    <includes
          id="org.csstudio.iter.utility.sysmon.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.iter.diag.pvfields.feature"
          version="0.0.0"/>
 
    <includes

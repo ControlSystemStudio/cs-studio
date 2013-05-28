@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Simple Logging Facade 4J
+Bundle-SymbolicName: org.slf4j.slf4j-jdk14
+Bundle-Version: 1.7.2
+Fragment-Host: org.slf4j
+Export-Package: org.slf4j,
+ org.slf4j.helpers,
+ org.slf4j.spi
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: ITER - Davy Dequidt <davy.dequidt@iter.org>

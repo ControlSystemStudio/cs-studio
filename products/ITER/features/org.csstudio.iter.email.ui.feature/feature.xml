@@ -5,10 +5,6 @@
       version="4.1.1.qualifier"
       provider-name="ITER">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
-   </description>
-
    <copyright>
       Copyright (c) : 2010-2013 ITER Organization,
 CS 90 046
@@ -22,6 +18,10 @@ For the terms and conditions of redistribution or use of this software
 refer to the file ITER-LICENSE.TXT located in the top level directory
 of the distribution package.
    </license>
+
+   <includes
+         id="org.csstudio.iter.css.app.feature"
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>

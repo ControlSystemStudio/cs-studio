@@ -9,6 +9,10 @@ package org.csstudio.utility.speech;
 
 import java.util.Locale;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 import javax.speech.EngineCreate;
 import javax.speech.EngineList;
 import javax.speech.EngineModeDesc;
@@ -31,6 +35,18 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
 
     public FreeTTS_JSAPI_Annunciator() throws Exception
     {
+		// Test if a sound card is available first
+    	AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+        try {
+            AudioSystem.getLine(info);
+        } catch (IllegalArgumentException e) {
+			if (e.getMessage() != null && e.getMessage().startsWith("No line")) {
+				throw new NoSoundCardAvailableException(
+						"No sound card available.", e);
+			}
+        }
+		
         FreeTTSHacks.perform();
 
         // Start the synthesizer

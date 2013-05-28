@@ -79,7 +79,8 @@ class AreaGraph2DFunction implements ReadFunction<Graph2DResult> {
         
         return new Graph2DResult(null, ValueUtil.toVImage(image),
                 new GraphDataRange(renderer.getXPlotRange(), histogram.getXRange(), renderer.getXAggregatedRange()),
-                new GraphDataRange(renderer.getYPlotRange(), histogram.getStatistics(), renderer.getYAggregatedRange()));
+                new GraphDataRange(renderer.getYPlotRange(), histogram.getStatistics(), renderer.getYAggregatedRange()),
+                -1);
     }
     
 }

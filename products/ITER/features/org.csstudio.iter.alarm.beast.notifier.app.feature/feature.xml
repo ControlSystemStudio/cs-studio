@@ -20,8 +20,8 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
@@ -34,10 +34,11 @@ of the distribution package.
       <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.csstudio.iter.alarm.beast.notifier.product"
+         id="org.csstudio.apputil"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -58,7 +59,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.apputil"
+         id="org.csstudio.iter.alarm.beast.notifier.product"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -91,7 +91,7 @@ public class MultipleSelectionCombo<T> extends Composite {
      * When list looses focus, the event time is noted here. This prevents the
      * drop-down button from re-opening the list right away.
      */
-    private int lost_focus = 0;
+    private long lost_focus = 0;
 
     private volatile boolean modify = false;
 
@@ -178,7 +178,10 @@ public class MultipleSelectionCombo<T> extends Composite {
 	    public void widgetSelected(final SelectionEvent e) {
 		// Was list open, user clicked this button to close,
 		// and list self-closed because is lost focus?
-		if (e.time - lost_focus <= 300)
+	    	
+		// e.time is an unsigned integer and should be AND'ed with
+		// 0xFFFFFFFFL so that it can be treated as a signed long.
+		if ((e.time & 0xFFFFFFFFL) - lost_focus <= 300)
 		    return; // Done
 
 		// If list is not open, open it
@@ -415,8 +418,10 @@ public class MultipleSelectionCombo<T> extends Composite {
 	list.addFocusListener(new FocusAdapter() {
 	    @Override
 	    public void focusLost(final FocusEvent e) {
-		lost_focus = e.time;
-		hidePopup();
+			// This field is an unsigned integer and should be AND'ed with
+			// 0xFFFFFFFFL so that it can be treated as a signed long.
+	    	lost_focus = e.time & 0xFFFFFFFFL;
+	    	hidePopup();
 	    }
 	});
 	list.setFocus();

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Extra widgets for BOY
+Bundle-SymbolicName: org.csstudio.opibuilder.widgets.extra;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.csstudio.utility.pvmanager;bundle-version="3.2.0",
+ org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0",
+ org.csstudio.opibuilder.widgets;bundle-version="3.2.0",
+ org.csstudio.opibuilder;bundle-version="3.2.0"

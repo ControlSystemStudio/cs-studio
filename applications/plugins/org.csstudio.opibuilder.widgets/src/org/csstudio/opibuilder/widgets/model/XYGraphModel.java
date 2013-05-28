@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.NameDefinedCategory;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -197,7 +198,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 
 	@Override
 	protected void configureProperties() {
-		addPVProperty(new StringProperty(PROP_TRIGGER_PV, "Trigger PV",
+		addPVProperty(new PVNameProperty(PROP_TRIGGER_PV, "Trigger PV",
 				WidgetPropertyCategory.Behavior, ""), 
 				new PVValueProperty(PROP_TRIGGER_PV_VALUE, null));
 		addProperty(new StringProperty(PROP_TITLE, "Title",
@@ -370,11 +371,11 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 0));
 			break;
 		case XPV:
-			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, ""), 
+			addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category, ""), 
 					new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YPV:
-			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, 
+			addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category, 
 					traceIndex == 0 ? "$(" + PROP_PVNAME + ")" : ""), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 					new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));			
 			break;

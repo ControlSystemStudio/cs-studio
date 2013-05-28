@@ -27,7 +27,13 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
 
     private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
+    // Pixel focus
+    private Integer focusPixelX;
+    
+    private boolean highlightFocusValue = false;
 
+    private int focusValueIndex = -1;
+    
     /**
      * Creates a new line graph renderer.
      * 
@@ -47,6 +53,18 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         return interpolation;
     }
     
+    public boolean isHighlightFocusValue() {
+        return highlightFocusValue;
+    }
+    
+    public int getFocusValueIndex() {
+        return focusValueIndex;
+    }
+    
+    public Integer getFocusPixelX() {
+        return focusPixelX;
+    }
+    
     @Override
     public void update(LineGraph2DRendererUpdate update) {
         super.update(update);
@@ -55,6 +73,12 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         }
         if (update.getDataReduction() != null) {
             reduction = update.getDataReduction();
+        }
+        if (update.getFocusPixelX()!= null) {
+            focusPixelX = update.getFocusPixelX();
+        }
+        if (update.getHighlightFocusValue()!= null) {
+            highlightFocusValue = update.getHighlightFocusValue();
         }
     }
 
@@ -77,6 +101,35 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
 
         setClip(g);
         g.setColor(Color.BLACK);
+
+        currentIndex = 0;
+        currentScaledDiff = getImageWidth();
         drawValueExplicitLine(xValues, yValues, interpolation, reduction);
+        if (focusPixelX != null) {
+            focusValueIndex = xValues.getIndexes().getInt(currentIndex);
+            if (highlightFocusValue) {
+                g.setColor(new Color(0, 0, 0, 128));
+                int x = (int) scaledX(xValues.getDouble(currentIndex));
+                g.drawLine(x, yAreaStart, x, yAreaEnd);
+            }
+        } else {
+            focusValueIndex = -1;
+        }
     }
+
+    @Override
+    protected void processScaledValue(int index, double valueX, double valueY, double scaledX, double scaledY) {
+        if (focusPixelX != null) {
+            double scaledDiff = Math.abs(scaledX - focusPixelX);
+            if (scaledDiff < currentScaledDiff) {
+                currentIndex = index;
+                currentScaledDiff = scaledDiff;
+            }
+        }
+    }
+    
+    private int currentIndex;
+    private double currentScaledDiff;
+    
+    
 }

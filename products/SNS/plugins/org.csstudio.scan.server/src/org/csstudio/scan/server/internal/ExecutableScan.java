@@ -77,6 +77,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Data logger, non-null while when executing the scan */
     private volatile transient DataLog data_logger = null;
 
+    /** Total number of commands to execute */
+    final private transient long total_work_units;
+
+    /** Commands executed so far */
     final protected transient AtomicLong work_performed = new AtomicLong();
 
     /** State of this scan
@@ -86,14 +90,15 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     private volatile transient String error = null;
 
+    /** Start time, set when execution starts */
     private volatile transient long start_ms = 0;
 
+    /** Actual or estimated end time */
     private volatile transient long end_ms = 0;
 
-    final private transient long total_work_units;
-
+    /** Currently executed command or <code>null</code> */
     private volatile transient ScanCommandImpl<?> current_command = null;
-
+    
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
     private volatile transient Future<Object> future = null;
 
@@ -187,31 +192,44 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public ScanInfo getScanInfo()
     {
         final ScanCommandImpl<?> command = current_command;
-
         final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
         final ScanState state = getScanState();
-        if (state == ScanState.Finished)
-        {
-            command_name = "- end -";
-        }
-        else if (command != null)
-            command_name = command.toString();
-        else
-            command_name = "";
-        return new ScanInfo(this, state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
-    }
+        final long runtime;
+        final long performed_work_units;
 
-    /** @return Runtime of this scan (so far) in millisecs. 0 if not started */
-    private long computeRuntime()
-    {
-        final long start = start_ms;
-        final long end = end_ms;
-        if (end > 0)
-            return end - start;
-        if (start > 0)
-            return System.currentTimeMillis() - start_ms;
-        return 0;
+        if (start_ms <= 0)
+        {   // Not started
+            command_name = "";
+            runtime = 0;
+            performed_work_units = 0;
+        }
+        else if (state.isDone())
+        {   // Finished, aborted
+            command_name = "- end -";
+            runtime = end_ms - start_ms;
+            performed_work_units = total_work_units;
+        }
+        else
+        {   // Running
+            command_name = command.toString();
+            final long now = System.currentTimeMillis();
+            runtime = now - start_ms;
+            performed_work_units = work_performed.get();
+            
+            // Estimate end time
+            final long finish_estimate = performed_work_units <= 0
+                ? now
+                : start_ms + runtime*total_work_units/performed_work_units;
+            
+            // Somewhat smoothly update end time w/ estimate
+            if (end_ms <= 0)
+                end_ms = finish_estimate;
+            else
+                end_ms = 4*(end_ms/5) + finish_estimate/5;
+        }
+
+        return new ScanInfo(this, state, error, runtime, end_ms, performed_work_units, total_work_units, address, command_name);
     }
 
     /** @return Commands executed by this scan */
@@ -351,6 +369,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         	}
             error = ex.getMessage();
         }
+        // Set actual end time, not estimated
+        end_ms = System.currentTimeMillis();
         // Close data logger
         final DataLog copy = data_logger;
         data_logger = null;

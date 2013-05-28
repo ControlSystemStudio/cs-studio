@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.swt;
 
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.swt.graphics.Drawable;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -44,11 +44,7 @@ public class Screenshot
 			final Drawable drawable,
 			final Rectangle bounds)
     {
-        final GC gc = new GC(drawable);
-		final Image image = new Image(display, bounds);
-        gc.copyArea(image, 0, 0);
-        gc.dispose();
-
-        return image;
+		return SingleSourcePlugin.getUIHelper().getScreenshot(display,
+				drawable, bounds);
     }
 }

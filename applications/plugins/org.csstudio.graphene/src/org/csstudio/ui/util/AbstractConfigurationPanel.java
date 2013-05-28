@@ -6,8 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -90,6 +92,23 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
 								widget.getText());
 					}
 				});
+			}
+		});
+	}
+	
+	protected boolean getCheckBoxValue(final Button checkBox) {
+		return checkBox.getSelection();
+	}
+	
+	protected void setCheckBoxValue(final Button checkBox, final boolean newSelection) {
+		checkBox.setSelection(newSelection);
+	}
+	
+	protected void forwardCheckBodEvents(final Button checkBox, final String propertyName) {
+		checkBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeSupport.firePropertyChange("propertyName", !getCheckBoxValue(checkBox), getCheckBoxValue(checkBox));
 			}
 		});
 	}

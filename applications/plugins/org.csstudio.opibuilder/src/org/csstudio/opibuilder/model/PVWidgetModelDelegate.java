@@ -8,8 +8,8 @@
 package org.csstudio.opibuilder.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
@@ -27,7 +27,7 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
 	}
 	
 	public void configureBaseProperties() {
-		model.addPVProperty(new StringProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
+		model.addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
 				""), new PVValueProperty(PROP_PVVALUE, null));
 		
 		model.addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE, 

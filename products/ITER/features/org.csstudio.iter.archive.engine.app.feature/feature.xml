@@ -21,52 +21,18 @@ of the distribution package.
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
-      <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
-      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.httpd" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.config" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.writer" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.rdb" version="3.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.rdb" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.csstudio.archive.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.archive.engine.product"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archive.writer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archive.writer.rdb"
+         id="org.csstudio.apputil"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -87,6 +53,13 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.archive.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.archive.rdb"
          download-size="0"
          install-size="0"
@@ -101,7 +74,21 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.apputil"
+         id="org.csstudio.archive.writer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.writer.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.archive.engine.product"
          download-size="0"
          install-size="0"
          version="0.0.0"
