@@ -7,19 +7,19 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VImageWidget;
 import org.eclipse.draw2d.IFigure;
 
-public class VImageWidgetEditPart extends AbstractWidgetEditPart {
+public class VImageDisplayEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * Create and initialize figure.
 	 */
 	@Override
-	protected VImageWidgetFigure doCreateFigure() {
-		VImageWidgetFigure figure = new VImageWidgetFigure(this);
+	protected VImageDisplayFigure doCreateFigure() {
+		VImageDisplayFigure figure = new VImageDisplayFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
 
-	private static void configure(VImageWidget widget, VImageWidgetModel model,
+	private static void configure(VImageWidget widget, VImageDisplayModel model,
 			boolean runMode) {
 		if (runMode) {
 			widget.setPvFormula(model.getPvFormula());
@@ -27,8 +27,8 @@ public class VImageWidgetEditPart extends AbstractWidgetEditPart {
 	}
 
 	@Override
-	public VImageWidgetModel getWidgetModel() {
-		VImageWidgetModel widgetModel = (VImageWidgetModel) super
+	public VImageDisplayModel getWidgetModel() {
+		VImageDisplayModel widgetModel = (VImageDisplayModel) super
 				.getWidgetModel();
 		return widgetModel;
 	}
@@ -43,7 +43,7 @@ public class VImageWidgetEditPart extends AbstractWidgetEditPart {
 				configure(
 						((AbstractSWTWidgetFigure<VImageWidget>) getFigure())
 								.getSWTWidget(), getWidgetModel(),
-						((VImageWidgetFigure) getFigure()).isRunMode());
+						((VImageDisplayFigure) getFigure()).isRunMode());
 				return false;
 			}
 		};

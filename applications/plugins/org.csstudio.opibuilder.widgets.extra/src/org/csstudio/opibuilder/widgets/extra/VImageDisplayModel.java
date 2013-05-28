@@ -6,9 +6,9 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
-public class VImageWidgetModel extends AbstractWidgetModel {
+public class VImageDisplayModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.opibuilder.widgets.VImageWidget"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.opibuilder.widgets.VImageDisplay"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

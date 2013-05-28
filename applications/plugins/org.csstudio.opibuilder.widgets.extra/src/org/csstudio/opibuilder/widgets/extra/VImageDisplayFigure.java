@@ -5,9 +5,9 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VImageWidget;
 import org.eclipse.swt.widgets.Composite;
 
-public class VImageWidgetFigure extends AbstractSWTWidgetFigure<VImageWidget> {
+public class VImageDisplayFigure extends AbstractSWTWidgetFigure<VImageWidget> {
 
-    public VImageWidgetFigure(AbstractBaseEditPart editPart) {
+    public VImageDisplayFigure(AbstractBaseEditPart editPart) {
 	super(editPart);
     }
 
