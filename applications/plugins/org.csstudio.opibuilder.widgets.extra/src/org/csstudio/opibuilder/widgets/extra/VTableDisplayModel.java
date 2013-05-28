@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.model;
+package org.csstudio.opibuilder.widgets.extra;
 
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;

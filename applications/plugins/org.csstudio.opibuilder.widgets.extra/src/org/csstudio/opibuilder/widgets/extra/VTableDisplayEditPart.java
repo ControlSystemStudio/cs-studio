@@ -1,11 +1,9 @@
-package org.csstudio.opibuilder.widgets.editparts;
+package org.csstudio.opibuilder.widgets.extra;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
-import org.csstudio.opibuilder.widgets.figures.VTableDisplayFigure;
-import org.csstudio.opibuilder.widgets.model.VTableDisplayModel;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.draw2d.IFigure;
 
