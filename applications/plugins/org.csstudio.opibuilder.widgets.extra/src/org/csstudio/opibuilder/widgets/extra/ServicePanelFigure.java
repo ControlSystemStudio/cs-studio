@@ -1,9 +1,8 @@
-package org.csstudio.opibuilder.widgets.service;
+package org.csstudio.opibuilder.widgets.extra;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.ServicePanel;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class ServicePanelFigure extends AbstractSWTWidgetFigure<ServicePanel> {

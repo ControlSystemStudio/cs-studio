@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.service;
+package org.csstudio.opibuilder.widgets.extra;
 
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -8,7 +8,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 public class VImageWidgetModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.opibuilder.widgets.service.VImageWidget"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.opibuilder.widgets.extra.VImageWidget"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

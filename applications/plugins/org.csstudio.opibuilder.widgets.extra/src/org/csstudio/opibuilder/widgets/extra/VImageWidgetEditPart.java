@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.service;
+package org.csstudio.opibuilder.widgets.extra;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
