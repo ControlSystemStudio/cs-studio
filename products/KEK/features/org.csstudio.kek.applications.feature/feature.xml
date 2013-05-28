@@ -82,6 +82,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.kek.product" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.archive.rdb" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.search"/>
    </requires>
 
    <plugin
