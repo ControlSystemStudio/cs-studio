@@ -9,7 +9,7 @@
             icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
             model_class="org.csstudio.opibuilder.widgets.extra.ServicePanelModel"
             name="Service panel"
-            typeId="org.csstudio.opibuilder.widgets.extra.ServicePanel">
+            typeId="org.csstudio.opibuilder.widgets.ServicePanel">
       </widget>
       <widget
             category="Monitors"
@@ -25,7 +25,7 @@
             icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/image-16.png"
             model_class="org.csstudio.opibuilder.widgets.extra.VImageWidgetModel"
             name="VImage"
-            typeId="org.csstudio.opibuilder.widgets.extra.VImageWidget">
+            typeId="org.csstudio.opibuilder.widgets.VImageWidget">
       </widget>
    </extension>
 

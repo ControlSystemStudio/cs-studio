@@ -7,7 +7,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 public class ServicePanelModel extends AbstractWidgetModel {
 	
-	public final String ID = "org.csstudio.opibuilder.widgets.extra.ServicePanel"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.opibuilder.widgets.ServicePanel"; //$NON-NLS-1$
 	
 	public static final String SERVICE_METHOD_NAME = "service_method_name"; //$NON-NLS-1$	
 	public static final String PV_ARGUMENT_PREFIX = "pv_argument_prefix"; //$NON-NLS-1$	
