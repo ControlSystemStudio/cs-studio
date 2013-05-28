@@ -52,11 +52,15 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.UnsavableListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.script.PVTuple;
+import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
+import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -566,7 +570,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public Version getVersionOnFile(){
 		if(versionOnFile == null) 
-			return getVersion();
+			return Version.emptyVersion;
 		return versionOnFile;
 	}
 	
@@ -683,6 +687,27 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 * Make necessary adjustment for widget compatibility between different versions.
 	 */
 	public void processVersionDifference(){
+		//update pv name
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){		
+			if(propertyMap.containsKey(PROP_SCRIPTS)){
+				ScriptsInput scriptsInput = getScriptsInput();
+				for(ScriptData sd : scriptsInput.getScriptList()){
+					for(PVTuple tuple : sd.getPVList()){
+						tuple.pvName=UpgradeUtil.convertUtilityPVNameToPM(tuple.pvName);
+					}
+				}
+				setPropertyValue(PROP_SCRIPTS, scriptsInput);
+			}
+			if(propertyMap.containsKey(PROP_RULES)){
+				RulesInput rulesInput = getRulesInput();
+				for(RuleData rd : rulesInput.getRuleDataList()){
+					for(PVTuple tuple: rd.getPVList()){
+						tuple.pvName=UpgradeUtil.convertUtilityPVNameToPM(tuple.pvName);
+					}					
+				}
+				setPropertyValue(PROP_RULES, rulesInput);
+			}
+		}
 		
 	}
 	
