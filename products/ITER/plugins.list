@@ -123,7 +123,6 @@ org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.extra
 org.csstudio.utility.pvmanager.file
 org.csstudio.utility.pvmanager.loc
-org.csstudio.utility.pvmanager.pva
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.ui
