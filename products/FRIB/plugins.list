@@ -67,7 +67,7 @@ org.csstudio.opibuilder.imagelib
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.rcp
-org.csstudio.opibuilder.widgets.service
+org.csstudio.opibuilder.widgets.extra
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
