@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
@@ -222,6 +223,28 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		addAxisProperties();
 		addTraceProperties();
 		setPropertyVisible(PROP_FONT, false);		
+	}
+	
+	@Override
+	public void processVersionDifference() {
+		super.processVersionDifference();
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){
+			setPropertyValue(PROP_TRIGGER_PV, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_TRIGGER_PV)));			
+			
+			for(int i=0; i < MAX_TRACES_AMOUNT; i++){
+				String traceXPVPropId = makeTracePropID(TraceProperty.XPV.propIDPre, i);
+				setPropertyValue(traceXPVPropId, 
+						UpgradeUtil.convertUtilityPVNameToPM(
+								(String) getPropertyValue(traceXPVPropId)));
+				
+				String traceYPVPropId = makeTracePropID(TraceProperty.YPV.propIDPre, i);
+				setPropertyValue(traceYPVPropId, 
+						UpgradeUtil.convertUtilityPVNameToPM(
+								(String) getPropertyValue(traceYPVPropId)));
+			}
+		}
 	}
 	
 	

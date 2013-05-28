@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
@@ -233,6 +234,25 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, CustomMediaFactory.COLOR_CYAN), true);
 		
 		addAxisProperties();
+	}
+	
+	@Override
+	public void processVersionDifference() {
+		super.processVersionDifference();
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){
+			setPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
+			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+		}
 	}
 
 	public static String makeAxisPropID(String axisID, String propIDPre){
