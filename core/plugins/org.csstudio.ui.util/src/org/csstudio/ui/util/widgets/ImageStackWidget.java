@@ -19,14 +19,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,9 +37,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.wb.swt.SWTResourceManager;
 
@@ -118,31 +118,57 @@ public class ImageStackWidget extends Composite {
 		.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
 	tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-	tableViewerColumn.setLabelProvider(new StyledCellLabelProvider() {
-	    @Override
-	    public void update(ViewerCell cell) {
-		// TODO does not center
-		// TODO does not preserve aspect ratio
-		// use the OwnerDrawLabelProvider
-		String imageName = cell.getElement() == null ? "" : cell
-			.getElement().toString();
-		InputStream stream = new ByteArrayInputStream(
-			imageInputStreamsMap.get(imageName));
-		ImageData imageData = null;
-		try {
-		    imageData = new ImageData(stream);
-		    int width = scrollBarVisble ? 90 : 100;
-		    cell.setImage(new Image(getDisplay(), imageData.scaledTo(
-			    width, width)));
-		} catch (SWTException ex) {
-		} finally {
-		    try {
-			stream.close();
-		    } catch (IOException ex) {
-		    }
-		}
+	tableViewerColumn.setLabelProvider(new OwnerDrawLabelProvider() {
+		@Override
+		protected void paint(Event event, Object element) {
+			String imageName = element == null ? "" : element.toString();
+			ImageData imageData = new ImageData(new ByteArrayInputStream(
+				imageInputStreamsMap.get(imageName)));
+			int width = scrollBarVisble ? 90 : 100;
+			double scale = determineImageScale(imageData, width, width);
+			Image img = new Image(getDisplay(), imageData.scaledTo(
+					(int) (imageData.width * scale),
+					(int) (imageData.height * scale)));
+			if (img != null) {
+				Rectangle bounds = ((TableItem) event.item)
+						.getBounds(event.index);
+				Rectangle imgBounds = img.getBounds();
+				bounds.width /= 2;
+				bounds.width -= imgBounds.width / 2;
+				bounds.height /= 2;
+				bounds.height -= imgBounds.height / 2;
 
-	    }
+				int x = bounds.width > 0 ? bounds.x + bounds.width
+						: bounds.x;
+				int y = bounds.height > 0 ? bounds.y + bounds.height
+						: bounds.y;
+
+				event.gc.drawImage(img, x, y);
+			}
+		}
+		
+		@Override
+		protected void measure(Event event, Object element) {
+			String imageName = element == null ? "" : element.toString();
+			ImageData imageData = new ImageData(new ByteArrayInputStream(
+					imageInputStreamsMap.get(imageName)));
+			double scale = determineImageScale(imageData, 85, 85);
+			event.height = (int) (scale * imageData.height) + 10;
+		}
+		
+		private double determineImageScale(ImageData imgData,
+				int targetWidth, int targetHeight) {
+			if (imgData == null) {
+				return 1;
+			}
+			double scalex = (double) targetWidth / imgData.width;
+			double scaley = (double) targetHeight / imgData.height;
+			double ratio = Math.min(scalex, scaley);
+			if (ratio > 1) {
+				return 1;
+			}
+			return ratio;
+		}
 	});
 
 	table.addPaintListener(new PaintListener() {
@@ -250,12 +276,15 @@ public class ImageStackWidget extends Composite {
 				    .getValue()));
 			    selectedImageName = next.getKey();
 			    buttonRemove.setVisible(true && editable);
+			    table.setSelection(0);
 			}
 		    } else {
 			tableViewer.setInput(null);
 			imagePreview.setImage((InputStream) null);
+			selectedImageName = null;
 		    }
 		    tableViewer.refresh();
+		    table.redraw();
 		    imagePreview.redraw();
 		    break;
 		case "selectedImageName":
@@ -263,6 +292,14 @@ public class ImageStackWidget extends Composite {
 			    imageInputStreamsMap.get(selectedImageName)));
 		    buttonRemove.setVisible(true && editable);
 		    imagePreview.redraw();
+		    for (int index = 0; index < table.getItemCount(); index++) {
+		    	if(selectedImageName.equals(
+		    			table.getItem(index).getData())) {
+		    		table.select(index);
+				    table.redraw();
+				    break;
+		    	}
+		    }
 		    break;
 		case "scrollBarVisible":
 		    tblclmnImage.setWidth(scrollBarVisble ? 94 : 104);

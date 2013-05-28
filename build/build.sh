@@ -15,14 +15,14 @@ rm -rf $BUILD
 # Install Eclipse if not there
 if [[ -d ext/eclipse ]]
 then
-  echo Build Target consisting of Eclipse with Deltapack alredy installed.....
+  echo Build Target consisting of Eclipse with Deltapack already installed.....
 else
   mkdir -p ext
   cd ext
 
   if [[ ! -f eclipse-rcp-indigo-linux-gtk.tar.gz ]]
     then
-      wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
+      wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
     fi
   if [[ ! -f eclipse-delta-pack.zip ]]
   then
@@ -33,14 +33,32 @@ else
   fi
   tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
   unzip -o eclipse-3.7.2-delta-pack.zip
+
+  if [ "$PRODUCT" = "ITER" ]
+  then 
+    if [[ ! -f org.tigris.subclipse-site-1.6.18.zip ]]
+    then
+      wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
+    fi
+    unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
+  fi
+
   cd ..
 fi
 
-
 # Copy product sources
 cp -R ../products/$PRODUCT $BUILD
+if [ "$PRODUCT" = "ITER" ]
+then 
+  cp -R ../products/$PRODUCT/products/* $BUILD/plugins/
+fi
+
 cat $BUILD/plugins.list | xargs -I {} cp -R ../core/plugins/{} $BUILD/plugins
 cat $BUILD/plugins.list | xargs -I {} cp -R ../applications/plugins/{} $BUILD/plugins
+if [ "$PRODUCT" = "ITER" ]
+then 
+  cat $BUILD/plugins.list | xargs -I {} cp -R ../products/DESY/plugins/{} $BUILD/plugins
+fi
 cat $BUILD/features.list | xargs -I {} cp -R ../core/features/{} $BUILD/features
 cat $BUILD/features.list | xargs -I {} cp -R ../applications/features/{} $BUILD/features
 mkdir $BUILD/BuildDirectory

@@ -37,7 +37,7 @@ public class NumberScanSample extends ScanSample
      *  @param number Number
      */
 	public NumberScanSample(final Date timestamp,
-	        final long serial, final Number[] values)
+	        final long serial, final Number... values)
 	{
 		super(timestamp, serial);
 		this.values = values;

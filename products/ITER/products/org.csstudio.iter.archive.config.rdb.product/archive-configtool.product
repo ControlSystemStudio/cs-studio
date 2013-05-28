@@ -46,9 +46,9 @@ of the distribution package.
    </plugins>
 
    <features>
-      <feature id="org.eclipse.iter.feature" version="4.1.1.qualifier"/>
-      <feature id="org.csstudio.iter.core.util.feature" version="4.1.1.qualifier"/>
       <feature id="org.csstudio.iter.archive.config.rdb.app.feature" version="4.1.1.qualifier"/>
+      <feature id="org.csstudio.iter.core.util.feature" version="4.1.1.qualifier"/>
+      <feature id="org.eclipse.iter.feature" version="4.1.1.qualifier"/>
    </features>
 
 

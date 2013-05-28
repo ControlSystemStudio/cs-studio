@@ -11,9 +11,11 @@ import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -106,6 +108,20 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
 	fd_link.right = new FormAttachment(100, -10);
 	link.setLayoutData(fd_link);
 	link.setText("<a>www.google.com</a>");
+	link.addSelectionListener(new SelectionListener() {
+		
+		@Override
+		public void widgetSelected(SelectionEvent event) {
+			String url = link.getText();
+			url = url.substring("<a>".length(),
+					url.length() - "</a>".length());
+			Program.launch(url);
+		}
+		
+		@Override
+		public void widgetDefaultSelected(SelectionEvent arg0) {
+		}
+	});
 
 	lblAttached = new Label(this, SWT.NONE);
 	lblAttached.setFont(SWTResourceManager.getFont("Segoe UI", 9,

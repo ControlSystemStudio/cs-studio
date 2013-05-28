@@ -15,7 +15,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.csstudio.ui.util.widgets.MultiSelectionCombo;
+import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,7 +36,7 @@ public abstract class ElogDialog extends Dialog
     private String body;
     private Text txt_user;
     private Text txt_password;
-    private MultiSelectionCombo<String> cmb_logbook;
+    private MultipleSelectionCombo<String> cmb_logbook;
     private Text txt_title;
     private Text txt_body;
 
@@ -94,7 +94,7 @@ public abstract class ElogDialog extends Dialog
         l.setText(Messages.Logbook);
         l.setLayoutData(new GridData());
         
-        cmb_logbook = new MultiSelectionCombo<>(composite, 0);
+        cmb_logbook = new MultipleSelectionCombo<>(composite, 0);
         cmb_logbook.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
         l = new Label(composite, 0);

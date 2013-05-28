@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
@@ -173,9 +173,9 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             readback = context.getDevice(command.getReadback());
 
         //  Wait for the device to reach the value?
-        final DeviceValueCondition condition;
+        final NumericValueCondition condition;
         if (command.getWait())
-            condition = new DeviceValueCondition(readback, Comparison.EQUALS,
+            condition = new NumericValueCondition(readback, Comparison.EQUALS,
                         command.getStart(),
                         command.getTolerance(),
                         TimeDuration.ofSeconds(command.getTimeout()));
@@ -202,7 +202,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	 *  @throws Exception
 	 */
     private void executeStep(final ScanContext context, final Device device,
-            final DeviceValueCondition condition, final Device readback, double value)
+            final NumericValueCondition condition, final Device readback, double value)
             throws Exception
     {
         // Set device to value for current step of loop

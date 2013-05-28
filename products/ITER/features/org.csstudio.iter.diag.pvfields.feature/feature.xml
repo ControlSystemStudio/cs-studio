@@ -20,12 +20,10 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.help"/>
       <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
@@ -34,12 +32,14 @@ of the distribution package.
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.diag.pvfields" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -64,14 +64,14 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.dbparser"
+         id="org.csstudio.iter.utility.sddreader"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.iter.utility.sddreader"
+         id="org.csstudio.utility.dbparser"
          download-size="0"
          install-size="0"
          version="0.0.0"

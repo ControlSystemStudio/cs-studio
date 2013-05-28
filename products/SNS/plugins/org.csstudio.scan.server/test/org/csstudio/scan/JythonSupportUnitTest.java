@@ -71,7 +71,7 @@ public class JythonSupportUnitTest
             @Override
             public void logData(final String device, final Object value) throws Exception
             {
-                log.log(device, ScanSampleFactory.createSample(new Date(), 1, new Number[] { (Number)value }));
+                log.log(device, ScanSampleFactory.createSample(new Date(), 1, value));
             }
         };
         script.run(context);
