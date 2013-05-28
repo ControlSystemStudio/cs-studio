@@ -22,7 +22,7 @@ else
 
   if [[ ! -f eclipse-rcp-indigo-linux-gtk.tar.gz ]]
     then
-      wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-jee-indigo-SR2-linux-gtk.tar.gz
+      wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
     fi
   if [[ ! -f eclipse-delta-pack.zip ]]
   then
