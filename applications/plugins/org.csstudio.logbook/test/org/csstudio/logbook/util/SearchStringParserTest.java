@@ -1,14 +1,13 @@
 /**
  * 
  */
-package org.csstudio.autocomplete.logbook;
+package org.csstudio.logbook.util;
 
-import static org.junit.Assert.*;
-import static org.csstudio.autocomplete.logbook.SearchStringParser.*;
+import static org.csstudio.logbook.util.SearchStringParser.searchParser;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.junit.Test;
 
