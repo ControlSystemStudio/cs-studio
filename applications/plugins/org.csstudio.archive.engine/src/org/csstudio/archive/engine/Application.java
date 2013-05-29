@@ -38,6 +38,9 @@ public class Application implements IApplication
 
     /** Application model */
     private EngineModel model;
+    
+    /** Option: if skip reading last sample time or not */
+    private boolean skip_last = false;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
@@ -49,7 +52,9 @@ public class Application implements IApplication
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
-                    "Display Help");
+                "Display Help");
+        final BooleanOption skip_last_opt = new BooleanOption(parser, "-skip_last",
+                "Skip reading last sample time from RDB on start-up");
         final IntegerOption port_opt = new IntegerOption(parser, "-port", "4812",
                     "HTTP server port", 4812);
         final StringOption engine_name_opt = new StringOption(parser,
@@ -110,6 +115,7 @@ public class Application implements IApplication
         // Copy stuff from options into member vars.
         port = port_opt.get();
         engine_name = engine_name_opt.get();
+        skip_last = skip_last_opt.get();
         return true;
     }
 
@@ -155,7 +161,7 @@ public class Application implements IApplication
                 try
                 {
                     config = ArchiveConfigFactory.getArchiveConfig();
-                    model.readConfig(config, engine_name, port);
+                    model.readConfig(config, engine_name, port, skip_last);
                 }
                 catch (final Exception ex)
                 {

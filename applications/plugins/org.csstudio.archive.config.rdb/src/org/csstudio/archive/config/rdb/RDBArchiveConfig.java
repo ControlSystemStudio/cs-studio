@@ -581,7 +581,7 @@ public class RDBArchiveConfig implements ArchiveConfig
 
     /** {@inheritDoc} */
     @Override
-    public ChannelConfig[] getChannels(final GroupConfig group) throws Exception
+    public ChannelConfig[] getChannels(final GroupConfig group, final boolean skip_last) throws Exception
     {
         final RDBGroupConfig rdb_group = (RDBGroupConfig) group;
         final List<ChannelConfig> channels = new ArrayList<ChannelConfig>();
@@ -596,7 +596,9 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final int id = result.getInt(1);
                 final SampleMode sample_mode =
                     getSampleMode(result.getInt(3), result.getDouble(4), result.getDouble(5));
-                final org.epics.util.time.Timestamp last_sample_time = getLastSampleTime(id);
+                org.epics.util.time.Timestamp last_sample_time = null;
+                if (!skip_last)
+                	 last_sample_time = getLastSampleTime(id);
                 channels.add(new RDBChannelConfig(id, result.getString(2),
                                                   sample_mode, last_sample_time));
             }
