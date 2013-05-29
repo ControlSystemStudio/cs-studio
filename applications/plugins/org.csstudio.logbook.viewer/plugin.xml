@@ -11,6 +11,13 @@
             name="Log Viewer"
             restorable="true">
       </view>
+      <view
+            class="org.csstudio.logbook.ui.LogTableView"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogTableView"
+            name="Log Table"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -27,7 +34,40 @@
                   value="org.csstudio.logbook.viewer.LogViewer">
             </parameter>
          </command>
+         <command
+               commandId="org.csstudio.logbook.viewer.OpenLogViewer"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+               label="Search Logbook"
+               style="push">
+         </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.logbook.ui.LogViewerPerspective"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogViewerPerspective"
+            name="LogViewerPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.logbook.ui.LogViewer"
+            default="false"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogViewer"
+            name="LogViewer">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogViewer"
+            id="org.csstudio.logbook.viewer.OpenLogViewer"
+            name="Search Logbook">
+      </command>
    </extension>
 
 </plugin>
