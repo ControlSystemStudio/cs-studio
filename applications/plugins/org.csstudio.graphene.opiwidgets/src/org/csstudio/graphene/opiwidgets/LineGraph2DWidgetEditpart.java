@@ -6,8 +6,8 @@ package org.csstudio.graphene.opiwidgets;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.graphene.LineGraph2DWidget;
+import org.csstudio.graphene.VTypeAdaptable;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -15,18 +15,15 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.ConfigurableWidgetAdaptable;
-import org.csstudio.ui.util.XAxisProcessVariable;
-import org.csstudio.ui.util.XAxisProcessVariableAdaptable;
-import org.csstudio.ui.util.YAxisProcessVariable;
-import org.csstudio.ui.util.YAxisProcessVariableAdaptable;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.VType;
 
 /**
  * @author shroffk
  * 
  */
 public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
-		YAxisProcessVariableAdaptable, XAxisProcessVariableAdaptable,
+		VTypeAdaptable,
 		ConfigurableWidgetAdaptable {
 
 	@Override
@@ -82,31 +79,18 @@ public class LineGraph2DWidgetEditpart extends AbstractWidgetEditPart implements
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcessVariables() {
-		return selectionToType(ProcessVariable.class);
+	public VType toVType() {
+		Collection<VType> values = selectionToType(VType.class);
+		if (values.isEmpty()) {
+			return null;
+		} else {
+			return values.iterator().next();
+		}
 	}
 
 	@Override
 	public ConfigurableWidget toConfigurableWidget() {
 		Collection<ConfigurableWidget> adapted = selectionToType(ConfigurableWidget.class);
-		if (adapted != null && adapted.size() == 1) {
-			return adapted.iterator().next();
-		}
-		return null;
-	}
-
-	@Override
-	public XAxisProcessVariable getXAxisProcessVariables() {
-		Collection<XAxisProcessVariable> adapted = selectionToType(XAxisProcessVariable.class);
-		if (adapted != null && adapted.size() == 1) {
-			return adapted.iterator().next();
-		}
-		return null;
-	}
-
-	@Override
-	public YAxisProcessVariable getYAxisProcessVariables() {
-		Collection<YAxisProcessVariable> adapted = selectionToType(YAxisProcessVariable.class);
 		if (adapted != null && adapted.size() == 1) {
 			return adapted.iterator().next();
 		}
