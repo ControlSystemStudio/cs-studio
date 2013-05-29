@@ -193,9 +193,9 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
-		return item == null ? "" : DateFormat.getDateTimeInstance(
-			DateFormat.SHORT, DateFormat.SHORT).format(
-			item.getCreateDate());
+		return item == null || item.getCreateDate() == null ? ""
+			: DateFormat.getDateTimeInstance(DateFormat.SHORT,
+				DateFormat.SHORT).format(item.getCreateDate());
 	    }
 	});
 	TableColumn tblclmnDate = tableViewerColumnDate.getColumn();
