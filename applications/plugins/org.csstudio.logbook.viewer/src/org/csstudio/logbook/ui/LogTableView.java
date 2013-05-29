@@ -9,12 +9,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
-import org.csstudio.logbook.ui.LogEntryTable;
-import org.csstudio.logbook.ui.LogEntryWidget;
-import org.csstudio.logbook.viewer.PopupMenuUtil;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -130,8 +125,6 @@ public class LogTableView extends ViewPart {
 
     @Override
     public void setFocus() {
-	// TODO Auto-generated method stub
-
+	// TODO Auto-generated method stub	
     }
-
 }
