@@ -79,7 +79,47 @@ public class ScanServlet extends HttpServlet
         out.println("</id>");
     }
     
-    /** DELETE scan/{id}: Abort a scan
+    /** 'Put' scan into new state
+     *  <p>PUT scan/{id}/pause: Pause running scan
+     *  <p>PUT scan/{id}/resume: Resume paused scan
+     *  <p>PUT scan/{id}/abort: Abort running or paused scan
+     *  Returns basic HTTP OK (200) on success, otherwise error
+     */
+    @Override
+    protected void doPut(final HttpServletRequest request,
+            final HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final RequestPath path = new RequestPath(request);
+        try
+        {
+            if (path.size() != 2)
+                throw new Exception("Missing scan ID and command");
+            final long id = path.getLong(0);
+            final String command = path.getString(1);
+            switch (command)
+            {
+            case "pause":
+                scan_server.pause(id);
+                break;
+            case "resume":
+                scan_server.resume(id);
+                break;
+            case "abort":
+                scan_server.abort(id);
+                break;
+            default:
+                throw new Exception("Unknown command '" + command + "'");
+            }
+        }
+        catch (Exception ex)
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            return;
+        }
+    }
+
+    /** DELETE scan/{id}: Remove a scan
      *  Returns basic HTTP OK (200) on success, otherwise error
      */
     @Override
@@ -94,7 +134,7 @@ public class ScanServlet extends HttpServlet
             if (path.size() != 1)
                 throw new Exception("Missing scan ID");
             final long id = path.getLong(0);
-            scan_server.abort(id);
+            scan_server.remove(id);
         }
         catch (Exception ex)
         {
@@ -103,9 +143,10 @@ public class ScanServlet extends HttpServlet
         }
     }    
     
-    /** GET scan/{id} - get scan info
-     *  GET scan/{id}/commands - get scan commands
-     *  GET scan/{id}/data - get scan data
+    /** Get scan information
+     *  <p>GET scan/{id} - get scan info
+     *  <p>GET scan/{id}/commands - get scan commands
+     *  <p>GET scan/{id}/data - get scan data
      */
     @Override
     protected void doGet(final HttpServletRequest request,

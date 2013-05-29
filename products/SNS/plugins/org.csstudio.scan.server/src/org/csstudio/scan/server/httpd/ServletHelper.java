@@ -78,10 +78,17 @@ public class ServletHelper
         el.appendChild(doc.createTextNode(Long.toString(info.getRuntimeMillisecs())));
         scan.appendChild(el);
 
-        el = doc.createElement("percentage");
-        el.appendChild(doc.createTextNode(Integer.toString(info.getPercentage())));
-        scan.appendChild(el);
-
+        if (info.getTotalWorkUnits() > 0)
+        {
+            el = doc.createElement("total_work_units");
+            el.appendChild(doc.createTextNode(Long.toString(info.getTotalWorkUnits())));
+            scan.appendChild(el);
+    
+            el = doc.createElement("performed_work_units");
+            el.appendChild(doc.createTextNode(Long.toString(info.getPerformedWorkUnits())));
+            scan.appendChild(el);
+        }
+        
         final Date finish = info.getFinishTime();
         if (finish != null)
         {
@@ -89,6 +96,10 @@ public class ServletHelper
             el.appendChild(doc.createTextNode(Long.toString(finish.getTime())));
             scan.appendChild(el);
         }
+
+        el = doc.createElement("address");
+        el.appendChild(doc.createTextNode(Long.toString(info.getCurrentAddress())));
+        scan.appendChild(el);
         
         el = doc.createElement("command");
         el.appendChild(doc.createTextNode(info.getCurrentCommand()));

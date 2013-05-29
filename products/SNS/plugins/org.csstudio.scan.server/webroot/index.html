@@ -20,7 +20,7 @@
 <dd>XML with scans</dd>
 </dl>
 
-<h2>Scan Info</h2>
+<h2>Get Scan Info</h2>
 <dl>
 <dt>Method</dt>
 <dd>GET</dd>
@@ -28,6 +28,24 @@
 <dd>/scan/{id}</a></dd>
 <dt>Result</dt>
 <dd>XML with scan info</dd>
+</dl>
+
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/commands</a></dd>
+<dt>Result</dt>
+<dd>XML with scan commands</dd>
+</dl>
+
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/data</a></dd>
+<dt>Result</dt>
+<dd>XML with scan data</dd>
 </dl>
 
 <h2>Submit Scan</h2>
@@ -42,7 +60,37 @@
 <dd>XML with scan ID, example: <code>&ltid>42&lt/id></code></dd>
 </dl>
 
-<h2>Abort Scan</h2>
+
+<h2>Put Scan into different States</h2>
+<dl>
+<dt>Method</dt>
+<dd>PUT</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/pause</a></dd>
+<dt>Result</dt>
+<dd>HTTP OK or error</dd>
+</dl>
+
+<dl>
+<dt>Method</dt>
+<dd>PUT</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/resume</a></dd>
+<dt>Result</dt>
+<dd>HTTP OK or error</dd>
+</dl>
+
+<dl>
+<dt>Method</dt>
+<dd>PUT</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/abort</a></dd>
+<dt>Result</dt>
+<dd>HTTP OK or error</dd>
+</dl>
+
+
+<h2>Delete a finished Scan</h2>
 <dl>
 <dt>Method</dt>
 <dd>DELETE</dd>
