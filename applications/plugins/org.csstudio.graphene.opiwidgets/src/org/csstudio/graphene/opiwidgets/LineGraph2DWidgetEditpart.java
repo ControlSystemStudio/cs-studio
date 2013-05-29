@@ -27,7 +27,7 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 			widget.setDataFormula(model.getDataFormula());
 			widget.setXColumnFormula(model.getXColumnFormula());
 			widget.setYColumnFormula(model.getYColumnFormula());
-			widget.setTooltipColumnFormula(model.getTooltipFormula());
+//			widget.setTooltipColumnFormula(model.getTooltipFormula());
 			widget.setShowAxis(model.getShowAxis());
 			widget.setConfigurable(model.isConfigurable());
 			widget.setHighlightFocusValue(model.isHighlightFocusValue());
@@ -50,7 +50,7 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_DATA_FORMULA, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_X_FORMULA, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_Y_FORMULA, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
+//		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.CONFIGURABLE, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_SHOW_AXIS, reconfigure);
 		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_HIGHLIGHT_FOCUS_VALUE, reconfigure);
