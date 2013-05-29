@@ -3,8 +3,6 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
