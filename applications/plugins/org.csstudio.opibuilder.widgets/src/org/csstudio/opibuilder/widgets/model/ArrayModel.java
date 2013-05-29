@@ -201,6 +201,11 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
 		return ArrayDataType.values()[(Integer)getPropertyValue(PROP_DATA_TYPE)];
 	}
 	
+	@Override
+	public void processVersionDifference() {
+		super.processVersionDifference();
+		delegate.processVersionDifference();
+	}
 	
 	
 	

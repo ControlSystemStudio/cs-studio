@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.pvmanager;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.swt.widgets.Display;
@@ -53,7 +54,7 @@ public class BOYPVFactory{
 			return new PVManagerPV(name, bufferAllValues, updateDuration);
 		case UTILITY_PV:
 		default:
-			return PVFactory.createPV(name);			
+			return PVFactory.createPV(UpgradeUtil.convertPMPVToUtilityPVName(name));			
 		}
 		
 	}
