@@ -1,4 +1,4 @@
-VALID_ACCS="JPARC PFAR PF LINAC SUPERKEKB CERL JPARC_OFFICE PFAR_OFFICE PF_OFFICE LINAC_OFFICE SUPERKEKB_OFFICE CERL_OFFICE"
+VALID_ACCS="JPARC PFAR PF LINAC SUPERKEKB CERL JPARC_OFFICE PF_OFFICE LINAC_OFFICE SUPERKEKB_OFFICE"
 
 JPARC_ADDR_LIST="jparc.kek.jp"
 JPARC_ARCHIVE_URLS="jdbc:postgresql://jparc.kek.jp:5432/archive"
@@ -55,25 +55,16 @@ JPARC_OFFICE_ARCHIVE_NAMES_1="rdb"
 JPARC_OFFICE_COLOR_DEF="/BOY Examples/color.def"
 JPARC_OFFICE_FONT_DEF="/BOY Examples/font.def"
 
-PFAR_OFFICE_ADDR_LIST="130.87.169.57 130.87.169.30 130.87.169.228"
-PFAR_OFFICE_ARCHIVE_URLS="xnds://pfconrg07.kek.jp:8082/archive/cgi/ArchiveDataServer.cgi xnds://pfconrg06.kek.jp:8080/archive/cgi/ArchiveDataServer.cgi"
-PFAR_OFFICE_ARCHIVE_NAMES_1="All\ Group\ (updated\ in\ 30min)"
-PFAR_OFFICE_ARCHIVE_NAMES_2="Archive"
-PFAR_OFFICE_COLOR_DEF="/Operation/AR/color_AR.def"
-PFAR_OFFICE_FONT_DEF="/Operation/AR/font_AR.def"
-PFAR_OFFICE_SHARE_LINK_SRC_WIN='\\pfrnas3.kek.jp\public\public\EPICS\CSS\Operation\AR'
-PFAR_OFFICE_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace/AR"
-PFAR_OFFICE_SHARE_LINK_DEST="/Operation/AR"
-
-PF_OFFICE_ADDR_LIST="130.87.169.57 130.87.169.30 130.87.169.228"
-PF_OFFICE_ARCHIVE_URLS="xnds://pfconrg07.kek.jp:8082/archive/cgi/ArchiveDataServer.cgi xnds://pfconrg06.kek.jp:8080/archive/cgi/ArchiveDataServer.cgi"
-PF_OFFICE_ARCHIVE_NAMES_1="All\ Group\ (updated\ in\ 30min)"
-PF_OFFICE_ARCHIVE_NAMES_2="Archive"
+PF_OFFICE_ADDR_LIST="127.0.0.1 pfconrg06.kek.jp pfconrg07.kek.jp erlserv1.kek.jp"
+PF_OFFICE_ARCHIVE_URLS="jdbc:postgresql://pfrproc5.kek.jp:9080/archive jdbc:postgresql://abcob12.kek.jp:5432/archive jdbc:postgresql://pfrproc5.kek.jp:9090/archive"
+PF_OFFICE_ARCHIVE_NAMES_1="rdb"
+PF_OFFICE_ARCHIVE_NAMES_2="rdb"
+PF_OFFICE_ARCHIVE_NAMES_3="rdb"
 PF_OFFICE_COLOR_DEF="/Operation/PF/color_PF.def"
 PF_OFFICE_FONT_DEF="/Operation/PF/font_PF.def"
-PF_OFFICE_SHARE_LINK_SRC_WIN='\\pfrnas3.kek.jp\public\public\EPICS\CSS\Operation\PF'
-PF_OFFICE_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace/PF"
-PF_OFFICE_SHARE_LINK_DEST="/Operation/PF"
+PF_OFFICE_SHARE_LINK_SRC_WIN='\\pfrnas3.kek.jp\public\public\EPICS\CSS\Operation'
+PF_OFFICE_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace"
+PF_OFFICE_SHARE_LINK_DEST="/Operation"
 
 LINAC_OFFICE_ADDR_LIST="172.19.95.255"
 LINAC_OFFICE_ARCHIVE_URLS="xnds://www-linac2.kek.jp:4080/RPC2 jdbc:postgresql://lcba09.kek.jp:5432/archive"
@@ -88,13 +79,3 @@ SUPERKEKB_OFFICE_ARCHIVE_NAMES_1=$(kblog_sub_archives ${SUPERKEKB_OFFICE_ARCHIVE
  # Note that "source kblog_settings.sh" must be called beforehand.
 SUPERKEKB_OFFICE_COLOR_DEF="/BOY Examples/color.def"
 SUPERKEKB_OFFICE_FONT_DEF="/BOY Examples/font.def"
-
-CERL_OFFICE_ADDR_LIST="130.87.169.57 130.87.169.30 130.87.169.228"
-CERL_OFFICE_ARCHIVE_URLS="xnds://pfconrg07.kek.jp:8082/archive/cgi/ArchiveDataServer.cgi xnds://pfconrg06.kek.jp:8080/archive/cgi/ArchiveDataServer.cgi"
-CERL_OFFICE_ARCHIVE_NAMES_1="All\ Group\ (updated\ in\ 30min)"
-CERL_OFFICE_ARCHIVE_NAMES_2="Archive"
-CERL_OFFICE_COLOR_DEF="/Operation/cERL/color_cERL.def"
-CERL_OFFICE_FONT_DEF="/Operation/cERL/font_cERL.def"
-CERL_OFFICE_SHARE_LINK_SRC_WIN='\\pfrnas3.kek.jp\public\public\EPICS\CSS\Operation\cERL'
-CERL_OFFICE_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace/cERL"
-CERL_OFFICE_SHARE_LINK_DEST="/Operation/cERL"
