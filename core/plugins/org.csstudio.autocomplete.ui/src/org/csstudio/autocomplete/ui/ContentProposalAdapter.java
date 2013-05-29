@@ -48,43 +48,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ContentProposalAdapter {
 	
-	private class SearchProposalTask implements Runnable {
-
-		private final int position;
-		private final String contents;
-		private final IContentProposalSearchHandler handler;
-
-		private boolean canceled = false;
-
-		public SearchProposalTask(String contents, int position,
-				IContentProposalSearchHandler handler) {
-			this.contents = contents;
-			this.position = position;
-			this.handler = handler;
-		}
-
-		@Override
-		public void run() {
-			final ContentProposalList proposals = proposalProvider
-					.getProposals(contents, position, maxDisplay);
-			if (!canceled) {
-				if (getControl().isDisposed())
-					return;
-				getControl().getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						handler.handleResult(proposals);
-					}
-				});
-			}
-		}
-
-		public void cancel() {
-			canceled = true;
-			proposalProvider.cancel();
-		}
-	}
-
 	/**
 	 * Flag that controls the printing of debug info.
 	 */
@@ -230,7 +193,6 @@ public class ContentProposalAdapter {
 	 */
 	private ILabelProvider labelProvider;
 	
-	private SearchProposalTask currentTask;
 	private int maxDisplay = 10;
 	
 	private AutoCompleteHistory history;
@@ -500,8 +462,7 @@ public class ContentProposalAdapter {
 				System.out.println("POPUP OPENED BY PRECEDING EVENT"); //$NON-NLS-1$
 			}
 			recordCursorPosition();
-			popup = new ContentProposalPopup(this, null, proposalList,
-					maxDisplay);
+			popup = new ContentProposalPopup(this, null, proposalList, maxDisplay);
 			popup.open();
 			popup.getShell().addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent event) {
@@ -532,8 +493,19 @@ public class ContentProposalAdapter {
 				recordCursorPosition(); // must be done before getting proposals
 				getProposals(new IContentProposalSearchHandler() {
 					@Override
-					public void handleResult(ContentProposalList proposalList) {
-						initPopup(proposalList, autoActivated);
+					public void handleResult(
+							final ContentProposalList proposalList) {
+						if (isValid()) {
+							getControl().getDisplay().syncExec(new Runnable() {
+								public void run() {
+									if (popup == null) {
+										initPopup(proposalList, autoActivated);
+									} else {
+										popup.refreshProposals(proposalList);
+									}
+								}
+							});
+						}
 					}
 				});
 			}
@@ -556,10 +528,8 @@ public class ContentProposalAdapter {
 		final String contents = getControlContentAdapter().getControlContents(getControl());
 		
 		// Interrupt current search & start new
-		if (currentTask != null)
-			currentTask.cancel();
-		currentTask = new SearchProposalTask(contents, position, listener);
-		new Thread(currentTask).start();
+		proposalProvider.cancel();
+		proposalProvider.getProposals(contents, position, maxDisplay, listener);
 	}
 
 	/**

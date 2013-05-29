@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
-public interface IAutoCompleteProposalProvider {
+/**
+ * List commonly used types. Each type defines a specific behavior, see
+ * AutoComplete provider preferences.
+ * 
+ * @author Fred Arnaud (Sopra Group)
+ * 
+ */
+public class AutoCompleteTypes {
 
-	public void getProposals(String contents, int position, int max,
-			IContentProposalSearchHandler handler);
-
-	public boolean hasProviders();
-
-	public void cancel();
-
-	public String getType();
+	public static final String PV = "PV";
 
 }

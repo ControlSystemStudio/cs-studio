@@ -5,17 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.autocomplete.ui;
+package org.csstudio.autocomplete;
 
-public interface IAutoCompleteProposalProvider {
+public interface IAutoCompleteResultListener {
 
-	public void getProposals(String contents, int position, int max,
-			IContentProposalSearchHandler handler);
-
-	public boolean hasProviders();
-
-	public void cancel();
-
-	public String getType();
+	public void handleResult(Long uniqueId, Integer index,
+			AutoCompleteResult result);
 
 }

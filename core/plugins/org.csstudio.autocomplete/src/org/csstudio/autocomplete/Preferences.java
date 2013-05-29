@@ -55,11 +55,11 @@ public class Preferences {
 	}
 	
 	/** @return providers settings */
-	public static String getProviders() {
+	public static String getProviders(String type) {
 		final IPreferencesService service = Platform.getPreferencesService();
 		if (service == null)
 			return null; // default
-		return getString(PROVIDERS);
+		return getString(PROVIDERS + "." + type);
 	}
 
 }
