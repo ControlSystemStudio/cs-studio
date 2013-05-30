@@ -1,26 +1,26 @@
 package org.csstudio.channel.views;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 
-public class ChannelLinePlotView extends AbstractChannelQueryView<Line2DPlotWidget> {
+public class ChannelLinePlotView extends AbstractChannelQueryView<ChannelLinePlotWidget> {
 
 	public static final String ID = "org.csstudio.channel.views.ChannelLinePlotView";
 
 	@Override
-	public void saveWidgetState(Line2DPlotWidget widget, IMemento memento) {
+	public void saveWidgetState(ChannelLinePlotWidget widget, IMemento memento) {
 		widget.saveState(memento);
 	}
 
 	@Override
-	public void loadWidgetState(Line2DPlotWidget widget, IMemento memento) {
+	public void loadWidgetState(ChannelLinePlotWidget widget, IMemento memento) {
 		widget.loadState(memento);
 	}
 
 	@Override
-	protected Line2DPlotWidget createChannelQueryWidget(Composite parent, int style) {
-		return new Line2DPlotWidget(parent, style);
+	protected ChannelLinePlotWidget createChannelQueryWidget(Composite parent, int style) {
+		return new ChannelLinePlotWidget(parent, style);
 	}
 
 }
