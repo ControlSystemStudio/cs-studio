@@ -4,9 +4,9 @@ import org.csstudio.channel.widgets.Line2DPlotWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 
-public class Line2DPlotView extends AbstractChannelQueryView<Line2DPlotWidget> {
+public class ChannelLinePlotView extends AbstractChannelQueryView<Line2DPlotWidget> {
 
-	public static final String ID = "org.csstudio.channel.views.Line2DPlotView";
+	public static final String ID = "org.csstudio.channel.views.ChannelLinePlotView";
 
 	@Override
 	public void saveWidgetState(Line2DPlotWidget widget, IMemento memento) {
