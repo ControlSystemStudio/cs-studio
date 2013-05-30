@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.client;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.Map;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
-import org.csstudio.scan.data.ScanSampleFormatter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
