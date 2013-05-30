@@ -38,6 +38,7 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.util.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server.httpd;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,6 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.util.IOUtils;
 import org.w3c.dom.Document;
 
 /** Servlet for "/scan/*": submitting a new scan, deleting (aborting) a current one
@@ -64,9 +64,7 @@ public class ScanServlet extends HttpServlet
         }
         
         // Read scan commands
-        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        StreamHelper.copy(request.getInputStream(), buf);
-        final String scan_commands = buf.toString();
+        final String scan_commands = IOUtils.toString(request.getInputStream());
         
         // Submit scan
         final long scan_id = scan_server.submitScan(scan_name, scan_commands);

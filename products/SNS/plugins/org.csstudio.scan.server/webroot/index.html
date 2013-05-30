@@ -11,6 +11,7 @@
 <h1>Scan Server REST Interface</h1>
 
 <h2>Server Info</h2>
+<p>Obtain general server info: Version number, runtime, memory usage.</p>
 <dl>
 <dt>Method</dt>
 <dd>GET</dd>
@@ -21,46 +22,8 @@
 </dl>
 
 
-<h2>List Scans</h2>
-<dl>
-<dt>Method</dt>
-<dd>GET</dd>
-<dt>URL</dt>
-<dd><a href="scans.html">/scans</a></dd>
-<dt>Result</dt>
-<dd>XML with scans</dd>
-</dl>
-
-
-<h2>Get Scan Info</h2>
-<dl>
-<dt>Method</dt>
-<dd>GET</dd>
-<dt>URL</dt>
-<dd>/scan/{id}</a></dd>
-<dt>Result</dt>
-<dd>XML with scan info</dd>
-</dl>
-
-<dl>
-<dt>Method</dt>
-<dd>GET</dd>
-<dt>URL</dt>
-<dd>/scan/{id}/commands</a></dd>
-<dt>Result</dt>
-<dd>XML with scan commands</dd>
-</dl>
-
-<dl>
-<dt>Method</dt>
-<dd>GET</dd>
-<dt>URL</dt>
-<dd>/scan/{id}/data</a></dd>
-<dt>Result</dt>
-<dd>XML with scan data</dd>
-</dl>
-
 <h2>Submit Scan</h2>
+<p>Submit a new scan for execution.</p>
 <dl>
 <dt>Method</dt>
 <dd>POST</dd>
@@ -72,8 +35,66 @@
 <dd>XML with scan ID, example: <code>&ltid>42&lt/id></code></dd>
 </dl>
 
+<p>Submit a scan for simulation.</p>
+<dl>
+<dt>Method</dt>
+<dd>POST</dd>
+<dt>URL</dt>
+<dd><a href="simulate.html">/simulate</a></dd>
+<dt>Message Body</dt>
+<dd>XML-formatted scan</dd>
+<dt>Result</dt>
+<dd>XML with scan similation</dd>
+</dl>
+
+
+<h2>List Scans</h2>
+<p>List all scans on the server.</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd><a href="scans.html">/scans</a></dd>
+<dt>Result</dt>
+<dd>XML with scans</dd>
+</dl>
+
+
+<h2>Get Scan Info</h2>
+<p>Get information for a specific scan.</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}</a></dd>
+<dt>Result</dt>
+<dd>XML with scan info</dd>
+</dl>
+
+<p>Get commands of a specific scan.</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/commands</a></dd>
+<dt>Result</dt>
+<dd>XML with scan commands</dd>
+</dl>
+
+<p>Get logged data of a specific scan.</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/data</a></dd>
+<dt>Result</dt>
+<dd>XML with scan data</dd>
+</dl>
+
+
 
 <h2>Put Scan into different States</h2>
+<p>Pause a running scan.</p>
 <dl>
 <dt>Method</dt>
 <dd>PUT</dd>
@@ -83,6 +104,7 @@
 <dd>HTTP OK or error</dd>
 </dl>
 
+<p>Resume a paused scan.</p>
 <dl>
 <dt>Method</dt>
 <dd>PUT</dd>
@@ -92,6 +114,7 @@
 <dd>HTTP OK or error</dd>
 </dl>
 
+<p>Abort a running or paused scan.</p>
 <dl>
 <dt>Method</dt>
 <dd>PUT</dd>
@@ -102,7 +125,8 @@
 </dl>
 
 
-<h2>Delete a finished Scan</h2>
+<h2>Delete Scans</h2>
+<p>Delete a finished Scan.</p>
 <dl>
 <dt>Method</dt>
 <dd>DELETE</dd>
@@ -112,7 +136,7 @@
 <dd>HTTP OK or error</dd>
 </dl>
 
-<h2>Delete all finished Scan</h2>
+<p>Delete all finished Scan</p>
 <dl>
 <dt>Method</dt>
 <dd>DELETE</dd>
