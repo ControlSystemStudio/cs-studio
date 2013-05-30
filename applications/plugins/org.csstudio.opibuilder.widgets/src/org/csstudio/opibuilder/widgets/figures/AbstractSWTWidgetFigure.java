@@ -158,7 +158,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
-				if (swtWidget == null || swtWidget.isDisposed()) {
+				if (swtWidget == null || swtWidget.isDisposed() || !editpart.isActive()) {
 					return;
 //					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
@@ -385,7 +385,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				new WidgetIgnorableUITask(this, new Runnable() {
 
 					public void run() {
-						if(!getSWTWidget().isDisposed())
+						if(!getSWTWidget().isDisposed() && getParent() != null)
 							doRelocateWidget();
 					}
 				}, composite.getDisplay()));

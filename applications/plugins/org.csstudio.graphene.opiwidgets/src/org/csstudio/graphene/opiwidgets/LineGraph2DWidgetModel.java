@@ -26,7 +26,12 @@ public class LineGraph2DWidgetModel extends
 		addProperty(new BooleanProperty(PROP_HIGHLIGHT_FOCUS_VALUE,
 				"Highlight Focus Value", WidgetPropertyCategory.Basic, false));
 		addProperty(new StringProperty(PROP_FOCUS_VALUE_PV,
-				"Focus Value PV", WidgetPropertyCategory.Basic, ""));
+				"Focus Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+	}
+	
+	@Override
+	protected String getDataType() {
+		return "VTable/VNumberArray";
 	}
 	
 	public String getFocusValuePv() {
