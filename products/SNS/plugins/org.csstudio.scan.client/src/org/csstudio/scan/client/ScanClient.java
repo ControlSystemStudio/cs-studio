@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.util.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -87,6 +89,21 @@ public class ScanClient
         connection.setRequestProperty("Content-Type", "text/xml");
         connection.setReadTimeout((int) SECONDS.toMillis(timeout));
         return connection;
+    }
+
+    /** POST data to connection
+     *  @param connection {@link HttpURLConnection}
+     *  @param text Data to post
+     *  @throws Exception on error
+     */
+    private void post(final HttpURLConnection connection, final String text) throws Exception
+    {
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+        final OutputStream body = connection.getOutputStream();
+        body.write(text.getBytes());
+        body.flush();
+        body.close();
     }
 
     /** Check HTTP response
@@ -150,7 +167,6 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            
             final Element root_node = parseXML(connection);
             if (! "server".equals(root_node.getNodeName()))
                 throw new Exception("Expected <server/>");
@@ -263,27 +279,52 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
+    /** Submit a scan for execution
+     *  @param name Name of the new scan
+     *  @param xml_commands XML commands of the scan to submit
+     *  @return Scan ID
+     *  @throws Exception on error
+     */
     public long submitScan(final String name, final String xml_commands) throws Exception
     {
         final HttpURLConnection connection = connect("/scan/" + name);
         try
         {
-            // Send commands
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            final OutputStream body = connection.getOutputStream();
-            body.write(xml_commands.getBytes());
-            body.flush();
-            body.close();
-            
-            // Obtain returned scan ID
+            post(connection, xml_commands);
             checkResponse(connection);
+            // Obtain returned scan ID
             final Element root_node = parseXML(connection);
             if (! "id".equals(root_node.getNodeName()))
                 throw new Exception("Expected <id/>");
             final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
             return id;
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+
+    /** Submit a scan for simulation
+     *  @param xml_commands XML commands of the scan to submit
+     *  @return Scan ID
+     *  @throws Exception on error
+     */
+    public SimulationResult simulateScan(final String xml_commands) throws Exception
+    {
+        final HttpURLConnection connection = connect("/simulate");
+        try
+        {
+            post(connection, xml_commands);
+            checkResponse(connection);
+            // Decode simulation result
+            final Element root_node = parseXML(connection);
+            if (! "simulation".equals(root_node.getNodeName()))
+                throw new Exception("Expected <simulation/>");
+            return new SimulationResult(
+                DOMHelper.getSubelementDouble(root_node, "seconds", 0.0),
+                DOMHelper.getSubelementString(root_node, "log"));
         }
         finally
         {

@@ -10,8 +10,8 @@ package org.csstudio.scan.ui.scantree;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.csstudio.scan.client.IOUtils;
 import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.util.IOUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

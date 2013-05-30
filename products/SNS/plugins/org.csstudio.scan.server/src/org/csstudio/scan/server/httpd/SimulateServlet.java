@@ -59,10 +59,10 @@ public class SimulateServlet extends HttpServlet
         response.setContentType("text/xml");
         final PrintWriter out = response.getWriter();
         out.println("<simulation>");
-        out.println("  <log>");
+        out.print("  <log>");
         out.print("<![CDATA[");
         out.print(simulation.getSimulationLog());
-        out.print("]]>");
+        out.println("]]>");
         out.println("  </log>");
         out.println("  <seconds>" + simulation.getSimulationSeconds() + "</seconds>");
         out.println("</simulation>");
