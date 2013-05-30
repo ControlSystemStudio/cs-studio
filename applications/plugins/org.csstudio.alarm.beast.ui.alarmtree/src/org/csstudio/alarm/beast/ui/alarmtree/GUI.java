@@ -100,10 +100,11 @@ public class GUI implements AlarmClientModelListener
         this.display = parent.getDisplay();
         createGUI(parent);
 
-        if (model.isServerAlive())
+        if (model.isServerAlive()) {
             setErrorMessage(null);
-        else
+        } else {
             setErrorMessage(Messages.WaitingForServer);
+        }
 
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
@@ -414,6 +415,12 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
+                
+                if (model.isServerAlive()) {
+                    setErrorMessage(null);
+                } else {
+                    setErrorMessage(Messages.WaitingForServer);
+                }
 
                 // Try to preserve the selection
                 AlarmTreeItem select =
