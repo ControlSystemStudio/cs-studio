@@ -59,7 +59,7 @@ import org.epics.pvmanager.graphene.GraphDataRange;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
 import org.epics.vtype.VNumberArray;
 
-public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
+public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
 	implements ISelectionProvider, ConfigurableWidget {
 
     private VImageDisplay imageDisplay;
@@ -69,7 +69,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
     private StartEndRangeWidget yRangeControl;
     private StartEndRangeWidget xRangeControl;
 
-    public Line2DPlotWidget(Composite parent, int style) {
+    public ChannelLinePlotWidget(Composite parent, int style) {
 	super(parent, style);
 
 	// Close PV on dispose
@@ -379,7 +379,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 	@Override
 	public void queryExecuted(final Result result) {
-	    SWTUtil.swtThread(Line2DPlotWidget.this).execute(new Runnable() {
+	    SWTUtil.swtThread(ChannelLinePlotWidget.this).execute(new Runnable() {
 
 		@Override
 		public void run() {
@@ -566,7 +566,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	    public void propertyChange(PropertyChangeEvent event) {
 		if ("channelQuery".equals(event.getPropertyName()))
 		    listener.selectionChanged(new SelectionChangedEvent(
-			    Line2DPlotWidget.this, getSelection()));
+			    ChannelLinePlotWidget.this, getSelection()));
 	    }
 	};
 	listenerMap.put(listener, propListener);
@@ -575,7 +575,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
     @Override
     public ISelection getSelection() {
-	return new StructuredSelection(new Line2DPlotSelection(
+	return new StructuredSelection(new ChannelLinePlotSelection(
 		getChannelQuery(), this));
     }
 
@@ -592,7 +592,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
     private boolean configurable = true;
 
-    private Line2DPlotConfigurationDialog dialog;
+    private ChannelLinePlotConfigurationDialog dialog;
 
     @Override
     public boolean isConfigurable() {
@@ -608,7 +608,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
     public void openConfigurationDialog() {
 	if (dialog != null)
 	    return;
-	dialog = new Line2DPlotConfigurationDialog(this);
+	dialog = new ChannelLinePlotConfigurationDialog(this);
 	dialog.open();
     }
 

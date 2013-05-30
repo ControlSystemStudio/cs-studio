@@ -3,7 +3,7 @@ package org.csstudio.channel.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget.XAxis;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget.XAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class Line2DPlotConfigurationPanel extends
+public class ChannelLinePlotConfigurationPanel extends
 		AbstractConfigurationComposite {
 
 	private Text xChannelQuery;
@@ -31,7 +31,7 @@ public class Line2DPlotConfigurationPanel extends
 	private Button btnProperty;
 	private Button btnChannelQuery;
 
-	public Line2DPlotConfigurationPanel(Composite parent, int style) {
+	public ChannelLinePlotConfigurationPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(2, false));
 

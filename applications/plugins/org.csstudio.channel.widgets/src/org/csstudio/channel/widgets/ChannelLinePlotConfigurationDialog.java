@@ -5,15 +5,15 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget.XAxis;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget.XAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-public class Line2DPlotConfigurationDialog
+public class ChannelLinePlotConfigurationDialog
 		extends
-		AbstractConfigurationDialog<Line2DPlotWidget, Line2DPlotConfigurationPanel> {
+		AbstractConfigurationDialog<ChannelLinePlotWidget, ChannelLinePlotConfigurationPanel> {
 
-	protected Line2DPlotConfigurationDialog(Line2DPlotWidget widget) {
+	protected ChannelLinePlotConfigurationDialog(ChannelLinePlotWidget widget) {
 		super(widget, SWT.DIALOG_TRIM, "Title");
 		addInitialValues("xOrdering", widget.getxOrdering());
 		addInitialValues("xChannelQuery",
@@ -67,9 +67,9 @@ public class Line2DPlotConfigurationDialog
 	}
 
 	@Override
-	protected Line2DPlotConfigurationPanel createConfigurationComposite(
+	protected ChannelLinePlotConfigurationPanel createConfigurationComposite(
 			Shell shell) {
-		return new Line2DPlotConfigurationPanel(shell, SWT.DIALOG_TRIM);
+		return new ChannelLinePlotConfigurationPanel(shell, SWT.DIALOG_TRIM);
 	}
 
 }

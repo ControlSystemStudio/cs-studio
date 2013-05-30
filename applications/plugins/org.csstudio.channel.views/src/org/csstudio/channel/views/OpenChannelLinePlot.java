@@ -8,16 +8,16 @@ import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.PartInitException;
 
-public class OpenLine2DPlot extends AbstractAdaptedHandler<ChannelQuery> {
+public class OpenChannelLinePlot extends AbstractAdaptedHandler<ChannelQuery> {
 
-	public OpenLine2DPlot() {
+	public OpenChannelLinePlot() {
 		super(ChannelQuery.class);
 	}
 	
 	@Override
 	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
 		if (!queries.isEmpty()) {
-			findView(Line2DPlotView.class, Line2DPlotView.ID)
+			findView(ChannelLinePlotView.class, ChannelLinePlotView.ID)
 				.setChannelQuery(queries.get(0));
 		}
 	}
