@@ -273,7 +273,7 @@ public class LogEntryWidget extends Composite {
 
 	btnAddTags = new Button(composite, SWT.NONE);
 	btnAddTags.setImage(ResourceManager.getPluginImage(
-		"org.csstudio.utility.channel", "icons/add_tag.png"));
+		"org.csstudio.logbook.ui", "icons/add_tag.png"));
 	btnAddTags.setEnabled(editable);
 	fd_lblTags.top = new FormAttachment(btnAddTags, 5, SWT.TOP);
 	btnAddTags.addSelectionListener(new SelectionAdapter() {

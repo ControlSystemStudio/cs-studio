@@ -114,8 +114,13 @@ public class AlarmTreeView extends ViewPart
         getSite().setSelectionProvider(gui.getTreeViewer());
     }
 
+    
+    
+    
     /** {@inheritDoc} */
+    
     @Override
+    
     public void setFocus()
     {
         if (gui != null)
