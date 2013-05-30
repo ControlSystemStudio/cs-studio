@@ -54,6 +54,26 @@ function deleteScan(id)
     });
 }
 
+function deleteCompletedScans()
+{
+    if (! confirm("Delete completed scans?"))
+        return;
+    $.ajax(
+    {
+        type: "DELETE",
+        url: "/scans/completed",
+        success: function()
+        {
+            location.reload();
+        },
+        error: function(xhr, status, error)
+        {
+            alert("Deletion of scans failed: " + error);
+            location.reload();
+        }
+    });
+}
+
 
 // Invoke GET /scans, display result in table 
 $(function()

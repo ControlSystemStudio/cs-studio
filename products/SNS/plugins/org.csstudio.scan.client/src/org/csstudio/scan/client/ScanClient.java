@@ -138,50 +138,72 @@ public class ScanClient
      */
     public ScanServerInfo getServerInfo() throws Exception
     {
-        final HttpURLConnection connection = connect("/server/info"); 
-        checkResponse(connection);
-        
-        final Element root_node = parseXML(connection);
-        if (! "server".equals(root_node.getNodeName()))
-            throw new Exception("Expected <server/>");
-        
-        final String version = DOMHelper.getSubelementString(root_node, "version");
-        final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
-        final String beamline_config = DOMHelper.getSubelementString(root_node, "beamline_config");
-        final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config");
-        final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
-        final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
-        final ScanServerInfo info = new ScanServerInfo(version, start_time,
-                beamline_config, simulation_config, used_mem, max_mem);
-        
-        connection.disconnect();
-        return info;
+        final HttpURLConnection connection = connect("/server/info");
+        try
+        {
+            checkResponse(connection);
+            
+            final Element root_node = parseXML(connection);
+            if (! "server".equals(root_node.getNodeName()))
+                throw new Exception("Expected <server/>");
+            
+            final String version = DOMHelper.getSubelementString(root_node, "version");
+            final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
+            final String beamline_config = DOMHelper.getSubelementString(root_node, "beamline_config");
+            final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config");
+            final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
+            final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
+            return new ScanServerInfo(version, start_time,
+                    beamline_config, simulation_config, used_mem, max_mem);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
 
     
+    public void removeCompletedScans() throws Exception
+    {
+        final HttpURLConnection connection = connect("/scans/remove_completed");
+        try
+        {
+            checkResponse(connection);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+
     /** Obtain information for all scans
      *  @return {@link List} of {@link ScanInfo}s
      *  @throws Exception on error
      */
     public List<ScanInfo> getScanInfos() throws Exception
     {
-        final HttpURLConnection connection = connect("/scans"); 
-        checkResponse(connection);
-        final Element root_node = parseXML(connection);
-        if (! "scans".equals(root_node.getNodeName()))
-            throw new Exception("Expected <scans/>");
-        
-        final List<ScanInfo> infos = new ArrayList<>();
-        Element node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "scan");
-        while (node != null)
+        final HttpURLConnection connection = connect("/scans");
+        try
         {
-            final ScanInfo info = parseScanInfo(node);
-            infos.add(info);
-            node = DOMHelper.findNextElementNode(node, "scan");
+            checkResponse(connection);
+            final Element root_node = parseXML(connection);
+            if (! "scans".equals(root_node.getNodeName()))
+                throw new Exception("Expected <scans/>");
+            
+            Element node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "scan");
+            final List<ScanInfo> infos = new ArrayList<>();
+            while (node != null)
+            {
+                final ScanInfo info = parseScanInfo(node);
+                infos.add(info);
+                node = DOMHelper.findNextElementNode(node, "scan");
+            }
+            return infos;
         }
-        
-        connection.disconnect();
-        return infos;
+        finally
+        {
+            connection.disconnect();
+        }
     }
 
     /** Obtain information for a scan
@@ -192,14 +214,18 @@ public class ScanClient
     public ScanInfo getScanInfo(final long id) throws Exception
     {
         final HttpURLConnection connection = connect("/scan/" + id);
-        checkResponse(connection);
-        final Element root_node = parseXML(connection);
-        if (! "scan".equals(root_node.getNodeName()))
-            throw new Exception("Expected <scan/>");
-        
-        final ScanInfo info = parseScanInfo(root_node);
-        connection.disconnect();
-        return info;
+        try
+        {
+            checkResponse(connection);
+            final Element root_node = parseXML(connection);
+            if (! "scan".equals(root_node.getNodeName()))
+                throw new Exception("Expected <scan/>");
+            return parseScanInfo(root_node);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
     
     /** Obtain commands for a scan
@@ -209,11 +235,16 @@ public class ScanClient
      */
     public String getScanCommands(final long id) throws Exception
     {
-        final HttpURLConnection connection = connect("/scan/" + id + "/commands"); 
-        checkResponse(connection);
-        final String xml = IOUtils.toString(connection.getInputStream());
-        connection.disconnect();
-        return xml;
+        final HttpURLConnection connection = connect("/scan/" + id + "/commands");
+        try
+        {
+            checkResponse(connection);
+            return IOUtils.toString(connection.getInputStream());
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
     
     // TODO getScanData(final long id) throws Exception
@@ -221,23 +252,28 @@ public class ScanClient
     public long submitScan(final String name, final String xml_commands) throws Exception
     {
         final HttpURLConnection connection = connect("/scan/" + name);
-
-        // Send commands
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        final OutputStream body = connection.getOutputStream();
-        body.write(xml_commands.getBytes());
-        body.flush();
-        body.close();
-        
-        // Obtain returned scan ID
-        checkResponse(connection);
-        final Element root_node = parseXML(connection);
-        if (! "id".equals(root_node.getNodeName()))
-            throw new Exception("Expected <id/>");
-        final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
-        connection.disconnect();
-        return id;
+        try
+        {
+            // Send commands
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            final OutputStream body = connection.getOutputStream();
+            body.write(xml_commands.getBytes());
+            body.flush();
+            body.close();
+            
+            // Obtain returned scan ID
+            checkResponse(connection);
+            final Element root_node = parseXML(connection);
+            if (! "id".equals(root_node.getNodeName()))
+                throw new Exception("Expected <id/>");
+            final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
+            return id;
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
 
     /** Put scan into different state via command
@@ -248,9 +284,15 @@ public class ScanClient
     private void sendScanCommand(final long id, final String command) throws Exception
     {
         final HttpURLConnection connection = connect("/scan/" + id + "/" + command);
-        connection.setRequestMethod("PUT");
-        checkResponse(connection);
-        connection.disconnect();
+        try
+        {
+            connection.setRequestMethod("PUT");
+            checkResponse(connection);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
     
     /** Put running scan into paused state

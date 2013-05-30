@@ -21,7 +21,7 @@ import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** Servlet for "/scans": listing scans
+/** Servlet for "/scans": listing scans, remove completed
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -35,6 +35,9 @@ public class ScansServlet extends HttpServlet
         this.scan_server = scan_server;
     }
 
+    /** Get scan information
+     *  <p>GET scans - get all scan infos
+     */
     @Override
     protected void doGet(final HttpServletRequest request,
             final HttpServletResponse response)
@@ -58,6 +61,28 @@ public class ScansServlet extends HttpServlet
         {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
             ex.printStackTrace();
+        }
+    }
+    
+    /** DELETE scans/completed: Remove completed scans
+     *  Returns basic HTTP OK (200) on success, otherwise error
+     */
+    @Override
+    protected void doDelete(final HttpServletRequest request,
+            final HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final String path = request.getPathInfo();
+        try
+        {
+            if (! "/completed".equals(path))
+                throw new Exception("Illegal path '/scans" + path + "'");
+            scan_server.removeCompletedScans();
+        }
+        catch (Exception ex)
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            return;
         }
     }
 }
