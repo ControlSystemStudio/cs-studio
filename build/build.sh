@@ -46,21 +46,52 @@ else
   cd ..
 fi
 
+function copyIfNotExists {
+  listfile=$1;
+  source=$2;
+  target=$3;
+  for dir in `cat $listfile`
+  do
+    if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
+    then
+      cp -R $source/$dir $target
+    fi
+  done
+}
+
 # Copy product sources
 cp -R ../products/$PRODUCT $BUILD
-if [ "$PRODUCT" = "ITER" ]
-then 
-  cp -R ../products/$PRODUCT/products/* $BUILD/plugins/
+if [[ "$PRODUCT" = "ITER" ]]
+then
+  copyIfNotExists $BUILD/plugins.list ../products/$PRODUCT/products $BUILD/plugins
 fi
 
-cat $BUILD/plugins.list | xargs -I {} cp -R ../core/plugins/{} $BUILD/plugins
-cat $BUILD/plugins.list | xargs -I {} cp -R ../applications/plugins/{} $BUILD/plugins
-if [ "$PRODUCT" = "ITER" ]
-then 
-  cat $BUILD/plugins.list | xargs -I {} cp -R ../products/DESY/plugins/{} $BUILD/plugins
+copyIfNotExists $BUILD/plugins.list ../core/plugins $BUILD/plugins
+copyIfNotExists $BUILD/plugins.list ../applications/plugins $BUILD/plugins
+
+if [[ "$PRODUCT" = "ITER" ]]
+then
+  copyIfNotExists $BUILD/plugins.list ../products/DESY/plugins $BUILD/plugins
 fi
-cat $BUILD/features.list | xargs -I {} cp -R ../core/features/{} $BUILD/features
-cat $BUILD/features.list | xargs -I {} cp -R ../applications/features/{} $BUILD/features
+copyIfNotExists $BUILD/features.list ../core/features $BUILD/features
+copyIfNotExists $BUILD/features.list ../applications/features $BUILD/features
+
+# Check if all required features and plugins was found
+for dir in `cat $BUILD/plugins.list`
+do
+  if [[ ! -d "$BUILD/plugins/$dir" ]]
+  then
+    echo Plugin $dir not found.
+  fi
+done
+for dir in `cat $BUILD/features.list`
+do
+  if [[ ! -d "$BUILD/features/$dir" ]]
+  then
+    echo Feature $dir not found.
+  fi
+done
+
 mkdir $BUILD/BuildDirectory
 cd $BUILD
 mv features BuildDirectory

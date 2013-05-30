@@ -1088,7 +1088,7 @@ public class ContentProposalPopup extends PopupDialog {
 	}
 
 	/*
-	 * Request the proposals from the proposal provider, and recompute any
+	 * Get the proposals from the proposal provider, and recompute any
 	 * caches. Repopulate the popup if it is open.
 	 */
 	private void recomputeProposals(ContentProposalList newProposalList) {
@@ -1120,17 +1120,16 @@ public class ContentProposalPopup extends PopupDialog {
 					adapter.getProposals(new IContentProposalSearchHandler() {
 						@Override
 						public void handleResult(
-								ContentProposalList proposalList) {
-							recomputeProposals(proposalList);
+								final ContentProposalList proposalList) {
+							if (control != null && !control.isDisposed()) {
+								control.getDisplay().syncExec(new Runnable() {
+									public void run() {
+										recomputeProposals(proposalList);
+									}
+								});
+							}
 						}
 					});
-				}
-			});
-		} else {
-			adapter.getProposals(new IContentProposalSearchHandler() {
-				@Override
-				public void handleResult(ContentProposalList proposalList) {
-					recomputeProposals(proposalList);
 				}
 			});
 		}
@@ -1149,5 +1148,9 @@ public class ContentProposalPopup extends PopupDialog {
 
 	public void setPopupSize(Point size) {
 		popupSize = size;
+	}
+
+	public void refreshProposals(ContentProposalList newProposalList) {
+		recomputeProposals(newProposalList);
 	}
 }

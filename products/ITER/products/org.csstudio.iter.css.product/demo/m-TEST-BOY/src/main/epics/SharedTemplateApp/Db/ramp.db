@@ -17,3 +17,17 @@ record(calc, "TEST-BOY1:RAMPx$(IOC)$(COUNT)")
     field(HIHI, "8")
     field(HHSV, "MAJOR")
 }
+
+record(calc, "TEST-BOY1:OnOffx$(IOC)$(COUNT)")
+{
+	field(DESC, "Ramp 0 to 1")
+    field(SCAN, "$(SCAN)")
+    field(CALC, "A=1?0:A+1")
+    field(INPA, "TEST-BOY1:OnOffx$(IOC)$(COUNT)")
+    field(LOPR, "0")
+    field(HOPR, "1")
+    field(LOW, "0")
+    field(LSV, "MINOR")
+    field(HIGH, "1")
+    field(HSV, "MAJOR")
+}

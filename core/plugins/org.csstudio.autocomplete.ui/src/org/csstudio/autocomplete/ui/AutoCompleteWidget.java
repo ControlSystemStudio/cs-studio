@@ -27,17 +27,29 @@ public class AutoCompleteWidget {
 	private final Control control;
 	private final String type;
 
+	/**
+	 * Enable auto-completed content on the specified widget.
+	 * 
+	 * @param control {@link Combo} or {@link Text}
+	 * @param type see {@link AutoCompleteTypes}
+	 */
 	public AutoCompleteWidget(Control control, String type) {
 		Assert.isNotNull(type);
-		
+
 		this.control = control;
 		this.type = type;
 		enableContentProposal();
 	}
 
+	/**
+	 * Enable auto-completed content on the specified widget.
+	 * 
+	 * @param control {@link Combo} or {@link Text}
+	 * @param type see {@link AutoCompleteTypes}
+	 */
 	public AutoCompleteWidget(CellEditor cellEditor, String type) {
 		Assert.isNotNull(type);
-		
+
 		this.control = cellEditor.getControl();
 		this.type = type;
 		enableContentProposal();

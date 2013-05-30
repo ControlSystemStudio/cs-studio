@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -205,6 +206,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 	@Override
 	protected boolean iRapIsLoggedIn(Display display) {
 		return false;
+	}
+
+	@Override
+	protected void iOpenEditor(IWorkbenchPage page, IPath path)
+			throws Exception {
+		SingleSourcePlugin.getUIHelper().openEditor(page, path);
 	}
 
 }
