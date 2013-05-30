@@ -88,7 +88,7 @@ public class ScanClient
     {
         final int code = connection.getResponseCode();
         if (code < 200  ||  code > 299)
-            throw new Exception("HTTP Response code " + code);
+            throw new Exception("HTTP Response code " + code + " (" + connection.getResponseMessage() + ")");
     }
 
     /** Parse XML document from connection
@@ -210,5 +210,45 @@ public class ScanClient
         final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
         connection.disconnect();
         return id;
+    }
+
+    /** Put scan into different state via command
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param command Command to send
+     *  @throws Exception on error
+     */
+    private void sendScanCommand(final long id, final String command) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id + "/" + command);
+        connection.setRequestMethod("PUT");
+        checkResponse(connection);
+        connection.disconnect();
+    }
+    
+    /** Put running scan into paused state
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void pauseScan(final long id) throws Exception
+    {
+        sendScanCommand(id, "pause");
+    }
+
+    /** Resume a paused scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void resumeScan(final long id) throws Exception
+    {
+        sendScanCommand(id, "resume");
+    }
+
+    /** Abort a running or paused scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void abortScan(final long id) throws Exception
+    {
+        sendScanCommand(id, "abort");
     }
 }

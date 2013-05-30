@@ -16,10 +16,13 @@
 package org.csstudio.scan.client;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThat;
@@ -73,19 +76,65 @@ public class ScanClientDemoREST
 
 
     @Test(timeout=10000)
-    public void getSubmit() throws Exception
+    public void submitScan() throws Exception
     {
         final ScanClient client = getScanClient();
         
         final CommandSequence commands = new CommandSequence(
-            new DelayCommand(5.0));
-        final long id = client.submitScan("Demo", commands.getXML());
+            new DelayCommand(1.0));
+        final long id = client.submitScan("SubmitDemo", commands.getXML());
         
-        final ScanInfo info = client.getScanInfo(id);
+        ScanInfo info = client.getScanInfo(id);
         System.out.println(info);
         
-        assertThat(info.getName(), equalTo("Demo"));
+        assertThat(info.getName(), equalTo("SubmitDemo"));
         assertThat(info.getId(), equalTo(id));
+        
+        // Wait for scan to finish
+        while (!info.getState().isDone())
+        {
+            TimeUnit.SECONDS.sleep(1);
+            info = client.getScanInfo(id);
+            System.out.println(info);
+        }
     }
+    
+    @Test(timeout=10000)
+    public void controlScan() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        
+        final CommandSequence commands = new CommandSequence(
+            new LoopCommand("loc://x", 1, 1000, 1,
+                new DelayCommand(1.0)
+            ));
+        final long id = client.submitScan("ControlDemo", commands.getXML());
+        
+        ScanInfo info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getName(), equalTo("ControlDemo"));
+        assertThat(info.getId(), equalTo(id));
+        // Wait for scan to start (may initially be Idle)
+        while (info.getState() != ScanState.Running)
+        {
+            TimeUnit.SECONDS.sleep(1);
+            info = client.getScanInfo(id);
+            System.out.println(info);
+        }
+        
+        client.pauseScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Paused));
 
+        client.resumeScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Running));
+
+        client.abortScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Aborted));
+    }
 }
