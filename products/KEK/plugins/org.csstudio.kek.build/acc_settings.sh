@@ -7,22 +7,21 @@ JPARC_COLOR_DEF="/BOY Examples/color.def"
 JPARC_FONT_DEF="/BOY Examples/font.def"
 
 PFAR_ADDR_LIST="172.19.63.255 172.19.68.144 172.19.68.161 130.87.169.30"
-PFAR_ARCHIVE_URLS="xnds://pfconrg07.kek.jp:8082/archive/cgi/ArchiveDataServer.cgi xnds://pfconrg06.kek.jp:8080/archive/cgi/ArchiveDataServer.cgi"
-PFAR_ARCHIVE_NAMES_1="All\ Group\ (updated\ in\ 30min)"
-PFAR_ARCHIVE_NAMES_2="Archive"
+PFAR_ARCHIVE_URLS="jdbc:postgresql://abcob12.kekb.kek.jp:5432/archive"
+PFAR_ARCHIVE_NAMES_1="rdb"
 PFAR_COLOR_DEF="/Operation/AR/color_AR.def"
 PFAR_FONT_DEF="/Operation/AR/font_AR.def"
-PFAR_SHARE_LINK_SRC_WIN=
-PFAR_SHARE_LINK_SRC="/cont/epics314/app/PFAR/OP/CSS/Operation"
+PFAR_SHARE_LINK_SRC_WIN='\\erlnas2w.kek.jp\opi\PF-AR'
+PFAR_SHARE_LINK_SRC="/cont/epics314/app/PFAR/opi"
 PFAR_SHARE_LINK_DEST="/Operation/AR"
 
 PF_ADDR_LIST="172.28.255.255"
-PF_ARCHIVE_URLS="xnds://pfrproc2.pfring.kek.jp/archive/cgi/ArchiveDataServer.cgi"
-PF_ARCHIVE_NAMES_1="Archive"
+PF_ARCHIVE_URLS="jdbc:postgresql://pfrproc4.pfring.kek.jp:5432/archive"
+PF_ARCHIVE_NAMES_1="rdb"
 PF_COLOR_DEF="/Operation/PF/color_PF.def"
 PF_FONT_DEF="/Operation/PF/font_PF.def"
-PF_SHARE_LINK_SRC_WIN='\\pfrdisk1.pfring.kek.jp\epics\app\OP\CSS\OP-Workspace\PF'
-PF_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace/PF"
+PF_SHARE_LINK_SRC_WIN='\\erlnas2w.kek.jp\opi\PF-Ring'
+PF_SHARE_LINK_SRC="/pf/epics/app/opi/PF-Ring"
 PF_SHARE_LINK_DEST="/Operation/PF"
 
 LINAC_ADDR_LIST="172.19.95.255"
@@ -40,13 +39,12 @@ SUPERKEKB_COLOR_DEF="/BOY Examples/color.def"
 SUPERKEKB_FONT_DEF="/BOY Examples/font.def"
 
 CERL_ADDR_LIST="172.28.79.255"
-CERL_ARCHIVE_URLS="xnds://pfconrg07.kek.jp:8082/archive/cgi/ArchiveDataServer.cgi xnds://pfconrg06.kek.jp:8080/archive/cgi/ArchiveDataServer.cgi"
-CERL_ARCHIVE_NAMES_1="All\ Group\ (updated\ in\ 30min)"
-CERL_ARCHIVE_NAMES_2="Archive"
+CERL_ARCHIVE_URLS="jdbc:postgresql://pfrproc5.kek.jp:9090/archive"
+CERL_ARCHIVE_NAMES_1="rdb"
 CERL_COLOR_DEF="/Operation/cERL/color_cERL.def"
 CERL_FONT_DEF="/Operation/cERL/font_cERL.def"
-CERL_SHARE_LINK_SRC_WIN='\\erlnas2.cerl.kek.jp\public\EPICS\CSS\Operation\cERL'
-CERL_SHARE_LINK_SRC="/cerl/epics/app/OP/CSS/OP-Workspace/cERL"
+CERL_SHARE_LINK_SRC_WIN='\\erlnas2w.kek.jp\opi\cERL'
+CERL_SHARE_LINK_SRC="/cerl/epics/app/opi/cERL"
 CERL_SHARE_LINK_DEST="/Operation/cERL"
 
 JPARC_OFFICE_ADDR_LIST="jparc-office.kek.jp"
@@ -62,8 +60,8 @@ PF_OFFICE_ARCHIVE_NAMES_2="rdb"
 PF_OFFICE_ARCHIVE_NAMES_3="rdb"
 PF_OFFICE_COLOR_DEF="/Operation/PF/color_PF.def"
 PF_OFFICE_FONT_DEF="/Operation/PF/font_PF.def"
-PF_OFFICE_SHARE_LINK_SRC_WIN='\\pfrnas3.kek.jp\public\public\EPICS\CSS\Operation'
-PF_OFFICE_SHARE_LINK_SRC="/pf/epics/app/OP/CSS/OP-Workspace"
+PF_OFFICE_SHARE_LINK_SRC_WIN='\\erlnas2w.kek.jp\opi'
+PF_OFFICE_SHARE_LINK_SRC="/pf/epics/app/opi"
 PF_OFFICE_SHARE_LINK_DEST="/Operation"
 
 LINAC_OFFICE_ADDR_LIST="172.19.95.255"
