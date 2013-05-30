@@ -314,10 +314,10 @@ public class LogEntryWidget extends Composite {
 	combo.setLayoutData(fd_combo);
 
 	lblNewLabel = new Label(composite, SWT.NONE);
-	fd_combo.left = new FormAttachment(lblNewLabel, 6);
+	fd_combo.left = new FormAttachment(lblNewLabel, 5);
 	FormData fd_lblNewLabel = new FormData();
 	fd_lblNewLabel.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_lblNewLabel.right = new FormAttachment(100, -108);
+	fd_lblNewLabel.right = new FormAttachment(100, -196);
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Level:");
 
