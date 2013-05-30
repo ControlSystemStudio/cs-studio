@@ -12,6 +12,7 @@ import java.util.Collection;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
+import org.csstudio.ui.util.AbstractSelectionProviderWrapper;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -20,13 +21,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -38,7 +36,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
-import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * @author shroffk
@@ -59,7 +56,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
     private Composite composite;
-    private org.csstudio.logbook.ui.AbstractSelectionProviderWrapper selectionProvider;
+    private AbstractSelectionProviderWrapper selectionProvider;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -196,9 +193,9 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
-		return item == null ? "" : DateFormat.getDateTimeInstance(
-			DateFormat.SHORT, DateFormat.SHORT).format(
-			item.getCreateDate());
+		return item == null || item.getCreateDate() == null ? ""
+			: DateFormat.getDateTimeInstance(DateFormat.SHORT,
+				DateFormat.SHORT).format(item.getCreateDate());
 	    }
 	});
 	TableColumn tblclmnDate = tableViewerColumnDate.getColumn();

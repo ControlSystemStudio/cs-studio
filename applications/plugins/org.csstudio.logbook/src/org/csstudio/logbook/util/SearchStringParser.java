@@ -32,13 +32,14 @@ public class SearchStringParser {
      * @param string
      * @return
      */
-    public static Map<String, String> searchParser(String string) {
+    public static Map<String, String> searchParser(String string,
+	    String DefaultKey) {
 	Map<String, String> result = new HashMap<String, String>();
 	Pattern p = Pattern.compile("([\\S]*):[.]*");
 	Matcher m = p.matcher(string);
 	int start = 0;
 	int end;
-	String key = "text";
+	String key = DefaultKey;
 	while (m.find()) {
 	    end = m.start() - 1;
 	    result.put(key, string.substring(start, end).trim());
