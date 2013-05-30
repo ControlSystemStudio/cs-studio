@@ -43,6 +43,7 @@ public class IOUtils
             count = stream.read(buf);
         }
         result.flush();
+        stream.close();
         
         return result.toByteArray();
     }

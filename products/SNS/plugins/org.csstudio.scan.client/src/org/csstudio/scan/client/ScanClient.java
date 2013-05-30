@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +79,9 @@ public class ScanClient
      */
     private HttpURLConnection connect(final String path) throws Exception
     {
-        final URL url = new URL("http", host, port, path);
+        // URI will properly escape content of path
+        final URI uri = new URI("http", null, host, port, path, null, null);
+        final URL url = uri.toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "text/xml");
         connection.setReadTimeout((int) SECONDS.toMillis(timeout));

@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanUIActivator;
@@ -104,7 +104,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
 
     /** Info about scan server */
-    private ScanInfoModel scan_info = null;
+    private ScanInfoModelREST scan_info = null;
 
     /** Commands displayed and edited in this editor*/
     final private ScanTreeModel model = new ScanTreeModel();
@@ -240,7 +240,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         // Get scan info model and return if that fails
         try
         {
-            scan_info = ScanInfoModel.getInstance();
+            scan_info = ScanInfoModelREST.getInstance();
         }
         catch (Exception ex)
         {
@@ -294,20 +294,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             @Override
             protected IStatus run(final IProgressMonitor monitor)
             {
-                final ScanServer server;
-        		try
-        		{
-        			server = scan_info.getServer();
-        		}
-        		catch (Exception ex)
-        		{
-        			// Not connected to server: Try again later
-        			schedule(10000);
-                    return Status.OK_STATUS;
-        		}
+                final ScanClient client = scan_info.getScanClient();
                 try
                 {
-                    devices = server.getDeviceInfos(-1);
+                    // TODO devices = client.getDeviceInfos(-1);
                 }
                 catch (Exception ex)
                 {	// Connected, but still error: Give up
@@ -345,7 +335,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             {
                 try
                 {
-                    scan_info.getServer().resume(scan_id);
+                    scan_info.getScanClient().resumeScan(scan_id);
                     resume.setEnabled(false);
                     pause.setEnabled(true);
                 }
@@ -364,7 +354,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             {
                 try
                 {
-                    scan_info.getServer().pause(scan_id);
+                    scan_info.getScanClient().pauseScan(scan_id);
                     resume.setEnabled(true);
                     pause.setEnabled(false);
                 }
@@ -383,7 +373,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             {
                 try
                 {
-                    scan_info.getServer().abort(scan_id);
+                    scan_info.getScanClient().abortScan(scan_id);
                 }
                 catch (Exception ex)
                 {
@@ -650,8 +640,9 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         final long id = scan_id;
         if (id < 0)
             return;
-        scan_info.getServer().updateScanProperty(id, command.getAddress(),
-                property_id, value);
+        // TODO
+//        scan_info.getServer().updateScanProperty(id, command.getAddress(),
+//                property_id, value);
     }
 
     /** @param file_path Complete path to a scan file
@@ -681,8 +672,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             {
                 try
                 {
-                    final ScanServer server = scan_info.getServer();
-                    scan_id = server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    final ScanClient client = scan_info.getScanClient();
+                    scan_id = client.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
                 }
                 catch (Exception ex)
                 {
