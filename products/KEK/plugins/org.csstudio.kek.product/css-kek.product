@@ -63,6 +63,7 @@ http://www-linac.kek.jp/cont/css/
       <feature id="org.csstudio.kek.eclipse.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.kek.core.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.kek.applications.feature" version="3.2.0.qualifier"/>
+      <feature id="org.csstudio.kek.optional.feature" version="3.2.0.qualifier"/>
    </features>
 
 
