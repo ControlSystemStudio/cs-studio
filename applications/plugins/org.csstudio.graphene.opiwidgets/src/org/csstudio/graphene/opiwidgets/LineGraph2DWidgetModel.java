@@ -17,16 +17,16 @@ public class LineGraph2DWidgetModel extends
 
 	public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
 	
-	public static final String PROP_HIGHLIGHT_FOCUS_VALUE = "highlight_focus_value"; //$NON-NLS-1$
-	public static final String PROP_FOCUS_VALUE_PV = "focus_value_pv"; //$NON-NLS-1$
+	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
+	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addProperty(new BooleanProperty(PROP_HIGHLIGHT_FOCUS_VALUE,
-				"Highlight Focus Value", WidgetPropertyCategory.Basic, false));
-		addProperty(new StringProperty(PROP_FOCUS_VALUE_PV,
-				"Focus Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+		addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
+				"Highlight Selection Value", WidgetPropertyCategory.Basic, false));
+		addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
+				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
 	}
 	
 	@Override
@@ -34,12 +34,12 @@ public class LineGraph2DWidgetModel extends
 		return "VTable/VNumberArray";
 	}
 	
-	public String getFocusValuePv() {
-		return (String) getCastedPropertyValue(PROP_FOCUS_VALUE_PV);
+	public String getSelectionValuePv() {
+		return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
 	}
 
-	public boolean isHighlightFocusValue() {
-		return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_FOCUS_VALUE);
+	public boolean isHighlightSelectionValue() {
+		return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
 	}
 
 	@Override
