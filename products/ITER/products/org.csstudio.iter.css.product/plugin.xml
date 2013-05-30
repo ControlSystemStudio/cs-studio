@@ -199,6 +199,11 @@
     		activityId="org.csstudio.iter.css.product.disablextensions"
     		pattern=".*org.eclipse.wst.xml.ui.XMLExampleProjectCreationWizard"
     	/>
+    	<!-- Disable Help -> Cheat Sheet... from showView -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern="org.csstudio.ui.menu.app/org.eclipse.ui.views.showView"
+    	/>
     	
     </extension>
    
