@@ -212,7 +212,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         else
         {   // Running
-            command_name = command.toString();
+            command_name = command == null ? "" : command.toString();
             final long now = System.currentTimeMillis();
             runtime = now - start_ms;
             performed_work_units = work_performed.get();
