@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>Editing Values</title>
+</head>
+<body>
+
+<h1>Editing Values</h1>
+Edit values by clicking into the cell, entering a new value, then
+pressing <b>Return</b>. The background of edited cells changes to
+indicate that they differ from the original value of the PV.
+<p>
+Note that <u>changes are not written out to PVs, yet</u>,
+until the changes are <a href=save_limits.html>saved.</a>
+<p>
+
+Cells in columns which have a gray background and a
+<a href=tooltips.html>Tooltip</a>
+that indicates <b>read-only</b> can not be edited.
+See <a href=config.html>Configuration Files</a>.
+
+<h2>Change Multiple Limits To The Same Value</h2>
+To set multiple cells in a row to the same value,
+select the desired rows, then right-click on 
+one cell in the desired column and invoke <b>Set Value</b>
+from the context menu.
+<p>
+In the example below, the rows for "MEBT 1" to "CCL 4"
+were selected, then the right button context menu
+was invoked on one of the selected cells in the
+"PwrLmtAdm" column. After entering a value and pressing <b>OK</b>,
+the "PwrLmtAdm" cells for rows "MEBT 1" to "CCL 4"
+will be set to the entered value.
+<p>
+<img src=InputValue.png width=699  height=380/>
+
+
+<h2>Change All Limits In A Column To The Same Value</h2>
+To set all the cells in a column to the same value,
+left-click the mouse on the desired column header.
+<p>
+Below, the "PwrLmtAdm" column was selected. This will
+obviously only be possible for editable columns,
+not for read-only columns, indicated by a grey
+background.
+<p>
+<img src=SetAllCells.png width=482  height=214/>
+<p>
+Pressing the <b>OK</b> results in the screen below.
+Note how all but the "RFQ" entry which was already
+set to a value of 1000 are highlighted to indicate
+the changed value, and the asterisk next to the window
+title (*rf_admin.pace) also reflects that some values
+have been changed.
+<p>
+<img src=AfterSetAllCells.png width=877  height=522/>
+
+
+<h2>Revert Changes</h2>
+To set selected edited cells back to their original value,
+select the desired rows, then right-click on 
+one cell in the desired column and invoke <b>Restore Original Value</b>
+from the context menu.
+
+</body>
+</html>
