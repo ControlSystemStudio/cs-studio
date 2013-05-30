@@ -64,7 +64,7 @@ public class ScanClientDemoREST
         final ScanClient client = getScanClient();
         final List<ScanInfo> infos = client.getScanInfos();
         for (ScanInfo info : infos)
-            System.out.println(info);
+            System.out.println(info + " @ " + info.getCurrentCommand() + " (" + info.getCurrentAddress() + ")");
         
         assertThat(infos.size(), greaterThan(0));
         final ScanInfo other = client.getScanInfo(infos.get(0).getId());

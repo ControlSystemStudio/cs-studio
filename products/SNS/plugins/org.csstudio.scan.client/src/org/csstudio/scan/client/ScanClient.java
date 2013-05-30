@@ -125,7 +125,7 @@ public class ScanClient
         final long performed_work_units = DOMHelper.getSubelementLong(node, "performed_work_units", 0);
         final long finishtime_ms = DOMHelper.getSubelementLong(node, "finish", 0);
         final long current_address = DOMHelper.getSubelementLong(node, "address", 0);
-        final String current_commmand = DOMHelper.getSubelementString(node, "commmand", "");
+        final String current_commmand = DOMHelper.getSubelementString(node, "command", "");
         
         final Scan scan = new Scan(id, name, created);
         return new ScanInfo(scan, state, error, runtime_ms, finishtime_ms,
