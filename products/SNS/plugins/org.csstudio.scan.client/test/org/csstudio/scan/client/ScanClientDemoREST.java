@@ -15,12 +15,15 @@
  ******************************************************************************/
 package org.csstudio.scan.client;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LoopCommand;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
@@ -96,6 +99,21 @@ public class ScanClientDemoREST
     }
 
 
+    @Test// (timeout=10000)
+    public void getScanData() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        final List<ScanInfo> infos = client.getScanInfos();
+        assertThat(infos.size(), greaterThan(0));
+
+        final ScanData data = client.getScanData(infos.get(0).getId());
+        System.out.println(Arrays.toString(data.getDevices()));
+        
+        final ScanDataIterator iterator = new ScanDataIterator(data);
+        iterator.printTable(System.out);
+    }
+
+    
     @Test(timeout=10000)
     public void submitScan() throws Exception
     {

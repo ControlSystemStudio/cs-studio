@@ -47,7 +47,7 @@ public class ShowDevicesAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        // TODO
+        // TODO Implement or remove
 //        // Collect devices from selected scans
 //        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
 //        for (ScanInfo info : infos)

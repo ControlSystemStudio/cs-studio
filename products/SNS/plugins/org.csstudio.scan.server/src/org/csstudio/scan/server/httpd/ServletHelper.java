@@ -21,7 +21,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
@@ -162,40 +161,34 @@ public class ServletHelper
     {
         final Element result = doc.createElement("data");
         
-        // Return data in spreadsheet-arrangement
-        final ScanDataIterator sheet = new ScanDataIterator(data);
-
-        // List all devices
-        final Element devices = doc.createElement("devices");
-        for (String device : sheet.getDevices())
+        for (String device_name : data.getDevices())
         {
-            final Element dev_node = doc.createElement("device");
-            dev_node.setTextContent(device);
-            devices.appendChild(dev_node);
-        }
-        result.appendChild(devices);
+            final Element device = doc.createElement("device");
+        
+            final Element name = doc.createElement("name");
+            name.setTextContent(device_name);
+            device.appendChild(name);
 
-        final Element samples = doc.createElement("samples");
-        while (sheet.hasNext())
-        {
-            // One 'values' element with <time><value><value>...
-            final ScanSample[] line = sheet.getSamples();
-
-            final Element values = doc.createElement("values");
-            
-            final Element time = doc.createElement("time");
-            time.setTextContent(ScanSampleFormatter.format(sheet.getTimestamp()));
-            values.appendChild(time);
-            
-            for (ScanSample sample : line)
+            final Element samples = doc.createElement("samples");
+            for (ScanSample data_sample : data.getSamples(device_name))
             {
+                final Element sample = doc.createElement("sample");
+                sample.setAttribute("id", Long.toString(data_sample.getSerial()));
+                
+                final Element time = doc.createElement("time");
+                time.setTextContent(Long.toString(data_sample.getTimestamp().getTime()));
+                sample.appendChild(time);
+                
                 final Element value = doc.createElement("value");
-                value.setTextContent(ScanSampleFormatter.asString(sample));
-                values.appendChild(value);
+                value.setTextContent(ScanSampleFormatter.asString(data_sample));
+                sample.appendChild(value);
+
+                samples.appendChild(sample);
             }
-            samples.appendChild(values);
+            device.appendChild(samples);
+            
+            result.appendChild(device);
         }
-        result.appendChild(samples);
 
         return result;
     }

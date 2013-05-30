@@ -17,6 +17,7 @@ package org.csstudio.scan.client;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,8 +27,11 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.scan.command.DOMHelper;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -233,7 +237,28 @@ public class ScanClient
         }
     }
     
-    // TODO getScanData(final long id) throws Exception
+    /** Obtain data logged by a scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @return {@link ScanData}
+     *  @throws Exception on error
+     */
+    public ScanData getScanData(final long id) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id + "/data");
+        try
+        {
+            checkResponse(connection);
+            final InputStream stream = connection.getInputStream();
+            final ScanDataSAXHandler handler = new ScanDataSAXHandler();
+            final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            parser.parse(stream, handler);
+            return handler.getScanData();
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
     
     public long submitScan(final String name, final String xml_commands) throws Exception
     {
