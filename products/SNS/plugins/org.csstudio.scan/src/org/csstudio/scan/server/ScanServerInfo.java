@@ -23,7 +23,7 @@ import org.csstudio.scan.data.ScanSampleFormatter;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanServerInfo  extends MemoryInfo
+public class ScanServerInfo extends MemoryInfo
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -49,6 +49,27 @@ public class ScanServerInfo  extends MemoryInfo
 	    this.simulation_config = simulation_config;
     }
 
+    /** Initialize
+     *  @param version
+     *  @param start_time
+     *  @param beamline_config
+     *  @param simulation_config
+     *  @param used_mem Used memory (kB)
+     *  @param max_mem Maximum available memory (kB)
+     */
+    public ScanServerInfo(final String version, final Date start_time,
+            final String beamline_config,
+            final String simulation_config,
+            final long used_mem, final long max_mem)
+    {
+        super(used_mem, max_mem);
+        this.version = version;
+        this.start_time = start_time;
+        this.beamline_config = beamline_config;
+        this.simulation_config = simulation_config;
+    }
+
+    
     /** @return Version number */
 	public String getVersion()
     {

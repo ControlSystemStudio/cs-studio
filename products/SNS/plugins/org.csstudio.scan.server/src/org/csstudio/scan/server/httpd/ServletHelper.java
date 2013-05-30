@@ -25,6 +25,7 @@ import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,6 +50,42 @@ public class ServletHelper
         }
     }
     
+    /** Create XML content for scan server info
+     *  @param doc XML {@link Document}
+     *  @param info {@link ScanServerInfo}
+     *  @return XML {@link Element} for the server info
+     */
+    public static Element createXMLElement(final Document doc, final ScanServerInfo info)
+    {
+        final Element server = doc.createElement("server");
+        
+        Element el = doc.createElement("version");
+        el.appendChild(doc.createTextNode(info.getVersion()));
+        server.appendChild(el);
+
+        el = doc.createElement("start_time");
+        el.appendChild(doc.createTextNode(Long.toString(info.getStartTime().getTime())));
+        server.appendChild(el);
+
+        el = doc.createElement("beamline_config");
+        el.appendChild(doc.createTextNode(info.getBeamlineConfig()));
+        server.appendChild(el);
+
+        el = doc.createElement("simulation_config");
+        el.appendChild(doc.createTextNode(info.getSimulationConfig()));
+        server.appendChild(el);
+
+        el = doc.createElement("used_mem");
+        el.appendChild(doc.createTextNode(Long.toString(info.getUsedMem())));
+        server.appendChild(el);
+
+        el = doc.createElement("max_mem");
+        el.appendChild(doc.createTextNode(Long.toString(info.getMaxMem())));
+        server.appendChild(el);
+        
+        return server;
+    }
+
     /** Create XML content for scan info
      *  @param doc XML {@link Document}
      *  @param info {@link ScanInfo}

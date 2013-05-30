@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
 package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,21 +15,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-/** Servlet for "/scans": listing scans
+/** Servlet for "/server/*": General {@link ScanServer} info
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScansServlet extends HttpServlet
+public class ServerServlet extends HttpServlet
 {
     final private static long serialVersionUID = 1L;
     final private ScanServer scan_server;
 
-    public ScansServlet(final ScanServer scan_server)
+    public ServerServlet(final ScanServer scan_server)
     {
         this.scan_server = scan_server;
     }
@@ -40,17 +38,33 @@ public class ScansServlet extends HttpServlet
             final HttpServletResponse response)
             throws ServletException, IOException
     {
-        final List<ScanInfo> scans = scan_server.getScanInfos();
+        final RequestPath path = new RequestPath(request);
+        final String detail;
+        try
+        {
+            if (path.size() != 1)
+                throw new Exception("Missing '/server/*' request detail");
+            detail = path.getString(0);
+        }
+        catch (Exception ex)
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            return;
+        }
         
         try
         {
             final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-            final Element root = doc.createElement("scans");
-            doc.appendChild(root);
-            for (ScanInfo info : scans)
+            switch (detail)
             {
-                final Element scan = ServletHelper.createXMLElement(doc, info);
-                root.appendChild(scan);
+            case "info":
+                {
+                    final ScanServerInfo info = scan_server.getInfo();
+                    doc.appendChild(ServletHelper.createXMLElement(doc, info));
+                }
+                break;
+            default:
+                throw new Exception("Invalid request /server/" + detail);
             }
             ServletHelper.submitXML(doc, response);
         }

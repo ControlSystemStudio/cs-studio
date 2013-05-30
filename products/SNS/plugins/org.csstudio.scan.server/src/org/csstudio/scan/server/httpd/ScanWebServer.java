@@ -26,6 +26,7 @@ public class ScanWebServer
         this.port = port;
         HttpService httpd = HttpServiceHelper.createHttpService(context, port);
         httpd.registerResources("/", "/webroot", null);
+        httpd.registerServlet("/server", new ServerServlet(scan_server), null, null);
         httpd.registerServlet("/scans", new ScansServlet(scan_server), null, null);
         httpd.registerServlet("/scan", new ScanServlet(scan_server), null, null);
     }

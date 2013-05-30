@@ -23,7 +23,7 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Document;
 
-/** Servlet for submitting a new scan, deleting (aborting) a current one
+/** Servlet for "/scan/*": submitting a new scan, deleting (aborting) a current one
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

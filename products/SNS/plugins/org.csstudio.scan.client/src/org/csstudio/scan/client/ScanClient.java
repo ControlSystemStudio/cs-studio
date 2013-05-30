@@ -31,6 +31,7 @@ import org.csstudio.scan.command.DOMHelper;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -131,6 +132,33 @@ public class ScanClient
                 performed_work_units, total_work_units, current_address, current_commmand);
     }
 
+    /** Obtain overall scan server information
+     *  @return {@link ScanServerInfo}
+     *  @throws Exception on error
+     */
+    public ScanServerInfo getServerInfo() throws Exception
+    {
+        final HttpURLConnection connection = connect("/server/info"); 
+        checkResponse(connection);
+        
+        final Element root_node = parseXML(connection);
+        if (! "server".equals(root_node.getNodeName()))
+            throw new Exception("Expected <server/>");
+        
+        final String version = DOMHelper.getSubelementString(root_node, "version");
+        final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
+        final String beamline_config = DOMHelper.getSubelementString(root_node, "beamline_config");
+        final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config");
+        final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
+        final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
+        final ScanServerInfo info = new ScanServerInfo(version, start_time,
+                beamline_config, simulation_config, used_mem, max_mem);
+        
+        connection.disconnect();
+        return info;
+    }
+
+    
     /** Obtain information for all scans
      *  @return {@link List} of {@link ScanInfo}s
      *  @throws Exception on error

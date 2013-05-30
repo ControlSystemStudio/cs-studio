@@ -32,13 +32,22 @@ public class MemoryInfo  implements Serializable
 
     final private long used_mem, max_mem;
 
-    /** Initialize
-     */
+    /** Initialize with memory usage of this JVM */
     public MemoryInfo()
     {
 		final MemoryUsage heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
 		used_mem = heap.getUsed();
 	    max_mem = heap.getMax();
+    }
+
+    /** Initialize 
+     *  @param used_mem Used memory (kB)
+     *  @param max_mem Maximum available memory (kB)
+     */
+    public MemoryInfo(final long used_mem, final long max_mem)
+    {
+        this.used_mem = used_mem;
+        this.max_mem = max_mem;
     }
 
 	/** @return Used memory (kB) */

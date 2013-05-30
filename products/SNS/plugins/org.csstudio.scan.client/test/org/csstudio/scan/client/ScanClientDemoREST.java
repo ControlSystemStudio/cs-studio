@@ -22,6 +22,7 @@ import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
@@ -44,6 +45,16 @@ public class ScanClientDemoREST
     private ScanClient getScanClient()
     {
         return new ScanClient();
+    }
+
+
+    @Test(timeout=10000)
+    public void getServerInfo() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        final ScanServerInfo info = client.getServerInfo();
+        System.out.println(info);
+        assertThat(info.getMemoryPercentage(), greaterThan(0.0));
     }
 
     
@@ -69,9 +80,19 @@ public class ScanClientDemoREST
         final ScanClient client = getScanClient();
         final List<ScanInfo> infos = client.getScanInfos();
         assertThat(infos.size(), greaterThan(0));
-        final String xml = client.getScanCommands(infos.get(0).getId());
-        System.out.println(xml);
-        assertThat(xml, containsString("<commands>"));
+        try
+        {
+            final String xml = client.getScanCommands(infos.get(0).getId());
+            System.out.println(xml);
+            assertThat(xml, containsString("<commands>"));
+        }
+        catch (Exception ex)
+        {
+            // If server was just re-started and only contains logged scans,
+            // there may not be any commands.
+            assertThat(ex.getMessage(), containsString("not available"));
+            assertThat(ex.getMessage(), containsString("logged"));
+        }
     }
 
 
@@ -98,6 +119,7 @@ public class ScanClientDemoREST
             System.out.println(info);
         }
     }
+    
     
     @Test(timeout=10000)
     public void controlScan() throws Exception
