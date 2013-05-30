@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>Configuration Files</title>
+</head>
+<body>
+
+<h1>Configuration Files</h1>
+This is about creating new PACE configuration files or editing existing
+PACE configuration files.
+To <u>use</u> the configuration files, see
+<a href=open_config.html>Starting the PACE Editor</a>.
+
+<p>
+PACE Editor configuration files are in XML format and have a <b>.pace</b> file 
+extension. To edit them, select <b>Open With...</b>, <b>Text Editor</b> from the
+Navigator context menu of the file. To create new files, use
+<b>New...</b>, <b>Other</b>, <b>General</b>, <b>File</b>
+in the Navigator context menu
+and make sure to use a <b>.pace</b> file extension for the new file.
+<p>
+When done editing, open the file via <b>Open With...</b>, <b>PACE</b>
+in the Navigator context menu to re-establish PACE as the default
+tool for opening the file.
+
+<h2>XML Tags</h2>
+The configuration files expect certain tags to define the
+column headers and the rows.
+<ul>
+<li>Root Element Opening and Closing Tags  <pre> &lt;paceconfig> ...  &lt;/paceconfig> </pre>
+<li>Fill ... with the <b>title</b> tag
+<pre> &lt;title> Your Title goes here  &lt;/title> </pre>
+<li>Then <b>column</b> Tags 
+<pre>&lt;columns> 
+   &lt;column>
+     &lt;name>Column Header&lt;/name>
+	  &lt;access>rw&lt;/access>
+	  &lt;pv>${S}_RCCS:CV${N}02:PID_KP&lt;/pv>
+   &lt;/column>
+   &lt;!-- There can be more columns -->
+ &lt;/columns></pre>
+    Where the cell access can be <b>rw</b> for read-write or <b>ro</b> for read-only.
+    <p>
+    The PV name for the cell contains macros either written as
+    <code>$(macro)</code> or
+    <code>${macro}</code>.
+    Replacement values for the macro variables are 
+    defined below under <b>instances</b>.
+    <p>
+    The column definition can have <i>meta-PVs</i> in addition
+    to the main PV. These are meant to contain the data, user name and
+    comment associated to the last change of the main PV.
+    They are defined via tags similar to the main PV:
+<pre>
+      # .. As before, including a main PV:
+      &lt;pv>${S}_RCCS:CV${N}02:PID_KP&lt;/pv>
+      &lt;name_pv>${S}_RCCS:CV${N}02:PID_Name&lt;/name_pv>
+      &lt;date_pv>${S}_RCCS:CV${N}02:PID_Time&lt;/date_pv>
+      &lt;comment_pv>${S}_RCCS:CV${N}02:PID_Txt&lt;/comment_pv>
+</pre>
+    The current values of these meta PVs will be displayed in the tool-tip
+    of the cell.
+    The name and date meta PVs will be updated with the user name and current
+    date when writing to the main PV.
+    The comment PV can be edited by providing access to it in a separate column.
+<li>And finally the <b>instance</b> or Row Tags.
+<pre>&lt;instances>
+     &lt;instance>
+       &lt;name>DTL 1&lt;/name>
+       &lt;macros>S=DTL,N=1&lt;/macros>
+     &lt;/instance>
+   &lt;!--  Many more...: DTL 1..6, CCL 1..4. -->
+&lt;/instances></pre>
+    Where <b>instance</b> is a row definition and <b>name</b> is put in the first cell of the row.
+    The <b>macro</b> definitions are used to turn the macro-ized PV names of the
+    column definitions into specific PV instances.
+    <p>
+    A macro can be set to empty like this:
+<pre>&lt;macros>PV=""&lt;/macros>
+</pre>
+ 
+    If the PV name for a cell evaluates to an empty string, that cell will not have a PV.   
+</ul>
+
+<h2>Configuration File Example</h2>
+<pre> 
+&lt;!-- Example config file -->
+&lt;paceconfig>
+    &lt;title> Title &lt;/title>
+    &lt;columns>
+        &lt;column>
+            &lt;name>PID Gain&lt;/name>
+            &lt;access>rw&lt;/access>
+            &lt;pv>${S}_RCCS:CV${N}02:PID_KP&lt;/pv>
+            &lt;name_pv>${S}_RCCS:CV${N}02:PID_Name&lt;/name_pv>
+            &lt;date_pv>${S}_RCCS:CV${N}02:PID_Time&lt;/date_pv>
+            &lt;comment_pv>${S}_RCCS:CV${N}02:PID_Txt&lt;/comment_pv>
+        &lt;/column>
+        &lt;column>
+            &lt;name>Comment&lt;/name>
+            &lt;access>rw&lt;/access>
+            &lt;pv>${S}_RCCS:CV${N}02:PID_Txt&lt;/pv>
+        &lt;/column>
+       &lt;!-- There can be more columns -->
+    &lt;/columns>
+    &lt;instances>
+        &lt;instance>
+            &lt;name>DTL 1&lt;/name>
+            &lt;macros>S=DTL,N=1&lt;/macros>
+        &lt;/instance>
+        &lt;!--  Many more...: DTL 1..6, CCL 1..4. -->
+    &lt;/instances>
+&lt;/paceconfig></pre>
+
+The above config file would create a PACE table somewhat like this:
+<table border=1>
+ <tr><th>System</th><th>PID Gain</th><th>Comment</th></tr>
+ <tr><td>DTL 1</td><td> &lt;Value of DTL_RCCS:CV102:PID_KP &gt; </td><td> &lt;Value of DTL_RCCS:CV102:PID_Txt &gt; </td></tr>
+ <tr><td>DTL 2</td><td> ...  </td><td> ... </td></tr>
+</table>
+
+</body>
+</html>
+ 

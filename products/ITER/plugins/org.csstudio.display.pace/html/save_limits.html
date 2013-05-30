@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Saving Limit Changes</title>
+</head>
+<body>
+
+<h1>Saving Changes</h1>
+After <a href=edit_limits.html>editing some values</a>,
+the changes can be written to the underlying process variables
+by selecting <b>File/Save</b> from the menu bar.
+Alternatively, the toolbar icon <img src="save.png" width=15 height=15>
+or a keyboard shortcut like <b>Ctrl-S</b> may be available.
+<p> 
+When closing a PACE table with modified values, you will also
+be asked if you want to save the changes or close without saving.
+<p>
+Before actually writing the changes to the PVs, a dialog as shown
+below will prompt for information to be entered into the ELog.
+
+<p>
+<img src=EnterLogData.png width=523 height=507/>
+<p> 
+
+<ul>
+<li>Enter your ELog user name and password.
+<li>You can edit the title and text, which starts out as a list
+    of modified PVs and their values
+<li>Press <b>OK</b> to perform the ELog entry and PV update.
+<li>.. or press <b>Cancel</b>.
+</ul>
+
+<h2>Save not available</h2>
+The option to save changes is only available when there are any
+modified values.
+This is also indicated via an asterix in the PACE table title.
+If no values where modified from the PVs' original values,
+there is nothing to save and the option to do so is
+not available.
+
+</body>
+</html>
