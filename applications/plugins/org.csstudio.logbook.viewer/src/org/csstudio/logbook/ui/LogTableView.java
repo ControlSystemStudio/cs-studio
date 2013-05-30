@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.logbook.viewer;
+package org.csstudio.logbook.ui;
 
 import java.util.Collection;
 
@@ -9,11 +9,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
-import org.csstudio.logbook.ui.LogEntryTable;
-import org.csstudio.logbook.ui.LogEntryWidget;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -32,18 +28,17 @@ import org.eclipse.ui.part.ViewPart;
  * @author shroffk
  * 
  */
-public class LogViewer extends ViewPart {
+public class LogTableView extends ViewPart {
     private Text text;
     private LogEntryTable logEntryTable;
 
     /** View ID defined in plugin.xml */
-    public static final String ID = "org.csstudio.logbook.viewer.LogViewer"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
 
     private LogbookClient logbookClient;
-    private LogEntryWidget logEntryWidget;
     private Label label;
 
-    public LogViewer() {
+    public LogTableView() {
     }
 
     @Override
@@ -91,7 +86,7 @@ public class LogViewer extends ViewPart {
 	fd_text.top = new FormAttachment(0, 5);
 	fd_text.right = new FormAttachment(100, -3);
 	text.setLayoutData(fd_text);
-	
+
 	// Add AutoComplete support, use type logEntrySearch
 	new AutoCompleteWidget(text, "LogentrySearch");
 
@@ -114,7 +109,7 @@ public class LogViewer extends ViewPart {
 	fd_label.left = new FormAttachment(0, 2);
 	label.setLayoutData(fd_label);
 
-	logEntryTable = new LogEntryTable(parent, SWT.NONE);
+	logEntryTable = new LogEntryTable(parent, SWT.NONE | SWT.SINGLE);
 	fd_lblLogQuery.left = new FormAttachment(logEntryTable, 0, SWT.LEFT);
 	FormData fd_logEntryTable = new FormData();
 	fd_logEntryTable.top = new FormAttachment(text, 5);
@@ -123,37 +118,6 @@ public class LogViewer extends ViewPart {
 	fd_logEntryTable.bottom = new FormAttachment(label, -5);
 
 	logEntryTable.setLayoutData(fd_logEntryTable);
-	logEntryTable
-		.addSelectionChangedListener(new ISelectionChangedListener() {
-
-		    @Override
-		    public void selectionChanged(SelectionChangedEvent event) {
-			if (event.getSelection() instanceof IStructuredSelection) {
-			    IStructuredSelection selection = (IStructuredSelection) event
-				    .getSelection();
-			    if (selection != null && !selection.isEmpty()) {
-				FormData fd = (FormData) label.getLayoutData();
-				fd.top = new FormAttachment(60);
-				label.setLayoutData(fd);
-				logEntryWidget.setLogEntry((LogEntry) selection
-					.getFirstElement());
-			    } else {
-				FormData fd = (FormData) label.getLayoutData();
-				fd.top = new FormAttachment(100);
-				label.setLayoutData(fd);
-//				logEntryWidget.setLogEntry(null);
-			    }
-			    parent.layout();
-			}
-		    }
-		});
-	logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
-	FormData fd_logEntryWidget = new FormData();
-	fd_logEntryWidget.right = new FormAttachment(100, -3);
-	fd_logEntryWidget.top = new FormAttachment(label, -5);
-	fd_logEntryWidget.left = new FormAttachment(0, 3);
-	fd_logEntryWidget.bottom = new FormAttachment(100, -5);
-	logEntryWidget.setLayoutData(fd_logEntryWidget);
 
 	PopupMenuUtil.installPopupForView(logEntryTable, getSite(),
 		logEntryTable);
@@ -162,7 +126,5 @@ public class LogViewer extends ViewPart {
     @Override
     public void setFocus() {
 	// TODO Auto-generated method stub
-
     }
-
 }

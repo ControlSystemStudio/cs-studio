@@ -3,7 +3,7 @@
  */
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget;
 import org.csstudio.channel.widgets.TunerWidget;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.SWT;
