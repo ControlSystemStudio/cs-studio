@@ -164,7 +164,9 @@ public class ScanInfo extends Scan implements Serializable
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof ScanInfo))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         final ScanInfo other = (ScanInfo) obj;
         return getId() == other.getId()  &&

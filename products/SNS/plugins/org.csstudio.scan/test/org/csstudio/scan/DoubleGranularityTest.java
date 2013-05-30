@@ -21,6 +21,8 @@ public class DoubleGranularityTest
 	public void findDoubleGranularityLimit()
 	{
 		double limit = 0.5;
+		// Findbugs will detect FE_FLOATING_POINT_EQUALITY,
+		// which is excactly what we want to demonstrate
 		while (1.0 + limit != limit)
 			limit *= 2;
 		System.out.println("** Rought limit for +-1 **");

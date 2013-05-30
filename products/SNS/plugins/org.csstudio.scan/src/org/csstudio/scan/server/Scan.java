@@ -95,7 +95,9 @@ implements Serializable
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof Scan))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         final Scan other = (Scan) obj;
         return id == other.id;
