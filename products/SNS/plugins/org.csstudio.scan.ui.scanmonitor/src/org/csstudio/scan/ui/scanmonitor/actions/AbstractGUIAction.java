@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -29,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 public abstract class AbstractGUIAction extends Action
 {
 	final protected Shell shell;
-    final protected ScanInfoModel model;
+    final protected ScanInfoModelREST model;
     final protected ScanInfo[] infos;
 
     /** Initialize
@@ -39,7 +40,7 @@ public abstract class AbstractGUIAction extends Action
      *  @param label Label
      *  @param icon Icon image
      */
-    public AbstractGUIAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos, final String label, final ImageDescriptor icon)
+    public AbstractGUIAction(final Shell shell, final ScanInfoModelREST model, final ScanInfo[] infos, final String label, final ImageDescriptor icon)
     {
         super(label, icon);
         this.shell = shell;

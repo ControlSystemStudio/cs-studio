@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.scanmonitor.Activator;
@@ -37,7 +38,7 @@ public class ShowDevicesAction extends AbstractGUIAction
      *  @param model
      *  @param infos
      */
-    public ShowDevicesAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
+    public ShowDevicesAction(final Shell shell, final ScanInfoModelREST model, final ScanInfo[] infos)
     {
         super(shell, model, infos, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
     }
@@ -46,21 +47,22 @@ public class ShowDevicesAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        // Collect devices from selected scans
-        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
-        for (ScanInfo info : infos)
-        {
-            final DeviceInfo[] scan_devices = model.getServer().getDeviceInfos(info.getId());
-            for (DeviceInfo device : scan_devices)
-                devices.add(device);
-        }
-        // Display
-        final StringBuilder buf = new StringBuilder();
-        buf.append("Devices:\n");
-        for (DeviceInfo info : devices)
-            buf.append(info).append("\n");
-
-        MessageDialog.openInformation(shell, Messages.InfoTitle,
-                buf.toString());
+        // TODO
+//        // Collect devices from selected scans
+//        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
+//        for (ScanInfo info : infos)
+//        {
+//            final DeviceInfo[] scan_devices = model.getServer().getDeviceInfos(info.getId());
+//            for (DeviceInfo device : scan_devices)
+//                devices.add(device);
+//        }
+//        // Display
+//        final StringBuilder buf = new StringBuilder();
+//        buf.append("Devices:\n");
+//        for (DeviceInfo info : devices)
+//            buf.append(info).append("\n");
+//
+//        MessageDialog.openInformation(shell, Messages.InfoTitle,
+//                buf.toString());
     }
 }

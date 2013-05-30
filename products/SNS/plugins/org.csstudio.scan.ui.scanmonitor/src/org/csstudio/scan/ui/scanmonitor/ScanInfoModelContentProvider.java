@@ -17,24 +17,24 @@ package org.csstudio.scan.ui.scanmonitor;
 
 import java.util.List;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Content provider for input of type {@link ScanInfoModel},
+/** Content provider for input of type {@link ScanInfoModelREST},
  *  elements are of type {@link ScanInfo}
  *
  *  @author Kay Kasemir
  */
 public class ScanInfoModelContentProvider implements IStructuredContentProvider
 {
-    private ScanInfoModel model;
+    private ScanInfoModelREST model;
 
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput)
     {
-        model = (ScanInfoModel) newInput;
+        model = (ScanInfoModelREST) newInput;
     }
 
     @Override

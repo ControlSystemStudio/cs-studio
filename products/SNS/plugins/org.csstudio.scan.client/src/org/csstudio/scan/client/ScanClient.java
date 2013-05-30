@@ -162,20 +162,6 @@ public class ScanClient
         }
     }
 
-    
-    public void removeCompletedScans() throws Exception
-    {
-        final HttpURLConnection connection = connect("/scans/remove_completed");
-        try
-        {
-            checkResponse(connection);
-        }
-        finally
-        {
-            connection.disconnect();
-        }
-    }
-
     /** Obtain information for all scans
      *  @return {@link List} of {@link ScanInfo}s
      *  @throws Exception on error
@@ -320,5 +306,40 @@ public class ScanClient
     public void abortScan(final long id) throws Exception
     {
         sendScanCommand(id, "abort");
+    }
+
+    /** Remove a completed scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void removeScan(final long id) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id);
+        try
+        {
+            connection.setRequestMethod("DELETE");
+            checkResponse(connection);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+    
+    /** Remove all completed scans
+     *  @throws Exception on error
+     */
+    public void removeCompletedScans() throws Exception
+    {
+        final HttpURLConnection connection = connect("/scans/completed");
+        try
+        {
+            connection.setRequestMethod("DELETE");
+            checkResponse(connection);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
 }

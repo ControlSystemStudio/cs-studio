@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
@@ -31,7 +31,7 @@ public class PauseAction extends AbstractGUIAction
      *  @param model
      *  @param infos
      */
-    public PauseAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
+    public PauseAction(final Shell shell, final ScanInfoModelREST model, final ScanInfo[] infos)
     {
         super(shell, model, infos, Messages.Pause, ScanUIActivator.getImageDescriptor("icons/pause.gif")); //$NON-NLS-1$
     }
@@ -41,9 +41,9 @@ public class PauseAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().pause(-1);
+            model.getScanClient().pauseScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().pause(info.getId());
+                model.getScanClient().pauseScan(info.getId());
     }
 }

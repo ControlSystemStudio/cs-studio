@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
@@ -31,7 +31,7 @@ public class AbortAction extends AbstractGUIAction
      *  @param model
      *  @param infos
      */
-    public AbortAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
+    public AbortAction(final Shell shell, final ScanInfoModelREST model, final ScanInfo[] infos)
     {
         super(shell, model, infos, Messages.Abort, ScanUIActivator.getImageDescriptor("icons/abort.gif")); //$NON-NLS-1$
     }
@@ -41,9 +41,9 @@ public class AbortAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().abort(-1);
+            model.getScanClient().abortScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().abort(info.getId());
+                model.getScanClient().abortScan(info.getId());
     }
 }

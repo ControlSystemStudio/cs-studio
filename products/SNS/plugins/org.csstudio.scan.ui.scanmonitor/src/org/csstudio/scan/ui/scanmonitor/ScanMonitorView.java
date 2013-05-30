@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
 import org.csstudio.scan.ui.scanmonitor.actions.InfoAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
@@ -34,7 +34,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ScanMonitorView extends ViewPart
 {
-    private ScanInfoModel model;
+    private ScanInfoModelREST model;
 
     /** {@inheritDoc} */
     @Override
@@ -43,7 +43,7 @@ public class ScanMonitorView extends ViewPart
         // Create and start Model
         try
         {
-            model = ScanInfoModel.getInstance();
+            model = ScanInfoModelREST.getInstance();
         }
         catch (Exception ex)
         {

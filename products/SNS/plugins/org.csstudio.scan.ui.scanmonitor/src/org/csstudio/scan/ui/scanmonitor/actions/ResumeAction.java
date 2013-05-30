@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
@@ -31,7 +31,7 @@ public class ResumeAction extends AbstractGUIAction
      *  @param model
      *  @param infos
      */
-    public ResumeAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
+    public ResumeAction(final Shell shell, final ScanInfoModelREST model, final ScanInfo[] infos)
     {
         super(shell, model, infos, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
     }
@@ -41,9 +41,9 @@ public class ResumeAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().resume(-1);
+            model.getScanClient().resumeScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().resume(info.getId());
+                model.getScanClient().resumeScan(info.getId());
     }
 }
