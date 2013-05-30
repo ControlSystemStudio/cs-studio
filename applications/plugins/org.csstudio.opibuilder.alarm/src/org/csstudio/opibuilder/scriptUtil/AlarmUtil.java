@@ -1,12 +1,9 @@
-package org.csstudio.opibuilder;
+package org.csstudio.opibuilder.scriptUtil;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.opibuilder.scriptUtil.ConsoleUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 public class AlarmUtil {
 	/**
