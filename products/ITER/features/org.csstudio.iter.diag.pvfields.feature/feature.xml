@@ -64,13 +64,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.iter.utility.sddreader"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.dbparser"
          download-size="0"
          install-size="0"
