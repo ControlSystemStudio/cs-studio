@@ -16,6 +16,7 @@
 package org.csstudio.scan.data;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -73,6 +74,20 @@ public class ScanSampleFormatter
         synchronized (date_format)
         {
             return date_format.format(timestamp);
+        }
+    }
+    
+    /** Parse a time stamp
+     *  @param timestamp Time stamp as returned by <code>format()</code>
+     *  @return {@link Date}
+     *  @throws ParseException on error
+     *  @see {@link #format(Date)}
+     */
+    public static Date parseTimestamp(final String timestamp) throws ParseException
+    {
+        synchronized (date_format)
+        {
+            return date_format.parse(timestamp);
         }
     }
 

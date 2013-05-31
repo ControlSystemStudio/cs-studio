@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.csstudio.scan.data.ScanData;
@@ -24,88 +22,63 @@ import org.csstudio.scan.device.DeviceInfo;
 
 /** Interface to the scan server
  *
- *  <p>Used by (remote) clients to communicate with the scan server.
+ *  <p>Used to be the RMI interface, now only used within scan server.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public interface ScanServer extends Remote
+public interface ScanServer
 {
-    /** Serialization version used for all RMI interfaces */
-    final public static long SERIAL_VERSION = 1;
-
-    /** Default host for scan server */
-    final public static String DEFAULT_HOST = "localhost";
-
-    /** Default port used by scan server
-     *
-     *  <p>Default RMI port is 1099,
-     *  but use a different port for the scan server
-     *  to avoid conflicts with other RMI tools.
-     *
-     *  <p>Note that the scan server then uses the 'next'
-     *  port for itself.
-     *  So setting this to 4810 means: 4810 will be the RMI registry
-     *  and 4811 will be the scan server published on that registry.
-     */
-    final public static int DEFAULT_PORT = 4810;
-
-    /** System property for overriding the scan server host */
-    final public static String HOST_PROPERTY = "ScanServerHost";
-
-    /** System property for overriding the scan server port */
-    final public static String PORT_PROPERTY = "ScanServerPort";
-
-    /** Name under which this interface is registered with RMI */
-    final public static String RMI_SCAN_SERVER_NAME = "ScanServer";
-
+    /** Version */
+    final public static String VERSION = "2";
+    
     /** @return Info about the scan server
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public ScanServerInfo getInfo() throws RemoteException;
+    public ScanServerInfo getInfo() throws Exception;
 
     /** Query server for devices used by a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            or -1 for default devices
      *  @return Info about devices
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public DeviceInfo[] getDeviceInfos(long id) throws RemoteException;
+    public DeviceInfo[] getDeviceInfos(long id) throws Exception;
 
     /** Submit a scan for simulation
      *  @param commands_as_xml Commands to simulate in XML format
      *  @return {@link SimulationResult}
-     *  @throws RemoteException
+     *  @throws Exception
      */
-    public SimulationResult simulateScan(String commands_as_xml) throws RemoteException;
+    public SimulationResult simulateScan(String commands_as_xml) throws Exception;
 
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
      *  @return ID that uniquely identifies the scan (within JVM of the scan engine)
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public long submitScan(String scan_name, String commands_as_xml) throws RemoteException;
+    public long submitScan(String scan_name, String commands_as_xml) throws Exception;
 
     /** Query server for scans
      *  @return Info for each scan on the server, most recently submitted scan first
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public List<ScanInfo> getScanInfos() throws RemoteException;
+    public List<ScanInfo> getScanInfos() throws Exception;
 
     /** Query server for scan info
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Info for that scan on the server or <code>null</code>
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public ScanInfo getScanInfo(long id) throws RemoteException;
+    public ScanInfo getScanInfo(long id) throws Exception;
 
     /** Query server for the commands in a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Scan commands in XML format for that scan on the server or <code>null</code>
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public String getScanCommands(long id) throws RemoteException;
+    public String getScanCommands(long id) throws Exception;
 
     /** Get serial of last logged sample.
      *
@@ -116,24 +89,24 @@ public interface ScanServer extends Remote
      *  @return Serial of last sample in scan data
      *  @see #getScanData(long)
      */
-    public long getLastScanDataSerial(long id) throws RemoteException;
+    public long getLastScanDataSerial(long id) throws Exception;
 
     /** Query server for scan data
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Data for that scan on the server or <code>null</code>
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      *  @see #getLastScanDataSerial(long)
      */
-    public ScanData getScanData(long id) throws RemoteException;
+    public ScanData getScanData(long id) throws Exception;
 
     /** Ask server to update a command parameter to a new value
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @param address Address of the command
      *  @param property_id Property to update
      *  @param value New value for the property
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void updateScanProperty(long id, long address, String property_id, Object value) throws RemoteException;
+    public void updateScanProperty(long id, long address, String property_id, Object value) throws Exception;
 
     /** Ask server to pause a scan
      *
@@ -148,32 +121,32 @@ public interface ScanServer extends Remote
      *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            -1 to pause all running scans
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void pause(long id) throws RemoteException;
+    public void pause(long id) throws Exception;
 
     /** Ask server to resume a paused scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            -1 to resume all paused scans
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void resume(long id) throws RemoteException;
+    public void resume(long id) throws Exception;
 
     /** Ask server to abort a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            -1 to abort all scans
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void abort(long id) throws RemoteException;
+    public void abort(long id) throws Exception;
 
     /** Ask server to remove a (finished) scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void remove(long id) throws RemoteException;
+    public void remove(long id) throws Exception;
 
     /** Remove completed scans (NOP if there aren't any)
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-    public void removeCompletedScans() throws RemoteException;
+    public void removeCompletedScans() throws Exception;
 }

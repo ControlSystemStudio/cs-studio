@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.scantree.properties;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -91,7 +92,7 @@ public class ScanCommandPVAdapterFactory implements IAdapterFactory
         final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
             return null;
-        final DeviceInfo[] devices = editor.getDevices();
+        final Collection<DeviceInfo> devices = editor.getDevices();
         if (devices == null)
             return null;
 

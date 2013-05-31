@@ -38,7 +38,7 @@ public class DeviceValueConditionHeadlessTest
 {
     private PVDevice getDemoDevice() throws Exception
     {
-    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv", "demo", true, true));
+    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv", "demo"));
         
         // Register listener that notifies device so test code can wait for a device update
         device.addListener(new DeviceListener()

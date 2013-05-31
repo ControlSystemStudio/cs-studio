@@ -88,11 +88,10 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
 	        {
 	        	if (pending.length() > 0)
 	        		pending.append(", ");
-	        	pending.append(device.getInfo());
+	        	pending.append(device);
 	        }
 	    if (pending.length() <= 0)
 	    	return "All devices ready";
         return "Waiting for device " + pending.toString();
     }
-
 }

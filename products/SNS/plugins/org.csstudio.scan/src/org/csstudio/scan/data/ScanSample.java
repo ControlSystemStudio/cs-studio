@@ -15,10 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
-import java.io.Serializable;
 import java.util.Date;
-
-import org.csstudio.scan.server.ScanServer;
 
 /** A sample taken by a scan
  *
@@ -43,11 +40,8 @@ import org.csstudio.scan.server.ScanServer;
  *
  *  @see NumberScanSample
  */
-abstract public class ScanSample implements Serializable
+abstract public class ScanSample
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
 	final private Date timestamp;
 	final private long serial;
 

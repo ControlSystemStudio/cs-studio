@@ -36,8 +36,8 @@ public class WaitForDevicesConditionHeadlessTest
     {
         final Device[] devices =
         {
-                new PVDevice(new DeviceInfo("motor_x", "xpos", true, true)),
-                new PVDevice(new DeviceInfo("motor_y", "ypos", true, true)),
+                new PVDevice(new DeviceInfo("motor_x", "xpos")),
+                new PVDevice(new DeviceInfo("motor_y", "ypos")),
         };
 
         final DeviceCondition connect = new WaitForDevicesCondition(devices);

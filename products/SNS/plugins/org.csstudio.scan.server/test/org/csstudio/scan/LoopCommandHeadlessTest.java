@@ -43,9 +43,9 @@ public class LoopCommandHeadlessTest
     private DeviceContext getDemoContext() throws Exception
     {
         final DeviceContext context = new DeviceContext();
-        context.addPVDevice(new DeviceInfo("loc://counter", "counter", true, true));
-        context.addPVDevice(new DeviceInfo("loc://other", "other", true, true));
-        context.addPVDevice(new DeviceInfo("loc://other2", "other2", true, true));
+        context.addPVDevice(new DeviceInfo("loc://counter", "counter"));
+        context.addPVDevice(new DeviceInfo("loc://other", "other"));
+        context.addPVDevice(new DeviceInfo("loc://other2", "other2"));
         return context;
     }
 

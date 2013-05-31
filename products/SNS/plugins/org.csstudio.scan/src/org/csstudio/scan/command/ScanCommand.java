@@ -161,7 +161,7 @@ abstract public class ScanCommand
      *  @param value New value
      *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
-    public void setProperty(final ScanCommandProperty property, final Object value) throws UnknownScanCommandPropertyException
+    public void setProperty(final ScanCommandProperty property, Object value) throws UnknownScanCommandPropertyException
     {
         final String meth_name = getMethodName("set", property.getID());
 
@@ -171,6 +171,32 @@ abstract public class ScanCommand
             type = String.class;
         else if (type == DeviceInfo[].class)
             type = String[].class;
+        
+        // Try to adjust string if more specific type is required
+        try
+        {
+            if (value instanceof String)
+            {
+                if (type == Double.class)
+                    value = Double.parseDouble(value.toString());
+                else if (type == Boolean.class)
+                    value = Boolean.parseBoolean(value.toString());
+                else if (type.isEnum())
+                {
+                    for (Object e : type.getEnumConstants())
+                        if (e.toString().equals(value))
+                        {
+                            value = e;
+                            break;
+                        }
+                }
+            }
+        }
+        catch (Throwable ex)
+        {
+            throw new UnknownScanCommandPropertyException("Property ID " + property.getID() +
+                    " requires value type " + type.getName() + " but received " + value.getClass().getName() + " for " + getClass().getName());
+        }
 
         try
         {

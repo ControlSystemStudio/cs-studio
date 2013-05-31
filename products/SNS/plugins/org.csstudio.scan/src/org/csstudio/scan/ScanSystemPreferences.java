@@ -8,7 +8,6 @@
 package org.csstudio.scan;
 
 import org.csstudio.java.string.StringSplitter;
-import org.csstudio.scan.server.ScanServer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -28,6 +27,18 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class ScanSystemPreferences extends SystemSettings
 {
+    /** Default host for scan server */
+    final public static String DEFAULT_HOST = "localhost";
+
+    /** Default port used by scan server's REST interface */
+    final public static int DEFAULT_PORT = 4810;
+
+    /** System property for overriding the scan server host */
+    final public static String HOST_PROPERTY = "ScanServerHost";
+
+    /** System property for overriding the scan server port */
+    final public static String PORT_PROPERTY = "ScanServerPort";
+    
 	/** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
 	{
@@ -120,10 +131,10 @@ public class ScanSystemPreferences extends SystemSettings
     public static void setSystemPropertiesFromPreferences()
     {
         final IPreferencesService service = Platform.getPreferencesService();
-        System.setProperty(ScanServer.HOST_PROPERTY,
-                service.getString(Activator.ID, "server_host", ScanServer.DEFAULT_HOST, null));
-        System.setProperty(ScanServer.PORT_PROPERTY,
+        System.setProperty(HOST_PROPERTY,
+                service.getString(Activator.ID, "server_host", DEFAULT_HOST, null));
+        System.setProperty(PORT_PROPERTY,
                 Integer.toString(
-                        service.getInt(Activator.ID, "server_port", ScanServer.DEFAULT_PORT, null)));
+                        service.getInt(Activator.ID, "server_port", DEFAULT_PORT, null)));
     }
 }
