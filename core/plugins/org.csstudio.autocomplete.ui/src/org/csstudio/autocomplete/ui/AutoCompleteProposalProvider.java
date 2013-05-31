@@ -12,52 +12,69 @@ import java.util.List;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.AutoCompleteService;
+import org.csstudio.autocomplete.IAutoCompleteResultListener;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 public class AutoCompleteProposalProvider implements
 		IAutoCompleteProposalProvider {
 
 	private final String type;
+	private ContentProposalList currentList;
+	private Long currentId;
 
 	public AutoCompleteProposalProvider(String type) {
 		this.type = type;
+		this.currentList = new ContentProposalList();
 	}
 
-	public ContentProposalList getProposals(String contents, int position,
-			int max) {
-		ContentProposalList cpl = new ContentProposalList();
-
-		AutoCompleteService cns = AutoCompleteService.getInstance();
-		List<AutoCompleteResult> results = cns.get(type, contents);
-		for (final AutoCompleteResult result : results) {
-
-			List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-			for (final String proposal : result.getResults()) {
-
-				contentProposals.add(new IContentProposal() {
-					public String getContent() {
-						return proposal;
-					}
-
-					public String getDescription() {
-						return null;
-					}
-
-					public String getLabel() {
-						return null;
-					}
-
-					public int getCursorPosition() {
-						return proposal.length();
-					}
-				});
-			}
-			cpl.addProposals(result.getProvider(),
-					(IContentProposal[]) contentProposals
-							.toArray(new IContentProposal[contentProposals
-									.size()]), result.getCount());
+	public void getProposals(String contents, int position, int max,
+			final IContentProposalSearchHandler handler) {
+		currentId = System.currentTimeMillis();
+		synchronized (currentList) {
+			currentList.clear();
 		}
-		return cpl;
+		AutoCompleteService cns = AutoCompleteService.getInstance();
+		cns.get(currentId, type, contents, new IAutoCompleteResultListener() {
+
+			@Override
+			public void handleResult(Long uniqueId, Integer index,
+					AutoCompleteResult result) {
+				if (uniqueId == currentId) {
+					List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
+					for (final String proposal : result.getResults()) {
+
+						contentProposals.add(new IContentProposal() {
+							public String getContent() {
+								return proposal;
+							}
+
+							public String getDescription() {
+								return null;
+							}
+
+							public String getLabel() {
+								return null;
+							}
+
+							public int getCursorPosition() {
+								return proposal.length();
+							}
+						});
+					}
+					ContentProposalList cpl = null;
+					synchronized (currentList) {
+						currentList.addProposals(
+								result.getProvider(),
+								(IContentProposal[]) contentProposals
+										.toArray(new IContentProposal[contentProposals
+												.size()]), result.getCount(), index);
+						cpl = currentList.clone();
+					}
+					handler.handleResult(cpl);
+					// System.out.println("PROCESSED: " + uniqueId + ", " + index);
+				}
+			}
+		});
 	}
 
 	@Override

@@ -80,6 +80,11 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 				Activator.getLogger().log(Level.WARNING, e.getMessage());
 			}
 		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 

@@ -12,7 +12,10 @@ package org.csstudio.utility.singlesource.rcp;
 import java.io.IOException;
 
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -50,12 +53,15 @@ public class RCPUIHelper extends UIHelper
      * @throws Exception */
     @Override
 	public void openEditor(final IWorkbenchPage page, IPath path) throws Exception {
-        // Copied from org.eclipse.ui.actions.OpenFileAction
-        // in org.eclipse.ui.ide
-        final IFile resource = RCPResourceHelper.getFileForPath(path);
-        if (resource == null)
-            throw new Exception(NLS.bind("Cannot find {0} in workspace", path));
-        IDE.openEditor(page, resource);
+		if (path == null || !SingleSourcePlugin.getResourceHelper().exists(path))
+			throw new Exception(NLS.bind("Cannot find {0}", path));
+		final IFile resource = RCPResourceHelper.getFileForPath(path);
+		if (resource != null && resource.exists()) {
+			IDE.openEditor(page, resource);
+		} else {
+			IFileStore fileStore = EFS.getLocalFileSystem().getStore(path);
+			IDE.openEditorOnFileStore(page, fileStore);
+		}
 	}
 	
     /** {@inheritDoc} */

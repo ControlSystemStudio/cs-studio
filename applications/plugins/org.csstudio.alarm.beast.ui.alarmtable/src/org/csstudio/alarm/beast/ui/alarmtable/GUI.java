@@ -149,8 +149,12 @@ public class GUI implements AlarmClientModelListener
         this.model = model;
         createComponents(parent);
 
-        if (!model.isServerAlive())
+        if (model.isServerAlive()) {
+            setErrorMessage(null);
+        } else {
             setErrorMessage(Messages.WaitingForServer);
+        }
+        
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
@@ -495,6 +499,18 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
+
+        display.asyncExec(new Runnable()
+        {
+            @Override
+            public void run() {
+		    	if (model.isServerAlive()) {
+		            setErrorMessage(null);
+		        } else {
+		            setErrorMessage(Messages.WaitingForServer);
+		        }
+        	}
+        });
     }
 
     // @see AlarmClientModelListener

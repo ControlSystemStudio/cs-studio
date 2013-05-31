@@ -9,5 +9,5 @@ package org.csstudio.autocomplete.ui;
 
 public interface IContentProposalSearchHandler {
 
-	public void handleResult(ContentProposalList proposalList);
+	public void handleResult(final ContentProposalList proposalList);
 }

@@ -28,6 +28,11 @@ public class DBPVListProvider implements IAutoCompleteProvider {
 		result.setCount(DBContextValueHolder.get().countPV(p));
 		for (String pv : DBContextValueHolder.get().findPV(p, limit))
 			result.add(pv);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 

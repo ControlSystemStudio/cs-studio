@@ -54,7 +54,6 @@
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
       <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.csstudio.utility.pvmanager.ui"/>
-      <plugin id="org.csstudio.utility.pvmanager.widgets"/>
       <plugin id="org.csstudio.utility.singlesource"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -145,7 +144,6 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.ui" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.utility.pvmanager.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
