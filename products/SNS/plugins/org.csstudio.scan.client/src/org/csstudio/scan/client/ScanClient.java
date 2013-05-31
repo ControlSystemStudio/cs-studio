@@ -99,8 +99,18 @@ public class ScanClient
      */
     private void post(final HttpURLConnection connection, final String text) throws Exception
     {
+        writeData(connection, "POST", text);
+    }    
+
+    /** Write data to connection
+     *  @param connection {@link HttpURLConnection}
+     *  @param text Data to post
+     *  @throws Exception on error
+     */
+    private void writeData(final HttpURLConnection connection, final String method, final String text) throws Exception
+    {
         connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(method);
         final OutputStream body = connection.getOutputStream();
         body.write(text.getBytes());
         body.flush();
@@ -413,6 +423,35 @@ public class ScanClient
         sendScanCommand(id, "abort");
     }
 
+    /** Submit patch to running scan
+     *  @param id ID that uniquely identifies a scan
+     *  @param address Address of command within scan
+     *  @param property Property of command to patch
+     *  @param value New value for that property
+     *  @throws Exception on error
+     */
+    public void patchScan(final long id, final long address,
+            final String property, final Object value) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id + "/patch");
+        try
+        {
+            final String patch =
+                "<patch>"
+                + "<address>" + address + "</address>"
+                + "<property>" + property + "</property>"
+                + "<value>" + value + "</value>"
+                + "</patch>";
+            writeData(connection, "PUT", patch);
+            checkResponse(connection);
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+
+    
     /** Remove a completed scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @throws Exception on error

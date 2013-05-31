@@ -636,14 +636,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
      *  @throws RemoteException on error
      */
     public void changeLiveProperty(final ScanCommand command, final String property_id,
-            final Object value) throws RemoteException
+            final Object value) throws Exception
     {
         final long id = scan_id;
         if (id < 0)
             return;
-        // TODO
-//        scan_info.getServer().updateScanProperty(id, command.getAddress(),
-//                property_id, value);
+        scan_info.getScanClient().patchScan(id, command.getAddress(),
+                property_id, value);
     }
 
     /** @param file_path Complete path to a scan file

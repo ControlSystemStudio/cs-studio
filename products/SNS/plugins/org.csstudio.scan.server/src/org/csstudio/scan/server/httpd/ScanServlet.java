@@ -15,14 +15,17 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.scan.command.DOMHelper;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.util.IOUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /** Servlet for "/scan/*": submitting a new scan, deleting (aborting) a current one
  *  @author Kay Kasemir
@@ -82,6 +85,15 @@ public class ScanServlet extends HttpServlet
      *  <p>PUT scan/{id}/pause: Pause running scan
      *  <p>PUT scan/{id}/resume: Resume paused scan
      *  <p>PUT scan/{id}/abort: Abort running or paused scan
+     *  <p>PUT scan/{id}/patch: Update property of a scan command<br>
+     *     Requires description of what to update:
+     *     <pre>
+     *     &lt;patch>
+     *        &lt;address>10&lt;/address>
+     *        &lt;property>name_of_property&lt;/property>
+     *        &lt;value>new_value&lt;/value>
+     *     &lt;/patch>
+     *     </pre>
      *  Returns basic HTTP OK (200) on success, otherwise error
      */
     @Override
@@ -106,6 +118,18 @@ public class ScanServlet extends HttpServlet
                 break;
             case "abort":
                 scan_server.abort(id);
+                break;
+            case "patch":
+                final DocumentBuilder docBuilder =
+                    DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                final Document doc = docBuilder.parse(request.getInputStream());
+                final Element root_node = doc.getDocumentElement();
+                if (! "patch".equals(root_node.getNodeName()))
+                    throw new Exception("Expected <patch>");
+                final long address = DOMHelper.getSubelementLong(root_node, "address", -1);
+                final String property = DOMHelper.getSubelementString(root_node, "property");
+                final String value = DOMHelper.getSubelementString(root_node, "value");
+                scan_server.updateScanProperty(id, address, property, value);
                 break;
             default:
                 throw new Exception("Unknown command '" + command + "'");
