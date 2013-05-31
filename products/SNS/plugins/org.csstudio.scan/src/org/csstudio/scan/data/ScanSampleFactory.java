@@ -69,6 +69,8 @@ public class ScanSampleFactory
             return new NumberScanSample(timestamp, serial, (Number[]) values);
         else if (values instanceof String[])
             return new StringScanSample(timestamp, serial, (String[]) values);
+        else if (values.length == 1  &&  values[0] instanceof Double)
+            return new NumberScanSample(timestamp, serial, (Double) values[0]);
         throw new IllegalArgumentException("Cannot handle values of type " + values[0].getClass().getName());
     }
 }

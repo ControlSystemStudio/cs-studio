@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,8 +43,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link ScanServer}
  *
  *  <p>Starts its own copy of the scan server,
- *  connects as client,
- *  performs some operations,
+ *  performs some operations from a different thread,
  *  then stops the scan server.
  *
  *  @author Kay Kasemir
@@ -54,6 +51,8 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanServerHeadlessTest implements Runnable
 {
+    private ScanServer server = null;
+    
     private volatile Throwable client_error = null;
 
     /** @return Demo scan sequence */
@@ -81,10 +80,8 @@ public class ScanServerHeadlessTest implements Runnable
             pv.write(0.0);
 
             // Connect to scan server
-            final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.DEFAULT_PORT);
-            final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
             final ScanServerInfo server_info = server.getInfo();
-			System.out.println("Client connected to " + server_info);
+			System.out.println("Thread using " + server_info);
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
@@ -216,10 +213,10 @@ public class ScanServerHeadlessTest implements Runnable
     public void runScanServer() throws Exception
     {
         TestSettings.init();
-        final ScanServerImpl server = new ScanServerImpl();
+        final ScanServerImpl server_impl = new ScanServerImpl();
         try
         {
-        	server.start();
+            server_impl.start();
         }
         catch (Exception ex)
         {
@@ -231,6 +228,7 @@ public class ScanServerHeadlessTest implements Runnable
         	}
         }
         System.out.println("Scan Server running...");
+        server = server_impl;
 
         // In another thread, try the client
         final Thread client = new Thread(this, "Client");
@@ -245,6 +243,6 @@ public class ScanServerHeadlessTest implements Runnable
         }
 
         System.out.println("Scan Server exiting.");
-        server.stop();
+        server_impl.stop();
     }
 }
