@@ -17,12 +17,11 @@ package org.csstudio.scan.ui.scantree;
 
 import java.util.List;
 
-import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanHandlerUtil;
 import org.eclipse.core.commands.AbstractHandler;
@@ -70,11 +69,10 @@ public class OpenScanTreeHandler extends AbstractHandler
                 try
                 {
                     // Fetch commands from server
-                    final ScanServer server = ScanServerConnector.connect();
-                    final String xml_commands = server.getScanCommands(info.getId());
+                    final ScanClient client = new ScanClient();
+                    final String xml_commands = client.getScanCommands(info.getId());
                     final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
                     final List<ScanCommand> commands = reader.readXMLString(xml_commands);
-                    ScanServerConnector.disconnect(server);
 
                     // Open in editor, which requires UI thread
                     display.asyncExec(new Runnable()
