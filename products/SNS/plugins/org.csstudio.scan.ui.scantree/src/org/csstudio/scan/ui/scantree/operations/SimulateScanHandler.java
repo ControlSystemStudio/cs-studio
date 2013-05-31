@@ -10,7 +10,7 @@ package org.csstudio.scan.ui.scantree.operations;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.SimulationResult;
@@ -39,7 +39,7 @@ public class SimulateScanHandler extends AbstractHandler
 {
 	private SimulationResult simulate(final List<ScanCommand> commands) throws Exception
 	{
-    	final ScanInfoModelREST scan_info = ScanInfoModelREST.getInstance();
+    	final ScanInfoModel scan_info = ScanInfoModel.getInstance();
 		try
 		{
 			final ScanClient client = scan_info.getScanClient();

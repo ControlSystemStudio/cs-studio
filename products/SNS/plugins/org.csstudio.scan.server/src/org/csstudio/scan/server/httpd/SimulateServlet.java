@@ -52,19 +52,26 @@ public class SimulateServlet extends HttpServlet
         // Read scan commands
         final String scan_commands = IOUtils.toString(request.getInputStream());
         
-        // Submit scan
-        final SimulationResult simulation = scan_server.simulateScan(scan_commands);
-        
-        // Return scan ID
-        response.setContentType("text/xml");
-        final PrintWriter out = response.getWriter();
-        out.println("<simulation>");
-        out.print("  <log>");
-        out.print("<![CDATA[");
-        out.print(simulation.getSimulationLog());
-        out.println("]]>");
-        out.println("  </log>");
-        out.println("  <seconds>" + simulation.getSimulationSeconds() + "</seconds>");
-        out.println("</simulation>");
+        // Simulate scan
+        try
+        {
+            final SimulationResult simulation = scan_server.simulateScan(scan_commands);
+            
+            // Return scan ID
+            response.setContentType("text/xml");
+            final PrintWriter out = response.getWriter();
+            out.println("<simulation>");
+            out.print("  <log>");
+            out.print("<![CDATA[");
+            out.print(simulation.getSimulationLog());
+            out.println("]]>");
+            out.println("  </log>");
+            out.println("  <seconds>" + simulation.getSimulationSeconds() + "</seconds>");
+            out.println("</simulation>");
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException("Error simulating scan", ex);
+        }
     }
 }

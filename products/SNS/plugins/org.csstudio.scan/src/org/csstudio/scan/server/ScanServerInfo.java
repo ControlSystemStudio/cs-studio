@@ -25,9 +25,6 @@ import org.csstudio.scan.data.ScanSampleFormatter;
 @SuppressWarnings("nls")
 public class ScanServerInfo extends MemoryInfo
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private String version;
     final private Date start_time;
     final private String beamline_config;

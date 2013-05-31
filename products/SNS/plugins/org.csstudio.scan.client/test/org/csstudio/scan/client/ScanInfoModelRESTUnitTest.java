@@ -26,7 +26,7 @@ import org.csstudio.scan.server.ScanServerInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/** JUnit test of the {@link ScanInfoModelREST}
+/** JUnit test of the {@link ScanInfoModel}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,8 +37,8 @@ public class ScanInfoModelRESTUnitTest implements ScanInfoModelListener
     @Test(timeout=15000)
     public void testStart() throws Exception
     {
-        final ScanInfoModelREST model = ScanInfoModelREST.getInstance();
-        final ScanInfoModelREST model2 = ScanInfoModelREST.getInstance();
+        final ScanInfoModel model = ScanInfoModel.getInstance();
+        final ScanInfoModel model2 = ScanInfoModel.getInstance();
         assertThat(model, sameInstance(model2));
         model2.release();
 
@@ -74,7 +74,7 @@ public class ScanInfoModelRESTUnitTest implements ScanInfoModelListener
     @Test
     public void keepMonitoring() throws Exception
     {
-        final ScanInfoModelREST model = ScanInfoModelREST.getInstance();
+        final ScanInfoModel model = ScanInfoModel.getInstance();
         model.addListener(this);
         // Wait forever
         while (true)

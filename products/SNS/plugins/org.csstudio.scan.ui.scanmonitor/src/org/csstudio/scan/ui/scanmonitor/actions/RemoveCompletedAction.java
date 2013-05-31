@@ -16,7 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -36,7 +36,7 @@ public class RemoveCompletedAction extends AbstractGUIAction
      *  @param shell Parent shell
      *  @param model
      */
-    public RemoveCompletedAction(final Shell shell, final ScanInfoModelREST model)
+    public RemoveCompletedAction(final Shell shell, final ScanInfoModel model)
     {
         super(shell, model, null, Messages.RemoveCompleted, Activator.getImageDescriptior("icons/remove_completed.gif")); //$NON-NLS-1$
     }

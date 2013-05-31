@@ -43,10 +43,9 @@ public class ScansServlet extends HttpServlet
             final HttpServletResponse response)
             throws ServletException, IOException
     {
-        final List<ScanInfo> scans = scan_server.getScanInfos();
-        
         try
         {
+            final List<ScanInfo> scans = scan_server.getScanInfos();
             final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             final Element root = doc.createElement("scans");
             doc.appendChild(root);

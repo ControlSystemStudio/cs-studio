@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.swt.widgets.Display;
@@ -39,7 +39,7 @@ public class PlotDataModel implements Runnable
     final private long update_period;
 
     /** Scan model */
-    final private ScanInfoModelREST model;
+    final private ScanInfoModel model;
 
     /** @see #run() */
     private volatile Thread update_thread;
@@ -82,7 +82,7 @@ public class PlotDataModel implements Runnable
     {
         this.display = display;
         update_period = Preferences.getUpdatePeriod();
-        model = ScanInfoModelREST.getInstance();
+        model = ScanInfoModel.getInstance();
     }
 
     /** Select scan for monitoring data

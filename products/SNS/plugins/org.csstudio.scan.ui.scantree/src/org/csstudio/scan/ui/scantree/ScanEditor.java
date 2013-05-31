@@ -9,7 +9,6 @@ package org.csstudio.scan.ui.scantree;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -105,7 +104,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
 
     /** Info about scan server */
-    private ScanInfoModelREST scan_info = null;
+    private ScanInfoModel scan_info = null;
 
     /** Commands displayed and edited in this editor*/
     final private ScanTreeModel model = new ScanTreeModel();
@@ -241,7 +240,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         // Get scan info model and return if that fails
         try
         {
-            scan_info = ScanInfoModelREST.getInstance();
+            scan_info = ScanInfoModel.getInstance();
         }
         catch (Exception ex)
         {
@@ -633,7 +632,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
      *  @param command Command to change
      *  @param property_id Property to change
      *  @param value New value
-     *  @throws RemoteException on error
+     *  @throws Exception on error
      */
     public void changeLiveProperty(final ScanCommand command, final String property_id,
             final Object value) throws Exception

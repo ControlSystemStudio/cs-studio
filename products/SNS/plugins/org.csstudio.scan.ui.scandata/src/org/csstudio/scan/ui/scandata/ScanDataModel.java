@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -37,7 +37,7 @@ public class ScanDataModel implements ScanInfoModelListener
 	final private long scan_id;
 
 	/** Scan client */
-	final private ScanInfoModelREST scan_info_model;
+	final private ScanInfoModel scan_info_model;
 
 	/** Most recent scan data */
 	private ScanData scan_data = null;
@@ -50,7 +50,7 @@ public class ScanDataModel implements ScanInfoModelListener
 	public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
     {
 		this.scan_id = scan_id;
-		scan_info_model = ScanInfoModelREST.getInstance();
+		scan_info_model = ScanInfoModel.getInstance();
 		this.listener = listener;
 		scan_info_model.addListener(this);
     }

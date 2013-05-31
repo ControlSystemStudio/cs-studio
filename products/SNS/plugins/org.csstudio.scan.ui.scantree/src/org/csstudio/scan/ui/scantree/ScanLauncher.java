@@ -10,7 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.util.IOUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,7 +51,7 @@ public class ScanLauncher implements IEditorLauncher
 					// final String scan = XMLCommandWriter.toXMLString(commands);
                     monitor.worked(1);
 
-                    final ScanInfoModelREST model = ScanInfoModelREST.getInstance();
+                    final ScanInfoModel model = ScanInfoModel.getInstance();
                     // If this is the very first attempt to access the scan info model,
                     // we may not be connected, so try a few times
                     int attempts = 5;

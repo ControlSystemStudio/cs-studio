@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 
@@ -23,11 +22,8 @@ import java.lang.management.MemoryUsage;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MemoryInfo  implements Serializable
+public class MemoryInfo
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
 	final private static double MB = 1024*1024;
 
     final private long used_mem, max_mem;

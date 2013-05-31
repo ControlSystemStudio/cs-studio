@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.rmi.RemoteException;
-
 /** Exception thrown by scan server when using an unknown scan ID
  *
  *  <p>The scan ID may be totally wrong,
@@ -19,7 +17,7 @@ import java.rmi.RemoteException;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class UnknownScanException extends RemoteException
+public class UnknownScanException extends Exception
 {
     /** Serialization ID */
     private static final long serialVersionUID = 1L;

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +45,6 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 import org.epics.util.time.TimeDuration;
 
@@ -62,9 +60,6 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     /** Commands to execute */
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
@@ -244,13 +239,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     /** @param address Command address
      *  @return ScanCommand with that address
-     *  @throws RemoteException when not found
+     *  @throws Exception when not found
      */
-    public ScanCommand getCommandByAddress(final long address) throws RemoteException
+    public ScanCommand getCommandByAddress(final long address) throws Exception
     {
         final ScanCommand found = findCommandByAddress(getScanCommands(), address);
         if (found == null)
-            throw new RemoteException("Invalid command address " + address);
+            throw new Exception("Invalid command address " + address);
         return found;
     }
 
@@ -281,10 +276,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      *  @param address Address of the command
      *  @param property_id Property to update
      *  @param value New value for the property
-     *  @throws RemoteException on error
+     *  @throws Exception on error
      */
     public void updateScanProperty(final long address, final String property_id,
-        final Object value) throws RemoteException
+        final Object value) throws Exception
     {
         final ScanCommand command = getCommandByAddress(address);
         try
@@ -293,7 +288,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         catch (Exception ex)
         {
-            throw new RemoteException("Cannot update " + property_id + " of " +
+            throw new Exception("Cannot update " + property_id + " of " +
                     command.getCommandName(), ex);
         }
     }

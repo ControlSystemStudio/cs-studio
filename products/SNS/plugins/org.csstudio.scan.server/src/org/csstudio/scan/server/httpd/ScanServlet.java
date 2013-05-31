@@ -71,14 +71,21 @@ public class ScanServlet extends HttpServlet
         final String scan_commands = IOUtils.toString(request.getInputStream());
         
         // Submit scan
-        final long scan_id = scan_server.submitScan(scan_name, scan_commands);
-        
-        // Return scan ID
-        response.setContentType("text/xml");
-        final PrintWriter out = response.getWriter();
-        out.print("<id>");
-        out.print(scan_id);
-        out.println("</id>");
+        try
+        {
+            final long scan_id = scan_server.submitScan(scan_name, scan_commands);
+            
+            // Return scan ID
+            response.setContentType("text/xml");
+            final PrintWriter out = response.getWriter();
+            out.print("<id>");
+            out.print(scan_id);
+            out.println("</id>");
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException("Error submitting scan", ex);
+        }
     }
     
     /** 'Put' scan into new state

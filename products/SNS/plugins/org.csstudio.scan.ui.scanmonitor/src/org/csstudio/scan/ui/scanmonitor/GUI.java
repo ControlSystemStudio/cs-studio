@@ -18,9 +18,8 @@ package org.csstudio.scan.ui.scanmonitor;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.client.ScanInfoModelREST;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -72,7 +71,7 @@ import org.eclipse.ui.handlers.IHandlerService;
  */
 public class GUI implements ScanInfoModelListener
 {
-    final private ScanInfoModelREST model;
+    final private ScanInfoModel model;
 
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
@@ -84,7 +83,7 @@ public class GUI implements ScanInfoModelListener
      *  @param model Model to display
      *  @param site Site or <code>null</code>
      */
-    public GUI(final Composite parent, final ScanInfoModelREST model, IWorkbenchPartSite site)
+    public GUI(final Composite parent, final ScanInfoModel model, IWorkbenchPartSite site)
     {
         this.model = model;
 

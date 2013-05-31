@@ -23,9 +23,6 @@ import org.csstudio.scan.server.ScanState;
  */
 public class LoggedScan extends Scan
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     /** Initialize
      *  @param scan {@link Scan}
      */
