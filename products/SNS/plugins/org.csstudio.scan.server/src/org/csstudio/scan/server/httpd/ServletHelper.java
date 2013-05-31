@@ -184,7 +184,8 @@ public class ServletHelper
             final Element device = doc.createElement("device");
             device.appendChild(createElement(doc, "name", info.getName()));
             device.appendChild(createElement(doc, "alias", info.getAlias()));
-            // TODO Add 'status' once that becomes available
+            if (! info.getStatus().isEmpty())
+                device.appendChild(createElement(doc, "status", info.getStatus()));
             result.appendChild(device);
         }
 

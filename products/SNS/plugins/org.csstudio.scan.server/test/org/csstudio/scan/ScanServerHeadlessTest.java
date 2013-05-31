@@ -74,7 +74,7 @@ public class ScanServerHeadlessTest implements Runnable
         try
         {
             // Pre-set xpos
-            final Device pv = new PVDevice(new DeviceInfo("motor_x", "xpos", true, true));
+            final Device pv = new PVDevice(new DeviceInfo("motor_x", "xpos"));
             pv.start();
             new WaitForDevicesCondition(pv).await();
             pv.write(0.0);

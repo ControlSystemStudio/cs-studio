@@ -313,8 +313,7 @@ public class ScanClient
                     new DeviceInfo(
                         DOMHelper.getSubelementString(node, "name"),
                         DOMHelper.getSubelementString(node, "alias"),
-                        true, true // TODO remove scan, log, instead add status
-                        ));
+                        DOMHelper.getSubelementString(node, "status", "")));
                 node = DOMHelper.findNextElementNode(node, "device");
             }
             return devices;

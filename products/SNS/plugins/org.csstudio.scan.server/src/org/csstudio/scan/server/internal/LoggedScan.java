@@ -12,7 +12,6 @@ import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 
 /** Scan with logged data

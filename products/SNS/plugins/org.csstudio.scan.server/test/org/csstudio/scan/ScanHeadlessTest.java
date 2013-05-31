@@ -71,7 +71,7 @@ public class ScanHeadlessTest
         boolean got_setpoint = false;
         for (Device device : device_infos)
         {
-            final String alias = device.getInfo().getAlias();
+            final String alias = device.getAlias();
             System.out.println(alias);
             if ("motor_x".equals(alias))
                 got_motor_x = true;
@@ -95,10 +95,10 @@ public class ScanHeadlessTest
 
         // Configure devices for beamline
         final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice(new DeviceInfo("motor_x", "xpos", true, true));
-        devices.addPVDevice(new DeviceInfo("motor_y", "ypos", true, true));
-        devices.addPVDevice(new DeviceInfo("setpoint", "setpoint", true, true));
-        devices.addPVDevice(new DeviceInfo("readback", "readback", true, true));
+        devices.addPVDevice(new DeviceInfo("motor_x", "xpos"));
+        devices.addPVDevice(new DeviceInfo("motor_y", "ypos"));
+        devices.addPVDevice(new DeviceInfo("setpoint", "setpoint"));
+        devices.addPVDevice(new DeviceInfo("readback", "readback"));
 
         // Configure a scan
         final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0,

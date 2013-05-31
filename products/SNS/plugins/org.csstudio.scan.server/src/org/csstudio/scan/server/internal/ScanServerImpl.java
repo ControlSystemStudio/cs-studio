@@ -124,10 +124,7 @@ public class ScanServerImpl implements ScanServer
     	// Turn Device[] into DeviceInfo[]
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
     	for (int i = 0; i < infos.length; i++)
-    	{
-    		final Device device = devices[i];
-			infos[i] = device.getInfo();
-    	}
+    	    infos[i] = devices[i];
     	return infos;
     }
 

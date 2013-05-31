@@ -39,8 +39,6 @@ public class BeamlineDeviceInfoReader
 	private static final String XML_PV = "pv";
 	private static final String XML_NAME = "name";
 	private static final String XML_ALIAS = "alias";
-    private static final String XML_SCAN = "scan";
-    private static final String XML_LOG = "log";
 
 	/** Read device configuration from XML file
 	 *  @param config_file_name Name of XML file
@@ -85,12 +83,7 @@ public class BeamlineDeviceInfoReader
             		throw new Exception("Missing PV name");
 
                 final String alias = XMLUtil.getSubelementString(pv, XML_ALIAS, name);
-
-            	final boolean scan = XMLUtil.findFirstElementNode(pv.getFirstChild(), XML_SCAN) != null;
-                final boolean log = XMLUtil.findFirstElementNode(pv.getFirstChild(), XML_LOG) != null;
-
-            	if (scan || log)
-            	    devices.add(new DeviceInfo(name, alias, scan, log));
+        	    devices.add(new DeviceInfo(name, alias));
             }
         }
 

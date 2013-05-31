@@ -77,6 +77,7 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
      *  @throws TimeoutException on timeout
      *  @throws Exception on interruption or device read error
      */
+    @Override
     public void await() throws TimeoutException, Exception
     {
         final long end_ms;

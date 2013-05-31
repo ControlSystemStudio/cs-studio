@@ -397,16 +397,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         if (prefix != null   &&   !prefix.isEmpty())
         {
         	device_active = prefix + "Active";
-	        devices.addPVDevice(new DeviceInfo(device_active, device_active, false, false));
+	        devices.addPVDevice(new DeviceInfo(device_active));
 	        
 	        device_status = prefix + "Status";
-	        devices.addPVDevice(new DeviceInfo(device_status, device_status, false, false));
+	        devices.addPVDevice(new DeviceInfo(device_status));
 
 	        device_progress = prefix + "Progress";
-	        devices.addPVDevice(new DeviceInfo(device_progress, device_progress, false, false));
+	        devices.addPVDevice(new DeviceInfo(device_progress));
 
 	        device_finish = prefix + "Finish";
-	        devices.addPVDevice(new DeviceInfo(device_finish, device_finish, false, false));
+	        devices.addPVDevice(new DeviceInfo(device_finish));
         }
 
         // Inspect all commands before executing them:
@@ -438,7 +438,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             }
             catch (Exception ex)
             {   // Add PV device, no alias, for unknown device
-                devices.addPVDevice(new DeviceInfo(device_name, device_name, true, true));
+                devices.addPVDevice(new DeviceInfo(device_name));
             }
         }
 

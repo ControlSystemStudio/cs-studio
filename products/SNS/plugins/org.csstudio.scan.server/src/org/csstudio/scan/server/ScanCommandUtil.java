@@ -96,7 +96,7 @@ public class ScanCommandUtil
             final VType log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();
-            log.log(readback.getInfo().getAlias(), VTypeHelper.createSample(serial, log_value));
+            log.log(readback.getAlias(), VTypeHelper.createSample(serial, log_value));
         }
     }
 }
