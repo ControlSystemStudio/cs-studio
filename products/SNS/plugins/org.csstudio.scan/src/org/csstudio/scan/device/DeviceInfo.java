@@ -55,6 +55,8 @@ public class DeviceInfo implements Serializable
         return alias;
     }
 
+    // TODO Scannable, loggable: Remove. It's not used. Instead, add 'status'.
+    // That would allow displaying status (connected? value?) for live scan.
     /** @return <code>true</code> if device can be scanned */
 	public boolean isScannable()
     {

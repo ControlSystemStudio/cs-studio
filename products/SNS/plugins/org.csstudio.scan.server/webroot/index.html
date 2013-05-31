@@ -81,6 +81,19 @@
 <dd>XML with scan commands</dd>
 </dl>
 
+<p>Get devices used by a specific scan.
+Returns default devices for scan ID -1: <a href="scan/-1/devices">/scan/-1/devices</a>.
+</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/devices</a></dd>
+<dt>Result</dt>
+<dd>XML with device infos</dd>
+</dl>
+
+
 <p>Get logged data of a specific scan.</p>
 <dl>
 <dt>Method</dt>
@@ -123,6 +136,8 @@
 <dt>Result</dt>
 <dd>HTTP OK or error</dd>
 </dl>
+
+<p>The above pause, resume, abort commands can be used with scan ID -1 to address all scans.</p>
 
 
 <h2>Delete Scans</h2>

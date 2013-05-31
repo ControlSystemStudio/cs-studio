@@ -20,10 +20,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +34,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.scan.command.DOMHelper;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -280,6 +281,40 @@ public class ScanClient
         }
     }
 
+    /** Obtain devices used by a scan
+     *  @param id ID that uniquely identifies a scan, or -1 to get default devices
+     *  @return {@link ScanData}
+     *  @throws Exception on error
+     */
+    public Collection<DeviceInfo> getScanDevices(final long id) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id + "/devices");
+        try
+        {
+            checkResponse(connection);
+            final Element root_node = parseXML(connection);
+            if (! "devices".equals(root_node.getNodeName()))
+                throw new Exception("Expected <devices/>");
+            Element node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "device");
+            final Collection<DeviceInfo> devices = new ArrayList<>();
+            while (node != null)
+            {
+                devices.add(
+                    new DeviceInfo(
+                        DOMHelper.getSubelementString(node, "name"),
+                        DOMHelper.getSubelementString(node, "alias"),
+                        true, true // TODO remove scan, log, instead add status
+                        ));
+                node = DOMHelper.findNextElementNode(node, "device");
+            }
+            return devices;
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+    
     /** Submit a scan for execution
      *  @param name Name of the new scan
      *  @param xml_commands XML commands of the scan to submit

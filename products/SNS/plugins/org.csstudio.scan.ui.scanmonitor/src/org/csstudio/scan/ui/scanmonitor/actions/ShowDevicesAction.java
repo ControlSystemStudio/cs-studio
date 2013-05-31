@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelREST;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
@@ -47,22 +47,20 @@ public class ShowDevicesAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        // TODO Implement or remove
-//        // Collect devices from selected scans
-//        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
-//        for (ScanInfo info : infos)
-//        {
-//            final DeviceInfo[] scan_devices = model.getServer().getDeviceInfos(info.getId());
-//            for (DeviceInfo device : scan_devices)
-//                devices.add(device);
-//        }
-//        // Display
-//        final StringBuilder buf = new StringBuilder();
-//        buf.append("Devices:\n");
-//        for (DeviceInfo info : devices)
-//            buf.append(info).append("\n");
-//
-//        MessageDialog.openInformation(shell, Messages.InfoTitle,
-//                buf.toString());
+        // Collect devices from selected scans
+        final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
+        for (ScanInfo info : infos)
+        {
+            final Collection<DeviceInfo> scan_devices = model.getScanClient().getScanDevices(info.getId());
+            devices.addAll(scan_devices);
+        }
+        // Display
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Devices:\n");
+        for (DeviceInfo info : devices)
+            buf.append(info).append("\n");
+
+        MessageDialog.openInformation(shell, Messages.InfoTitle,
+                buf.toString());
     }
 }

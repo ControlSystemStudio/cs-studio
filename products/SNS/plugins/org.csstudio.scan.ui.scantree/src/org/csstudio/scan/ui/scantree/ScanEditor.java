@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,7 +140,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     private boolean is_dirty = false;
 
     /** @return Devices available on scan server. Set by background thread */
-    private volatile DeviceInfo[] devices = null;
+    private volatile Collection<DeviceInfo> devices = null;
 
     /** ID of scan that was submitted, the 'live' scan, or -1 */
     private volatile long scan_id = -1;
@@ -297,7 +298,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 final ScanClient client = scan_info.getScanClient();
                 try
                 {
-                    // TODO devices = client.getDeviceInfos(-1);
+                    devices = client.getScanDevices(-1);
                 }
                 catch (Exception ex)
                 {	// Connected, but still error: Give up
@@ -580,7 +581,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     }
 
     /** @return Devices available on scan server. May be <code>null</code> */
-    public DeviceInfo[] getDevices()
+    public Collection<DeviceInfo> getDevices()
     {
         return devices;
     }

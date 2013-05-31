@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.util.IOUtils;
@@ -145,6 +146,7 @@ public class ScanServlet extends HttpServlet
      *  <p>GET scan/{id} - get scan info
      *  <p>GET scan/{id}/commands - get scan commands
      *  <p>GET scan/{id}/data - get scan data
+     *  <p>GET scan/{id}/devices - get devices used by a scan
      */
     @Override
     protected void doGet(final HttpServletRequest request,
@@ -187,10 +189,15 @@ public class ScanServlet extends HttpServlet
                 out.flush();
             }
             else if ("data".equalsIgnoreCase(object))
-            {
-                // Get data
+            {   // Get data
                 final ScanData data = scan_server.getScanData(id);
                 doc.appendChild(ServletHelper.createXMLElement(doc, data));
+                ServletHelper.submitXML(doc, response);
+            }
+            else if ("devices".equalsIgnoreCase(object))
+            {   // Get devices
+                final DeviceInfo[] devices = scan_server.getDeviceInfos(id);
+                doc.appendChild(ServletHelper.createXMLElement(doc, devices));
                 ServletHelper.submitXML(doc, response);
             }
             else

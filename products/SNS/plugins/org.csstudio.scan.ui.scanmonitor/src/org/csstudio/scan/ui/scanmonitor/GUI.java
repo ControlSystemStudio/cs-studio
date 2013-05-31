@@ -453,7 +453,7 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
-                if (infos.length > 1)
+                if (infos.length >= 1)
                     manager.add(new ShowDevicesAction(shell, model, infos));
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
