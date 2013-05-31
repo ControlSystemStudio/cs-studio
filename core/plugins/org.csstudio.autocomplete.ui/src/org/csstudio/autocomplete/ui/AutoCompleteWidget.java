@@ -7,6 +7,8 @@
 ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
@@ -46,6 +48,23 @@ public class AutoCompleteWidget {
 	 * 
 	 * @param control {@link Combo} or {@link Text}
 	 * @param type see {@link AutoCompleteTypes}
+	 * @param historyHandlers control which trigger add entry envent on history
+	 */
+	public AutoCompleteWidget(Control control, String type,
+			List<Control> historyHandlers) {
+		this(control, type);
+		if (historyHandlers != null) {
+			for (Control handler : historyHandlers) {
+				getHistory().installListener(handler);
+			}
+		}
+	}
+	
+	/**
+	 * Enable auto-completed content on the specified widget.
+	 * 
+	 * @param control {@link Combo} or {@link Text}
+	 * @param type see {@link AutoCompleteTypes}
 	 */
 	public AutoCompleteWidget(CellEditor cellEditor, String type) {
 		Assert.isNotNull(type);
@@ -53,6 +72,23 @@ public class AutoCompleteWidget {
 		this.control = cellEditor.getControl();
 		this.type = type;
 		enableContentProposal();
+	}
+
+	/**
+	 * Enable auto-completed content on the specified widget.
+	 * 
+	 * @param control {@link Combo} or {@link Text}
+	 * @param type see {@link AutoCompleteTypes}
+	 * @param historyHandlers control which trigger add entry envent on history
+	 */
+	public AutoCompleteWidget(CellEditor cellEditor, String type,
+			List<Control> historyHandlers) {
+		this(cellEditor, type);
+		if (historyHandlers != null) {
+			for (Control handler : historyHandlers) {
+				getHistory().installListener(handler);
+			}
+		}
 	}
 
 	/**
@@ -114,4 +150,8 @@ public class AutoCompleteWidget {
 		return adapter;
 	}
 
+	public AutoCompleteHistory getHistory() {
+		return adapter.getHistory();
+	}
+	
 }

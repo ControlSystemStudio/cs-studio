@@ -442,13 +442,6 @@ public class ContentProposalAdapter {
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 		
-		control.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
-				history.addEntry(getControlContentAdapter()
-						.getControlContents(getControl()));
-			}
-		});
-
 		if (DEBUG) {
 			System.out
 					.println("ContentProposalAdapter#installControlListener() - installed"); //$NON-NLS-1$
@@ -934,7 +927,7 @@ public class ContentProposalAdapter {
 		}
 		
 		// Add entry to history
-		history.addEntry(proposal.getContent());
+		// history.addEntry(proposal.getContent());
 
 		// In all cases, notify listeners of an accepted proposal.
 		notifyProposalAccepted(proposal);
@@ -951,10 +944,10 @@ public class ContentProposalAdapter {
 			controlContentAdapter.setControlContents(control, text,
 					cursorPosition);
 			// send 'enter' event to control
-			Event event = new Event();
-			event.keyCode = SWT.CR;
-			event.type = SWT.KeyDown;
-			control.notifyListeners(SWT.KeyDown, event);
+			// Event event = new Event();
+			// event.keyCode = SWT.CR;
+			// event.type = SWT.KeyDown;
+			// control.notifyListeners(SWT.KeyDown, event);
 		}
 	}
 
@@ -1192,6 +1185,10 @@ public class ContentProposalAdapter {
 
 	public void setMaxDisplay(int maxDisplay) {
 		this.maxDisplay = maxDisplay;
+	}
+
+	public AutoCompleteHistory getHistory() {
+		return history;
 	}
 	
 }
