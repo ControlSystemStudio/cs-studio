@@ -32,7 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.csstudio.scan.ScanSystemPreferences;
+import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.command.DOMHelper;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.DeviceInfo;
@@ -45,9 +45,11 @@ import org.csstudio.scan.util.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** Scan server client
+/** Client for remotely accessing the scan server.
  * 
- *  <p>REST-based implementation.
+ *  <p>Uses the REST-based web interface of the
+ *  scan server to submit new scans, monitor
+ *  and control existing scans.
  *
  *  @author Kay Kasemir
  */
@@ -63,7 +65,8 @@ public class ScanClient
     /** Initialize */
     public ScanClient()
     {
-        this(ScanSystemPreferences.DEFAULT_HOST, ScanSystemPreferences.DEFAULT_PORT);
+        this(SystemSettings.getServerHost(),
+             SystemSettings.getServerPort());
     }
     
     /** Initialize

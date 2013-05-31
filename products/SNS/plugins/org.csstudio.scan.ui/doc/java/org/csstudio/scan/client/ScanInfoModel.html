@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
+<li><a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -97,10 +97,8 @@
 extends java.lang.Object</pre>
 <div class="block">Model of scan information on scan server
 
-  <p>The scan server has (at this time) a simple RMI
-  interface that only offers polling access.
-
-  This model periodically polls the scan server for its
+  <p>Based on the <a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client"><code>ScanClient</code></a>,
+  this model periodically polls the scan server for its
   state and sends updates to a (GUI) listener.
 
   <p>Singleton to allow multiple views to monitor
@@ -139,18 +137,14 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServer()">getServer</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#getScanClient()">getScanClient</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServerInfo()">getServerInfo</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServerInfoText()">getServerInfoText</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#release()">release</a></strong>()</code>
 <div class="block">Release
@@ -158,7 +152,7 @@ extends java.lang.Object</pre>
   singleton instance is stopped and removed.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanInfoModel.html#removeListener(org.csstudio.scan.client.ScanInfoModelListener)">removeListener</a></strong>(<a href="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
@@ -231,17 +225,14 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>listener</code> - Listener to remove</dd></dl>
 </li>
 </ul>
-<a name="getServer()">
+<a name="getScanClient()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getServer</h4>
-<pre>public&nbsp;<a href="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a>&nbsp;getServer()
-                     throws java.rmi.RemoteException</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Server</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code>java.rmi.RemoteException</code> - when not connected to server</dd></dl>
+<h4>getScanClient</h4>
+<pre>public&nbsp;<a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a>&nbsp;getScanClient()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client"><code>ScanClient</code></a></dd></dl>
 </li>
 </ul>
 <a name="getServerInfo()">
@@ -252,19 +243,6 @@ extends java.lang.Object</pre>
 <h4>getServerInfo</h4>
 <pre>public&nbsp;<a href="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a>&nbsp;getServerInfo()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Scan Server info or <code>null</code></dd></dl>
-</li>
-</ul>
-<a name="getServerInfoText()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getServerInfoText</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getServerInfoText()
-                                   throws java.rmi.RemoteException</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Scan Server info</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code>java.rmi.RemoteException</code> - on error in remote access</dd></dl>
 </li>
 </ul>
 <a name="getInfos()">
@@ -302,7 +280,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
+<li><a href="../../../../org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">

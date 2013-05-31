@@ -3,7 +3,7 @@
 
      Execute as
      
-       ant -f javadoc.xml
+       ant -f javadoc.xml clean all
        
      to re-create the doc/java files.
   -->
@@ -54,7 +54,8 @@
 
             	<include name="org.csstudio.scan.client/src/org/csstudio/scan/client/*.java"/>
             	
-            	<exclude name="**/SimpleScanCommandFactory.java"/>
+                <exclude name="**/SimpleScanCommandFactory.java"/>
+            	<exclude name="**/ScanDataSAXHandler.java"/>
                 <exclude name="**/ScanCommandFactory.java"/>
                 <exclude name="**/ScanCommandProperty.java"/>
                 <exclude name="**/DOMHelper.java"/>
