@@ -60,12 +60,13 @@ public class AutoCompleteService {
 		public void run() {
 			AutoCompleteResult result = settings.getProvider().listResult(type,
 					name + "*", settings.getMax_results());
-			result.setProvider(settings.getName());
-			if (result != null && !canceled)
+			if (result != null)
+				result.setProvider(settings.getName());
+			if (!canceled)
 				listener.handleResult(uniqueId, index, result);
 			synchronized (workQueue) {
 				workQueue.remove(this);
-				// System.out.println("REMOVED: " + task);
+				// System.out.println("REMOVED: " + this);
 			}
 		}
 
@@ -150,17 +151,17 @@ public class AutoCompleteService {
 		return instance;
 	}
 
-	public void get(final Long uniqueId, final String type, final String name,
+	public int get(final Long uniqueId, final String type, final String name,
 			final IAutoCompleteResultListener listener) {
 		Activator.getLogger().log(Level.FINE,
 				">> ChannelNameService get: " + name + " for type: " + type + " <<");
 
 		if (name == null || name.isEmpty())
-			return;
+			return 0;
 
 		List<ProviderSettings> providerList = findProviders(type);
 		if (providerList == null || providerList.isEmpty())
-			return;
+			return 0;
 
 		// Execute them in parallel
 		int index = 0; // Usefull to keep the order
@@ -174,6 +175,7 @@ public class AutoCompleteService {
 			new Thread(task).start();
 			index++;
 		}
+		return providerList.size();
 	}
 	
 	public void cancel(final String type) {

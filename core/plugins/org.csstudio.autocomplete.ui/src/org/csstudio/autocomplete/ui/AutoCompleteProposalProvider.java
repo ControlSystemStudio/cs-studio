@@ -34,47 +34,53 @@ public class AutoCompleteProposalProvider implements
 			currentList.clear();
 		}
 		AutoCompleteService cns = AutoCompleteService.getInstance();
-		cns.get(currentId, type, contents, new IAutoCompleteResultListener() {
+		int expected = cns.get(currentId, type, contents,
+				new IAutoCompleteResultListener() {
 
-			@Override
-			public void handleResult(Long uniqueId, Integer index,
-					AutoCompleteResult result) {
-				if (uniqueId == currentId) {
-					List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-					for (final String proposal : result.getResults()) {
-
-						contentProposals.add(new IContentProposal() {
-							public String getContent() {
-								return proposal;
+					@Override
+					public void handleResult(Long uniqueId, Integer index,
+							AutoCompleteResult result) {
+						if (uniqueId == currentId) {
+							synchronized (currentList) {
+								currentList.responseReceived();
 							}
+							if (result == null)
+								return;
 
-							public String getDescription() {
-								return null;
-							}
+							List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
+							for (final String proposal : result.getResults()) {
 
-							public String getLabel() {
-								return null;
-							}
+								contentProposals.add(new IContentProposal() {
+									public String getContent() {
+										return proposal;
+									}
 
-							public int getCursorPosition() {
-								return proposal.length();
+									public String getDescription() {
+										return null;
+									}
+
+									public String getLabel() {
+										return null;
+									}
+
+									public int getCursorPosition() {
+										return proposal.length();
+									}
+								});
 							}
-						});
+							ContentProposalList cpl = null;
+							synchronized (currentList) {
+								currentList.addProposals(result.getProvider(),
+										(IContentProposal[]) contentProposals.toArray(new IContentProposal[contentProposals.size()]), 
+										result.getCount(), index);
+								cpl = currentList.clone();
+							}
+							handler.handleResult(cpl);
+							// System.out.println("PROCESSED: " + uniqueId + ", " + index);
+						}
 					}
-					ContentProposalList cpl = null;
-					synchronized (currentList) {
-						currentList.addProposals(
-								result.getProvider(),
-								(IContentProposal[]) contentProposals
-										.toArray(new IContentProposal[contentProposals
-												.size()]), result.getCount(), index);
-						cpl = currentList.clone();
-					}
-					handler.handleResult(cpl);
-					// System.out.println("PROCESSED: " + uniqueId + ", " + index);
-				}
-			}
-		});
+				});
+		currentList.setExpected(expected);
 	}
 
 	@Override
