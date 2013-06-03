@@ -139,9 +139,28 @@ function css_kek_settings {
             FONT_DEF=$(eval 'echo $'$a'_FONT_DEF')
 
 	    # Set -share_link parameters
-	    SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN')
-	    SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC')
-	    SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST')
+            SHARE_LINK=""
+            SHARE_LINK_WIN=""
+            for i in $(seq 3); do
+	        SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN_$i')
+	        SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC_$i')
+	        SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST_$i')
+                if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK}" ]; then
+                        SHARE_LINK="${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK="${SHARE_LINK},${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+
+                if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK_WIN}" ]; then
+                        SHARE_LINK_WIN="${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK_WIN="${SHARE_LINK_WIN},${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+            done
             
         # Set archiver URLs
             prepend_urls "${URLS}"
