@@ -19,13 +19,13 @@ public class LineGraph2DConfigurationDialog
 			String title) {
 		super(control, title);
 		addInitialValues("highlightFocusValue", getWidget()
-				.isHighlightFocusValue());
+				.isHighlightSelectionValue());
 	}
 
 	@Override
 	protected void onPropertyChange(PropertyChangeEvent evt) {
 		super.onPropertyChange(evt);
-		getWidget().setHighlightFocusValue(
+		getWidget().setHighlightSelectionValue(
 				getConfigurationComposite().getHighlightFocusData());
 	}
 

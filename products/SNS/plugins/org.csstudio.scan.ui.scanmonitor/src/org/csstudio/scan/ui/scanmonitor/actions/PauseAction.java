@@ -41,9 +41,9 @@ public class PauseAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().pause(-1);
+            model.getScanClient().pauseScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().pause(info.getId());
+                model.getScanClient().pauseScan(info.getId());
     }
 }

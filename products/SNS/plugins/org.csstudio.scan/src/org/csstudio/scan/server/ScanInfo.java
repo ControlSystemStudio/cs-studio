@@ -15,18 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /** Information about a Scan
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanInfo extends Scan implements Serializable
+public class ScanInfo extends Scan
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private ScanState state;
     final private String error;
     final private long runtime_ms;
@@ -164,7 +160,9 @@ public class ScanInfo extends Scan implements Serializable
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof ScanInfo))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         final ScanInfo other = (ScanInfo) obj;
         return getId() == other.getId()  &&

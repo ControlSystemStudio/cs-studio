@@ -11,7 +11,7 @@
     </title>
     <graph_settings>
         <show_title>true</show_title>
-        <show_legend>true</show_legend>
+        <show_legend>false</show_legend>
         <show_plot_area_border>true</show_plot_area_border>
         <transparent>false</transparent>
     </graph_settings>
@@ -25,12 +25,12 @@
             <font>1|Sans|10.0|1|GTK|1|</font>
             <scale_font>1|Sans|10.0|0|GTK|1|</scale_font>
             <color>
-                <red>0</red>
-                <green>0</green>
-                <blue>255</blue>
+                <red>77</red>
+                <green>77</green>
+                <blue>77</blue>
             </color>
-            <min>1.358951155155E12</min>
-            <max>1.358951755155E12</max>
+            <min>1.367850017623E12</min>
+            <max>1.367850617623E12</max>
             <log_scale>false</log_scale>
             <autoscale>true</autoscale>
             <visible>true</visible>
@@ -51,9 +51,9 @@
         </axis>
     </time_axis>
     <background>
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>229</red>
+        <green>229</green>
+        <blue>229</blue>
     </background>
     <archive_rescale>NONE</archive_rescale>
     <axes>
@@ -62,9 +62,9 @@
             <font>1|Sans|10.0|1|GTK|1|</font>
             <scale_font>1|Sans|10.0|0|GTK|1|</scale_font>
             <color>
-                <red>21</red>
-                <green>21</green>
-                <blue>196</blue>
+                <red>77</red>
+                <green>77</green>
+                <blue>77</blue>
             </color>
             <min>0.0</min>
             <max>100.0</max>
@@ -84,6 +84,64 @@
                 <auto_format>true</auto_format>
                 <time_format>false</time_format>
                 <format_pattern>############.##</format_pattern>
+            </format>
+        </axis>
+        <axis>
+            <name>TEST-BST0:TANK-LEVEL.LOW</name>
+            <font>1|Sans|10.0|1|GTK|1|</font>
+            <scale_font>1|Sans|10.0|0|GTK|1|</scale_font>
+            <color>
+                <red>242</red>
+                <green>26</green>
+                <blue>26</blue>
+            </color>
+            <min>20.0</min>
+            <max>21.0</max>
+            <log_scale>false</log_scale>
+            <autoscale>true</autoscale>
+            <visible>false</visible>
+            <grid_line>
+                <show_grid_line>false</show_grid_line>
+                <dash_grid_line>true</dash_grid_line>
+                <color>
+                    <red>200</red>
+                    <green>200</green>
+                    <blue>200</blue>
+                </color>
+            </grid_line>
+            <format>
+                <auto_format>true</auto_format>
+                <time_format>false</time_format>
+                <format_pattern>############.##</format_pattern>
+            </format>
+        </axis>
+        <axis>
+            <name>TEST-BST0:TANK-LEVEL.HIGH</name>
+            <font>1|Sans|10.0|1|GTK|1|</font>
+            <scale_font>1|Sans|10.0|0|GTK|1|</scale_font>
+            <color>
+                <red>33</red>
+                <green>179</green>
+                <blue>33</blue>
+            </color>
+            <min>80.0</min>
+            <max>80.1</max>
+            <log_scale>false</log_scale>
+            <autoscale>true</autoscale>
+            <visible>false</visible>
+            <grid_line>
+                <show_grid_line>false</show_grid_line>
+                <dash_grid_line>true</dash_grid_line>
+                <color>
+                    <red>200</red>
+                    <green>200</green>
+                    <blue>200</blue>
+                </color>
+            </grid_line>
+            <format>
+                <auto_format>true</auto_format>
+                <time_format>false</time_format>
+                <format_pattern>##.####</format_pattern>
             </format>
         </axis>
     </axes>
@@ -107,7 +165,51 @@
             <ring_size>5000</ring_size>
             <request>OPTIMIZED</request>
             <archive>
-                <name>rdb</name>
+                <name>RDB</name>
+                <url>jdbc:postgresql://localhost/css_archive_3_0_0</url>
+                <key>1</key>
+            </archive>
+        </pv>
+        <pv>
+            <name>TEST-BST0:TANK-LEVEL.LOW</name>
+            <display_name>TEST-BST0:TANK-LEVEL.LOW</display_name>
+            <visible>true</visible>
+            <axis>0</axis>
+            <linewidth>2</linewidth>
+            <color>
+                <red>242</red>
+                <green>26</green>
+                <blue>26</blue>
+            </color>
+            <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
+            <period>0.0</period>
+            <ring_size>5000</ring_size>
+            <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
+                <url>jdbc:postgresql://localhost/css_archive_3_0_0</url>
+                <key>1</key>
+            </archive>
+        </pv>
+        <pv>
+            <name>TEST-BST0:TANK-LEVEL.HIGH</name>
+            <display_name>TEST-BST0:TANK-LEVEL.HIGH</display_name>
+            <visible>true</visible>
+            <axis>0</axis>
+            <linewidth>2</linewidth>
+            <color>
+                <red>255</red>
+                <green>165</green>
+                <blue>0</blue>
+            </color>
+            <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
+            <period>0.0</period>
+            <ring_size>5000</ring_size>
+            <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
                 <url>jdbc:postgresql://localhost/css_archive_3_0_0</url>
                 <key>1</key>
             </archive>

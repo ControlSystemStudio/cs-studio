@@ -32,20 +32,19 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 	public SDDPVListProvider() {
 		try {
 			rdb = RDBUtil.connect(Preferences.getRDB_Url(),
-					Preferences.getRDB_User(), Preferences.getRDB_Password(),
-					true);
-			Activator.getLogger().log(
-					Level.INFO,
-					"SDDPVListProvider connected to DB: "
-							+ Preferences.getRDB_Url());
+					Preferences.getRDB_User(), Preferences.getRDB_Password(), true);
+			Activator.getLogger().log(Level.INFO,
+					"SDDPVListProvider connected to DB: " + Preferences.getRDB_Url());
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.WARNING, e.getMessage());
 		}
 	}
 
 	@Override
 	public AutoCompleteResult listResult(final String type, final String name,
 			final int limit) {
+		if (rdb == null)
+			return null;
 		AutoCompleteResult result = new AutoCompleteResult();
 
 		try {

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IMetaData;
@@ -333,7 +334,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 				setPVName(cbo_name.getText());
 			}
 		});
-		new AutoCompleteWidget(cbo_name, "PV");
+		new AutoCompleteWidget(cbo_name, AutoCompleteTypes.PV);
 
         final Button btn_info = new Button(top_box, SWT.PUSH);
         btn_info.setText(Messages.S_Info);

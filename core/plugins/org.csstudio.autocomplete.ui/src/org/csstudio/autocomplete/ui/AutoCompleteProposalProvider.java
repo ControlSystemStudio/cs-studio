@@ -12,52 +12,75 @@ import java.util.List;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.AutoCompleteService;
+import org.csstudio.autocomplete.IAutoCompleteResultListener;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 public class AutoCompleteProposalProvider implements
 		IAutoCompleteProposalProvider {
 
 	private final String type;
+	private ContentProposalList currentList;
+	private Long currentId;
 
 	public AutoCompleteProposalProvider(String type) {
 		this.type = type;
+		this.currentList = new ContentProposalList();
 	}
 
-	public ContentProposalList getProposals(String contents, int position,
-			int max) {
-		ContentProposalList cpl = new ContentProposalList();
-
+	public void getProposals(String contents, int position, int max,
+			final IContentProposalSearchHandler handler) {
+		currentId = System.currentTimeMillis();
+		synchronized (currentList) {
+			currentList.clear();
+		}
 		AutoCompleteService cns = AutoCompleteService.getInstance();
-		List<AutoCompleteResult> results = cns.get(type, contents);
-		for (final AutoCompleteResult result : results) {
+		int expected = cns.get(currentId, type, contents,
+				new IAutoCompleteResultListener() {
 
-			List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-			for (final String proposal : result.getResults()) {
+					@Override
+					public void handleResult(Long uniqueId, Integer index,
+							AutoCompleteResult result) {
+						if (uniqueId == currentId) {
+							synchronized (currentList) {
+								currentList.responseReceived();
+							}
+							if (result == null)
+								return;
 
-				contentProposals.add(new IContentProposal() {
-					public String getContent() {
-						return proposal;
-					}
+							List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
+							for (final String proposal : result.getResults()) {
 
-					public String getDescription() {
-						return null;
-					}
+								contentProposals.add(new IContentProposal() {
+									public String getContent() {
+										return proposal;
+									}
 
-					public String getLabel() {
-						return null;
-					}
+									public String getDescription() {
+										return null;
+									}
 
-					public int getCursorPosition() {
-						return proposal.length();
+									public String getLabel() {
+										return null;
+									}
+
+									public int getCursorPosition() {
+										return proposal.length();
+									}
+								});
+							}
+							ContentProposalList cpl = null;
+							synchronized (currentList) {
+								currentList.addProposals(result.getProvider(),
+										(IContentProposal[]) contentProposals.toArray(new IContentProposal[contentProposals.size()]), 
+										result.getCount(), index);
+								cpl = currentList.clone();
+							}
+							handler.handleResult(cpl);
+							// System.out.println("PROCESSED: " + uniqueId + ", " + index);
+						}
 					}
 				});
-			}
-			cpl.addProposals(result.getProvider(),
-					(IContentProposal[]) contentProposals
-							.toArray(new IContentProposal[contentProposals
-									.size()]), result.getCount());
-		}
-		return cpl;
+		currentList.setExpected(expected);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ org.csstudio.iter.opibuilder.feature
 org.csstudio.iter.snl.feature
 org.csstudio.iter.svn.feature
 org.csstudio.iter.test.feature
+org.csstudio.iter.trends.databrowser2.feature
 org.csstudio.iter.utility.clock.feature
 org.csstudio.iter.utility.eliza.feature
 org.csstudio.iter.utility.sysmon.feature

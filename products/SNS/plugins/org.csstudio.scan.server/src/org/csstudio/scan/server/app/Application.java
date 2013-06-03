@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.equinox.app.IApplication;
@@ -81,14 +80,11 @@ public class Application implements IApplication
 
 	        // Start server
 	        final int port = ScanSystemPreferences.getServerPort();
-	        server = new ScanServerImpl(port);
+	        server = new ScanServerImpl();
 	        server.start();
-	        log.info("Scan Server running on ports " + port + " (RMI Registry), " +
-	                (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface), " +
-	                (port + 2) + " (REST interface)");
-
-	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port + 2);
-	        
+	        log.info("Scan Server running on port " + port + " (REST interface)");
+	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
+        
 	        // Register console commands
 	        ConsoleCommands commands = new ConsoleCommands(server);
 	        final BundleContext bundle_context = bundle.getBundleContext();

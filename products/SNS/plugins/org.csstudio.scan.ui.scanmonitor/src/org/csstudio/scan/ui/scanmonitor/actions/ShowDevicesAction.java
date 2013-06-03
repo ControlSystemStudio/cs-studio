@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,9 +51,8 @@ public class ShowDevicesAction extends AbstractGUIAction
         final Set<DeviceInfo> devices = new HashSet<DeviceInfo>();
         for (ScanInfo info : infos)
         {
-            final DeviceInfo[] scan_devices = model.getServer().getDeviceInfos(info.getId());
-            for (DeviceInfo device : scan_devices)
-                devices.add(device);
+            final Collection<DeviceInfo> scan_devices = model.getScanClient().getScanDevices(info.getId());
+            devices.addAll(scan_devices);
         }
         // Display
         final StringBuilder buf = new StringBuilder();

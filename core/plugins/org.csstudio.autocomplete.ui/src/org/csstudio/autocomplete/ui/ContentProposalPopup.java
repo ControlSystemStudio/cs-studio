@@ -795,7 +795,7 @@ public class ContentProposalPopup extends PopupDialog {
 	 * created.
 	 */
 	private void setProposals(ContentProposalList newProposalList) {
-		if (newProposalList == null || newProposalList.length() == 0) {
+		if (newProposalList == null) {
 			newProposalList = getEmptyProposalArray();
 		}
 		this.proposalList = newProposalList;
@@ -1088,19 +1088,16 @@ public class ContentProposalPopup extends PopupDialog {
 	}
 
 	/*
-	 * Request the proposals from the proposal provider, and recompute any
+	 * Get the proposals from the proposal provider, and recompute any
 	 * caches. Repopulate the popup if it is open.
 	 */
 	private void recomputeProposals(ContentProposalList newProposalList) {
 		if (newProposalList == null)
 			newProposalList = getEmptyProposalArray();
-		// If the non-filtered proposal list is empty, we should close the popup.
-		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
-		if (newProposalList.length() == 0) {
+		if (newProposalList.length() == 0 && newProposalList.allResponded()) {
 			this.proposalList = newProposalList;
 			close();
 		} else {
-			// Keep the popup open, but filter by any provided filter text
 			setProposals(newProposalList);
 		}
 	}
@@ -1120,17 +1117,16 @@ public class ContentProposalPopup extends PopupDialog {
 					adapter.getProposals(new IContentProposalSearchHandler() {
 						@Override
 						public void handleResult(
-								ContentProposalList proposalList) {
-							recomputeProposals(proposalList);
+								final ContentProposalList proposalList) {
+							if (control != null && !control.isDisposed()) {
+								control.getDisplay().syncExec(new Runnable() {
+									public void run() {
+										recomputeProposals(proposalList);
+									}
+								});
+							}
 						}
 					});
-				}
-			});
-		} else {
-			adapter.getProposals(new IContentProposalSearchHandler() {
-				@Override
-				public void handleResult(ContentProposalList proposalList) {
-					recomputeProposals(proposalList);
 				}
 			});
 		}
@@ -1149,5 +1145,9 @@ public class ContentProposalPopup extends PopupDialog {
 
 	public void setPopupSize(Point size) {
 		popupSize = size;
+	}
+
+	public void refreshProposals(ContentProposalList newProposalList) {
+		recomputeProposals(newProposalList);
 	}
 }

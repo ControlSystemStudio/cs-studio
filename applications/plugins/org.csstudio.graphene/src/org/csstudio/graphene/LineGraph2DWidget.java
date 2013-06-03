@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.formula.ExpressionLanguage.*;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 
 import java.beans.PropertyChangeEvent;
@@ -27,7 +27,6 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.formula.TableFunctionSet;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
@@ -48,7 +47,7 @@ public class LineGraph2DWidget
 		AbstractPointDatasetGraph2DWidget<LineGraph2DRendererUpdate, LineGraph2DExpression>
 		implements ConfigurableWidget, ISelectionProvider {
 	
-	private PVWriter<Object> focusValueWriter;
+	private PVWriter<Object> selectionValueWriter;
 
 	public LineGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
@@ -56,7 +55,7 @@ public class LineGraph2DWidget
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("highlightFocusValue") && getGraph() != null) {
+				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
 					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
 				}
 				
@@ -66,7 +65,7 @@ public class LineGraph2DWidget
 			
 			@Override
 			public void mouseMove(MouseEvent e) {
-				if (isHighlightFocusValue() && getGraph() != null) {
+				if (isHighlightSelectionValue() && getGraph() != null) {
 					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
 				}
 			}
@@ -76,30 +75,30 @@ public class LineGraph2DWidget
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("focusValuePv") && getGraph() != null) {
-					if (focusValueWriter != null) {
-						focusValueWriter.close();
-						focusValueWriter = null;
+				if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
+					if (selectionValueWriter != null) {
+						selectionValueWriter.close();
+						selectionValueWriter = null;
 					}
 					
-					if (getFocusValuePv() == null || getFocusValuePv().trim().isEmpty()) {
+					if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
 						return;
 					}
 					
-					focusValueWriter = PVManager.write(formula(getFocusValuePv()))
+					selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
 							.writeListener(new PVWriterListener<Object>() {
 								@Override
 								public void pvChanged(
 										PVWriterEvent<Object> event) {
 									if (event.isWriteFailed()) {
 										Logger.getLogger(LineGraph2DWidget.class.getName())
-										.log(Level.WARNING, "Line graph focus notification failed", event.getPvWriter().lastWriteException());
+										.log(Level.WARNING, "Line graph selection notification failed", event.getPvWriter().lastWriteException());
 									}
 								}
 							})
 							.async();
-					if (getFocusValue() != null) {
-						focusValueWriter.write(getFocusValue());
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
 					}
 							
 				}
@@ -110,9 +109,9 @@ public class LineGraph2DWidget
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("focusValue") && focusValueWriter != null) {
-					if (getFocusValue() != null) {
-						focusValueWriter.write(getFocusValue());
+				if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
 					}
 				}
 				
@@ -127,52 +126,52 @@ public class LineGraph2DWidget
 				formulaArg(getTooltipColumnFormula()));
 		graph.update(graph.newUpdate()
 				.interpolation(InterpolationScheme.LINEAR)
-				.highlightFocusValue(isHighlightFocusValue()));
+				.highlightFocusValue(isHighlightSelectionValue()));
 		return graph;
 	}
 	
-	private boolean highlightFocusValue = false;
-	private VTable focusValue;
-	private String focusValuePv;
+	private boolean highlightSelectionValue = false;
+	private VTable selectionValue;
+	private String selectionValuePv;
 	
-	public String getFocusValuePv() {
-		return focusValuePv;
+	public String getSelectionValuePv() {
+		return selectionValuePv;
 	}
 	
-	public void setFocusValuePv(String focusValuePv) {
-		String oldValue = this.focusValuePv;
-		this.focusValuePv = focusValuePv;
-		changeSupport.firePropertyChange("focusValuePv", oldValue, this.focusValuePv);
+	public void setSelectionValuePv(String selectionValuePv) {
+		String oldValue = this.selectionValuePv;
+		this.selectionValuePv = selectionValuePv;
+		changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
 	}
 	
-	public boolean isHighlightFocusValue() {
-		return highlightFocusValue;
+	public boolean isHighlightSelectionValue() {
+		return highlightSelectionValue;
 	}
 	
-	public void setHighlightFocusValue(boolean highlightFocusValue) {
-		boolean oldValue = this.highlightFocusValue;
-		this.highlightFocusValue = highlightFocusValue;
-		changeSupport.firePropertyChange("highlightFocusValue", oldValue, this.highlightFocusValue);
+	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
+		boolean oldValue = this.highlightSelectionValue;
+		this.highlightSelectionValue = highlightSelectionValue;
+		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
 	}
 	
-	public VTable getFocusValue() {
-		return focusValue;
+	public VTable getSelectionValue() {
+		return selectionValue;
 	}
 	
-	private void setFocusValue(VTable focusValue) {
-		VTable oldValue = this.focusValue;
-		this.focusValue = focusValue;
-		changeSupport.firePropertyChange("focusValue", oldValue, this.focusValue);
+	private void setSelectionValue(VTable selectionValue) {
+		VTable oldValue = this.selectionValue;
+		this.selectionValue = selectionValue;
+		changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
 	}
 	
-	private static final String MEMENTO_HIGHLIGHT_FOCUS_VALUE = "highlightFocusValue"; //$NON-NLS-1$
+	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 	
 	@Override
 	public void loadState(IMemento memento) {
 		super.loadState(memento);
 		if (memento != null) {
-			if (memento.getBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE) != null) {
-				setHighlightFocusValue(memento.getBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE));
+			if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
+				setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
 			}
 		}
 	}
@@ -180,7 +179,7 @@ public class LineGraph2DWidget
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
-		memento.putBoolean(MEMENTO_HIGHLIGHT_FOCUS_VALUE, isHighlightFocusValue());
+		memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
 	}
 	
 	@Override
@@ -193,15 +192,15 @@ public class LineGraph2DWidget
 	protected void processValue() {
 		Graph2DResult result = getCurrentResult();
 		if (result == null || result.getData() == null) {
-			setFocusValue(null);
+			setSelectionValue(null);
 		} else {
 			int index = result.focusDataIndex();
 			if (index == -1) {
-				setFocusValue(null);
+				setSelectionValue(null);
 			} else {
 				if (result.getData() instanceof VTable) {
 					VTable data = (VTable) result.getData();
-					setFocusValue(VTableFactory.extractRow(data, index));
+					setSelectionValue(VTableFactory.extractRow(data, index));
 					return;
 				}
 				if (result.getData() instanceof VNumberArray) {
@@ -209,10 +208,10 @@ public class LineGraph2DWidget
 					VTable selection = ValueFactory.newVTable(Arrays.<Class<?>>asList(double.class, double.class),
 							Arrays.asList("X", "Y"), 
 							Arrays.<Object>asList(new ArrayDouble(index), new ArrayDouble(data.getData().getDouble(index))));
-					setFocusValue(selection);
+					setSelectionValue(selection);
 					return;
 				}
-				setFocusValue(null);
+				setSelectionValue(null);
 			}
 		}
 	}

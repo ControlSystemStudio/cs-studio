@@ -36,7 +36,7 @@ public class PVDeviceHeadlessTest implements DeviceListener
     @Test(timeout=5000)
     public void testPVDevice() throws Exception
     {
-        final PVDevice device = new PVDevice(new DeviceInfo("sim://sine", "demo", true, true));
+        final PVDevice device = new PVDevice(new DeviceInfo("sim://sine", "demo"));
         device.start();
         try
         {

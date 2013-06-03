@@ -64,9 +64,9 @@
 </a>
 <h2 class="title">A</h2>
 <dl>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#abort(long)">abort(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#abortScan(long)">abortScan(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Ask server to abort a scan</div>
+<div class="block">Abort a running or paused scan</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#addListener(org.csstudio.scan.client.ScanInfoModelListener)">addListener(ScanInfoModelListener)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
 <dd>&nbsp;</dd>
@@ -126,25 +126,19 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ConfigLogCommand.html#ConfigLogCommand()">ConfigLogCommand()</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanServerConnector.html#connect()">connect()</a></span> - Static method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanServerConnector.html" title="class in org.csstudio.scan.client">ScanServerConnector</a></dt>
-<dd>
-<div class="block">Connect to <a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><code>ScanServer</code></a> on host and port
-  provided via system properties <code>ScanServerHost</code>
-  and <code>ScanServerPort</code>.</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanServerConnector.html#connect(java.lang.String, int)">connect(String, int)</a></span> - Static method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanServerConnector.html" title="class in org.csstudio.scan.client">ScanServerConnector</a></dt>
-<dd>
-<div class="block">Connect to <a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><code>ScanServer</code></a></div>
-</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModelListener.html#connectionError()">connectionError()</a></span> - Method in interface org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</a></dt>
 <dd>
 <div class="block">Invoked when there are errors in communication with scan server</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Number...)">createSample(Date, long, Number...)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</a></dt>
 <dd>
-<div class="block">Create ScanSample for plain number or text value</div>
+<div class="block">Create ScanSample for plain number</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object[])">createSample(Date, long, Object[])</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.String...)">createSample(Date, long, String...)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</a></dt>
+<dd>
+<div class="block">Create ScanSample for strings</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object...)">createSample(Date, long, Object...)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data">ScanSampleFactory</a></dt>
 <dd>
 <div class="block">Create ScanSample for plain number or text value</div>
 </dd>
@@ -157,14 +151,6 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#DATE_FORMAT">DATE_FORMAT</a></span> - Static variable in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
 <dd>
 <div class="block">Suggested time format</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#DEFAULT_HOST">DEFAULT_HOST</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Default host for scan server</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#DEFAULT_PORT">DEFAULT_PORT</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Default port used by scan server</div>
 </dd>
 <dt><a href="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><span class="strong">DelayCommand</span></a> - Class in <a href="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</a></dt>
 <dd>
@@ -182,13 +168,17 @@
 <dd>
 <div class="block">Information about a device</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String, boolean, boolean)">DeviceInfo(String, String, boolean, boolean)</a></span> - Constructor for class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String)">DeviceInfo(String)</a></span> - Constructor for class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanServerConnector.html#disconnect(org.csstudio.scan.server.ScanServer)">disconnect(ScanServer)</a></span> - Static method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanServerConnector.html" title="class in org.csstudio.scan.client">ScanServerConnector</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String)">DeviceInfo(String, String)</a></span> - Constructor for class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>
-<div class="block">Disconnect from a scan server</div>
+<div class="block">Initialize</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String, java.lang.String)">DeviceInfo(String, String, String)</a></span> - Constructor for class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
+<dd>
+<div class="block">Initialize</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/CommandSequence.html#dump()">dump()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</a></dt>
 <dd>
@@ -223,9 +213,17 @@
 <h2 class="title">F</h2>
 <dl>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#format(java.util.Date)">format(Date)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Format <code>Date</code> to the fullest detail: Date, time, seconds, ...</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#formatCompactDateTime(java.util.Date)">formatCompactDateTime(Date)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
+<dd>
+<div class="block">Format date and time in a 'compact' way.</div>
+</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#formatTime(java.util.Date)">formatTime(Date)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Format only the time (HH:MM:SS) of a <code>Date</code></div>
+</dd>
 </dl>
 <a name="_G_">
 <!--   -->
@@ -262,10 +260,6 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/WaitCommand.html#getDesiredValue()">getDesiredValue()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getDeviceInfos(long)">getDeviceInfos(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Query server for devices used by a scan</div>
-</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#getDeviceName()">getDeviceName()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#getDeviceName()">getDeviceName()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
@@ -293,17 +287,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/Scan.html#getId()">getId()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getInfo()">getInfo()</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getInfos()">getInfos()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getInstance()">getInstance()</a></span> - Static method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
 <dd>
 <div class="block">Obtain reference to the singleton instance.</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getLastScanDataSerial(long)">getLastScanDataSerial(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Get serial of last logged sample.</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#getMaxMem()">getMaxMem()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -345,25 +333,31 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanDataIterator.html#getSamples()">getSamples()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data">ScanDataIterator</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getScanCommands(long)">getScanCommands(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getScanClient()">getScanClient()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanCommands(long)">getScanCommands(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Query server for the commands in a scan</div>
+<div class="block">Obtain commands for a scan</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanData(long)">getScanData(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
+<dd>
+<div class="block">Obtain data logged by a scan</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScriptContext.html#getScanData()">getScanData()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a></dt>
 <dd>
 <div class="block">Access to the <a href="./org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data"><code>ScanData</code></a></div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getScanData(long)">getScanData(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanDevices(long)">getScanDevices(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Query server for scan data</div>
+<div class="block">Obtain devices used by a scan</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getScanInfo(long)">getScanInfo(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanInfo(long)">getScanInfo(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Query server for scan info</div>
+<div class="block">Obtain information for a scan</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#getScanInfos()">getScanInfos()</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanInfos()">getScanInfos()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Query server for scans</div>
+<div class="block">Obtain information for all scans</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#getScript()">getScript()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -371,11 +365,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getServer()">getServer()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getServerInfo()">getServerInfo()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
+<dd>
+<div class="block">Obtain overall scan server information</div>
+</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getServerInfo()">getServerInfo()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#getServerInfoText()">getServerInfoText()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#getSimulationConfig()">getSimulationConfig()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -389,7 +383,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanInfo.html#getState()">getState()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#getStatus()">getStatus()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#getStepSize()">getStepSize()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/StringScanSample.html#getString(int)">getString(int)</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#getTimeout()">getTimeout()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -418,6 +416,10 @@
 <div class="block">Get raw values of the sample</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSample.html#getValues()">getValues()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a></dt>
+<dd>
+<div class="block">Get raw values of the sample</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/StringScanSample.html#getValues()">getValues()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dt>
 <dd>
 <div class="block">Get raw values of the sample</div>
 </dd>
@@ -457,10 +459,6 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanDataIterator.html#hasNext()">hasNext()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data">ScanDataIterator</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#HOST_PROPERTY">HOST_PROPERTY</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">System property for overriding the scan server host</div>
-</dd>
 </dl>
 <a name="_I_">
 <!--   -->
@@ -470,10 +468,6 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanState.html#isActive()">isActive()</a></span> - Method in enum org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanState.html#isDone()">isDone()</a></span> - Method in enum org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#isLoggable()">isLoggable()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#isScannable()">isScannable()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="_L_">
@@ -533,6 +527,10 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#MemoryInfo()">MemoryInfo()</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
 <dd>
+<div class="block">Initialize with memory usage of this JVM</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#MemoryInfo(long, long)">MemoryInfo(long, long)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
+<dd>
 <div class="block">Initialize</div>
 </dd>
 </dl>
@@ -545,7 +543,7 @@
 <dd>
 <div class="block">Scan sample for numbers</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number[])">NumberScanSample(Date, long, Number[])</a></span> - Constructor for class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number...)">NumberScanSample(Date, long, Number...)</a></span> - Constructor for class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
@@ -581,13 +579,17 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#pause(long)">pause(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#parseTimestamp(java.lang.String)">parseTimestamp(String)</a></span> - Static method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
 <dd>
-<div class="block">Ask server to pause a scan</div>
+<div class="block">Parse a time stamp</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#PORT_PROPERTY">PORT_PROPERTY</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#patchScan(long, long, java.lang.String, java.lang.Object)">patchScan(long, long, String, Object)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">System property for overriding the scan server port</div>
+<div class="block">Submit patch to running scan</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#pauseScan(long)">pauseScan(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
+<dd>
+<div class="block">Put running scan into paused state</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanDataIterator.html#printCSV(java.io.PrintStream)">printCSV(PrintStream)</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data">ScanDataIterator</a></dt>
 <dd>
@@ -649,23 +651,19 @@
   When last reference to the model has been released,
   singleton instance is stopped and removed.</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#remove(long)">remove(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#removeCompletedScans()">removeCompletedScans()</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Ask server to remove a (finished) scan</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#removeCompletedScans()">removeCompletedScans()</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Remove completed scans (NOP if there aren't any)</div>
+<div class="block">Remove all completed scans</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanInfoModel.html#removeListener(org.csstudio.scan.client.ScanInfoModelListener)">removeListener(ScanInfoModelListener)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#resume(long)">resume(long)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#removeScan(long)">removeScan(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Ask server to resume a paused scan</div>
+<div class="block">Remove a completed scan</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#RMI_SCAN_SERVER_NAME">RMI_SCAN_SERVER_NAME</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#resumeScan(long)">resumeScan(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
-<div class="block">Name under which this interface is registered with RMI</div>
+<div class="block">Resume a paused scan</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScript.html#run(org.csstudio.scan.command.ScanScriptContext)">run(ScanScriptContext)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScript.html" title="class in org.csstudio.scan.command">ScanScript</a></dt>
 <dd>
@@ -683,6 +681,18 @@
 <div class="block">Scan: ID, Name, Date</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/Scan.html#Scan(long, java.lang.String, java.util.Date)">Scan(long, String, Date)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
+<dt><a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client"><span class="strong">ScanClient</span></a> - Class in <a href="./org/csstudio/scan/client/package-summary.html">org.csstudio.scan.client</a></dt>
+<dd>
+<div class="block">Client for remotely accessing the scan server.</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#ScanClient()">ScanClient()</a></span> - Constructor for class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#ScanClient(java.lang.String, int)">ScanClient(String, int)</a></span> - Constructor for class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
@@ -732,7 +742,7 @@
 <dd>
 <div class="block">Initialize</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState, java.lang.String, long, long, long, long, java.lang.String)">ScanInfo(Scan, ScanState, String, long, long, long, long, String)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState, java.lang.String, long, long, long, long, long, java.lang.String)">ScanInfo(Scan, ScanState, String, long, long, long, long, long, String)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
@@ -776,21 +786,15 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScriptContext.html#ScanScriptContext()">ScanScriptContext()</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><span class="strong">ScanServer</span></a> - Interface in <a href="./org/csstudio/scan/server/package-summary.html">org.csstudio.scan.server</a></dt>
-<dd>
-<div class="block">Interface to the scan server</div>
-</dd>
-<dt><a href="./org/csstudio/scan/client/ScanServerConnector.html" title="class in org.csstudio.scan.client"><span class="strong">ScanServerConnector</span></a> - Class in <a href="./org/csstudio/scan/client/package-summary.html">org.csstudio.scan.client</a></dt>
-<dd>
-<div class="block">Connect to a <a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><code>ScanServer</code></a></div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanServerConnector.html#ScanServerConnector()">ScanServerConnector()</a></span> - Constructor for class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanServerConnector.html" title="class in org.csstudio.scan.client">ScanServerConnector</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server"><span class="strong">ScanServerInfo</span></a> - Class in <a href="./org/csstudio/scan/server/package-summary.html">org.csstudio.scan.server</a></dt>
 <dd>
 <div class="block">Scan server info</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String)">ScanServerInfo(String, Date, String, String)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">ScanServerInfo(String, Date, String, String, long, long)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
@@ -817,10 +821,6 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#ScriptCommand(java.lang.String)">ScriptCommand(String)</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
 <dd>
 <div class="block">Initialize</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#SERIAL_VERSION">SERIAL_VERSION</a></span> - Static variable in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Serialization version used for all RMI interfaces</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#setAddress(long)">setAddress(long)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dd>
@@ -919,7 +919,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#setWait(java.lang.Boolean)">setWait(Boolean)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#simulateScan(java.lang.String)">simulateScan(String)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#simulateScan(java.lang.String)">simulateScan(String)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
 <div class="block">Submit a scan for simulation</div>
 </dd>
@@ -933,9 +933,19 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/NumberScanSample.html#size()">size()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#submitScan(java.lang.String, java.lang.String)">submitScan(String, String)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/StringScanSample.html#size()">size()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data"><span class="strong">StringScanSample</span></a> - Class in <a href="./org/csstudio/scan/data/package-summary.html">org.csstudio.scan.data</a></dt>
 <dd>
-<div class="block">Submit a sequence of commands as a 'scan' to be executed</div>
+<div class="block">Scan sample for strings</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/StringScanSample.html#StringScanSample(java.util.Date, long, java.lang.String...)">StringScanSample(Date, long, String...)</a></span> - Constructor for class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#submitScan(java.lang.String, java.lang.String)">submitScan(String, String)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
+<dd>
+<div class="block">Submit a scan for execution</div>
 </dd>
 </dl>
 <a name="_T_">
@@ -960,6 +970,8 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/data/NumberScanSample.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSample.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/data/StringScanSample.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -991,10 +1003,6 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/server/UnknownScanException.html#UnknownScanException(long)">UnknownScanException(long)</a></span> - Constructor for exception org.csstudio.scan.server.<a href="./org/csstudio/scan/server/UnknownScanException.html" title="class in org.csstudio.scan.server">UnknownScanException</a></dt>
 <dd>
 <div class="block">Initialize</div>
-</dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServer.html#updateScanProperty(long, long, java.lang.String, java.lang.Object)">updateScanProperty(long, long, String, Object)</a></span> - Method in interface org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</a></dt>
-<dd>
-<div class="block">Ask server to update a command parameter to a new value</div>
 </dd>
 </dl>
 <a name="_V_">
@@ -1067,7 +1075,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Write to device, using alternate readback device</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">write(String, Object, String, boolean, double, double)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">write(String, Object, String, boolean, double, TimeDuration)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a></dt>
 <dd>
 <div class="block">Write to device</div>
 </dd>

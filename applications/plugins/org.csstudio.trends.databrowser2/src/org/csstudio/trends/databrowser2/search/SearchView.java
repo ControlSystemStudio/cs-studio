@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.autocomplete.ui.AutoCompleteHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
@@ -171,7 +173,7 @@ public class SearchView extends ViewPart
 				searchForChannels();
 			}
 		});
-		new AutoCompleteWidget(pattern, "PV");
+		AutoCompleteWidget acw = new AutoCompleteWidget(pattern, AutoCompleteTypes.PV);
 
 		// final ComboHistoryHelper pattern_history =
 		// new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
@@ -189,6 +191,7 @@ public class SearchView extends ViewPart
         search.setToolTipText(Messages.SearchTT);
         search.setLayoutData(new GridData());
         search.setEnabled(false);
+		AutoCompleteHelper.handleSelectEvent(search, acw);
 
         // ( ) Add  (*) Replace   [ ] Reg.Exp.
         final Button result_append = new Button(parent, SWT.RADIO);

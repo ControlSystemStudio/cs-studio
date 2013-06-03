@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.iter.feature"
       label="CSS Eclipse Components"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>

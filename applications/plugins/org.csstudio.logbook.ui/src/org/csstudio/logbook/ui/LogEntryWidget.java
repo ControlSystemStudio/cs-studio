@@ -273,7 +273,7 @@ public class LogEntryWidget extends Composite {
 
 	btnAddTags = new Button(composite, SWT.NONE);
 	btnAddTags.setImage(ResourceManager.getPluginImage(
-		"org.csstudio.utility.channel", "icons/add_tag.png"));
+		"org.csstudio.logbook.ui", "icons/add_tag.png"));
 	btnAddTags.setEnabled(editable);
 	fd_lblTags.top = new FormAttachment(btnAddTags, 5, SWT.TOP);
 	btnAddTags.addSelectionListener(new SelectionAdapter() {
@@ -314,10 +314,10 @@ public class LogEntryWidget extends Composite {
 	combo.setLayoutData(fd_combo);
 
 	lblNewLabel = new Label(composite, SWT.NONE);
-	fd_combo.left = new FormAttachment(lblNewLabel, 6);
+	fd_combo.left = new FormAttachment(lblNewLabel, 5);
 	FormData fd_lblNewLabel = new FormData();
 	fd_lblNewLabel.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_lblNewLabel.right = new FormAttachment(100, -108);
+	fd_lblNewLabel.right = new FormAttachment(100, -196);
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Level:");
 
