@@ -142,9 +142,9 @@ function css_kek_settings {
             SHARE_LINK=""
             SHARE_LINK_WIN=""
             for i in $(seq 3); do
-	        SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN_$i')
-	        SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC_$i')
-	        SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST_$i')
+	        SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN_'$i)
+	        SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC_'$i)
+	        SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST_'$i)
                 if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
                     if [ -z "${SHARE_LINK}" ]; then
                         SHARE_LINK="${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
