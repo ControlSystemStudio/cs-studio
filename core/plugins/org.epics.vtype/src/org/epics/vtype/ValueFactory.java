@@ -493,6 +493,20 @@ public class ValueFactory {
      * @return the wrapped value
      */
     public static VType wrapValue(Object value) {
+        return wrapValue(value, alarmNone());
+    }
+    
+    /**
+     * Takes a java objects and wraps it into a vType. All numbers are wrapped
+     * as VDouble. String is wrapped as VString. double[] and ListDouble are wrapped as
+     * VDoubleArray. A List of String is wrapped to a VStringArray. Alarms
+     * are alarm, time are timeNow() and display are displayNone();
+     * 
+     * @param value the value to wrap
+     * @param alarm the alarm for the value
+     * @return the wrapped value
+     */
+    public static VType wrapValue(Object value, Alarm alarm) {
         if (value instanceof Number) {
             // Special support for numbers
             return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
