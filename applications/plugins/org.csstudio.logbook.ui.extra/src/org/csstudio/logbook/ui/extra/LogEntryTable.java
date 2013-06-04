@@ -73,6 +73,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    public void propertyChange(PropertyChangeEvent event) {
 		switch (event.getPropertyName()) {
 		case "logEntries":
+		    gridTableViewer.setSelection(null, true);
 		    gridTableViewer.setInput(logEntries
 			    .toArray(new LogEntry[logEntries.size()]));
 		    break;
@@ -141,6 +142,13 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	column.getColumn().setText("Date");
 	column.getColumn().setWordWrap(true);
 	new ColumnViewerSimpleLayout(gridTableViewer, column, 15, 100);
+	new ColumnViewerSorter(gridTableViewer, column) {
+	    @Override
+	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
+		return Long.compare(((LogEntry) e1).getCreateDate().getTime(),
+			((LogEntry) e2).getCreateDate().getTime());
+	    }
+	};
 
 	// Second column is the first line of the logEntry
 

@@ -3,7 +3,12 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import org.csstudio.logbook.LogEntry;
+import org.csstudio.logbook.LogEntryBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,6 +17,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
@@ -33,6 +39,8 @@ public class LogViewer extends EditorPart {
     private LogEntryWidget logEntryWidget;
     private ISelectionListener selectionListener;
 
+    private static LogViewer editor;
+
     /**
      * 
      */
@@ -44,12 +52,21 @@ public class LogViewer extends EditorPart {
     }
 
     public static LogViewer createInstance(final IEditorInput input) {
-	final LogViewer editor;
 	try {
 	    final IWorkbench workbench = PlatformUI.getWorkbench();
 	    final IWorkbenchWindow window = workbench
 		    .getActiveWorkbenchWindow();
 	    final IWorkbenchPage page = window.getActivePage();
+	    List<IEditorReference> editors = Arrays.asList(page
+		    .getEditorReferences());
+	    for (IEditorReference iEditorReference : editors) {
+		if (iEditorReference.getId().equals(ID)) {
+		    editor = (LogViewer) iEditorReference.getEditor(true);
+		    editor.setInput(input);
+		    page.activate(editor);
+		    return editor;
+		}
+	    }
 	    editor = (LogViewer) page.openEditor(input, ID);
 	} catch (Exception ex) {
 	    ex.printStackTrace();
@@ -100,19 +117,27 @@ public class LogViewer extends EditorPart {
 	    @Override
 	    public void selectionChanged(IWorkbenchPart part,
 		    ISelection selection) {
-	    	if(logEntryWidget==null || logEntryWidget.isDisposed()) {
-	    		return;
-	    	}
+		if (logEntryWidget == null || logEntryWidget.isDisposed()) {
+		    return;
+		}
 		if (selection instanceof IStructuredSelection) {
 		    Object first = ((IStructuredSelection) selection)
 			    .getFirstElement();
 		    if (first instanceof LogEntry) {
-		    	logEntryWidget.setLogEntry((LogEntry) first);
+			logEntryWidget.setLogEntry((LogEntry) first);
+		    } else {
+			try {
+			    logEntryWidget.setLogEntry(LogEntryBuilder
+				    .withText("").build());
+			} catch (IOException e) {
+			    //
+			}
 		    }
 		}
 	    }
 	};
-	ss.addSelectionListener(org.csstudio.logbook.ui.LogTableView.ID, selectionListener);
+	ss.addSelectionListener(org.csstudio.logbook.ui.LogTableView.ID,
+		selectionListener);
     }
 
     /*
@@ -145,20 +170,20 @@ public class LogViewer extends EditorPart {
      * .Composite)
      */
     @Override
-	public void createPartControl(Composite parent) {
-		logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
-		logEntryWidget.addDisposeListener(new DisposeListener() {
+    public void createPartControl(Composite parent) {
+	logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
+	logEntryWidget.addDisposeListener(new DisposeListener() {
 
-			@Override
-			public void widgetDisposed(DisposeEvent arg0) {
-				ISelectionService ss = getSite().getWorkbenchWindow()
-						.getSelectionService();
-				ss.removeSelectionListener(
-						org.csstudio.logbook.ui.LogTableView.ID,
-						selectionListener);
-			}
-		});
-	}
+	    @Override
+	    public void widgetDisposed(DisposeEvent arg0) {
+		ISelectionService ss = getSite().getWorkbenchWindow()
+			.getSelectionService();
+		ss.removeSelectionListener(
+			org.csstudio.logbook.ui.LogTableView.ID,
+			selectionListener);
+	    }
+	});
+    }
 
     /*
      * (non-Javadoc)
