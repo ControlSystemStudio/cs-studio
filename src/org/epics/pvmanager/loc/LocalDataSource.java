@@ -55,39 +55,7 @@ public final class LocalDataSource extends DataSource {
     }
     
     private List<Object> parseName(String channelName) {
-        // Parse the channel name
-        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
-        if (parsedTokens != null && parsedTokens.size() <= 2) {
-            return parsedTokens;
-        }
-        
-        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof Double) {
-            double[] data = new double[parsedTokens.size() - 1];
-            for (int i = 1; i < parsedTokens.size(); i++) {
-                Object value = parsedTokens.get(i);
-                if (value instanceof Double) {
-                    data[i-1] = (Double) value;
-                } else {
-                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
-                }
-            }
-            return Arrays.asList(parsedTokens.get(0), new ArrayDouble(data));
-        }
-        
-        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof String) {
-            List<String> data = new ArrayList<>();
-            for (int i = 1; i < parsedTokens.size(); i++) {
-                Object value = parsedTokens.get(i);
-                if (value instanceof String) {
-                    data.add((String) value);
-                } else {
-                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
-                }
-            }
-            return Arrays.asList(parsedTokens.get(0), data);
-        }
-        
-        throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+        return FunctionParser.parseFunctionWithScalarOrArrayArguments(".+", channelName, CHANNEL_SYNTAX_ERROR_MESSAGE);
     }
 
     @Override
