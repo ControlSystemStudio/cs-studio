@@ -65,7 +65,12 @@ abstract class SimFunction<T> extends Simulation<T> {
     @Override
     List<T> createValues(TimeInterval interval) {
         List<T> values = new ArrayList<T>();
-        Timestamp newTime = lastTime.plus(timeBetweenSamples);
+        Timestamp newTime;
+        if (lastTime != null) {
+            newTime = lastTime.plus(timeBetweenSamples);
+        } else {
+            newTime = Timestamp.now();
+        }
 
         while (interval.contains(newTime)) {
             lastTime = newTime;

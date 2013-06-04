@@ -39,9 +39,33 @@
             </tr>
             <tr>
                 <td><code>sim://gaussianWaveform</code><br/>
-                    <code>sim://gaussianWaveform(stdDev, nSamples, timeStep)</code></td>
-                <td>A waveform with nSamples shaped like a gaussian that cycles around in time, generated every
-                timeStep.<br/> The default is equivalent to <code>sim://gaussianWaveform(1, 100, 1)</code>. </td>
+                    <code>sim://gaussianWaveform(periodInSeconds, stdDev, nSamples, updateRateInSeconds)</code></td>
+                <td>A waveform with nSamples shaped like a gaussian that cycles around in time every periodInSeconds, generated every
+                updateRateInSeconds.<br/> The default is equivalent to <code>sim://gaussianWaveform(1, 100, 100, 0.1)</code>. </td>
+            </tr>
+            <tr>
+                <td><code>sim://sineWaveform</code><br/>
+                    <code>sim://sineWaveform(periodInSeconds, wavelengthInSamples, nSamples, updateRateInSeconds)</code></td>
+                <td>A waveform with nSamples shaped like a sine wave of width wavelengthInSamples that cycles around in time every periodInSeconds, generated every
+                updateRateInSeconds.<br/> The default is equivalent to <code>sim://sineWaveform(1, 100, 100, 0.1)</code>. </td>
+            </tr>
+            <tr>
+                <td><code>sim://squareWaveform</code><br/>
+                    <code>sim://squareWaveform(periodInSeconds, wavelengthInSamples, nSamples, updateRateInSeconds)</code></td>
+                <td>A waveform with nSamples shaped like a square wave of width wavelengthInSamples that cycles around in time every periodInSeconds, generated every
+                updateRateInSeconds.<br/> The default is equivalent to <code>sim://squareWaveform(1, 100, 100, 0.1)</code>. </td>
+            </tr>
+            <tr>
+                <td><code>sim://triangleWaveform</code><br/>
+                    <code>sim://triangleWaveform(periodInSeconds, wavelengthInSamples, nSamples, updateRateInSeconds)</code></td>
+                <td>A waveform with nSamples shaped like a triangle wave of width wavelengthInSamples that cycles around in time every periodInSeconds, generated every
+                updateRateInSeconds.<br/> The default is equivalent to <code>sim://triangleWaveform(1, 100, 100, 0.1)</code>. </td>
+            </tr>
+            <tr>
+                <td><code>sim://sawtoothWaveform</code><br/>
+                    <code>sim://sawtoothWaveform(periodInSeconds, wavelengthInSamples, nSamples, updateRateInSeconds)</code></td>
+                <td>A waveform with nSamples shaped like a sawtooth wave of width wavelengthInSamples that cycles around in time every periodInSeconds, generated every
+                updateRateInSeconds.<br/> The default is equivalent to <code>sim://sawtoothWaveform(1, 100, 100, 0.1)</code>. </td>
             </tr>
             <tr>
                 <td><code>sim://noise</code><br/><code>sim://noise(minValue, maxValue, timeStep)</code></td>
