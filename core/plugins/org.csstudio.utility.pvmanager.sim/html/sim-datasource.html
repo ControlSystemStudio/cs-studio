@@ -14,6 +14,18 @@
         <table border=1>
             <tr><th>Syntax</th><th>Description</th></tr>
             <tr>
+                <td><code>sim://delayedConnectionChannel(delayInSeconds, value)</code></td>
+                <td>A channel that connects after an initial delay. This is useful
+                to test timeout behavior of applications. The value can be a number,
+                a string, an array of numbers or an array of strings.</td>
+            </tr>
+            <tr>
+                <td><code>sim://intermittentChannel(delayInSeconds, value)</code></td>
+                <td>A channel that keeps connecting and disonnecting. This is useful
+                to test disconnect behavior of applications. The value can be a number,
+                a string, an array of numbers or an array of strings.</td>
+            </tr>
+            <tr>
                 <td><code>sim://const(number)</code><br/>
                     <code>sim://const("string")</code><br/>
                     <code>sim://const(number, number, ...)</code><br/>
