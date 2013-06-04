@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.kek.optional.feature"
       label="Optional Alarm UI for CSS KEK"
-      version="3.1.1.qualifier"
+      version="3.1.2.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description>
@@ -58,7 +58,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sns.dummyAuthorization"
+         id="org.csstudio.dummyauthorization"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -79,31 +79,43 @@ function unique_urls {
 }
 
 # =========================================================================
-# Append sub archive names with the given URL to SUB_ARCHIVES.
+# Append sub archive name with the given URL to SUB_ARCHIVES.
 # SUB_ARCHIVES will finally be a string in the following form:
-#  NAME1|1|URL*NAME2|2|URL*NAME3|3|URL*...
+#  NAME1|1|URL1*NAME2|1|URL2*NAME3|1|URL3*...
 # This string can be passed to org.csstudio.trends.databrowser2/archives
 # property of CSS.
 #
 # Parameters
 #  1: Archive URL
-#  2: Sub archive names separated by a white space
+#  2: Sub archive names separated by white spaces
 # =========================================================================
 function append_sub_archives {
     local URL=$1
     local NAMES=$2
     local i=1
     local SUB_ARCHIVE=
+    local TAIL=
+    local NAME=
+    local POS=
 
-    for NAME in ${NAMES}; do
-        SUB_ARCHIVE="${NAME}|$i|${URL}"
-
-        if [ -z "${SUB_ARCHIVES}" ]; then
-            SUB_ARCHIVES="${SUB_ARCHIVE}"
+    for S in ${NAMES}; do
+        TAIL=$(echo ${S} | cut -c ${#S})
+        if [ "${TAIL}" = "\\" ]; then
+            echo "OK!!!"
+            POS=$(expr ${#S} - 1)
+            NAME="${NAME}"$(echo ${S} | cut -c 1-${POS})" "
         else
-            SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+            NAME="${NAME}${S}"
+            SUB_ARCHIVE="${NAME}|$i|${URL}"
+            if [ -z "${SUB_ARCHIVES}" ]; then
+                SUB_ARCHIVES="${SUB_ARCHIVE}"
+            else
+                SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+            fi
+
+            NAME=""
+            i=$(expr $i + 1)
         fi
-        i=$(expr $i + 1)
     done
 }
 
@@ -127,9 +139,28 @@ function css_kek_settings {
             FONT_DEF=$(eval 'echo $'$a'_FONT_DEF')
 
 	    # Set -share_link parameters
-	    SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN')
-	    SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC')
-	    SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST')
+            SHARE_LINK=""
+            SHARE_LINK_WIN=""
+            for i in $(seq 3); do
+	        SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN_'$i)
+	        SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC_'$i)
+	        SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST_'$i)
+                if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK}" ]; then
+                        SHARE_LINK="${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK="${SHARE_LINK},${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+
+                if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK_WIN}" ]; then
+                        SHARE_LINK_WIN="${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK_WIN="${SHARE_LINK_WIN},${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+            done
             
         # Set archiver URLs
             prepend_urls "${URLS}"

@@ -6,11 +6,11 @@
 #
 
 # Version number of CSS
-export VERSION=3.1.1
+export VERSION=3.1.2
 
-# Build host name (lcba03, abco4 or JCSL_WS001).
-# Current official build machine is lcba03.
-BUILD_HOST=lcba03
+# Build host name (lcba03, abco4, lcba07 or JCSL_WS001).
+# Current official build machine is lcba07.
+BUILD_HOST=lcba07
 
 # Root of CSS source tree.
 #export TOP=${HOME}/work/cs-studio
@@ -39,8 +39,8 @@ BUILD_HOST=lcba03
 #export JAVA_HOME=${HOME}/work/jdk1.6.0_27
 
 case "${BUILD_HOST}" in
-    lcba03 | abco4)
-        export TOP=${HOME}/work/cs-studio-3.1
+    lcba03 | abco4 | lcba07)
+        export TOP=${HOME}/work/cs-studio
         export CYGDRIVE=
         export BUILDDIR=${HOME}/work/CSSBuild
         export ECLIPSE_BASE=${HOME}/work
@@ -50,7 +50,7 @@ case "${BUILD_HOST}" in
         PDE_VER=*
         ;;
     JCSL_WS001)
-        export TOP='/work/cs-studio-3.1'
+        export TOP='/work/cs-studio'
         export CYGDRIVE=/cygdrive/c
         export BUILDDIR='/work/CSSBuild/BuildDir'
         export ECLIPSE_BASE='/work/CSSBuild'
