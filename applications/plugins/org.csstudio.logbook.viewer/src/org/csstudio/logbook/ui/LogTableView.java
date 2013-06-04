@@ -3,6 +3,8 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Collection;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
@@ -30,7 +32,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class LogTableView extends ViewPart {
     private Text text;
-    private LogEntryTable logEntryTable;
+    private org.csstudio.logbook.ui.extra.LogEntryTable logEntryTable;
 
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
@@ -65,8 +67,8 @@ public class LogTableView extends ViewPart {
 			}
 		    } else {
 			try {
-			    final Collection<LogEntry> logEntries = logbookClient
-				    .findLogEntries(text.getText());
+			    final List<LogEntry> logEntries = new ArrayList<LogEntry>(
+				    logbookClient.findLogEntries(text.getText()));
 			    Display.getDefault().asyncExec(new Runnable() {
 
 				@Override
@@ -109,7 +111,8 @@ public class LogTableView extends ViewPart {
 	fd_label.left = new FormAttachment(0, 2);
 	label.setLayoutData(fd_label);
 
-	logEntryTable = new LogEntryTable(parent, SWT.NONE | SWT.SINGLE);
+	logEntryTable = new org.csstudio.logbook.ui.extra.LogEntryTable(parent,
+		SWT.NONE | SWT.SINGLE);
 	fd_lblLogQuery.left = new FormAttachment(logEntryTable, 0, SWT.LEFT);
 	FormData fd_logEntryTable = new FormData();
 	fd_logEntryTable.top = new FormAttachment(text, 5);
