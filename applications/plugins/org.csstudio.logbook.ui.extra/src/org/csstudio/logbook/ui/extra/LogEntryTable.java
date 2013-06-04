@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 
 /**
  * @author shroffk
@@ -81,7 +82,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    }
 	});
 
-	gridTableViewer = new GridTableViewer(this, SWT.BORDER);
+	gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL
+		| SWT.DOUBLE_BUFFERED);
 	selectionProvider = new AbstractSelectionProviderWrapper(
 		gridTableViewer, this) {
 
@@ -90,7 +92,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		return selection;
 	    }
 
-	};	
+	};
 
 	grid = gridTableViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -199,8 +201,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnLogbooks = gridViewerColumnLogbooks.getColumn();
 	tblclmnLogbooks.setWordWrap(true);
 	tblclmnLogbooks.setText("Logbooks");
-	new ColumnViewerSimpleLayout(gridTableViewer,
-		gridViewerColumnLogbooks, 10, 75);
+	new ColumnViewerSimpleLayout(gridTableViewer, gridViewerColumnLogbooks,
+		10, 75);
 
 	// column lists the tags
 	GridViewerColumn gridViewerColumnTags = new GridViewerColumn(
@@ -219,17 +221,13 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnTags = gridViewerColumnTags.getColumn();
 	tblclmnTags.setWordWrap(true);
 	tblclmnTags.setText("Tags");
-	new ColumnViewerSimpleLayout(gridTableViewer, gridViewerColumnTags,
-		10, 75);
+	new ColumnViewerSimpleLayout(gridTableViewer, gridViewerColumnTags, 10,
+		75);
 
 	// Attachments
 	GridViewerColumn gridViewerColumnAttachments = new GridViewerColumn(
 		gridTableViewer, SWT.DOUBLE_BUFFERED);
 	gridViewerColumnAttachments.setLabelProvider(new ColumnLabelProvider() {
-	    @Override
-	    public Image getImage(Object element) {
-		return new Image(getDisplay(), "icons/attachment-16.png");
-	    };
 
 	    @Override
 	    public String getText(Object element) {
@@ -283,5 +281,11 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     @Override
     public void setSelection(ISelection selection) {
 	selectionProvider.setSelection(selection);
+    }
+
+    @Override
+    public void setMenu(Menu menu) {
+	super.setMenu(menu);
+	gridTableViewer.getGrid().setMenu(menu);
     }
 }
