@@ -7,10 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties.support;
 
-import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.opibuilder.visualparts.PVNameTextCellEditor;
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -43,17 +40,7 @@ public class PVNamePropertyDescriptor extends TextPropertyDescriptor {
 	@Override
 	public CellEditor createPropertyEditor(final Composite parent) {
 
-		final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);	
-		AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(editor, "PV"); //$NON-NLS-1$		
-		editor.setContentProposalAdapter(autoCompleteWidget.getContentProposalAdapter());		
-		editor.addContentProposalListener(
-				new IContentProposalListener() {
-					//This allows refreshing property sheet when pv name is seleteced by double click.
-					@Override
-					public void proposalAccepted(IContentProposal proposal) {
-						editor.applyValue();
-					}
-				});
+		final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);			
 		editor.getControl().setToolTipText(getDescription());
 		return editor;
 	}

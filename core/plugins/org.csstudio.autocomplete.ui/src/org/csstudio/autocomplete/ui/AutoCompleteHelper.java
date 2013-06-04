@@ -7,8 +7,11 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Auto complete Widget helper to manage with special field editor
@@ -18,6 +21,16 @@ public class AutoCompleteHelper {
 	public static TextCellEditor createAutoCompleteTextCellEditor(
 			Composite parent, String type) {
 		return new AutoCompleteTextCellEditor(parent, type);
+	}
+
+	public static TextCellEditor createAutoCompleteTextCellEditor(
+			Composite parent, String type, List<Control> historyHandlers) {
+		return new AutoCompleteTextCellEditor(parent, type, historyHandlers);
+	}
+
+	public static void handleSelectEvent(final Control control,
+			final AutoCompleteWidget autocompleteWidget) {
+		autocompleteWidget.getHistory().installListener(control);
 	}
 
 }

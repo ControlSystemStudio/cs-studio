@@ -7,10 +7,13 @@
 ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
+import java.util.List;
+
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 public class AutoCompleteTextCellEditor extends TextCellEditor {
 
@@ -31,6 +34,16 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 		enableContentProposal(provider,
 				AutoCompleteWidget.getActivationKeystroke(),
 				AutoCompleteWidget.getAutoactivationChars());
+	}
+
+	public AutoCompleteTextCellEditor(Composite parent, String type,
+			List<Control> historyHandlers) {
+		this(parent, type);
+		if (historyHandlers != null) {
+			for (Control handler : historyHandlers) {
+				getHistory().installListener(handler);
+			}
+		}
 	}
 
 	private void enableContentProposal(AutoCompleteProposalProvider provider,
@@ -80,5 +93,9 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 		// to
 		// activation of the completion proposal popup. See also bug 58777.
 		return false;
+	}
+	
+	public AutoCompleteHistory getHistory() {
+		return contentProposalAdapter.getHistory();
 	}
 }

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import java.util.Collection;
+
 import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.swt.widgets.Composite;
 
@@ -24,7 +26,7 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
      *  @param parent Parent widget
      *  @param devices Available devices
      */
-    public DeviceInfoCellEditor(final Composite parent, final DeviceInfo[] devices)
+    public DeviceInfoCellEditor(final Composite parent, final Collection<DeviceInfo> devices)
     {
         super(parent, getLabels(devices));
     }
@@ -38,12 +40,13 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
     /** @param devices Available devices
      *  @return Labels to use in editor
      */
-    private static String[] getLabels(final DeviceInfo[] devices)
+    private static String[] getLabels(final Collection<DeviceInfo> devices)
     {
-        final String[] labels = new String[1+devices.length];
+        final String[] labels = new String[1+devices.size()];
         labels[0] = ""; // Allow selecting "no" device
-        for (int i=0; i<devices.length; ++i)
-            labels[i+1] = devices[i].getAlias();
+        int i=1;
+        for (DeviceInfo device : devices)
+            labels[i++] = device.getAlias();
         return labels;
     }
 

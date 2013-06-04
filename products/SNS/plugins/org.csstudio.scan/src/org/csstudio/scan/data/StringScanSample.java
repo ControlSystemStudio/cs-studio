@@ -18,17 +18,12 @@ package org.csstudio.scan.data;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.csstudio.scan.server.ScanServer;
-
 /** Scan sample for strings
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class StringScanSample extends ScanSample
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private String[] values;
 
     /** Initialize

@@ -25,6 +25,9 @@ public class ContentProposalList {
 	// index => provider
 	private SortedMap<Integer, String> providerMap;
 	private int lenght = 0;
+	
+	private int expected = 0;
+	private int responded = 0;
 
 	public ContentProposalList() {
 		proposalMap = new HashMap<String, IContentProposal[]>();
@@ -37,6 +40,8 @@ public class ContentProposalList {
 		this.countMap = new HashMap<String, Integer>(list.countMap);
 		this.providerMap = new TreeMap<Integer, String>(list.providerMap);
 		this.lenght = list.lenght;
+		this.expected = list.expected;
+		this.responded = list.responded;
 	}
 
 	public void addProposals(String provider, IContentProposal[] proposals,
@@ -72,6 +77,8 @@ public class ContentProposalList {
 		countMap.clear();
 		providerMap.clear();
 		lenght = 0;
+		expected = 0;
+		responded = 0;
 	}
 	
 	public ContentProposalList clone() {
@@ -83,6 +90,18 @@ public class ContentProposalList {
 		return "ContentProposalList [proposalMap=" + proposalMap
 				+ ", countMap=" + countMap + ", providerMap=" + providerMap
 				+ ", lenght=" + lenght + "]";
+	}
+
+	public void setExpected(int expected) {
+		this.expected = expected;
+	}
+
+	public void responseReceived() {
+		responded++;
+	}
+
+	public boolean allResponded() {
+		return expected == responded;
 	}
 	
 }

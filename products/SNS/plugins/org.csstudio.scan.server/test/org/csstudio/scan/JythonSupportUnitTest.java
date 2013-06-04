@@ -29,7 +29,7 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class JythonSupportUnitTest
 {
-    @Test(timeout=10000)
+    @Test//(timeout=10000)
     public void testJythonSupport() throws Exception
     {
         TestSettings.init();

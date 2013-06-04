@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server.app;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.csstudio.scan.data.ScanData;
@@ -95,7 +94,7 @@ public class ConsoleCommands implements CommandProvider
                 for (int i=infos.size()-1; i>=0; --i)
                     intp.println(infos.get(i).toString());
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -110,7 +109,7 @@ public class ConsoleCommands implements CommandProvider
         {
         	intp.println(server.getInfo());
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -217,7 +216,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.pause(-1);
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -231,7 +230,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.resume(-1);
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -267,7 +266,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.removeCompletedScans();
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }

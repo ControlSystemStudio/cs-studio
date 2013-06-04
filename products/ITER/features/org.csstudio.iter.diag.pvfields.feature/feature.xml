@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.diag.pvfields.feature"
       label="ITER PV Fields Viewer"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -58,13 +58,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.diag.pvfields.iter"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.utility.sddreader"
          download-size="0"
          install-size="0"
          version="0.0.0"

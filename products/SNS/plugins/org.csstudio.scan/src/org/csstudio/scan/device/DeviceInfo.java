@@ -15,32 +15,43 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import java.io.Serializable;
-
 /** Information about a device
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DeviceInfo implements Serializable
+public class DeviceInfo
 {
-	/** Serialization ID */
-	final private static long serialVersionUID = 1L;
-
 	final private String name;
 	final private String alias;
-	final private boolean scan;
-	final private boolean log;
+    private String status;
 
-	/** Initialize
+    /** Initialize
+     *  @param name Device name as understood by the control system
+     */
+    public DeviceInfo(final String name)
+    {
+        this(name, name);
+    }
+    
+    /** Initialize
+     *  @param name Device name as understood by the control system
+     *  @param alias Alias for the device that is used in GUI and scans
+     */
+    public DeviceInfo(final String name, final String alias)
+    {
+        this(name, alias, "");
+    }
+    
+    /** Initialize
 	 *  @param name Device name as understood by the control system
 	 *  @param alias Alias for the device that is used in GUI and scans
+     *  @param status Status of the device, for display purpose
 	 */
-	public DeviceInfo(final String name, final String alias, final boolean scan, final boolean log)
+	public DeviceInfo(final String name, final String alias, final String status)
     {
-	    this.name = name;
-	    this.alias = alias;
-	    this.scan = scan;
-	    this.log = log;
+        this.name = name;
+        this.alias = alias;
+        this.status = status;
     }
 
 	/** @return Name of the device */
@@ -55,18 +66,12 @@ public class DeviceInfo implements Serializable
         return alias;
     }
 
-    /** @return <code>true</code> if device can be scanned */
-	public boolean isScannable()
+    /** @return Status of the device, for display purpose */
+    public String getStatus()
     {
-        return scan;
+        return status;
     }
-
-    /** @return <code>true</code> if device can be logged/monitored */
-    public boolean isLoggable()
-    {
-        return log;
-    }
-
+    
     /** Hash on name
      *  {@inheritDoc}
      */
@@ -96,10 +101,9 @@ public class DeviceInfo implements Serializable
         buf.append(alias);
         if (! alias.equals(name))
         	buf.append(" [").append(name).append("]");
-        if (log)
-            buf.append(" (loggable)");
-        if (scan)
-            buf.append(" (scannable)");
+        final String status = getStatus();
+        if (! status.isEmpty())
+            buf.append(" - ").append(status);
         return buf.toString();
 	}
 }

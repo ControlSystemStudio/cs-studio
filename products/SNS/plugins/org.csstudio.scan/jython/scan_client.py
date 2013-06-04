@@ -112,15 +112,9 @@ else:
 # -------------------------------------------------------
 # Scan Server connection setup
 
-import org.csstudio.scan.server.ScanServer as ScanServer
+import org.csstudio.scan.client.ScanClient as JavaScanClient
 import java.lang.System as System
     
-# Set scan server host and port if they're not the default.
-# Can also pass this as command-line definitions to jython:
-#  jython  -DScanServerHost=ky9linux.ornl.gov ....
-#System.setProperty(ScanServer.HOST_PROPERTY, "ky9linux.ornl.gov")
-#System.setProperty(ScanServer.PORT_PROPERTY, str(4810))
-
 
 # -------------------------------------------------------
 # Leave rest as is
@@ -133,7 +127,6 @@ import java.lang.System as System
 #   import org.csstudio.scan.command
 #
 # The most dependable way is to explicitly import one-by-one
-import org.csstudio.scan.client.ScanServerConnector as ScanServerConnector
 import org.csstudio.scan.command.CommandSequence as CommandSequence
 import org.csstudio.scan.command.LoopCommand as LoopCommand
 import org.csstudio.scan.command.Comparison as Comparison
@@ -156,7 +149,7 @@ class ScanClient(object):
     """
     def __init__(self):
         # Connection to the scan server
-        self.server = ScanServerConnector.connect()
+        self.client = JavaScanClient()
         # Scan ID
         self.id = -1
         
@@ -170,9 +163,9 @@ class ScanClient(object):
         server connection.
         """
         try:
-            self.server.getInfo()
+            self.client.getServerInfo()
         except:
-            self.server = ScanServerConnector.connect()
+            self.client = JavaScanClient()
             
             
     def simulate(self, commands):
@@ -190,7 +183,7 @@ class ScanClient(object):
             xml = commands.getXML()
         else:
             raise Exception('Expecting CommandSequence or XML-text')
-        return self.server.simulateScan(xml)
+        return self.client.simulateScan(xml)
 
 
     def submit(self, name, commands):
@@ -209,7 +202,7 @@ class ScanClient(object):
             xml = commands.getXML()
         else:
             raise Exception('Expecting CommandSequence or XML-text')
-        self.id = self.server.submitScan(name, xml)
+        self.id = self.client.submitScan(name, xml)
         return self.id
 
     def getScanInfo(self, id=-1):
@@ -221,7 +214,7 @@ class ScanClient(object):
         self.checkServer()
         if id == -1:
             id = self.id
-        return self.server.getScanInfo(id)
+        return self.client.getScanInfo(id)
     
     def printData(self, id=-1, *devices):
         """
@@ -233,7 +226,7 @@ class ScanClient(object):
         self.checkServer()
         if id == -1:
             id = self.id
-        data = self.server.getScanData(id)
+        data = self.client.getScanData(id)
         if devices:
             sheet = ScanDataIterator(data, devices)
         else:
@@ -389,7 +382,7 @@ scan = ScanNd()
 if __name__ == '__main__':
     print 'Welcome to the scan system'
     # print 'Running in %s' % os.getcwd()
-    print 'Connected to %s' % scan.server.getInfo()
+    print 'Connected to %s' % scan.client.getServerInfo()
     
     # 'Normal' loops
     #scan('Normal 2D', ('xpos', 1, 10), ('ypos', 1, 10, 0.5), 'readback')

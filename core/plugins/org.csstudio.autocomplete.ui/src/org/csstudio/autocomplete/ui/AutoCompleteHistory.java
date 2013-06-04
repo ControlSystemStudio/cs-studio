@@ -10,9 +10,14 @@ package org.csstudio.autocomplete.ui;
 import java.util.LinkedList;
 
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 public class AutoCompleteHistory {
 
@@ -28,24 +33,43 @@ public class AutoCompleteHistory {
 		this.type = type;
 		this.controlContentAdapter = adapter;
 
-		control.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				String new_entry = AutoCompleteHistory.this.controlContentAdapter
-						.getControlContents(AutoCompleteHistory.this.control);
-				addEntry(new_entry);
-			}
+		installListener(control);
+	}
+	
+	public void installListener(final Control control) {
+		if (control == null || control.isDisposed())
+			return;
+		if (control instanceof Combo) {
+			((Combo) control).addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					handleSelection();
+				}
+			});
+		} else if (control instanceof Button) {
+			((Button) control).addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					handleSelection();
+				}
+			});
+		} else {
+			control.addListener(SWT.DefaultSelection, new Listener() {
+				public void handleEvent(Event e) {
+					handleSelection();
+				}
+			});
+		}
+	}
 
-			@Override
-			public void focusGained(FocusEvent arg0) {
-			}
-		});
-		// TODO : handle <enter> key !
+	private void handleSelection() {
+		String new_entry = controlContentAdapter.getControlContents(control);
+		addEntry(new_entry);
 	}
 
 	public synchronized void addEntry(final String newEntry) {
 		// Avoid empty entries
-		if (newEntry.trim().isEmpty())
+		if (newEntry == null || newEntry.trim().isEmpty())
 			return;
 		LinkedList<String> fifo = Activator.getDefault().getHistory(type);
 		if (fifo == null)

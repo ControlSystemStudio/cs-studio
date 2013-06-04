@@ -72,7 +72,7 @@ public class PVDevice extends Device
     {
 	    super(info);
     }
-
+	
 	/** {@inheritDoc} */
 	@Override
     public void start() throws Exception
@@ -91,7 +91,7 @@ public class PVDevice extends Device
 					{
 						value = DISCONNECTED;
                         Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                            "PV " + getInfo().getName() + " error",
+                            "PV " + getName() + " error",
                             error);
 					}
 					else
@@ -103,12 +103,12 @@ public class PVDevice extends Device
 						{
 						    value = DISCONNECTED;
 						    Logger.getLogger(getClass().getName()).log(Level.WARNING,
-						            "PV {0} disconnected", getInfo().getName());
+						            "PV {0} disconnected", getName());
 						}
 						else
 						{
     						Logger.getLogger(getClass().getName()).log(Level.FINER,
-    					        "PV {0} received {1}", new Object[] { getInfo().getName(), value });
+    					        "PV {0} received {1}", new Object[] { getName(), value });
     						
     						if (value == null)
     							value = DISCONNECTED;
@@ -133,7 +133,7 @@ public class PVDevice extends Device
 		synchronized (this)
 		{
 			pv = PVManager
-		        .readAndWrite(latestValueOf(vType(getInfo().getName())))
+		        .readAndWrite(latestValueOf(vType(getName())))
 		        .readListener(listener)
 		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
 		}
@@ -146,7 +146,17 @@ public class PVDevice extends Device
         return value != DISCONNECTED  &&  pv != null  && pv.isConnected();
     }
 
-	/** {@inheritDoc} */
+	/** @return Human-readable device status */
+    @Override
+    public synchronized String getStatus()
+    {
+        if (pv == null)
+            return "no PV";
+        else
+            return VTypeHelper.toString(value);
+    }
+
+    /** {@inheritDoc} */
 	@Override
     public void stop()
 	{
@@ -169,7 +179,7 @@ public class PVDevice extends Device
     {
 		final VType current = this.value;
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
-				new Object[] { getInfo().getName(), current });
+				new Object[] { getName(), current });
 		return current;
     }
 
@@ -187,28 +197,6 @@ public class PVDevice extends Device
 			pv.write(value);
 		}
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
-				new Object[] { getInfo().getName(), value });
-    }
-
-	/** @return Human-readable representation of this device */
-    @Override
-    public synchronized String toString()
-    {
-        final StringBuilder buf = new StringBuilder();
-        buf.append(super.toString());
-    	if (pv == null)
-            buf.append(", no PV");
-    	else
-    	{
-    	    buf.append(", PV '").append(pv.getName()).append("'");
-
-    	    final VType current;
-    	    synchronized (this)
-            {
-                current = this.value;
-            }
-    	    buf.append(" = ").append(VTypeHelper.toString(current));
-    	}
-    	return buf.toString();
+				new Object[] { getName(), value });
     }
 }

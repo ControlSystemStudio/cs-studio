@@ -16,12 +16,12 @@ import java.util.Map;
  */
 public class LogEntrySearchUtil {
 
-    public static final String SEARCH_KEYWORD_TEXT = "search";
-    public static final String SEARCH_KEYWORD_LOGBOOKS = "logbooks";
-    public static final String SEARCH_KEYWORD_TAGS = "tags";
-    public static final String SEARCH_KEYWORD_PROPERTIES = "properties";
-    public static final String SEARCH_KEYWORD_START = "from";
-    public static final String SEARCH_KEYWORD_END = "to";
+    public static final String SEARCH_KEYWORD_TEXT = Messages.search;
+    public static final String SEARCH_KEYWORD_LOGBOOKS = Messages.logbook;
+    public static final String SEARCH_KEYWORD_TAGS = Messages.tag;
+    public static final String SEARCH_KEYWORD_PROPERTIES = Messages.properties;
+    public static final String SEARCH_KEYWORD_START = Messages.from;
+    public static final String SEARCH_KEYWORD_END = Messages.to;
 
     private static final List<String> keywords = new ArrayList<String>(
 	    Arrays.asList(SEARCH_KEYWORD_TEXT, SEARCH_KEYWORD_LOGBOOKS,
@@ -34,8 +34,8 @@ public class LogEntrySearchUtil {
 	if (keywords.containsAll(searchMap.keySet())) {
 	    return searchMap;
 	} else {
-	    throw new IllegalArgumentException("Search string:" + search
-		    + " has an invalid keyword");
+	    throw new IllegalArgumentException("Search string:" + search //$NON-NLS-1$
+		    + " has an invalid keyword"); //$NON-NLS-1$
 	}
     }
 }

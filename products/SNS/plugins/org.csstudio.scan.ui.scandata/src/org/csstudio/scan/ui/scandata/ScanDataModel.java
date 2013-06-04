@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model that monitors the data of a scan
@@ -81,14 +81,14 @@ public class ScanDataModel implements ScanInfoModelListener
     {
 		try
 		{
-			// Any change in the data?
-			final ScanServer server = scan_info_model.getServer();
-			final long serial = server.getLastScanDataSerial(scan_id);
-			if (serial == last_scan_data_serial)
-				return;
+			// TODO Any change in the data?
+			final ScanClient client = scan_info_model.getScanClient();
+//			final long serial = server.getLastScanDataSerial(scan_id);
+//			if (serial == last_scan_data_serial)
+//				return;
 
 			// Get data
-			final ScanData data = server.getScanData(scan_id);
+			final ScanData data = client.getScanData(scan_id);
 			synchronized (this)
 			{
 				scan_data = data;

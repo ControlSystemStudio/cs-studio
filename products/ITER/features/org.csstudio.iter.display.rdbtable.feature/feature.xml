@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.display.rdbtable.feature"
       label="CSS RDB Table Component"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>

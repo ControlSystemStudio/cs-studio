@@ -3,24 +3,16 @@
  */
 package org.csstudio.logbook.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.ui.util.AdapterUtil;
-import org.csstudio.ui.util.EmptyEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
@@ -39,6 +31,7 @@ public class LogViewer extends EditorPart {
 
     public static final String ID = "org.csstudio.logbook.ui.LogViewer";
     private LogEntryWidget logEntryWidget;
+    private ISelectionListener selectionListener;
 
     /**
      * 
@@ -102,21 +95,24 @@ public class LogViewer extends EditorPart {
 	setInput(input);
 	ISelectionService ss = getSite().getWorkbenchWindow()
 		.getSelectionService();
-	ss.addSelectionListener(org.csstudio.logbook.ui.LogTableView.ID,
-		new ISelectionListener() {
+	selectionListener = new ISelectionListener() {
 
-		    @Override
-		    public void selectionChanged(IWorkbenchPart part,
-			    ISelection selection) {
-			if (selection instanceof IStructuredSelection) {
-			    Object first = ((IStructuredSelection) selection)
-				    .getFirstElement();
-			    if (first instanceof LogEntry) {
-				logEntryWidget.setLogEntry((LogEntry) first);
-			    }
-			}
+	    @Override
+	    public void selectionChanged(IWorkbenchPart part,
+		    ISelection selection) {
+	    	if(logEntryWidget==null || logEntryWidget.isDisposed()) {
+	    		return;
+	    	}
+		if (selection instanceof IStructuredSelection) {
+		    Object first = ((IStructuredSelection) selection)
+			    .getFirstElement();
+		    if (first instanceof LogEntry) {
+		    	logEntryWidget.setLogEntry((LogEntry) first);
 		    }
-		});
+		}
+	    }
+	};
+	ss.addSelectionListener(org.csstudio.logbook.ui.LogTableView.ID, selectionListener);
     }
 
     /*
@@ -149,9 +145,20 @@ public class LogViewer extends EditorPart {
      * .Composite)
      */
     @Override
-    public void createPartControl(Composite parent) {
-	logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
-    }
+	public void createPartControl(Composite parent) {
+		logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
+		logEntryWidget.addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent arg0) {
+				ISelectionService ss = getSite().getWorkbenchWindow()
+						.getSelectionService();
+				ss.removeSelectionListener(
+						org.csstudio.logbook.ui.LogTableView.ID,
+						selectionListener);
+			}
+		});
+	}
 
     /*
      * (non-Javadoc)
