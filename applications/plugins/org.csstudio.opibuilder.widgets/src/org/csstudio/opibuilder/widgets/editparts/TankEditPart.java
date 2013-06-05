@@ -100,18 +100,17 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
 				TankFigure figure = (TankFigure) refreshableFigure;
 				boolean sensitive = (Boolean)newValue;
-				if (sensitive) {
-					ISeverity severity = ((IValue)newValue).getSeverity();
+				if (sensitive && currentSeverity != null) {
 					Device device = figure.getFillColor().getDevice();
-					if (severity.isOK()) {
+					if (currentSeverity.isOK()) {
 						figure.setFillColor(getWidgetModel().getFillColor());
-					} else if (severity.isMajor()) {
+					} else if (currentSeverity.isMajor()) {
 						Color color = new Color(device, AlarmRepresentationScheme.getMajorColor());
 						figure.setFillColor(color);
-					} else if (severity.isMinor()) {
+					} else if (currentSeverity.isMinor()) {
 						Color color = new Color(device, AlarmRepresentationScheme.getMinorColor());
 						figure.setFillColor(color);
-					} else if (severity.isInvalid()) {
+					} else if (currentSeverity.isInvalid()) {
 						Color color = new Color(device, AlarmRepresentationScheme.getInValidColor());
 						figure.setFillColor(color);
 					}
@@ -131,10 +130,12 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 
 				TankFigure figure = (TankFigure) refreshableFigure;
-				
-				if (!getWidgetModel().isFillColorAlarmSensitive())
-					return false;
 				ISeverity newSeverity = ((IValue)newValue).getSeverity();
+				
+				if (!getWidgetModel().isFillColorAlarmSensitive()) {
+					currentSeverity = newSeverity;
+					return false;
+				}
 				
 				if (currentSeverity != null) {
 					if (currentSeverity.isOK() && newSeverity.isOK())
