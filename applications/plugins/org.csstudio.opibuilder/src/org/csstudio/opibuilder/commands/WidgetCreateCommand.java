@@ -89,11 +89,19 @@ public class WidgetCreateCommand extends Command {
 	public boolean canExecute() {
 		return newWidget != null && container != null;
 	}
+	
+	private void generateNewWUID(AbstractWidgetModel widgetModel){
+		widgetModel.generateNewWUID();
+		if(widgetModel instanceof AbstractContainerModel){
+			for(AbstractWidgetModel child: ((AbstractContainerModel)widgetModel).getChildren())
+				generateNewWUID(child);
+		}
+	}
 
 	@Override
 	public void execute() {
 		oldBounds = newWidget.getBounds();
-		newWidget.generateNewWUID();
+		generateNewWUID(newWidget);
 		//If the new created widget has connections on it, remove their points.
 		for(ConnectionModel conn : newWidget.getSourceConnections()){
 			conn.setPoints(new PointList());
