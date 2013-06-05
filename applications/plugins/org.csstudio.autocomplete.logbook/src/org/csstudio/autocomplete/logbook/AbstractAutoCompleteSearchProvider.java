@@ -80,7 +80,8 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 	String lastPart = searchString
 		.substring(searchString.lastIndexOf(' ') + 1);
 	for (String key : keyValueMap.keySet()) {
-	    if (key.startsWith(lastPart.substring(0, lastPart.length() - 1))) {
+	    if (lastPart.length() > 0
+	    	    && key.startsWith(lastPart.substring(0, lastPart.length() - 1))) {
 		result.add(fixedFirstPart + ' ' + key + ":");
 		result.setCount(result.getCount() + 1);
 	    }
