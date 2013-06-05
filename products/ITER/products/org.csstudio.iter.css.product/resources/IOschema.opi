@@ -2697,6 +2697,54 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <wuid>64aa6cfe:13f1341eb17:-76c2</wuid>
+      <scripts />
+      <height>27</height>
+      <name>Combo</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <pv_name>loc://choice</pv_name>
+      <background_color>
+        <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+      </background_color>
+      <foreground_color>
+        <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      </foreground_color>
+      <widget_type>Combo</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name fontName="arial" height="10" style="1">IO Output 1</opifont.name>
+      </font>
+      <width>100</width>
+      <border_style>6</border_style>
+      <rules>
+        <rule name="BorderRule" prop_id="border_style" out_exp="false">
+          <exp bool_exp="pv0==1">
+            <value>9</value>
+          </exp>
+          <pv trig="true">$(pv_name).SIMM</pv>
+        </rule>
+      </rules>
+      <pv_value />
+      <border_width>2</border_width>
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <items_from_pv>true</items_from_pv>
+      <actions hook="false" hook_all="false" />
+      <y>305</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>460</x>
+    </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
@@ -2910,10 +2958,8 @@ $(pv_value)</tooltip>
       </macros>
       <minimum_tab_height>10</minimum_tab_height>
       <active_tab>0</active_tab>
-      <tab_1_title>Tab 1</tab_1_title>
       <border_style>6</border_style>
       <wuid>-6311979:13ef4be482a:-7c2c</wuid>
-      <tab_1_icon_path></tab_1_icon_path>
       <tab_0_background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </tab_0_background_color>
@@ -2932,15 +2978,8 @@ $(pv_value)</tooltip>
       <x>305</x>
       <visible>true</visible>
       <scripts />
-      <tab_1_enabled>true</tab_1_enabled>
       <height>246</height>
       <horizontal_tabs>true</horizontal_tabs>
-      <tab_1_font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
-      </tab_1_font>
-      <tab_1_foreground_color>
-        <color name="IO Foreground" red="0" green="0" blue="0" />
-      </tab_1_foreground_color>
       <tab_0_title>Tab 0</tab_0_title>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
@@ -2948,9 +2987,6 @@ $(pv_value)</tooltip>
       <widget_type>Tabbed Container</widget_type>
       <enabled>true</enabled>
       <width>300</width>
-      <tab_1_background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
-      </tab_1_background_color>
       <border_width>2</border_width>
       <name>Tabbed ContainerTemplate</name>
       <scale_options>
