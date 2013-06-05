@@ -9,8 +9,10 @@ package org.csstudio.display.rdbtable.model;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -284,6 +286,7 @@ public class RDBTableModel
     /** Write table changes/additions out to RDB */
     public void write() throws Exception
     {
+        rdb.getConnection().setAutoCommit(false);
         final PreparedStatement insert = rdb.getConnection().prepareStatement(sql_insert);
         final PreparedStatement update = rdb.getConnection().prepareStatement(sql_update);
         final PreparedStatement delete = rdb.getConnection().prepareStatement(sql_delete);
@@ -326,14 +329,18 @@ public class RDBTableModel
                     }
                 }
             }
+            rdb.getConnection().commit();
+        } catch (Exception ex) {
+            rdb.getConnection().rollback();
+            throw ex;
         }
         finally
         {
             insert.close();
             update.close();
             delete.close();
+            rdb.getConnection().setAutoCommit(true);
         }
-        rdb.getConnection().commit();
         read();
     }
 

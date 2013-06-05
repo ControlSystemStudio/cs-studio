@@ -54,8 +54,12 @@ public class RDBTableRow
      *  @param new_value New value for that column
      */
     public void setColumn(final int column, final String new_value)
-    {
-        if (! new_value.equals(columns[column]))
+ {
+		// Update the model when value changed.
+    	// If previous value was null and new value is empty string,
+    	// keep  the null value
+		if (!new_value.equals(columns[column])
+				&& (columns[column] != null || !"".equals(new_value)))
         {
             columns[column] = new_value;
             was_modified = true;
