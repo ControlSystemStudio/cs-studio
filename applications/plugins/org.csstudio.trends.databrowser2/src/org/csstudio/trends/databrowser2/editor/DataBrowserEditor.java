@@ -26,6 +26,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
@@ -379,7 +380,8 @@ public class DataBrowserEditor extends EditorPart
                 Messages.OpenPropertiesView, activator
                         .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
         mm.add(open_properties);
-    	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+        if(is_rcp || !Preferences.hideSearchView())
+        	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
 				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
