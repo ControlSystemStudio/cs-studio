@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.ui.util.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;

@@ -8,13 +8,13 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.ui.util.BeanComposite;
-import org.csstudio.ui.util.ConfigurableWidget;
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;

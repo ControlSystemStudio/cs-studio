@@ -6,9 +6,9 @@ package org.csstudio.graphene;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
