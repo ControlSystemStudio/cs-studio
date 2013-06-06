@@ -110,50 +110,6 @@
             </visibleWhen>
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=org.csstudio.channel.views.configure">
-         <menu
-               label="Y PV">
-            <visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <adapt
-                           type="org.csstudio.ui.util.YAxisProcessVariable">
-                     </adapt>
-                  </iterate>
-                  <and>
-                     <count
-                           value="*">
-                     </count>
-                  </and>
-               </with>
-            </visibleWhen>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=org.csstudio.channel.views.configure">
-         <menu
-               label="X PV">
-            <visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <adapt
-                           type="org.csstudio.ui.util.XAxisProcessVariable">
-                     </adapt>
-                  </iterate>
-                  <and>
-                     <count
-                           value="*">
-                     </count>
-                  </and>
-               </with>
-            </visibleWhen>
-         </menu>
-      </menuContribution>
     </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -180,20 +136,6 @@
             class="org.csstudio.ui.util.CommonAdapterFactory">
          <adapter
                type="org.csstudio.ui.util.ConfigurableWidget">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.ui.util.YAxisProcessVariableAdaptable"
-            class="org.csstudio.ui.util.CommonAdapterFactory">
-         <adapter
-               type="org.csstudio.ui.util.YAxisProcessVariable">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.ui.util.XAxisProcessVariableAdaptable"
-            class="org.csstudio.ui.util.CommonAdapterFactory">
-         <adapter
-               type="org.csstudio.ui.util.XAxisProcessVariable">
          </adapter>
       </factory>
    </extension>

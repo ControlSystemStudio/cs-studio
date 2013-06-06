@@ -33,18 +33,6 @@ public class CommonAdapterFactory implements IAdapterFactory {
 		    return pvs.toArray(new ProcessVariable[pvs.size()]);
 	    }
 	}
-	if (adaptableObject instanceof YAxisProcessVariableAdaptable) {
-	    YAxisProcessVariableAdaptable yAxisProcessVariableAdaptable = (YAxisProcessVariableAdaptable) adaptableObject;
-	    if (adapterType == YAxisProcessVariable.class) {
-		return yAxisProcessVariableAdaptable.getYAxisProcessVariables();
-	    }
-	}
-	if (adaptableObject instanceof XAxisProcessVariableAdaptable) {
-	    XAxisProcessVariableAdaptable xAxisProcessVariableAdaptable = (XAxisProcessVariableAdaptable) adaptableObject;
-	    if (adapterType == XAxisProcessVariable.class) {
-		return xAxisProcessVariableAdaptable.getXAxisProcessVariables();
-	    }
-	}
 	if (adaptableObject instanceof ConfigurableWidgetAdaptable) {
 	    if (adapterType == ConfigurableWidget.class) {
 		ConfigurableWidgetAdaptable configurableWidgetAdaptable = (ConfigurableWidgetAdaptable) adaptableObject;
@@ -64,7 +52,6 @@ public class CommonAdapterFactory implements IAdapterFactory {
     @Override
     public Class[] getAdapterList() {
 	return new Class[] { ProcessVariable.class, ProcessVariable[].class,
-		YAxisProcessVariable.class, XAxisProcessVariable.class,
 		ConfigurableWidget.class };
     }
 
