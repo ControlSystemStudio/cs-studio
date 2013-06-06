@@ -72,7 +72,7 @@ public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWid
 	}
 	
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return selectionToType(ProcessVariable.class);
 	}
 }
