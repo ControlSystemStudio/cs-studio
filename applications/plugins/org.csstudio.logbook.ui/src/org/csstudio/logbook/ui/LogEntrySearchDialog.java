@@ -5,6 +5,7 @@ package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +35,17 @@ import com.google.common.base.Joiner;
  */
 public class LogEntrySearchDialog extends Dialog {
 
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
+	    this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+	changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+	changeSupport.removePropertyChangeListener(listener);
+    }
+
     // GUI components
     private Text searchString;
     private MultipleSelectionCombo<String> logbookCombo;
@@ -62,6 +74,17 @@ public class LogEntrySearchDialog extends Dialog {
 	Composite container = (Composite) super.createDialogArea(parent);
 	container.setLayout(new GridLayout(2, false));
 
+	this.addPropertyChangeListener(new PropertyChangeListener() {
+
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if (event.getPropertyName().equals("searchParameters")) {
+		    initialize();
+		}
+
+	    }
+	});
+
 	Label lblNewLabel = new Label(container, SWT.NONE);
 	lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 		false, 1, 1));
@@ -81,10 +104,8 @@ public class LogEntrySearchDialog extends Dialog {
 
 		    @Override
 		    public void run() {
-			System.out.println("search");
-			searchParameters = LogEntrySearchUtil
-				.parseSearchString(searchString.getText());
-			initialize();
+			setSearchParameters(LogEntrySearchUtil
+				.parseSearchString(searchString.getText()));
 		    }
 		});
 	    }
@@ -237,13 +258,31 @@ public class LogEntrySearchDialog extends Dialog {
 	    if (LogEntrySearchUtil.SEARCH_KEYWORD_END.equals(keyword)) {
 		textTo.setText(searchParameters.get(keyword));
 	    }
-
 	}
     }
 
     protected void updateSearch() {
 	searchString.setText(LogEntrySearchUtil
 		.parseSearchMap(searchParameters));
+    }
+
+    /**
+     * @return the searchParameters
+     */
+    private synchronized Map<String, String> getSearchParameters() {
+	return searchParameters;
+    }
+
+    /**
+     * @param searchParameters
+     *            the searchParameters to set
+     */
+    private synchronized void setSearchParameters(
+	    Map<String, String> searchParameters) {
+	Map<String, String> OldValue = this.searchParameters;
+	this.searchParameters = searchParameters;
+	changeSupport.firePropertyChange("searchParameters", OldValue,
+		this.searchParameters);
     }
 
     public String getSearchString() {

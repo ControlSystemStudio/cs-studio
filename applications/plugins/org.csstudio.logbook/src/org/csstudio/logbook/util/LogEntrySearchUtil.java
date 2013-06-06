@@ -42,7 +42,8 @@ public class LogEntrySearchUtil {
     public static String parseSearchMap(Map<String, String> searchMap) {
 	StringBuffer search = new StringBuffer();
 	for (String keyword : keywords) {
-	    if (searchMap.containsKey(keyword)) {
+	    if (searchMap.containsKey(keyword)
+		    && !searchMap.get(keyword).isEmpty()) {
 		if (!keyword.equals(SEARCH_KEYWORD_TEXT)) {
 		    search.append(keyword);
 		    search.append(":");
