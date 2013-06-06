@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene;
 
-import org.csstudio.ui.util.AbstractConfigurationPanel;
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

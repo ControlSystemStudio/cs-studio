@@ -9,8 +9,8 @@ import java.util.Collection;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.ui.util.AdapterUtil;
-import org.csstudio.ui.util.ConfigurableWidget;
-import org.csstudio.ui.util.ConfigurableWidgetAdaptable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 import org.csstudio.utility.pvmanager.widgets.VTypeAdaptable;
 import org.epics.vtype.VType;
 
