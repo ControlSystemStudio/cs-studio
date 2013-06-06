@@ -123,7 +123,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.ui.util.ProcessVariableAdaptable"
-            class="org.csstudio.ui.util.CommonAdapterFactory">
+            class="org.csstudio.ui.util.ProcessVariableAdapterFactory">
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
@@ -133,7 +133,7 @@
       </factory>
       <factory
             adaptableType="org.csstudio.ui.util.ConfigurableWidgetAdaptable"
-            class="org.csstudio.ui.util.CommonAdapterFactory">
+            class="org.csstudio.ui.util.ConfigurableWidgetAdapterFactory">
          <adapter
                type="org.csstudio.ui.util.ConfigurableWidget">
          </adapter>
