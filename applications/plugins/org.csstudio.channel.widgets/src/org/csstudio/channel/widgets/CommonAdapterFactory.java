@@ -6,6 +6,9 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
+import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
@@ -21,19 +24,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 public class CommonAdapterFactory implements IAdapterFactory {
 
 	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (adaptableObject instanceof ProcessVariableAdaptable) {
-			ProcessVariableAdaptable processVariableAdaptable = (ProcessVariableAdaptable) adaptableObject;
-			Collection<ProcessVariable> pvs = processVariableAdaptable
-					.toProcesVariables();
-			if (adapterType == ProcessVariable.class) {
-				if (pvs != null && pvs.size() == 1)
-					return pvs.iterator().next();
-			} else if (adapterType == ProcessVariable[].class) {
-				if (pvs != null && !pvs.isEmpty())
-					return pvs.toArray(new ProcessVariable[pvs.size()]);
-			}
-		} 
+	public Object getAdapter(Object adaptableObject, Class adapterType) {		
 		if (adaptableObject instanceof ChannelAdaptable) {
 			ChannelAdaptable channelAdaptable = (ChannelAdaptable) adaptableObject;
 			Collection<Channel> channels = channelAdaptable.toChannels();
@@ -74,8 +65,7 @@ public class CommonAdapterFactory implements IAdapterFactory {
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class,
-				ProcessVariable.class, ProcessVariable[].class,
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class,				
 				ConfigurableWidget.class };
 	}
 

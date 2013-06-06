@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 
 import org.csstudio.channel.widgets.ChannelLinePlotWidget.XAxis;
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 

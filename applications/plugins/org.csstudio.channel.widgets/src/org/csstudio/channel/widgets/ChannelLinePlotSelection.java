@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 public class ChannelLinePlotSelection implements ChannelQueryAdaptable,
 		ConfigurableWidgetAdaptable {
@@ -27,7 +29,7 @@ public class ChannelLinePlotSelection implements ChannelQueryAdaptable,
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return AdaptableUtilities.toProcessVariables(toChannels());
 	}
 

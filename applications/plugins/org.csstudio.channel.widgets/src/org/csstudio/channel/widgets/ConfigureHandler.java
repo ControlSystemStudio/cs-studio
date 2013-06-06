@@ -3,6 +3,7 @@ package org.csstudio.channel.widgets;
 import java.util.List;
 
 import org.csstudio.ui.util.AbstractAdaptedHandler;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.core.commands.ExecutionEvent;
 
 /**
