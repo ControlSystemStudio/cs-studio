@@ -77,7 +77,7 @@
                      variable="activeMenuSelection">
                   <iterate>
                      <adapt
-                           type="org.csstudio.ui.util.ConfigurableWidget">
+                           type="org.csstudio.utility.pvmanager.widgets.ConfigurableWidget">
                      </adapt>
                   </iterate>
                   <and>
