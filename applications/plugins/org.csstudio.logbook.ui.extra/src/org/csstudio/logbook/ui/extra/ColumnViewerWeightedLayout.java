@@ -35,11 +35,16 @@ public class ColumnViewerWeightedLayout extends ControlAdapter {
 
     @Override
     public void controlResized(ControlEvent e) {
-	// TODO Auto-generated method stub
 	super.controlResized(e);
 	Point newSize = gridTableViewer.getGrid().getSize();
-	int newWidth = gridViewerColumn.getColumn().getWidth()
-		+ (weight * (newSize.x - oldSize.x) / 100);
+	int newWidth;
+	if (oldSize.x == 0 && oldSize.y == 0) {
+	    newWidth = weight * (newSize.x - oldSize.x) / 100;
+	} else {
+	    newWidth = gridViewerColumn.getColumn().getWidth()
+		    + (weight * (newSize.x - oldSize.x) / 100);
+	}
+	System.out.println(newSize.toString() + " " + oldSize.toString());
 	gridViewerColumn.getColumn().setWidth(
 		newWidth >= minWidth ? newWidth : minWidth);
 	oldSize = newSize;

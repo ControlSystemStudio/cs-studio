@@ -88,10 +88,10 @@ public class LogTableView extends ViewPart {
 		    dialog.setBlockOnOpen(true);
 		    if (dialog.open() == IDialogConstants.OK_ID) {
 			text.setText(dialog.getSearchString());
+			text.getParent().update();
 			search();
 		    }
 		} catch (Exception e2) {
-		    // TODO make this widget composite with exception
 		    e2.printStackTrace();
 		}
 	    }
