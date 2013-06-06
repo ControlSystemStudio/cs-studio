@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.pvmanager.widgets.CopyValueToClipboardHandler"
+            id="org.csstudio.utility.pvmanager.widgets.CopyValueToClipboardHandler"
+            name="Copy Value to Clipboard">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.utility.pvmanager.widgets.VTypeAdaptable"
+            class="org.csstudio.utility.pvmanager.widgets.VTypeAdapterFactory">
+         <adapter
+               type="org.epics.vtype.VType">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=org.csstudio.ui.menu.popup.processvariable">
+         <menu
+               icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/value-16.png"
+               id="org.csstudio.ui.menu.popup.value"
+               label="%Value">
+            <visibleWhen>
+            <or>
+               <with variable="activeMenuSelection">
+                  <iterate>
+                     <adapt type="org.epics.vtype.VType"/>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lorg.epics.vtype.VType;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
+            </visibleWhen>
+            <separator
+                  name="main">
+            </separator>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.value">
+         <command
+               commandId="org.csstudio.graphene.CopyValueToClipboardHandler"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/paste_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>
