@@ -12,50 +12,35 @@ import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter factor for the common adaptables. This will adapt a selection of
- * {@link ConfigurableWidgetAdaptable}, {@link ProcessVariableAdaptable},
- * {@link ChannelAdaptable} and {@link ChannelQueryAdaptable} to the appropriate
- * objects and arrays so that the logic does not have to be replicated over and
- * over.
+ * Adapter factor for a selection of {@link ChannelQueryAdaptable} to the
+ * appropriate objects and arrays.
  * 
  * @author shroffk
  * 
  */
 public class ChannelQueryAdapterFactory implements IAdapterFactory {
 
-	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {		
-		if (adaptableObject instanceof ChannelAdaptable) {
-			ChannelAdaptable channelAdaptable = (ChannelAdaptable) adaptableObject;
-			Collection<Channel> channels = channelAdaptable.toChannels();
-			if (adapterType == Channel.class) {
-				if (channels != null && channels.size() == 1)
-					return channels.iterator().next();
-			} else if (adapterType == Channel[].class) {
-				if (channels != null && !channels.isEmpty())
-					return channels.toArray(new Channel[channels.size()]);
-			}
-		} 
-		if (adaptableObject instanceof ChannelQueryAdaptable) {
-			ChannelQueryAdaptable channelQueryAdaptable = (ChannelQueryAdaptable) adaptableObject;
-			Collection<ChannelQuery> channelQueries = channelQueryAdaptable
-					.toChannelQueries();
-			if (adapterType == ChannelQuery.class) {
-				if (channelQueries != null && channelQueries.size() == 1)
-					return channelQueries.iterator().next();
-			} else if (adapterType == ChannelQuery[].class) {
-				if (channelQueries != null && !channelQueries.isEmpty())
-					return channelQueries.toArray(new ChannelQuery[channelQueries
-							.size()]);
-			}
-		} 		
-		return null;
+    @Override
+    public Object getAdapter(Object adaptableObject, Class adapterType) {
+	if (adaptableObject instanceof ChannelQueryAdaptable) {
+	    ChannelQueryAdaptable channelQueryAdaptable = (ChannelQueryAdaptable) adaptableObject;
+	    Collection<ChannelQuery> channelQueries = channelQueryAdaptable
+		    .toChannelQueries();
+	    if (adapterType == ChannelQuery.class) {
+		if (channelQueries != null && channelQueries.size() == 1)
+		    return channelQueries.iterator().next();
+	    } else if (adapterType == ChannelQuery[].class) {
+		if (channelQueries != null && !channelQueries.isEmpty())
+		    return channelQueries
+			    .toArray(new ChannelQuery[channelQueries.size()]);
+	    }
 	}
+	return null;
+    }
 
-	@Override
-	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class	
-				 };
-	}
+    @Override
+    public Class[] getAdapterList() {
+	return new Class[] { ChannelQuery.class, ChannelQuery[].class };
+    }
 
 }
