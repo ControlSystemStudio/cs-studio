@@ -60,7 +60,7 @@
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.value">
          <command
-               commandId="org.csstudio.graphene.CopyValueToClipboardHandler"
+               commandId="org.csstudio.utility.pvmanager.widgets.CopyValueToClipboardHandler"
                icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/paste_edit.gif"
                style="push">
          </command>
