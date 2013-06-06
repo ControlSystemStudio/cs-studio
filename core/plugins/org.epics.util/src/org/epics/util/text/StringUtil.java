@@ -96,7 +96,7 @@ public class StringUtil {
             if (stringMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                 // Found String match
                 String token = line.substring(currentPosition + 1, stringMatcher.end() - 1);
-                matches.add(token);
+                matches.add(unescapeString(token));
                 currentPosition = stringMatcher.end();
             } else if (doubleMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                 // Found Double match
