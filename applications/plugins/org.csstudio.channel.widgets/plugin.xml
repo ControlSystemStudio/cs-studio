@@ -16,7 +16,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.channel.widgets.ChannelAdaptable"
-            class="org.csstudio.channel.widgets.CommonAdapterFactory">
+            class="org.csstudio.channel.widgets.ChannelAdapterFactory">
         <adapter
                type="gov.bnl.channelfinder.api.Channel">
          </adapter>
@@ -26,19 +26,12 @@
       </factory>
       <factory
             adaptableType="org.csstudio.channel.widgets.ChannelQueryAdaptable"
-            class="org.csstudio.channel.widgets.CommonAdapterFactory">
+            class="org.csstudio.channel.widgets.ChannelQueryAdapterFactory">
          <adapter
                type="gov.bnl.channelfinder.api.ChannelQuery">
          </adapter>
          <adapter
                type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.channel.widgets.ConfigurableWidgetAdaptable"
-            class="org.csstudio.channel.widgets.CommonAdapterFactory">
-         <adapter
-               type="org.csstudio.channel.widgets.ConfigurableWidget">
          </adapter>
       </factory>
    </extension>

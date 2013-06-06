@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
  * @author shroffk
  * 
  */
-public class CommonAdapterFactory implements IAdapterFactory {
+public class ChannelQueryAdapterFactory implements IAdapterFactory {
 
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {		
@@ -48,25 +48,14 @@ public class CommonAdapterFactory implements IAdapterFactory {
 					return channelQueries.toArray(new ChannelQuery[channelQueries
 							.size()]);
 			}
-		} 
-		if (adaptableObject instanceof ConfigurableWidgetAdaptable) {
-			if (adapterType == ConfigurableWidget.class) {
-				ConfigurableWidgetAdaptable configurableWidgetAdaptable = (ConfigurableWidgetAdaptable) adaptableObject;
-				if (configurableWidgetAdaptable != null && configurableWidgetAdaptable.toConfigurableWidget() != null &&
-						configurableWidgetAdaptable.toConfigurableWidget().isConfigurable())
-					return configurableWidgetAdaptable.toConfigurableWidget();
-				else
-					return null;
-			}
-
-		}
+		} 		
 		return null;
 	}
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class,				
-				ConfigurableWidget.class };
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class	
+				 };
 	}
 
 }
