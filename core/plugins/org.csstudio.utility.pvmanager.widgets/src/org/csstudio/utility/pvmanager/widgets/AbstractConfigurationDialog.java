@@ -1,4 +1,4 @@
-package org.csstudio.ui.util.composites;
+package org.csstudio.utility.pvmanager.widgets;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

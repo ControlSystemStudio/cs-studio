@@ -1,4 +1,4 @@
-package org.csstudio.ui.util.composites;
+package org.csstudio.utility.pvmanager.widgets;
 
 /**
  * A widget that can be configured and can open up a 
