@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.opibuilder.widgets;bundle-version="3.2.0",
  org.csstudio.opibuilder;bundle-version="3.2.0",
  org.epics.graphene,
- org.csstudio.utility.pvmanager.graphene
+ org.csstudio.utility.pvmanager.graphene,
+ org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

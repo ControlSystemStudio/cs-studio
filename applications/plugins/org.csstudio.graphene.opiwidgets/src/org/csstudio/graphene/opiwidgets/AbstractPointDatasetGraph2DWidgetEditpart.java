@@ -6,12 +6,12 @@ package org.csstudio.graphene.opiwidgets;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.csstudio.graphene.VTypeAdaptable;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.ui.util.ConfigurableWidget;
 import org.csstudio.ui.util.ConfigurableWidgetAdaptable;
+import org.csstudio.utility.pvmanager.widgets.VTypeAdaptable;
 import org.epics.vtype.VType;
 
 /**
