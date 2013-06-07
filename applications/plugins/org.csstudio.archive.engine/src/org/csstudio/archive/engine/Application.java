@@ -27,6 +27,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - added "-skip_last" option.
  */
 public class Application implements IApplication
 {

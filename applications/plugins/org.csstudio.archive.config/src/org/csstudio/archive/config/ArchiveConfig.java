@@ -9,6 +9,7 @@ package org.csstudio.archive.config;
 
 /** Archive configuration info
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - Added an option to skip reading last sample time.
  */
 public interface ArchiveConfig
 {

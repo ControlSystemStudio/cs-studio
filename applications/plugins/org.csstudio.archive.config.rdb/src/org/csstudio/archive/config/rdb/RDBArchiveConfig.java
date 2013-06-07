@@ -35,6 +35,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
  *
  *  @author Kay Kasemir
  *  @author Lana Abadie - Disable autocommit as needed.
+ *  @author Takashi Nakamoto - Added an option to skip reading last sampled time.
  */
 @SuppressWarnings("nls")
 public class RDBArchiveConfig implements ArchiveConfig
