@@ -3,8 +3,9 @@
  */
 package org.csstudio.graphene;
 
-import org.csstudio.ui.util.ConfigurableWidget;
-import org.csstudio.ui.util.ConfigurableWidgetAdaptable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
+import org.csstudio.utility.pvmanager.widgets.VTypeAdaptable;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.vtype.VType;
 

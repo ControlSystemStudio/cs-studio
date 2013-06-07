@@ -1,20 +1,17 @@
-package org.csstudio.graphene;
+package org.csstudio.utility.pvmanager.widgets;
 
-import java.util.Collection;
-
-import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.epics.vtype.VType;
 
 /**
+ * An adapter factory that transforms VTypeAdaptable object to VTypes.
  * 
  * @author carcassi
- * 
  */
 public class VTypeAdapterFactory implements IAdapterFactory {
 
 	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
 		if (adaptableObject instanceof VTypeAdaptable) {
 			VTypeAdaptable vTypeAdaptable = (VTypeAdaptable) adaptableObject;
 			if (adapterType == VType.class) {

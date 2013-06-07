@@ -1,9 +1,11 @@
-package org.csstudio.ui.util;
+package org.csstudio.utility.pvmanager.widgets;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.ui.util.DelayedNotificator;
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;

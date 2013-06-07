@@ -3,6 +3,7 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
+import org.csstudio.graphene.LineGraph2DWidget;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -14,6 +15,10 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  */
 public class LineGraph2DWidgetModel extends
 		AbstractPointDatasetGraph2DWidgetModel {
+
+	public LineGraph2DWidgetModel() {
+		super(LineGraph2DWidget.class);
+	}
 
 	public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
 	

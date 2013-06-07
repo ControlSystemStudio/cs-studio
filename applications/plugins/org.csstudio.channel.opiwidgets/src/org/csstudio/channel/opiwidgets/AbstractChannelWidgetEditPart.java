@@ -7,12 +7,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.channel.widgets.ChannelQueryAdaptable;
-import org.csstudio.channel.widgets.ConfigurableWidget;
-import org.csstudio.channel.widgets.ConfigurableWidgetAdaptable;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.ui.util.AdapterUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 /**
  * Abstract class for channel based widgets. Here we put the functionality that is common to
@@ -72,7 +72,7 @@ public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWid
 	}
 	
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return selectionToType(ProcessVariable.class);
 	}
 }

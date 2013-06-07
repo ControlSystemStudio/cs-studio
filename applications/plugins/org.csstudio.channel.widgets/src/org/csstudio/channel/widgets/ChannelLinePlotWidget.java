@@ -28,6 +28,7 @@ import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

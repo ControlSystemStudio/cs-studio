@@ -2,6 +2,7 @@ package org.csstudio.channel.widgets;
 
 import java.beans.PropertyChangeEvent;
 
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.epics.util.time.TimeDuration;

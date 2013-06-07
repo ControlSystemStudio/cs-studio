@@ -1,4 +1,4 @@
-package org.csstudio.ui.util;
+package org.csstudio.ui.util.composites;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

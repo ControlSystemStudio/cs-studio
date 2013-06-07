@@ -1,4 +1,4 @@
-package org.csstudio.ui.util;
+package org.csstudio.utility.pvmanager.widgets;
 
 /**
  * A selection that can be adaptad to a ConfigurableWidget.

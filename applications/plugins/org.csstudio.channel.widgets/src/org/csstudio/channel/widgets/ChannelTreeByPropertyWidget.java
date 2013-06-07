@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;

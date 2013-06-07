@@ -1,4 +1,7 @@
-package org.csstudio.channel.widgets;
+/**
+ * 
+ */
+package org.csstudio.utility.pvmanager.widgets;
 
 import java.util.List;
 
@@ -6,11 +9,15 @@ import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 
 /**
- * Opens the waterfall view.
  * 
- * @author carcassi
+ * A command that opens up the selected configurable widgets configuration
+ * panel.
+ * 
+ * @author shroffk
+ * 
  */
-public class ConfigureHandler extends AbstractAdaptedHandler<ConfigurableWidget> {
+public class ConfigureHandler extends
+		AbstractAdaptedHandler<ConfigurableWidget> {
 
 	public ConfigureHandler() {
 		super(ConfigurableWidget.class);
