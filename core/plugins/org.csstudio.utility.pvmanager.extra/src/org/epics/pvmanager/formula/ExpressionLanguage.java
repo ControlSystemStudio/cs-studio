@@ -2,10 +2,6 @@
  * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
@@ -26,6 +22,7 @@ import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.util.text.StringUtil;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
@@ -57,6 +54,9 @@ public class ExpressionLanguage {
      */
     public static String channelFromFormula(String formula) {
         if (!formula.startsWith("=")) {
+            if (formula.trim().matches(StringUtil.SINGLEQUOTED_STRING_REGEX)) {
+                return StringUtil.unquote(formula);
+            }
             return formula;
         } else {
             formula = formula.substring(1);
@@ -100,7 +100,7 @@ public class ExpressionLanguage {
     
     private static DesiredRateExpression<?> parseFormula(String formula) {
         if (!formula.startsWith("=")) {
-            return cachedPv(formula);
+            return cachedPv(channelFromFormula(formula));
         } else {
             formula = formula.substring(1);
         }
@@ -167,7 +167,7 @@ public class ExpressionLanguage {
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
-        return new LastOfChannelExpression<Object>(channelName, Object.class);
+        return new LastOfChannelExpression<>(channelName, Object.class);
     }
     
     static <T> DesiredRateExpression<T> cast(Class<T> clazz, DesiredRateExpression<?> arg1) {
