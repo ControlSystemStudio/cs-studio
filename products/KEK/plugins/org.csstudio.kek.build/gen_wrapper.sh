@@ -49,8 +49,8 @@ echo org.csstudio.opibuilder/font_file=${FONT_DEF} >> %TEMP%\plugin_customizatio
 
 EOF
     
-    if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
-	echo "start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini -share_link ${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST} %*"
+    if [ -n "${SHARE_LINK_WIN}" ]; then
+	echo "start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini -share_link ${SHARE_LINK_WIN} %*"
     else
 	echo "start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini %*"
     fi
@@ -58,4 +58,3 @@ else
     echo "This script supports only WIN." 1>&2
     exit 1
 fi
-
