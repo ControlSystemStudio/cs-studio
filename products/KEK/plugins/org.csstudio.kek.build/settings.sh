@@ -6,7 +6,7 @@
 #
 
 # Version number of CSS
-export VERSION=3.1.1
+export VERSION=3.2.0
 
 # Build host name (lcba03, abco4, lcba07 or JCSL_WS001).
 # Current official build machine is lcba07.
@@ -44,7 +44,7 @@ case "${BUILD_HOST}" in
         export CYGDRIVE=
         export BUILDDIR=${HOME}/work/CSSBuild
         export ECLIPSE_BASE=${HOME}/work
-        export DELTAPACK=${HOME}/work/delta/eclipse
+        export DELTAPACK=${HOME}/work/delta/eclipse:${HOME}/work/rap/rap1.4/eclipse
         export WORKSPACE=${HOME}/work/Workspace_cs-studio-3-1_3.7
         export JAVA_HOME=${HOME}/work/jdk1.6.0_27
         PDE_VER=*
@@ -54,7 +54,7 @@ case "${BUILD_HOST}" in
         export CYGDRIVE=/cygdrive/c
         export BUILDDIR='/work/CSSBuild/BuildDir'
         export ECLIPSE_BASE='/work/CSSBuild'
-        export DELTAPACK='/work/CSSBuild/delta/eclipse'
+        export DELTAPACK='/work/CSSBuild/delta/eclipse:/work/CSSBuild/rap/rap1.4/eclipse'
         export WORKSPACE='/work/CSSBuild/Workspace_cs-studio-3-1_3.7'
         export JAVA_HOME='c:\Program Files\Java\jdk1.6.0_31'
         PDE_VER=3.7.0.v20111116-2009
