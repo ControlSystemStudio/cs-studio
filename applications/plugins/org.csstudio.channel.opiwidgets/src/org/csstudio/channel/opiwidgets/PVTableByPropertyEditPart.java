@@ -40,6 +40,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 		widget.setRowProperty(model.getRowProperty());
 		widget.setColumnProperty(model.getColumnProperty());
 		widget.setColumnTags(model.getColumnTags());
+		widget.setConfigurable(model.isConfigurable());
 	}
 
 	@Override

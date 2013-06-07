@@ -7,6 +7,10 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 public class PVTableByPropertyModel extends AbstractChannelWidgetWithNotificationModel {
 	
+	public PVTableByPropertyModel() {
+		super(true);
+	}
+	
 	public final String ID = "org.csstudio.channel.opiwidgets.PVTableByProperty"; //$NON-NLS-1$
 	
 	public static final String ROW_PROPERTY = "row_property"; //$NON-NLS-1$	
