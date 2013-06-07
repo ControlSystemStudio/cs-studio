@@ -121,3 +121,4 @@ org.csstudio.alarm.beast.notifier.intro/**
 org.csstudio.trends.databrowser2.rcp/**
 org.csstudio.opibuilder.alarm/**
 com.google.common/**
+org.csstudio.utility.singlesource.rcp/**
