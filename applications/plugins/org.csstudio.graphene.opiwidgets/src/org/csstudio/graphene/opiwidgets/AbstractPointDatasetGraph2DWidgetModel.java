@@ -7,7 +7,6 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
@@ -15,8 +14,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class AbstractPointDatasetGraph2DWidgetModel extends AbstractSelectionWidgetModel {
 	
-	public AbstractPointDatasetGraph2DWidgetModel(Class<? extends Composite> widgetClass) {
-		super(widgetClass);
+	public AbstractPointDatasetGraph2DWidgetModel(boolean enableConfigurableProperty) {
+		super(enableConfigurableProperty);
 	}
 
 	public static final String PROP_DATA_FORMULA = "data_formula"; //$NON-NLS-1$
