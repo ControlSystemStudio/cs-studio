@@ -11,7 +11,7 @@ package org.csstudio.channel.opiwidgets;
 public class ChannelViewerModel extends AbstractChannelWidgetModel {
 	
 	public ChannelViewerModel() {
-		super(false);
+		super(true);
 	}
 
 	public final String ID = "org.csstudio.channel.opiwidgets.ChannelViewer"; //$NON-NLS-1$
