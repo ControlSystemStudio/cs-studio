@@ -44,9 +44,10 @@ public class ColumnViewerWeightedLayout extends ControlAdapter {
 	    newWidth = gridViewerColumn.getColumn().getWidth()
 		    + (weight * (newSize.x - oldSize.x) / 100);
 	}
-	System.out.println(newSize.toString() + " " + oldSize.toString());
-	gridViewerColumn.getColumn().setWidth(
-		newWidth >= minWidth ? newWidth : minWidth);
-	oldSize = newSize;
+	if (gridViewerColumn.getColumn().getWidth() != newWidth) {
+	    gridViewerColumn.getColumn().setWidth(
+		    newWidth >= minWidth ? newWidth : minWidth);
+	    oldSize = newSize;
+	}
     }
 }
