@@ -58,6 +58,10 @@ IO Oil Pipe = 255,255,0
 IO Secondary Circuit Pipe = 0,76,240
 
 
+# Electrical bus colors
+IO Energised Busbar = 255,0,0
+IO De energised Busbar = 128,128,128
+ 
 # State colors
 IO OK = 0,255,0
 IO Default = 255,0,0
