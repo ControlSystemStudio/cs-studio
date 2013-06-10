@@ -40,6 +40,8 @@ org.csstudio.debugging.rdbshell/**
 org.csstudio.diag.epics.pvtree/**
 org.csstudio.diag.postanalyser/**
 org.csstudio.diag.probe/**
+org.csstudio.diag.pvmanager.probe/**
+org.csstudio.display.pace/**
 org.csstudio.display.pvtable/**
 org.csstudio.display.rdbtable/**
 org.csstudio.dummyauthorization/**
@@ -109,6 +111,7 @@ org.csstudio.utility.pv/**
 org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.extra/**
 org.csstudio.utility.pvmanager.loc/**
+org.csstudio.utility.pvmanager.probe/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.pvmanager.vtype/**
@@ -117,6 +120,8 @@ org.csstudio.utility.pvmanager/**
 org.csstudio.utility.singlesource.rcp/**
 org.csstudio.utility.singlesource/**
 org.csstudio.utility.speech/**
+org.csstudio.utility.sysmon/**
+org.csstudio.utility.test/**
 org.csstudio.workspace/**
 org.epics.util/**
 org.epics.vtype/**
