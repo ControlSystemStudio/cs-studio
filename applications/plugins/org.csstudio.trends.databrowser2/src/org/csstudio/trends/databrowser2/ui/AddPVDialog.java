@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.HashMap;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -130,7 +131,7 @@ public class AddPVDialog  extends TitleAreaDialog
         txt_name = new Text(box, SWT.BORDER);
         txt_name.setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
         txt_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
-        new AutoCompleteWidget(txt_name, "PV");
+        new AutoCompleteWidget(txt_name, AutoCompleteTypes.PV);
 
         if (! formula)
         {

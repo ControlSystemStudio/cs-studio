@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.iter.p2.rcpupdate.feature"
       label="CSS Update Components"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,39 +20,57 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.preferences"/>
-      <import plugin="org.eclipse.equinox.p2.publisher.eclipse"/>
-      <import plugin="org.eclipse.equinox.p2.publisher"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.app"/>
+      <import plugin="org.eclipse.equinox.util"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
       <import plugin="org.sat4j.core" version="2.2.0"/>
       <import plugin="org.sat4j.pb" version="2.2.0"/>
       <import plugin="org.eclipse.core.jobs" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.app"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ecf" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ecf.filetransfer" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="2.0.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.repository" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.jobs" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.equinox.security.ui" version="1.0.0" match="compatible"/>
       <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.equinox.p2.discovery" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.equinox.p2.ui" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.operations" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.repository" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.engine" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.metadata.repository" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.artifact.repository" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -105,7 +123,21 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.equinox.p2.artifact.repository"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.console"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -126,7 +158,35 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.p2.director.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.directorywatcher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.discovery"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.equinox.p2.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.extensionlocation"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -168,7 +228,28 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.p2.publisher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.publisher.eclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.equinox.p2.repository"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.repository.tools"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -189,7 +270,56 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.p2.transport.ecf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+<!--
+   <plugin
          id="org.eclipse.equinox.p2.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.ui.discovery"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.ui.importexport"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.ui.sdk"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.ui.sdk.scheduler"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+-->
+   <plugin
+         id="org.eclipse.equinox.p2.updatechecker"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.updatesite"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -218,6 +348,20 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.equinox.simpleconfigurator.manipulator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.update.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.update.configurator"
          download-size="0"
          install-size="0"
          version="0.0.0"

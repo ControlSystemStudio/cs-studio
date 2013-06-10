@@ -1,5 +1,6 @@
 package org.csstudio.channel.widgets;
 
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -23,7 +24,7 @@ import org.epics.util.time.TimeDuration;
  * 
  * @author carcassi
  */
-public class WaterfallConfigurationPanel extends AbstractConfigurationComposite {
+public class WaterfallConfigurationPanel extends AbstractConfigurationPanel{
 	
 	private Button btnMetadata;
 	private Button btnAutoRange;

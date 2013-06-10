@@ -91,17 +91,11 @@
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd>java.io.Serializable</dd>
-</dl>
 <hr>
 <br>
 <pre>public class <span class="strong">DeviceInfo</span>
-extends java.lang.Object
-implements java.io.Serializable</pre>
+extends java.lang.Object</pre>
 <div class="block">Information about a device</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../serialized-form.html#org.csstudio.scan.device.DeviceInfo">Serialized Form</a></dd></dl>
 </li>
 </ul>
 </div>
@@ -120,10 +114,20 @@ implements java.io.Serializable</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String, boolean, boolean)">DeviceInfo</a></strong>(java.lang.String&nbsp;name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String)">DeviceInfo</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String)">DeviceInfo</a></strong>(java.lang.String&nbsp;name,
+          java.lang.String&nbsp;alias)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#DeviceInfo(java.lang.String, java.lang.String, java.lang.String)">DeviceInfo</a></strong>(java.lang.String&nbsp;name,
           java.lang.String&nbsp;alias,
-          boolean&nbsp;scan,
-          boolean&nbsp;log)</code>
+          java.lang.String&nbsp;status)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -158,21 +162,17 @@ implements java.io.Serializable</pre>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#getName()">getName</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#getStatus()">getStatus</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#hashCode()">hashCode</a></strong>()</code>
 <div class="block">Hash on name
   </div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#isLoggable()">isLoggable</a></strong>()</code>&nbsp;</td>
-</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#isScannable()">isScannable</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/DeviceInfo.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
@@ -198,7 +198,30 @@ implements java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DeviceInfo(java.lang.String, java.lang.String, boolean, boolean)">
+<a name="DeviceInfo(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DeviceInfo</h4>
+<pre>public&nbsp;DeviceInfo(java.lang.String&nbsp;name)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Device name as understood by the control system</dd></dl>
+</li>
+</ul>
+<a name="DeviceInfo(java.lang.String, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DeviceInfo</h4>
+<pre>public&nbsp;DeviceInfo(java.lang.String&nbsp;name,
+          java.lang.String&nbsp;alias)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Device name as understood by the control system</dd><dd><code>alias</code> - Alias for the device that is used in GUI and scans</dd></dl>
+</li>
+</ul>
+<a name="DeviceInfo(java.lang.String, java.lang.String, java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -206,10 +229,9 @@ implements java.io.Serializable</pre>
 <h4>DeviceInfo</h4>
 <pre>public&nbsp;DeviceInfo(java.lang.String&nbsp;name,
           java.lang.String&nbsp;alias,
-          boolean&nbsp;scan,
-          boolean&nbsp;log)</pre>
+          java.lang.String&nbsp;status)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Device name as understood by the control system</dd><dd><code>alias</code> - Alias for the device that is used in GUI and scans</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Device name as understood by the control system</dd><dd><code>alias</code> - Alias for the device that is used in GUI and scans</dd><dd><code>status</code> - Status of the device, for display purpose</dd></dl>
 </li>
 </ul>
 </li>
@@ -240,24 +262,14 @@ implements java.io.Serializable</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Alias of the device</dd></dl>
 </li>
 </ul>
-<a name="isScannable()">
+<a name="getStatus()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isScannable</h4>
-<pre>public&nbsp;boolean&nbsp;isScannable()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd><code>true</code> if device can be scanned</dd></dl>
-</li>
-</ul>
-<a name="isLoggable()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isLoggable</h4>
-<pre>public&nbsp;boolean&nbsp;isLoggable()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd><code>true</code> if device can be logged/monitored</dd></dl>
+<h4>getStatus</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getStatus()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Status of the device, for display purpose</dd></dl>
 </li>
 </ul>
 <a name="hashCode()">

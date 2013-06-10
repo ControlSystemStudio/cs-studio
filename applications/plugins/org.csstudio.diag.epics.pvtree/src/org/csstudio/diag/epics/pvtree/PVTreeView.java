@@ -9,6 +9,7 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
@@ -128,7 +129,7 @@ public class PVTreeView extends ViewPart
 				setPVName(pv_name.getText());
 			}
 		});
-		new AutoCompleteWidget(pv_name, "PV");
+		new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
 		// pv_name_helper =
 		// new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
 		// PV_LIST_TAG, pv_name)

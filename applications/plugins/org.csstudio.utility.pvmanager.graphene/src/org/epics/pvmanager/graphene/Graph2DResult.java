@@ -16,16 +16,22 @@ public class Graph2DResult {
     private final VImage image;
     private final GraphDataRange xRange;
     private final GraphDataRange yRange;
+    private final int focusDataIndex;
 
-    Graph2DResult(VType data, VImage image, GraphDataRange xRange, GraphDataRange yRange) {
+    Graph2DResult(VType data, VImage image, GraphDataRange xRange, GraphDataRange yRange, int focusDataIndex) {
         this.data = data;
         this.image = image;
         this.xRange = xRange;
         this.yRange = yRange;
+        this.focusDataIndex = focusDataIndex;
     }
     
     public VType getData() {
         return data;
+    }
+    
+    public int focusDataIndex() {
+        return focusDataIndex;
     }
 
     public VImage getImage() {

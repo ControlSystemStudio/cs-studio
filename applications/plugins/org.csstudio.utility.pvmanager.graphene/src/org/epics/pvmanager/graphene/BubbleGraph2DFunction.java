@@ -8,16 +8,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import org.epics.graphene.BubbleGraph2DRenderer;
 import org.epics.graphene.BubbleGraph2DRendererUpdate;
-import org.epics.graphene.Graph2DRendererUpdate;
-
-import org.epics.graphene.Point2DDataset;
 import org.epics.graphene.Point3DWithLabelDataset;
-import org.epics.graphene.ScatterGraph2DRenderer;
-import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.VImage;
-import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
@@ -89,7 +83,8 @@ public class BubbleGraph2DFunction implements ReadFunction<Graph2DResult> {
         previousImage = ValueUtil.toVImage(image);
         return new Graph2DResult(vTable, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), renderer.getXPlotRange(), renderer.getXAggregatedRange()), new GraphDataRange(
-                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()));
+                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()),
+                -1);
 
     }
 }

@@ -18,8 +18,8 @@ package org.csstudio.scan.ui.scanmonitor;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -452,7 +452,7 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
-                if (infos.length > 1)
+                if (infos.length >= 1)
                     manager.add(new ShowDevicesAction(shell, model, infos));
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }

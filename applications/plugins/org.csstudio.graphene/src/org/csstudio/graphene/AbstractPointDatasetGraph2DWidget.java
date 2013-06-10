@@ -8,13 +8,13 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.ui.util.BeanComposite;
-import org.csstudio.ui.util.ConfigurableWidget;
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -208,6 +208,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 			graph = null;
 			resetRange(xRangeControl);
 			resetRange(yRangeControl);
+			processInit();
 		}
 
 		if (getDataFormula() == null || getDataFormula().trim().isEmpty()) {
@@ -229,9 +230,18 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 						} else {
 							imageDisplay.setVImage(null);
 						}
+						processValue();
 					}
 
 				}).maxRate(ofHertz(50));
+	}
+	
+	protected void processInit() {
+		// To be extended if needed
+	}
+	
+	protected void processValue() {
+		// To be extended if needed
 	}
 
 	protected abstract T createGraph();
@@ -331,6 +341,10 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 				setTooltipColumnFormula(memento.getString(MEMENTO_TOOLTIP_COLUMN_FORMULA));
 			}
 		}
+	}
+	
+	protected VImageDisplay getImageDisplay() {
+		return imageDisplay;
 	}
 
 }

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.core.ui.feature"
       label="CSS Core UI Component"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -164,13 +164,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.pvmanager.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.ui.toolbox"
          download-size="0"
          install-size="0"
          version="0.0.0"

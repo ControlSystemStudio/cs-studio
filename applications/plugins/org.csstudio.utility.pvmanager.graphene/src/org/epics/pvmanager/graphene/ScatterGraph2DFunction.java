@@ -13,7 +13,6 @@ import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.VImage;
-import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
@@ -81,7 +80,8 @@ public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
         previousImage = ValueUtil.toVImage(image);
         return new Graph2DResult(vTable, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), renderer.getXPlotRange(), renderer.getXAggregatedRange()), new GraphDataRange(
-                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()));
+                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()),
+                -1);
 
     }
 }

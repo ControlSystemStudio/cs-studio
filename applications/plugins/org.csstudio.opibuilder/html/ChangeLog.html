@@ -34,22 +34,26 @@
     <li>Rotated text in Text Update can be properly aligned inside the box.
     <p><img src="img/ALignedRotatedText.png"></p>
     </li>
+	<li>Support PV Name auto-complete. By default, it only supports history inputs, but a site may implement 
+	its own PV name provider. For more details, please see <code>CSS online help->CSS Core->Auto-Complete</code>  
+	(Primarily contributed by ITER).
+	<p><img src="img/autocomplete.png"</p>
+	
+	</li> 
     <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
     It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
     PVManager has lots of advantages such as better performance on array type of PV, maximum updating rate throttling, formula support and so on.
     With PVManager, there are few differences with Utility PV on local and simulation PV syntax:
     <ul>
+       <li>Constant PV such as <code>1</code> or <code>"fred"</code> must be prefixed with <code>=</code>. For example, <code>=1</code> and <code>="fred"</code>.</li>
        <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
        <li>Initial string value should be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
        <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
        <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
     </ul> 
+    BOY will automatically convert existing local PV names to new syntax for old OPIs except the PV names embedded in scripts. 
     For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
-    Because this is the first version of BOY that supports PVManager, the default PV connection layer is still Utility PV, but it
-    is highly encouraged to switch to PVManager to test all your existing OPIs. 
-    If your existing OPI doesn't work correctly with PVManager, you can switch back to use Utility PV and most importantly, 
-<a href="mailto:chenx1@ornl.gov">report the issue to me</a>. <code>BOY Examples</code> has been updated to meet the local pv syntax of PVManager,
-please reinstall it also. 
+   
     </li>
     
     <li>Add authentication support to WebOPI so that you can protect the whole site or only OPIs in a particular directory with password.

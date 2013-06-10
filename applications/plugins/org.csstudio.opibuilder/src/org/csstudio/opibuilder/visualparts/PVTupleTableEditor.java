@@ -11,15 +11,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -33,8 +30,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -452,17 +447,7 @@ public class PVTupleTableEditor extends Composite {
 
 		@Override
 		protected CellEditor getCellEditor(final Object element) {
-			final TextCellEditor cellEditor = new TextCellEditor(table);
-			AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(cellEditor, "PV"); //$NON-NLS-1$
-			autoCompleteWidget.getContentProposalAdapter().addContentProposalListener(
-					new IContentProposalListener() {
-
-						@Override
-						public void proposalAccepted(IContentProposal proposal) {
-							setValue(element, cellEditor.getValue());
-						}
-					});
-			return cellEditor;
+			return new PVNameTextCellEditor(table);
 		}
 
 		@Override

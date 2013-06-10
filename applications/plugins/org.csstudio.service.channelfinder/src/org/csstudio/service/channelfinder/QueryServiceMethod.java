@@ -20,6 +20,8 @@ import java.util.Map;
 import org.epics.pvmanager.WriteFunction;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceMethodDescription;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 
@@ -36,9 +38,9 @@ public class QueryServiceMethod extends ServiceMethod {
      */
     public QueryServiceMethod() {
 	super(new ServiceMethodDescription("find", "Find Channels")
-		.addArgument("query", "Query String", String.class)
+		.addArgument("query", "Query String", VString.class)
 		.addResult("result", "Query Result", VTable.class)
-		.addResult("result_size", "Query Result size", Number.class));
+		.addResult("result_size", "Query Result size", VNumber.class));
     }
 
     /*
@@ -52,7 +54,7 @@ public class QueryServiceMethod extends ServiceMethod {
     public void executeMethod(Map<String, Object> parameters,
 	    final WriteFunction<Map<String, Object>> callback,
 	    final WriteFunction<Exception> errorCallback) {
-	String query = (String) parameters.get("query");
+	String query = ((VString) parameters.get("query")).getValue();
 	ChannelQuery channelQuery = ChannelQuery.query(query).build();
 	channelQuery.addChannelQueryListener(new ChannelQueryListener() {
 
@@ -86,7 +88,7 @@ public class QueryServiceMethod extends ServiceMethod {
 				public String apply(Channel input) {
 				    return input.getName();
 				}
-			    }).toArray(new String[channels.size()]));
+			    }));
 
 		    // Add Property Columns
 		    Collection<String> propertyNames = ChannelUtil
@@ -102,7 +104,7 @@ public class QueryServiceMethod extends ServiceMethod {
 						.getProperty(propertyName)
 						.getValue() : "";
 				    }
-				}).toArray(new String[channels.size()]));
+				}));
 		    }
 
 		    // Add Tag Columns
@@ -118,7 +120,7 @@ public class QueryServiceMethod extends ServiceMethod {
 					return input.getTag(tagName) != null ? "tagged"
 						: "";
 				    }
-				}).toArray(new String[channels.size()]));
+				}));
 		    }
 
 		    Map<String, Object> resultMap = new HashMap<>();

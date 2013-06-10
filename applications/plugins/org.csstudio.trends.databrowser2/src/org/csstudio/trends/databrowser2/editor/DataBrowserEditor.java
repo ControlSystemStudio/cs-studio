@@ -26,6 +26,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
@@ -84,6 +85,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  plugin.xml registers this as an editor for data browser configuration
  *  files.
  *  @author Kay Kasemir
+ *  @author Xihui Chen (Adjustment to make it work like a view in RAP)
  */
 public class DataBrowserEditor extends EditorPart
 {
@@ -138,7 +140,14 @@ public class DataBrowserEditor extends EditorPart
      */
     public static DataBrowserEditor createInstance()
     {
-    	return createInstance(new EmptyEditorInput());
+    	return createInstance(new EmptyEditorInput(){
+    		@Override
+    		public String getName() {
+    			if(SingleSourcePlugin.isRAP())
+    				return "Data Browser";
+    			return super.getName();
+    		}
+    	});
     }
 
     /** @return Model displayed/edited by this EditorPart */
@@ -362,31 +371,34 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
         if (is_rcp)
 		{
-			mm.add(new Separator());
-			open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-	                    Messages.OpenPropertiesView, activator
-	                            .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
-			mm.add(open_properties); 
-			mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-					activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
+			mm.add(new Separator());			
+			 		
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
+        open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
+                Messages.OpenPropertiesView, activator
+                        .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+        mm.add(open_properties);
+        if(is_rcp || !Preferences.hideSearchView())
+        	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
+		
+		mm.add(new OpenPerspectiveAction(activator
+				.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
+				Messages.OpenDataBrowserPerspective, Perspective.ID));
+		mm.add(new OpenViewAction(WaveformView.ID,
+				Messages.OpenWaveformView, activator
+						.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$		
 		if (is_rcp)
-		{
-			mm.add(new OpenViewAction(WaveformView.ID,
-					Messages.OpenWaveformView, activator
-							.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
-			mm.add(new OpenPerspectiveAction(activator
-					.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
-					Messages.OpenDataBrowserPerspective, Perspective.ID));
+		{					
 			mm.add(new Separator());
 			if (EMailSender.isEmailSupported())
 				mm.add(new SendEMailAction(shell, plot.getXYGraph()));
-		}
-		mm.add(new PrintAction(shell, plot.getXYGraph()));
+			mm.add(new PrintAction(shell, plot.getXYGraph()));
+		}		
 		
 		mm.add(new Separator());
 		mm.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -440,7 +452,9 @@ public class DataBrowserEditor extends EditorPart
     /** {@inheritDoc} */
     @Override
     public boolean isDirty()
-    {
+    {	
+    	if(SingleSourcePlugin.isRAP()) //always not savable in RAP
+    		return false;
         return is_dirty;
     }
 

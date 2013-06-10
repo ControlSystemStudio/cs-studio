@@ -21,6 +21,7 @@ public class StringUtil {
     
     public static final String STRING_ESCAPE_SEQUENCE_REGEX = "\\\\(\"|\\\\|\'|r|n|b|t|u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]|[0-3]?[0-7]?[0-7])";
     public static final String QUOTED_STRING_REGEX = "\"([^\"\\\\]|" + StringUtil.STRING_ESCAPE_SEQUENCE_REGEX + ")*\"";
+    public static final String SINGLEQUOTED_STRING_REGEX = "\'([^\"\\\\]|" + StringUtil.STRING_ESCAPE_SEQUENCE_REGEX + ")*\'";
     public static final String DOUBLE_REGEX = "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)";
     
     static Pattern escapeSequence = Pattern.compile(STRING_ESCAPE_SEQUENCE_REGEX);
@@ -96,7 +97,7 @@ public class StringUtil {
             if (stringMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                 // Found String match
                 String token = line.substring(currentPosition + 1, stringMatcher.end() - 1);
-                matches.add(token);
+                matches.add(unescapeString(token));
                 currentPosition = stringMatcher.end();
             } else if (doubleMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                 // Found Double match

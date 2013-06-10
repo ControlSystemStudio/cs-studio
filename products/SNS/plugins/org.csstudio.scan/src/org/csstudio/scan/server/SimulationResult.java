@@ -7,16 +7,12 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
 
 /** Result of a scan simulation
  *  @author Kay Kasemir
  */
-public class SimulationResult implements Serializable
+public class SimulationResult
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private double simulation_seconds;
 
 	final private String simulation_log;

@@ -42,8 +42,8 @@ public class DeviceContextFileHeadlessTest
 
 		final Device device = context.getDeviceByAlias("xpos");
 		assertNotNull(device);
-		assertEquals("xpos", device.getInfo().getAlias());
-        assertEquals("motor_x", device.getInfo().getName());
+		assertEquals("xpos", device.getAlias());
+        assertEquals("motor_x", device.getName());
 		assertEquals(PVDevice.class, device.getClass());
 	}
 }

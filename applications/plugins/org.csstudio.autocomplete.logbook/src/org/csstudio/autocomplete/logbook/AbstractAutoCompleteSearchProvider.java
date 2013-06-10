@@ -3,14 +3,14 @@
  */
 package org.csstudio.autocomplete.logbook;
 
-import java.lang.instrument.UnmodifiableClassException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
@@ -43,47 +43,48 @@ public abstract class AbstractAutoCompleteSearchProvider implements
     @Override
     public AutoCompleteResult listResult(String type, String name, int limit) {
 	AutoCompleteResult result = new AutoCompleteResult();
-	name = name.trim();
-	String fixedFirstPart = name.substring(0,
-		name.lastIndexOf(' ') > 0 ? name.lastIndexOf(' ') : 0);
-	String lastPart = name.substring(name.lastIndexOf(' ') + 1);
-	final String[] keyValue = lastPart.split(":");
-	if (keyValue.length == 1) {
-	    // search for possible matches to key words
-	    for (String key : keyValueMap.keySet()) {
-		if (key.startsWith(keyValue[0].substring(0,
-			keyValue[0].length() - 1))) {
-		    result.add(fixedFirstPart + ' ' + key + ":");
-		    result.setCount(result.getCount() + 1);
-		}
-	    }
-	} else if (keyValue.length == 2) {
-	    // search for possible matches for the values
-	    String key = keyValue[0];
+	String searchString = name.trim().substring(0, name.length() - 1);
+	String fixedFirstPart;
+	if (searchString.contains(":")) {
+	    fixedFirstPart = searchString.substring(0,
+		    searchString.lastIndexOf(":") + 1);
+	    Matcher m = Pattern.compile("(\\w*):[^:]*$").matcher(searchString);
+	    m.find();
+	    String lastKey = m.group(1);
+	    String lastValue = searchString.substring(searchString
+		    .lastIndexOf(":") + 1);
 	    String valuePattern;
 	    Set<String> includedValues = new LinkedHashSet<String>();
-	    if (keyValue[1].contains(",")) {
-		includedValues.addAll(Arrays.asList(keyValue[1].substring(0,
-			keyValue[1].lastIndexOf(',')).split(",")));
-		valuePattern = keyValue[1].substring(
-			keyValue[1].lastIndexOf(',') + 1,
-			keyValue[1].length() - 1).trim();
+	    if (lastValue.contains(",")) {
+		includedValues.addAll(Arrays.asList(lastValue.substring(0,
+			lastValue.lastIndexOf(',')).split(",")));
+		valuePattern = lastValue
+			.substring(lastValue.lastIndexOf(",") + 1);
 	    } else {
-		valuePattern = keyValue[1].substring(0,
-			keyValue[1].length() - 1);
+		valuePattern = lastValue;
 	    }
-	    for (String value : keyValueMap.get(key)) {
+	    for (String value : keyValueMap.get(lastKey)) {
 		Set<String> proposedValues = new LinkedHashSet<String>(
 			includedValues);
-		if (value.startsWith(valuePattern)) {
+		if (value.startsWith(valuePattern.trim())) {
 		    proposedValues.add(value);
-		    result.add(fixedFirstPart + ' ' + key + ':'
+		    result.add(fixedFirstPart + ' '
 			    + Joiner.on(',').join(proposedValues));
 		    result.setCount(result.getCount() + 1);
 		}
 	    }
-	} else {
-	    //
+	}
+	// use the last word of the String to check for keywords
+	fixedFirstPart = searchString.substring(0, searchString
+		.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') : 0);
+	String lastPart = searchString
+		.substring(searchString.lastIndexOf(' ') + 1);
+	for (String key : keyValueMap.keySet()) {
+	    if (lastPart.length() > 0
+	    	    && key.startsWith(lastPart.substring(0, lastPart.length() - 1))) {
+		result.add(fixedFirstPart + ' ' + key + ":");
+		result.setCount(result.getCount() + 1);
+	    }
 	}
 	return result;
     }

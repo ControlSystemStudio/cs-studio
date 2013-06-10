@@ -493,18 +493,32 @@ public class ValueFactory {
      * @return the wrapped value
      */
     public static VType wrapValue(Object value) {
+        return wrapValue(value, alarmNone());
+    }
+    
+    /**
+     * Takes a java objects and wraps it into a vType. All numbers are wrapped
+     * as VDouble. String is wrapped as VString. double[] and ListDouble are wrapped as
+     * VDoubleArray. A List of String is wrapped to a VStringArray. Alarms
+     * are alarm, time are timeNow() and display are displayNone();
+     * 
+     * @param value the value to wrap
+     * @param alarm the alarm for the value
+     * @return the wrapped value
+     */
+    public static VType wrapValue(Object value, Alarm alarm) {
         if (value instanceof Number) {
             // Special support for numbers
-            return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
+            return newVDouble(((Number) value).doubleValue(), alarm, timeNow(),
                     displayNone());
         } else if (value instanceof String) {
             // Special support for strings
             return newVString(((String) value),
-                    alarmNone(), timeNow());
+                    alarm, timeNow());
         } else if (value instanceof double[]) {
-            return newVDoubleArray(new ArrayDouble((double[]) value), alarmNone(), timeNow(), displayNone());
+            return newVDoubleArray(new ArrayDouble((double[]) value), alarm, timeNow(), displayNone());
         } else if (value instanceof ListDouble) {
-            return newVDoubleArray((ListDouble) value, alarmNone(), timeNow(), displayNone());
+            return newVDoubleArray((ListDouble) value, alarm, timeNow(), displayNone());
         } else if (value instanceof List) {
             boolean matches = true;
             List list = (List) value;
@@ -516,7 +530,7 @@ public class ValueFactory {
             if (matches) {
                 @SuppressWarnings("unchecked")
                 List<String> newList = (List<String>) list;
-                return newVStringArray(Collections.unmodifiableList(newList), alarmNone(), timeNow());
+                return newVStringArray(Collections.unmodifiableList(newList), alarm, timeNow());
             } else {
                 throw new UnsupportedOperationException("Type " + value.getClass().getName() + " contains non Strings");
             }

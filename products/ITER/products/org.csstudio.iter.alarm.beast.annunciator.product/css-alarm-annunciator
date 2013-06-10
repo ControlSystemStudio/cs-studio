@@ -44,9 +44,10 @@ unset REQUSER
 NAMES=("CSS Alarm Annunciator")
 
 function annunciator_start_hook {
-  aplay $CODAC_ROOT/css/alarm-annunciator/emptySound.wav > /dev/null 2>&1
+  echo '' | text2wave | aplay > /dev/null 2>&1
   if [ "$?" -ne "0" ] ; then
     echo -e "${RED}${NAME} failed to start: No sound card found!${NC}" 1>&2
+    echo "$(date) - CSS Alarm Annunciator failed to start: No sound card found." >> $CODAC_VAR/css/alarm-annunciator/console.log
     exit 1
   fi
 }

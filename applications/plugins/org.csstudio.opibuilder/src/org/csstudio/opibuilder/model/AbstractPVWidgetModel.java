@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.model;
 
 
+
 /**The abstract widget model for all PV related widgets. 
  * @author Xihui Chen
  *
@@ -30,6 +31,12 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
 	protected void configureBaseProperties() {
 		super.configureBaseProperties();		
 		getDelegate().configureBaseProperties();
+	}
+	
+	@Override
+	public void processVersionDifference() {
+		super.processVersionDifference();
+		delegate.processVersionDifference();		
 	}
 
 	public boolean isBorderAlarmSensitve(){

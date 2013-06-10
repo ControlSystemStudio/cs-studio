@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 
 /**
  * The model delegate for widgets have PV Name property.
@@ -20,7 +21,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 public class PVWidgetModelDelegate implements IPVWidgetModel{	
 	
 
-	AbstractWidgetModel model;
+	AbstractWidgetModel model;	
 
 	public PVWidgetModelDelegate(AbstractWidgetModel model) {
 		this.model = model;
@@ -60,6 +61,14 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
 	
 	public String getPVName(){
 		return (String)model.getCastedPropertyValue(PROP_PVNAME);
+	}
+	
+	public void processVersionDifference() {
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(model.getVersionOnFile())>0){
+			model.setPropertyValue(PROP_PVNAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(getPVName()));
+			
+		}
 	}
 
 }

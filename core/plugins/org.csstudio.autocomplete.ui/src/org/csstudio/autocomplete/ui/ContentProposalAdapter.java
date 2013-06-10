@@ -48,43 +48,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ContentProposalAdapter {
 	
-	private class SearchProposalTask implements Runnable {
-
-		private final int position;
-		private final String contents;
-		private final IContentProposalSearchHandler handler;
-
-		private boolean canceled = false;
-
-		public SearchProposalTask(String contents, int position,
-				IContentProposalSearchHandler handler) {
-			this.contents = contents;
-			this.position = position;
-			this.handler = handler;
-		}
-
-		@Override
-		public void run() {
-			final ContentProposalList proposals = proposalProvider
-					.getProposals(contents, position, maxDisplay);
-			if (!canceled) {
-				if (getControl().isDisposed())
-					return;
-				getControl().getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						handler.handleResult(proposals);
-					}
-				});
-			}
-		}
-
-		public void cancel() {
-			canceled = true;
-			proposalProvider.cancel();
-		}
-	}
-
 	/**
 	 * Flag that controls the printing of debug info.
 	 */
@@ -230,7 +193,6 @@ public class ContentProposalAdapter {
 	 */
 	private ILabelProvider labelProvider;
 	
-	private SearchProposalTask currentTask;
 	private int maxDisplay = 10;
 	
 	private AutoCompleteHistory history;
@@ -480,13 +442,6 @@ public class ContentProposalAdapter {
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 		
-		control.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
-				history.addEntry(getControlContentAdapter()
-						.getControlContents(getControl()));
-			}
-		});
-
 		if (DEBUG) {
 			System.out
 					.println("ContentProposalAdapter#installControlListener() - installed"); //$NON-NLS-1$
@@ -500,8 +455,7 @@ public class ContentProposalAdapter {
 				System.out.println("POPUP OPENED BY PRECEDING EVENT"); //$NON-NLS-1$
 			}
 			recordCursorPosition();
-			popup = new ContentProposalPopup(this, null, proposalList,
-					maxDisplay);
+			popup = new ContentProposalPopup(this, null, proposalList, maxDisplay);
 			popup.open();
 			popup.getShell().addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent event) {
@@ -532,8 +486,19 @@ public class ContentProposalAdapter {
 				recordCursorPosition(); // must be done before getting proposals
 				getProposals(new IContentProposalSearchHandler() {
 					@Override
-					public void handleResult(ContentProposalList proposalList) {
-						initPopup(proposalList, autoActivated);
+					public void handleResult(
+							final ContentProposalList proposalList) {
+						if (isValid()) {
+							getControl().getDisplay().syncExec(new Runnable() {
+								public void run() {
+									if (popup == null) {
+										initPopup(proposalList, autoActivated);
+									} else {
+										popup.refreshProposals(proposalList);
+									}
+								}
+							});
+						}
 					}
 				});
 			}
@@ -556,10 +521,8 @@ public class ContentProposalAdapter {
 		final String contents = getControlContentAdapter().getControlContents(getControl());
 		
 		// Interrupt current search & start new
-		if (currentTask != null)
-			currentTask.cancel();
-		currentTask = new SearchProposalTask(contents, position, listener);
-		new Thread(currentTask).start();
+		proposalProvider.cancel();
+		proposalProvider.getProposals(contents, position, maxDisplay, listener);
 	}
 
 	/**
@@ -964,7 +927,7 @@ public class ContentProposalAdapter {
 		}
 		
 		// Add entry to history
-		history.addEntry(proposal.getContent());
+		// history.addEntry(proposal.getContent());
 
 		// In all cases, notify listeners of an accepted proposal.
 		notifyProposalAccepted(proposal);
@@ -981,10 +944,10 @@ public class ContentProposalAdapter {
 			controlContentAdapter.setControlContents(control, text,
 					cursorPosition);
 			// send 'enter' event to control
-			Event event = new Event();
-			event.keyCode = SWT.CR;
-			event.type = SWT.KeyDown;
-			control.notifyListeners(SWT.KeyDown, event);
+			// Event event = new Event();
+			// event.keyCode = SWT.CR;
+			// event.type = SWT.KeyDown;
+			// control.notifyListeners(SWT.KeyDown, event);
 		}
 	}
 
@@ -1222,6 +1185,10 @@ public class ContentProposalAdapter {
 
 	public void setMaxDisplay(int maxDisplay) {
 		this.maxDisplay = maxDisplay;
+	}
+
+	public AutoCompleteHistory getHistory() {
+		return history;
 	}
 	
 }

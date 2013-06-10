@@ -87,15 +87,20 @@ public class AlarmTreeView extends ViewPart
     	}
         if (model.isWriteAllowed())
         {
+            toolbar.add(new MaintenanceModeAction(model));
+            toolbar.add(new Separator());
+        }
+        
+        final Shell shell = parent.getShell();
+		toolbar.add(new InfoAction(shell, model));
+		
+        if (model.isWriteAllowed())
+        {
             // TODO Toolbar layout problems on some OS/WS.
             // On OS X/cocoa, Toolbar buttons 'wrap' around to the next
             // line when the view is too small.
             // On Linux/GTK, however, buttons vanish at the right edge of the view.
             // Tried SWT.Resize listener with toolbar.update(true), no improvement.
-            final Shell shell = parent.getShell();
-            toolbar.add(new MaintenanceModeAction(model));
-            toolbar.add(new Separator());
-			toolbar.add(new InfoAction(shell, model));
             toolbar.add(new DebugAction(shell, model));
             toolbar.add(new ConfigureItemAction(shell, model, gui.getTreeViewer()));
             toolbar.add(new AcknowledgeAction(true, gui.getTreeViewer()));
@@ -109,8 +114,13 @@ public class AlarmTreeView extends ViewPart
         getSite().setSelectionProvider(gui.getTreeViewer());
     }
 
+    
+    
+    
     /** {@inheritDoc} */
+    
     @Override
+    
     public void setFocus()
     {
         if (gui != null)

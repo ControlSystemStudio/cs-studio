@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.core.util.feature"
       label="CSS Core Component"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -278,13 +278,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.pva"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.pvmanager.sim"
          download-size="0"
          install-size="0"
@@ -321,20 +314,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.epics.pvaccess"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.epics.pvdata"
          download-size="0"
          install-size="0"
          version="0.0.0"
