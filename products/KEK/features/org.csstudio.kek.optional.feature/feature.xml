@@ -41,6 +41,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
