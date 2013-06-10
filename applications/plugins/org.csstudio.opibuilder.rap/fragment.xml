@@ -84,11 +84,4 @@
       </filter>
    </extension>
    
-   <!-- Disable New Plot on toolbar -->
-   <extension point="org.eclipse.ui.activities">
-   		<activity id="org.csstudio.opibuilder.rap.disablextensions" name="Hidden activities" />
-   		<activityPatternBinding
-        	activityId="org.csstudio.opibuilder.rap.disablextensions"
-        	pattern="org.csstudio.trends.databrowser.*" />
-	</extension>
 </fragment>
