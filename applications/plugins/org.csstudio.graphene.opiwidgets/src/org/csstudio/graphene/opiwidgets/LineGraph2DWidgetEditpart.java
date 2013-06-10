@@ -4,8 +4,6 @@
 package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.LineGraph2DWidget;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -33,22 +31,9 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// The handler when PV value changed.
-		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure figure) {
-				configure(getFigure(), getWidgetModel());
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_DATA_FORMULA, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_X_FORMULA, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_Y_FORMULA, reconfigure);
-//		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.CONFIGURABLE, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_RESIZABLE_AXIS, reconfigure);
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, reconfigure);
+		super.registerPropertyChangeHandlers();
+		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }
