@@ -36,6 +36,9 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DeviceValueConditionHeadlessTest
 {
+    @SuppressWarnings("unused")
+    private long updates = 0;
+    
     private PVDevice getDemoDevice() throws Exception
     {
     	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv", "demo"));
@@ -48,6 +51,8 @@ public class DeviceValueConditionHeadlessTest
 			{
 				synchronized (device)
 				{
+				    // Update something to avoid FindBugs "Naked Notify" warning
+				    ++updates;
 					device.notifyAll();
 				}
 			}

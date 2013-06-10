@@ -77,6 +77,6 @@ abstract public class ScanSample
 	@Override
 	public String toString()
 	{
-	    return ScanSampleFormatter.format(timestamp);
+	    return ScanSampleFormatter.format(timestamp) + " [" + serial + "]";
 	}
 }

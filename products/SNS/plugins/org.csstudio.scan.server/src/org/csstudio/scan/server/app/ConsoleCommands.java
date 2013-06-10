@@ -184,6 +184,7 @@ public class ConsoleCommands implements CommandProvider
             final long id = Long.parseLong(arg.trim());
             // Dump data
             final ScanData data = server.getScanData(id);
+            final long last_serial = server.getLastScanDataSerial(id);
             final ScanDataIterator sheet = new ScanDataIterator(data);
 
             // Header: Device names
@@ -198,6 +199,8 @@ public class ConsoleCommands implements CommandProvider
                 	intp.print(sample + "  ");
                 intp.println();
             }
+            intp.println("Last sample serial: " + last_serial);
+
             // Dump scan info
             intp.println(server.getScanInfo(id));
         }

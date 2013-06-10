@@ -81,5 +81,6 @@ public class JythonSupportUnitTest
         assertEquals(1, samples.size());
         System.out.println("Value: " + samples.get(0));
         assertEquals(42.0, (Double) samples.get(0).getValues()[0], 0.01);
+        log.close();
     }
 }

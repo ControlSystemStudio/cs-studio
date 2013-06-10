@@ -41,18 +41,39 @@ public class LoggedScan extends Scan
     {
         return new ScanInfo(this, getScanState());
     }
+    
+    /** Get serial of last logged sample.
+     *
+     *  <p>Can be used to determine if there are new samples
+     *  that should be fetched via <code>getScanData()</code>
+     *
+     *  @return Serial of last sample in scan data or -1 if nothing has been logged
+     *  @throws Exception on error
+     *  @see #getScanData()
+     */
+    public long getLastScanDataSerial() throws Exception
+    {
+        try
+        (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
+        {
+            return logger.getLastScanDataSerial();
+        }
+    }
 
-    /** {@inheritDoc} */
+    /** Get logged samples.
+     *  @return {@link ScanData}
+     *  @throws Exception on error
+     */
 	public ScanData getScanData() throws Exception
 	{
-	    final DataLog logger = DataLogFactory.getDataLog(this);
 	    try
+	    (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
 	    {
 	        return logger.getScanData();
-	    }
-	    finally
-	    {
-	        logger.close();
 	    }
 	}
 
