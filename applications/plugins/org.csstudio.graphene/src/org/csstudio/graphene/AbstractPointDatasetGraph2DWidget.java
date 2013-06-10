@@ -47,7 +47,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 	private VImageDisplay imageDisplay;
 	private T graph;
 	private ErrorBar errorBar;
-	private boolean showAxis = true;
+	private boolean resizableAxis = true;
 	private StartEndRangeWidget yRangeControl;
 	private StartEndRangeWidget xRangeControl;
 
@@ -99,7 +99,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 				}
 			}
 		});
-		yRangeControl.setVisible(showAxis);
+		yRangeControl.setVisible(resizableAxis);
 
 		imageDisplay = new VImageDisplay(this);
 		FormData fd_imageDisplay = new FormData();
@@ -145,7 +145,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 				}
 			}
 		});
-		xRangeControl.setVisible(showAxis);
+		xRangeControl.setVisible(resizableAxis);
 
 		addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -156,9 +156,9 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 						|| event.getPropertyName().equals("yColumnFormula")
 						|| event.getPropertyName().equals("tooltipFormula")) {
 					reconnect();
-				} else if (event.getPropertyName().equals("showAxis")) {
-					xRangeControl.setVisible(showAxis);
-					yRangeControl.setVisible(showAxis);
+				} else if (event.getPropertyName().equals("resizableAxis")) {
+					xRangeControl.setVisible(resizableAxis);
+					yRangeControl.setVisible(resizableAxis);
 					redraw();
 				}
 
@@ -186,14 +186,14 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 		return graph;
 	}
 
-	public boolean isShowAxis() {
-		return showAxis;
+	public boolean isResizableAxis() {
+		return resizableAxis;
 	}
 
-	public void setShowAxis(boolean showAxis) {
-		boolean oldValue = this.showAxis;
-		this.showAxis = showAxis;
-		changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
+	public void setResizableAxis(boolean resizableAxis) {
+		boolean oldValue = this.resizableAxis;
+		this.resizableAxis = resizableAxis;
+		changeSupport.firePropertyChange("resizableAxis", oldValue, this.resizableAxis);
 	}
 
 	private void setLastError(Exception lastException) {

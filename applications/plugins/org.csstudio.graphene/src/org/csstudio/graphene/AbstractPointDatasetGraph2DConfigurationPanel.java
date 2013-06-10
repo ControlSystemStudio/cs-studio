@@ -22,7 +22,7 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 	private Text textDataFormula;
 	private Text textXColumnFormula;
 	private Text textYColumnFormula;
-	private Button btnShowAxis;
+	private Button btnResizableAxis;
 
 	public AbstractPointDatasetGraph2DConfigurationPanel(Composite parent,
 			int style) {
@@ -102,13 +102,13 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 		}
 	}
 
-	public boolean getShowAxis() {
-		return this.btnShowAxis.getSelection();
+	public boolean isResizableAxis() {
+		return this.btnResizableAxis.getSelection();
 	}
 
 	public void setShowAxis(boolean showAxis) {
-		this.btnShowAxis.setSelection(showAxis);
-		changeSupport.firePropertyChange("showAxisScroll", null, getShowAxis());
+		this.btnResizableAxis.setSelection(showAxis);
+		changeSupport.firePropertyChange("resizableAxis", null, isResizableAxis());
 	}
 
 }

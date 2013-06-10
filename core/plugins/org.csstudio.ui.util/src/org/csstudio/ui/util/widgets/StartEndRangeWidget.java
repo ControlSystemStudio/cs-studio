@@ -18,9 +18,12 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+
+import sun.nio.cs.ext.MacArabic;
 
 /**
  * @author shroffk
@@ -45,7 +48,7 @@ public class StartEndRangeWidget extends Canvas {
     }
 
     private enum MOVE {
-	SELECTEDMIN, SELECTEDMAX, RANGE, NONE
+	SELECTEDMIN, SELECTEDMAX, RANGE, NONE, SELECTED
     }
 
     private Set<RangeListener> listeners = new HashSet<RangeListener>();
@@ -307,14 +310,15 @@ public class StartEndRangeWidget extends Canvas {
 		valueAlongOrientationAxis = e.y;
 		valueAlongNonOrientationAxis = e.x;
 	    }
-	    if ((valueAlongOrientationAxis >= minSelectedOval && valueAlongOrientationAxis <= minSelectedOval + 10)
+
+	    if ((valueAlongOrientationAxis >= minSelectedOval && valueAlongOrientationAxis <= minSelectedOval + 5)
 		    && (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 		moveControl = MOVE.SELECTEDMIN;
 		followMin = false;
-	    } else if ((valueAlongOrientationAxis >= maxSelectedOval && valueAlongOrientationAxis <= maxSelectedOval + 10)
+	    } else if ((valueAlongOrientationAxis >= maxSelectedOval + 5 && valueAlongOrientationAxis <= maxSelectedOval + 10)
 		    && (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 		moveControl = MOVE.SELECTEDMAX;
-		followMax = false;
+		followMin = false;
 	    } else if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
 		moveControl = MOVE.RANGE;
 		followMin = false;
@@ -346,15 +350,17 @@ public class StartEndRangeWidget extends Canvas {
 		double newSelectedMin = Math.max(
 			(valueAlongOrientationAxis - zero) / distancePerPx,
 			getMin());
-		setSelectedMin(newSelectedMin);
-		// setToolTipText(String.valueOf(newSelectedMin));
+		if (newSelectedMin < getSelectedMax()) {
+		    setSelectedMin(newSelectedMin);
+		}
 		break;
 	    case SELECTEDMAX:
 		double newSelectedMax = Math.min(
 			(valueAlongOrientationAxis - zero) / distancePerPx,
 			getMax());
-		setSelectedMax(newSelectedMax);
-		// setToolTipText(String.valueOf(newSelectedMax));
+		if (newSelectedMax > getSelectedMin()) {
+		    setSelectedMax(newSelectedMax);
+		}
 		break;
 	    case RANGE:
 		double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
@@ -381,52 +387,84 @@ public class StartEndRangeWidget extends Canvas {
 	fireRangeChanged();
     }
 
-    // Drawing function
+    /**
+     * Drawing function
+     * 
+     * The things that need to be painted are 2 arcs, fills for the arcs and
+     * binding lines.
+     */
     private PaintListener paintListener = new PaintListener() {
 
 	@Override
 	public void paintControl(PaintEvent e) {
 	    Point origin = new Point(5, 5);
 	    Point end;
-	    Point minOval;
-	    Point maxOval;
+
+	    int startAngle;
+
+	    Point minArc;
+	    Point maxArc;
+
+	    Point topLeft;
+	    Point bottomRight;
+
+	    e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
+
 	    if (Double.isInfinite(distancePerPx)) {
 		if (orientation.equals(ORIENTATION.HORIZONTAL)) {
+		    startAngle = 90;
 		    end = new Point(getClientArea().width - 5, 5);
-		    minOval = new Point(0, 0);
-		    maxOval = new Point(getClientArea().width - 11, 0);
+		    minArc = new Point(0, 0);
+		    topLeft = new Point(minArc.x, 0);
+		    maxArc = new Point(getClientArea().width - 11, 0);
+		    bottomRight = new Point(maxArc.x + 5, 10);
+
 		} else {
+		    startAngle = 360;
 		    end = new Point(5, getClientArea().height - 5);
-		    minOval = new Point(0, 0);
-		    maxOval = new Point(0, getClientArea().height - 11);
+		    minArc = new Point(0, 0);
+		    topLeft = new Point(minArc.x, 5);
+		    maxArc = new Point(0, getClientArea().height - 11);
+		    bottomRight = new Point(maxArc.x, maxArc.y + 5);
 		}
 	    } else {
 		double zero = (0 - min) * distancePerPx;
 		if (orientation.equals(ORIENTATION.HORIZONTAL)) {
+		    startAngle = 90;
 		    end = new Point(getClientArea().width - 5, 5);
-		    minOval = new Point(
+		    minArc = new Point(
 			    (int) (zero + (selectedMin * distancePerPx)), 0);
-		    maxOval = new Point(
+		    topLeft = new Point(minArc.x, minArc.y);
+		    maxArc = new Point(
 			    (int) (zero + (selectedMax * distancePerPx)) - 1, 0);
+		    bottomRight = new Point(maxArc.x, maxArc.y + 10);
 		} else {
+		    startAngle = 360;
 		    end = new Point(5, getClientArea().height - 5);
-		    minOval = new Point(0,
+		    minArc = new Point(0,
 			    (int) (zero + (selectedMin * distancePerPx)));
-		    maxOval = new Point(0,
+		    topLeft = new Point(minArc.x - 5, minArc.y + 5);
+		    maxArc = new Point(0,
 			    (int) (zero + (selectedMax * distancePerPx)) - 1);
+		    bottomRight = new Point(maxArc.x + 5, maxArc.y + 5);
 		}
 	    }
 
 	    // Draw the line of appropriate size
 	    e.gc.drawLine(origin.x, origin.y, end.x, end.y);
 
-	    e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
-	    // min selected
-	    e.gc.drawOval(minOval.x, minOval.y, 10, 10);
-	    e.gc.fillOval(minOval.x + 1, minOval.y + 1, 9, 9);
-	    // max selected
-	    e.gc.drawOval(maxOval.x, maxOval.y, 10, 10);
-	    e.gc.fillOval(maxOval.x + 1, maxOval.y + 1, 9, 9);
+	    // arc for min selected
+	    e.gc.drawArc(minArc.x, minArc.y, 10, 10, startAngle, 180);
+	    e.gc.fillArc(minArc.x + 1, minArc.y + 1, 9, 9, startAngle, 180);
+	    // arc for max selected
+	    e.gc.drawArc(maxArc.x, maxArc.y, 10, 10, startAngle, -180);
+	    e.gc.fillArc(maxArc.x + 1, maxArc.y + 1, 9, 9, startAngle, -180);
+
+	    Rectangle rectangle = new Rectangle(topLeft.x + 5, topLeft.y,
+		    bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+	    e.gc.drawRectangle(rectangle);
+	    e.gc.fillRectangle(rectangle.x + 1, rectangle.y + 1,
+		    rectangle.width - 1, rectangle.height - 1);
 	}
     };
 }
