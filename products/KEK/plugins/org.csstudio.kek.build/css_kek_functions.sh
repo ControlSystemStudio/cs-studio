@@ -22,12 +22,17 @@ function num_seq {
 #  1: URLs separated by a white space
 # =========================================================================
 function append_urls {
-    local URLS=$(echo "$1" | tr ' ' '*')
-    if [ -z "${ARCHIVE_URLS}" ]; then
-        ARCHIVE_URLS="${URLS}"
-    else
-        ARCHIVE_URLS="${ARCHIVE_URLS}*${URLS}"
-    fi
+    local URLS=($(echo "$1"))
+    local BASE_NAME="$2"
+    for i in $(seq 1 ${#URLS[@]}); do
+        URL=${URLS[$i-1]}
+        ALIAS=$(eval 'echo $'${BASE_NAME}${i})
+        if [ -z "${ARCHIVE_URLS}" ]; then
+            ARCHIVE_URLS="${URL}|${ALIAS}"
+        else
+            ARCHIVE_URLS="${ARCHIVE_URLS}*${URL}|${ALIAS}"
+        fi
+    done
 }
 
 # =========================================================================
@@ -38,12 +43,17 @@ function append_urls {
 #  1: URLs separated by a white space
 # =========================================================================
 function prepend_urls {
-    local URLS=$(echo "$1" | tr ' ' '*')
-    if [ -z "${ARCHIVE_URLS}" ]; then
-        ARCHIVE_URLS="${URLS}"
-    else
-        ARCHIVE_URLS="${URLS}*${ARCHIVE_URLS}"
-    fi
+    local URLS=($(echo "$1"))
+    local BASE_NAME="$2"
+    for i in $(seq 1 ${#URLS[@]}); do
+        URL=${URLS[$i-1]}
+        ALIAS=$(eval 'echo $'${BASE_NAME}${i})
+        if [ -z "${ARCHIVE_URLS}" ]; then
+            ARCHIVE_URLS="${URL}|${ALIAS}"
+        else
+            ARCHIVE_URLS="${URL}|${ALIAS}*${ARCHIVE_URLS}"
+        fi
+    done
 }
 
 # =========================================================================
@@ -53,10 +63,11 @@ function prepend_urls {
 #  ARCHIVE_URLS: URLs separated by '*'
 # =========================================================================
 function unique_urls {
-    local URLS=$(echo "${ARCHIVE_URLS}" | tr '*' ' ')
+    local OIFS=${IFS}
+    IFS="*"
     local UNIQUE_URLS=""
 
-    for URL1 in ${URLS}; do
+    for URL1 in ${ARCHIVE_URLS}; do
         DUPLICATED=0
 
         for URL2 in ${UNIQUE_URLS}; do
@@ -70,12 +81,13 @@ function unique_urls {
             if [ -z "${UNIQUE_URLS}" ]; then
                 UNIQUE_URLS="${URL1}"
             else
-                UNIQUE_URLS="${UNIQUE_URLS} ${URL1}"
+                UNIQUE_URLS="${UNIQUE_URLS}*${URL1}"
             fi
         fi
     done
 
-    ARCHIVE_URLS=$(echo "${UNIQUE_URLS}" | tr ' ' '*')
+    ARCHIVE_URLS=${UNIQUE_URLS}
+    IFS=${OIFS}
 }
 
 # =========================================================================
@@ -163,7 +175,7 @@ function css_kek_settings {
             done
             
         # Set archiver URLs
-            prepend_urls "${URLS}"
+            prepend_urls "${URLS}" "${a}_ARCHIVE_ALIAS_"
 
         # Set sub archive names for each archiver URL
             i=1
@@ -176,7 +188,7 @@ function css_kek_settings {
             valid=1
         else
         # Set archiver URLs
-            append_urls "${URLS}"
+            append_urls "${URLS}" "${a}_ARCHIVE_ALIAS_"
         fi
     done
 
