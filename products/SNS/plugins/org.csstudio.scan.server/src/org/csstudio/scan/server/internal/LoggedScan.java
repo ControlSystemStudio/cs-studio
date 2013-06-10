@@ -53,14 +53,12 @@ public class LoggedScan extends Scan
      */
     public long getLastScanDataSerial() throws Exception
     {
-        final DataLog logger = DataLogFactory.getDataLog(this);
         try
+        (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
         {
             return logger.getLastScanDataSerial();
-        }
-        finally
-        {
-            logger.close();
         }
     }
 
@@ -70,14 +68,12 @@ public class LoggedScan extends Scan
      */
 	public ScanData getScanData() throws Exception
 	{
-	    final DataLog logger = DataLogFactory.getDataLog(this);
 	    try
+	    (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
 	    {
 	        return logger.getScanData();
-	    }
-	    finally
-	    {
-	        logger.close();
 	    }
 	}
 

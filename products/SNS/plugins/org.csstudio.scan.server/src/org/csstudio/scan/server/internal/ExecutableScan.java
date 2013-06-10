@@ -364,11 +364,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0}", getName());
 
         try
+        (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
         {
-            // Open logger for execution of scan
+            // Set logger for execution of scan
             synchronized (this)
             {
-                data_logger = DataLogFactory.getDataLog(this);
+                data_logger = logger;
             }
             execute_or_die_trying();
         }
@@ -390,10 +393,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         // Set actual end time, not estimated
         end_ms = System.currentTimeMillis();
-        // Close data logger
+        // Un-set data logger
         synchronized (this)
         {
-            data_logger.close();
             data_logger = null;
         }
         return null;

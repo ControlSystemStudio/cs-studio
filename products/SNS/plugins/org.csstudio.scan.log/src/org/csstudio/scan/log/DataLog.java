@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.log;
 
+import java.io.Closeable;
+
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
@@ -25,7 +27,7 @@ import org.csstudio.scan.data.ScanSample;
  *
  *  @author Kay Kasemir
  */
-abstract public class DataLog
+abstract public class DataLog implements Closeable
 {
 	/** Serial of last logged sample */
     protected long last_serial = -1;
@@ -79,7 +81,8 @@ abstract public class DataLog
     /** Should be called when done logging samples
      *  to allow logging mechanism to release resources.
      */
-	public void close()
+	@Override
+    public void close()
 	{
 		// NOP
 	}
