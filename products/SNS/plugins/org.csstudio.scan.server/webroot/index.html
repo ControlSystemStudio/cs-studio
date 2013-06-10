@@ -93,7 +93,6 @@ Returns default devices for scan ID -1: <a href="scan/-1/devices">/scan/-1/devic
 <dd>XML with device infos</dd>
 </dl>
 
-
 <p>Get logged data of a specific scan.</p>
 <dl>
 <dt>Method</dt>
@@ -104,6 +103,15 @@ Returns default devices for scan ID -1: <a href="scan/-1/devices">/scan/-1/devic
 <dd>XML with scan data</dd>
 </dl>
 
+<p>Get last sample's serial for logged data of a specific scan.</p>
+<dl>
+<dt>Method</dt>
+<dd>GET</dd>
+<dt>URL</dt>
+<dd>/scan/{id}/last_serial</a></dd>
+<dt>Result</dt>
+<dd>XML with last sample's serial, example: <code>&ltserial>142&lt/serial></code></dd>
+</dl>
 
 
 <h2>Put Scan into different States</h2>

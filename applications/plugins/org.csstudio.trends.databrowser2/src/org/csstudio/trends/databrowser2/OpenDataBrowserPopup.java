@@ -33,14 +33,15 @@ public class OpenDataBrowserPopup extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
+    	//Get selection first because the ApplicationContext might change.
+        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
             return null;
-        final Model model = editor.getModel();
-
+        
         // Add received items
-        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
+        final Model model = editor.getModel();       
         try
         {
             if (selection.getFirstElement() instanceof ChannelInfo)

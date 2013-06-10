@@ -86,7 +86,7 @@ public interface ScanServer
      *  that should be fetched via <code>getScanData()</code>
      *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
-     *  @return Serial of last sample in scan data
+     *  @return Serial of last sample in scan data or -1 if nothing has been logged
      *  @see #getScanData(long)
      */
     public long getLastScanDataSerial(long id) throws Exception;

@@ -42,11 +42,17 @@ public class ScanDataModel implements ScanInfoModelListener
 	/** Most recent scan data */
 	private ScanData scan_data = null;
 
+	/** Last sample serial of scan data */
+	private long last_scan_data_serial = -1;
+
 	/** Listener to notify about updates in the scan's data */
 	final private ScanDataModelListener listener;
 
-	private long last_scan_data_serial = -1;
-
+	/** Initialize
+	 *  @param scan_id ID of scan to monitor
+	 *  @param listener {@link ScanDataModelListener}
+	 *  @throws Exception on error
+	 */
 	public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
     {
 		this.scan_id = scan_id;
@@ -81,11 +87,11 @@ public class ScanDataModel implements ScanInfoModelListener
     {
 		try
 		{
-			// TODO Any change in the data?
+			// Any change in the data?
 			final ScanClient client = scan_info_model.getScanClient();
-//			final long serial = server.getLastScanDataSerial(scan_id);
-//			if (serial == last_scan_data_serial)
-//				return;
+			final long serial = client.getLastScanDataSerial(scan_id);
+			if (serial == last_scan_data_serial)
+				return;
 
 			// Get data
 			final ScanData data = client.getScanData(scan_id);
@@ -93,6 +99,7 @@ public class ScanDataModel implements ScanInfoModelListener
 			{
 				scan_data = data;
 			}
+			last_scan_data_serial = serial;
 			// Update listener
 			listener.updateScanData(data);
 		}

@@ -56,7 +56,7 @@ public class ServletHelper
      *  @param text Text content
      *  @return XML element
      */
-    private static Element createElement(final Document doc,
+    public static Element createXMLElement(final Document doc,
             final String name, final String text)
     {
         final Element el = doc.createElement(name);
@@ -70,10 +70,10 @@ public class ServletHelper
      *  @param number Number content
      *  @return XML element
      */
-    private static Element createElement(final Document doc,
+    public static Element createXMLElement(final Document doc,
             final String name, final Long number)
     {
-        return createElement(doc, name, Long.toString(number));
+        return createXMLElement(doc, name, Long.toString(number));
     }
 
     /** Create XML element for date, encoded as milliseconds since epoch
@@ -82,10 +82,10 @@ public class ServletHelper
      *  @param date Date content
      *  @return XML element
      */
-    private static Element createElement(final Document doc,
+    public static Element createXMLElement(final Document doc,
             final String name, final Date date)
     {
-        return createElement(doc, name, date.getTime());
+        return createXMLElement(doc, name, date.getTime());
     }
     
     /** Create XML content for scan server info
@@ -96,12 +96,12 @@ public class ServletHelper
     public static Element createXMLElement(final Document doc, final ScanServerInfo info)
     {
         final Element server = doc.createElement("server");
-        server.appendChild(createElement(doc, "version", info.getVersion()));
-        server.appendChild(createElement(doc, "start_time", info.getStartTime()));
-        server.appendChild(createElement(doc, "beamline_config", info.getBeamlineConfig()));
-        server.appendChild(createElement(doc, "simulation_config", info.getSimulationConfig()));
-        server.appendChild(createElement(doc, "used_mem", info.getUsedMem()));
-        server.appendChild(createElement(doc, "max_mem", info.getMaxMem()));
+        server.appendChild(createXMLElement(doc, "version", info.getVersion()));
+        server.appendChild(createXMLElement(doc, "start_time", info.getStartTime()));
+        server.appendChild(createXMLElement(doc, "beamline_config", info.getBeamlineConfig()));
+        server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
+        server.appendChild(createXMLElement(doc, "used_mem", info.getUsedMem()));
+        server.appendChild(createXMLElement(doc, "max_mem", info.getMaxMem()));
         return server;
     }
 
@@ -114,28 +114,28 @@ public class ServletHelper
     {
         final Element scan = doc.createElement("scan");
         
-        scan.appendChild(createElement(doc, "id", info.getId()));
-        scan.appendChild(createElement(doc, "name", info.getName()));
-        scan.appendChild(createElement(doc, "created", info.getCreated()));
-        scan.appendChild(createElement(doc, "state", info.getState().name()));
-        scan.appendChild(createElement(doc, "runtime", info.getRuntimeMillisecs()));
+        scan.appendChild(createXMLElement(doc, "id", info.getId()));
+        scan.appendChild(createXMLElement(doc, "name", info.getName()));
+        scan.appendChild(createXMLElement(doc, "created", info.getCreated()));
+        scan.appendChild(createXMLElement(doc, "state", info.getState().name()));
+        scan.appendChild(createXMLElement(doc, "runtime", info.getRuntimeMillisecs()));
 
         if (info.getTotalWorkUnits() > 0)
         {
-            scan.appendChild(createElement(doc, "total_work_units", info.getTotalWorkUnits()));
-            scan.appendChild(createElement(doc, "performed_work_units", info.getPerformedWorkUnits()));
+            scan.appendChild(createXMLElement(doc, "total_work_units", info.getTotalWorkUnits()));
+            scan.appendChild(createXMLElement(doc, "performed_work_units", info.getPerformedWorkUnits()));
         }
         
         final Date finish = info.getFinishTime();
         if (finish != null)
-            scan.appendChild(createElement(doc, "finish", finish));
+            scan.appendChild(createXMLElement(doc, "finish", finish));
 
-        scan.appendChild(createElement(doc, "address", info.getCurrentAddress()));
-        scan.appendChild(createElement(doc, "command", info.getCurrentCommand()));
+        scan.appendChild(createXMLElement(doc, "address", info.getCurrentAddress()));
+        scan.appendChild(createXMLElement(doc, "command", info.getCurrentCommand()));
         
         final String error = info.getError();
         if (error != null)
-            scan.appendChild(createElement(doc, "error", error));
+            scan.appendChild(createXMLElement(doc, "error", error));
 
         return scan;
     }
@@ -152,15 +152,15 @@ public class ServletHelper
         for (String device_name : data.getDevices())
         {
             final Element device = doc.createElement("device");
-            device.appendChild(createElement(doc, "name", device_name));
+            device.appendChild(createXMLElement(doc, "name", device_name));
         
             final Element samples = doc.createElement("samples");
             for (ScanSample data_sample : data.getSamples(device_name))
             {
                 final Element sample = doc.createElement("sample");
                 sample.setAttribute("id", Long.toString(data_sample.getSerial()));
-                sample.appendChild(createElement(doc, "time", data_sample.getTimestamp()));
-                sample.appendChild(createElement(doc, "value", ScanSampleFormatter.asString(data_sample)));
+                sample.appendChild(createXMLElement(doc, "time", data_sample.getTimestamp()));
+                sample.appendChild(createXMLElement(doc, "value", ScanSampleFormatter.asString(data_sample)));
                 samples.appendChild(sample);
             }
             
@@ -182,19 +182,19 @@ public class ServletHelper
         for (DeviceInfo info : devices)
         {
             final Element device = doc.createElement("device");
-            device.appendChild(createElement(doc, "name", info.getName()));
-            device.appendChild(createElement(doc, "alias", info.getAlias()));
+            device.appendChild(createXMLElement(doc, "name", info.getName()));
+            device.appendChild(createXMLElement(doc, "alias", info.getAlias()));
             if (! info.getStatus().isEmpty())
-                device.appendChild(createElement(doc, "status", info.getStatus()));
+                device.appendChild(createXMLElement(doc, "status", info.getStatus()));
             result.appendChild(device);
         }
 
         return result;
     }
 
-    /** Submit XML HTTP client
+    /** Submit XML to HTTP client
      *  @param doc {@link Document} to submit
-     *  @param response {@link HttpServletResponse}
+     *  @param response {@link HttpServletResponse} to which XML is submitted
      *  @throws Exception on error
      */
     public static void submitXML(final Document doc, final HttpServletResponse response) throws Exception
