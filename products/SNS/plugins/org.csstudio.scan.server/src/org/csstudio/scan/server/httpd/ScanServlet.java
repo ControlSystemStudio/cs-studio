@@ -177,6 +177,7 @@ public class ScanServlet extends HttpServlet
      *  <p>GET scan/{id} - get scan info
      *  <p>GET scan/{id}/commands - get scan commands
      *  <p>GET scan/{id}/data - get scan data
+     *  <p>GET scan/{id}/last_serial - get scan data's last serial
      *  <p>GET scan/{id}/devices - get devices used by a scan
      */
     @Override
@@ -203,12 +204,12 @@ public class ScanServlet extends HttpServlet
         final String object = path.size() < 2 ? null : path.getString(1);
         try
         {
-            final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             if (object == null)
             {   // Get Scan info
                 final ScanInfo info = scan_server.getScanInfo(id);
                 if (info == null)
                     throw new Exception("Unknown scan ID " + id);
+                final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
                 doc.appendChild(ServletHelper.createXMLElement(doc, info));
                 ServletHelper.submitXML(doc, response);
             }
@@ -222,12 +223,21 @@ public class ScanServlet extends HttpServlet
             else if ("data".equalsIgnoreCase(object))
             {   // Get data
                 final ScanData data = scan_server.getScanData(id);
+                final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
                 doc.appendChild(ServletHelper.createXMLElement(doc, data));
                 ServletHelper.submitXML(doc, response);
+            }
+            else if ("last_serial".equalsIgnoreCase(object))
+            {   // Get last serial of data
+                final long last_serial = scan_server.getLastScanDataSerial(id);
+                final ServletOutputStream out = response.getOutputStream();
+                out.print("<serial>" + last_serial + "</serial>");
+                out.flush();
             }
             else if ("devices".equalsIgnoreCase(object))
             {   // Get devices
                 final DeviceInfo[] devices = scan_server.getDeviceInfos(id);
+                final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
                 doc.appendChild(ServletHelper.createXMLElement(doc, devices));
                 ServletHelper.submitXML(doc, response);
             }

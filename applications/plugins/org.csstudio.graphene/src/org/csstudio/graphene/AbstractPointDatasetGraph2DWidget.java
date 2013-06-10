@@ -107,7 +107,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 		fd_imageDisplay.right = new FormAttachment(100, -2);
 		fd_imageDisplay.left = new FormAttachment(yRangeControl, 2);
 		imageDisplay.setLayoutData(fd_imageDisplay);
-		imageDisplay.setStretched(SWT.HORIZONTAL);
+		imageDisplay.setStretched(SWT.HORIZONTAL | SWT.VERTICAL);
 
 		imageDisplay.addControlListener(new ControlListener() {
 
