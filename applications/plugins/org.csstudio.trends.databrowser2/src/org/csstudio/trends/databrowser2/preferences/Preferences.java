@@ -52,7 +52,8 @@ public class Preferences
 			ARCHIVE_RESCALE = "archive_rescale",
 			USE_AUTO_SCALE = "use_auto_scale",
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
-			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view";
+			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
+			SECURE_DATA_BROWSER = "secure_data_browser";
 
     public static double getTimeSpan()
     {
@@ -210,11 +211,23 @@ public class Preferences
     
     /** @return <code>true</code> to hide search view on rap version.
      */
-    static public boolean hideSearchView()
+    public static boolean hideSearchView()
     {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
     }
+    
+    /** @return <code>true</code> to authentication is required to open data browser in rap.
+     */
+    public static boolean isDataBrowserSecured()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
+    }
+    
+    
 }

@@ -63,6 +63,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -140,6 +141,15 @@ public class DataBrowserEditor extends EditorPart
      */
     public static DataBrowserEditor createInstance()
     {
+    	if(SingleSourcePlugin.isRAP()){
+    		if(Preferences.isDataBrowserSecured() &&
+    				!SingleSourcePlugin.getUIHelper().rapIsLoggedIn(Display.getCurrent())){
+    			if(!SingleSourcePlugin.getUIHelper().rapAuthenticate(Display.getCurrent()))
+    				return null;
+    		}
+    			
+    	}
+    	
     	return createInstance(new EmptyEditorInput(){
     		@Override
     		public String getName() {
