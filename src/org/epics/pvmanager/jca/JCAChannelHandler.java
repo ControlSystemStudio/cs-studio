@@ -25,6 +25,8 @@ import gov.aps.jca.event.PutListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
@@ -63,6 +65,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     
     public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     private final static Pattern hasOptions = Pattern.compile("(.*) (\\{.*\\})");
+    
+    private final static Logger log = Logger.getLogger(JCAChannelHandler.class.getName());
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
@@ -168,6 +172,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
             @Override
             public void putCompleted(PutEvent ev) {
+                if (log.isLoggable(Level.FINEST)) {
+                    log.log(Level.FINEST, "JCA putCompleted for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                }
+                
                 if (ev.getStatus().isSuccessful()) {
                     callback.channelWritten(null);
                 } else {
@@ -256,6 +264,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 @Override
                 public void getCompleted(GetEvent ev) {
                     synchronized(JCAChannelHandler.this) {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA metadata getCompleted for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+                        
                         // In case the metadata arrives after the monitor
                         MonitorEvent event = null;
                         if (getLastMessagePayload() != null) {
@@ -281,6 +293,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 @Override
                 public void monitorChanged(MonitorEvent ev) {
                     synchronized(JCAChannelHandler.this) {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA metadata monitorChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+                        
                         // In case the metadata arrives after the monitor
                         MonitorEvent event = null;
                         if (getLastMessagePayload() != null) {
@@ -302,6 +318,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             public void connectionChanged(ConnectionEvent ev) {
                 synchronized(JCAChannelHandler.this) {
                     try {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA connectionChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+
                         // Take the channel from the event so that there is no
                         // synchronization problem
                         Channel channel = (Channel) ev.getSource();
@@ -352,6 +372,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
                             @Override
                             public void accessRightsChanged(AccessRightsEvent ev) {
+                                if (log.isLoggable(Level.FINEST)) {
+                                    log.log(Level.FINEST, "JCA accessRightsChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                                }
+                                
                                 // Some JNI implementation lock if calling getState
                                 // from within this callback. We context switch in that case
                                 final Channel channel = (Channel) ev.getSource();
@@ -387,6 +411,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         @Override
         public void monitorChanged(MonitorEvent event) {
             synchronized(JCAChannelHandler.this) {
+                if (log.isLoggable(Level.FINEST)) {
+                    log.log(Level.FINEST, "JCA value monitorChanged for channel {0} event {1}", new Object[] {getChannelName(), event});
+                }
+                
                 DBR metadata = null;
                 if (getLastMessagePayload() != null) {
                     metadata = getLastMessagePayload().getMetadata();
