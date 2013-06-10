@@ -3,7 +3,6 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.BubbleGraph2DWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
@@ -16,20 +15,8 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 	@Override
 	protected IFigure doCreateFigure() {
 		BubbleGraph2DWidgetFigure figure = new BubbleGraph2DWidgetFigure(this);
-		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel(), figure.isRunMode());
 		return figure;
-	}
-
-	private static void configure(BubbleGraph2DWidget widget,
-			BubbleGraph2DWidgetModel model, boolean runMode) {
-		if (runMode) {
-			widget.setDataFormula(model.getDataFormula());
-			widget.setXColumnFormula(model.getXColumnFormula());
-			widget.setYColumnFormula(model.getYColumnFormula());
-//			widget.setTooltipColumnFormula(model.getTooltipFormula());
-			widget.setResizableAxis(model.isResizableAxis());
-			//widget.setConfigurable(model.isConfigurable());
-		}
 	}
 
 	@Override
@@ -37,7 +24,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure().getSWTWidget(), getWidgetModel(),
+				configure(getFigure(), getWidgetModel(),
 						getFigure().isRunMode());
 				return false;
 			}

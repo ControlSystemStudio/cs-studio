@@ -17,19 +17,16 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 	@Override
 	protected IFigure doCreateFigure() {
 		LineGraph2DWidgetFigure figure = new LineGraph2DWidgetFigure(this);
-		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
-
-	private static void configure(LineGraph2DWidget widget,
+	
+	@Override
+	protected void configure(LineGraph2DWidgetFigure figure,
 			LineGraph2DWidgetModel model, boolean runMode) {
+		super.configure(figure, model, runMode);
+		LineGraph2DWidget widget = figure.getSWTWidget();
 		if (runMode) {
-			widget.setDataFormula(model.getDataFormula());
-			widget.setXColumnFormula(model.getXColumnFormula());
-			widget.setYColumnFormula(model.getYColumnFormula());
-//			widget.setTooltipColumnFormula(model.getTooltipFormula());
-			widget.setResizableAxis(model.isResizableAxis());
-			widget.setConfigurable(model.isConfigurable());
 			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
 			widget.setSelectionValuePv(model.getSelectionValuePv());
 		}
@@ -41,7 +38,7 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure().getSWTWidget(), getWidgetModel(),
+				configure(getFigure(), getWidgetModel(),
 						getFigure().isRunMode());
 				return false;
 			}

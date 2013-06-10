@@ -3,7 +3,6 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.ScatterGraph2DWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
@@ -22,20 +21,8 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 	@Override
 	protected IFigure doCreateFigure() {
 		ScatterGraph2DWidgetFigure figure = new ScatterGraph2DWidgetFigure(this);
-		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel(), figure.isRunMode());
 		return figure;
-	}
-
-	private static void configure(ScatterGraph2DWidget widget,
-			ScatterGraph2DWidgetModel model, boolean runMode) {
-		if (runMode) {
-			widget.setDataFormula(model.getDataFormula());
-			widget.setXColumnFormula(model.getXColumnFormula());
-			widget.setYColumnFormula(model.getYColumnFormula());
-//			widget.setTooltipColumnFormula(model.getTooltipFormula());
-			widget.setResizableAxis(model.isResizableAxis());
-			//widget.setConfigurable(model.isConfigurable());
-		}
 	}
 
 	/*
@@ -49,7 +36,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure().getSWTWidget(), getWidgetModel(),
+				configure(getFigure(), getWidgetModel(),
 						getFigure().isRunMode());
 				return false;
 			}
