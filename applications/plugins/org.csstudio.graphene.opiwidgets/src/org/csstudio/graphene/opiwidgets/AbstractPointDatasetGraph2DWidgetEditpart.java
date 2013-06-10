@@ -16,10 +16,9 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetEditpart;
 public abstract class AbstractPointDatasetGraph2DWidgetEditpart<F extends AbstractPointDatasetGraph2DWidgetFigure<? extends AbstractPointDatasetGraph2DWidget<?, ?>>,
 M extends AbstractPointDatasetGraph2DWidgetModel> extends AbstractSelectionWidgetEditpart<F, M> {
 
-	protected void configure(F figure,
-			M model, boolean runMode) {
+	protected void configure(F figure, M model) {
 		AbstractPointDatasetGraph2DWidget<?, ?> widget = figure.getSWTWidget();
-		if (runMode) {
+		if (figure.isRunMode()) {
 			widget.setDataFormula(model.getDataFormula());
 			widget.setXColumnFormula(model.getXColumnFormula());
 			widget.setYColumnFormula(model.getYColumnFormula());

@@ -15,7 +15,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 	@Override
 	protected IFigure doCreateFigure() {
 		BubbleGraph2DWidgetFigure figure = new BubbleGraph2DWidgetFigure(this);
-		configure(figure, getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel());
 		return figure;
 	}
 
@@ -24,8 +24,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure(), getWidgetModel(),
-						getFigure().isRunMode());
+				configure(getFigure(), getWidgetModel());
 				return false;
 			}
 		};

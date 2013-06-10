@@ -21,7 +21,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 	@Override
 	protected IFigure doCreateFigure() {
 		ScatterGraph2DWidgetFigure figure = new ScatterGraph2DWidgetFigure(this);
-		configure(figure, getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel());
 		return figure;
 	}
 
@@ -36,8 +36,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure(), getWidgetModel(),
-						getFigure().isRunMode());
+				configure(getFigure(), getWidgetModel());
 				return false;
 			}
 		};

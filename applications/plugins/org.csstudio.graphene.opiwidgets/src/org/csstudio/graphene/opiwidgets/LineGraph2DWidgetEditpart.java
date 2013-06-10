@@ -17,16 +17,15 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 	@Override
 	protected IFigure doCreateFigure() {
 		LineGraph2DWidgetFigure figure = new LineGraph2DWidgetFigure(this);
-		configure(figure, getWidgetModel(), figure.isRunMode());
+		configure(figure, getWidgetModel());
 		return figure;
 	}
 	
 	@Override
-	protected void configure(LineGraph2DWidgetFigure figure,
-			LineGraph2DWidgetModel model, boolean runMode) {
-		super.configure(figure, model, runMode);
+	protected void configure(LineGraph2DWidgetFigure figure, LineGraph2DWidgetModel model) {
+		super.configure(figure, model);
 		LineGraph2DWidget widget = figure.getSWTWidget();
-		if (runMode) {
+		if (figure.isRunMode()) {
 			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
 			widget.setSelectionValuePv(model.getSelectionValuePv());
 		}
@@ -38,8 +37,7 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(getFigure(), getWidgetModel(),
-						getFigure().isRunMode());
+				configure(getFigure(), getWidgetModel());
 				return false;
 			}
 		};
