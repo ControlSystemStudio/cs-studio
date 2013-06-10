@@ -202,13 +202,13 @@ public class PlotDataModel implements Runnable
             else
             {   // Get data for scan
                 try
-                {   // TODO Check if there is new data
+                {   // Check if there is new data
                     final ScanClient client = model.getScanClient();
-//                    final long current_serial = server.getLastScanDataSerial(scan.getId());
-//                    if (last_serial != current_serial)
-//                    {
-//                        last_serial = current_serial;
+                    final long current_serial = client.getLastScanDataSerial(scan.getId());
+                    if (last_serial != current_serial)
+                    {
                         final ScanData scan_data = client.getScanData(scan.getId());
+                        last_serial = current_serial;
                         if (scan_data == null)
                             devices = null;
                         else
@@ -220,8 +220,8 @@ public class PlotDataModel implements Runnable
                                     data.update(scan_data);
                             }
                         }
-//                    }
-                    // else: Skip fetching the same data. No plot_data.update, no events
+                    }
+                    // else: Skip fetching the same data. No data.update, no events
                 }
                 catch (Exception ex)
                 {

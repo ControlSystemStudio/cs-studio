@@ -28,7 +28,7 @@ import org.csstudio.scan.data.ScanSample;
 abstract public class DataLog
 {
 	/** Serial of last logged sample */
-    private long last_serial = -1;
+    protected long last_serial = -1;
 
     /** @return Next unique scan sample serial */
     public synchronized long getNextScanDataSerial()

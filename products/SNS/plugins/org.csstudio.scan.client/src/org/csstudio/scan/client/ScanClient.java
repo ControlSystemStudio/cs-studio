@@ -294,6 +294,33 @@ public class ScanClient
         }
     }
 
+    /** Get serial of last logged sample.
+     *
+     *  <p>Can be used to determine if there are new samples
+     *  that should be fetched via <code>getScanData()</code>
+     *
+     *  @param id ID that uniquely identifies a scan
+     *  @return Serial of last sample in scan data or -1 if nothing has been logged
+     *  @throws Exception on error
+     *  @see #getScanData(long)
+     */
+    public long getLastScanDataSerial(final long id) throws Exception
+    {
+        final HttpURLConnection connection = connect("/scan/" + id + "/last_serial");
+        try
+        {
+            checkResponse(connection);
+            final Element root_node = parseXML(connection);
+            if (! "serial".equals(root_node.getNodeName()))
+                throw new Exception("Expected <serial/>");
+            return Long.parseLong(root_node.getFirstChild().getNodeValue());
+        }
+        finally
+        {
+            connection.disconnect();
+        }
+    }
+
     /** Obtain devices used by a scan
      *  @param id ID that uniquely identifies a scan, or -1 to get default devices
      *  @return {@link ScanData}

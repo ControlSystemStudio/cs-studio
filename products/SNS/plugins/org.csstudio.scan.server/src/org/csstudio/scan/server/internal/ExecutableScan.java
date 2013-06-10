@@ -34,6 +34,7 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -69,8 +70,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Log each device access, or require specific log command? */
     private volatile transient boolean automatic_log_mode = false;
 
-    /** Data logger, non-null while when executing the scan */
-    private volatile transient DataLog data_logger = null;
+    /** Data logger, non-null while when executing the scan
+     *  SYNC on this for access
+     */
+    private transient DataLog data_logger = null;
 
     /** Total number of commands to execute */
     final private transient long total_work_units;
@@ -329,9 +332,27 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
 	/** {@inheritDoc} */
     @Override
-    public DataLog getDataLog()
+    public synchronized DataLog getDataLog()
     {
         return data_logger;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public synchronized long getLastScanDataSerial() throws Exception
+    {
+        if (data_logger == null)
+            return super.getLastScanDataSerial();
+        return data_logger.getLastScanDataSerial();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public synchronized ScanData getScanData() throws Exception
+    {
+        if (data_logger == null)
+            return super.getScanData();
+        return data_logger.getScanData();
     }
 
     /** Callable for executing all commands on the scan,
@@ -345,7 +366,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         try
         {
             // Open logger for execution of scan
-            data_logger = DataLogFactory.getDataLog(this);
+            synchronized (this)
+            {
+                data_logger = DataLogFactory.getDataLog(this);
+            }
             execute_or_die_trying();
         }
         catch (InterruptedException ex)
@@ -367,10 +391,11 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Set actual end time, not estimated
         end_ms = System.currentTimeMillis();
         // Close data logger
-        final DataLog copy = data_logger;
-        data_logger = null;
-        copy.close();
-
+        synchronized (this)
+        {
+            data_logger.close();
+            data_logger = null;
+        }
         return null;
     }
 
@@ -629,15 +654,5 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public void workPerformed(final int work_units)
     {
         work_performed.addAndGet(work_units);
-    }
-
-    // Compare by ID
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (! (obj instanceof ExecutableScan))
-            return false;
-        final ExecutableScan other = (ExecutableScan) obj;
-        return getId() == other.getId();
     }
 }
