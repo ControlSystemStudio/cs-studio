@@ -51,7 +51,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private ConnectionPayload connectionPayload;
     private Map<ChannelHandlerReadSubscription, MonitorHandler> monitors = new ConcurrentHashMap<>();
     private Map<WriteCache<?>, ChannelHandlerWriteSubscription> writeSubscriptions = new ConcurrentHashMap<>();
-
+    
     private class MonitorHandler {
 
         private final ChannelHandlerReadSubscription subscription;
@@ -153,6 +153,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * @param connectionPayload 
      */
     protected synchronized final void processConnection(ConnectionPayload connectionPayload) {
+        if (log.isLoggable(Level.FINEST)) {
+            log.log(Level.FINEST, "processConnection for channel {0} connecionPayload {1}", new Object[] {getChannelName(), connectionPayload});
+        }
+        
         this.connectionPayload = connectionPayload;
         setConnected(isConnected(connectionPayload));
         setWriteConnected(isWriteConnected(connectionPayload));
@@ -279,6 +283,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * @param payload the payload of for this type of channel
      */
     protected synchronized final void processMessage(MessagePayload payload) {
+        if (log.isLoggable(Level.FINEST)) {
+            log.log(Level.FINEST, "processMessage for channel {0} messagePayload {1}", new Object[]{getChannelName(), payload});
+        }
+        
         lastMessage = payload;
         for (MonitorHandler monitor : monitors.values()) {
             monitor.processValue(payload);
