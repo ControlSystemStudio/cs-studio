@@ -28,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
  * This class implements the widget edit part for the Byte Monitor widget.  This
  * displays the bits in a value as s series of LEDs
  * @author hammonds
- *
+ * @author Takashi Nakamoto - added labels property
  */
 public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
@@ -76,6 +76,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
 		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
 		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
+		fig.setLabels(model.getLabels());
 		fig.setValue(0x1111);
 		fig.drawValue();
 
@@ -273,7 +274,18 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);
 
-
+		// labels
+		IWidgetPropertyChangeHandler labelsHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
+				ByteMonitorModel model = getWidgetModel();
+				bmFig.setLabels(model.getLabels());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ByteMonitorModel.PROP_LABELS, labelsHandler);
 	}
 
 }

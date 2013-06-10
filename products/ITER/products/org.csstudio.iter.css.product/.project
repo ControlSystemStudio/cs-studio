@@ -29,7 +29,7 @@
 		<link>
 			<name>resources/SymbolLibrary</name>
 			<type>2</type>
-			<location>/opt/codac/opi/boy/SymbolLibrary</location>
+			<location>C:/opt/codac/opi/boy/SymbolLibrary</location>
 		</link>
 	</linkedResources>
 </projectDescription>
