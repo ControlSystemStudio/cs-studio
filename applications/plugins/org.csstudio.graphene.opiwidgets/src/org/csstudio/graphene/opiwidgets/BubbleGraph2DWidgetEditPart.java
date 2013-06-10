@@ -27,7 +27,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 			widget.setXColumnFormula(model.getXColumnFormula());
 			widget.setYColumnFormula(model.getYColumnFormula());
 //			widget.setTooltipColumnFormula(model.getTooltipFormula());
-			widget.setShowAxis(model.getShowAxis());
+			widget.setResizableAxis(model.isResizableAxis());
 			//widget.setConfigurable(model.isConfigurable());
 		}
 	}
@@ -48,7 +48,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 //		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
 		setPropertyChangeHandler(ScatterGraph2DWidgetModel.CONFIGURABLE,
 				reconfigure);
-		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_SHOW_AXIS,
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_RESIZABLE_AXIS,
 				reconfigure);
 
 	}

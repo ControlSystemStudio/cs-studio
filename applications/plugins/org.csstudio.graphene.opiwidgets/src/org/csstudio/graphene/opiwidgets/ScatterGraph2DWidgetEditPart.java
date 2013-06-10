@@ -33,7 +33,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 			widget.setXColumnFormula(model.getXColumnFormula());
 			widget.setYColumnFormula(model.getYColumnFormula());
 //			widget.setTooltipColumnFormula(model.getTooltipFormula());
-			widget.setShowAxis(model.getShowAxis());
+			widget.setResizableAxis(model.isResizableAxis());
 			//widget.setConfigurable(model.isConfigurable());
 		}
 	}
@@ -60,7 +60,7 @@ public class ScatterGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWid
 //		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_TOOLTIP_FORMULA, reconfigure);
 		setPropertyChangeHandler(ScatterGraph2DWidgetModel.CONFIGURABLE,
 				reconfigure);
-		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_SHOW_AXIS,
+		setPropertyChangeHandler(ScatterGraph2DWidgetModel.PROP_RESIZABLE_AXIS,
 				reconfigure);
 
 	}
