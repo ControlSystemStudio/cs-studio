@@ -51,7 +51,10 @@ class StringMultiColumnsEditor extends EditingSupport {
 			return ""; //$NON-NLS-1$
 		final int index = ((Integer)element).intValue();
 		final List<String[]> items = (List<String[]>) table_viewer.getInput();
-		return items.get(index)[columnNo];
+		if (columnNo < items.get(index).length)
+			return items.get(index)[columnNo];
+		else
+			return "";
 	}
 
     @SuppressWarnings("unchecked")
@@ -71,6 +74,17 @@ class StringMultiColumnsEditor extends EditingSupport {
 		// else
 		final int index = ((Integer)element).intValue();
 		rowData = items.get(index);
+		if (columnNo >= rowData.length) {
+			String [] newRowData = new String[columnNo + 1];
+			int i = 0;
+			for (; i<rowData.length; i++) {
+				newRowData[i] = rowData[i];
+			}
+			for (; i<newRowData.length; i++) {
+				newRowData[i] = "";
+			}
+			rowData = newRowData;
+		}
 		rowData[columnNo] = value.toString();
 		items.set(index, rowData);
 		getViewer().refresh(element);

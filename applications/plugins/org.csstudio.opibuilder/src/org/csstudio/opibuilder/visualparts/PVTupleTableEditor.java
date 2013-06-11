@@ -115,6 +115,7 @@ public class PVTupleTableEditor extends Composite {
 	public void updateInput(List<PVTuple> new_items) {
 		this.pvTupleList = new_items;
 		pvTupleListTableViewer.setInput(new_items);
+		pvTupleListTableViewer.setLabelProvider(new PVTupleLabelProvider(pvTupleList));
 	}
 
 	/**
@@ -129,6 +130,11 @@ public class PVTupleTableEditor extends Composite {
 				| SWT.FULL_SELECTION | SWT.MULTI);
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);
+		
+		final TableViewerColumn numColumn = new TableViewerColumn(viewer, SWT.NONE);
+		numColumn.getColumn().setText("#");
+		numColumn.getColumn().setMoveable(false);
+		numColumn.getColumn().setWidth(50);
 
 		final TableViewerColumn pvColumn = new TableViewerColumn(viewer, SWT.NONE);
 		pvColumn.getColumn().setText("PV Name");
@@ -143,7 +149,7 @@ public class PVTupleTableEditor extends Composite {
 		TrigColumn.setEditingSupport(new TriggerColumnEditingSupport(viewer, viewer.getTable()));
 
 		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new PVTupleLabelProvider());
+		viewer.setLabelProvider(new PVTupleLabelProvider(pvTupleList));
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
@@ -388,9 +394,19 @@ public class PVTupleTableEditor extends Composite {
 
 	private final static class PVTupleLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		
+		private List<PVTuple> pvTupleList;
+		
+		public PVTupleLabelProvider(List<PVTuple> pvTupleList) {
+			this.pvTupleList = pvTupleList;
+		}
+		
+		public void setPVTupleList(List<PVTuple> pvTupleList) {
+			this.pvTupleList = pvTupleList;
+		}
 
 		public Image getColumnImage(Object element, int columnIndex) {
-			if (columnIndex == 1 && element instanceof PVTuple) {
+			if (columnIndex == 2 && element instanceof PVTuple) {
 				if (((PVTuple) element).trigger) {
 					return CustomMediaFactory.getInstance().getImageFromPlugin(
 							OPIBuilderPlugin.PLUGIN_ID, "icons/checked.gif");
@@ -404,9 +420,11 @@ public class PVTupleTableEditor extends Composite {
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
-			if (columnIndex == 0 && element instanceof PVTuple)
-				return ((PVTuple) element).pvName;
+			if (columnIndex == 0)
+				return String.valueOf(pvTupleList.indexOf(element));
 			if (columnIndex == 1 && element instanceof PVTuple)
+				return ((PVTuple) element).pvName;
+			if (columnIndex == 2 && element instanceof PVTuple)
 				return ((PVTuple) element).trigger ? "yes" : "no";
 			return null;
 		}
