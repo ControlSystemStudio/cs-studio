@@ -236,7 +236,7 @@ public class Preferences
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return false;
-		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
+		return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
     }
     
     

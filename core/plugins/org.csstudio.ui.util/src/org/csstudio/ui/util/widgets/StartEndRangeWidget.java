@@ -6,8 +6,6 @@ package org.csstudio.ui.util.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.activity.InvalidActivityException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -21,9 +19,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-
-import sun.nio.cs.ext.MacArabic;
 
 /**
  * @author shroffk
