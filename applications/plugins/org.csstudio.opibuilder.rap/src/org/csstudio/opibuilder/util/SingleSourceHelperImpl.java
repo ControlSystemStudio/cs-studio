@@ -1,7 +1,5 @@
 package org.csstudio.opibuilder.util;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -14,6 +12,7 @@ import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.rap.core.DisplayManager;
 import org.csstudio.rap.core.preferences.ServerScope;
 import org.csstudio.rap.core.security.SecurityService;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.webopi.WebOPIConstants;
 import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
@@ -34,10 +33,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-
-import com.sun.jmx.snmp.Timestamp;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper {
 	
@@ -193,25 +191,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 	@Override
 	protected void iOpenEditor(IWorkbenchPage page, IPath path)
 			throws Exception {
-		HttpServletRequest request = RWT.getRequest();
-		String url = request.getRequestURL().toString();
-		// to allow multilple browser instances, session id is not allowed
-		if (url.contains(";jsessionid")) //$NON-NLS-1$
-			url = url.substring(0, url.indexOf(";jsessionid"));//$NON-NLS-1$
-
-		if (path.getFileExtension().toLowerCase().equals("plt")) {
-			int index = url.lastIndexOf("/");
-			url = url.substring(0, index) + WEBDATABROWSER_CONTEXT;
-			long timestamp = new Timestamp(new Date().getTime()).getDateTime();
-			url += "?plt=" + path.toString() + "&nocache=" + timestamp;
-			JSExecutor.executeJS("window.open(\"" + url + "\");");
-			// ExternalBrowser.open("_blank" + timestamp,
-			// url + "?plt=" + path.toString() + "&nocache=" + timestamp, SWT.None);
-		} else {
-			throw new Exception(
-					"No web version of editor matching this file extension: "
-							+ path.getFileExtension());
-		}
+		IEditorDescriptor defaultEditor = page.getWorkbenchWindow().getWorkbench().
+						getEditorRegistry().getDefaultEditor(path.toString());
+		if(defaultEditor == null)
+			throw new Exception("No editor was found for this file " + path); 
+		String id = defaultEditor.getId();
+		page.openEditor(new PathEditorInput(path), id);
 	}
 
 }

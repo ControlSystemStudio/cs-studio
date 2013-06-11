@@ -32,7 +32,6 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
@@ -272,14 +271,10 @@ public class ScanServerImpl implements ScanServer
     @Override
     public long getLastScanDataSerial(final long id) throws Exception
     {
-        final ExecutableScan scan = scan_engine.getExecutableScan(id);
+        final LoggedScan scan = scan_engine.getScan(id);
         if (scan != null)
-        {
-            final DataLog log = scan.getDataLog();
-            if (log != null)
-                return log.getLastScanDataSerial();
-        }
-        return 0;
+            return scan.getLastScanDataSerial();
+        return -1;
     }
 
     /** {@inheritDoc} */

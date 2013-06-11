@@ -153,4 +153,23 @@ public class UIHelper
         
         return null;
     }
+	
+	/**Popup login dialog to authenticate user with the registered login module. 
+	 * This method must be called in UI thread.
+	 * @param display display of the session.
+	 * @param retry the allowed number of retries.
+	 * @return true if login successfully.
+	 */
+	public boolean rapAuthenticate(Display display){		
+		return false;		
+	}		
+	
+	/**Check if current RAP session is logged in.
+	 * @param display
+	 * @return
+	 */
+	public boolean rapIsLoggedIn(Display display){		
+		return false;		
+	}
+
 }
