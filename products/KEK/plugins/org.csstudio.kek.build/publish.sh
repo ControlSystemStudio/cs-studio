@@ -55,7 +55,7 @@ PREV_DIR=$(pwd)
 
 # Copy CSS binaries
 mkdir -p ${DEST}/apps
-ACCS="pfar pf linac superkekb cerl pfar_office pf_office linac_office superkekb_office cerl_office jparc jparc_office"
+ACCS="pfar pf linac superkekb cerl pf_office linac_office superkekb_office jparc jparc_office"
 
 for PLATFORM in ${PLATFORMS}; do
     echo "#####################################################"
