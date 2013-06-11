@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.InputStream;
 import java.io.Reader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -16,7 +17,6 @@ import org.eclipse.core.runtime.IPath;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.util.PythonInterpreter;
 
 /**
  * This is the implementation of {@link AbstractScriptStore} for Jython PythonInterpreter. 
@@ -65,8 +65,8 @@ public class JythonScriptStore extends AbstractScriptStore{
 	}
 
 	@Override
-	protected void compileReader(Reader reader) throws Exception {
-		code = interpreter.compile(reader);
+	protected void compileInputStream(InputStream s) throws Exception {
+		code = interpreter.compile(s);
 	}
 
 	@Override

@@ -218,6 +218,7 @@ public class Messages extends NLS
     public static String SearchPatternTT;
     public static String SearchTT;
     public static String SendToElog;
+    public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
     public static String StartEndDialogBtn;
