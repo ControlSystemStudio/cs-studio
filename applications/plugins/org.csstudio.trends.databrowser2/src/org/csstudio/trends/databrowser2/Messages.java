@@ -73,6 +73,7 @@ public class Messages extends NLS
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
+    public static String EditItem;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
