@@ -9,21 +9,14 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.ProgressBarModel;
 import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
 import org.csstudio.swt.widgets.figures.ProgressBarFigure;
 import org.csstudio.swt.widgets.figures.ScaledSliderFigure;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the scaled slider widget. The controller mediates between
@@ -33,9 +26,6 @@ import org.eclipse.swt.graphics.RGB;
  * @author Takashi Nakamoto - support "FillColor Alarm Sensitive" property
  */
 public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
-
-	private ISeverity currentSeverity = null;
-	
 	/**
 	 * {@inheritDoc}
 	 */

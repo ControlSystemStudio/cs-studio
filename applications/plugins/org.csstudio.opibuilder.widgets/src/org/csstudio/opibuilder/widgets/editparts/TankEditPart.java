@@ -8,16 +8,12 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IValue;
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.model.ProgressBarModel;
 import org.csstudio.opibuilder.widgets.model.TankModel;
 import org.csstudio.swt.widgets.figures.TankFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between
@@ -27,9 +23,6 @@ import org.eclipse.swt.graphics.Device;
  * @author Takashi Nakamoto - support for "FillColor Alarm Sensitive" property
  */
 public final class TankEditPart extends AbstractMarkedWidgetEditPart {
-	
-	private ISeverity currentSeverity = null;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -100,74 +93,26 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
 				TankFigure figure = (TankFigure) refreshableFigure;
 				boolean sensitive = (Boolean)newValue;
-				if (sensitive && currentSeverity != null) {
-					Device device = figure.getFillColor().getDevice();
-					if (currentSeverity.isOK()) {
-						figure.setFillColor(getWidgetModel().getFillColor());
-					} else if (currentSeverity.isMajor()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getMajorColor());
-						figure.setFillColor(color);
-					} else if (currentSeverity.isMinor()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getMinorColor());
-						figure.setFillColor(color);
-					} else if (currentSeverity.isInvalid()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getInValidColor());
-						figure.setFillColor(color);
-					}
-				} else {
-					figure.setFillColor(getWidgetModel().getFillColor());
-				}
-				return false;
-			}
-		};
-		setPropertyChangeHandler(ProgressBarModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
-
-		
-		// Change fill color when alarm severity changes.
-		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-
-				TankFigure figure = (TankFigure) refreshableFigure;
-				ISeverity newSeverity = ((IValue)newValue).getSeverity();
-				
-				if (!getWidgetModel().isFillColorAlarmSensitive()) {
-					currentSeverity = newSeverity;
-					return false;
-				}
-				
-				if (currentSeverity != null) {
-					if (currentSeverity.isOK() && newSeverity.isOK())
-						return false;
-					if (currentSeverity.isMajor() && newSeverity.isMajor())
-						return false;
-					if (currentSeverity.isMinor() && newSeverity.isMinor())
-						return false;
-					if (currentSeverity.isInvalid() && newSeverity.isInvalid())
-						return false;
-				}
-				
-				Device device = figure.getFillColor().getDevice();
-				if (newSeverity.isOK()) {
-					figure.setFillColor(getWidgetModel().getFillColor());
-				} else if (newSeverity.isMajor()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getMajorColor());
-					figure.setFillColor(color);
-				} else if (newSeverity.isMinor()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getMinorColor());
-					figure.setFillColor(color);
-				} else if (newSeverity.isInvalid()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getInValidColor());
-					figure.setFillColor(color);
-				}
-				
-				currentSeverity = newSeverity;
-				
+				figure.setFillColor(
+						delegate.calculateAlarmColor(sensitive,
+													 getWidgetModel().getFillColor()));
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TankModel.PROP_PVVALUE, valueHandler);	
+		setPropertyChangeHandler(TankModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
+		
+		// Change fill color when alarm severity changes.
+		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!getWidgetModel().isFillColorAlarmSensitive())
+					return false;
+				TankFigure tank = (TankFigure) figure;
+				tank.setFillColor(
+						delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
+													 getWidgetModel().getFillColor()));
+				return true;
+			}
+		});
 	}
-
 }
