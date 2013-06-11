@@ -46,22 +46,64 @@ public final class LocalDataSource extends DataSource {
         List<Object> parsedTokens = parseName(channelName);
         
         LocalChannelHandler channel = new LocalChannelHandler(parsedTokens.get(0).toString());
-        if (parsedTokens.size() > 1) {
-            channel.setInitialValue(parsedTokens.get(1));
-        } else {
-            channel.setInitialValue(0.0);
-        }
         return channel;
     }
     
     private List<Object> parseName(String channelName) {
-        return FunctionParser.parseFunctionWithScalarOrArrayArguments(".+", channelName, CHANNEL_SYNTAX_ERROR_MESSAGE);
+        List<Object> tokens = FunctionParser.parseFunctionWithScalarOrArrayArguments(".+", channelName, CHANNEL_SYNTAX_ERROR_MESSAGE);
+        String nameAndType = tokens.get(0).toString();
+        String name = nameAndType;
+        String type = null;
+        int index = nameAndType.lastIndexOf('<');
+        if (nameAndType.endsWith(">") && index != -1) {
+            name = nameAndType.substring(0, index);
+            type = nameAndType.substring(index + 1, nameAndType.length() - 1);
+        }
+        List<Object> newTokens = new ArrayList<>();
+        newTokens.add(name);
+        newTokens.add(type);
+        if (tokens.size() > 1) {
+            newTokens.addAll(tokens.subList(1, tokens.size()));
+        }
+        return newTokens;
     }
 
     @Override
     protected String channelHandlerLookupName(String channelName) {
         List<Object> parsedTokens = parseName(channelName);
         return parsedTokens.get(0).toString();
+    }
+    
+    private void initialize(String channelName) {
+        List<Object> parsedTokens = parseName(channelName);
+
+        LocalChannelHandler channel = (LocalChannelHandler) getChannels().get(channelHandlerLookupName(channelName));
+        channel.setType((String) parsedTokens.get(1));
+        if (parsedTokens.size() > 2) {
+            if (channel != null) {
+                channel.setInitialValue(parsedTokens.get(2));
+            }
+        }
+    }
+
+    @Override
+    public void connectRead(ReadRecipe readRecipe) {
+        super.connectRead(readRecipe);
+        
+        // Initialize all values
+        for (ChannelReadRecipe channelReadRecipe : readRecipe.getChannelReadRecipes()) {
+            initialize(channelReadRecipe.getChannelName());
+        }
+    }
+
+    @Override
+    public void connectWrite(WriteRecipe writeRecipe) {
+        super.connectWrite(writeRecipe);
+        
+        // Initialize all values
+        for (ChannelWriteRecipe channelWriteRecipe : writeRecipe.getChannelWriteRecipes()) {
+            initialize(channelWriteRecipe.getChannelName());
+        }
     }
 
 }
