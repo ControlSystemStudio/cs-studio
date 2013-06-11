@@ -563,24 +563,17 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 		}
 	}
 	
-	private Color calculateBackColor() {
-		if(!isBackColorAlarmSensitive) {
-			return saveBackColor;
-		} else {
-			RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
-			if (alarmColor != null) {
-				// Alarm severity is either "Major", "Minor" or "Invalid.
-				return CustomMediaFactory.getInstance().getColor(alarmColor);
-			} else {
-				// Alarm severity is "OK".
-				return saveBackColor;
-			}
-		}
+	public Color calculateBackColor() {
+		return calculateAlarmColor(isBackColorAlarmSensitive, saveBackColor);
 	}
 	
-	private Color calculateForeColor() {
-		if(!isForeColorAlarmSensitive) {
-			return saveForeColor;
+	public Color calculateForeColor() {
+		return calculateAlarmColor(isForeColorAlarmSensitive, saveForeColor);
+	}
+	
+	public Color calculateAlarmColor(boolean isSensitive, Color saveColor) {
+		if (!isSensitive) {
+			return saveColor;
 		} else {
 			RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
 			if (alarmColor != null) {
@@ -588,7 +581,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				return CustomMediaFactory.getInstance().getColor(alarmColor);
 			} else {
 				// Alarm severity is "OK".
-				return saveForeColor;
+				return saveColor;
 			}
 		}
 	}

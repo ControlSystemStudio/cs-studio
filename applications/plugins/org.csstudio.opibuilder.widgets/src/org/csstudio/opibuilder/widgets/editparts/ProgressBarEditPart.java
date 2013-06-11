@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
@@ -29,7 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  * {@link ScaledSliderModel} and {@link ScaledSliderFigure}.
  * 
  * @author Xihui Chen
- * 
+ * @author Takashi Nakamoto - support "FillColor Alarm Sensitive" property
  */
 public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
@@ -185,77 +186,31 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_ENABLED, enableHandler);	
 
-		// Change fill color whne "FillColor Alarm Sensitive" property changes.
+		// Change fill color when "FillColor Alarm Sensitive" property changes.
 		IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
 				ProgressBarFigure figure = (ProgressBarFigure) refreshableFigure;
 				boolean sensitive = (Boolean)newValue;
-				if (sensitive && currentSeverity != null) {
-					Device device = figure.getFillColor().getDevice();
-					if (currentSeverity.isOK()) {
-						figure.setFillColor(getWidgetModel().getFillColor());
-					} else if (currentSeverity.isMajor()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getMajorColor());
-						figure.setFillColor(color);
-					} else if (currentSeverity.isMinor()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getMinorColor());
-						figure.setFillColor(color);
-					} else if (currentSeverity.isInvalid()) {
-						Color color = new Color(device, AlarmRepresentationScheme.getInValidColor());
-						figure.setFillColor(color);
-					}
-				} else {
-					figure.setFillColor(getWidgetModel().getFillColor());
-				}
-				return false;
+				figure.setFillColor(
+						delegate.calculateAlarmColor(sensitive,
+													 getWidgetModel().getFillColor()));
+				return true;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
 		
-		// Change fill color whne alarm severity changes.
-		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-
-				ProgressBarFigure figure = (ProgressBarFigure) refreshableFigure;
-				ISeverity newSeverity = ((IValue)newValue).getSeverity();
-				
-				if (!getWidgetModel().isFillColorAlarmSensitive()) {
-					currentSeverity = newSeverity;
+		// Change fill color when alarm severity changes.
+		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!getWidgetModel().isFillColorAlarmSensitive())
 					return false;
-				}
-				
-				if (currentSeverity != null) {
-					if (currentSeverity.isOK() && newSeverity.isOK())
-						return false;
-					if (currentSeverity.isMajor() && newSeverity.isMajor())
-						return false;
-					if (currentSeverity.isMinor() && newSeverity.isMinor())
-						return false;
-					if (currentSeverity.isInvalid() && newSeverity.isInvalid())
-						return false;
-				}
-				
-				Device device = figure.getFillColor().getDevice();
-				if (newSeverity.isOK()) {
-					figure.setFillColor(getWidgetModel().getFillColor());
-				} else if (newSeverity.isMajor()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getMajorColor());
-					figure.setFillColor(color);
-				} else if (newSeverity.isMinor()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getMinorColor());
-					figure.setFillColor(color);
-				} else if (newSeverity.isInvalid()) {
-					Color color = new Color(device, AlarmRepresentationScheme.getInValidColor());
-					figure.setFillColor(color);
-				}
-				
-				currentSeverity = newSeverity;
-				
+				ProgressBarFigure progress = (ProgressBarFigure) figure;
+				progress.setFillColor(
+						delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
+													 getWidgetModel().getFillColor()));
 				return true;
 			}
-		};
-		setPropertyChangeHandler(ProgressBarModel.PROP_PVVALUE, valueHandler);	
+		});
 	}
 }
