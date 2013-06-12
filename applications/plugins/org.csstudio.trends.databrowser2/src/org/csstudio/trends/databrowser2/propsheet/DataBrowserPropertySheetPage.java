@@ -355,7 +355,7 @@ public class DataBrowserPropertySheetPage extends Page
         final Shell shell = trace_table.getControl().getShell();
         final AddPVAction add_pv = new AddPVAction(operations_manager, shell, model, false);
         final AddPVAction add_formula = new AddPVAction(operations_manager, shell, model, true);
-        final EditItemsAction edit_pv = new EditItemsAction(operations_manager, shell, trace_table);
+        final EditItemsAction edit_pv = new EditItemsAction(operations_manager, shell, trace_table, model);
         final DeleteItemsAction delete_pv = new DeleteItemsAction(operations_manager, trace_table, model);
         menu.addMenuListener(new IMenuListener()
         {

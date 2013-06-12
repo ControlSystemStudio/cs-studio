@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
+    public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;

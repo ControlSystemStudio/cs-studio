@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -19,20 +20,24 @@ public class EditItemsAction extends Action {
     final private OperationsManager operations_manager;
     final private Shell shell;
     final private TableViewer trace_table;
+    final private Model model;
 
     /** Initialize
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param shell Parent shell for dialog
      *  @param trace_table Table of ModelItems
+     *  @param model Model
      */
     public EditItemsAction(final OperationsManager operations_manager,
     		final Shell shell,
-            final TableViewer trace_table)
+            final TableViewer trace_table,
+            final Model model)
     {
         super(Messages.EditItem, null);
         this.operations_manager = operations_manager;
         this.shell = shell;
         this.trace_table = trace_table;
+        this.model = model;
         
         // Only enabled when one or more items are selected.
         final ISelectionChangedListener selection_listener = new ISelectionChangedListener()
@@ -59,7 +64,7 @@ public class EditItemsAction extends Action {
         }
         
         // Show edit dialog.
-        EditItemsDialog dialog = new EditItemsDialog(shell, items);
+        EditItemsDialog dialog = new EditItemsDialog(shell, items, model);
         if (dialog.open() != IDialogConstants.OK_ID)
         	return;
         

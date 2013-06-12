@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.PVItem;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -15,6 +16,7 @@ public class EditItemsCommand implements IUndoableCommand {
     final private Shell shell;
     final private ModelItem[] items;
     final private ArrayList<ModelItem> oldItems;
+    final private ArrayList<Integer> oldBufferSizes;
     final private EditItemsDialog.Result result;
    
     /**
@@ -34,8 +36,15 @@ public class EditItemsCommand implements IUndoableCommand {
 
     	// Save old values so that this operation can be undone later.
     	oldItems = new ArrayList<ModelItem>();
-    	for (ModelItem item : items)
+    	oldBufferSizes = new ArrayList<Integer>();
+    	for (ModelItem item : items) {
     		oldItems.add(item.clone());
+    		if (item instanceof PVItem) {
+    			oldBufferSizes.add(((PVItem)item).getLiveCapacity());
+    		} else {
+    			oldBufferSizes.add(0);
+    		}
+    	}
     	
     	// Edit items
     	applyChanges();
@@ -46,9 +55,34 @@ public class EditItemsCommand implements IUndoableCommand {
 	@Override
 	public void undo() {
 		for (int i=0; i<items.length; i++) {
-			items[i].setDisplayName(oldItems.get(i).getDisplayName());
+			ModelItem item = items[i];
+			ModelItem oldItem = oldItems.get(i);
 			
-			// TODO: revert other values
+			item.setVisible(oldItem.isVisible());
+			try {
+				item.setName(oldItem.getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			item.setDisplayName(oldItem.getDisplayName());
+			item.setColor(oldItem.getColor());
+			item.setLineWidth(oldItem.getLineWidth());
+			item.setAxis(oldItem.getAxis());
+			item.setTraceType(oldItem.getTraceType());
+			item.setWaveformIndex(oldItem.getWaveformIndex());
+			if (item instanceof PVItem) {
+				try {
+					((PVItem)item).setScanPeriod(((PVItem)oldItem).getScanPeriod());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				try {
+					((PVItem)item).setLiveCapacity(oldBufferSizes.get(i));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				((PVItem)item).setRequestType(((PVItem)oldItem).getRequestType());
+			}
 		}
 	}
 
@@ -59,13 +93,43 @@ public class EditItemsCommand implements IUndoableCommand {
 	
 	public void applyChanges() {
 		for (ModelItem item : items) {
-			String strDisplayName = result.getDisplayName();
-			if (strDisplayName != null) {
-				// Do not apply changes if the result is null.
-				item.setDisplayName(strDisplayName);
+			if (result.appliedVisible())
+				item.setVisible(result.isVisible());
+			if (result.appliedItem()) {
+				try {
+					item.setName(result.getItem());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			
-			// TODO: change other values
+			if (result.appliedDisplayName())
+				item.setDisplayName(result.getDisplayName());
+			if (result.appliedColor())
+				item.setColor(result.getColor());
+			if (result.appliedScan() && item instanceof PVItem) {
+				try {
+					((PVItem)item).setScanPeriod(result.getScan());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (result.appliedBufferSize() && item instanceof PVItem) {
+				try {
+					((PVItem)item).setLiveCapacity(result.getBufferSize());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (result.appliedWidth())
+				item.setLineWidth(result.getWidth());
+			if (result.appliedAxis())
+				item.setAxis(result.getAxis());
+			if (result.appliedTraceType())
+				item.setTraceType(result.getTraceType());
+			if (result.appliedRequest() && item instanceof PVItem)
+				((PVItem)item).setRequestType(result.getRequest());
+			if (result.appliedIndex())
+				item.setWaveformIndex(result.getIndex());
 		}
 	}
 }
