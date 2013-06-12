@@ -393,7 +393,7 @@
       </scale_options>
       <selector_type>0</selector_type>
       <transparent>false</transparent>
-      <pv_name>loc://align(Align)</pv_name>
+      <pv_name>loc://align("Align")</pv_name>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
