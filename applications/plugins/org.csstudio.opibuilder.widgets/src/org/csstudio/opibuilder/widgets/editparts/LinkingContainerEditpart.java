@@ -48,7 +48,8 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class LinkingContainerEditpart extends AbstractContainerEditpart{
-
+	
+	private static int linkingContainerID = 0;
 
 	@Override
 	protected IFigure doCreateFigure() {
@@ -176,6 +177,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				if(group != null && group instanceof AbstractContainerModel){
 					loadTarget = (AbstractContainerModel) group;
 				}
+			}
+			// Load "LCID" macro whose value is unique to this instance of Linking Container.
+			if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+				linkingContainerID++;
+				loadTarget.getMacroMap().put("LCID", "LCID_" + linkingContainerID);
 			}
 			//Load system macro
 			if(loadTarget.getMacrosInput().isInclude_parent_macros()){				
