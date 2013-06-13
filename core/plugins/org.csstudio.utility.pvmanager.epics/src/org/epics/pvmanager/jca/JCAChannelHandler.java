@@ -479,17 +479,21 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     public synchronized Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<String, Object>();
         if (channel != null) {
-            properties.put("Channel name", channel.getName());
-            properties.put("Connection state", channel.getConnectionState().getName());
+            properties.put("CA Channel name", channel.getName());
+            properties.put("CA Connection state", channel.getConnectionState().getName());
             if (channel.getConnectionState() == Channel.ConnectionState.CONNECTED) {
-                properties.put("Hostname", channel.getHostName());
-                properties.put("Channel type", channel.getFieldType().getName());
-                properties.put("Element count", channel.getElementCount());
-                properties.put("Read access", channel.getReadAccess());
-                properties.put("Write access", channel.getWriteAccess());
+                properties.put("CA Hostname", channel.getHostName());
+                properties.put("CA Channel type", channel.getFieldType().getName());
+                properties.put("CA Element count", channel.getElementCount());
+                properties.put("CA Read access", channel.getReadAccess());
+                properties.put("CA Write access", channel.getWriteAccess());
             }
             properties.put("isLongString", isLongString());
             properties.put("isPutCallback", isPutCallback());
+            properties.put("Connected", isConnected());
+            properties.put("Write Connected", isWriteConnected());
+            properties.put("Connection payload", getConnectionPayload());
+            properties.put("Last message payload", getLastMessagePayload());
         }
         return properties;
     }
