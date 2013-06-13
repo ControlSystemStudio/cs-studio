@@ -185,6 +185,8 @@ public class Messages extends NLS
     public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
+    public static String Refresh;
+
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
