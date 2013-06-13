@@ -39,6 +39,7 @@ import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.RefreshAction;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -354,6 +355,7 @@ public class DataBrowserEditor extends EditorPart
             ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
+        mm.add(new RefreshAction(controller));
 		if (!Activator.isRAP()) {
 			mm.add(new Separator());
 			mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET,
