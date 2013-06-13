@@ -4,7 +4,7 @@
 
 # Version to build
 
-export VERSION=3.1.5
+export VERSION=3.1.6
 
 export PATH=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin:$PATH
 
