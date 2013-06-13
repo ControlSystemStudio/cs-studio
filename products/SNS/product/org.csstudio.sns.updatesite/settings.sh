@@ -19,7 +19,7 @@ export ECLIPSE_BASE=/Users/ky9/Eclipse/3.7.2/rcp
 # Deltapack can list several sites: delta pack;PyDev
 export DELTAPACK="/Users/ky9/Eclipse/3.7.2/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
 
-export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
+export JRE_Win64=/Users/ky9/Eclipse/CSS_Additions/Win64/jre
 
 # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
 export BUILDDIR=/Kram/build
