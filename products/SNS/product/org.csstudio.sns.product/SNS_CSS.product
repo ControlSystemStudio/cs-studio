@@ -31,7 +31,8 @@ openFile</programArgs>
 -XX:MaxPermSize=128M
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
--Dpython.cachedir.skip=true</vmArgs>
+-Dpython.cachedir.skip=true
+-Declipse.p2.unsignedPolicy=allow</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.csstudio.sns.product/icons/css16.png" i32="/org.csstudio.sns.product/icons/css32.png" i48="/org.csstudio.sns.product/icons/css48.png" i64="/org.csstudio.sns.product/icons/css64.png" i128="/org.csstudio.sns.product/icons/css128.png"/>

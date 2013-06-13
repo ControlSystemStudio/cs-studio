@@ -68,7 +68,7 @@ public class VTableWidget extends Composite {
 							final PVReaderEvent<Object> event) {
 						errorBar.setException(event.getPvReader().lastException());
 						Object value = event.getPvReader().getValue();
-						if (value instanceof VTable) {
+						if (value == null || value instanceof VTable) {
 							tableDisplay.setVTable((VTable) value);
 						} else {
 							errorBar.setException(new RuntimeException("Formula does not return a VTable"));

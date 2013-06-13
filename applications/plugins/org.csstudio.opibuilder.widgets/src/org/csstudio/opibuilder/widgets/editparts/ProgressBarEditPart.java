@@ -8,6 +8,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.ProgressBarModel;
@@ -21,10 +23,9 @@ import org.eclipse.draw2d.IFigure;
  * {@link ScaledSliderModel} and {@link ScaledSliderFigure}.
  * 
  * @author Xihui Chen
- * 
+ * @author Takashi Nakamoto - support "FillColor Alarm Sensitive" property
  */
 public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -168,16 +169,38 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;				
+				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
 				slider.setEnabled((Boolean) newValue);				
 				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_ENABLED, enableHandler);	
-		
-		
 
+		// Change fill color when "FillColor Alarm Sensitive" property changes.
+		IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+				ProgressBarFigure figure = (ProgressBarFigure) refreshableFigure;
+				boolean sensitive = (Boolean)newValue;
+				figure.setFillColor(
+						delegate.calculateAlarmColor(sensitive,
+													 getWidgetModel().getFillColor()));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ProgressBarModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
 		
+		// Change fill color when alarm severity changes.
+		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!getWidgetModel().isFillColorAlarmSensitive())
+					return false;
+				ProgressBarFigure progress = (ProgressBarFigure) figure;
+				progress.setFillColor(
+						delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
+													 getWidgetModel().getFillColor()));
+				return true;
+			}
+		});
 	}
-
 }

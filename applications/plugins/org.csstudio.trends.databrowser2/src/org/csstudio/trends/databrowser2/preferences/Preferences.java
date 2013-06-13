@@ -105,13 +105,23 @@ public class Preferences
         return prefs.getInt(Activator.PLUGIN_ID, PLOT_BINS, 800, null);
     }
 
-    public static String[] getArchiveServerURLs()
+    public static ArchiveServerURL[] getArchiveServerURLs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
         if (urls.length() <= 0)
-            return new String[0];
-        return urls.split("\\*");
+            return null;
+        
+        ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>(); 
+        for (String fragment : urls.split("\\*")) {
+        	String[] strs = fragment.split("\\|");
+        	if (strs.length == 1) {
+        		list.add(new ArchiveServerURL(strs[0], null));
+        	} else if (strs.length >= 2) {
+        		list.add(new ArchiveServerURL(strs[0], strs[1]));
+        	}
+        }
+        return list.toArray(new ArchiveServerURL[list.size()]);
     }
 
     public static ArchiveDataSource[] getArchives()
