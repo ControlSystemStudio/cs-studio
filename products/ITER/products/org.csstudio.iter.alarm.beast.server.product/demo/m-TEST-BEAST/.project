@@ -4,6 +4,10 @@
 	<comment></comment>
 	<projects>
 	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
 	<linkedResources>
 		<link>
 			<name>src/main/boy/SymbolLibrary</name>

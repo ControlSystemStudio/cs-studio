@@ -34,6 +34,7 @@ import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.RefreshAction;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
@@ -51,9 +52,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -379,6 +377,7 @@ public class DataBrowserEditor extends EditorPart
 	        }
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
+        mm.add(new RefreshAction(controller));
         if (is_rcp)
 		{
 			mm.add(new Separator());			
@@ -415,28 +414,12 @@ public class DataBrowserEditor extends EditorPart
 		
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
+        
+        if(is_rcp && SendToElogAction.isElogAvailable()) {
+        	mm.add(new SendToElogAction(shell, plot.getXYGraph()));
+        }
 
-		if (is_rcp) {
-			getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
-		} else {
-			getSite().registerContextMenu(mm, new ISelectionProvider() {
-				// Null Selection Provider
-				@Override
-				public void setSelection(ISelection selection) {
-				}
-				@Override
-				public void removeSelectionChangedListener(
-						ISelectionChangedListener listener) {
-				}
-				@Override
-				public ISelection getSelection() {
-					return null;
-				}
-				@Override
-				public void addSelectionChangedListener(ISelectionChangedListener listener) {
-				}
-			});
-		}
+		getSite().registerContextMenu(mm, null);
     }
 
     /** {@inheritDoc} */
