@@ -172,4 +172,8 @@ public class UIHelper
 		return false;		
 	}
 
+	public SSTextLayout newTextLayout() {
+		return new SSTextLayout();
+	}
+
 }
