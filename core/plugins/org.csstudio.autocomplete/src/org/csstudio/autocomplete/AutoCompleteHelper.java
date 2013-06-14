@@ -38,4 +38,10 @@ public class AutoCompleteHelper {
 		return sql;
 	}
 
+	public static String clean(String name) {
+		String cleaned = name.replaceAll("^[\\*\\?]+", "");
+		cleaned = cleaned.replaceAll("[\\*\\?]+$", "");
+		return cleaned;
+	}
+
 }
