@@ -10,11 +10,14 @@ package org.csstudio.iter.utility.sddreader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.TopProposalFinder;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 public class SDDPVListProvider implements IAutoCompleteProvider {
@@ -62,7 +65,10 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 
 			final ResultSet result_get = statement_get.executeQuery();
 			while (result_get.next()) {
-				result.add(result_get.getString(1));
+				String value = result_get.getString(1);
+				if (value != null && !value.isEmpty()) {
+					result.addProposal(new Proposal(value, false));
+				}
 			}
 		} catch (Exception e) {
 			if ("!ERROR: canceling statement due to user request".equals(e
@@ -79,6 +85,12 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 				Activator.getLogger().log(Level.WARNING, e.getMessage());
 			}
 		}
+		
+		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
+		List<Proposal> topProposals = trf.getTopProposals(name, result.getProposalsAsString());
+		for (Proposal p : topProposals)
+			result.addTopProposal(p);
+		
 		return result;
 	}
 

@@ -33,6 +33,7 @@
       <plugin id="org.csstudio.swt.xygraph.rap" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
+      <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.extra"/>

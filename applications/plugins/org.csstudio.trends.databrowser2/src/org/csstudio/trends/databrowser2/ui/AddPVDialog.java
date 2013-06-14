@@ -64,8 +64,10 @@ public class AddPVDialog  extends TitleAreaDialog
     /** Entered period */
     private double period;
 
-    /** Selected Axis index or -1 */
-    private int axis_index = -1;
+	/** Selected Axis index or -1 */
+	private int axis_index = -1;
+
+	private AutoCompleteWidget autoCompleteWidget;
 
     /** Initialize
      *  @param shell Shell
@@ -131,7 +133,7 @@ public class AddPVDialog  extends TitleAreaDialog
         txt_name = new Text(box, SWT.BORDER);
         txt_name.setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
         txt_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
-        new AutoCompleteWidget(txt_name, AutoCompleteTypes.PV);
+        autoCompleteWidget = new AutoCompleteWidget(txt_name, AutoCompleteTypes.PV);
 
         if (! formula)
         {
@@ -227,10 +229,11 @@ public class AddPVDialog  extends TitleAreaDialog
     @Override
     protected void okPressed()
     {
-    	if (!updateAndValidate())
-    		return;
-
-        super.okPressed();
+		if (!updateAndValidate())
+			return;
+		if (autoCompleteWidget != null)
+			autoCompleteWidget.getHistory().addEntry(txt_name.getText());
+		super.okPressed();
     }
 
     /** Set initial name. Only effective when called before dialog is opened.
