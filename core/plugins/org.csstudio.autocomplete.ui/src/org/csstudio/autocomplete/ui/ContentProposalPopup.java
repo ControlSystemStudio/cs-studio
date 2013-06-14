@@ -150,6 +150,12 @@ public class ContentProposalPopup extends PopupDialog {
 				scrollbarClicked = true;
 				return;
 			}
+			
+			if (e.type == SWT.Resize) {
+				// Do not close popup on resize for web version.
+				// RAP raise too many resize event
+				return;
+			}
 			// For all other events, merely getting them dictates closure.
 			close();
 		}
