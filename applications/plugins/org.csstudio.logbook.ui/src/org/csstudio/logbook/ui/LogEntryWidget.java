@@ -117,7 +117,7 @@ public class LogEntryWidget extends Composite {
     private Composite composite;
     private ErrorBar errorBar;
     private final boolean newWindow;
-    
+
     private String imageToSelect;
 
     private final String[] supportedImageTypes = new String[] { "*.png",
@@ -127,6 +127,8 @@ public class LogEntryWidget extends Composite {
     private MultipleSelectionCombo<String> multiSelectionComboTag;
     private Button btnNewButton;
     private Label label;
+    private CTabItem tbtmNewItem;
+    private Composite composite_1;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -417,7 +419,7 @@ public class LogEntryWidget extends Composite {
 		SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
 	tbtmAttachments = new CTabItem(tabFolder, SWT.NONE);
-	tbtmAttachments.setText("Attachments");
+	tbtmAttachments.setText("Images");
 	tabFolder.setSelection(tbtmAttachments);
 
 	tbtmAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
@@ -435,12 +437,12 @@ public class LogEntryWidget extends Composite {
 		final String filename = dlg.open();
 		if (filename != null) {
 		    try {
-		    File imgFile = new File(filename);
+			File imgFile = new File(filename);
 			LogEntryBuilder logEntryBuilder = LogEntryBuilder
 				.logEntry(logEntryChangeset.getLogEntry())
-				.attach(AttachmentBuilder.attachment(imgFile.getName())
-					.inputStream(
-						new FileInputStream(imgFile)));
+				.attach(AttachmentBuilder.attachment(
+					imgFile.getName()).inputStream(
+					new FileInputStream(imgFile)));
 			imageToSelect = imgFile.getName();
 			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		    } catch (IOException e1) {
@@ -546,6 +548,12 @@ public class LogEntryWidget extends Composite {
 			}
 		    }
 		});
+
+	tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
+	tbtmNewItem.setText("Files");
+	
+	composite_1 = new Composite(tabFolder, SWT.NONE);
+	tbtmNewItem.setControl(composite_1);
 
 	empty = new FormData();
 	empty.top = new FormAttachment(0);
@@ -770,8 +778,8 @@ public class LogEntryWidget extends Composite {
 	    try {
 		imageStackWidget.setImageInputStreamsMap(imageInputStreamsMap);
 		if (imageToSelect != null) {
-			imageStackWidget.setSelectedImageName(imageToSelect);
-			imageToSelect = null;
+		    imageStackWidget.setSelectedImageName(imageToSelect);
+		    imageToSelect = null;
 		}
 	    } catch (IOException e) {
 		setLastException(e);
@@ -829,7 +837,7 @@ public class LogEntryWidget extends Composite {
 	    image.dispose();
 	    // Save
 	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-		imageToSelect = screenshot_file.getName();
+	    imageToSelect = screenshot_file.getName();
 	    return AttachmentBuilder
 		    .attachment(screenshot_file.getName())
 		    .inputStream(new FileInputStream(screenshot_file.getPath()));
