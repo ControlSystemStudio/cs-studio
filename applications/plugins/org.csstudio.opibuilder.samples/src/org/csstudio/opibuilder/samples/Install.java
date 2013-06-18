@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,12 +34,16 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 
 /**
+ * A command to install examples.
+ * 
+ * The command looks for example
+ * 
  * @author shroffk
  * 
  */
 public class Install extends AbstractHandler {
 
-    private static final String PROJECT_NAME = "Samples";
+    private static final String PROJECT_NAME = "Examples";
 
     /*
      * (non-Javadoc)
@@ -55,15 +57,24 @@ public class Install extends AbstractHandler {
 	final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
 	if (root.getProject(PROJECT_NAME).exists()) {
-	    MessageDialog
-		    .openError(
+	    boolean result = MessageDialog
+		    .openConfirm(
 			    null,
-			    "Failed",
-			    NLS.bind(
-				    "There is already a project named \"{0}\"."
-					    + "Please make sure there is no project named {0} in the workspace.",
-				    PROJECT_NAME));
-	    return null;
+			    "Confirm Cleanup",
+			    "The "
+				    + PROJECT_NAME
+				    + " already exists on disk, Please confirm to perform a clean reinstall");
+	    if (result) {
+		// OK Button, cleanup project
+		try {
+		    root.getProject(PROJECT_NAME).delete(true, null);
+		} catch (CoreException e) {
+		    e.printStackTrace();
+		}
+	    } else {
+		// Cancel Button selected do nothing
+		return null;
+	    }
 	}
 
 	Job job = new Job("Import BOY Examples") {
