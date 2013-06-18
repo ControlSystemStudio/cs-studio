@@ -11,9 +11,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
@@ -23,6 +23,9 @@ import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.sns.elog.ELog;
 import org.csstudio.logbook.sns.elog.ELogEntry;
+import org.csstudio.logbook.util.LogEntrySearchUtil;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.TimeParser;
 
 /** {@link LogbookClient} for SNS 'ELog'
  *  @author ky9
@@ -131,10 +134,17 @@ public class SNSLogbookClient implements LogbookClient
     @Override
     public Collection<LogEntry> findLogEntries(final String search) throws Exception
     {
-        // TODO Support locating entries based on time range, ...
-        // using LogEntrySearchUtil as in OlogLogbookClient?
-        final Date end = new Date();
-        final Date start = new Date(end.getTime() - 1000L*60*60*24);
+        final Map<String, String> params = LogEntrySearchUtil.parseSearchString(search);
+
+        // Determing time range
+        String start_param = params.get(LogEntrySearchUtil.SEARCH_KEYWORD_START);
+        if (start_param == null)
+            start_param = "last 2 days";
+        String end_param = params.get(LogEntrySearchUtil.SEARCH_KEYWORD_END);
+        if (end_param == null)
+            end_param = "now";
+        final TimeInterval interval = TimeParser.getTimeInterval(start_param, end_param);
+        // TODO Support more filters
 
         final List<LogEntry> result;
         try
@@ -142,7 +152,8 @@ public class SNSLogbookClient implements LogbookClient
             final ELog elog = new ELog(url, user, password);
         )
         {
-            final List<ELogEntry> entries = elog.getEntries(start, end);
+            final List<ELogEntry> entries = elog.getEntries(
+                interval.getStart().toDate(), interval.getEnd().toDate());
             result = new ArrayList<>(entries.size());
             for (ELogEntry entry : entries)
                 result.add(new SNSLogEntry(entry));
