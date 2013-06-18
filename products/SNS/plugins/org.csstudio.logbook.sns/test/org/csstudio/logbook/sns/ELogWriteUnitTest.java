@@ -11,19 +11,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.csstudio.logbook.sns.elog.ELog;
 import org.csstudio.logbook.sns.elog.ELogEntry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/** JUnit test for {@link ELog}
+/** JUnit test for writing to the {@link ELog}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ELogUnitTest
+public class ELogWriteUnitTest
 {
     final private static String LOGBOOK = "Scratch Pad";
     private ELog elog;
@@ -41,14 +39,6 @@ public class ELogUnitTest
         elog.close();
     }
 
-    @Test
-    public void testLogbooks() throws Exception
-    {
-        final List<String> logbooks = elog.getLogbooks();
-        System.out.println(logbooks);
-        assertTrue(logbooks.size() > 0);
-    }
-    
     @Test
     public void testTextEntry() throws Exception
     {
@@ -90,11 +80,4 @@ public class ELogUnitTest
         final String attached_text = new String(entry.getAttachments().get(0).getData());
         assertThat(attached_text, equalTo(buf.toString()));
     }
-
-    @Test //(timeout=10000)
-    public void testReadEntry() throws Exception
-    {
-        ELogEntry entry = elog.getEntry(entry_id);
-        System.out.println(entry);
-   }
 }
