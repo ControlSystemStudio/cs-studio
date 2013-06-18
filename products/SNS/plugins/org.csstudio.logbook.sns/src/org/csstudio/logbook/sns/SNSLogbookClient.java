@@ -8,9 +8,12 @@
 package org.csstudio.logbook.sns;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.LogEntry;
@@ -19,6 +22,7 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.sns.elog.ELog;
+import org.csstudio.logbook.sns.elog.ELogEntry;
 
 /** {@link LogbookClient} for SNS 'ELog'
  *  @author ky9
@@ -54,14 +58,12 @@ public class SNSLogbookClient implements LogbookClient
     @Override
     public Collection<Logbook> listLogbooks() throws Exception
     {
-        final ELog elog = new ELog(url, user, password);
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
             return Converter.convertLogbooks(elog.getLogbooks());
-        }
-        finally
-        {
-            elog.close();
         }
     }
 
@@ -69,14 +71,12 @@ public class SNSLogbookClient implements LogbookClient
     @Override
     public Collection<Tag> listTags() throws Exception
     {
-        final ELog elog = new ELog(url, user, password);
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
             return Converter.convertCategories(elog.getCategories());
-        }
-        finally
-        {
-            elog.close();
         }
     }
 
@@ -93,15 +93,13 @@ public class SNSLogbookClient implements LogbookClient
             throws Exception
     {
         final long entry_id = getEntryID(logId);
-        final ELog elog = new ELog(url, user, password);
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
             return Converter.convertAttachments(elog.getImageAttachments(entry_id),
                     elog.getOtherAttachments(entry_id));
-        }
-        finally
-        {
-            elog.close();
         }
     }
 
@@ -120,24 +118,36 @@ public class SNSLogbookClient implements LogbookClient
     public LogEntry findLogEntry(final Object logId) throws Exception
     {
         final long entry_id = getEntryID(logId);
-        final ELog elog = new ELog(url, user, password);
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
-            return new SNSLogEntry(entry_id, elog.getEntry(entry_id));
-        }
-        finally
-        {
-            elog.close();
+            return new SNSLogEntry(elog.getEntry(entry_id));
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public Collection<LogEntry> findLogEntries(String search) throws Exception
+    public Collection<LogEntry> findLogEntries(final String search) throws Exception
     {
         // TODO Support locating entries based on time range, ...
-        // once the API is clearer
-        throw new UnsupportedOperationException();
+        // using LogEntrySearchUtil as in OlogLogbookClient?
+        final Date end = new Date();
+        final Date start = new Date(end.getTime() - 1000L*60*60*24);
+
+        final List<LogEntry> result;
+        try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
+        {
+            final List<ELogEntry> entries = elog.getEntries(start, end);
+            result = new ArrayList<>(entries.size());
+            for (ELogEntry entry : entries)
+                result.add(new SNSLogEntry(entry));
+        }
+        return result;
     }
 
     /** {@inheritDoc} */
@@ -156,9 +166,11 @@ public class SNSLogbookClient implements LogbookClient
         final Iterator<Logbook> logbooks = entry.getLogbooks().iterator();
         String logbook = logbooks.next().getName();
         
-        final ELog elog = new ELog(url, user, password);
         final long id;
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
             id = elog.createEntry(logbook, title, text);
         
@@ -184,10 +196,6 @@ public class SNSLogbookClient implements LogbookClient
             
             // API requires returning the entry as actually written...
             return findLogEntry(id);
-        }
-        finally
-        {
-            elog.close();
         }
     }
 
@@ -242,15 +250,12 @@ public class SNSLogbookClient implements LogbookClient
             throws Exception
     {
         final long entry_id = getEntryID(logId);
-        
-        final ELog elog = new ELog(url, user, password);
         try
+        (
+            final ELog elog = new ELog(url, user, password);
+        )
         {
             return Converter.convertAttachment(elog.addAttachment(entry_id, name, name, stream));
-        }
-        finally
-        {
-            elog.close();
         }
     }
 
