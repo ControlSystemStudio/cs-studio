@@ -7,10 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,6 +70,12 @@ public abstract class AbstractScriptStore implements IScriptStore{
 			if(!absoluteScriptPath.isAbsolute()){
 				absoluteScriptPath = ResourceUtil.buildAbsolutePath(
 						editpart.getWidgetModel(), absoluteScriptPath);
+				if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
+					//search from OPI search path
+					absoluteScriptPath = ResourceUtil.getFileOnSearchPath(scriptData.getPath(), true);
+					if(absoluteScriptPath == null)
+						throw new FileNotFoundException(scriptData.getPath().toString());
+				}
 			}
 		}
 		
