@@ -20,7 +20,7 @@
       <command
             defaultHandler="org.csstudio.examples.Install"
             id="org.csstudio.opibuilder.samples.install"
-            name="Install Boy Examples">
+            name="Install Examples">
       </command>
    </extension>
 

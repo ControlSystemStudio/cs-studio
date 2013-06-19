@@ -83,7 +83,9 @@ public class Install extends AbstractHandler {
 	ListSelectionDialog listSelectionDialog = new ListSelectionDialog(
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 		urls.keySet(), new ArrayContentProvider(),
-		new ColumnLabelProvider(), "Select Examples");
+		new ColumnLabelProvider(),
+		"Select the Examples to be installed.");
+	listSelectionDialog.setTitle("Install Examples");
 	List<String> existingProjects = new ArrayList<String>();
 	for (IProject project : root.getProjects()) {
 	    if (urls.keySet().contains(project.getName())) {
