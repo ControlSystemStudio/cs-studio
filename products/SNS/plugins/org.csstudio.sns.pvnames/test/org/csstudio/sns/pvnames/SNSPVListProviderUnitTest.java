@@ -27,8 +27,8 @@ public class SNSPVListProviderUnitTest
         final IAutoCompleteProvider provider = new SNSPVListProvider();
         AutoCompleteResult pvs = provider.listResult("PV", "DTL_LLRF:IOC1:L*", 10);
         System.out.println("Matching PVs: " + pvs.getCount());
-        System.out.println(pvs.getResults());
-        assertThat(pvs.getResults().size(), greaterThan(1));
-        assertThat(pvs.getResults().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
+        System.out.println(pvs.getProposalsAsString());
+        assertThat(pvs.getCount(), greaterThan(1));
+        assertThat(pvs.getProposalsAsString().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
     }
 }
