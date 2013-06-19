@@ -6,7 +6,7 @@ package org.csstudio.examples;
 import java.net.URL;
 
 /**
- * Interface for the extension point to contribute sample screens to the BOY
+ * Interface for the extension point to contribute sample screens to the 
  * examples that can be install in CS-Studio
  * 
  * The given sample screens will be installed in a directory under Examples

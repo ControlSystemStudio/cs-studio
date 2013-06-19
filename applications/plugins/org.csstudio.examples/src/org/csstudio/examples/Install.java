@@ -6,7 +6,6 @@ package org.csstudio.examples;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +43,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 
 /**
- * A command to install examples.
- * 
- * The command looks for example
+ * A command to install examples defined using the sampleset extension point.
  * 
  * @author shroffk
  * 
@@ -106,7 +103,7 @@ public class Install extends AbstractHandler {
 	    }
 	}
 
-	Job job = new Job("Import BOY Examples") {
+	Job job = new Job("Import Examples") {
 
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {

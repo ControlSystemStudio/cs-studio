@@ -6,7 +6,7 @@
          <meta.schema plugin="org.csstudio.examples" id="org.csstudio.examples.sampleset" name="Sample Set"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         An Extenstion point to contribute CS-Studio examples
       </documentation>
    </annotation>
 

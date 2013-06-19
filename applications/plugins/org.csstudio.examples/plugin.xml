@@ -9,7 +9,6 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.opibuilder.samples.install"
-               icon="icons/logentry-add-16.png"
                label="Install Samples"
                style="push">
          </command>
