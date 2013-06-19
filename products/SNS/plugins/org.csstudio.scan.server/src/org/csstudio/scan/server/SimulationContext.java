@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.MacroTable;
+import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.device.SimulatedDevice;
 
 /** Context used for the simulation of {@link ScanCommandImpl}
@@ -22,6 +26,9 @@ public class SimulationContext
 {
 	final private SimulationInfo simulation_info;
 
+    /** Macros for resolving device names */
+    final private IMacroTableProvider macros;
+	
 	final private Map<String, SimulatedDevice> devices = new HashMap<String, SimulatedDevice>();
 
 	final private PrintStream log_stream;
@@ -34,7 +41,8 @@ public class SimulationContext
 	 */
 	public SimulationContext(final PrintStream log_stream) throws Exception
 	{
-		this.simulation_info = SimulationInfo.getDefault();
+	    this.simulation_info = SimulationInfo.getDefault();
+        this.macros = new MacroTable(ScanSystemPreferences.getMacros());
 		this.log_stream = log_stream;
 	}
 
@@ -57,16 +65,18 @@ public class SimulationContext
 		return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
 
-	/** @param name Device name
+	/** @param name Device name, may contain macros
 	 *  @return {@link SimulatedDevice}
+	 *  @throws Exception on error in macro handling
 	 */
-    public SimulatedDevice getDevice(final String name)
+    public SimulatedDevice getDevice(final String name) throws Exception
     {
-    	SimulatedDevice device = devices.get(name);
+        final String expanded_name = MacroUtil.replaceMacros(name, macros);
+    	SimulatedDevice device = devices.get(expanded_name);
 		if (device == null)
 		{
-			device = new SimulatedDevice(name, simulation_info);
-			devices.put(name, device);
+			device = new SimulatedDevice(expanded_name, simulation_info);
+			devices.put(expanded_name, device);
 		}
 	    return device;
     }
@@ -79,7 +89,14 @@ public class SimulationContext
     {
 		log_stream.print(getSimulationTime());
 		log_stream.print(" - ");
-		log_stream.println(info);
+		try
+		{
+		    log_stream.println(MacroUtil.replaceMacros(info, macros));
+		}
+		catch (Exception ex)
+		{
+            log_stream.println(info);
+		}
 		simulation_seconds += seconds;
     }
 
