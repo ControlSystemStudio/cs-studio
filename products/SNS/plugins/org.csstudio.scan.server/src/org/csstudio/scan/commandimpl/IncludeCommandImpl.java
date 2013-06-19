@@ -29,6 +29,7 @@ import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.SimulationContext;
 import org.csstudio.scan.server.internal.PathStreamTool;
 
 /** {@link ScanCommandImpl} that includes another scan
@@ -67,6 +68,14 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
         }
 	    return devices.toArray(new String[devices.size()]);
 	}
+	
+	/** {@inheritDoc} */
+    @Override
+    public void simulate(final SimulationContext context) throws Exception
+    {
+        context.logExecutionStep(command.toString(), 0.0);
+        context.simulate(scan_impl);
+    }
 
 	/** {@inheritDoc} */
 	@Override
