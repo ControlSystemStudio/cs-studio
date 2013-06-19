@@ -29,6 +29,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.MacroTable;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
@@ -64,6 +67,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Commands to execute */
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
+    /** Macros for resolving device names */
+    final private IMacroTableProvider macros;
+    
     /** Devices used by the scan */
     final protected transient DeviceContext devices;
 
@@ -150,6 +156,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         super(scan);
+        this.macros = new MacroTable(ScanSystemPreferences.getMacros());
         this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
@@ -313,7 +320,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Device getDevice(final String name) throws Exception
     {
-        return devices.getDeviceByAlias(name);
+        final String expanded_name = MacroUtil.replaceMacros(name, macros);
+        return devices.getDeviceByAlias(expanded_name);
     }
 
     /** {@inheritDoc} */
@@ -458,14 +466,15 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Add required devices
         for (String device_name : required_devices)
         {
+            final String expanded_name = MacroUtil.replaceMacros(device_name, macros);
             try
             {
-                if (devices.getDeviceByAlias(device_name) != null)
+                if (devices.getDeviceByAlias(expanded_name) != null)
                     continue;
             }
             catch (Exception ex)
             {   // Add PV device, no alias, for unknown device
-                devices.addPVDevice(new DeviceInfo(device_name));
+                devices.addPVDevice(new DeviceInfo(expanded_name));
             }
         }
 

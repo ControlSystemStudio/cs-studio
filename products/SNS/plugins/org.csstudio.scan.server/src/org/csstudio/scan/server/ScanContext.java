@@ -39,7 +39,7 @@ import org.csstudio.scan.server.internal.ExecutableScan;
 public interface ScanContext
 {
 	/** Get a device by (alias) name
-	 *  @param name
+	 *  @param name (Alias) name of the device. May contain macros.
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */
