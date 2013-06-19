@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.IncludeCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
@@ -43,9 +44,9 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     {
 	    super(command, jython);
 
-	    // TODO Use path(s) from preferences
 	    // Parse scan
-	    final InputStream scan_stream = PathStreamTool.openStream(command.getScanFile());
+	    final String[] paths = ScanSystemPreferences.getScriptPaths();
+	    final InputStream scan_stream = PathStreamTool.openStream(paths, command.getScanFile());
         final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
         final List<ScanCommand> commands = reader.readXMLStream(scan_stream);
         

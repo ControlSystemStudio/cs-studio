@@ -77,7 +77,7 @@ public class ScanSystemPreferences extends SystemSettings
         return StringSplitter.splitIgnoreInQuotes(list, ',', true);
     }
 
-    /** @return Scan script search paths */
+    /** @return Search paths for scan scripts and 'included' scans */
     public static String[] getScriptPaths()
     {
         final IPreferencesService service = Platform.getPreferencesService();

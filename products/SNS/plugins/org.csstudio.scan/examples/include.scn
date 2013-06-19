@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+  <comment><address>0</address><text>This scan includes another one</text></comment>
+  <include>
+    <address>1</address>
+    <scan_file>included.scn</scan_file>
+    <macros>macro=value</macros>
+  </include>
+</commands>
