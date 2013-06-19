@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-/** Example for a custom command, added to scan system via extension point.
+/** Command that adds comment to a scan
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

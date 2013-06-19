@@ -29,6 +29,11 @@
    <extension
          point="org.csstudio.scan.server.scancommandimpl">
       <imp_factory
+            command="org.csstudio.scan.command.CommentCommand"
+            factory="org.csstudio.scan.commandimpl.CommentCommandImplFactory"
+            name="Comment">
+      </imp_factory>
+      <imp_factory
             command="org.csstudio.scan.command.ConfigLogCommand"
             factory="org.csstudio.scan.commandimpl.ConfigLogCommandImplFactory"
             name="ConfigLog">

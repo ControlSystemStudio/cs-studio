@@ -20,7 +20,7 @@ import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** Implementation of an example command, namely {@link CommentCommand}
+/** Implementation of {@link CommentCommand}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

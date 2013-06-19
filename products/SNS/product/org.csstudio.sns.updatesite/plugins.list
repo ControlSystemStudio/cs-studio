@@ -89,8 +89,6 @@ org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
 org.csstudio.scan/**
 org.csstudio.scan.client/**
-org.csstudio.scan.custom/**
-org.csstudio.scan.custom.impl/**
 org.csstudio.scan.server/**
 org.csstudio.scan.log/**
 org.csstudio.scan.log.derby/**

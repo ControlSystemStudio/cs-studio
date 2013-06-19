@@ -13,14 +13,19 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.scan.command.CommentCommand;
+import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.SimpleScanCommandFactory;
+import org.csstudio.scan.command.XMLCommandReader;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.junit.Test;
 
 /** JUnit test of the {@link CommentCommand}
@@ -37,10 +42,10 @@ public class CommentCommandUnitTest
         final String xml = XMLCommandWriter.toXMLString(Arrays.asList(command));
 
         final List<ScanCommand> commands = new XMLCommandReader(new SimpleScanCommandFactory()).readXMLString(xml);
-        assertEquals(1, commands.size());
-        assertSame(CommentCommand.class, commands.get(0).getClass());
+        assertThat(commands.size(), equalTo(1));
+        assertThat(commands.get(0).getClass().getName(), equalTo(CommentCommand.class.getName()));
         final CommentCommand comment = (CommentCommand) commands.get(0);
         System.out.println(comment);
-        assertEquals("Test is OK", comment.getComment());
+        assertThat(comment.getComment(), equalTo("Test is OK"));
     }
 }
