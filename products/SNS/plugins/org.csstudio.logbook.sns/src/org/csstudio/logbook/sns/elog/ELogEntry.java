@@ -16,6 +16,7 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class ELogEntry
 {
+    final private long id;
     final private String user;
     final private Date date;
     final private String title;
@@ -25,13 +26,14 @@ public class ELogEntry
     final private List<ELogAttachment> images;
     final private List<ELogAttachment> attachments;
 
-    public ELogEntry(final String user, final Date date,
+    public ELogEntry(final long id, final String user, final Date date,
             final String title, final String text,
             final List<String> logbooks,
             final List<ELogCategory> categories,
             final List<ELogAttachment> images,
             final List<ELogAttachment> attachments)
     {
+        this.id = id;
         this.user = user;
         this.date = date;
         this.title = title;
@@ -40,6 +42,11 @@ public class ELogEntry
         this.categories = categories;
         this.images = images;
         this.attachments = attachments;
+    }
+    
+    public long getId()
+    {
+        return id;
     }
 
     public String getUser()

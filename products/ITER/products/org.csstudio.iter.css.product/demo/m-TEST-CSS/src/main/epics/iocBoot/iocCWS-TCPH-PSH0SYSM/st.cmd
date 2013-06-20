@@ -1,7 +1,7 @@
 #!../../bin/linux-x86_64/CWS-TCPH
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-epics-iter-templates/tags/CODAC-CORE-3.1.0/templates/genericBoot/ioc/st.cmd $
-# $Id: st.cmd 27608 2012-05-15 15:14:52Z zagara $
+# $HeadURL$
+# $Id$
 #
 # Project       : CODAC Core System
 #
@@ -9,7 +9,7 @@
 #
 # Author(s)     : Cosylab
 #
-# Copyright (c) : 2010-2012 ITER Organization,
+# Copyright (c) : 2010-2013 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France

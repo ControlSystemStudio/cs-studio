@@ -10,6 +10,10 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  */
 public abstract class AbstractChannelWidgetWithNotificationModel extends AbstractChannelWidgetModel {
 	
+	public AbstractChannelWidgetWithNotificationModel(boolean enableConfigurableProperty) {
+		super(enableConfigurableProperty);
+	}
+	
 	public static final String SELECTION_PV = "selection_pv"; //$NON-NLS-1$	
 	public static final String SELECTION_EXPRESSION = "selection_expression"; //$NON-NLS-1$	
 	

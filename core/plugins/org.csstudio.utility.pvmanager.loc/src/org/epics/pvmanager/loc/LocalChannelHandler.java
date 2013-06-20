@@ -10,10 +10,16 @@ import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.ChannelHandlerWriteSubscription;
 import java.util.Collections;
 import java.util.List;
-import org.epics.pvmanager.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
+import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
 
 /**
@@ -22,6 +28,8 @@ import org.epics.vtype.VType;
  * @author carcassi
  */
 class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
+    
+    private static Logger log = Logger.getLogger(LocalChannelHandler.class.getName());
 
     LocalChannelHandler(String channelName) {
         super(channelName);
@@ -30,13 +38,12 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     @Override
     public void connect() {
         processConnection(new Object());
-        if (getLastMessagePayload() == null) {
-            processMessage(wrapValue(0.0));
-        }
     }
 
     @Override
     public void disconnect() {
+        initialValue = null;
+        type = null;
         processConnection(null);
     }
 
@@ -62,6 +69,13 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     protected synchronized void removeWrite(ChannelHandlerWriteSubscription subscription) {
         // Override for test visibility purposes
         super.removeWrite(subscription);
+    }
+    
+    private Object checkValue(Object value) {
+        if (type != null && !type.isInstance(value)) {
+            throw new IllegalArgumentException("Value " + value + " is not of type " + type.getSimpleName());
+        }
+        return value;
     }
     
     private Object wrapValue(Object value) {
@@ -111,7 +125,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
                 } catch (NumberFormatException ex) {
                 }
             }
-            newValue = wrapValue(newValue);
+            newValue = checkValue(wrapValue(newValue));
             processMessage(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
@@ -123,14 +137,49 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     protected boolean isWriteConnected(Object payload) {
         return isConnected(payload);
     }
-
-    @Override
-    protected boolean saveMessageAfterDisconnect() {
-        return true;
-    }
+    
+    private Object initialValue;
+    private Class<?> type;
     
     void setInitialValue(Object value) {
-        processMessage(wrapValue(value));
+        if (initialValue != null && !initialValue.equals(value)) {
+            String message = "Different initialization for local channel " + getChannelName() + ": " + value + " but was " + initialValue;
+            log.log(Level.WARNING, message);
+            throw new RuntimeException(message);
+        }
+        initialValue = value;
+        if (getLastMessagePayload() == null) {
+            processMessage(checkValue(wrapValue(value)));
+        }
+    }
+    
+    void setType(String typeName) {
+        if (typeName == null) {
+            return;
+        }
+        Class<?> newType = null;
+        if ("VDouble".equals(typeName)) {
+            newType = VDouble.class;
+        }
+        if ("VString".equals(typeName)) {
+            newType = VString.class;
+        }
+        if ("VDoubleArray".equals(typeName)) {
+            newType = VDoubleArray.class;
+        }
+        if ("VStringArray".equals(typeName)) {
+            newType = VStringArray.class;
+        }
+        if ("VTable".equals(typeName)) {
+            newType = VTable.class;
+        }
+        if (newType == null) {
+            throw new IllegalArgumentException("Type " + typeName + " for channel " + getChannelName() + " is not supported by local datasource.");
+        }
+        if (type != null && !type.equals(newType)) {
+            throw new IllegalArgumentException("Type mismatch for channel " + getChannelName() + ": " + typeName + " but was " + type.getSimpleName());
+        }
+        type = newType;
     }
     
 }

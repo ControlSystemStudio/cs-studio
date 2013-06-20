@@ -3,7 +3,6 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.BubbleGraph2DWidget;
 
 
 /**
@@ -13,7 +12,7 @@ import org.csstudio.graphene.BubbleGraph2DWidget;
 public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetModel {
 	
 	public BubbleGraph2DWidgetModel() {
-		super(BubbleGraph2DWidget.class);
+		super(true);
 	}
 
 	public final String ID = "org.csstudio.graphene.opiwidgets.BubbleGraph2D"; //$NON-NLS-1$

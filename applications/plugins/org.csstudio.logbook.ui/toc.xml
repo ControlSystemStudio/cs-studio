@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.ui.help/tocApps.xml#utility" label="Logbook">
-	<topic label="Logbook"  href="html/logbook.html">
+	<topic label="Create Log Entry"  href="html/logbook.html">
 	</topic>
 </toc>

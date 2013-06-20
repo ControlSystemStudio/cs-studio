@@ -24,6 +24,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -48,6 +50,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
 			.getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
 
+	@SuppressWarnings("serial")
 	public Menu getMenu(Control parent) {
 		dispose();
 		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
@@ -62,12 +65,24 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 					item.setText(alias);
 				else
 					item.setText(path.lastSegment());
-				item.setImage(OPI_RUNTIME_IMAGE);
+				if(path.getFileExtension().toLowerCase().equals("opi")) //$NON-NLS-1$
+					item.setImage(OPI_RUNTIME_IMAGE);
+				else{
+					final Image image = PlatformUI.getWorkbench().getEditorRegistry().
+							getImageDescriptor(path.toOSString()).createImage();
+					item.setImage(image);
+					item.addDisposeListener(new DisposeListener() {						
+						@Override
+						public void widgetDisposed(DisposeEvent e) {
+							image.dispose();
+						}
+					});
+				}
 				item.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (path != null) {
-							if (path.getFileExtension().toLowerCase().equals("opi")) {
+							if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
 								runOPI(topOPIs.get(path), path);
 							} else {
 								runOther(path);

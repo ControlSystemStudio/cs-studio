@@ -1,7 +1,7 @@
 #!/bin/bash
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-maven-iter-plugin/tags/CODAC-CORE-3.1.0/src/main/resources/test_template.sh $
-# $Id: test_template.sh 25208 2012-02-07 10:17:51Z zagara $
+# $HeadURL$
+# $Id$
 #
 # Project       : CODAC Core System
 #
@@ -9,7 +9,7 @@
 #
 # Author        : Cosylab
 #
-# Copyright (c) : 2010-2012 ITER Organization,
+# Copyright (c) : 2010-2013 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France

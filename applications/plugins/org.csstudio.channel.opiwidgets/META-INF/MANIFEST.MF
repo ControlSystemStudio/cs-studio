@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  gov.bnl.channelfinder.api;bundle-version="2.1.0",
  org.csstudio.utility.channelfinder;bundle-version="1.1.0",
  org.junit,
- org.epics.util
+ org.epics.util,
+ org.csstudio.opibuilder.widgets.extra;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Set of BOY widgets that expose the channel based SWT widgets in org.csstudio.channel.widgets

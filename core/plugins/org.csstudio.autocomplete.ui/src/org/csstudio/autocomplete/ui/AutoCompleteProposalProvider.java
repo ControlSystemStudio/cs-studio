@@ -13,7 +13,7 @@ import java.util.List;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.AutoCompleteService;
 import org.csstudio.autocomplete.IAutoCompleteResultListener;
-import org.eclipse.jface.fieldassist.IContentProposal;
+import org.csstudio.autocomplete.Proposal;
 
 public class AutoCompleteProposalProvider implements
 		IAutoCompleteProposalProvider {
@@ -27,11 +27,12 @@ public class AutoCompleteProposalProvider implements
 		this.currentList = new ContentProposalList();
 	}
 
-	public void getProposals(String contents, int position, int max,
+	public void getProposals(final String contents,
 			final IContentProposalSearchHandler handler) {
 		currentId = System.currentTimeMillis();
 		synchronized (currentList) {
 			currentList.clear();
+			currentList.setOriginalValue(contents);
 		}
 		AutoCompleteService cns = AutoCompleteService.getInstance();
 		int expected = cns.get(currentId, type, contents,
@@ -47,32 +48,22 @@ public class AutoCompleteProposalProvider implements
 							if (result == null)
 								return;
 
-							List<IContentProposal> contentProposals = new ArrayList<IContentProposal>();
-							for (final String proposal : result.getResults()) {
+							List<Proposal> contentProposals = new ArrayList<Proposal>();
+							if (result.getProposals() != null)
+								for (final Proposal proposal : result.getProposals())
+									contentProposals.add(proposal);
+							Proposal[] contentProposalsArray = contentProposals
+									.toArray(new Proposal[contentProposals.size()]);
 
-								contentProposals.add(new IContentProposal() {
-									public String getContent() {
-										return proposal;
-									}
+							List<Proposal> topContentProposals = new ArrayList<Proposal>();
+							if (result.getTopProposals() != null)
+								for (final Proposal proposal : result.getTopProposals())
+									topContentProposals.add(proposal);
 
-									public String getDescription() {
-										return null;
-									}
-
-									public String getLabel() {
-										return null;
-									}
-
-									public int getCursorPosition() {
-										return proposal.length();
-									}
-								});
-							}
 							ContentProposalList cpl = null;
 							synchronized (currentList) {
-								currentList.addProposals(result.getProvider(),
-										(IContentProposal[]) contentProposals.toArray(new IContentProposal[contentProposals.size()]), 
-										result.getCount(), index);
+								currentList.addProposals(result.getProvider(), contentProposalsArray, result.getCount(), index);
+								currentList.addTopProposals(topContentProposals);
 								cpl = currentList.clone();
 							}
 							handler.handleResult(cpl);

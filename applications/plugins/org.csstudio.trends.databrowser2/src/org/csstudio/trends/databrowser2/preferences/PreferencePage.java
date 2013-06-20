@@ -24,6 +24,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /** Preference Page, registered in plugin.xml
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - added archive server alias
  */
 public class PreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage
@@ -157,9 +158,9 @@ public class PreferencePage extends FieldEditorPreferencePage
         // Server URLs
         final StringTableFieldEditor urls = new StringTableFieldEditor(
                 parent, Preferences.URLS, Messages.PrefPage_DataServerURLs,
-                new String[] { Messages.URL },
-                new boolean[] { true },
-                new int[] { 500 },
+                new String[] { Messages.URL, Messages.ServerAlias },
+                new boolean[] { true, true },
+                new int[] { 500, 100 },
                 new ArchiveURLEditor(parent.getShell()));
         addField(urls);
 

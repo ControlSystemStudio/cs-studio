@@ -127,11 +127,13 @@ public class GUI implements AlarmClientModelListener
                     // as that happens to not flicker.
                     AlarmTreePV[] alarms = model.getActiveAlarms();
                     current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
+                    current_alarms.pack();
+                    ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
 
                     alarms = model.getAcknowledgedAlarms();
                     acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
+                    acknowledged_alarms.pack();
+                    ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
                 }
             });
         }
@@ -499,7 +501,6 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
-
         display.asyncExec(new Runnable()
         {
             @Override
@@ -519,6 +520,7 @@ public class GUI implements AlarmClientModelListener
             final AlarmTreePV pv, final boolean parent_changed)
     {
         gui_update.trigger();
+        
         if (model.isServerAlive() && have_error_message)
         {   // Clear error message now that we have info from the alarm server
             display.asyncExec(new Runnable()

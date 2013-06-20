@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.eclipse.core.commands.Command;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 
 /**
@@ -128,12 +130,17 @@ public class SendToElogAction extends Action {
 		try {
 			if (LogbookClientManager.getLogbookClientFactory() == null)
 				return false;
-			
-			// Check if logbook UI is available
-			if (Class.forName("org.csstudio.logbook.ui.LogEntryBuilderDialog") == null) {
+
+			// Check if logbook dialog is available
+			ICommandService commandService = (ICommandService) PlatformUI
+					.getWorkbench().getActiveWorkbenchWindow()
+					.getService(ICommandService.class);
+			Command command = commandService
+					.getCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID);
+			if (command == null) {
 				return false;
 			}
-			
+
 			return true;
 		} catch (Exception e) {
 			return false;

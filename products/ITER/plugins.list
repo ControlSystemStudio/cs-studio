@@ -53,12 +53,12 @@ org.csstudio.display.pvtable
 org.csstudio.display.rdbtable
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.examples
 org.csstudio.iter.authorizationprovider
 org.csstudio.iter.css.product
 org.csstudio.iter.passwordprovider
 org.csstudio.iter.startuphelper
 org.csstudio.iter.utility.ologauth
-org.csstudio.iter.utility.sddreader
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog

@@ -68,7 +68,7 @@ public class VImageWidget extends Composite {
 							final PVReaderEvent<Object> event) {
 						errorBar.setException(event.getPvReader().lastException());
 						Object value = event.getPvReader().getValue();
-						if (value instanceof VImage) {
+						if (value == null || value instanceof VImage) {
 							imageDisplay.setVImage((VImage) value);
 						} else {
 							errorBar.setException(new RuntimeException("Formula does not return a VImage"));

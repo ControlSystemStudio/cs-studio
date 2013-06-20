@@ -38,14 +38,31 @@ IO Trace 2 = 192,80,77
 IO Trace 3 = 119,147,60
 IO Trace 4 = 135,112,107
 
-# Button color
-IO Button = 178, 178, 178
-
+# StatusBar color
 IO StatusBar Bg = 0,75,125
 IO StatusBar Fg = 255,255,255
+
+# Button colors
+IO Button = 178, 178, 178
 IO TextButton = 0, 0, 0
 IO TextInactiveButton = 166,166,166
+
+# Label color
 IO Label = 0, 0, 0
+
+# Fluid Pipe colors
+IO Cooling Water Pipe = 0,176,80
+IO Helium Pipe = 0,176,240
+IO Nitrogen Pipe = 255,195,0
+IO Oil Pipe = 255,255,0
+IO Secondary Circuit Pipe = 0,76,240
+
+
+# Electrical bus colors
+IO Energised Busbar = 255,0,0
+IO De energised Busbar = 128,128,128
+ 
+# State colors
 IO OK = 0,255,0
 IO Default = 255,0,0
 IO onGoing = 255,255,0

@@ -102,6 +102,7 @@ protected CellEditor createCellEditorOn(Composite composite) {
 						fireCancelEditor();
 						deactivate();
 					}
+					editPart.getFigure().requestFocus();
 				} else
 					super.focusLost();
 		}
@@ -109,8 +110,9 @@ protected CellEditor createCellEditorOn(Composite composite) {
 		@Override
 		protected void handleDefaultSelection(SelectionEvent event) {
 			//In run mode, hit ENTER should force to write the new value even it doesn't change.
-			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE)
+			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE) {
 				setDirty(true);
+			}
 			super.handleDefaultSelection(event);
 		}
 		

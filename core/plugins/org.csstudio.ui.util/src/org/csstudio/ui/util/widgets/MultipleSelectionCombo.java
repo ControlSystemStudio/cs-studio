@@ -243,7 +243,10 @@ public class MultipleSelectionCombo<T> extends Composite {
 	List<Integer> newSelectionIndex = new ArrayList<Integer>(
 		selection.size());
 	for (T t : selection) {
-	    newSelectionIndex.add(items.indexOf(t));
+		int index = items.indexOf(t);
+		if (index >= 0) {
+			newSelectionIndex.add(items.indexOf(t));
+		}
 	}
 	this.selectionIndex = newSelectionIndex;
 	changeSupport.firePropertyChange("selection", oldValue,

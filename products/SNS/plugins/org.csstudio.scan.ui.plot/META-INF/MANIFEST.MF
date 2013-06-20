@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scan Plot
 Bundle-SymbolicName: org.csstudio.scan.ui.plot;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.2.1.qualifier
 Bundle-Activator: org.csstudio.scan.ui.plot.Activator
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -16,6 +16,6 @@ Require-Bundle: org.junit,
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.client;bundle-version="1.0.0",
  org.csstudio.scan.ui;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.scan.ui.plot
