@@ -136,10 +136,13 @@ public class ScanServerImpl implements ScanServer
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
+            
+            // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-            List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
+            List<ScanCommandImpl<?>> scan = tool.implement(commands, jython);
 
             // Setup simulation log
             ByteArrayOutputStream log_buf = new ByteArrayOutputStream();

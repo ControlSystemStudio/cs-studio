@@ -53,6 +53,7 @@ org.csstudio.display.pvtable
 org.csstudio.display.rdbtable
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.examples
 org.csstudio.iter.authorizationprovider
 org.csstudio.iter.css.product
 org.csstudio.iter.passwordprovider

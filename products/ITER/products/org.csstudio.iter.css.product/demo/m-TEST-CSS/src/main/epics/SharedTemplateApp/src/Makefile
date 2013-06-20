@@ -1,6 +1,6 @@
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-epics-iter-templates/tags/CODAC-CORE-3.1.0/templates/sddconfApp/src/Makefile $
-# $Id: Makefile 28651 2012-06-20 14:09:27Z zagara $
+# $HeadURL$
+# $Id$
 #
 # Project       : CODAC Core System
 #
@@ -8,7 +8,7 @@
 #
 # Author(s)     : Anze Zagar
 #
-# Copyright (c) : 2010-2012 ITER Organization,
+# Copyright (c) : 2010-2013 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France

@@ -150,42 +150,48 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getLastScanDataSerial(long)">getLastScanDataSerial</a></strong>(long&nbsp;id)</code>
+<div class="block">Get serial of last logged sample.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanCommands(long)">getScanCommands</a></strong>(long&nbsp;id)</code>
 <div class="block">Obtain commands for a scan</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data">ScanData</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanData(long)">getScanData</a></strong>(long&nbsp;id)</code>
 <div class="block">Obtain data logged by a scan</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Collection&lt;<a href="../../../../org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanDevices(long)">getScanDevices</a></strong>(long&nbsp;id)</code>
 <div class="block">Obtain devices used by a scan</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanInfo(long)">getScanInfo</a></strong>(long&nbsp;id)</code>
 <div class="block">Obtain information for a scan</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanInfos()">getScanInfos</a></strong>()</code>
 <div class="block">Obtain information for all scans</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#getServerInfo()">getServerInfo</a></strong>()</code>
 <div class="block">Obtain overall scan server information</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#patchScan(long, long, java.lang.String, java.lang.Object)">patchScan</a></strong>(long&nbsp;id,
          long&nbsp;address,
@@ -194,37 +200,37 @@ extends java.lang.Object</pre>
 <div class="block">Submit patch to running scan</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#pauseScan(long)">pauseScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Put running scan into paused state</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#removeCompletedScans()">removeCompletedScans</a></strong>()</code>
 <div class="block">Remove all completed scans</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#removeScan(long)">removeScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Remove a completed scan</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#resumeScan(long)">resumeScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Resume a paused scan</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server">SimulationResult</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#simulateScan(java.lang.String)">simulateScan</a></strong>(java.lang.String&nbsp;xml_commands)</code>
 <div class="block">Submit a scan for simulation</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#submitScan(java.lang.String, java.lang.String)">submitScan</a></strong>(java.lang.String&nbsp;name,
           java.lang.String&nbsp;xml_commands)</code>
@@ -354,6 +360,24 @@ extends java.lang.Object</pre>
 <dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data"><code>ScanData</code></a></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="getLastScanDataSerial(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLastScanDataSerial</h4>
+<pre>public&nbsp;long&nbsp;getLastScanDataSerial(long&nbsp;id)
+                           throws java.lang.Exception</pre>
+<div class="block">Get serial of last logged sample.
+
+  <p>Can be used to determine if there are new samples
+  that should be fetched via <code>getScanData()</code></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>id</code> - ID that uniquely identifies a scan</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Serial of last sample in scan data or -1 if nothing has been logged</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanData(long)"><code>getScanData(long)</code></a></dd></dl>
 </li>
 </ul>
 <a name="getScanDevices(long)">

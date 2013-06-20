@@ -566,6 +566,10 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 						if(!absoluteScriptPath.isAbsolute()){
 							absoluteScriptPath = ResourceUtil.buildAbsolutePath(
 									widgetModel, absoluteScriptPath);
+							if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
+								//search from OPI search path
+								absoluteScriptPath = ResourceUtil.getFileOnSearchPath(sd.getPath(), true);
+							}
 						}
 						
 						try {

@@ -39,7 +39,7 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
 	protected void configureProperties() {
 		addProperty(new FilePathProperty(
 				PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
-				new String[]{getFileExtension()}));
+				new String[]{getFileExtension()}, false));
 		addProperty(new StringProperty(
 				PROP_SCRIPT_TEXT, "Script Text", WidgetPropertyCategory.Basic, 
 				getScriptHeader(), true, true));
@@ -68,9 +68,13 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
 	protected IPath getAbsolutePath(){
 		//read file
 		IPath absolutePath = getPath();
-		if(!getPath().isAbsolute()){
+		if(!absolutePath.isAbsolute()){
     		absolutePath =
     			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
+    		if(!ResourceUtil.isExsitingFile(absolutePath, true)){
+				//search from OPI search path
+				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
+			}
     	}
 		return absolutePath;
 	}

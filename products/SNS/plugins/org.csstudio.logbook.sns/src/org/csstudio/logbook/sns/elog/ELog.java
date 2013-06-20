@@ -9,6 +9,7 @@ package org.csstudio.logbook.sns.elog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -30,7 +31,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ELog
+public class ELog implements Closeable
 {
     final private RDBUtil rdb;
 
@@ -208,7 +209,7 @@ public class ELog
             if (! result.next())
                 return null;
             user = result.getString(2) + " " + result.getString(3);
-            date = result.getDate(4);
+            date = new Date(result.getTimestamp(4).getTime());
             title = result.getString(5);
             text = result.getString(6);
         }
@@ -221,7 +222,48 @@ public class ELog
         final List<ELogAttachment> attachments = getOtherAttachments(entry_id);
         
         // Return entry        
-        return new ELogEntry(user, date, title, text, logbooks, categories, images, attachments);
+        return new ELogEntry(entry_id, user, date, title, text, logbooks, categories, images, attachments);
+    }
+    
+    /** Read logbook entries
+     *  @param start Start date
+     *  @param end End date
+     *  @return List of {@link ELogEntry}
+     *  @throws Exception on error
+     */
+    public List<ELogEntry> getEntries(final Date start, final Date end) throws Exception
+    {
+        final List<ELogEntry> entries = new ArrayList<>();
+        try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "SELECT e.log_entry_id, d.pref_first_nm, d.pref_last_nm," +
+                "  e.orig_post, e.title, e.content " +
+                " FROM LOGBOOK.log_entry e" +
+                " LEFT JOIN oper.employee_v d ON d.bn = e.bn" +
+                " WHERE (e.pub_stat_id = 'P' OR e.pub_stat_id IS NULL)" +
+                " AND e.orig_post BETWEEN ? AND ?" +
+                " ORDER BY e.orig_post DESC");
+        )
+        {
+            statement.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+            statement.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
+            final ResultSet result = statement.executeQuery();
+            while (result.next())
+            {
+                final long entry_id = result.getLong(1);
+                final String user = result.getString(2) + " " + result.getString(3);
+                final Date date = new Date(result.getTimestamp(4).getTime());
+                final String title = result.getString(5);
+                final String text = result.getString(6);
+                final List<String> logbooks = getLogbooks(entry_id);
+                final List<ELogCategory> categories = getCategories(entry_id);
+                final List<ELogAttachment> images = getImageAttachments(entry_id);
+                final List<ELogAttachment> attachments = getOtherAttachments(entry_id);
+                entries.add(new ELogEntry(entry_id, user, date, title, text, logbooks, categories, images, attachments));
+            }
+        }
+        return entries;
     }
     
     /** @param entry_id Log entry ID
@@ -566,6 +608,7 @@ public class ELog
     }
 
     /** Close RDB connection. Must be called when done using the logbook. */
+    @Override
     public void close()
     {
         rdb.close();
