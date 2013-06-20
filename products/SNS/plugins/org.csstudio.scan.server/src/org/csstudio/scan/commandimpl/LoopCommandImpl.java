@@ -65,10 +65,10 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     
     /** {@inheritDoc} */
 	@Override
-    public int getWorkUnits()
+    public long getWorkUnits()
     {
-        final int iterations = 1 + (int) Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
-        int body_units = 0;
+        final long iterations = 1 + Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
+        long body_units = 0;
         for (ScanCommandImpl<?> command : implementation)
             body_units += command.getWorkUnits();
         if (body_units == 0)

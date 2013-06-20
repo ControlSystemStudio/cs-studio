@@ -106,7 +106,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      *  iteration, so derived implementations may override.
      *
      *  @return Number of work units that this command performs */
-    public int getWorkUnits()
+    public long getWorkUnits()
     {
         return 1;
     }

@@ -105,13 +105,13 @@ public class LoopCommandHeadlessTest
 
         final LoopCommandImpl loop1 = new LoopCommandImpl(
                 new LoopCommand("counter", 1.0, 5.0, 1.0));
-        assertThat(loop1.getWorkUnits(), equalTo(5));
+        assertThat(loop1.getWorkUnits(), equalTo(5l));
 
         final LoopCommandImpl loop2 = new LoopCommandImpl(
             new LoopCommand("counter", 1.0, 5.0, 1.0,
                 new SetCommand("other", 1.0),
                 new SetCommand("other2", 2.0)));
-        assertThat(loop2.getWorkUnits(), equalTo(10));
+        assertThat(loop2.getWorkUnits(), equalTo(10l));
 
         final String[] names = loop2.getDeviceNames();
         assertEquals(3, names.length);
