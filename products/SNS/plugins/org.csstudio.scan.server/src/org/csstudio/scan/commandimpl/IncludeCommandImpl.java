@@ -57,6 +57,16 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     }
 	
     /** {@inheritDoc} */
+    @Override
+    public long getWorkUnits()
+    {
+        long included_units = 0;
+        for (ScanCommandImpl<?> command : scan_impl)
+            included_units += command.getWorkUnits();
+        return included_units;
+    }
+	
+    /** {@inheritDoc} */
 	@Override
     public String[] getDeviceNames(final ScanContext context) throws Exception
 	{
