@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>DelayCommand (Scan System API)</title>
+<title>IncludeCommand (Scan System API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="DelayCommand (Scan System API)";
+        parent.document.title="IncludeCommand (Scan System API)";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/command/DelayCommand.html" target="_top">Frames</a></li>
-<li><a href="DelayCommand.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/command/IncludeCommand.html" target="_top">Frames</a></li>
+<li><a href="IncludeCommand.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,7 +77,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.csstudio.scan.command</div>
-<h2 title="Class DelayCommand" class="title">Class DelayCommand</h2>
+<h2 title="Class IncludeCommand" class="title">Class IncludeCommand</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -87,7 +87,7 @@
 <li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">org.csstudio.scan.command.ScanCommand</a></li>
 <li>
 <ul class="inheritance">
-<li>org.csstudio.scan.command.DelayCommand</li>
+<li>org.csstudio.scan.command.IncludeCommand</li>
 </ul>
 </li>
 </ul>
@@ -98,9 +98,9 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">DelayCommand</span>
+<pre>public class <span class="strong">IncludeCommand</span>
 extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></pre>
-<div class="block">Command that delays the scan for some time</div>
+<div class="block">Command that includes existing *.scn file with macros</div>
 </li>
 </ul>
 </div>
@@ -119,12 +119,13 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#DelayCommand()">DelayCommand</a></strong>()</code>
-<div class="block">Initialize delay with 1 second</div>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#IncludeCommand()">IncludeCommand</a></strong>()</code>
+<div class="block">Initialize with example values</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#DelayCommand(double)">DelayCommand</a></strong>(double&nbsp;seconds)</code>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#IncludeCommand(java.lang.String, java.lang.String)">IncludeCommand</a></strong>(java.lang.String&nbsp;scan_file,
+              java.lang.String&nbsp;macros)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -144,27 +145,35 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#getSeconds()">getSeconds</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#getScanFile()">getScanFile</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#setMacros(java.lang.String)">setMacros</a></strong>(java.lang.String&nbsp;macros)</code>&nbsp;</td>
+</tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#setSeconds(java.lang.Double)">setSeconds</a></strong>(java.lang.Double&nbsp;seconds)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#setScanFile(java.lang.String)">setScanFile</a></strong>(java.lang.String&nbsp;scan_file)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#toString()">toString</a></strong>()</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#toString()">toString</a></strong>()</code></td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/DelayCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></strong>(java.io.PrintStream&nbsp;out,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></strong>(java.io.PrintStream&nbsp;out,
         int&nbsp;level)</code>
 <div class="block">Write the command (and its sub-commands) in an XML format.</div>
 </td>
@@ -198,25 +207,26 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DelayCommand()">
+<a name="IncludeCommand()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>DelayCommand</h4>
-<pre>public&nbsp;DelayCommand()</pre>
-<div class="block">Initialize delay with 1 second</div>
+<h4>IncludeCommand</h4>
+<pre>public&nbsp;IncludeCommand()</pre>
+<div class="block">Initialize with example values</div>
 </li>
 </ul>
-<a name="DelayCommand(double)">
+<a name="IncludeCommand(java.lang.String, java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>DelayCommand</h4>
-<pre>public&nbsp;DelayCommand(double&nbsp;seconds)</pre>
+<h4>IncludeCommand</h4>
+<pre>public&nbsp;IncludeCommand(java.lang.String&nbsp;scan_file,
+              java.lang.String&nbsp;macros)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>seconds</code> - Delay in seconds</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>comment</code> - Comment</dd></dl>
 </li>
 </ul>
 </li>
@@ -227,24 +237,44 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getSeconds()">
+<a name="getScanFile()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getSeconds</h4>
-<pre>public&nbsp;double&nbsp;getSeconds()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Delay in seconds</dd></dl>
+<h4>getScanFile</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getScanFile()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Scan File</dd></dl>
 </li>
 </ul>
-<a name="setSeconds(java.lang.Double)">
+<a name="setScanFile(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setSeconds</h4>
-<pre>public&nbsp;void&nbsp;setSeconds(java.lang.Double&nbsp;seconds)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>seconds</code> - Delay in seconds</dd></dl>
+<h4>setScanFile</h4>
+<pre>public&nbsp;void&nbsp;setScanFile(java.lang.String&nbsp;scan_file)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan_file</code> - Desired scan file</dd></dl>
+</li>
+</ul>
+<a name="getMacros()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMacros</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getMacros()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Macros</dd></dl>
+</li>
+</ul>
+<a name="setMacros(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMacros</h4>
+<pre>public&nbsp;void&nbsp;setMacros(java.lang.String&nbsp;macros)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>macros</code> - Macros</dd></dl>
 </li>
 </ul>
 <a name="writeXML(java.io.PrintStream, int)">
@@ -330,12 +360,12 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/command/DelayCommand.html" target="_top">Frames</a></li>
-<li><a href="DelayCommand.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/command/IncludeCommand.html" target="_top">Frames</a></li>
+<li><a href="IncludeCommand.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
