@@ -10,9 +10,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -101,6 +103,25 @@ public class Install extends AbstractHandler {
 		    urls.remove(key);
 		}
 	    }
+	}
+	// check for the projects that will be overwritten and ask for
+	// confirmation.
+	Set<String> overwrite = new HashSet<String>(urls.keySet());
+	overwrite.retainAll(existingProjects);
+	String eol = System.getProperty("line.separator");
+	StringBuffer sb = new StringBuffer(
+		"The following example projects will be reinstalled:" + eol);
+	for (String projectName : overwrite) {
+	    sb.append("-");
+	    sb.append(projectName);
+	    sb.append(eol);
+	}
+	boolean result = MessageDialog.openConfirm(PlatformUI.getWorkbench()
+		.getActiveWorkbenchWindow().getShell(), "Confirm Reinstall",
+		sb.toString());
+
+	if (!result) {
+	    return Status.CANCEL_STATUS;
 	}
 
 	Job job = new Job("Import Examples") {
