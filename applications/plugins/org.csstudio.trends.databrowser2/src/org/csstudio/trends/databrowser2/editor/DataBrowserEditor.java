@@ -34,6 +34,7 @@ import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.RefreshAction;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
@@ -376,6 +377,7 @@ public class DataBrowserEditor extends EditorPart
 	        }
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
+        mm.add(new RefreshAction(controller));
         if (is_rcp)
 		{
 			mm.add(new Separator());			

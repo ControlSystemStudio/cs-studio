@@ -51,7 +51,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 	public void run() {
 		// read file
 		IPath absolutePath = getPath();
-		if (!getPath().isAbsolute()) {
+		if (!absolutePath.isAbsolute()) {
 			absolutePath = ResourceUtil.buildAbsolutePath(getWidgetModel(),
 					getPath());		
 			if(!ResourceUtil.isExsitingFile(absolutePath, true)){

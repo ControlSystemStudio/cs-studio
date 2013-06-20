@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.script;
 
 import java.io.InputStream;
-import java.io.Reader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;

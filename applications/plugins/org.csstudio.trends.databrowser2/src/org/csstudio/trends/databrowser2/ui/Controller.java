@@ -539,11 +539,15 @@ public class Controller implements ArchiveFetchJobListener
             }
     }
 
-    /** When the user moves the time axis around, archive requests for the
+    /** Schedule fetching archived data.
+     * 
+     *  <p>When the user moves the time axis around, archive requests for the
      *  new time range are delayed to avoid a flurry of archive
-     *  requests while the user is still moving around:
+     *  requests while the user is still moving around.
+     *  This request is therefore a little delayed, and a follow-up
+     *  request will cancel an ongoing, scheduled, request.
      */
-    protected void scheduleArchiveRetrieval()
+    public void scheduleArchiveRetrieval()
     {
         if (archive_fetch_delay_task != null)
             archive_fetch_delay_task.cancel();

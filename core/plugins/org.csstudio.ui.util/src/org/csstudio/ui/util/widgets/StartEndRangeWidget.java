@@ -210,45 +210,47 @@ public class StartEndRangeWidget extends Canvas {
     }
 
     public void setRange(double min, double max) {
-	if (min <= max) {
-	    this.min = min;
-	    if (selectedMin < min || followMin) {
-		this.selectedMin = min;
+	if (min != this.min || max != this.max) {
+	    if (min <= max) {
+		this.min = min;
+		if (selectedMin < min || followMin) {
+		    this.selectedMin = min;
+		}
+		this.max = max;
+		if (selectedMax > max || followMax) {
+		    this.selectedMax = max;
+		}
+		recalculateDistancePerPx();
+	    } else {
+		throw new IllegalArgumentException(
+			"Invalid range values, minimum cannot be greater than maximum");
 	    }
-	    this.max = max;
-	    if (selectedMax > max || followMax) {
-		this.selectedMax = max;
-	    }
-	    recalculateDistancePerPx();
-	} else {
-	    throw new IllegalArgumentException(
-		    "Invalid range values, minimum cannot be greater than maximum");
 	}
     }
 
     public void setRanges(double min, double selectedMin, double selectedMax,
 	    double max) {
-	if (min <= selectedMin && selectedMin <= selectedMax
-		&& selectedMax <= max) {
-	    this.min = min;
-	    this.selectedMin = selectedMin;
-	    this.max = max;
-	    this.selectedMax = selectedMax;
-	    if (selectedMin == min) {
-		followMin = true;
+	if (min != this.min || max != this.max
+		|| selectedMin != this.selectedMin
+		|| selectedMax != this.selectedMax) {
+	    if (min <= selectedMin && selectedMin <= selectedMax
+		    && selectedMax <= max) {
+		this.min = min;
+		this.selectedMin = selectedMin;
+		this.max = max;
+		this.selectedMax = selectedMax;
+		if (selectedMin == min) {
+		    followMin = true;
+		}
+		if (selectedMax == max) {
+		    followMax = true;
+		}
+		recalculateDistancePerPx();
+	    } else {
+		throw new IllegalArgumentException();
 	    }
-	    if (selectedMax == max) {
-		followMax = true;
-	    }
-	    recalculateDistancePerPx();
-	} else {
-	    throw new IllegalArgumentException();
 	}
     }
-
-    // public ORIENTATION getOrientation() {
-    // return orientation;
-    // }
 
     public void setOrientation(ORIENTATION orientation) {
 	if (this.orientation != orientation) {
@@ -306,22 +308,24 @@ public class StartEndRangeWidget extends Canvas {
 		valueAlongNonOrientationAxis = e.x;
 	    }
 
+	    moveControl = MOVE.NONE;
 	    if ((valueAlongOrientationAxis >= minSelectedOval && valueAlongOrientationAxis <= minSelectedOval + 5)
 		    && (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 		moveControl = MOVE.SELECTEDMIN;
 		followMin = false;
-	    } else if ((valueAlongOrientationAxis >= maxSelectedOval + 5 && valueAlongOrientationAxis <= maxSelectedOval + 10)
+	    }
+	    if ((valueAlongOrientationAxis >= maxSelectedOval + 5 && valueAlongOrientationAxis <= maxSelectedOval + 10)
 		    && (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 		moveControl = MOVE.SELECTEDMAX;
-		followMin = false;
-	    } else if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
+		followMax = false;
+	    }
+	    if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
 		moveControl = MOVE.RANGE;
 		followMin = false;
 		followMax = false;
 		rangeX = valueAlongOrientationAxis;
-	    } else {
-		moveControl = MOVE.NONE;
 	    }
+
 	}
 
 	@Override
@@ -403,7 +407,8 @@ public class StartEndRangeWidget extends Canvas {
 	    Point topLeft;
 	    Point bottomRight;
 
-	    e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
+	    e.gc.setBackground(new Color(getDisplay(), 100, 100, 100));
+	    // e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
 
 	    if (Double.isInfinite(distancePerPx)) {
 		if (orientation.equals(ORIENTATION.HORIZONTAL)) {
@@ -454,6 +459,8 @@ public class StartEndRangeWidget extends Canvas {
 	    // arc for max selected
 	    e.gc.drawArc(maxArc.x, maxArc.y, 10, 10, startAngle, -180);
 	    e.gc.fillArc(maxArc.x + 1, maxArc.y + 1, 9, 9, startAngle, -180);
+
+	    e.gc.setBackground(new Color(getDisplay(), 220, 220, 220));
 
 	    Rectangle rectangle = new Rectangle(topLeft.x + 5, topLeft.y,
 		    bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
