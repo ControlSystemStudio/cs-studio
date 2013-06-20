@@ -31,9 +31,7 @@ import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -271,9 +269,18 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     }
 
     @Override
+    public void addMouseListener(MouseListener listener) {
+	gridTableViewer.getGrid().addMouseListener(listener);
+    };
+
+    @Override
+    public void removeMouseListener(MouseListener listener) {
+	gridTableViewer.getGrid().removeMouseListener(listener);
+    };
+
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
 	selectionProvider.addSelectionChangedListener(listener);
-
     }
 
     @Override

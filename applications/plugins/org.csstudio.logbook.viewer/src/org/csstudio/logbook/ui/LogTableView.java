@@ -15,6 +15,8 @@ import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -31,7 +33,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.IServiceLocator;
+import org.eclipse.swt.events.MouseAdapter;
 
 /**
  * @author shroffk
@@ -141,6 +147,34 @@ public class LogTableView extends ViewPart {
 
 	logEntryTable = new org.csstudio.logbook.ui.extra.LogEntryTable(parent,
 		SWT.NONE | SWT.SINGLE);
+	logEntryTable.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mouseDoubleClick(MouseEvent evt) {
+		// Obtain IServiceLocator implementer, e.g. from
+		// PlatformUI.getWorkbench():
+		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+		// or a site from within a editor or view:
+		// IServiceLocator serviceLocator = getSite();
+
+		ICommandService commandService = (ICommandService) serviceLocator
+			.getService(ICommandService.class);
+
+		try {
+		    // Lookup commmand with its ID
+		    Command command = commandService
+			    .getCommand(OpenLogViewer.ID);
+
+		    // Optionally pass a ExecutionEvent instance, default
+		    // no-param arg creates blank event
+		    command.executeWithChecks(new ExecutionEvent());
+
+		} catch (Exception e) {
+
+		    // Replace with real-world exception handling
+		    e.printStackTrace();
+		}
+	    }
+	});
 	fd_lblLogQuery.left = new FormAttachment(logEntryTable, 0, SWT.LEFT);
 	FormData fd_logEntryTable = new FormData();
 	fd_logEntryTable.top = new FormAttachment(text, 5);
@@ -165,8 +199,9 @@ public class LogTableView extends ViewPart {
 		e1.printStackTrace();
 		return false;
 	    }
+	} else {
+	    return true;
 	}
-	return true;
     }
 
     private void search() {
