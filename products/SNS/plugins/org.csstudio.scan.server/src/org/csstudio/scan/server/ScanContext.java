@@ -36,27 +36,10 @@ import org.csstudio.scan.server.internal.ExecutableScan;
  *
  *  @author Kay Kasemir
  */
-public interface ScanContext
+public interface ScanContext extends MacroContext
 {
-    /** @param text Text that may contain "$(macro)"
-     *  @return Text where macros have been replaced by their values
-     *  @throws Exception on error in macros
-     */
-	public String resolveMacros(String text) throws Exception;
-
-    /** @param names_and_values Macros in the form "name=value, name=value" to add to the context
-     *  @throws Exception on error in macros
-     *  @see #popMacros()
-     */
-    public void pushMacros(String names_and_values) throws Exception;
-
-    /** Restore macros to the state before last push
-     *  @see #pushMacros()
-     */
-    public void popMacros();
-
-    /** Get a device by (alias) name
-	 *  @param name (Alias) name of the device. May contain macros.
+    /** Get a device by (alias) name.
+	 *  @param name (Alias) name of the device.
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */

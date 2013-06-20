@@ -43,6 +43,7 @@ public class MacroStackUnitTest
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Bye, Jimmy!"));
+        System.out.println(macros);
 
         macros.pop();
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);

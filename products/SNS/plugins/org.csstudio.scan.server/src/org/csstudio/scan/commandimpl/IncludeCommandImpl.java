@@ -81,15 +81,22 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-        context.logExecutionStep(command.toString(), 0.0);
-        context.simulate(scan_impl);
+        context.pushMacros(command.getMacros());
+        try
+        {
+            context.logExecutionStep(context.resolveMacros(command.toString()), 0.0);
+            context.simulate(scan_impl);
+        }
+        finally
+        {
+            context.popMacros();
+        }
     }
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-	    // TODO Set macros
 	    context.pushMacros(command.getMacros());
 	    try
 	    {

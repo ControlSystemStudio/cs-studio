@@ -75,14 +75,24 @@ public class MacroStack implements IMacroTableProvider
     @Override
     public String toString()
     {
-        final Map<String, String> macros = stack.peek();
         final StringBuilder buf = new StringBuilder();
-        final String names[] = macros.keySet().toArray(new String[macros.size()]);
-        for (String name: names)
+        int level = 0;
+        for (Map<String, String> macros : stack)
         {
-            if (buf.length() > 0)
-                buf.append(", ");
-            buf.append(name + "=\"" + getMacroValue(name) + "\"");
+            buf.append(level + ": ");
+            final String names[] = macros.keySet().toArray(new String[macros.size()]);
+            boolean first = true;
+            for (String name: names)
+            {
+                if (first)
+                    first = false;
+                else
+                    buf.append(", ");
+                buf.append(name + "=\"" + macros.get(name) + "\"");
+            }
+            ++level;
+            if (level < stack.size())
+                buf.append("\n");
         }
         return buf.toString();
     }

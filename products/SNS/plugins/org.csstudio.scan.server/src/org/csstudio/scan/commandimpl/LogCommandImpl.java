@@ -66,7 +66,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 		final String[] device_names = command.getDeviceNames();
 		for (String device_name : device_names)
 		{
-			final Device device = context.getDevice(device_name);
+			final Device device = context.getDevice(context.resolveMacros(device_name));
 			final VType value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
 			log.log(device.getAlias(), VTypeHelper.createSample(serial, value));

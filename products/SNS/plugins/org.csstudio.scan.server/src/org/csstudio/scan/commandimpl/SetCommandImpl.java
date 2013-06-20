@@ -56,7 +56,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(command.getDeviceName());
+		final SimulatedDevice device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
 		// Get previous and desired values
 		final double original = device.readDouble();
@@ -77,7 +77,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	    command.appendConditionDetail(buf);
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
-    	context.logExecutionStep(buf.toString(), time_estimate);
+    	context.logExecutionStep(context.resolveMacros(buf.toString()), time_estimate);
 
     	// Set to (simulated) new value
     	device.write(command.getValue());

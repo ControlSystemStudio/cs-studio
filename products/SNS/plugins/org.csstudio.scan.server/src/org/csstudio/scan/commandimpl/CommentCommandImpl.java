@@ -31,7 +31,7 @@ public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
     {
         super(command, jython);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void execute(final ScanContext context) throws Exception

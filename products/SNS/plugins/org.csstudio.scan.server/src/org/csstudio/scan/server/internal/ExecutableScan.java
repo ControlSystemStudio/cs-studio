@@ -339,8 +339,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Device getDevice(final String name) throws Exception
     {
-        final String expanded_name = MacroUtil.replaceMacros(name, macros);
-        return devices.getDeviceByAlias(expanded_name);
+        return devices.getDeviceByAlias(name);
     }
 
     /** {@inheritDoc} */
