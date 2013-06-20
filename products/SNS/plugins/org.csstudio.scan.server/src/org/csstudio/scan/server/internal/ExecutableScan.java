@@ -29,8 +29,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.macros.IMacroTableProvider;
-import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
@@ -68,7 +66,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
     /** Macros for resolving device names */
-    final private IMacroTableProvider macros;
+    final private MacroStack macros;
     
     /** Devices used by the scan */
     final protected transient DeviceContext devices;
@@ -156,7 +154,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         super(scan);
-        this.macros = new MacroTable(ScanSystemPreferences.getMacros());
+        this.macros = new MacroStack(ScanSystemPreferences.getMacros());
         this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
@@ -303,6 +301,27 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String resolveMacros(final String text) throws Exception
+    {
+        return MacroUtil.replaceMacros(text, macros);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void pushMacros(String names_and_values) throws Exception
+    {
+        this.macros.push(names_and_values);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void popMacros()
+    {
+        macros.pop();
+    }
+
     /** Obtain devices used by this scan.
      *
      *  <p>Note that the result can differ before and
@@ -362,7 +381,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             return super.getScanData();
         return data_logger.getScanData();
     }
-
+    
     /** Callable for executing all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
@@ -450,17 +469,17 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         final Set<String> required_devices = new HashSet<String>();
         for (ScanCommandImpl<?> command : pre_scan)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         for (ScanCommandImpl<?> command : implementations)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         for (ScanCommandImpl<?> command : post_scan)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         // Add required devices

@@ -45,9 +45,9 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
-        return new String[] { command.getDeviceName() };
+        return new String[] { context.resolveMacros(command.getDeviceName()) };
     }
 
 	/** {@inheritDoc} */

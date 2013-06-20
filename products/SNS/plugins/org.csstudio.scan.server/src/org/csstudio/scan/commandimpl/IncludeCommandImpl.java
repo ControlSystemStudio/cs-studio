@@ -58,15 +58,23 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	
     /** {@inheritDoc} */
 	@Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
 	{
-        final Set<String> devices = new HashSet<String>();
-        for (ScanCommandImpl<?> command : scan_impl)
-        {
-            for (String device_name : command.getDeviceNames())
-                devices.add(device_name);
-        }
-	    return devices.toArray(new String[devices.size()]);
+	    context.pushMacros(command.getMacros());
+	    try
+	    {
+            final Set<String> devices = new HashSet<String>();
+            for (ScanCommandImpl<?> command : scan_impl)
+            {
+                for (String device_name : command.getDeviceNames(context))
+                    devices.add(device_name);
+            }
+    	    return devices.toArray(new String[devices.size()]);
+	    }
+	    finally
+	    {
+	        context.popMacros();
+	    }
 	}
 	
 	/** {@inheritDoc} */
@@ -82,6 +90,14 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	public void execute(final ScanContext context) throws Exception
 	{
 	    // TODO Set macros
-		context.execute(scan_impl);
+	    context.pushMacros(command.getMacros());
+	    try
+	    {
+	        context.execute(scan_impl);
+	    }
+	    finally
+	    {
+	        context.popMacros();
+	    }
 	}
 }

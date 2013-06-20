@@ -47,9 +47,12 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 
     /** {@inheritDoc} */
 	@Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
 	{
-	    return command.getDeviceNames();
+	    final String[] names = command.getDeviceNames();
+	    for (int i=0; i<names.length; ++i)
+	        names[i] = context.resolveMacros(names[i]);
+        return names;
 	}
 
 	/** {@inheritDoc} */

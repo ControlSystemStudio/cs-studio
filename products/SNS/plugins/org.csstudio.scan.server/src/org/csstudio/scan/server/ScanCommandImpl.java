@@ -111,8 +111,12 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         return 1;
     }
 
-    /** @return Device (alias) names used by the command */
-    public String[] getDeviceNames()
+    /** Determine which devices are required by this command      
+     *  @param context {@link ScanContext} for resolving macros
+     *  @return Device (alias) names used by the command
+     *  @throws Exception on macro error
+     */
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         return new String[0];
     }

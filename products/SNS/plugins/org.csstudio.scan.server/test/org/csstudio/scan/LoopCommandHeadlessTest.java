@@ -31,6 +31,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.ExecutableScan;
 import org.junit.Test;
 
@@ -113,7 +114,8 @@ public class LoopCommandHeadlessTest
                 new SetCommand("other2", 2.0)));
         assertThat(loop2.getWorkUnits(), equalTo(10l));
 
-        final String[] names = loop2.getDeviceNames();
+        final ScanContext dummy = new ExecutableScan("dummy", devices);
+        final String[] names = loop2.getDeviceNames(dummy);
         assertEquals(3, names.length);
         Arrays.sort(names);
         assertThat(Arrays.binarySearch(names, "counter"), greaterThanOrEqualTo(0));

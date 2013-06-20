@@ -78,7 +78,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         final Set<String> device_names = new HashSet<String>();
         device_names.add(command.getDeviceName());
@@ -86,7 +86,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             device_names.add(command.getReadback());
         for (ScanCommandImpl<?> command : implementation)
         {
-            final String[] names = command.getDeviceNames();
+            final String[] names = command.getDeviceNames(context);
             for (String name : names)
                 device_names.add(name);
         }
