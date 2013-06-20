@@ -16,7 +16,9 @@
 package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.*;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -43,9 +45,9 @@ public class LoopCommandHeadlessTest
     private DeviceContext getDemoContext() throws Exception
     {
         final DeviceContext context = new DeviceContext();
-        context.addPVDevice(new DeviceInfo("loc://counter", "counter"));
-        context.addPVDevice(new DeviceInfo("loc://other", "other"));
-        context.addPVDevice(new DeviceInfo("loc://other2", "other2"));
+        context.addPVDevice(new DeviceInfo("loc://counter(0)", "counter"));
+        context.addPVDevice(new DeviceInfo("loc://other(0)", "other"));
+        context.addPVDevice(new DeviceInfo("loc://other2(0)", "other2"));
         return context;
     }
 
@@ -103,27 +105,27 @@ public class LoopCommandHeadlessTest
 
         final LoopCommandImpl loop1 = new LoopCommandImpl(
                 new LoopCommand("counter", 1.0, 5.0, 1.0));
-        assertEquals(5, loop1.getWorkUnits());
+        assertThat(loop1.getWorkUnits(), equalTo(5));
 
         final LoopCommandImpl loop2 = new LoopCommandImpl(
             new LoopCommand("counter", 1.0, 5.0, 1.0,
                 new SetCommand("other", 1.0),
                 new SetCommand("other2", 2.0)));
-        assertEquals(10, loop2.getWorkUnits());
+        assertThat(loop2.getWorkUnits(), equalTo(10));
 
         final String[] names = loop2.getDeviceNames();
         assertEquals(3, names.length);
         Arrays.sort(names);
-        assertTrue(Arrays.binarySearch(names, "counter") >= 0);
-        assertTrue(Arrays.binarySearch(names, "other") >= 0);
-        assertTrue(Arrays.binarySearch(names, "other2") >= 0);
+        assertThat(Arrays.binarySearch(names, "counter"), greaterThanOrEqualTo(0));
+        assertThat(Arrays.binarySearch(names, "other"), greaterThanOrEqualTo(0));
+        assertThat(Arrays.binarySearch(names, "other2"), greaterThanOrEqualTo(0));
 
         final ExecutableScan scan = new ExecutableScan("Loop Test", devices, loop1, loop2);
         assertEquals(0, scan.getScanInfo().getPerformedWorkUnits());
         scan.call();
 
         // loop1 + loop2
-        assertEquals(15, scan.getScanInfo().getPerformedWorkUnits());
+        assertThat(scan.getScanInfo().getPerformedWorkUnits(), equalTo(15L));
     }
 
 
