@@ -22,14 +22,21 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class OpenLogViewer extends AbstractHandler {
 
     public final static String ID = "org.csstudio.logbook.viewer.OpenLogViewer";
-    
+
     public OpenLogViewer() {
 	super();
     }
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-	ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+	final IWorkbench workbench = PlatformUI.getWorkbench();
+	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+	ISelection selection;
+	if (HandlerUtil.getActiveMenuSelection(event) != null) {
+	    selection = HandlerUtil.getActiveMenuSelection(event);
+	} else {
+	    selection = window.getActivePage().getSelection(LogTableView.ID);
+	}
 	if (selection instanceof IStructuredSelection) {
 	    IStructuredSelection strucSelection = (IStructuredSelection) selection;
 	    if (strucSelection.getFirstElement() instanceof LogEntry) {
@@ -42,10 +49,10 @@ public class OpenLogViewer extends AbstractHandler {
 	    LogViewer.createInstance();
 	}
 	try {
-	    final IWorkbench workbench = PlatformUI.getWorkbench();
-	    final IWorkbenchWindow window = workbench
-		    .getActiveWorkbenchWindow();
 	    workbench.showPerspective(LogViewerPerspective.ID, window);
+	    window.getActivePage().showView(LogTableView.ID);
+
+	    // window.getActivePage().resetPerspective();
 	} catch (Exception ex) {
 	    ExceptionDetailsErrorDialog.openError(
 		    HandlerUtil.getActiveShell(event),

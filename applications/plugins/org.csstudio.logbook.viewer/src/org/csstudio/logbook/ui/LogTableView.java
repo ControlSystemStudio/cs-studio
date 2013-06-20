@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.swt.events.MouseAdapter;
@@ -150,28 +151,13 @@ public class LogTableView extends ViewPart {
 	logEntryTable.addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mouseDoubleClick(MouseEvent evt) {
-		// Obtain IServiceLocator implementer, e.g. from
-		// PlatformUI.getWorkbench():
-		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-		// or a site from within a editor or view:
-		// IServiceLocator serviceLocator = getSite();
-
-		ICommandService commandService = (ICommandService) serviceLocator
-			.getService(ICommandService.class);
-
+		IHandlerService handlerService = (IHandlerService) getSite()
+			.getService(IHandlerService.class);
 		try {
-		    // Lookup commmand with its ID
-		    Command command = commandService
-			    .getCommand(OpenLogViewer.ID);
-
-		    // Optionally pass a ExecutionEvent instance, default
-		    // no-param arg creates blank event
-		    command.executeWithChecks(new ExecutionEvent());
-
-		} catch (Exception e) {
-
-		    // Replace with real-world exception handling
-		    e.printStackTrace();
+		    handlerService.executeCommand(OpenLogViewer.ID, null);
+		} catch (Exception ex) {
+		    throw new RuntimeException("add.command not found");
+		    // Give message
 		}
 	    }
 	});

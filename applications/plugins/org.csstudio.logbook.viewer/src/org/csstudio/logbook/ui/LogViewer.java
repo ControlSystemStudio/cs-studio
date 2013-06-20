@@ -172,7 +172,11 @@ public class LogViewer extends EditorPart {
     @Override
     public void createPartControl(Composite parent) {
 	logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);
-	logEntryWidget.addDisposeListener(new DisposeListener() {
+	LogEntry logEntry = ((LogViewerModel) getEditorInput()).getLogEntry();
+	if (logEntry != null) {
+	    logEntryWidget.setLogEntry(((LogViewerModel) getEditorInput())
+		    .getLogEntry());
+	}logEntryWidget.addDisposeListener(new DisposeListener() {
 
 	    @Override
 	    public void widgetDisposed(DisposeEvent arg0) {
