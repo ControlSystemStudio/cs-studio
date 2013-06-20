@@ -88,7 +88,17 @@ abstract public class ScanCommand
         return name.substring(sep + 1);
     }
 
-    /** @return Address of this command within command sequence */
+    /** Address of this command within the command sequence
+     *
+     *  <p>Addresses are only well-defined for the top-level
+     *  command sequence.
+     *  The <code>LoopCommand</code> will increment the addresses
+     *  within its body, but the <code>IncludeCommand</code>
+     *  will not be able to assign addresses for the included
+     *  scan or possibly further sub-includes.
+     *  
+     *  @return Address of this command or -1
+     */
     final public long getAddress()
     {
         return address;

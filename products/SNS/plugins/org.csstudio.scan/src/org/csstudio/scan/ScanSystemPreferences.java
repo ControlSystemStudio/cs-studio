@@ -77,7 +77,7 @@ public class ScanSystemPreferences extends SystemSettings
         return StringSplitter.splitIgnoreInQuotes(list, ',', true);
     }
 
-    /** @return Scan script search paths */
+    /** @return Search paths for scan scripts and 'included' scans */
     public static String[] getScriptPaths()
     {
         final IPreferencesService service = Platform.getPreferencesService();
@@ -123,6 +123,16 @@ public class ScanSystemPreferences extends SystemSettings
     		prefix = service.getString(Activator.ID, "status_pv_prefix", prefix, null);
     	return prefix;
 	}
+
+	/** @return Macros. Not <code>null</code> */
+    public static String getMacros() throws Exception
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String macros = service.getString(Activator.ID, "macros", "", null);
+        if (macros == null)
+            return "";
+        return macros;
+    }
 	
 	/** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools

@@ -22,6 +22,12 @@
             name="Delay">
       </command>
       <command
+            class="org.csstudio.scan.command.IncludeCommand"
+            icon="icons/includecommand.gif"
+            id="include"
+            name="Include">
+      </command>
+      <command
             class="org.csstudio.scan.command.LogCommand"
             icon="icons/logcommand.gif"
             id="log"
