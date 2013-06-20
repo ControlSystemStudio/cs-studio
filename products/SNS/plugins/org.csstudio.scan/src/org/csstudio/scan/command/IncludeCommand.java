@@ -84,8 +84,6 @@ public class IncludeCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<include>");
         writeIndent(out, level+1);
-        out.println("<address>" + getAddress() + "</address>");
-        writeIndent(out, level+1);
         out.println("<scan_file>" + getScanFile() + "</scan_file>");
         writeIndent(out, level+1);
         out.println("<macros>" + getMacros() + "</macros>");
@@ -98,7 +96,6 @@ public class IncludeCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setScanFile(DOMHelper.getSubelementString(element, "scan_file", ""));
         setMacros(DOMHelper.getSubelementString(element, "macros", ""));
         super.readXML(factory, element);

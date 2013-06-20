@@ -69,40 +69,47 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     final private MacroStack macros;
     
     /** Devices used by the scan */
-    final protected transient DeviceContext devices;
+    final protected DeviceContext devices;
 
     /** Log each device access, or require specific log command? */
-    private volatile transient boolean automatic_log_mode = false;
+    private volatile boolean automatic_log_mode = false;
 
     /** Data logger, non-null while when executing the scan
      *  SYNC on this for access
      */
-    private transient DataLog data_logger = null;
+    private DataLog data_logger = null;
 
     /** Total number of commands to execute */
-    final private transient long total_work_units;
+    final private long total_work_units;
 
     /** Commands executed so far */
-    final protected transient AtomicLong work_performed = new AtomicLong();
+    final protected AtomicLong work_performed = new AtomicLong();
 
     /** State of this scan
      *  SYNC on this for access
      */
-    private transient ScanState state = ScanState.Idle;
+    private ScanState state = ScanState.Idle;
 
-    private volatile transient String error = null;
+    private volatile String error = null;
 
     /** Start time, set when execution starts */
-    private volatile transient long start_ms = 0;
+    private volatile long start_ms = 0;
 
     /** Actual or estimated end time */
-    private volatile transient long end_ms = 0;
+    private volatile long end_ms = 0;
 
+    /** Last valid address
+     *  <p>The current_command may be within an IncludeCommand,
+     *  where addresses are no longer set.
+     *  This address tracks the most recent valid address.
+     */
+    private volatile long current_address = -1;
+    
     /** Currently executed command or <code>null</code> */
-    private volatile transient ScanCommandImpl<?> current_command = null;
+    private volatile ScanCommandImpl<?> current_command = null;
     
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
-    private volatile transient Future<Object> future = null;
+    private volatile Future<Object> future = null;
 
     /** Device Names for status PVs */
 	private String device_active = null, device_status = null, device_progress = null, device_finish = null;
@@ -194,8 +201,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public ScanInfo getScanInfo()
     {
+        final long address = current_address;
         final ScanCommandImpl<?> command = current_command;
-        final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
         final ScanState state = getScanState();
         final long runtime;
@@ -563,6 +570,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         finally
         {
+            current_address = -1;
             current_command = null;
             end_ms = System.currentTimeMillis();
             // Stop devices
@@ -604,8 +612,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             retry = false;
             try
             {
+                // Update current command, but only track address if valid.
+                // Will NOT update the address when going into IncludeCommand.
                 current_command = command;
-        		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
+                if (current_command.getCommand().getAddress() >= 0)
+                    current_address = current_command.getCommand().getAddress();
+                Logger.getLogger(getClass().getName()).log(Level.FINE, "@{0}: {1}", new Object[] { current_address, command });
                 command.execute(this);
             }
             catch (InterruptedException abort)
