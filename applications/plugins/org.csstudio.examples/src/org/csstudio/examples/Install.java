@@ -108,20 +108,22 @@ public class Install extends AbstractHandler {
 	// confirmation.
 	Set<String> overwrite = new HashSet<String>(urls.keySet());
 	overwrite.retainAll(existingProjects);
-	String eol = System.getProperty("line.separator");
-	StringBuffer sb = new StringBuffer(
-		"The following example projects will be reinstalled:" + eol);
-	for (String projectName : overwrite) {
-	    sb.append("-");
-	    sb.append(projectName);
-	    sb.append(eol);
-	}
-	boolean result = MessageDialog.openConfirm(PlatformUI.getWorkbench()
-		.getActiveWorkbenchWindow().getShell(), "Confirm Reinstall",
-		sb.toString());
+	if (!overwrite.isEmpty()) {
+	    String eol = System.getProperty("line.separator");
+	    StringBuffer sb = new StringBuffer(
+		    "The following example projects will be reinstalled:" + eol);
+	    for (String projectName : overwrite) {
+		sb.append("-");
+		sb.append(projectName);
+		sb.append(eol);
+	    }
+	    boolean result = MessageDialog.openConfirm(PlatformUI
+		    .getWorkbench().getActiveWorkbenchWindow().getShell(),
+		    "Confirm Reinstall", sb.toString());
 
-	if (!result) {
-	    return Status.CANCEL_STATUS;
+	    if (!result) {
+		return Status.CANCEL_STATUS;
+	    }
 	}
 
 	Job job = new Job("Import Examples") {
