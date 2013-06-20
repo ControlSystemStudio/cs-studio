@@ -151,7 +151,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     @Override
-    public void connect() {
+    public synchronized void connect() {
+        needsMonitor = true;
+        needsAccessChangeListener.set(true);
+        
         try {
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
@@ -160,8 +163,6 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 	    } else {
                 channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
-            needsMonitor = true;
-            needsAccessChangeListener.set(true);
         } catch (CAException ex) {
             throw new RuntimeException("JCA Connection failed", ex);
         }
@@ -425,8 +426,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     };
 
     @Override
-    public void disconnect() {
+    public synchronized void disconnect() {
         try {
+            channel.removeConnectionListener(connectionListener);
             // Close the channel
             if (channel.getConnectionState() != Channel.ConnectionState.CLOSED) {
                 channel.destroy();
