@@ -2,6 +2,7 @@ package org.csstudio.logbook.ui.extra;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,11 +21,15 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 
 public class LinkTable extends BeanComposite {
+
     private List<Attachment> files = Collections.emptyList();
+    private List<Integer> selectionIndex = new ArrayList<Integer>();
+
     private GridTableViewer gridTableViewer;
     private Grid grid;
 
@@ -72,31 +77,62 @@ public class LinkTable extends BeanComposite {
 	    }
 	});
 
-	// First Columns displays the Date
+	GridViewerColumn columnRemove = new GridViewerColumn(gridTableViewer,
+		SWT.NONE);
+	new ColumnViewerSimpleLayout(gridTableViewer, columnRemove, 0, 20);
+	columnRemove.getColumn().setWordWrap(true);
+
 	GridViewerColumn columnFile = new GridViewerColumn(gridTableViewer,
 		SWT.NONE);
-	new ColumnViewerSimpleLayout(gridTableViewer, columnFile, 100, 50);
+	new ColumnViewerSimpleLayout(gridTableViewer, columnFile, 95, 50);
 	columnFile.getColumn().setText("Attached Files:");
 	columnFile.getColumn().setWordWrap(true);
+
 	createTable();
+
     }
 
     private void createTable() {
 	grid.removeAll();
 	for (final Attachment file : files) {
-	    GridItem item = new GridItem(grid, SWT.NONE);
 	    GridEditor editor = new GridEditor(grid);
-	    final Link link = new Link(grid, SWT.NONE);
+
+	    GridItem item = new GridItem(grid, SWT.NONE);
+	    final Button check = new Button(grid, SWT.CHECK);
+	    check.addSelectionListener(new SelectionListener() {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+		    List<Integer> newSelectionIndex;
+		    if (check.getSelection()) {
+			newSelectionIndex = getSelectionIndex();
+			newSelectionIndex.add(Integer.valueOf(files
+				.indexOf(file)));
+		    } else {
+			newSelectionIndex = getSelectionIndex();
+			newSelectionIndex.add((Integer) files.indexOf(file));
+		    }
+		    setSelectionIndex(newSelectionIndex);
+		}
+
+		@Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+
+		}
+	    });
 	    editor.grabHorizontal = true;
-	    editor.setEditor(link, item, 0);
+	    editor.setEditor(check, item, 0);
+
+	    editor = new GridEditor(grid);
+	    final Link link = new Link(grid, SWT.RIGHT);
+	    editor.grabHorizontal = true;
+	    editor.setEditor(link, item, 1);
 	    link.setText("<a>" + file.getFileName() + "</a>");
 	    link.addSelectionListener(new SelectionListener() {
 
 		@Override
 		public void widgetSelected(SelectionEvent event) {
 		    String url = file.getFileName();
-//		    url = url.substring("<a>".length(),
-//			    url.length() - "</a>".length());
 		    Program.launch(url);
 		}
 
@@ -123,6 +159,55 @@ public class LinkTable extends BeanComposite {
 	List<Attachment> oldValue = this.files;
 	this.files = files;
 	changeSupport.firePropertyChange("files", oldValue, this.files);
+    }
+
+    /**
+     * @return the selectionIndex
+     */
+    private synchronized List<Integer> getSelectionIndex() {
+	return new ArrayList<Integer>(selectionIndex);
+    }
+
+    /**
+     * @param selectionIndex
+     *            the selectionIndex to set
+     */
+    private synchronized void setSelectionIndex(List<Integer> selectionIndex) {
+	List<Integer> oldValue = this.selectionIndex;
+	this.selectionIndex = selectionIndex;
+	changeSupport.firePropertyChange("selection", oldValue,
+		this.selectionIndex);
+    }
+
+    /**
+     * @return the selection
+     */
+    public synchronized List<Attachment> getSelection() {
+	List<Attachment> selection = new ArrayList<Attachment>(
+		this.selectionIndex.size());
+	for (int index : this.selectionIndex) {
+	    selection.add(files.get(index));
+	}
+	return Collections.unmodifiableList(selection);
+    }
+
+    /**
+     * @param selection
+     *            the selection to set
+     */
+    public synchronized void setSelection(List<Attachment> selection) {
+	List<Integer> oldValue = this.selectionIndex;
+	List<Integer> newSelectionIndex = new ArrayList<Integer>(
+		selection.size());
+	for (Attachment t : selection) {
+	    int index = files.indexOf(t);
+	    if (index >= 0) {
+		newSelectionIndex.add(files.indexOf(t));
+	    }
+	}
+	this.selectionIndex = newSelectionIndex;
+	changeSupport.firePropertyChange("selection", oldValue,
+		this.selectionIndex);
     }
 
 }

@@ -3,6 +3,8 @@
  */
 package org.csstudio.logbook.ui.extra;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -69,13 +71,25 @@ public class LinkTableTest extends ApplicationWindow {
 		try {
 		    List<Attachment> files = new ArrayList<Attachment>();
 		    files.add(AttachmentBuilder.attachment("first.txt").build());
-		    files.add(AttachmentBuilder.attachment("build.properties").build());
+		    files.add(AttachmentBuilder.attachment("build.properties")
+			    .build());
 		    files.add(AttachmentBuilder.attachment("plugin.xml")
 			    .build());
 		    linkTable.setFiles(files);
 		} catch (IOException e1) {
 		    e1.printStackTrace();
 		}
+	    }
+	});
+	linkTable.addPropertyChangeListener(new PropertyChangeListener() {
+
+	    @Override
+	    public void propertyChange(PropertyChangeEvent evt) {
+		StringBuffer sb = new StringBuffer();
+		for (Attachment selectedAttachment : linkTable.getSelection()) {
+		    sb.append(selectedAttachment.getFileName());
+		}
+		System.out.println("Selected Files: " + sb.toString());
 	    }
 	});
 	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
