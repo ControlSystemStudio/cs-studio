@@ -17,6 +17,7 @@ package org.csstudio.scan.server;
 
 import java.util.Date;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanSampleFormatter;
 
 /** Scan server info
@@ -29,6 +30,8 @@ public class ScanServerInfo extends MemoryInfo
     final private Date start_time;
     final private String beamline_config;
     final private String simulation_config;
+    final private String[] script_paths;
+    final private String macros;
 
     /** Initialize
      *  @param version
@@ -38,12 +41,16 @@ public class ScanServerInfo extends MemoryInfo
      */
     public ScanServerInfo(final String version, final Date start_time,
     		final String beamline_config,
-    		final String simulation_config)
+    		final String simulation_config,
+    		final String[] script_paths,
+    		final String macros)
     {
 	    this.version = version;
 	    this.start_time = start_time;
 	    this.beamline_config = beamline_config;
 	    this.simulation_config = simulation_config;
+	    this.script_paths = script_paths;
+	    this.macros = macros;
     }
 
     /** Initialize
@@ -57,6 +64,8 @@ public class ScanServerInfo extends MemoryInfo
     public ScanServerInfo(final String version, final Date start_time,
             final String beamline_config,
             final String simulation_config,
+            final String[] script_paths,
+            final String macros,
             final long used_mem, final long max_mem)
     {
         super(used_mem, max_mem);
@@ -64,8 +73,9 @@ public class ScanServerInfo extends MemoryInfo
         this.start_time = start_time;
         this.beamline_config = beamline_config;
         this.simulation_config = simulation_config;
+        this.script_paths = script_paths;
+        this.macros = macros;
     }
-
     
     /** @return Version number */
 	public String getVersion()
@@ -91,6 +101,18 @@ public class ScanServerInfo extends MemoryInfo
 		return simulation_config;
 	}
 
+	/** @return Script paths */
+    public String[] getScriptPaths()
+    {
+        return script_paths;
+    }
+
+    /** @return Macros */
+    public String getMacros()
+    {
+        return macros;
+    }
+	
     /** {@inheritDoc} */
     @Override
     public String toString()
@@ -100,6 +122,8 @@ public class ScanServerInfo extends MemoryInfo
         buf.append("Started: ").append(ScanSampleFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
         buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
+        buf.append("Script paths: ").append(ScanSystemPreferences.joinPaths(script_paths)).append("\n");
+        buf.append("Macros: ").append(macros).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");
         return buf.toString();
     }

@@ -39,7 +39,34 @@ public class ScanSystemPreferences extends SystemSettings
     /** System property for overriding the scan server port */
     final public static String PORT_PROPERTY = "ScanServerPort";
     
-	/** @return Path to the default beamline information file */
+	/** @param path_spec Path elements joined by ","
+     *  @return Separate path elements
+     *  @throws Exception on parse error (missing end of quoted string)
+     */
+    public static String[] splitPath(final String path_spec) throws Exception
+    {
+        if (path_spec == null)
+            return new String[0];
+        return StringSplitter.splitIgnoreInQuotes(path_spec, ',', true);
+
+    }
+
+    /** @param paths Path elements
+     *  @return Path elements joined by ","
+     */
+    public static String joinPaths(final String[] paths)
+    {
+        final StringBuilder buf = new StringBuilder();
+        for (String path : paths)
+        {
+            if (buf.length() > 0)
+                buf.append(", ");
+            buf.append(path);
+        }
+        return buf.toString();
+    }
+
+    /** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
@@ -60,9 +87,7 @@ public class ScanSystemPreferences extends SystemSettings
     {
         final IPreferencesService service = Platform.getPreferencesService();
         final String list = service.getString(Activator.ID, "pre_scan", "platform:/plugin/org.csstudio.scan/examples/pre_scan.scn", null);
-        if (list == null)
-            return new String[0];
-        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
+        return splitPath(list);
     }
 
     /** @return Paths to post-scan commands
@@ -72,19 +97,19 @@ public class ScanSystemPreferences extends SystemSettings
     {
         final IPreferencesService service = Platform.getPreferencesService();
         final String list = service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
-        if (list == null)
-            return new String[0];
-        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
+        return splitPath(list);
     }
-
-    /** @return Search paths for scan scripts and 'included' scans */
-    public static String[] getScriptPaths()
+    
+    /** @return Search paths for scan scripts and 'included' scans
+     *  @throws Exception on parse error (missing end of quoted string)
+     */
+    public static String[] getScriptPaths() throws Exception
     {
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return new String[0];
         final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
-        return pref.split("\\s*,\\s*");
+        return splitPath(pref);
     }
 
     /** @return Memory threshold for removing older scans */
@@ -125,7 +150,7 @@ public class ScanSystemPreferences extends SystemSettings
 	}
 
 	/** @return Macros. Not <code>null</code> */
-    public static String getMacros() throws Exception
+    public static String getMacros()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         final String macros = service.getString(Activator.ID, "macros", "", null);
