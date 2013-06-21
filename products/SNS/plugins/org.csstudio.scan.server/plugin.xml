@@ -44,6 +44,11 @@
             name="Delay">
       </imp_factory>
       <imp_factory
+            command="org.csstudio.scan.command.IncludeCommand"
+            factory="org.csstudio.scan.commandimpl.IncludeCommandImplFactory"
+            name="Include">
+      </imp_factory>
+      <imp_factory
             command="org.csstudio.scan.command.LogCommand"
             factory="org.csstudio.scan.commandimpl.LogCommandImplFactory"
             name="Log">

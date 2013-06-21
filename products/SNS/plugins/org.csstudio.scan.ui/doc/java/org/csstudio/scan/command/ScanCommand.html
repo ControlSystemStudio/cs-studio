@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a>, <a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a>, <a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a>, <a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</a>, <a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a>, <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a>, <a href="../../../../org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a>, <a href="../../../../org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dd>
+<dd><a href="../../../../org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a>, <a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a>, <a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a>, <a href="../../../../org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a>, <a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</a>, <a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a>, <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a>, <a href="../../../../org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a>, <a href="../../../../org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dd>
 </dl>
 <hr>
 <br>
@@ -168,7 +168,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a></strong>()</code>
+<div class="block">Address of this command within the command sequence</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -297,7 +299,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getAddress</h4>
 <pre>public final&nbsp;long&nbsp;getAddress()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Address of this command within command sequence</dd></dl>
+<div class="block">Address of this command within the command sequence
+
+  <p>Addresses are only well-defined for the top-level
+  command sequence.
+  The <code>LoopCommand</code> will increment the addresses
+  within its body, but the <code>IncludeCommand</code>
+  will not be able to assign addresses for the included
+  scan or possibly further sub-includes.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Address of this command or -1</dd></dl>
 </li>
 </ul>
 <a name="setAddress(long)">

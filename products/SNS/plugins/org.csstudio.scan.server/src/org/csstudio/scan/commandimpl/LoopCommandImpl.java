@@ -65,10 +65,10 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     
     /** {@inheritDoc} */
 	@Override
-    public int getWorkUnits()
+    public long getWorkUnits()
     {
-        final int iterations = 1 + (int) Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
-        int body_units = 0;
+        final long iterations = 1 + Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
+        long body_units = 0;
         for (ScanCommandImpl<?> command : implementation)
             body_units += command.getWorkUnits();
         if (body_units == 0)
@@ -78,15 +78,15 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         final Set<String> device_names = new HashSet<String>();
-        device_names.add(command.getDeviceName());
+        device_names.add(context.resolveMacros(command.getDeviceName()));
         if (! command.getReadback().isEmpty())
-            device_names.add(command.getReadback());
+            device_names.add(context.resolveMacros(command.getReadback()));
         for (ScanCommandImpl<?> command : implementation)
         {
-            final String[] names = command.getDeviceNames();
+            final String[] names = command.getDeviceNames(context);
             for (String name : names)
                 device_names.add(name);
         }
@@ -114,7 +114,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(command.getDeviceName());
+		final SimulatedDevice device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
 		final double start = getLoopStart();
         final double end   = getLoopEnd();
@@ -150,7 +150,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	    command.appendConditionDetail(buf);
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
-	    context.logExecutionStep(buf.toString(), time_estimate);
+	    context.logExecutionStep(context.resolveMacros(buf.toString()), time_estimate);
 
     	// Set to (simulated) new value
     	device.write(value);
@@ -163,14 +163,14 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-		final Device device = context.getDevice(command.getDeviceName());
+		final Device device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
 	      // Separate read-back device, or use 'set' device?
         final Device readback;
         if (command.getReadback().isEmpty())
             readback = device;
         else
-            readback = context.getDevice(command.getReadback());
+            readback = context.getDevice(context.resolveMacros(command.getReadback()));
 
         //  Wait for the device to reach the value?
         final NumericValueCondition condition;

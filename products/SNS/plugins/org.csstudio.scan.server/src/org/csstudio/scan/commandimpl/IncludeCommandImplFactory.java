@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,28 +15,20 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import org.csstudio.scan.command.CommentCommand;
+import org.csstudio.scan.command.IncludeCommand;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.ScanCommandImplFactory;
 
-/** Implementation of {@link CommentCommand}
+/** Factory for creating the implementation of a {@link IncludeCommand}
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
+public class IncludeCommandImplFactory implements ScanCommandImplFactory<IncludeCommand>
 {
-    /** {@inheritDoc} */
-    public CommentCommandImpl(final CommentCommand command, final JythonSupport jython) throws Exception
-    {
-        super(command, jython);
-    }
-    
-    /** {@inheritDoc} */
     @Override
-    public void execute(final ScanContext context) throws Exception
+    public ScanCommandImpl<IncludeCommand> createImplementation(final IncludeCommand command, final JythonSupport jython)
+            throws Exception
     {
-        System.out.println("Comment: " + context.resolveMacros(command.getComment()));
-        context.workPerformed(1);
+        return new IncludeCommandImpl(command, jython);
     }
 }

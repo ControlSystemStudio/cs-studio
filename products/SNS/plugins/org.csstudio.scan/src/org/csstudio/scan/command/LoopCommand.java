@@ -286,8 +286,6 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<loop>");
         writeIndent(out, level+1);
-        out.println("<address>" + getAddress() + "</address>");
-        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<start>" + start + "</start>");
@@ -334,7 +332,6 @@ public class LoopCommand extends ScanCommand
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
