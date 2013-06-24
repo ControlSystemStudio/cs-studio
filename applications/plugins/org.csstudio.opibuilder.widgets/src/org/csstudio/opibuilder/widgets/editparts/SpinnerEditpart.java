@@ -305,6 +305,15 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
 			
+			handler = new IWidgetPropertyChangeHandler() {
+
+				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+					((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
+					return false;
+				}
+			};
+			setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
+			
 
 	}
 
