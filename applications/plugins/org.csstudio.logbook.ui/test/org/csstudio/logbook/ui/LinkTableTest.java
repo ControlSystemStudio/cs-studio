@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui.extra;
+package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -17,6 +17,7 @@ import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.TagBuilder;
+import org.csstudio.logbook.ui.LinkTable;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -95,6 +96,29 @@ public class LinkTableTest extends ApplicationWindow {
 	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 		false, 1, 1));
 	btnNewButton.setText("Add Test Files");
+
+	Button btnNewButton_2 = new Button(container, SWT.NONE);
+	btnNewButton_2.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		try {
+		    List<Attachment> files = new ArrayList<Attachment>();
+		    final File folder = new File("icons");
+		    for (final File fileEntry : folder.listFiles()) {
+			if (!fileEntry.isDirectory()) {
+			    files.add(AttachmentBuilder.attachment(
+				    fileEntry.getName()).build());
+			}
+		    }
+		    linkTable.setFiles(files);
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		}
+	    }
+	});
+	btnNewButton_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		false, 1, 1));
+	btnNewButton_2.setText("Add Test Images");
 
 	Button btnNewButton_1 = new Button(container, SWT.NONE);
 	btnNewButton_1.addSelectionListener(new SelectionAdapter() {

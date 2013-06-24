@@ -1,4 +1,4 @@
-package org.csstudio.logbook.ui.extra;
+package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,34 +8,44 @@ import java.util.List;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.ui.util.composites.BeanComposite;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
-import org.eclipse.nebula.widgets.grid.Grid;
-import org.eclipse.nebula.widgets.grid.GridEditor;
-import org.eclipse.nebula.widgets.grid.GridItem;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
+import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.GridData;
 
 public class LinkTable extends BeanComposite {
 
     private List<Attachment> files = Collections.emptyList();
     private List<Integer> selectionIndex = new ArrayList<Integer>();
-
-    private GridTableViewer gridTableViewer;
-    private Grid grid;
+    private ErrorBar errorBar;
+    private Composite composite;
 
     public LinkTable(Composite parent, int style) {
 	super(parent, style);
 	setLayout(new GridLayout(1, false));
+
+	errorBar = new ErrorBar(this, SWT.NONE);
+	errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+		1, 1));
+
+	Label lblNewLabel = new Label(this, SWT.NONE);
+	lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+		false, 1, 1));
+	lblNewLabel.setText("Attachments:");
+
+	composite = new Composite(this, SWT.NONE);
+	composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+		1));
+
+	composite.setLayout(new GridLayout(2, false));
 
 	addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -43,8 +53,7 @@ public class LinkTable extends BeanComposite {
 	    public void propertyChange(PropertyChangeEvent event) {
 		switch (event.getPropertyName()) {
 		case "files":
-		    gridTableViewer.setSelection(null, true);
-		    createTable();
+		    updateGrid(composite);
 		    break;
 		default:
 		    break;
@@ -52,53 +61,20 @@ public class LinkTable extends BeanComposite {
 	    }
 	});
 
-	gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL
-		| SWT.DOUBLE_BUFFERED);
-	grid = gridTableViewer.getGrid();
-	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-	grid.setLinesVisible(false);
-	grid.setHeaderVisible(true);
-	gridTableViewer.setContentProvider(new IStructuredContentProvider() {
-
-	    @Override
-	    public void inputChanged(Viewer viewer, Object oldInput,
-		    Object newInput) {
-
-	    }
-
-	    @Override
-	    public void dispose() {
-
-	    }
-
-	    @Override
-	    public Object[] getElements(Object inputElement) {
-		return (Object[]) inputElement;
-	    }
-	});
-
-	GridViewerColumn columnRemove = new GridViewerColumn(gridTableViewer,
-		SWT.NONE);
-	new ColumnViewerSimpleLayout(gridTableViewer, columnRemove, 0, 20);
-	columnRemove.getColumn().setWordWrap(true);
-
-	GridViewerColumn columnFile = new GridViewerColumn(gridTableViewer,
-		SWT.NONE);
-	new ColumnViewerSimpleLayout(gridTableViewer, columnFile, 95, 50);
-	columnFile.getColumn().setText("Attached Files:");
-	columnFile.getColumn().setWordWrap(true);
-
-	createTable();
+	updateGrid(composite);
 
     }
 
-    private void createTable() {
-	grid.removeAll();
-	for (final Attachment file : files) {
-	    GridEditor editor = new GridEditor(grid);
+    private void updateGrid(Composite parent) {
+	for (Control control : parent.getChildren()) {
+	    control.dispose();
+	}
+	parent.redraw();
+	for (final Attachment attachment : files) {
+	    final Button check = new Button(parent, SWT.CHECK);
+	    check.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+		    false, 1, 1));
 
-	    GridItem item = new GridItem(grid, SWT.NONE);
-	    final Button check = new Button(grid, SWT.CHECK);
 	    check.addSelectionListener(new SelectionListener() {
 
 		@Override
@@ -107,32 +83,32 @@ public class LinkTable extends BeanComposite {
 		    if (check.getSelection()) {
 			newSelectionIndex = getSelectionIndex();
 			newSelectionIndex.add(Integer.valueOf(files
-				.indexOf(file)));
+				.indexOf(attachment)));
 		    } else {
 			newSelectionIndex = getSelectionIndex();
-			newSelectionIndex.add((Integer) files.indexOf(file));
+			newSelectionIndex.add((Integer) files
+				.indexOf(attachment));
 		    }
 		    setSelectionIndex(newSelectionIndex);
 		}
 
 		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
+		    // TODO Auto-generated method stub
 
 		}
 	    });
-	    editor.grabHorizontal = true;
-	    editor.setEditor(check, item, 0);
 
-	    editor = new GridEditor(grid);
-	    final Link link = new Link(grid, SWT.RIGHT);
-	    editor.grabHorizontal = true;
-	    editor.setEditor(link, item, 1);
-	    link.setText("<a>" + file.getFileName() + "</a>");
+	    final Link link = new Link(parent, SWT.RIGHT);
+	    link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+		    1, 1));
+
+	    link.setText("<a>" + attachment.getFileName() + "</a>");
 	    link.addSelectionListener(new SelectionListener() {
 
 		@Override
 		public void widgetSelected(SelectionEvent event) {
-		    linkAction(file);
+		    linkAction(attachment);
 		}
 
 		@Override
@@ -141,6 +117,8 @@ public class LinkTable extends BeanComposite {
 	    });
 
 	}
+	parent.layout();
+	parent.redraw();
     }
 
     public void linkAction(Attachment attachment) {
