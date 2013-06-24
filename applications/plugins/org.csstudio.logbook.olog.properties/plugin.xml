@@ -11,10 +11,6 @@
             propertyName="Ticket"
             propertywidgetfactory="org.csstudio.logbook.olog.properties.TicketPropertyWidgetFactory">
       </propertywidgetfactory>
-      <propertywidgetfactory
-            propertyName="Files"
-            propertywidgetfactory="org.csstudio.logbook.olog.properties.FileWidgetFactory">
-      </propertywidgetfactory>
    </extension>
 
 </plugin>
