@@ -117,7 +117,7 @@ public class ValuePanel extends Composite {
 	
 	private boolean needsDoLayout;
 	
-	public void changeValue(Object value) {
+	public void changeValue(Object value, boolean connection) {
 		needsDoLayout = false;
 		
 		setValue(value);

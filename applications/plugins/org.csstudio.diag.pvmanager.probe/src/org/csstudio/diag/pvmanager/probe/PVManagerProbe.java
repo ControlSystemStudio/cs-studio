@@ -323,7 +323,7 @@ public class PVManagerProbe extends ViewPart {
 			pv = null;
 		}
 
-		valuePanel.changeValue(null);
+		valuePanel.changeValue(null, false);
 		changeValuePanel.reset();
 		metadataPanel.changeValue(null);
 		detailsPanel.changeValue(null, null);
@@ -359,7 +359,7 @@ public class PVManagerProbe extends ViewPart {
 							} else {
 								setStatus(Messages.Probe_statusSearching);
 							}
-							valuePanel.changeValue(value);
+							valuePanel.changeValue(value, event.getPvReader().isConnected());
 							metadataPanel.changeValue(value);
 							copyValueAction.setEnabled(export.canExport(value));
 						}
