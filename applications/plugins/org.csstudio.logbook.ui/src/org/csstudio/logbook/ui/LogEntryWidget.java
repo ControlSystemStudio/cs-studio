@@ -3,6 +3,8 @@
  */
 package org.csstudio.logbook.ui;
 
+import static org.csstudio.logbook.LogEntryBuilder.logEntry;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -32,17 +34,21 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
+import org.csstudio.logbook.ui.extra.LinkTable;
+import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.ImageStackWidget;
 import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -51,6 +57,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -66,12 +73,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import static org.csstudio.logbook.LogEntryBuilder.logEntry;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author shroffk
@@ -106,9 +118,13 @@ public class LogEntryWidget extends Composite {
     private Button btnAddLogbook;
     private Button btnAddTags;
     final private FormData empty;
-    private CTabItem tbtmAttachments;
+
     private CTabFolder tabFolder;
-    private Composite tbtmAttachmentsComposite;
+    private Composite tbtmImgAttachmentsComposite;
+    private CTabItem tbtmAttachments;
+    private Composite tbtmFileAttachmentsComposite;
+    private CTabItem tbtmFileAttachments;
+
     private ImageStackWidget imageStackWidget;
     private Button btnAddImage;
     private Button btnAddScreenshot;
@@ -127,8 +143,7 @@ public class LogEntryWidget extends Composite {
     private MultipleSelectionCombo<String> multiSelectionComboTag;
     private Button btnNewButton;
     private Label label;
-    private CTabItem tbtmNewItem;
-    private Composite composite_1;
+    private LinkTable linkTable;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -422,11 +437,11 @@ public class LogEntryWidget extends Composite {
 	tbtmAttachments.setText("Images");
 	tabFolder.setSelection(tbtmAttachments);
 
-	tbtmAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
-	tbtmAttachments.setControl(tbtmAttachmentsComposite);
-	tbtmAttachmentsComposite.setLayout(new FormLayout());
+	tbtmImgAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
+	tbtmAttachments.setControl(tbtmImgAttachmentsComposite);
+	tbtmImgAttachmentsComposite.setLayout(new FormLayout());
 
-	btnAddImage = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnAddImage = new Button(tbtmImgAttachmentsComposite, SWT.NONE);
 	btnAddImage.setVisible(editable);
 	btnAddImage.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -458,7 +473,7 @@ public class LogEntryWidget extends Composite {
 	btnAddImage.setLayoutData(fd_btnAddImage);
 	btnAddImage.setText("Add Image");
 
-	btnAddScreenshot = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnAddScreenshot = new Button(tbtmImgAttachmentsComposite, SWT.NONE);
 	btnAddScreenshot.setVisible(editable);
 	btnAddScreenshot.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -480,7 +495,7 @@ public class LogEntryWidget extends Composite {
 	btnAddScreenshot.setLayoutData(fd_btnAddScreenshot);
 	btnAddScreenshot.setText("Screenshot");
 
-	btnCSSWindow = new Button(tbtmAttachmentsComposite, SWT.NONE);
+	btnCSSWindow = new Button(tbtmImgAttachmentsComposite, SWT.NONE);
 	btnCSSWindow.setVisible(editable);
 	btnCSSWindow.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -502,7 +517,7 @@ public class LogEntryWidget extends Composite {
 	btnCSSWindow.setLayoutData(fd_btnCSSWindow);
 	btnCSSWindow.setText("CSS Window");
 
-	imageStackWidget = new ImageStackWidget(tbtmAttachmentsComposite,
+	imageStackWidget = new ImageStackWidget(tbtmImgAttachmentsComposite,
 		SWT.NONE);
 	imageStackWidget.setEditable(editable);
 	FormData fd_imageStackWidget = new FormData();
@@ -549,11 +564,90 @@ public class LogEntryWidget extends Composite {
 		    }
 		});
 
-	tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
-	tbtmNewItem.setText("Files");
-	
-	composite_1 = new Composite(tabFolder, SWT.NONE);
-	tbtmNewItem.setControl(composite_1);
+	tbtmFileAttachments = new CTabItem(tabFolder, SWT.NONE);
+	tbtmFileAttachments.setText("Files");
+	tabFolder.setSelection(tbtmFileAttachments);
+
+	tbtmFileAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
+	tbtmFileAttachments.setControl(tbtmFileAttachmentsComposite);
+	tbtmFileAttachmentsComposite.setLayout(new FormLayout());
+
+	errorBar = new ErrorBar(tbtmFileAttachmentsComposite, SWT.NONE);
+	FormData fd_errorBar = new FormData();
+	fd_errorBar.right = new FormAttachment(100, -2);
+	fd_errorBar.top = new FormAttachment(0, 2);
+	fd_errorBar.left = new FormAttachment(0, 2);
+	errorBar.setLayoutData(fd_errorBar);
+
+	btnNewButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	FormData fd_btnNewButton1 = new FormData();
+	fd_btnNewButton1.bottom = new FormAttachment(100, -5);
+	fd_btnNewButton1.right = new FormAttachment(100, -5);
+	btnNewButton.setLayoutData(fd_btnNewButton1);
+	btnNewButton.addSelectionListener(new SelectionListener() {
+
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		// Button behaviour various based on if the logEntry is being
+		// displayed in view mode or edit mode
+		try {
+		    LogEntryBuilder logEntryBuilder = LogEntryBuilder
+			    .logEntry(getLogEntry());
+
+		    if (isEditable()) {
+			// remove the selected attachments
+			for (Attachment attachment : linkTable.getSelection()) {
+			    logEntryBuilder.removeAttachment(attachment
+				    .getFileName());
+			}
+		    } else {
+			// Open the selected files
+
+		    }
+		} catch (IOException e1) {
+		    errorBar.setException(e1);
+		}
+
+	    }
+
+	    @Override
+	    public void widgetDefaultSelected(SelectionEvent e) {
+
+	    }
+	});
+
+	linkTable = new LinkTable(tbtmFileAttachmentsComposite, SWT.NONE) {
+
+	    @Override
+	    public void linkAction(Attachment attachment) {
+
+		try {
+		    IWorkbenchPage page = PlatformUI.getWorkbench()
+			    .getActiveWorkbenchWindow().getActivePage();
+		    IFile ifile = IFileUtil.getInstance().createFileResource(
+			    "hhh" + attachment.getFileName(),
+			    attachment.getInputStream());
+		    IEditorDescriptor desc = PlatformUI.getWorkbench()
+			    .getEditorRegistry()
+			    .getDefaultEditor(attachment.getFileName());
+		    if (desc != null) {
+			IEditorPart part = page.openEditor(new FileEditorInput(
+				ifile), desc.getId());
+			IFileUtil.getInstance().registerPart(part, ifile);
+		    } else {
+			super.linkAction(attachment);
+		    }
+		} catch (IOException | PartInitException e) {
+		    errorBar.setException(e);
+		}
+	    }
+	};
+	FormData fd_linkTable = new FormData();
+	fd_linkTable.top = new FormAttachment(errorBar, 2);
+	fd_linkTable.bottom = new FormAttachment(btnNewButton);
+	fd_linkTable.right = new FormAttachment(100, -2);
+	fd_linkTable.left = new FormAttachment(0, 2);
+	linkTable.setLayoutData(fd_linkTable);
 
 	empty = new FormData();
 	empty.top = new FormAttachment(0);
@@ -725,7 +819,8 @@ public class LogEntryWidget extends Composite {
     private void updateUI() {
 	// Dispose the contributed tabs, only keep the default attachments tab
 	for (CTabItem cTabItem : tabFolder.getItems()) {
-	    if (!cTabItem.equals(tbtmAttachments)) {
+	    if (!cTabItem.equals(tbtmAttachments)
+		    && !cTabItem.equals(tbtmFileAttachments)) {
 		cTabItem.dispose();
 	    }
 	}
@@ -751,6 +846,7 @@ public class LogEntryWidget extends Composite {
 	    }
 	    multiSelectionComboTag.setSelection(LogEntryUtil
 		    .getTagNames(logEntry));
+
 	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
@@ -765,6 +861,11 @@ public class LogEntryWidget extends Composite {
 						"."),
 					attachment.getFileName().length()))) {
 		    try {
+			System.out.println("First");
+			System.out.println(attachment);
+			System.out.println(attachment.getInputStream());
+			System.out.println(attachment.getInputStream()
+				.available());
 			if (attachment.getInputStream().available() > 0) {
 			    imageInputStreamsMap.put(attachment.getFileName(),
 				    attachment.getInputStream());
@@ -772,7 +873,6 @@ public class LogEntryWidget extends Composite {
 		    } catch (IOException e) {
 			setLastException(e);
 		    }
-
 		}
 	    }
 	    try {
@@ -784,12 +884,28 @@ public class LogEntryWidget extends Composite {
 	    } catch (IOException e) {
 		setLastException(e);
 	    }
+	    for (Attachment attachment : logEntry.getAttachment()) {
+		System.out.println("Second");
+		System.out.println(attachment);
+		System.out.println(attachment.getInputStream());
+		try {
+		    System.out.println(attachment.getInputStream().available());
+		} catch (IOException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+
+	    }
+	    linkTable.setFiles(Collections.<Attachment> emptyList());
+	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
+		    .getAttachment()));
 	} else {
 	    text.setText("");
 	    multiSelectionComboLogbook.setItems(Collections
 		    .<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
+	    linkTable.setFiles(Collections.<Attachment>emptyList());
 	}
 	if (propertyWidgetFactories != null) {
 	    for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories

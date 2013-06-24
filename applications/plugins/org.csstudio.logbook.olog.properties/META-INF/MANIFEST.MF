@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.logbook.ui;bundle-version="3.0.0",
  org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
- org.csstudio.ui.util;bundle-version="3.2.0"
+ org.csstudio.ui.util;bundle-version="3.2.0",
+ org.csstudio.logbook.ui.extra;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ui.part

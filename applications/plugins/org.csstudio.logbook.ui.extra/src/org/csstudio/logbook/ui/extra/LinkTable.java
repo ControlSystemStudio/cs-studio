@@ -132,8 +132,7 @@ public class LinkTable extends BeanComposite {
 
 		@Override
 		public void widgetSelected(SelectionEvent event) {
-		    String url = file.getFileName();
-		    Program.launch(url);
+		    linkAction(file);
 		}
 
 		@Override
@@ -142,6 +141,11 @@ public class LinkTable extends BeanComposite {
 	    });
 
 	}
+    }
+
+    public void linkAction(Attachment attachment) {
+	String url = attachment.getFileName();
+	Program.launch(url);
     }
 
     /**

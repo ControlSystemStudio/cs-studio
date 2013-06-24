@@ -11,17 +11,16 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author shroffk
  * 
- *         TODO a public constructor is mandated by the extension framework.
- * 
  */
-public class TicketPropertyWidgetFactory implements PropertyWidgetFactory {
+public class FileWidgetFactory implements PropertyWidgetFactory {
 
-    public TicketPropertyWidgetFactory() {
+    public FileWidgetFactory() {
     }
 
     @Override
     public AbstractPropertyWidget create(Composite parent, int SWT,
 	    LogEntryChangeset logEntryChangeset) {
-	return new TicketPropertyWidget(parent, SWT, logEntryChangeset);
+	return new FileWidget(parent, SWT, logEntryChangeset);
     }
+
 }

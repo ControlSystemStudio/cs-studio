@@ -51,8 +51,6 @@ public class OpenLogViewer extends AbstractHandler {
 	try {
 	    workbench.showPerspective(LogViewerPerspective.ID, window);
 	    window.getActivePage().showView(LogTableView.ID);
-
-	    // window.getActivePage().resetPerspective();
 	} catch (Exception ex) {
 	    ExceptionDetailsErrorDialog.openError(
 		    HandlerUtil.getActiveShell(event),
