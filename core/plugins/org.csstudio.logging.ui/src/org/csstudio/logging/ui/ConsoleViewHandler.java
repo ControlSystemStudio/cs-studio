@@ -34,7 +34,7 @@ public class ConsoleViewHandler extends Handler
     /** Connection to Console View.
      *  Set to <code>null</code> when console support shuts down
      */
-    private MessageConsole console;
+    private volatile MessageConsole console;
 
     /** Printable, color-coded stream of the <code>console</code> */
     final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
@@ -90,13 +90,9 @@ public class ConsoleViewHandler extends Handler
                 new IConsole[] { console });
 
         // Route StreamHandler's output to the MessageConsole.
-        // Could this deadlock because StreamHandler.publish() is
-        // synchronized, and the final ConsoleView update is on the
-        // one and only GUI thread?
-        //
         // According to MessageConsole javadoc,
         // "Text written to streams is buffered and processed in a Job",
-        // so we assume it's decoupled by the MessageConsole buffer & Job
+        // so we assume concurrent writing it OK.
         severe_stream = console.newMessageStream();
         warning_stream = console.newMessageStream();
         info_stream = console.newMessageStream();
@@ -133,15 +129,12 @@ public class ConsoleViewHandler extends Handler
             public void consolesRemoved(final IConsole[] consoles)
             {
                 // Check if it's this console
-                synchronized (ConsoleViewHandler.this)
+                for (IConsole console : consoles)
                 {
-                    for (IConsole console : consoles)
-                    {
-                        if (console == ConsoleViewHandler.this.console)
-                        {   // Mark as closed/detached
-                            ConsoleViewHandler.this.console = null;
-                            return;
-                        }
+                    if (console == ConsoleViewHandler.this.console)
+                    {   // Mark as closed/detached
+                        ConsoleViewHandler.this.console = null;
+                        return;
                     }
                 }
             }
@@ -150,7 +143,7 @@ public class ConsoleViewHandler extends Handler
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void publish(final LogRecord record)
+    public void publish(final LogRecord record)
     {
         if (! isLoggable(record))
             return;
@@ -171,12 +164,10 @@ public class ConsoleViewHandler extends Handler
         try
         {
             // Console might already be closed/detached
-            if (console == null)
-                return;
             final MessageConsoleStream stream = getStream(record.getLevel());
-            if (stream.isClosed())
+            if (stream == null  ||  stream.isClosed())
                 return;
-            // Suring shutdown, error is possible because 'document' of console view
+            // During shutdown, error is possible because 'document' of console view
             // was already closed. Unclear how to check for that.
             stream.print(msg);
         }
@@ -187,10 +178,13 @@ public class ConsoleViewHandler extends Handler
     }
 
     /** @param level Message {@link Level}
-     *  @return Suggested stream for that Level
+     *  @return Suggested stream for that Level or <code>null</code>
      */
     private MessageConsoleStream getStream(final Level level)
     {
+        // Console might already be closed/detached
+        if (console == null)
+            return null;
         if (level.intValue() >= Level.SEVERE.intValue())
             return severe_stream;
         else if (level.intValue() >= Level.WARNING.intValue())
@@ -219,21 +213,17 @@ public class ConsoleViewHandler extends Handler
     }
 
     /** Usually called by JRE when Logger shuts down, i.e.
-     *  way after the Eclipse shudown has already closed
+     *  way after the Eclipse shutdown has already closed
      *  the console view
      */
     @Override
     public void close() throws SecurityException
     {
         // Mark as detached from console
-        final MessageConsole console_copy;
-        synchronized (this)
-        {
-            if (console == null)
-                return;
-            console_copy = console;
-            console = null;
-        }
+        final MessageConsole console_copy = console;
+        if (console_copy == null)
+            return;
+        console = null;
         // Remove from 'Console' view
         console_copy.clearConsole();
         final ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
