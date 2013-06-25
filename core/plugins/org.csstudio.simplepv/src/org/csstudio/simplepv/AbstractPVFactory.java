@@ -35,13 +35,13 @@ public abstract class AbstractPVFactory {
 	 * 
 	 * @return the PV.
 	 */
-	public abstract IPV createPV(String name,
-			boolean readOnly, int maxUpdateRate,
-			boolean bufferAllValues,
-			Executor notificationThread,
-			ExceptionHandler exceptionHandler);
+	public abstract IPV createPV(final String name,
+			final boolean readOnly, final int maxUpdateRate,
+			final boolean bufferAllValues,
+			final Executor notificationThread,
+			final ExceptionHandler exceptionHandler);
 	
-	/**Create a PV with most of parameters in default value:
+	/**Create a PV with most of the parameters in default value:
 	 * <pre>
 	 * readOnly = false;
 	 * maxUpdateRate = 10ms;
@@ -52,7 +52,7 @@ public abstract class AbstractPVFactory {
 	 * @param name name of the PV. Must not be null.
 	 * @return the pv.
 	 */
-	public IPV createPV(String name){
+	public IPV createPV(final String name){
 		return createPV(name, false, 10, false, SIMPLE_PV_THREAD, null);
 	}
 

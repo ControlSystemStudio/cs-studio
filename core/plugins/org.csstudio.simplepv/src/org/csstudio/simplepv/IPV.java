@@ -40,7 +40,7 @@ public interface IPV {
 	 * @return all values buffered. It can be null.
 	 * @throws Exception on error.
 	 */
-	public List<Object> getAllBufferedValues() throws Exception;
+	public List<VType> getAllBufferedValues() throws Exception;
 
 	/**
 	 * Get name of the PV.
