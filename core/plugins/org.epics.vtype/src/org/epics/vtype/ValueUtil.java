@@ -90,7 +90,7 @@ public class ValueUtil {
         if (value != null) {
             return alarmOf(value);
         } else if (connected) {
-            return ValueFactory.alarmNone();
+            return ValueFactory.newAlarm(AlarmSeverity.INVALID, "No value");
         } else {
             return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected");
         }
