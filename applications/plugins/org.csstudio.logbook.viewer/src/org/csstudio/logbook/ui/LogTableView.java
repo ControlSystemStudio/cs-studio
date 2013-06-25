@@ -15,12 +15,12 @@ import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,14 +33,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.services.IServiceLocator;
-import org.eclipse.swt.events.MouseAdapter;
 
 /**
+ * A view to search for logEntries and then display them in a tabluar form
+ * 
  * @author shroffk
  * 
  */
@@ -74,33 +72,45 @@ public class LogTableView extends ViewPart {
 	btnNewButton.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    if (logbooks.isEmpty() && initializeClient()) {
-			logbooks = new ArrayList<String>();
-			for (Logbook logbook : logbookClient.listLogbooks()) {
-			    logbooks.add(logbook.getName());
+		Runnable openSearchDialog = new Runnable() {
+
+		    @Override
+		    public void run() {
+			try {
+			    if (logbooks.isEmpty() && initializeClient()) {
+				logbooks = new ArrayList<String>();
+				for (Logbook logbook : logbookClient
+					.listLogbooks()) {
+				    logbooks.add(logbook.getName());
+				}
+			    }
+			    if (tags.isEmpty() && initializeClient()) {
+				tags = new ArrayList<String>();
+				for (Tag tag : logbookClient.listTags()) {
+				    tags.add(tag.getName());
+				}
+			    }
+			    Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+				    LogEntrySearchDialog dialog = new LogEntrySearchDialog(
+					    parent.getShell(), logbooks, tags,
+					    LogEntrySearchUtil
+						    .parseSearchString(text
+							    .getText()));
+				    dialog.setBlockOnOpen(true);
+				    if (dialog.open() == IDialogConstants.OK_ID) {
+					text.setText(dialog.getSearchString());
+					text.getParent().update();
+					search();
+				    }
+				}
+			    });
+			} catch (Exception e) {
+			    e.printStackTrace();
 			}
 		    }
-		    if (tags.isEmpty() && initializeClient()) {
-			tags = new ArrayList<String>();
-			for (Tag tag : logbookClient.listTags()) {
-			    tags.add(tag.getName());
-			}
-		    }
-		    LogEntrySearchDialog dialog = new LogEntrySearchDialog(
-			    parent.getShell(),
-			    logbooks,
-			    tags,
-			    LogEntrySearchUtil.parseSearchString(text.getText()));
-		    dialog.setBlockOnOpen(true);
-		    if (dialog.open() == IDialogConstants.OK_ID) {
-			text.setText(dialog.getSearchString());
-			text.getParent().update();
-			search();
-		    }
-		} catch (Exception e2) {
-		    e2.printStackTrace();
-		}
+		};
+		BusyIndicator.showWhile(Display.getDefault(), openSearchDialog);
 	    }
 	});
 	FormData fd_btnNewButton = new FormData();
@@ -191,21 +201,27 @@ public class LogTableView extends ViewPart {
     }
 
     private void search() {
-	if (initializeClient()) {
-	    try {
-		final List<LogEntry> logEntries = new ArrayList<LogEntry>(
-			logbookClient.findLogEntries(text.getText()));
-		Display.getDefault().asyncExec(new Runnable() {
-
-		    @Override
-		    public void run() {
-			logEntryTable.setLogs(logEntries);
+	Runnable search = new Runnable() {
+	    @Override
+	    public void run() {
+		if (initializeClient()) {
+		    try {
+			final List<LogEntry> logEntries = new ArrayList<LogEntry>(
+				logbookClient.findLogEntries(text.getText()));
+			Display.getDefault().asyncExec(new Runnable() {
+			    @Override
+			    public void run() {
+				logEntryTable.setLogs(logEntries);
+			    }
+			});
+		    } catch (Exception e1) {
+			e1.printStackTrace();
 		    }
-		});
-	    } catch (Exception e1) {
-		e1.printStackTrace();
+		}
+
 	    }
-	}
+	};
+	BusyIndicator.showWhile(Display.getDefault(), search);
     }
 
     @Override
