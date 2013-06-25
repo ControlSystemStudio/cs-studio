@@ -53,7 +53,7 @@ public final class SimulationDataSource extends DataSource {
             return new ConstantChannelHandler(channelName);
         }
         if (channelName.startsWith("delayedConnectionChannel(")) {
-            return new DelayedConnectionChannelHandler(channelName);
+            return new DelayedConnectionChannelHandler(channelName, exec);
         }
         if (channelName.startsWith("intermittentChannel(")) {
             return new IntermittentChannelHandler(channelName, exec);
