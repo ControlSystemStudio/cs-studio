@@ -140,9 +140,10 @@ public class LogEntryWidget extends Composite {
     private Label lblNewLabel;
     private MultipleSelectionCombo<String> multiSelectionComboLogbook;
     private MultipleSelectionCombo<String> multiSelectionComboTag;
-    private Button btnNewButton;
+    private Button showDetailsButton;
     private Label label;
     private LinkTable linkTable;
+    private Button removeSelectedButton;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -406,8 +407,8 @@ public class LogEntryWidget extends Composite {
 		    }
 		});
 
-	btnNewButton = new Button(composite, SWT.FLAT | SWT.LEFT);
-	btnNewButton.addSelectionListener(new SelectionAdapter() {
+	showDetailsButton = new Button(composite, SWT.FLAT | SWT.LEFT);
+	showDetailsButton.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 		// Toggle the expand/collapse
@@ -419,15 +420,15 @@ public class LogEntryWidget extends Composite {
 	fd_btnNewButton.right = new FormAttachment(100, -2);
 	fd_btnNewButton.top = new FormAttachment(label, 0);
 	fd_btnNewButton.bottom = new FormAttachment(label, 24, SWT.BOTTOM);
-	btnNewButton.setLayoutData(fd_btnNewButton);
-	btnNewButton.setText("Details");
+	showDetailsButton.setLayoutData(fd_btnNewButton);
+	showDetailsButton.setText("Details");
 
 	tabFolder = new CTabFolder(composite, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 	FormData fd_tabFolder = new FormData();
 	fd_tabFolder.bottom = new FormAttachment(100, -2);
 	fd_tabFolder.right = new FormAttachment(100, -2);
 	fd_tabFolder.left = new FormAttachment(0, 2);
-	fd_tabFolder.top = new FormAttachment(btnNewButton, 2);
+	fd_tabFolder.top = new FormAttachment(showDetailsButton, 2);
 	tabFolder.setLayoutData(fd_tabFolder);
 	tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(
 		SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
@@ -578,12 +579,15 @@ public class LogEntryWidget extends Composite {
 	fd_errorBar.left = new FormAttachment(0, 2);
 	errorBar.setLayoutData(fd_errorBar);
 
-	btnNewButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
-	FormData fd_btnNewButton1 = new FormData();
-	fd_btnNewButton1.bottom = new FormAttachment(100, -5);
-	fd_btnNewButton1.right = new FormAttachment(100, -5);
-	btnNewButton.setLayoutData(fd_btnNewButton1);
-	btnNewButton.addSelectionListener(new SelectionListener() {
+	removeSelectedButton = new Button(tbtmFileAttachmentsComposite,
+		SWT.NONE);
+	removeSelectedButton.setVisible(editable);
+	removeSelectedButton.setText("Remove selected attachments");
+	FormData fd_btnRemoveSelectedButton = new FormData();
+	fd_btnRemoveSelectedButton.bottom = new FormAttachment(100, -5);
+	fd_btnRemoveSelectedButton.right = new FormAttachment(100, -5);
+	removeSelectedButton.setLayoutData(fd_btnRemoveSelectedButton);
+	removeSelectedButton.addSelectionListener(new SelectionListener() {
 
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
@@ -599,6 +603,7 @@ public class LogEntryWidget extends Composite {
 			    logEntryBuilder.removeAttachment(attachment
 				    .getFileName());
 			}
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		    } else {
 			// Open the selected files
 
@@ -624,7 +629,7 @@ public class LogEntryWidget extends Composite {
 		    IWorkbenchPage page = PlatformUI.getWorkbench()
 			    .getActiveWorkbenchWindow().getActivePage();
 		    IFile ifile = IFileUtil.getInstance().createFileResource(
-			    "hhh" + attachment.getFileName(),
+			    attachment.getFileName(),
 			    attachment.getInputStream());
 		    IEditorDescriptor desc = PlatformUI.getWorkbench()
 			    .getEditorRegistry()
@@ -643,7 +648,7 @@ public class LogEntryWidget extends Composite {
 	};
 	FormData fd_linkTable = new FormData();
 	fd_linkTable.top = new FormAttachment(errorBar, 2);
-	fd_linkTable.bottom = new FormAttachment(btnNewButton);
+	fd_linkTable.bottom = new FormAttachment(removeSelectedButton);
 	fd_linkTable.right = new FormAttachment(100, -2);
 	fd_linkTable.left = new FormAttachment(0, 2);
 	linkTable.setLayoutData(fd_linkTable);
@@ -663,10 +668,10 @@ public class LogEntryWidget extends Composite {
 		    FormData fd = ((FormData) label.getLayoutData());
 		    if (expanded) {
 			fd.top = new FormAttachment(60, -28);
-			btnNewButton.setText("Hide details");
+			showDetailsButton.setText("Hide details");
 		    } else {
 			fd.top = new FormAttachment(100, -28);
-			btnNewButton.setText("Show Details");
+			showDetailsButton.setText("Show Details");
 		    }
 		    label.setLayoutData(fd);
 		    label.getParent().layout();
@@ -860,11 +865,6 @@ public class LogEntryWidget extends Composite {
 						"."),
 					attachment.getFileName().length()))) {
 		    try {
-			System.out.println("First");
-			System.out.println(attachment);
-			System.out.println(attachment.getInputStream());
-			System.out.println(attachment.getInputStream()
-				.available());
 			if (attachment.getInputStream().available() > 0) {
 			    imageInputStreamsMap.put(attachment.getFileName(),
 				    attachment.getInputStream());
@@ -883,18 +883,6 @@ public class LogEntryWidget extends Composite {
 	    } catch (IOException e) {
 		setLastException(e);
 	    }
-	    for (Attachment attachment : logEntry.getAttachment()) {
-		System.out.println("Second");
-		System.out.println(attachment);
-		System.out.println(attachment.getInputStream());
-		try {
-		    System.out.println(attachment.getInputStream().available());
-		} catch (IOException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-
-	    }
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
 		    .getAttachment()));
@@ -904,7 +892,7 @@ public class LogEntryWidget extends Composite {
 		    .<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
-	    linkTable.setFiles(Collections.<Attachment>emptyList());
+	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	}
 	if (propertyWidgetFactories != null) {
 	    for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
