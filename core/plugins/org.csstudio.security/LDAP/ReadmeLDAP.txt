@@ -30,6 +30,11 @@ ldapsearch -x -b 'ou=Users,dc=css-demo,dc=org'  '(objectclass=account)'
 ldapsearch -x -b 'ou=Groups,dc=css-demo,dc=org'  '(memberUid=fred)'
 
 
+Check password of user 'fred':
+ldapsearch -h ky9linux.ornl.gov -x -b 'ou=Users,dc=css-demo,dc=org' -D 'uid=fred,ou=Users,dc=css-demo,dc=org' -W '(uid=fred)'
+# At prompt, enter password. On success, will see full info for user.
+
+
 Delete entries:
 ldapdelete -x -D "cn=Manager,dc=css-demo,dc=org" -W 'uid=fred,ou=Users,dc=css-demo,dc=org'
 
