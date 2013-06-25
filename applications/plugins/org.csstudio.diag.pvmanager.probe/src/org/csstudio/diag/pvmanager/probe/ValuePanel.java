@@ -120,7 +120,7 @@ public class ValuePanel extends Composite {
 	public void changeValue(Object value, boolean connection) {
 		needsDoLayout = false;
 		
-		setValue(value);
+		setValue(value, connection);
 		setTime(ValueUtil.timeOf(value));
 		
 		if (value instanceof Enum) {
@@ -179,7 +179,7 @@ public class ValuePanel extends Composite {
 		}
 	}
 	
-	private void setValue(Object value) {
+	private void setValue(Object value, boolean connection) {
 		StringBuilder formattedValue = new StringBuilder();
 		
 		if (value != null) {
@@ -189,7 +189,7 @@ public class ValuePanel extends Composite {
 			}
 		}
 		
-		appendAlarm(formattedValue, ValueUtil.alarmOf(value));
+		appendAlarm(formattedValue, ValueUtil.alarmOf(value, connection));
 
 		valueField.setText(formattedValue.toString());
 	}
