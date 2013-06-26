@@ -15,6 +15,10 @@ import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -201,13 +205,15 @@ public class LogTableView extends ViewPart {
     }
 
     private void search() {
-	Runnable search = new Runnable() {
+	final String searchString = text.getText();
+	Job search = new Job("Searching") {
+
 	    @Override
-	    public void run() {
+	    protected IStatus run(IProgressMonitor monitor) {
 		if (initializeClient()) {
 		    try {
 			final List<LogEntry> logEntries = new ArrayList<LogEntry>(
-				logbookClient.findLogEntries(text.getText()));
+				logbookClient.findLogEntries(searchString));
 			Display.getDefault().asyncExec(new Runnable() {
 			    @Override
 			    public void run() {
@@ -218,10 +224,10 @@ public class LogTableView extends ViewPart {
 			e1.printStackTrace();
 		    }
 		}
-
+		return Status.OK_STATUS;
 	    }
 	};
-	BusyIndicator.showWhile(Display.getDefault(), search);
+	search.schedule();
     }
 
     @Override
