@@ -11,8 +11,7 @@ public class PVManagerPVFactory extends AbstractPVFactory {
 	@Override
 	public IPV createPV(String name, boolean readOnly, int maxUpdateRate, boolean bufferAllValues,
 			Executor notificationThread, ExceptionHandler exceptionHandler) {
-		// TODO Auto-generated method stub
-		return null;
+		return new PVManagerPV(name, readOnly, maxUpdateRate, bufferAllValues, notificationThread, exceptionHandler);
 	}
 
 	
