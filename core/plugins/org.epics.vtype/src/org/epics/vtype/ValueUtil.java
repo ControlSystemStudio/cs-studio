@@ -71,11 +71,29 @@ public class ValueUtil {
      */
     public static Alarm alarmOf(Object obj) {
         if (obj == null) {
-            return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "UNDEFINED");
+            return ValueFactory.alarmNone();
         }
         if (obj instanceof Alarm)
             return (Alarm) obj;
         return null;
+    }
+    
+    /**
+     * Extracts the alarm information if present, based on value
+     * and connection status.
+     * 
+     * @param value a value
+     * @param connected the connection status
+     * @return the alarm information
+     */
+    public static Alarm alarmOf(Object value, boolean connected) {
+        if (value != null) {
+            return alarmOf(value);
+        } else if (connected) {
+            return ValueFactory.newAlarm(AlarmSeverity.INVALID, "No value");
+        } else {
+            return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected");
+        }
     }
 
     /**
