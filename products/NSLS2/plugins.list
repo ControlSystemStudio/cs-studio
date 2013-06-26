@@ -41,6 +41,7 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.examples
 org.csstudio.graphene
 org.csstudio.graphene.opiwidgets
 org.csstudio.java
@@ -63,8 +64,8 @@ org.csstudio.opibuilder.examples
 org.csstudio.opibuilder.imagelib
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
-org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.extra
+org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
