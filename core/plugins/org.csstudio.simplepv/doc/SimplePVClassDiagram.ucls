@@ -19,34 +19,25 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <interface id="3" language="java" name="org.csstudio.simplepv.IPVReadListener" project="org.csstudio.simplepv" 
-    file="/org.csstudio.simplepv/src/org/csstudio/simplepv/IPVReadListener.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="962" y="349"/>    
-    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
+  <interface id="3" language="java" name="org.csstudio.simplepv.IPVListener" project="org.csstudio.simplepv" 
+    file="/org.csstudio.simplepv/src/org/csstudio/simplepv/IPVListener.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="972" y="190"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <interface id="4" language="java" name="org.csstudio.simplepv.IPVWriteListener" project="org.csstudio.simplepv" 
-    file="/org.csstudio.simplepv/src/org/csstudio/simplepv/IPVWriteListener.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="971" y="178"/>    
-    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </interface>  
-  <class id="5" language="java" name="org.csstudio.simplepv.VTypeHelper" project="org.csstudio.simplepv" 
+  <class id="4" language="java" name="org.csstudio.simplepv.VTypeHelper" project="org.csstudio.simplepv" 
     file="/org.csstudio.simplepv/src/org/csstudio/simplepv/VTypeHelper.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="243" y="581"/>    
+    <position height="-1" width="-1" x="207" y="612"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <interface id="6" language="java" name="org.epics.vtype.VType" project="org.epics.vtype" 
+  <interface id="5" language="java" name="org.epics.vtype.VType" project="org.epics.vtype" 
     file="/org.epics.vtype/src/org/epics/vtype/VType.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="503" y="396"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
@@ -55,16 +46,16 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </interface>  
-  <class id="7" language="java" name="org.epics.vtype.ValueUtil" project="org.epics.vtype" 
+  <class id="6" language="java" name="org.epics.vtype.ValueUtil" project="org.epics.vtype" 
     file="/org.epics.vtype/src/org/epics/vtype/ValueUtil.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="537" y="648"/>    
+    <position height="-1" width="-1" x="501" y="679"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <interface id="8" language="java" name="org.csstudio.simplepv.ExceptionHandler" project="org.csstudio.simplepv" 
+  <interface id="7" language="java" name="org.csstudio.simplepv.ExceptionHandler" project="org.csstudio.simplepv" 
     file="/org.csstudio.simplepv/src/org/csstudio/simplepv/ExceptionHandler.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="470" y="300"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
@@ -73,7 +64,7 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </interface>  
-  <class id="9" language="java" name="org.csstudio.simplepv.SimplePVLayer" project="org.csstudio.simplepv" 
+  <class id="8" language="java" name="org.csstudio.simplepv.SimplePVLayer" project="org.csstudio.simplepv" 
     file="/org.csstudio.simplepv/src/org/csstudio/simplepv/SimplePVLayer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="236" y="169"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" accessors="true" 
@@ -82,41 +73,33 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <dependency id="10">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="8"/>  
-  </dependency>  
-  <dependency id="11">    
+  <dependency id="9">    
     <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="13">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <dependency id="14">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="15">    
-    <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="6"/>  
   </dependency>  
-  <dependency id="16">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="17">    
+  <dependency id="10">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
-  <dependency id="18">    
-    <end type="SOURCE" refId="5"/>    
+  <dependency id="11">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="false" package="true" initial-value="true" signature="true" 
     accessors="true" visibility="true">    

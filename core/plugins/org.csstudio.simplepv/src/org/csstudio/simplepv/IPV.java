@@ -16,26 +16,20 @@ import org.epics.vtype.ValueUtil;
 /**
  * A simple PV interface for common UI applications. <p>
  * <b>Note:</b> Implementations should make sure all methods are thread safe.
- * @author                     Xihui Chen
+ * @author  Xihui Chen
  */
 public interface IPV {
 
-	/**Add a read listener to the PV,
-	 * which will be notified on value or connection change in notify thread. 
-	 * @param listener the listener
-	 */
-	public void addPVReadListener(IPVReadListener listener);
 
-	/**Add a write listener to the PV, which will be notified on
-	 * write event in notify thread.
+	/**Add a listener to the PV, which will be notified on
+	 * events of the PV in the given notify thread.
 	 * @param listener the listener
 	 */
-	public void addPVWriteListener(IPVWriteListener listener);
+	public void addPVListener(IPVListener listener);
 
 	/**
-	 * Get all values that were buffered during the update period. If value is
-	 * not buffered, it should return a single item list that has the latest
-	 * value.
+	 * Get all values that were buffered in last update cycle that has values. If value is
+	 * not buffered, it should return a single item list that wraps {@link #getValue()}
 	 * 
 	 * @return all values buffered. It can be null.
 	 * @throws Exception on error.
@@ -50,18 +44,23 @@ public interface IPV {
 	public String getName();
 
 	/**
-	 * Get the most recent value of the PV. If {@link #isValuesBuffered()} is false,
-	 * this should return the latest value of the PV, which should be a
-	 * {@link VType} value, otherwise, it should return a
-	 * {@link List} of all the values buffered during the update period.
+	 * Get the most recent value of the PV in last update cycle that has values.	 * 
 	 * {@link VTypeHelper} and {@link ValueUtil} can be used to get the number
-	 * value, string value, alarm, display, time stamp etc. from the value and
+	 * or string value, alarm, display, time stamp etc. from the {@link VType} value and
 	 * help to format the value.
 	 * 
-	 * @return value of the PV. It can be null.
+	 * @return value of the PV. It can be null even the PV is connected. For example, 
+	 * the value is not prepared yet or it has null as the initial value.
 	 * @throws Exception on error.
 	 */
 	public VType getValue() throws Exception;
+
+	/**
+	 * Return true if all values during an update period should be buffered.
+	 * 
+	 * @return true if all values should be buffered.
+	 */
+	public boolean isBufferingValues();
 
 	/**If the PV is connected. If the PV is an aggregate of multiple PVs,
 	 * the connection state should be determined by the aggregator. For example,
@@ -71,8 +70,9 @@ public interface IPV {
 	 */
 	public boolean isConnected();
 
-	/**
-	 * @return true if the PV is paused or false otherwise.
+	/**If the pv is paused. When a pv is paused, it will stop sending notifications to listeners
+	 * while keeps connected.
+	 * @return true if the PV is paused or false if the pv is not started or not paused.
 	 */
 	public boolean isPaused();
 
@@ -82,17 +82,16 @@ public interface IPV {
 	 */
 	public boolean isStarted();
 
-	/**
-	 * Return true if all values during the update period should be buffered.
-	 * 
-	 * @return true if all values should be buffered.
-	 */
-	public boolean isValuesBuffered();
-
 	/** @return <code>true</code> if the PV is connected and allowed to write.*/
     public boolean isWriteAllowed();
 	
 	
+    
+    /**Remove a pv listener.
+     * @param listener the listener to be removed.
+     */
+    public void removePVListener(IPVListener listener);
+    
 	/**
 	 * Pause notifications while keep the connection.
 	 * 
@@ -110,16 +109,6 @@ public interface IPV {
      */
     public void setValue(Object value) throws Exception;
 	
-
-    /** Set PV to a given value synchronously.
-     *  Should accept number, number array,
-     *  <code>String</code>, maybe more.
-     *  @param value Value to write to the PV
-     *  @param timeout timeout for pv connection and write operation.
-     *  @throws Exception on error.
-     */
-    public void setValue(Object value, int timeout) throws Exception;
-	
     
     /**
 	 * Start to connect and listen on the PV.
@@ -127,8 +116,9 @@ public interface IPV {
 	public void start() throws Exception;
     
     /**
-	 * Stop the connection. When the PV is no longer needed, one should stop it
-	 * to release resources. It has no effect if the pv was stopped.
+	 * Stop the connection and remove all listeners. 
+	 * When the PV is no longer needed, one should stop it
+	 * to release resources. It has no effect if the pv has been stopped already.
 	 */
 	public void stop();
 
