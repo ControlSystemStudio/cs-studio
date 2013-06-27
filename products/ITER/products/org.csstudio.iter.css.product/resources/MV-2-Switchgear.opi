@@ -262,7 +262,7 @@ Medium Voltage Switchergear 02</text>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://myPV</pv_name>
+        <pv_name>loc://$(DID)_myPV</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -423,7 +423,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://myPV</pv_name>
+        <pv_name>loc://$(DID)_myPV</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -6345,7 +6345,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -6424,7 +6424,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -6624,7 +6624,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -6703,7 +6703,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -7718,7 +7718,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -7797,7 +7797,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://idle</pv_name>
+          <pv_name>loc://$(DID)_idle</pv_name>
           <foreground_color>
             <color name="IO Foreground" red="0" green="0" blue="0" />
           </foreground_color>
@@ -7876,7 +7876,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://idle</pv_name>
+          <pv_name>loc://$(DID)_idle</pv_name>
           <foreground_color>
             <color name="IO Foreground" red="0" green="0" blue="0" />
           </foreground_color>
@@ -8078,7 +8078,7 @@ Dyn11</text>
             <off_color>
               <color name="IO PV OFF" red="77" green="77" blue="77" />
             </off_color>
-            <pv_name>loc://myPV</pv_name>
+            <pv_name>loc://$(DID)_myPV</pv_name>
             <foreground_color>
               <color name="IO Foreground" red="0" green="0" blue="0" />
             </foreground_color>
@@ -8157,7 +8157,7 @@ $(pv_value)</tooltip>
             <off_color>
               <color name="IO PV OFF" red="77" green="77" blue="77" />
             </off_color>
-            <pv_name>loc://myPV</pv_name>
+            <pv_name>loc://$(DID)_myPV</pv_name>
             <foreground_color>
               <color name="IO Foreground" red="0" green="0" blue="0" />
             </foreground_color>
@@ -8359,7 +8359,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://myPV</pv_name>
+          <pv_name>loc://$(DID)_myPV</pv_name>
           <foreground_color>
             <color red="192" green="192" blue="192" />
           </foreground_color>
@@ -8438,7 +8438,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://idle</pv_name>
+          <pv_name>loc://$(DID)_idle</pv_name>
           <foreground_color>
             <color name="IO Foreground" red="0" green="0" blue="0" />
           </foreground_color>
@@ -8517,7 +8517,7 @@ $(pv_value)</tooltip>
           <off_color>
             <color name="IO PV OFF" red="77" green="77" blue="77" />
           </off_color>
-          <pv_name>loc://idle</pv_name>
+          <pv_name>loc://$(DID)_idle</pv_name>
           <foreground_color>
             <color name="IO Foreground" red="0" green="0" blue="0" />
           </foreground_color>
@@ -8719,7 +8719,7 @@ Dyn11</text>
             <off_color>
               <color name="IO PV OFF" red="77" green="77" blue="77" />
             </off_color>
-            <pv_name>loc://myPV</pv_name>
+            <pv_name>loc://$(DID)_myPV</pv_name>
             <foreground_color>
               <color name="IO Foreground" red="0" green="0" blue="0" />
             </foreground_color>
@@ -8798,7 +8798,7 @@ $(pv_value)</tooltip>
             <off_color>
               <color name="IO PV OFF" red="77" green="77" blue="77" />
             </off_color>
-            <pv_name>loc://myPV</pv_name>
+            <pv_name>loc://$(DID)_myPV</pv_name>
             <foreground_color>
               <color name="IO Foreground" red="0" green="0" blue="0" />
             </foreground_color>
@@ -9559,7 +9559,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://myPV</pv_name>
+        <pv_name>loc://$(DID)_myPV</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -9720,7 +9720,7 @@ CABLE INCOMER</text>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://myPV</pv_name>
+        <pv_name>loc://$(DID)_myPV</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -10019,7 +10019,7 @@ Cooling Water Pumping Station</text>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10179,7 +10179,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10339,7 +10339,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10499,7 +10499,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10659,7 +10659,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10819,7 +10819,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -10979,7 +10979,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -11139,7 +11139,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -11299,7 +11299,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
         </foreground_color>
@@ -11597,7 +11597,7 @@ Hot Bassin &amp; Cooling Towers Station</text>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -11757,7 +11757,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -11917,7 +11917,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12077,7 +12077,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12237,7 +12237,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12397,7 +12397,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12557,7 +12557,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12717,7 +12717,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color name="IO PV OFF" red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://idle</pv_name>
+        <pv_name>loc://$(DID)_idle</pv_name>
         <foreground_color>
           <color red="192" green="192" blue="192" />
         </foreground_color>
@@ -12863,7 +12863,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>loc://version(BOY Symbol Library V3.1)</pv_name>
+    <pv_name>loc://$(DID)_version(BOY Symbol Library V3.1)</pv_name>
     <background_color>
       <color name="IO InputPV Bg" red="255" green="255" blue="255" />
     </background_color>

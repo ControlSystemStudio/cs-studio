@@ -34,13 +34,14 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.channel.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.frib.basic.applications.feature"
          version="0.0.0"
          optional="true"/>
+
+   <includes
+         id="org.csstudio.channel.feature"
+         version="0.0.0"/>
+
 
    <includes
          id="org.csstudio.olog.feature"
