@@ -36,6 +36,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 
+
 /**The editpart for spinner widget.
  * @author Xihui Chen
  *
@@ -343,9 +344,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	}
 
 	protected void performDirectEdit(){
-		new TextEditManager(this,
+		new SpinnerTextEditManager(this,
 				new LabelCellEditorLocator(
-						((SpinnerFigure)getFigure()).getLabelFigure()), false).show();
+						((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();	
 	}
 
 	@Override
