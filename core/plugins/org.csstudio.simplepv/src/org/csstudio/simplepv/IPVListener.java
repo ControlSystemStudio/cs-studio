@@ -27,6 +27,8 @@ public interface IPVListener{
 	}
 	
 	/**Will be called when connection state changed.
+	 * It the connection is closed by explicitly calling {@link IPV#stop()},
+	 * this method will not be notified.  
 	 * @param pv the pv whose connection state changed.
 	 */
 	void connectionChanged(IPV pv);

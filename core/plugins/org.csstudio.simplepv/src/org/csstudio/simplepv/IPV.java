@@ -76,9 +76,10 @@ public interface IPV {
 	 */
 	public boolean isPaused();
 
-	/**
-	 * @return true if the {@link #start()} has been called but {@link #stop()}
-	 *         has not been called.
+	/**If the {@link #start()} has been called but {@link #stop()}
+	 *         has not been called. This method tells nothing if the pv is connected.
+	 *         To see if the PV is connected use {@link #isConnected()}.
+	 * @return true if the pv is started but not stopped.
 	 */
 	public boolean isStarted();
 
@@ -116,7 +117,9 @@ public interface IPV {
 	public void start() throws Exception;
     
     /**
-	 * Stop the connection and remove all listeners. 
+	 * Close the connection while keeping all listeners, so when it is restarted, it will work as before,
+	 * but it is recommended to use {@link #setPaused(boolean)} instead of calling stop and start again 
+	 * because {@link #setPaused(boolean)} will keep the connection. 
 	 * When the PV is no longer needed, one should stop it
 	 * to release resources. It has no effect if the pv has been stopped already.
 	 */
