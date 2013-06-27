@@ -300,7 +300,7 @@ public class PVManagerPV implements IPV {
 
 	@Override
 	public boolean isStarted() {
-		return pvReader != null && !pvReader.isClosed();
+		return startFlag.get();
 	}
 
 	@Override
