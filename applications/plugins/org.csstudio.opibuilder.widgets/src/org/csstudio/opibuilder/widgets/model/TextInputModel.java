@@ -176,9 +176,9 @@ public class TextInputModel extends TextUpdateModel {
 	}
 	
 	@Override
-	public void processVersionDifference() {
-		super.processVersionDifference();
-		if(getVersionOnFile().getMajor()<2){			
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		if(boyVersionOnFile.getMajor()<2){			
 			if(getWidgetType().equals("Text") || //$NON-NLS-1$
 					getWidgetType().equals("Native Text")){ //$NON-NLS-1$
 				setPropertyValue(PROP_WIDGET_TYPE, "Text Input"); //$NON-NLS-1$

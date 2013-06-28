@@ -224,6 +224,27 @@ the alternating scan will be faster and reduce wear on the motors.
 </p>
 
 
+<h3><a name="IncludeCommand"><img alt="include" src="PLUGINS_ROOT/org.csstudio.scan/icons/includecommand.gif"/>&nbsp;Include Command</a></h3>
+<p>Include another <code>*.scn</code> file in a scan.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Scan File: Name of the scan file</li>
+<li>Macros: Macros</li>
+</ul>
+<p>Example:
+<code>Include 'other.scn', macro1=value1,macro2=value2</code>
+will include the scan defined in <code>other.scn</code> and execute it with the given macros.
+</p>
+<p>The path to the scan file must either be a complete path within the file system,
+or - preferably - a file in one of the directories listed in the scan server
+search path preference.
+</p>
+<p>Macros specified in an include command are added to the existing macros.
+Macros of the same name as existing macros replace their value.
+</p>
+
+
 <h3><a name="LogCommand"><img alt="log" src="PLUGINS_ROOT/org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</a></h3>
 <p>Send values of devices to the log.
 </p>
@@ -469,6 +490,28 @@ It shows the hierarchical structure of loops in a scan.
 or the toolbar button <img alt="Run" src="../icons/run.png"/>.
 </li>
 </ul>
+
+
+<h2><a name="macros">Macros</a></h2> 
+
+<p>Device names as for example used in the
+<a href="#SetCommand">Set</a>
+or
+<a href="#LoopCommand">Loop</a>
+commands can use macros.
+</p>
+
+<p>Instead of specifying a complete device name like
+"motor_x", macro expressions like "$(device)" or "motor_$(axis)"
+may be used, which would evaluate to the same "motor_x" if
+the macros were defined as follows:
+<code>device=motor_x, axis=x</code>
+</p>
+
+<p>Macros can be defined in the scan server preferences.
+They can also be provided in the
+<a href="#IncludeCommand">IncludeCommand</a>.
+</p>
 
 
 <h2><a name="monitor">Scan Monitor</a></h2> 

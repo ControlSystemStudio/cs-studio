@@ -14,6 +14,10 @@ public class UpgradeUtilTest {
 		//local pv
 		assertEquals("loc://myPV(\"fred\")",
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(fred)"));
+		assertEquals("loc://myPV(\"fred\")",
+				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(\"fred\")"));
+		assertEquals("loc://myPV(\"\")",
+				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(\"\")"));
 		assertEquals("loc://myPV(12.34)",
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(12.34)"));
 		assertEquals("loc://myPV(12,34,2.3,4.56)",

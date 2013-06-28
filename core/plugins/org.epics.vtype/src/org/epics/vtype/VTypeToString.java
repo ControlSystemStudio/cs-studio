@@ -7,6 +7,7 @@ package org.epics.vtype;
 import java.util.AbstractList;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
+import org.epics.vtype.table.VTableFactory;
 
 /**
  * Helper class that provides default implementation of toString for VTypes.
@@ -171,18 +172,7 @@ public class VTypeToString {
                 .append("x")
                 .append(vTable.getRowCount())
                 .append(", ");
-        builder.append(format.format(ValueFactory.newVStringArray(new AbstractList<String>() {
-
-            @Override
-            public String get(int index) {
-                return vTable.getColumnName(index);
-            }
-
-            @Override
-            public int size() {
-                return vTable.getColumnCount();
-            }
-        }, ValueFactory.alarmNone(), ValueFactory.timeNow())));
+        builder.append(format.format(ValueFactory.newVStringArray(VTableFactory.columnNames(vTable), ValueFactory.alarmNone(), ValueFactory.timeNow())));
         builder.append(']');
         return builder.toString();
     }

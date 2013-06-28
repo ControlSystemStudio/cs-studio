@@ -151,7 +151,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     @Override
-    public void connect() {
+    public synchronized void connect() {
+        needsMonitor = true;
+        needsAccessChangeListener.set(true);
+        
         try {
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
@@ -160,8 +163,6 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 	    } else {
                 channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
-            needsMonitor = true;
-            needsAccessChangeListener.set(true);
         } catch (CAException ex) {
             throw new RuntimeException("JCA Connection failed", ex);
         }
@@ -183,11 +184,26 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 }
             }
         };
+        // If it's a ListNumber, extract the array
+        if (newValue instanceof ListNumber) {
+            ListNumber data = (ListNumber) newValue;
+            Object wrappedArray = CollectionNumbers.wrappedArray(data);
+            if (wrappedArray == null) {
+                newValue = CollectionNumbers.doubleArrayCopyOf(data);
+            } else {
+                newValue = wrappedArray;
+            }
+        }
         if (newValue instanceof String) {
             if (isLongString()) {
                 channel.put(toBytes(newValue.toString()), listener);
             } else {
-                channel.put(newValue.toString(), listener);
+                if (channel.getFieldType().isBYTE() && channel.getElementCount() > 1) {
+                    log.warning("You are writing the String " + newValue + " to BYTE channel " + getChannelName() + ": use {\"longString\":true} for support");
+                    channel.put(toBytes(newValue.toString()), listener);
+                } else {
+                    channel.put(newValue.toString(), listener);
+                }
             }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue, listener);
@@ -221,12 +237,35 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 newValue = wrappedArray;
             }
         }
+        if (newValue instanceof Double[]) {
+            log.warning("You are writing a Double[] to channel " + getChannelName() + ": use org.epics.util.array.ListDouble instead");
+            final Double dbl[] = (Double[]) newValue;
+            final double val[] = new double[dbl.length];
+            for (int i = 0; i < val.length; ++i) {
+                val[i] = dbl[i].doubleValue();
+            }
+            newValue = val;
+        }
+        if (newValue instanceof Integer[]) {
+            log.warning("You are writing a Integer[] to channel " + getChannelName() + ": use org.epics.util.array.ListInt instead");
+            final Integer ival[] = (Integer[]) newValue;
+            final int val[] = new int[ival.length];
+            for (int i = 0; i < val.length; ++i) {
+                val[i] = ival[i].intValue();
+            }
+            newValue = val;
+        }
         
         if (newValue instanceof String) {
             if (isLongString()) {
                 channel.put(toBytes(newValue.toString()));
             } else {
-                channel.put(newValue.toString());
+                if (channel.getFieldType().isBYTE() && channel.getElementCount() > 1) {
+                    log.warning("You are writing the String " + newValue + " to BYTE channel " + getChannelName() + ": use {\"longString\":true} for support");
+                    channel.put(toBytes(newValue.toString()));
+                } else {
+                    channel.put(newValue.toString());
+                }
             }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue);
@@ -425,8 +464,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     };
 
     @Override
-    public void disconnect() {
+    public synchronized void disconnect() {
         try {
+            channel.removeConnectionListener(connectionListener);
             // Close the channel
             if (channel.getConnectionState() != Channel.ConnectionState.CLOSED) {
                 channel.destroy();

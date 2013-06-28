@@ -107,7 +107,7 @@ class NameParser {
             }
             return clazz.getConstructor(types).newInstance(constructorParams);
         } catch (ClassNotFoundException ex) {
-            throw new RuntimeException("Function " + parameters.get(0) + " is not defined");
+            throw new RuntimeException("Simulation channel " + parameters.get(0) + " is not defined");
         } catch (NoClassDefFoundError ex) {
             if (ex.getMessage().contains("wrong name") && ex.getMessage().lastIndexOf("/") != -1) {
                 String suggestedName = ex.getMessage().substring(ex.getMessage().lastIndexOf("/") + 1, ex.getMessage().length() - 1);

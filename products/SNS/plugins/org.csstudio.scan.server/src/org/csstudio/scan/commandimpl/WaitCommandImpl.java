@@ -45,9 +45,9 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
-        return new String[] { command.getDeviceName() };
+        return new String[] { context.resolveMacros(command.getDeviceName()) };
     }
 
 	/** {@inheritDoc} */
@@ -85,7 +85,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 
 		// Show command
 		final StringBuilder buf = new StringBuilder();
-	    buf.append(command.toString());
+	    buf.append(context.resolveMacros(command.toString()));
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
     	context.logExecutionStep(buf.toString(), time_estimate);
@@ -98,7 +98,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-        final Device device = context.getDevice(command.getDeviceName());
+        final Device device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
         final NumericValueCondition condition =
             new NumericValueCondition(device, command.getComparison(),

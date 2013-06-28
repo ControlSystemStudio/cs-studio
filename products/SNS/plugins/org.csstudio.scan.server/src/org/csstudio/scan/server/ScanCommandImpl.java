@@ -106,13 +106,17 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      *  iteration, so derived implementations may override.
      *
      *  @return Number of work units that this command performs */
-    public int getWorkUnits()
+    public long getWorkUnits()
     {
         return 1;
     }
 
-    /** @return Device (alias) names used by the command */
-    public String[] getDeviceNames()
+    /** Determine which devices are required by this command      
+     *  @param context {@link ScanContext} for resolving macros
+     *  @return Device (alias) names used by the command
+     *  @throws Exception on macro error
+     */
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         return new String[0];
     }
@@ -128,7 +132,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      */
     public void simulate(final SimulationContext context) throws Exception
     {
-    	context.logExecutionStep(command.toString(), 0.1);
+    	context.logExecutionStep(context.resolveMacros(command.toString()), 0.1);
     }
 
 	/** Execute the command

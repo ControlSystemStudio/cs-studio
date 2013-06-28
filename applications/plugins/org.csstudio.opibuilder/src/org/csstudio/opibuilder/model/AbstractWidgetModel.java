@@ -686,9 +686,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	/**
 	 * Make necessary adjustment for widget compatibility between different versions.
 	 */
-	public void processVersionDifference(){
+	public void processVersionDifference(Version boyVersionOnFile){
 		//update pv name
-		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){		
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){		
 			if(propertyMap.containsKey(PROP_SCRIPTS)){
 				ScriptsInput scriptsInput = getScriptsInput();
 				for(ScriptData sd : scriptsInput.getScriptList()){
