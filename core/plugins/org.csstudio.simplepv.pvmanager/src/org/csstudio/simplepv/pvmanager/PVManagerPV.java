@@ -31,6 +31,7 @@ import org.epics.pvmanager.PVReaderConfiguration;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterConfiguration;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.vtype.VType;
@@ -184,18 +185,17 @@ public class PVManagerPV implements IPV {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<VType> getAllBufferedValues() throws Exception {
+	public List<Object> getAllBufferedValues() throws Exception {
 		checkIfPVStarted();
 		Object obj = pvReader.getValue();
 		if (obj != null) {
-			if (!valueBuffered) {
-				if (obj instanceof VType)
-					return Arrays.asList((VType) obj);
+			if (!valueBuffered) {				
+					return Arrays.asList(obj);
 			} else {
 				if (obj instanceof List<?> && ((List<?>) obj).size() > 0) {
 					// Assume it is returning a VType List. If it is not, the
 					// client needs to handle it.
-					return (List<VType>) obj;
+					return (List<Object>)obj;
 				}
 			}
 			throw new Exception("Unknown data type returned from PVManager.");
@@ -269,7 +269,13 @@ public class PVManagerPV implements IPV {
 		// only create writer if it is not a formula and not created for read
 		// only
 		if (!readOnly && !isFormula) {
-			pvWriter = PVManager.write(channel(name)).notifyOn(notificationThread).async();
+			PVWriterConfiguration<Object> writerConfiguration = PVManager.write(channel(name));
+			//TODO: PVManager could throw unnecessary exception when data source is read only
+			//See: https://github.com/ControlSystemStudio/cs-studio/issues/66
+			//Need to enable following line when above issue is fixed.
+//			if(exceptionHandler != null)
+//				writerConfiguration.routeExceptionsTo(exceptionHandler);
+			pvWriter = writerConfiguration.notifyOn(notificationThread).async();
 			for (PVWriterListener<Object> pvWriterListener : writeListenerMap.values()) {
 				pvWriter.addPVWriterListener(pvWriterListener);
 			}
