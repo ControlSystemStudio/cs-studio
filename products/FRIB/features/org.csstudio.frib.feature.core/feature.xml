@@ -572,13 +572,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.opibuilder.widgets.extra"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.logbook.olog.properties"
          download-size="0"
          install-size="0"
@@ -608,6 +601,13 @@
 
    <plugin
          id="org.csstudio.utility.httpd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.examples"
          download-size="0"
          install-size="0"
          version="0.0.0"

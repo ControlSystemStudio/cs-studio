@@ -23,6 +23,14 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 /** Log handler that displays messages in the Eclipse Console view.
+ * 
+ *  <p>The {@link MessageConsoleStream} description mentions buffering
+ *  and appears thread-safe, but lockups have been observed
+ *  if multiple threads try to access the console streams.
+ *  This handler therefore logs in the UI thread, using the {@link Display}
+ *  that was available on initialization.
+ *  This is suitable for RCP, but not RAP.
+ * 
  *  @author Kay Kasemir
  *  @author Alexander Will - Author of org.csstudio.platform.ui.internal.console.Console that was used with Log4j
  */
@@ -30,11 +38,14 @@ public class ConsoleViewHandler extends Handler
 {
     /** Flag to prevent multiple instances */
     private static boolean have_console = false;
-
+    
+    /** Display used for performing console access in the UI thread */
+    final Display display;
+    
     /** Connection to Console View.
      *  Set to <code>null</code> when console support shuts down
      */
-    private MessageConsole console;
+    private volatile MessageConsole console;
 
     /** Printable, color-coded stream of the <code>console</code> */
     final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
@@ -57,10 +68,21 @@ public class ConsoleViewHandler extends Handler
     {
         if (have_console)
             return;
-        final ConsoleViewHandler handler = new ConsoleViewHandler();
+        
         try
         {
+            // RAP has one (pseudo-)display per web client.
+            // Cannot obtain one shared display as on RCP.
+            if (SWT.getPlatform().startsWith("rap"))
+                throw new Exception("Console logging not supported on RAP");
+                
+            final Display display = Display.getCurrent();
+            if (display == null)
+                throw new Exception("No display");
+        
+            final ConsoleViewHandler handler = new ConsoleViewHandler(display);
             handler.setFormatter(new LogFormatter(Preferences.getDetail()));
+            Logger.getLogger("").addHandler(handler);
         }
         catch (Throwable ex)
         {
@@ -68,7 +90,6 @@ public class ConsoleViewHandler extends Handler
                 .log(Level.WARNING, "Cannot configure console view: {0}", ex.getMessage());
             return;
         }
-        Logger.getLogger("").addHandler(handler);
         have_console = true;
     }
 
@@ -77,8 +98,10 @@ public class ConsoleViewHandler extends Handler
      *  Private to prevent multiple instances
      *  @see #addToLogger()
      */
-    private ConsoleViewHandler()
+    private ConsoleViewHandler(final Display display)
     {
+        this.display = display;
+        
         // Allocate a console for text messages.
         console = new MessageConsole(Messages.ConsoleView_Title, null);
         // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
@@ -89,14 +112,7 @@ public class ConsoleViewHandler extends Handler
         consolePlugin.getConsoleManager().addConsoles(
                 new IConsole[] { console });
 
-        // Route StreamHandler's output to the MessageConsole.
-        // Could this deadlock because StreamHandler.publish() is
-        // synchronized, and the final ConsoleView update is on the
-        // one and only GUI thread?
-        //
-        // According to MessageConsole javadoc,
-        // "Text written to streams is buffered and processed in a Job",
-        // so we assume it's decoupled by the MessageConsole buffer & Job
+        // Streams to the MessageConsole
         severe_stream = console.newMessageStream();
         warning_stream = console.newMessageStream();
         info_stream = console.newMessageStream();
@@ -107,13 +123,9 @@ public class ConsoleViewHandler extends Handler
         // affect only the next message or the whole Console View.
         // Using different streams for the color-coded message levels
         // seem to work OK.
-        final Display display = Display.getCurrent();
-        if (display != null)
-        {
-            severe_stream.setColor(display.getSystemColor(SWT.COLOR_MAGENTA));
-            warning_stream.setColor(display.getSystemColor(SWT.COLOR_RED));
-            info_stream.setColor(display.getSystemColor(SWT.COLOR_BLUE));
-        }
+        severe_stream.setColor(display.getSystemColor(SWT.COLOR_MAGENTA));
+        warning_stream.setColor(display.getSystemColor(SWT.COLOR_RED));
+        info_stream.setColor(display.getSystemColor(SWT.COLOR_BLUE));
 
         // Suppress log messages when the Eclipse console system shuts down.
         // Unclear how to best do that. Console plugin will 'remove' all consoles on shutdown,
@@ -133,15 +145,12 @@ public class ConsoleViewHandler extends Handler
             public void consolesRemoved(final IConsole[] consoles)
             {
                 // Check if it's this console
-                synchronized (ConsoleViewHandler.this)
+                for (IConsole console : consoles)
                 {
-                    for (IConsole console : consoles)
-                    {
-                        if (console == ConsoleViewHandler.this.console)
-                        {   // Mark as closed/detached
-                            ConsoleViewHandler.this.console = null;
-                            return;
-                        }
+                    if (console == ConsoleViewHandler.this.console)
+                    {   // Mark as closed/detached
+                        ConsoleViewHandler.this.console = null;
+                        return;
                     }
                 }
             }
@@ -150,11 +159,11 @@ public class ConsoleViewHandler extends Handler
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void publish(final LogRecord record)
+    public void publish(final LogRecord record)
     {
         if (! isLoggable(record))
             return;
-
+        
         // Format message
         final String msg;
         try
@@ -167,27 +176,36 @@ public class ConsoleViewHandler extends Handler
             return;
         }
 
-        // Print
-        try
+        // Print in UI thread to avoid lockups
+        if (display.isDisposed())
+            return;
+        display.asyncExec(new Runnable()
         {
-            // Console might already be closed/detached
-            if (console == null)
-                return;
-            final MessageConsoleStream stream = getStream(record.getLevel());
-            if (stream.isClosed())
-                return;
-            // Suring shutdown, error is possible because 'document' of console view
-            // was already closed. Unclear how to check for that.
-            stream.print(msg);
-        }
-        catch (Exception ex)
-        {
-            reportError(null, ex, ErrorManager.WRITE_FAILURE);
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    // Console might already be closed/detached
+                    if (console == null)
+                        return;
+                    final MessageConsoleStream stream = getStream(record.getLevel());
+                    if (stream.isClosed())
+                        return;
+                    // During shutdown, error is possible because 'document' of console view
+                    // was already closed. Unclear how to check for that.
+                    stream.print(msg);
+                }
+                catch (Exception ex)
+                {
+                    reportError(null, ex, ErrorManager.WRITE_FAILURE);
+                }
+            }
+        });
     }
 
     /** @param level Message {@link Level}
-     *  @return Suggested stream for that Level
+     *  @return Suggested stream for that Level or <code>null</code>
      */
     private MessageConsoleStream getStream(final Level level)
     {
@@ -205,35 +223,39 @@ public class ConsoleViewHandler extends Handler
     @Override
     public void flush()
     {
-        try
+        // Flush in UI thread to avoid lockups
+        display.asyncExec(new Runnable()
         {
-            severe_stream.flush();
-            warning_stream.flush();
-            info_stream.flush();
-            basic_stream.flush();
-        }
-        catch (Exception ex)
-        {
-            reportError(null, ex, ErrorManager.FLUSH_FAILURE);
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    severe_stream.flush();
+                    warning_stream.flush();
+                    info_stream.flush();
+                    basic_stream.flush();
+                }
+                catch (Exception ex)
+                {
+                    reportError(null, ex, ErrorManager.FLUSH_FAILURE);
+                }
+            }
+        });
     }
 
     /** Usually called by JRE when Logger shuts down, i.e.
-     *  way after the Eclipse shudown has already closed
+     *  way after the Eclipse shutdown has already closed
      *  the console view
      */
     @Override
     public void close() throws SecurityException
     {
         // Mark as detached from console
-        final MessageConsole console_copy;
-        synchronized (this)
-        {
-            if (console == null)
-                return;
-            console_copy = console;
-            console = null;
-        }
+        final MessageConsole console_copy = console;
+        if (console_copy == null)
+            return;
+        console = null;
         // Remove from 'Console' view
         console_copy.clearConsole();
         final ConsolePlugin consolePlugin = ConsolePlugin.getDefault();

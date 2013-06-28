@@ -17,11 +17,27 @@ import java.util.regex.Pattern;
 public class StringUtil {
 
     private StringUtil() {
+        // Prevent instantiation
     }
     
+    /**
+     * The pattern of a string fragment with escape sequences.
+     */
     public static final String STRING_ESCAPE_SEQUENCE_REGEX = "\\\\(\"|\\\\|\'|r|n|b|t|u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]|[0-3]?[0-7]?[0-7])";
+    
+    /**
+     * The pattern of a string, including double quotes.
+     */
     public static final String QUOTED_STRING_REGEX = "\"([^\"\\\\]|" + StringUtil.STRING_ESCAPE_SEQUENCE_REGEX + ")*\"";
+    
+    /**
+     * The pattern of a string using single quotes.
+     */
     public static final String SINGLEQUOTED_STRING_REGEX = "\'([^\"\\\\]|" + StringUtil.STRING_ESCAPE_SEQUENCE_REGEX + ")*\'";
+    
+    /**
+     * The pattern of a double value.
+     */
     public static final String DOUBLE_REGEX = "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)";
     
     static Pattern escapeSequence = Pattern.compile(STRING_ESCAPE_SEQUENCE_REGEX);
