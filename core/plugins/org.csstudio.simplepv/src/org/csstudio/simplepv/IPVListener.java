@@ -47,6 +47,9 @@ public interface IPVListener{
 	void valueChanged(IPV pv);
 	
 	/**Will be called when a write is finished. 
+	 * <br><b>Note:</b> when this is called, the value of the pv may not update yet, which 
+	 * depends the max update rate, so it is not recommended to call {@link IPV#getValue()}
+	 * in this method. 
 	 * @param pv the pv on which the write event happened.
 	 * @param isWriteSucceeded true if the write was successful.
 	 */
