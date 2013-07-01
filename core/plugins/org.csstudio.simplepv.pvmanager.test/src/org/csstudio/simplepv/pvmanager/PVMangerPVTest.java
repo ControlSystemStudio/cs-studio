@@ -8,7 +8,9 @@
 
 package org.csstudio.simplepv.pvmanager;
 
-import org.csstudio.simplepv.test.SimplePVBasicReadTester;
+import org.csstudio.simplepv.test.BasicReadTester;
+import org.csstudio.simplepv.test.BasicReadWriteTester;
+import org.csstudio.simplepv.test.BufferingReadTester;
 import org.junit.Test;
 
 /**
@@ -20,11 +22,25 @@ import org.junit.Test;
 public class PVMangerPVTest {
 
 	@Test
-	public void test() throws Exception {
-		SimplePVBasicReadTester tester = 
-				new SimplePVBasicReadTester("pvmanager", "sim://ramp(0,100,1,0.1)");
+	public void testSimpleRead() throws Exception {
+		BasicReadTester tester = 
+				new BasicReadTester("pvmanager", "sim://ramp(0,100,1,0.1)");
 		tester.testAll();
 		
 	}
+	
+	@Test
+	public void testBufferingRead() throws Exception {
+		BufferingReadTester tester = 
+				new BufferingReadTester("pvmanager", "sim://ramp(0,80,1,0.1)");
+		tester.testAll();		
+	}
 
+	
+	@Test
+	public void testReadWrite() throws Exception {
+		BasicReadWriteTester tester = 
+				new BasicReadWriteTester("pvmanager", "loc://test(0)");
+		tester.testAll();		
+	}
 }

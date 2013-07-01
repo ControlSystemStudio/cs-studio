@@ -30,13 +30,14 @@ import org.epics.vtype.VType;
  * @author Xihui Chen
  * 
  */
-public class SimplePVBasicReadTester {
+public class BasicReadTester {
 
 	private IPV pv;
 	private int updates;
 	private volatile boolean connected;
 	private String failMessage;
 	private String pvName;
+	private IPVListener.Stub pvListener;
 
 	/**Create a tester.
 	 * @param pvFactoryId pv factory id.
@@ -44,7 +45,7 @@ public class SimplePVBasicReadTester {
 	 * updates faster than 10hz. For example, sim://ramp(0,100,1,0.1)
 	 * @throws CoreException
 	 */
-	public SimplePVBasicReadTester(String pvFactoryId, String pvName) throws CoreException {
+	public BasicReadTester(String pvFactoryId, String pvName) throws CoreException {
 		updates = 0;
 		connected = false;
 		failMessage = null;
@@ -57,7 +58,7 @@ public class SimplePVBasicReadTester {
 		};
 		pv = SimplePVLayer.getPVFactory(pvFactoryId).createPV(pvName, false, 500, false,
 				Executors.newSingleThreadExecutor(), exceptionHandler);
-		pv.addPVListener(new IPVListener.Stub() {
+		pvListener = new IPVListener.Stub() {
 			@Override
 			public void valueChanged(IPV pv) {
 				try {
@@ -83,14 +84,14 @@ public class SimplePVBasicReadTester {
 
 			@Override
 			public void writePermissionChanged(IPV pv) {
-				failMessage = "writePermissionChanged() should not be called";
 			}
 
 			@Override
 			public void writeFinished(IPV pv, boolean isWriteSucceeded) {
 				failMessage = "writeFinished should not be called";
 			}
-		});
+		};
+		pv.addPVListener(pvListener);
 	}
 
 
@@ -134,6 +135,15 @@ public class SimplePVBasicReadTester {
 		assertFalse(pv.isPaused());
 		Thread.sleep(3000);
 		assertTrue(updates - temp > 3);
+		//Test remove and add listener
+		temp=updates;
+		pv.removePVListener(pvListener);
+		Thread.sleep(3000);
+		assertEquals(temp, updates);
+		pv.addPVListener(pvListener);
+		Thread.sleep(3000);
+		assertTrue(updates - temp > 3);
+		
 		// Test reading buffered values
 		assertTrue(pv.getValue() instanceof VType);
 		assertEquals(1, pv.getAllBufferedValues().size());
