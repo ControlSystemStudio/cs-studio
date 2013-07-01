@@ -34,7 +34,7 @@ public interface IPV {
 	 * @return all values buffered. It can be null.
 	 * @throws Exception on error.
 	 */
-	public List<Object> getAllBufferedValues() throws Exception;
+	public List<VType> getAllBufferedValues() throws Exception;
 
 	/**
 	 * Get name of the PV.
@@ -44,8 +44,7 @@ public interface IPV {
 	public String getName();
 
 	/**
-	 * Get the most recent value of the PV in last update cycle that has values.	
-	 * In most cases, the returned value is a {@link VType} value. 
+	 * Get the most recent value of the PV in last update cycle that has values.	 * 
 	 * {@link VTypeHelper} and {@link ValueUtil} can be used to get the number
 	 * or string value, alarm, display, time stamp etc. from the {@link VType} value and
 	 * help to format the value.
@@ -54,7 +53,7 @@ public interface IPV {
 	 * the value is not prepared yet or it has null as the initial value.
 	 * @throws Exception on error.
 	 */
-	public Object getValue() throws Exception;
+	public VType getValue() throws Exception;
 
 	/**
 	 * Return true if all values during an update period should be buffered.
