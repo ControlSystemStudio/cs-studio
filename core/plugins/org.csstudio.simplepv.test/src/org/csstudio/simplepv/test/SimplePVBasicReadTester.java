@@ -34,14 +34,14 @@ public class SimplePVBasicReadTester {
 
 	private IPV pv;
 	private int updates;
-	private boolean connected;
+	private volatile boolean connected;
 	private String failMessage;
 	private String pvName;
 
 	/**Create a tester.
 	 * @param pvFactoryId pv factory id.
-	 * @param pvName pv name. The pv should be a read only pv that updates faster than 10hz.
-	 * For example, sim://ramp(0,100,1,0.1)
+	 * @param pvName pv name. The pv should be a read only pv that returns VType value that 
+	 * updates faster than 10hz. For example, sim://ramp(0,100,1,0.1)
 	 * @throws CoreException
 	 */
 	public SimplePVBasicReadTester(String pvFactoryId, String pvName) throws CoreException {
@@ -49,14 +49,14 @@ public class SimplePVBasicReadTester {
 		connected = false;
 		failMessage = null;
 		this.pvName = pvName;
+		ExceptionHandler exceptionHandler = new ExceptionHandler() {
+			@Override
+			public void handleException(Exception exception) {
+				System.err.println("Caught Exception in ExceptionHandler: " + exception);
+			}
+		};
 		pv = SimplePVLayer.getPVFactory(pvFactoryId).createPV(pvName, false, 500, false,
-				Executors.newSingleThreadExecutor(), new ExceptionHandler() {
-
-					@Override
-					public void handleException(Exception exception) {
-						exception.printStackTrace();
-					}
-				});
+				Executors.newSingleThreadExecutor(), exceptionHandler);
 		pv.addPVListener(new IPVListener.Stub() {
 			@Override
 			public void valueChanged(IPV pv) {
@@ -72,7 +72,7 @@ public class SimplePVBasicReadTester {
 
 			@Override
 			public void exceptionOccurred(IPV pv, Exception exception) {
-				System.out.println("Exception Occured: " + exception);
+				System.err.println("Exception Occured: " + exception);
 			}
 
 			@Override
@@ -110,8 +110,7 @@ public class SimplePVBasicReadTester {
 			Thread.sleep(100);
 			i++;
 		}
-		System.out.println("It took " + i * 100 + "ms to connect.");
-		assertTrue(connected);
+		System.out.println("It took " + i * 100 + "ms to connect.");		
 		assertTrue(pv.isConnected());
 		assertFalse(pv.isWriteAllowed());
 		assertFalse(pv.isBufferingValues());
@@ -122,6 +121,7 @@ public class SimplePVBasicReadTester {
 
 	protected void testRead() throws Exception {
 		Thread.sleep(10000);
+		assertTrue(connected);
 		assertTrue(updates > 17);
 		// Test pausing
 		pv.setPaused(true);
@@ -133,12 +133,20 @@ public class SimplePVBasicReadTester {
 		pv.setPaused(false);
 		assertFalse(pv.isPaused());
 		Thread.sleep(3000);
-		assertTrue(updates - temp > 5);
+		assertTrue(updates - temp > 3);
 		// Test reading buffered values
 		assertTrue(pv.getValue() instanceof VType);
 		assertEquals(1, pv.getAllBufferedValues().size());
 		assertTrue(pv.getAllBufferedValues().get(0) instanceof VType);
-		pv.setValue(100);
+		
+		//Test write
+		Exception exception = null;
+		try {
+			pv.setValue(100);
+		} catch (Exception e) {
+			exception = e;
+		}
+		assertTrue(exception == null);
 	}
 
 	protected void testStop() throws Exception {

@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.simplepv;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -21,7 +24,17 @@ public class SimplePVLayer {
 	
 	private static final String EXTPOINT_PVFACTORY = "org.csstudio.simplepv.pvfactory"; //$NON-NLS-1$
 	
+	private static Map<String, AbstractPVFactory> factoryMap = new HashMap<String, AbstractPVFactory>(4);
+	
 	public static AbstractPVFactory getPVFactory(String factoryName) throws CoreException{
+		if(!factoryMap.containsKey(factoryName)){
+			AbstractPVFactory pvFactory = createPVFactory(factoryName);
+			factoryMap.put(factoryName, pvFactory);
+		}		
+		return factoryMap.get(factoryName);				
+	}
+	
+	private static AbstractPVFactory createPVFactory(String factoryName) throws CoreException{
 		IExtensionRegistry extReg = Platform.getExtensionRegistry();		
 		IConfigurationElement[] confElements = 
 				extReg.getConfigurationElementsFor(EXTPOINT_PVFACTORY);
