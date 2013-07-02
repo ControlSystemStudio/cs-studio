@@ -21,6 +21,7 @@ import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.internal.ExecutableScan;
+import org.epics.pvdata.pv.PVStructure;
 
 /** Context in which the {@link ScanCommandImpl}s of a {@link ExecutableScan} are executed.
  *
@@ -36,45 +37,12 @@ import org.csstudio.scan.server.internal.ExecutableScan;
  *
  *  @author Kay Kasemir
  */
-public interface ScanContext
+public interface ScanContextListener
 {
-	/** Get a device by (alias) name
-	 *  @param name
-	 *  @return {@link Device} with that name
-	 *  @throws Exception when device name not known
-	 */
-	public Device getDevice(final String name) throws Exception;
-
-	/** Set log mode
-	 *  @param automatic Should commands automatically log every change that they perform/observe?
-	 */
-	public void setLogMode(final boolean automatic);
-
-	/** @return Should commands automatically log every change that they perform/observe?
-	 */
-	public boolean isAutomaticLogMode();
-
-	/** @return {@link DataLog}. Only non-<code>null</code> while scan is being executed */
-	abstract public DataLog getDataLog();
-
-	/** Execute a list of commands
-     *  @param commands {@link ScanCommandImpl}s to execute
-     *  @throws Exception on error in executing a command
-     */
-    abstract public void execute(final List<ScanCommandImpl<?>> commands) throws Exception;
-
-    /** Execute a single command
-     *  @param command {@link ScanCommandImpl} to execute
-     *  @throws Exception on error in executing the command
-     */
-    abstract public void execute(final ScanCommandImpl<?> command) throws Exception;
-
-	/** Inform scan context that work has been performed.
-	 *  Meant to be called by {@link ScanCommandImpl}s
-	 *  @param work_units Number of performed work units
-	 */
-    public void workPerformed(final int work_units);
     
-    public void fireDataLogEvent(DataLog dataLog);
-
+	/** Inform scan context that log has been performed.
+	 *  Meant to be called by {@link ScanCommandImpl}s
+	 *  @param datalog log data
+	 */
+    public void logPerformed(DataLog datalog);
 }

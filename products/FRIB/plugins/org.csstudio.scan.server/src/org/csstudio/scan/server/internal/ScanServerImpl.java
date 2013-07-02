@@ -43,6 +43,7 @@ import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
+import org.csstudio.scan.server.ScanContextListener;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -370,6 +371,20 @@ public class ScanServerImpl implements ScanServer
         	throw new RemoteException("Error retrieving log data", ex);
         }
     }
+	
+
+	public LoggedScan getLoggedScan(final long id) throws RemoteException
+	{
+        try
+        {
+        	return scan_engine.getScan(id);
+        }
+        catch (Exception ex)
+        {
+        	throw new RemoteException("Error retrieving log data", ex);
+        }
+	}
+    
 
     /** {@inheritDoc} */
     @Override
