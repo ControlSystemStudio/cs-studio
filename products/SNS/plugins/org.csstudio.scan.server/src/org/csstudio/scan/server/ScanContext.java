@@ -74,4 +74,9 @@ public interface ScanContext extends MacroContext
 	 *  @param work_units Number of performed work units
 	 */
     public void workPerformed(final int work_units);
+
+    /** Inform listener that data was added to the log
+     *  @param log {@link DataLog}
+     */
+    public void fireDataLogEvent(DataLog log);
 }

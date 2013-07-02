@@ -272,6 +272,12 @@ public class ScanServerImpl implements ScanServer
             throw new Exception("Commands not available for logged scan");
     }
 
+    // TODO Expose Scan, or just addScanContextListener/remove...?
+    public LoggedScan getLoggedScan(final long id) throws Exception
+    {
+        return scan_engine.getScan(id);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws Exception

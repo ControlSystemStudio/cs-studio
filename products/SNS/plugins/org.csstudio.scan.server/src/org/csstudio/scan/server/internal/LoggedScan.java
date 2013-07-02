@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
+import org.csstudio.scan.server.ScanContextListener;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 
@@ -22,6 +26,9 @@ import org.csstudio.scan.server.ScanState;
  */
 public class LoggedScan extends Scan
 {
+    /** Listeners */
+    final private List<ScanContextListener> listeners = new CopyOnWriteArrayList<>();
+    
     /** Initialize
      *  @param scan {@link Scan}
      */
@@ -77,6 +84,28 @@ public class LoggedScan extends Scan
 	    }
 	}
 
+	/** @param listener Listener to add */
+	public void addScanContextListener(ScanContextListener listener)
+	{
+	    listeners.add(listener);
+	}
+	 
+    /** @param listener Listener to remove */
+    public void removeScanContextListener(ScanContextListener listener)
+    {
+        listeners.remove(listener);
+    }
+	   
+    /** Inform listener that data was added to the log
+     *  @param log {@link DataLog}
+     */
+    // TODO @Override? ScanContext interface?
+    public void fireDataLogEvent(final DataLog log)
+    {
+        for (ScanContextListener listener : listeners)
+            listener.logPerformed(log);
+    }
+	
     // Compare by ID
     @Override
     public boolean equals(final Object obj)
