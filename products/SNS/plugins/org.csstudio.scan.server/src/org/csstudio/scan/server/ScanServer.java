@@ -38,7 +38,7 @@ public interface ScanServer
     public ScanServerInfo getInfo() throws Exception;
 
     /** Query server for devices used by a scan
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            or -1 for default devices
      *  @return Info about devices
      *  @throws Exception on error
@@ -55,7 +55,7 @@ public interface ScanServer
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
-     *  @return ID that uniquely identifies the scan (within JVM of the scan engine)
+     *  @return ID that uniquely identifies the scan
      *  @throws Exception on error
      */
     public long submitScan(String scan_name, String commands_as_xml) throws Exception;
@@ -67,14 +67,14 @@ public interface ScanServer
     public List<ScanInfo> getScanInfos() throws Exception;
 
     /** Query server for scan info
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @return Info for that scan on the server or <code>null</code>
      *  @throws Exception on error
      */
     public ScanInfo getScanInfo(long id) throws Exception;
 
     /** Query server for the commands in a scan
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @return Scan commands in XML format for that scan on the server or <code>null</code>
      *  @throws Exception on error
      */
@@ -85,14 +85,14 @@ public interface ScanServer
      *  <p>Can be used to determine if there are new samples
      *  that should be fetched via <code>getScanData()</code>
      *
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @return Serial of last sample in scan data or -1 if nothing has been logged
      *  @see #getScanData(long)
      */
     public long getLastScanDataSerial(long id) throws Exception;
 
     /** Query server for scan data
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @return Data for that scan on the server or <code>null</code>
      *  @throws Exception on error
      *  @see #getLastScanDataSerial(long)
@@ -100,7 +100,7 @@ public interface ScanServer
     public ScanData getScanData(long id) throws Exception;
 
     /** Ask server to update a command parameter to a new value
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @param address Address of the command
      *  @param property_id Property to update
      *  @param value New value for the property
@@ -119,28 +119,28 @@ public interface ScanServer
      *  You cannot submit a scan and pause it right away, i.e. block
      *  all subsequent scans.
      *
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            -1 to pause all running scans
      *  @throws Exception on error
      */
     public void pause(long id) throws Exception;
 
     /** Ask server to resume a paused scan
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            -1 to resume all paused scans
      *  @throws Exception on error
      */
     public void resume(long id) throws Exception;
 
     /** Ask server to abort a scan
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            -1 to abort all scans
      *  @throws Exception on error
      */
     public void abort(long id) throws Exception;
 
     /** Ask server to remove a (finished) scan
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *  @throws Exception on error
      */
     public void remove(long id) throws Exception;

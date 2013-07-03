@@ -18,8 +18,11 @@ package org.csstudio.scan.log;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
@@ -43,6 +46,7 @@ public class DataLogUnitTest
 			for (int y=0; y<5; ++y)
 				logger.log("y", ScanSampleFactory.createSample(now, serial, Double.valueOf(y)));
 		}
+		logger.flush();
     }
 
     @Test
@@ -52,8 +56,19 @@ public class DataLogUnitTest
         final DataLog logger = new MemoryDataLog();
         assertTrue(logger.getLastScanDataSerial() < 0);
 
+        final AtomicInteger events = new AtomicInteger();
+        final DataLogListener listener = new DataLogListener()
+        {
+            @Override
+            public void logDataChanged(DataLog datalog)
+            {
+                events.incrementAndGet();
+            }
+        };
+        logger.addDataLogListener(listener);
         logData(logger);
-
+        assertThat(events.get(), equalTo(1));
+        
         final ScanData data = logger.getScanData();
         assertEquals(2, data.getDevices().length);
         assertNotNull(data.getSamples("x"));
@@ -65,6 +80,12 @@ public class DataLogUnitTest
 
         assertEquals(data.getSamples("y").get(5*5-1).getSerial(),
                      logger.getLastScanDataSerial());
+        
+        
+        logger.removeDataLogListener(listener);
+        logData(logger);
+        // Should not see updates
+        assertThat(events.get(), equalTo(1));
     }
 
 	@Test

@@ -6,7 +6,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.log.DataLog;
-import org.csstudio.scan.server.ScanContextListener;
+import org.csstudio.scan.log.DataLogListener;
 import org.epics.pvaccess.PVFactory;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.pv.PVDataCreate;
@@ -18,7 +18,7 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.StringArrayData;
 
-public class LogDataVTable implements ScanContextListener{
+public class LogDataVTable implements DataLogListener{
 
 	private  PVTopStructure pvTop;
 	private static final PVDataCreate pvDataCreate = PVFactory.getPVDataCreate();
@@ -30,7 +30,7 @@ public class LogDataVTable implements ScanContextListener{
 
 
 	@Override
-	public void logPerformed(DataLog datalog) {
+	public void logDataChanged(final DataLog datalog) {
 		PVStructure pvField = pvTop.getPVStructure();
 
         	ScanData scanData;

@@ -1,23 +1,67 @@
 package org.csstudio.scan.server.pvaccess;
 
-import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
-import org.csstudio.scan.server.internal.LoggedScan;
+import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.epics.pvaccess.PVFactory;
-import org.epics.pvaccess.client.*;
+import org.epics.pvaccess.client.AccessRights;
+import org.epics.pvaccess.client.Channel;
+import org.epics.pvaccess.client.ChannelArray;
+import org.epics.pvaccess.client.ChannelArrayRequester;
+import org.epics.pvaccess.client.ChannelFind;
+import org.epics.pvaccess.client.ChannelFindRequester;
+import org.epics.pvaccess.client.ChannelGet;
+import org.epics.pvaccess.client.ChannelGetRequester;
+import org.epics.pvaccess.client.ChannelProcess;
+import org.epics.pvaccess.client.ChannelProcessRequester;
+import org.epics.pvaccess.client.ChannelProvider;
+import org.epics.pvaccess.client.ChannelPut;
+import org.epics.pvaccess.client.ChannelPutGet;
+import org.epics.pvaccess.client.ChannelPutGetRequester;
+import org.epics.pvaccess.client.ChannelPutRequester;
+import org.epics.pvaccess.client.ChannelRPC;
+import org.epics.pvaccess.client.ChannelRPCRequester;
+import org.epics.pvaccess.client.ChannelRequest;
+import org.epics.pvaccess.client.ChannelRequester;
+import org.epics.pvaccess.client.GetFieldRequester;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.monitor.Monitor;
 import org.epics.pvdata.monitor.MonitorElement;
 import org.epics.pvdata.monitor.MonitorRequester;
-import org.epics.pvdata.pv.*;
+import org.epics.pvdata.pv.Convert;
+import org.epics.pvdata.pv.Field;
+import org.epics.pvdata.pv.FieldCreate;
+import org.epics.pvdata.pv.MessageType;
+import org.epics.pvdata.pv.PVDataCreate;
+import org.epics.pvdata.pv.PVDoubleArray;
+import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVScalarArray;
+import org.epics.pvdata.pv.PVString;
+import org.epics.pvdata.pv.PVStringArray;
+import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.Scalar;
+import org.epics.pvdata.pv.ScalarArray;
+import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Status.StatusType;
+import org.epics.pvdata.pv.StatusCreate;
+import org.epics.pvdata.pv.Structure;
+import org.epics.pvdata.pv.Type;
 
 
 /**
@@ -141,8 +185,16 @@ public class ChannelProviderImpl implements ChannelProvider {
             	}
             	
             	retVal = new PVTopStructure(pvTop);
-            	LoggedScan loggedscan = scan_server.getLoggedScan(id);	
-            	loggedscan.addScanContextListener(new LogDataVTable(retVal));
+            	final ScanContext scan_context = scan_server.getScanContext(id);
+            	if (scan_context != null)
+            	{
+            	    final DataLog log = scan_context.getDataLog();
+            	    if (log != null)
+            	    {
+            	        // TODO: Remember 'log', remove listener when done
+            	        log.addDataLogListener(new LogDataVTable(retVal));
+            	    }
+            	}
 
 			} catch (Exception e) {
 				e.printStackTrace();
