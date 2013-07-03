@@ -71,18 +71,22 @@ protected CellEditor createCellEditorOn(Composite composite) {
 			if (keyEvent.keyCode == SWT.ARROW_UP) {
 				text.selectAll();
 				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) + step_increment));
+				setDirty(true);
 			}
 			if (keyEvent.keyCode == SWT.ARROW_DOWN) {
 				text.selectAll();
 				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) - step_increment));
+				setDirty(true);
 			}
 			if (keyEvent.keyCode == SWT.PAGE_UP) {
 				text.selectAll();
 				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) + page_increment));
+				setDirty(true);
 			}
 			if (keyEvent.keyCode == SWT.PAGE_DOWN) {
 				text.selectAll();
 				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) - page_increment));
+				setDirty(true);
 			}
 			super.keyReleaseOccured(keyEvent);
 		}
