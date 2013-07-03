@@ -64,6 +64,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setFormatType(getWidgetModel().getFormat());
 		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
 		spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
+		spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
