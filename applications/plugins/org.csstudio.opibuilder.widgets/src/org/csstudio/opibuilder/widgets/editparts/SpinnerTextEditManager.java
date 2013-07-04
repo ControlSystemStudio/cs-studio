@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -69,24 +70,24 @@ protected CellEditor createCellEditorOn(Composite composite) {
 	            }
 			}
 			if (keyEvent.keyCode == SWT.ARROW_UP) {
-				text.selectAll();
-				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) + step_increment));
-				setDirty(true);
+				doSetValue(String.valueOf(Double.valueOf(doGetValue().toString()) + step_increment));
+				CommandStack stack = getEditPart().getViewer().getEditDomain().getCommandStack();
+				stack.execute(getEditPart().getCommand(getDirectEditRequest()));
 			}
 			if (keyEvent.keyCode == SWT.ARROW_DOWN) {
-				text.selectAll();
-				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) - step_increment));
-				setDirty(true);
+				doSetValue(String.valueOf(Double.valueOf(doGetValue().toString()) - step_increment));
+				CommandStack stack = getEditPart().getViewer().getEditDomain().getCommandStack();
+				stack.execute(getEditPart().getCommand(getDirectEditRequest()));
 			}
 			if (keyEvent.keyCode == SWT.PAGE_UP) {
-				text.selectAll();
-				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) + page_increment));
-				setDirty(true);
+				doSetValue(String.valueOf(Double.valueOf(doGetValue().toString()) + page_increment));
+				CommandStack stack = getEditPart().getViewer().getEditDomain().getCommandStack();
+				stack.execute(getEditPart().getCommand(getDirectEditRequest()));
 			}
 			if (keyEvent.keyCode == SWT.PAGE_DOWN) {
-				text.selectAll();
-				text.setText(String.valueOf(Double.valueOf(text.getSelectionText()) - page_increment));
-				setDirty(true);
+				doSetValue(String.valueOf(Double.valueOf(doGetValue().toString()) - page_increment));
+				CommandStack stack = getEditPart().getViewer().getEditDomain().getCommandStack();
+				stack.execute(getEditPart().getCommand(getDirectEditRequest()));
 			}
 			super.keyReleaseOccured(keyEvent);
 		}
