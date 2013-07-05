@@ -17,14 +17,16 @@ import java.util.List;
 import org.csstudio.autocomplete.Proposal;
 import org.csstudio.autocomplete.ProposalStyle;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.SSTextLayout;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -47,6 +49,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -626,6 +629,7 @@ public class ContentProposalPopup extends PopupDialog {
 
 	private final int SWTMeasureItem = 41;
 	private final int SWTPaintItem = 42;
+	private int maxItemWidth = 0;
 
 	/**
 	 * Constructs a new instance of this popup, specifying the control for which
@@ -770,6 +774,23 @@ public class ContentProposalPopup extends PopupDialog {
 				acceptCurrentProposal(true);
 			}
 		});
+
+		// Added to solve a item resize bug on windows:
+		new TableColumn(proposalTable, SWT.NONE);
+		proposalTable.addControlListener(new ControlAdapter() {
+			public void controlResized(ControlEvent event) {
+				if (proposalTable.getColumnCount() > 0) {
+					if (proposalTable.getClientArea().width > maxItemWidth + 50) {
+						proposalTable.getColumn(0).setWidth(
+								proposalTable.getClientArea().width);
+					} else {
+						proposalTable.getColumn(0).setWidth(maxItemWidth + 50);
+					}
+				}
+
+			}
+		});
+
 		return proposalTable;
 	}
 
@@ -832,8 +853,9 @@ public class ContentProposalPopup extends PopupDialog {
 			return;
 		Display display = Display.getCurrent();
 
-		String fontName = "DejaVu LGC Sans Mono";
-		int fontHeight = 12;
+		FontData defaultFontData = display.getSystemFont().getFontData()[0];
+		String fontName = defaultFontData.getName();
+		int fontHeight = defaultFontData.getHeight();
 
 		Font headerFont = new Font(display, new FontData(fontName, fontHeight, SWT.ITALIC | SWT.BOLD));
 		Font noFont = new Font(display, new FontData(fontName, fontHeight, SWT.NORMAL));
@@ -892,6 +914,9 @@ public class ContentProposalPopup extends PopupDialog {
 				index++;
 			}
 		}
+		for (SSTextLayout sstl : textLayouts)
+			if (sstl.getBounds().width > maxItemWidth)
+				maxItemWidth = sstl.getBounds().width;
 	}
 
 	/*
@@ -909,6 +934,8 @@ public class ContentProposalPopup extends PopupDialog {
 				if (SingleSourcePlugin.isRAP()) {
 					item.setText("  " + getString(proposal));
 					item.setImage(getImage(proposal));
+					if (maxItemWidth < item.getBounds().width)
+						maxItemWidth = item.getBounds().width;
 				}
 				item.setData(proposal);
 				return;
@@ -924,11 +951,14 @@ public class ContentProposalPopup extends PopupDialog {
 					int count = proposalList.getCount(provider);
 					String text = provider + " (" + count + " matching items)";
 					item.setText(text);
-					
-					FontData fontData = item.getFont().getFontData()[0];
+
+					FontData fontData = display.getSystemFont().getFontData()[0];
 					FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), SWT.ITALIC | SWT.BOLD);
 					Font font = new Font(display, newFontData);
 					item.setFont(font);
+
+					if (maxItemWidth < item.getBounds().width)
+						maxItemWidth = item.getBounds().width;
 				}
 				return;
 			}
@@ -938,6 +968,8 @@ public class ContentProposalPopup extends PopupDialog {
 					if (SingleSourcePlugin.isRAP()) {
 						item.setText("  " + getString(proposal));
 						item.setImage(getImage(proposal));
+						if (maxItemWidth < item.getBounds().width)
+							maxItemWidth = item.getBounds().width;
 					}
 					item.setData(proposal);
 					return;
@@ -958,6 +990,9 @@ public class ContentProposalPopup extends PopupDialog {
 		this.proposalList = newProposalList;
 		if (!isValid())
 			return;
+
+		// Reset item width
+		maxItemWidth = 0;
 
 		// If there is a table
 		if (isValid()) {

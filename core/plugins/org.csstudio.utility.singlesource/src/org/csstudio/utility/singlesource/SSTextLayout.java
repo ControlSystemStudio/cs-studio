@@ -9,6 +9,7 @@ package org.csstudio.utility.singlesource;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
@@ -28,6 +29,10 @@ public class SSTextLayout {
 
 	public void handleMeasureItemEvent(Event event) {
 		return;
+	}
+
+	public Rectangle getBounds() {
+		return null;
 	}
 
 }
