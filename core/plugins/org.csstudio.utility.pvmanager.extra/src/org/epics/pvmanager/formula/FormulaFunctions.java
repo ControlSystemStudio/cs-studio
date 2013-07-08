@@ -7,6 +7,8 @@ package org.epics.pvmanager.formula;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -163,6 +165,18 @@ public class FormulaFunctions {
         }
         sb.append(')');
         return sb.toString();
+    }
+    
+    static StatefulFormulaFunction createInstance(StatefulFormulaFunction function) {
+        try {
+            return function.getClass().newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(FormulaFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("StatefulFormulaFunction " + FormulaFunctions.formatSignature(function) + " must have a no arg constructor.", ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(FormulaFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("StatefulFormulaFunction " + FormulaFunctions.formatSignature(function) + " no arg constructor is not accessible.", ex);
+        }
     }
     
 }

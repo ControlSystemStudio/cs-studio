@@ -124,6 +124,7 @@ public class MathFunctionSet extends FormulaFunctionSet {
                         return Math.tanh(arg);
                     }
                 })
+                .addFormulaFunction(new IntegrateFormulaFunction())
                 );
     }
 
