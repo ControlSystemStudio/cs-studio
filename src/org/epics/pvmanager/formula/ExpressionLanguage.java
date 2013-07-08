@@ -236,7 +236,7 @@ public class ExpressionLanguage {
             for (DesiredRateExpression<? extends Object> arg : args.getDesiredRateExpressions()) {
                 argNames.add(arg.getName());
             }
-            return new DesiredRateExpressionImpl<>(args, readFunction, FormulaFunctions.format(function, argNames));
+            return new FormulaFunctionReadExpression(args, readFunction, FormulaFunctions.format(function, argNames));
         }
         
         throw new IllegalArgumentException("No function named '" + function + "' is defined");

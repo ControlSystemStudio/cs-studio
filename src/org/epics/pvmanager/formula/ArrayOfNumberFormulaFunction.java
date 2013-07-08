@@ -17,7 +17,7 @@ import static org.epics.vtype.ValueFactory.*;
  *
  * @author carcassi
  */
-class ArrayOfFormulaFunction implements FormulaFunction {
+class ArrayOfNumberFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
