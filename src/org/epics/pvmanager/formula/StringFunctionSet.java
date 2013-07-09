@@ -15,7 +15,9 @@ public class StringFunctionSet extends FormulaFunctionSet {
 		"Function to aggregate and manipulate strings")
 		.addFormulaFunction(new ConcatStringArrayFunction())
 		.addFormulaFunction(new ConcatStringsFunction())
-		.addFormulaFunction(new PvFormulaFunction()));
+		.addFormulaFunction(new PvFormulaFunction())
+		.addFormulaFunction(new PvsFormulaFunction())
+                );
     }
 
 }

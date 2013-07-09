@@ -11,6 +11,8 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.vtype.VString;
 
 /**
+ * Formula function that returns the value of the pv matching the name
+ * of the argument.
  *
  * @author carcassi
  */
@@ -51,34 +53,39 @@ class PvFormulaFunction extends DynamicFormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
+        // Retrieve the new name
         VString value = (VString) args.get(0);
         String newName = null;
         if (value != null) {
             newName = value.getValue();
         }
         
+        // If the name does not match, disconnect and connect
         if (!Objects.equals(newName, previousName)) {
-            // Change connection
+            // Disconnect previous
             if (currentExpression != null) {
                 getDirector().disconnectExpression(currentExpression);
                 currentExpression = null;
             }
+            
+            // Connect new
             if (newName != null) {
                 currentExpression = new LastOfChannelExpression<Object>(newName, Object.class);
                 getDirector().connectExpression(currentExpression);
             }
             previousName = newName;
         }
-        
+
+        // Return value
         if (newName == null) {
             return null;
         }
-
         return currentExpression.getFunction().readValue();
     }
 
     @Override
     public void dispose() {
+        // Disconnect everything on dispose
         getDirector().disconnectExpression(currentExpression);
         currentExpression = null;
     }
