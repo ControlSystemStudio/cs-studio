@@ -246,13 +246,13 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
 			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME)));	
 			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME)));	
 			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME)));	
 		}
 	}
 
