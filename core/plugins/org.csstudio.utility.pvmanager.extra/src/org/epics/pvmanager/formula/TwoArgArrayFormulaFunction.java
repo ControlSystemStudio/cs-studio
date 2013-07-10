@@ -4,23 +4,36 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
-import static org.epics.vtype.ValueFactory.newTime;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VString;
-import org.epics.vtype.VStringArray;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
+import static org.epics.vtype.ValueFactory.alarmNone;
+import static org.epics.vtype.ValueFactory.timeNow;
+import static org.epics.vtype.ValueFactory.displayNone;
 
 /**
  * @author shroffk
  * 
  */
-public class ArrayOfStringFormulaFunction implements FormulaFunction {
+public abstract class TwoArgArrayFormulaFunction implements FormulaFunction {
+
+    private final String name;
+    private final String description;
+    private final List<Class<?>> argumentTypes;
+    private final List<String> argumentNames;
+
+    public TwoArgArrayFormulaFunction(String name, String description,
+	    String arg1Name, String arg2Name) {
+	this.name = name;
+	this.description = description;
+	this.argumentTypes = Arrays.<Class<?>> asList(VNumberArray.class,
+		VNumberArray.class);
+	this.argumentNames = Arrays.asList(arg1Name, arg2Name);
+    }
 
     /*
      * (non-Javadoc)
@@ -39,7 +52,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public boolean isVarArgs() {
-	return true;
+	return false;
     }
 
     /*
@@ -49,7 +62,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public String getName() {
-	return "arrayOf";
+	return name;
     }
 
     /*
@@ -59,7 +72,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public String getDescription() {
-	return "Constructs array from a series of string";
+	return description;
     }
 
     /*
@@ -69,7 +82,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VString.class);
+	return argumentTypes;
     }
 
     /*
@@ -79,7 +92,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("args");
+	return argumentNames;
     }
 
     /*
@@ -89,7 +102,7 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public Class<?> getReturnType() {
-	return VStringArray.class;
+	return VNumberArray.class;
     }
 
     /*
@@ -100,18 +113,13 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
      */
     @Override
     public Object calculate(List<Object> args) {
+	return ValueFactory.newVDoubleArray(
+		calculate(((VNumberArray) args.get(0)).getData(),
+			((VNumberArray) args.get(1)).getData()), alarmNone(),
+		timeNow(), displayNone());
 
-	List<String> data = new ArrayList<String>();
-	for (Object arg : args) {
-	    VString str = (VString) arg;
-	    if (str == null || str.getValue() == null)
-		data.add("NaN");
-	    else
-		data.add(str.getValue());
-	}
-
-	return ValueFactory.newVStringArray(data, alarmNone(),
-		newTime(Timestamp.now()));
     }
+
+    abstract ListDouble calculate(ListNumber arg1, ListNumber arg2);
 
 }
