@@ -72,6 +72,24 @@ public class VTypeToString {
     }
     
     /**
+     * Default toString implementation for VBoolean.
+     *
+     * @param vBoolean the object
+     * @return the string representation
+     */
+    public static String toString(VBoolean vBoolean) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vBoolean);
+        builder.append(type.getSimpleName())
+                .append("[")
+                .append(vBoolean.getValue());
+        appendAlarm(builder, vBoolean);
+        appendTime(builder, vBoolean);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    /**
      * Default toString implementation for VEnum.
      *
      * @param vEnum the object

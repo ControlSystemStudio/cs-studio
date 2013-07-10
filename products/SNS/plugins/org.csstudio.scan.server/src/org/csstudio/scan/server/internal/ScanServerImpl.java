@@ -35,6 +35,7 @@ import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -86,7 +87,7 @@ public class ScanServerImpl implements ScanServer
      * 
      *  <p>Meant to be called only inside the scan server.
      *  
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            or -1 for default devices
      *  @return {@link Device}s
      *  @see #getDeviceInfos(long) for similar method that is exposed to clients
@@ -272,6 +273,19 @@ public class ScanServerImpl implements ScanServer
             throw new Exception("Commands not available for logged scan");
     }
 
+    /** Obtain scan context.
+     *  @param id ID that uniquely identifies a scan
+     *  @return {@link ScanContext} or <code>null</code> if ID does not refer to an active scan
+     *  @throws Exception
+     */
+    public ScanContext getScanContext(final long id) throws Exception
+    {
+        final ScanContext scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
+            return scan;
+        return null;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws Exception

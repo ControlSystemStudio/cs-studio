@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
+import org.csstudio.scan.server.ScanContextListener;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
@@ -25,6 +29,7 @@ public class LoggedScan extends Scan
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+    private List<ScanContextListener> listeners;
 
     /** Initialize
      *  @param scan {@link Scan}
@@ -32,6 +37,7 @@ public class LoggedScan extends Scan
     public LoggedScan(final Scan scan)
     {
         super(scan);
+        this.listeners = new ArrayList<ScanContextListener>();
     }
 
     /** @return {@link ScanState} */
@@ -59,6 +65,20 @@ public class LoggedScan extends Scan
 	        logger.close();
 	    }
 	}
+	
+    public synchronized void addScanContextListener(ScanContextListener scanContextListener) {
+        listeners.add(scanContextListener);
+    }
+ 
+    public synchronized void removeScanContextListener(ScanContextListener scanContextListener) {
+        listeners.remove(scanContextListener);
+    }
+    
+    public synchronized void fireDataLogEvent(DataLog dataLog) {
+ 
+        for (ScanContextListener listener : listeners)
+            listener.logPerformed(dataLog);
+    }
 
     // Compare by ID
     @Override

@@ -54,7 +54,13 @@ public interface ScanContext extends MacroContext
 	 */
 	public boolean isAutomaticLogMode();
 
-	/** @return {@link DataLog}. Only non-<code>null</code> while scan is being executed */
+	/** Obtain the active data log.
+	 *  
+	 *  <p>Only non-<code>null</code> while scan is being executed.
+	 *  Caller must NOT close this log.
+	 *  
+	 *  @return {@link DataLog}
+	 */
 	abstract public DataLog getDataLog();
 	
 	/** Execute a list of commands

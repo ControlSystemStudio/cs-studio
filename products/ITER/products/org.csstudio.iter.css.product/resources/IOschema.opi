@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.0.codac_core_4_1b2</boy_version>
+  <boy_version>3.2.6.codac_core_4_1b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -818,6 +818,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>80</height>
@@ -997,6 +998,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>205</height>
@@ -1087,6 +1089,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>180</height>
@@ -1322,6 +1325,7 @@ $(trace_0_y_pv_value)</tooltip>
       <width>309</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <label />
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -1446,7 +1450,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://$(DID)_mbbval</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -1692,7 +1696,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <transparent>false</transparent>
-      <pv_name>loc://$(DID)_choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2333,7 +2337,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2385,7 +2389,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2710,7 +2714,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2835,7 +2839,7 @@ $(pv_value)</tooltip>
       <wuid>-6311979:13ef4be482a:-7c69</wuid>
       <scripts />
       <height>300</height>
-      <name>Web Browser</name>
+      <name>Web Browser Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -2988,7 +2992,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <width>300</width>
       <border_width>2</border_width>
-      <name>Tabbed ContainerTemplate</name>
+      <name>Tabbed Container Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -3054,7 +3058,7 @@ $(pv_value)</tooltip>
       <wuid>-6311979:13ef4be482a:-7c27</wuid>
       <scripts />
       <height>300</height>
-      <name>Sash Container</name>
+      <name>Sash Container Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -3068,7 +3072,7 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Tabbed Container</widget_type>
+      <widget_type>Sash Container</widget_type>
       <enabled>true</enabled>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>

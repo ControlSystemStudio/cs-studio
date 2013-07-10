@@ -31,7 +31,7 @@ public class LoggedScan extends Scan
     }
 
     /** @return {@link ScanState} */
-    public synchronized ScanState getScanState()
+    public ScanState getScanState()
     {
         return ScanState.Logged;
     }

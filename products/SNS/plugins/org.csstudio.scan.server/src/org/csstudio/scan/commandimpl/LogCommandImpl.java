@@ -71,6 +71,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
 			log.log(device.getAlias(), VTypeHelper.createSample(serial, value));
 		}
+        log.flush();
         context.workPerformed(1);
 	}
 }

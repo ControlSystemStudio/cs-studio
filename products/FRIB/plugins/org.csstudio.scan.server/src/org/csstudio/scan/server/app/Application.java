@@ -24,6 +24,7 @@ import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
+import org.csstudio.scan.server.pvaccess.PVAccessServer;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -86,6 +87,8 @@ public class Application implements IApplication
 	        log.info("Scan Server running on ports " + port + " (RMI Registry) and " + (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface)");
 
 	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port + 2);
+	        final PVAccessServer pva = new PVAccessServer(server);
+	        pva.initializeServerContext();
 	        
 	        // Register console commands
 	        ConsoleCommands commands = new ConsoleCommands(server);
@@ -96,6 +99,7 @@ public class Application implements IApplication
 	        run.await();
 
 	        httpd.stop();
+	        pva.destroyServerContext();
 	        // Release commands
 	        commands = null;
     	}
