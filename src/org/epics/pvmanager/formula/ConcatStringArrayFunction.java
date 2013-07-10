@@ -6,11 +6,9 @@ package org.epics.pvmanager.formula;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
-import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 
 /**

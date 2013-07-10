@@ -149,21 +149,8 @@ public class ExpressionLanguage {
      * @return an expression of the given type
      */
     public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
-        // TODO: refactor better; make sure it does check the final type
-        RuntimeException parsingError;
-        try {
-            DesiredRateExpression<?> exp = createParser(formula).formula();
-            if (exp == null) {
-                throw new NullPointerException("Parsing failed");
-            }
-            
-            return checkReturnType(readType, exp);
-        } catch (RecognitionException ex) {
-            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
-        } catch (Exception ex) {
-            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
-        }
-        return errorDesiredRateExpression(parsingError); 
+        DesiredRateExpression<?> exp = parseFormula(formula);
+        return checkReturnType(readType, exp);
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
@@ -200,32 +187,20 @@ public class ExpressionLanguage {
         return fun + "(" + arg.getName()+ ")";
     }
     
-    static DesiredRateExpression<?> addCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("+", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
-    }
-    
     static DesiredRateExpression<?> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
         return function("^", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
-    
-    static DesiredRateExpression<?> subtractCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
-    }
-    
-    static DesiredRateExpression<?> negateCast(DesiredRateExpression<?> arg) {
-        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg));
-    }
-    
-    static DesiredRateExpression<?> multiplyCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("*", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+
+    static DesiredRateExpression<?> threeArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2, DesiredRateExpression<?> arg3) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2).and(arg3));
     }
 
-    static DesiredRateExpression<?> divideCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("/", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    static DesiredRateExpression<?> twoArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
-    
-    static DesiredRateExpression<?> remainderCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("%", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+
+    static DesiredRateExpression<?> oneArgOp(String opName, DesiredRateExpression<?> arg) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg));
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
