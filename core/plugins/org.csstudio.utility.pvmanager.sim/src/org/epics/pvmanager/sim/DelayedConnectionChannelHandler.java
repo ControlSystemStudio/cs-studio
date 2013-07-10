@@ -32,7 +32,7 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
             throw new IllegalArgumentException(errorMessage);
         }
         if (tokens.size() == 2) {
-            initialValue = "Initial Value";
+            initialValue = "Initial value";
         } else {
             Object value = FunctionParser.asScalarOrList(tokens.subList(2, tokens.size()));
             if (value == null) {
