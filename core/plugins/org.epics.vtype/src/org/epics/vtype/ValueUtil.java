@@ -35,7 +35,7 @@ public class ValueUtil {
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
             VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
-            VStatistics.class, VString.class, VStringArray.class, VTable.class);
+            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class);
 
     /**
      * Returns the type of the object by returning the class object of one
@@ -200,6 +200,10 @@ public class ValueUtil {
             if (value != null) {
                 return value.doubleValue();
             }
+        }
+        
+        if (obj instanceof VBoolean) {
+            return (double) (((VBoolean) obj).getValue() ? 1 : 0);
         }
         
         if (obj instanceof VEnum) {
