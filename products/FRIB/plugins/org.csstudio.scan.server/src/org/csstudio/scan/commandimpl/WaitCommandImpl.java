@@ -16,13 +16,14 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.WaitCommand;
-import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.epics.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
@@ -44,9 +45,9 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
-        return new String[] { command.getDeviceName() };
+        return new String[] { context.resolveMacros(command.getDeviceName()) };
     }
 
 	/** {@inheritDoc} */
@@ -84,7 +85,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 
 		// Show command
 		final StringBuilder buf = new StringBuilder();
-	    buf.append(command.toString());
+	    buf.append(context.resolveMacros(command.toString()));
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
     	context.logExecutionStep(buf.toString(), time_estimate);
@@ -97,12 +98,12 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-        final Device device = context.getDevice(command.getDeviceName());
+        final Device device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
-        final DeviceValueCondition condition =
-            new DeviceValueCondition(device, command.getComparison(),
+        final NumericValueCondition condition =
+            new NumericValueCondition(device, command.getComparison(),
                     command.getDesiredValue(), command.getTolerance(),
-                    command.getTimeout());
+                    TimeDuration.ofSeconds(command.getTimeout()));
         condition.await();
         context.workPerformed(1);
     }

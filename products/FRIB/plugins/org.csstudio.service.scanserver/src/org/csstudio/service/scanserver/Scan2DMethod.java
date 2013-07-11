@@ -16,8 +16,12 @@ import org.epics.vtype.ValueFactory;
 import edu.msu.frib.scanserver.api.ScanServerClient;
 import edu.msu.frib.scanserver.api.ScanServerClientImpl.SSCBuilder;
 import edu.msu.frib.scanserver.api.commands.CommandSet;
+import edu.msu.frib.scanserver.api.commands.DelayCommand;
 import edu.msu.frib.scanserver.api.commands.LogCommand;
 import edu.msu.frib.scanserver.api.commands.LoopCommand;
+import edu.msu.frib.scanserver.api.commands.LoopCommand.Builder;
+import static edu.msu.frib.scanserver.api.commands.LoopCommand.builder;;
+
 
 public class Scan2DMethod extends ServiceMethod{
 
@@ -28,6 +32,7 @@ public class Scan2DMethod extends ServiceMethod{
 			.addArgument("start", "Start location", VNumber.class)
 			.addArgument("end", "End location", VNumber.class)
 			.addArgument("step", "Step size", VNumber.class)
+			.addArgument("delay", "delay before logging", VNumber.class)
 			.addResult("result", "id of queued scan", VNumber.class));
 	    }
 
@@ -37,7 +42,7 @@ public class Scan2DMethod extends ServiceMethod{
 			WriteFunction<Exception> errorCallback) {
 		
 		ScanServerClient ssc;
-        ssc = SSCBuilder.serviceURL("http://localhost:4812")
+        ssc = SSCBuilder.serviceURL("http://localhost:4810")
                 .create();
         
         String positioner = ((VString) parameters.get("positioner")).getValue();
@@ -45,21 +50,27 @@ public class Scan2DMethod extends ServiceMethod{
         Number start = ((VNumber) parameters.get("start")).getValue();
         Number end = ((VNumber) parameters.get("end")).getValue();
         Number step = ((VNumber) parameters.get("step")).getValue();
+
         
         List<String> devices = new ArrayList<String>();
         devices.add(detector);
         devices.add(positioner);
         LogCommand log = LogCommand.builder().devices(devices).build();
-        LoopCommand loop = LoopCommand.builder().device("loc://positioner")
+        LoopCommand.Builder<?> loopBuilder = LoopCommand.builder().device(positioner)
         		.start((Double) start)
         		.end((Double) end)
-        		.step((Double) step)
-        		.add(log).build();
+        		.step((Double) step);
+        if (((VNumber) parameters.get("delay")) != null){
+            Number delayTime = ((VNumber) parameters.get("delay")).getValue();
+        	DelayCommand delay = DelayCommand.builder().seconds(delayTime.doubleValue()).build();
+        	loopBuilder.add(delay);
+        }
+		LoopCommand loop = loopBuilder.add(log).build();
         CommandSet commandSet = CommandSet.builder().add(loop).build();
         Long scanId = ssc.queueScan(positioner+" "+detector+" 2D Scan",commandSet);
         
         Map<String, Object> resultMap = new HashMap<>();
-	    resultMap.put("result",scanId.intValue());
+	    resultMap.put("result",ValueFactory.newVInt(scanId.intValue(), ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone()));
 	    callback.writeValue(resultMap);
 		
 	}

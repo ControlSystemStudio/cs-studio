@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model that monitors the data of a scan
@@ -42,11 +42,17 @@ public class ScanDataModel implements ScanInfoModelListener
 	/** Most recent scan data */
 	private ScanData scan_data = null;
 
+	/** Last sample serial of scan data */
+	private long last_scan_data_serial = -1;
+
 	/** Listener to notify about updates in the scan's data */
 	final private ScanDataModelListener listener;
 
-	private long last_scan_data_serial = -1;
-
+	/** Initialize
+	 *  @param scan_id ID of scan to monitor
+	 *  @param listener {@link ScanDataModelListener}
+	 *  @throws Exception on error
+	 */
 	public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
     {
 		this.scan_id = scan_id;
@@ -82,17 +88,18 @@ public class ScanDataModel implements ScanInfoModelListener
 		try
 		{
 			// Any change in the data?
-			final ScanServer server = scan_info_model.getServer();
-			final long serial = server.getLastScanDataSerial(scan_id);
+			final ScanClient client = scan_info_model.getScanClient();
+			final long serial = client.getLastScanDataSerial(scan_id);
 			if (serial == last_scan_data_serial)
 				return;
 
 			// Get data
-			final ScanData data = server.getScanData(scan_id);
+			final ScanData data = client.getScanData(scan_id);
 			synchronized (this)
 			{
 				scan_data = data;
 			}
+			last_scan_data_serial = serial;
 			// Update listener
 			listener.updateScanData(data);
 		}

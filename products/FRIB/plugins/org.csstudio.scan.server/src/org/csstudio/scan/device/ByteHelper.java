@@ -25,7 +25,8 @@ public class ByteHelper
 	    final byte[] bytes = new byte[data.size()];
 	    for (int i=0; i<bytes.length; ++i)
 	        bytes[i] = data.getByte(i);
-	    if (bytes[bytes.length-1] == 0)
+	    // Remove '\0' terminator, if bytes included one
+	    if (bytes.length > 0  &&  bytes[bytes.length-1] == 0)
 	        return new String(bytes, 0, bytes.length-1);
 	    else
 	        return new String(bytes);

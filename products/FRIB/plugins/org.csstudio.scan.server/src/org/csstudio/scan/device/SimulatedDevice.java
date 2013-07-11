@@ -25,7 +25,7 @@ public class SimulatedDevice extends Device
 	 */
 	public SimulatedDevice(final String name)
     {
-		super(new DeviceInfo(name, name, true, true));
+		super(new DeviceInfo(name, name));
 		slew_rate = SimulationInfo.DEFAULT_SLEW_RATE;
     }
 
@@ -35,7 +35,7 @@ public class SimulatedDevice extends Device
 	 */
 	public SimulatedDevice(final String name, final SimulationInfo simulation_info)
     {
-		super(new DeviceInfo(name, name, true, true));
+		super(new DeviceInfo(name, name));
 		slew_rate = simulation_info.getSlewRate(name);
     }
 

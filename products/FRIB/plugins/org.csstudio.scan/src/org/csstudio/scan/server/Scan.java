@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /** Scan: ID, Name, Date
@@ -30,11 +29,7 @@ import java.util.Date;
  */
 @SuppressWarnings("nls")
 public class Scan
-implements Serializable
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private long id;
     final private String name;
     final private Date created;
@@ -95,7 +90,9 @@ implements Serializable
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof Scan))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         final Scan other = (Scan) obj;
         return id == other.id;

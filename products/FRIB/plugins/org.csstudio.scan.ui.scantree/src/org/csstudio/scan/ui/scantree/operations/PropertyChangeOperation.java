@@ -107,20 +107,29 @@ public class PropertyChangeOperation extends AbstractOperation
             @Override
             protected IStatus run(IProgressMonitor monitor)
             {
+                final Shell shell = editor.getSite().getShell();
+
                 // Attempt update of 'live' editor,
                 // sending change to the scan server
                 try
                 {
                     editor.changeLiveProperty(command, property, value);
                 }
-                catch (Exception ex)
+                catch (final Exception ex)
                 {
+                    shell.getDisplay().asyncExec(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+                        }
+                    });
                 	final String operation = PropertyChangeOperation.this.toString();
                     return new Status(IStatus.WARNING, Activator.PLUGIN_ID, operation, ex);
                 }
 
                 // Update local model in UI thread
-                final Shell shell = editor.getSite().getShell();
                 shell.getDisplay().asyncExec(new Runnable()
                 {
                     @Override

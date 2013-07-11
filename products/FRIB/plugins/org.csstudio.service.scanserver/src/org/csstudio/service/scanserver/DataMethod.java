@@ -33,7 +33,7 @@ public class DataMethod extends ServiceMethod {
 
 
 		ScanServerClient ssc;
-        ssc = SSCBuilder.serviceURL("http://localhost:4812")
+        ssc = SSCBuilder.serviceURL("http://localhost:4810")
                 .create();
         Number id = ((VNumber) parameters.get("id")).getValue();
         

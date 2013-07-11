@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
@@ -64,6 +65,14 @@ public class ScanEngine
     public void stop()
     {
         executor.shutdownNow();
+        try
+        {
+            executor.awaitTermination(10, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e)
+        {
+            // Ignore, shutting down anyway
+        }
         synchronized (scan_queue)
         {
             scan_queue.clear();

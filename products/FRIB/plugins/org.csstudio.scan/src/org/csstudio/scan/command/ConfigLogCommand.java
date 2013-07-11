@@ -74,7 +74,6 @@ public class ConfigLogCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setAutomatic(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "automatic", "false")));
         super.readXML(factory, element);
     }

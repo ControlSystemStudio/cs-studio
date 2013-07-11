@@ -41,9 +41,9 @@ public class AbortAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().abort(-1);
+            model.getScanClient().abortScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().abort(info.getId());
+                model.getScanClient().abortScan(info.getId());
     }
 }
