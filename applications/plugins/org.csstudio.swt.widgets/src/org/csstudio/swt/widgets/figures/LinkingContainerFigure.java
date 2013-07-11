@@ -102,6 +102,10 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 			zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
 		}
 	}
+	
+	public ZoomManager getZoomManager() {
+		return zoomManager;
+	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
