@@ -42,7 +42,6 @@
          id="org.csstudio.channel.feature"
          version="0.0.0"/>
 
-
    <includes
          id="org.csstudio.olog.feature"
          version="0.0.0"/>
@@ -53,6 +52,10 @@
 
    <includes
          id="org.csstudio.scan.ui.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.logbook.viewer.feature"
          version="0.0.0"/>
 
 </feature>

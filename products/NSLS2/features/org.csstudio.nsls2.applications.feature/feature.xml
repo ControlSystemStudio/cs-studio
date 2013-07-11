@@ -50,4 +50,8 @@
          id="org.csstudio.alarm.beast.ui.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.logbook.viewer.feature"
+         version="0.0.0"/>
+
 </feature>
