@@ -43,6 +43,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -62,6 +63,19 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure f = new LinkingContainerFigure();
 		f.setZoomToFitAll(getWidgetModel().isAutoFit());		
+		f.getZoomManager().addZoomListener(new ZoomListener() {
+			
+			@Override
+			public void zoomChanged(double arg0) {
+				getViewer().getControl().getDisplay().timerExec(100,new Runnable() {
+					
+					@Override
+					public void run() {
+						updateConnectionList();
+					}
+				});
+			}
+		});
 		return f;
 	}
 
@@ -211,11 +225,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					originalPoints.put(conn, conn.getPoints().getCopy());
 			}			
 			if (originalPoints != null && !originalPoints.isEmpty())
-				UIBundlingThread.getInstance().addRunnable(new Runnable() {
-
+				//update connections after the figure is repainted.
+				getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
 					@Override
 					public void run() {
-						updateConnectionList();
+						updateConnectionList();				
 					}
 				});
 			
