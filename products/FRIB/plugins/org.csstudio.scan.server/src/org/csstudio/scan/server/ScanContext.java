@@ -74,4 +74,7 @@ public interface ScanContext
 	 *  @param work_units Number of performed work units
 	 */
     public void workPerformed(final int work_units);
+    
+    public void fireDataLogEvent(DataLog dataLog);
+
 }

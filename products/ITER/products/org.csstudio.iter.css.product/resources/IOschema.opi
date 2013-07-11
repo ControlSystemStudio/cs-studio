@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.0.codac_core_4_1b2</boy_version>
+  <boy_version>3.2.6.codac_core_4_1b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -818,6 +818,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>80</height>
@@ -997,6 +998,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>205</height>
@@ -1087,6 +1089,7 @@ $(pv_value)</tooltip>
       <color_hihi>
         <color name="Major" red="255" green="0" blue="0" />
       </color_hihi>
+      <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
       <show_lo>true</show_lo>
       <scripts />
       <height>180</height>
@@ -1322,6 +1325,7 @@ $(trace_0_y_pv_value)</tooltip>
       <width>309</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <label />
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -1446,7 +1450,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://mbbval</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -1692,7 +1696,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <transparent>false</transparent>
-      <pv_name>loc://choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -1737,7 +1741,7 @@ $(pv_value)</tooltip>
       <page_increment>10.0</page_increment>
       <precision_from_pv>true</precision_from_pv>
       <transparent>false</transparent>
-      <pv_name>loc://numdata(73)</pv_name>
+      <pv_name>loc://$(DID)_numdata(73)</pv_name>
       <buttons_on_left>false</buttons_on_left>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
@@ -1831,7 +1835,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://input3(42)</pv_name>
+      <pv_name>loc://$(DID)_input3(42)</pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1924,7 +1928,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://input2(68)</pv_name>
+      <pv_name>loc://$(DID)_input2(68)</pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1980,7 +1984,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <page_increment>10.0</page_increment>
-      <pv_name>loc://input2(68)</pv_name>
+      <pv_name>loc://$(DID)_input2(68)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2038,7 +2042,7 @@ $(pv_value)</tooltip>
       <internalFrameColor>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </internalFrameColor>
-      <pv_name>loc://numdata(73)</pv_name>
+      <pv_name>loc://$(DID)_numdata(73)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2094,7 +2098,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://$(DID)_bool</pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2160,7 +2164,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://$(DID)_bool</pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2223,7 +2227,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://$(DID)_bool</pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2281,7 +2285,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://check</pv_name>
+      <pv_name>loc://$(DID)_check</pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2333,7 +2337,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2385,7 +2389,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2481,7 +2485,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://$(DID)_bool</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -2563,7 +2567,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://mbbval</pv_name>
+      <pv_name>loc://$(DID)_mbbval</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -2671,7 +2675,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://input1(1.45)</pv_name>
+      <pv_name>loc://$(DID)_input1(1.45)</pv_name>
       <foreground_color>
         <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
       </foreground_color>
@@ -2710,7 +2714,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://choice</pv_name>
+      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2835,7 +2839,7 @@ $(pv_value)</tooltip>
       <wuid>-6311979:13ef4be482a:-7c69</wuid>
       <scripts />
       <height>300</height>
-      <name>Web Browser</name>
+      <name>Web Browser Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -2880,7 +2884,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://array(0, 1.5, 1.5, 1.15, 1.15, 2, 2, 0)</pv_name>
+      <pv_name>loc://$(DID)_array(0, 1.5, 1.5, 1.15, 1.15, 2, 2, 0)</pv_name>
       <show_scrollbar>false</show_scrollbar>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
@@ -2988,7 +2992,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <width>300</width>
       <border_width>2</border_width>
-      <name>Tabbed ContainerTemplate</name>
+      <name>Tabbed Container Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -3054,7 +3058,7 @@ $(pv_value)</tooltip>
       <wuid>-6311979:13ef4be482a:-7c27</wuid>
       <scripts />
       <height>300</height>
-      <name>Sash Container</name>
+      <name>Sash Container Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
@@ -3068,7 +3072,7 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Tabbed Container</widget_type>
+      <widget_type>Sash Container</widget_type>
       <enabled>true</enabled>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>

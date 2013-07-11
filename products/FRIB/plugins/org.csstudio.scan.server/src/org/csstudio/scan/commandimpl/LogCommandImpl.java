@@ -69,5 +69,6 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 			log.log(device_name, VTypeHelper.createSample(serial, value));
 		}
         context.workPerformed(1);
+        context.fireDataLogEvent(log);
 	}
 }

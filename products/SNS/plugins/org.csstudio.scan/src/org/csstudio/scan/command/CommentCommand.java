@@ -67,8 +67,7 @@ public class CommentCommand extends ScanCommand
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
-        out.println("<comment><address>" + getAddress() + "</address>" +
-        		    "<text>" + comment + "</text></comment>");
+        out.println("<comment><text>" + comment + "</text></comment>");
         // NOT calling super.writeXML(out, level);
     }
 
@@ -76,7 +75,6 @@ public class CommentCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setComment(DOMHelper.getSubelementString(element, "text", ""));
         // NOT calling super.readXML(factory, element);
     }

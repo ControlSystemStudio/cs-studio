@@ -22,12 +22,5 @@
             name="Install Examples">
       </command>
    </extension>
-   <extension
-         point="org.csstudio.examples.sampleset">
-      <sampleset
-            name="Http"
-            sampleset="org.csstudio.examples.ttp">
-      </sampleset>
-   </extension>
 
 </plugin>

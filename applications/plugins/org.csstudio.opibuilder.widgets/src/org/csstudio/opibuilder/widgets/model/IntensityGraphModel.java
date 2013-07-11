@@ -30,6 +30,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Version;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -237,21 +238,21 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	}
 	
 	@Override
-	public void processVersionDifference() {
-		super.processVersionDifference();
-		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
 			setPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
 							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
 			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME)));	
 			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME)));	
 			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME)));	
 		}
 	}
 

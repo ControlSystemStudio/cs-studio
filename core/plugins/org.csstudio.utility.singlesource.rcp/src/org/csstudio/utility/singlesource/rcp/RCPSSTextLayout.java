@@ -58,4 +58,14 @@ public class RCPSSTextLayout extends SSTextLayout {
 		event.height = textLayoutBounds.height + 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Rectangle getBounds() {
+		if (textLayout != null)
+			return textLayout.getBounds();
+		return null;
+	}
+
 }

@@ -231,7 +231,9 @@
 <h2 class="title">G</h2>
 <dl>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Address of this command within the command sequence</div>
+</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#getAlias()">getAlias()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ConfigLogCommand.html#getAutomatic()">getAutomatic()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a></dt>
@@ -297,6 +299,8 @@
 <dd>
 <div class="block">Get serial of last logged sample.</div>
 </dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#getMacros()">getMacros()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#getMaxMem()">getMaxMem()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#getMemoryInfo()">getMemoryInfo()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
@@ -355,6 +359,8 @@
 <dd>
 <div class="block">Obtain devices used by a scan</div>
 </dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#getScanFile()">getScanFile()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/client/ScanClient.html#getScanInfo(long)">getScanInfo(long)</a></span> - Method in class org.csstudio.scan.client.<a href="./org/csstudio/scan/client/ScanClient.html" title="class in org.csstudio.scan.client">ScanClient</a></dt>
 <dd>
 <div class="block">Obtain information for a scan</div>
@@ -469,6 +475,18 @@
 </a>
 <h2 class="title">I</h2>
 <dl>
+<dt><a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command"><span class="strong">IncludeCommand</span></a> - Class in <a href="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</a></dt>
+<dd>
+<div class="block">Command that includes existing *.scn file with macros</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#IncludeCommand()">IncludeCommand()</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>
+<div class="block">Initialize with example values</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#IncludeCommand(java.lang.String, java.lang.String)">IncludeCommand(String, String)</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanState.html#isActive()">isActive()</a></span> - Method in enum org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanState.html#isDone()">isDone()</a></span> - Method in enum org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a></dt>
@@ -622,6 +640,10 @@
 <div class="block">Read command parameters from XML element</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/DelayCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML(SimpleScanCommandFactory, Element)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a></dt>
+<dd>
+<div class="block">Read command parameters from XML element</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML(SimpleScanCommandFactory, Element)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
 <dd>
 <div class="block">Read command parameters from XML element</div>
 </dd>
@@ -885,6 +907,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#setMacros(java.lang.String)">setMacros(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String, java.lang.Object)">setProperty(String, Object)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></dt>
 <dd>
 <div class="block">Set a command's property</div>
@@ -896,6 +920,8 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#setReadback(java.lang.String)">setReadback(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#setReadback(java.lang.String)">setReadback(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#setScanFile(java.lang.String)">setScanFile(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#setScript(java.lang.String)">setScript(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -964,6 +990,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ConfigLogCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a></dt>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/DelayCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LogCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</a></dt>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></dt>
@@ -1092,6 +1119,10 @@ the order they are declared.</div>
 <div class="block">Write the command (and its sub-commands) in an XML format.</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/DelayCommand.html#writeXML(java.io.PrintStream, int)">writeXML(PrintStream, int)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a></dt>
+<dd>
+<div class="block">Write the command (and its sub-commands) in an XML format.</div>
+</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#writeXML(java.io.PrintStream, int)">writeXML(PrintStream, int)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
 <dd>
 <div class="block">Write the command (and its sub-commands) in an XML format.</div>
 </dd>

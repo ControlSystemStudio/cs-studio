@@ -7,6 +7,8 @@ package org.epics.pvmanager.formula;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -108,8 +110,8 @@ public class FormulaFunctions {
         return sb.toString();
     }
     
-    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^");
-    private static Pattern prefixOneArg = Pattern.compile("-");
+    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|<=|>=|<|>|==|!=|\\|\\||&&");
+    private static Pattern prefixOneArg = Pattern.compile("-|!");
 
     /**
      * Given the function name and a string representation of the arguments,
@@ -121,6 +123,9 @@ public class FormulaFunctions {
      * @return the expression text representation
      */
     public static String format(String function, List<String> args) {
+        if (args.size() == 3 && "?:".equals(function)) {
+            return conditionalOperator(function, args);
+        }
         if (args.size() == 2 && postfixTwoArg.matcher(function).matches()) {
             return formatPostfixTwoArgs(function, args);
         }
@@ -128,6 +133,18 @@ public class FormulaFunctions {
             return formatPrefixOneArg(function, args);
         }
         return formatFunction(function, args);
+    }
+    
+    private static String conditionalOperator(String function, List<String> args) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(")
+          .append(args.get(0))
+          .append(" ? ")
+          .append(args.get(1))
+          .append(" : ")
+          .append(args.get(2))
+          .append(")");
+        return sb.toString();
     }
     
     private static String formatPostfixTwoArgs(String function, List<String> args) {
@@ -163,6 +180,18 @@ public class FormulaFunctions {
         }
         sb.append(')');
         return sb.toString();
+    }
+    
+    static StatefulFormulaFunction createInstance(StatefulFormulaFunction function) {
+        try {
+            return function.getClass().newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(FormulaFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("StatefulFormulaFunction " + FormulaFunctions.formatSignature(function) + " must have a no arg constructor.", ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(FormulaFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("StatefulFormulaFunction " + FormulaFunctions.formatSignature(function) + " no arg constructor is not accessible.", ex);
+        }
     }
     
 }

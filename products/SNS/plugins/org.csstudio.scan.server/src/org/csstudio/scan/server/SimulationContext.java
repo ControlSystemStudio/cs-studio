@@ -12,16 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.server.internal.MacroStack;
 
 /** Context used for the simulation of {@link ScanCommandImpl}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SimulationContext
+public class SimulationContext implements MacroContext
 {
 	final private SimulationInfo simulation_info;
 
+    /** Macros for resolving device names */
+    final private MacroStack macros;
+	
 	final private Map<String, SimulatedDevice> devices = new HashMap<String, SimulatedDevice>();
 
 	final private PrintStream log_stream;
@@ -34,11 +40,33 @@ public class SimulationContext
 	 */
 	public SimulationContext(final PrintStream log_stream) throws Exception
 	{
-		this.simulation_info = SimulationInfo.getDefault();
+	    this.simulation_info = SimulationInfo.getDefault();
+        this.macros = new MacroStack(ScanSystemPreferences.getMacros());
 		this.log_stream = log_stream;
 	}
 
-	/** @return Current time of simulation in seconds */
+    /** {@inheritDoc} */
+    @Override
+    public String resolveMacros(final String text) throws Exception
+    {
+        return MacroUtil.replaceMacros(text, macros);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void pushMacros(String names_and_values) throws Exception
+    {
+        this.macros.push(names_and_values);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void popMacros()
+    {
+        macros.pop();
+    }
+
+    /** @return Current time of simulation in seconds */
 	public double getSimulationSeconds()
 	{
 		return simulation_seconds;
@@ -59,14 +87,16 @@ public class SimulationContext
 
 	/** @param name Device name
 	 *  @return {@link SimulatedDevice}
+	 *  @throws Exception on error in macro handling
 	 */
-    public SimulatedDevice getDevice(final String name)
+    public SimulatedDevice getDevice(final String name) throws Exception
     {
-    	SimulatedDevice device = devices.get(name);
+        final String expanded_name = MacroUtil.replaceMacros(name, macros);
+    	SimulatedDevice device = devices.get(expanded_name);
 		if (device == null)
 		{
-			device = new SimulatedDevice(name, simulation_info);
-			devices.put(name, device);
+			device = new SimulatedDevice(expanded_name, simulation_info);
+			devices.put(expanded_name, device);
 		}
 	    return device;
     }
@@ -89,14 +119,6 @@ public class SimulationContext
 	public void simulate(final List<ScanCommandImpl<?>> scan) throws Exception
     {
 		for (ScanCommandImpl<?> impl : scan)
-			simulate(impl);
-    }
-
-	/** @param impl Scan implementation to simulate
-	 *  @throws Exception
-	 */
-	public void simulate(final ScanCommandImpl<?> impl) throws Exception
-    {
-		impl.simulate(this);
+		    impl.simulate(this);
     }
 }

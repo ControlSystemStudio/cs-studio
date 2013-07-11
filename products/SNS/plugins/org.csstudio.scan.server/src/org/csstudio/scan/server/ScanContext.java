@@ -36,10 +36,10 @@ import org.csstudio.scan.server.internal.ExecutableScan;
  *
  *  @author Kay Kasemir
  */
-public interface ScanContext
+public interface ScanContext extends MacroContext
 {
-	/** Get a device by (alias) name
-	 *  @param name
+    /** Get a device by (alias) name.
+	 *  @param name (Alias) name of the device.
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */
@@ -54,9 +54,15 @@ public interface ScanContext
 	 */
 	public boolean isAutomaticLogMode();
 
-	/** @return {@link DataLog}. Only non-<code>null</code> while scan is being executed */
+	/** Obtain the active data log.
+	 *  
+	 *  <p>Only non-<code>null</code> while scan is being executed.
+	 *  Caller must NOT close this log.
+	 *  
+	 *  @return {@link DataLog}
+	 */
 	abstract public DataLog getDataLog();
-
+	
 	/** Execute a list of commands
      *  @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command

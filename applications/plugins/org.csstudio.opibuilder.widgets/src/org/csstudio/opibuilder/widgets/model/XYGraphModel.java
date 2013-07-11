@@ -32,6 +32,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Version;
 
 /**
  * The model for XYGraph
@@ -226,9 +227,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	}
 	
 	@Override
-	public void processVersionDifference() {
-		super.processVersionDifference();
-		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(getVersionOnFile())>0){
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
 			setPropertyValue(PROP_TRIGGER_PV, 
 					UpgradeUtil.convertUtilityPVNameToPM(
 							(String) getPropertyValue(PROP_TRIGGER_PV)));			
