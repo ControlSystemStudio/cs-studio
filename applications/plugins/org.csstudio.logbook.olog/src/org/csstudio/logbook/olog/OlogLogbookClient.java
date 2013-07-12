@@ -137,6 +137,15 @@ public class OlogLogbookClient implements LogbookClient {
     public Collection<LogEntry> findLogEntries(String search) throws Exception {
 	Map<String, String> searchParameters = LogEntrySearchUtil
 		.parseSearchString(search);
+	// append text search with a leading and trailing *
+	if (searchParameters
+		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT)) {
+	    String textSearch = "*"
+		    + searchParameters
+			    .get(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT) + "*";
+	    searchParameters.put(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT,
+		    textSearch);
+	}
 	if (searchParameters
 		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_START)) {
 	    TimeInterval timeInterval;

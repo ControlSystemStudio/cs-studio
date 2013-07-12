@@ -38,4 +38,20 @@ public class LogEntrySearchUtil {
 		    + " has an invalid keyword"); //$NON-NLS-1$
 	}
     }
+
+    public static String parseSearchMap(Map<String, String> searchMap) {
+	StringBuffer search = new StringBuffer();
+	for (String keyword : keywords) {
+	    if (searchMap.containsKey(keyword)
+		    && !searchMap.get(keyword).isEmpty()) {
+		if (!keyword.equals(SEARCH_KEYWORD_TEXT)) {
+		    search.append(keyword);
+		    search.append(":");
+		}
+		search.append(searchMap.get(keyword));
+		search.append(" ");
+	    }
+	}
+	return search.toString();
+    }
 }
