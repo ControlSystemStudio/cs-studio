@@ -32,6 +32,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
+import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
@@ -940,7 +941,6 @@ public class LogEntryWidget extends Composite {
 	    multiSelectionComboTag.setSelection(LogEntryUtil
 		    .getTagNames(logEntry));
 
-	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
 		tabFolder.setSelection(tbtmAttachments);
@@ -950,6 +950,7 @@ public class LogEntryWidget extends Composite {
 	    } else {
 		setExpanded(false);
 	    }
+	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    for (Attachment attachment : logEntry.getAttachment()) {
 		if (Arrays.asList(supportedImageTypes).contains(
 			"*"
@@ -979,6 +980,8 @@ public class LogEntryWidget extends Composite {
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
 		    .getAttachment()));
+	    propertyTree.setProperties(new ArrayList<Property>(logEntry
+		    .getProperties()));
 	} else {
 	    text.setText("");
 	    multiSelectionComboLogbook.setItems(Collections
