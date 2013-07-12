@@ -1,5 +1,6 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
@@ -19,7 +20,7 @@ import org.epics.vtype.VTable;
  * 
  * @author carcassi
  */
-public class VTableWidget extends Composite {
+public class VTableWidget extends BeanComposite {
 
 	private String pvFormula;
 	private PVReader<?> pv;
@@ -44,6 +45,7 @@ public class VTableWidget extends Composite {
 		tableDisplay = new VTableDisplay(this);
 		tableDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
+		forwardPropertyChange(tableDisplay, "vTable", "value");
 	}
 
 	private VTableDisplay tableDisplay;
@@ -85,6 +87,10 @@ public class VTableWidget extends Composite {
 	public void setPvFormula(String pvFormula) {
 		this.pvFormula = pvFormula;
 		reconnect();
+	}
+	
+	public VTable getValue() {
+		return tableDisplay.getVTable();
 	}
 
 }
