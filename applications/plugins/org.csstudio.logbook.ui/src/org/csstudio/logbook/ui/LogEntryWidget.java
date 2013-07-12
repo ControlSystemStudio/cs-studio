@@ -144,6 +144,7 @@ public class LogEntryWidget extends Composite {
     private Label label;
     private LinkTable linkTable;
     private Button removeSelectedButton;
+    private Button addFileButton;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -610,6 +611,43 @@ public class LogEntryWidget extends Composite {
 		    }
 		} catch (IOException e1) {
 		    errorBar.setException(e1);
+		}
+
+	    }
+
+	    @Override
+	    public void widgetDefaultSelected(SelectionEvent e) {
+
+	    }
+	});
+
+	addFileButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	addFileButton.setVisible(editable);
+	addFileButton.setText("Add a file attachment");
+	FormData fd_btnAddFileButtonButton = new FormData();
+	fd_btnAddFileButtonButton.bottom = new FormAttachment(100, -5);
+	fd_btnAddFileButtonButton.right = new FormAttachment(
+		removeSelectedButton, -5);
+	addFileButton.setLayoutData(fd_btnAddFileButtonButton);
+	addFileButton.addSelectionListener(new SelectionListener() {
+
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		final FileDialog fileDialog = new FileDialog(getShell(),
+			SWT.SAVE);
+		final String filename = fileDialog.open();
+		if (filename != null) {
+		    try {
+			File file = new File(filename);
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry())
+				.attach(AttachmentBuilder.attachment(
+					file.getName()).inputStream(
+					new FileInputStream(file)));
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
 		}
 
 	    }
