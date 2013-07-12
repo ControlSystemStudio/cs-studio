@@ -91,7 +91,11 @@ public class ValueUtil {
      */
     public static Alarm alarmOf(Object value, boolean connected) {
         if (value != null) {
-            return alarmOf(value);
+            if (value instanceof Alarm) {
+                return (Alarm) value;
+            } else {
+                return ValueFactory.alarmNone();
+            }
         } else if (connected) {
             return ValueFactory.newAlarm(AlarmSeverity.INVALID, "No value");
         } else {
