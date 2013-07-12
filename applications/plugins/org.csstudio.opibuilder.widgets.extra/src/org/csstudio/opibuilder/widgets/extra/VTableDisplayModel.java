@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.extra;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
@@ -13,6 +14,8 @@ public class VTableDisplayModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(IPVWidgetModel.PROP_PVNAME, "PV Formula", WidgetPropertyCategory.Basic, ""));
+		addProperty(new BooleanProperty(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, 
+				"Alarm Sensitive", WidgetPropertyCategory.Border, true));
 	}
 	
 	public String getPvFormula() {
@@ -22,6 +25,10 @@ public class VTableDisplayModel extends AbstractWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+
+	public boolean isAlarmSensitive() {
+		return getCastedPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE);
 	}
 
 }
