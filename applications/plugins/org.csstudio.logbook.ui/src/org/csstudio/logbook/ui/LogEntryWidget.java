@@ -73,6 +73,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -145,6 +146,7 @@ public class LogEntryWidget extends Composite {
     private LinkTable linkTable;
     private Button removeSelectedButton;
     private Button addFileButton;
+    private Button btnCurrentContext;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -580,11 +582,88 @@ public class LogEntryWidget extends Composite {
 	fd_errorBar.left = new FormAttachment(0, 2);
 	errorBar.setLayoutData(fd_errorBar);
 
+	btnCurrentContext = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	btnCurrentContext.setVisible(editable);
+	btnCurrentContext.setText("Attach context");
+	btnCurrentContext.setToolTipText("Attach the in focus CS-Studio file");
+
+	FormData fd_btnCurrentContext = new FormData();
+	fd_btnCurrentContext.left = new FormAttachment(0, 5);
+	fd_btnCurrentContext.bottom = new FormAttachment(100, -5);
+	fd_btnCurrentContext.right = new FormAttachment(32);
+	btnCurrentContext.setLayoutData(fd_btnCurrentContext);
+
+	btnCurrentContext.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		IEditorInput input = PlatformUI.getWorkbench()
+			.getActiveWorkbenchWindow().getActivePage()
+			.getActiveEditor().getEditorInput();
+		IFile editorFile = (IFile) input.getAdapter(IFile.class);
+		if (editorFile != null) {
+		    try {
+			File file = new File(editorFile.getLocationURI());
+			if (file != null) {
+			    LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				    .logEntry(logEntryChangeset.getLogEntry())
+				    .attach(AttachmentBuilder.attachment(
+					    file.getName()).inputStream(
+					    new FileInputStream(file)));
+			    logEntryChangeset
+				    .setLogEntryBuilder(logEntryBuilder);
+			}
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
+		}
+	    }
+	});
+
+	addFileButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	addFileButton.setVisible(editable);
+	addFileButton.setText("Attach file");
+	addFileButton.setToolTipText("Add a file attachment");
+	FormData fd_btnAddFileButtonButton = new FormData();
+	fd_btnAddFileButtonButton.left = new FormAttachment(33);
+	fd_btnAddFileButtonButton.bottom = new FormAttachment(100, -5);
+	fd_btnAddFileButtonButton.right = new FormAttachment(65);
+	addFileButton.setLayoutData(fd_btnAddFileButtonButton);
+	addFileButton.addSelectionListener(new SelectionListener() {
+
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		final FileDialog fileDialog = new FileDialog(getShell(),
+			SWT.SAVE);
+		final String filename = fileDialog.open();
+		if (filename != null) {
+		    try {
+			File file = new File(filename);
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry())
+				.attach(AttachmentBuilder.attachment(
+					file.getName()).inputStream(
+					new FileInputStream(file)));
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
+		}
+
+	    }
+
+	    @Override
+	    public void widgetDefaultSelected(SelectionEvent e) {
+
+	    }
+	});
+
 	removeSelectedButton = new Button(tbtmFileAttachmentsComposite,
 		SWT.NONE);
 	removeSelectedButton.setVisible(editable);
-	removeSelectedButton.setText("Remove selected attachments");
+	removeSelectedButton.setText("Remove selected");
+	removeSelectedButton.setToolTipText("Remove the selected attachments");
 	FormData fd_btnRemoveSelectedButton = new FormData();
+	fd_btnRemoveSelectedButton.left = new FormAttachment(66);
 	fd_btnRemoveSelectedButton.bottom = new FormAttachment(100, -5);
 	fd_btnRemoveSelectedButton.right = new FormAttachment(100, -5);
 	removeSelectedButton.setLayoutData(fd_btnRemoveSelectedButton);
@@ -611,43 +690,6 @@ public class LogEntryWidget extends Composite {
 		    }
 		} catch (IOException e1) {
 		    errorBar.setException(e1);
-		}
-
-	    }
-
-	    @Override
-	    public void widgetDefaultSelected(SelectionEvent e) {
-
-	    }
-	});
-
-	addFileButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
-	addFileButton.setVisible(editable);
-	addFileButton.setText("Add a file attachment");
-	FormData fd_btnAddFileButtonButton = new FormData();
-	fd_btnAddFileButtonButton.bottom = new FormAttachment(100, -5);
-	fd_btnAddFileButtonButton.right = new FormAttachment(
-		removeSelectedButton, -5);
-	addFileButton.setLayoutData(fd_btnAddFileButtonButton);
-	addFileButton.addSelectionListener(new SelectionListener() {
-
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		final FileDialog fileDialog = new FileDialog(getShell(),
-			SWT.SAVE);
-		final String filename = fileDialog.open();
-		if (filename != null) {
-		    try {
-			File file = new File(filename);
-			LogEntryBuilder logEntryBuilder = LogEntryBuilder
-				.logEntry(logEntryChangeset.getLogEntry())
-				.attach(AttachmentBuilder.attachment(
-					file.getName()).inputStream(
-					new FileInputStream(file)));
-			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		    } catch (IOException e1) {
-			setLastException(e1);
-		    }
 		}
 
 	    }
