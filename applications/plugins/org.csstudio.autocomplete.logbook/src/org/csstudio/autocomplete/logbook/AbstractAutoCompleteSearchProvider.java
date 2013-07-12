@@ -26,10 +26,10 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 
     // The keys represent the supported keywords and the values represent
     // possible values
-    private final Map<String, List<String>> keyValueMap;
+    private Map<String, List<String>> keyValueMap;
 
-    public AbstractAutoCompleteSearchProvider() {
-	this.keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
+    AbstractAutoCompleteSearchProvider() {
+
     }
 
     /**
@@ -42,6 +42,10 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 
     @Override
     public AutoCompleteResult listResult(String type, String name, int limit) {
+	if (keyValueMap == null) {
+	    keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
+	}
+
 	AutoCompleteResult result = new AutoCompleteResult();
 	String searchString = name.trim().substring(0, name.length() - 1);
 	String fixedFirstPart;
@@ -81,7 +85,8 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 		.substring(searchString.lastIndexOf(' ') + 1);
 	for (String key : keyValueMap.keySet()) {
 	    if (lastPart.length() > 0
-	    	    && key.startsWith(lastPart.substring(0, lastPart.length() - 1))) {
+		    && key.startsWith(lastPart.substring(0,
+			    lastPart.length() - 1))) {
 		result.add(fixedFirstPart + ' ' + key + ":");
 		result.setCount(result.getCount() + 1);
 	    }

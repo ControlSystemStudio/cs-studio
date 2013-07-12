@@ -16,7 +16,6 @@ import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.csstudio.logbook.ui.util.IFileUtil;
 import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,9 +54,9 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 
 	Label lblNewLabel = new Label(this, SWT.NONE);
 	FormData fd_lblNewLabel = new FormData();
-	fd_lblNewLabel.right = new FormAttachment(100, -10);
-	fd_lblNewLabel.top = new FormAttachment(0, 10);
-	fd_lblNewLabel.left = new FormAttachment(0, 10);
+	fd_lblNewLabel.right = new FormAttachment(100, -5);
+	fd_lblNewLabel.top = new FormAttachment(0, 5);
+	fd_lblNewLabel.left = new FormAttachment(0, 5);
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Context Files:");
 
@@ -130,7 +129,7 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	    }
 	});
 	FormData fd_btnRestore = new FormData();
-	fd_btnRestore.bottom = new FormAttachment(100, -10);
+	fd_btnRestore.bottom = new FormAttachment(100, -5);
 	fd_btnRestore.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
 	btnRestore.setLayoutData(fd_btnRestore);
 	btnRestore.setText("Restore");
@@ -153,14 +152,14 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	});
 	FormData fd_btnCurrentContext = new FormData();
 	fd_btnCurrentContext.top = new FormAttachment(btnRestore, 0, SWT.TOP);
-	fd_btnCurrentContext.left = new FormAttachment(0, 10);
+	fd_btnCurrentContext.left = new FormAttachment(0, 5);
 	btnCurrentContext.setLayoutData(fd_btnCurrentContext);
 	btnCurrentContext.setText("Add Current Context");
 
 	lblNewLabel_1 = new Label(this, SWT.NONE);
 	FormData fd_lblNewLabel_1 = new FormData();
 	fd_lblNewLabel_1.top = new FormAttachment(lblNewLabel, 6);
-	fd_lblNewLabel_1.left = new FormAttachment(0, 10);
+	fd_lblNewLabel_1.left = new FormAttachment(0, 5);
 	lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
 	lblNewLabel_1.setText("File Description:");
 
@@ -168,7 +167,7 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	FormData fd_textFileName = new FormData();
 	fd_textFileName.bottom = new FormAttachment(btnRestore, -6);
 	fd_textFileName.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
-	fd_textFileName.left = new FormAttachment(0, 10);
+	fd_textFileName.left = new FormAttachment(0, 5);
 	textFileName.setLayoutData(fd_textFileName);
 
 	lblNewLabel_2 = new Label(this, SWT.NONE);
@@ -182,9 +181,9 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 			| SWT.V_SCROLL);
 	FormData fd_textFileDescription = new FormData();
 	fd_textFileDescription.bottom = new FormAttachment(lblNewLabel_2, -6);
-	fd_textFileDescription.left = new FormAttachment(0, 10);
+	fd_textFileDescription.left = new FormAttachment(0, 5);
 	fd_textFileDescription.top = new FormAttachment(lblNewLabel_1, 6);
-	fd_textFileDescription.right = new FormAttachment(100, -10);
+	fd_textFileDescription.right = new FormAttachment(100, -5);
 	textFileDescription.setLayoutData(fd_textFileDescription);
     }
 

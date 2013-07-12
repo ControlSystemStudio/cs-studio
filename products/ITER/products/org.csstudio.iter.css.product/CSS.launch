@@ -14,7 +14,7 @@
 <booleanAttribute key="default_auto_start" value="true"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-CSS"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-clean -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog&#10;-clean&#10;-share_link /opt/codac/opi=CSS/opi,/opt/codac/examples=CSS/examples,/opt/codac/opi/boy/SymbolLibrary=CSS/SymbolLibrary"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#10;-Xms128m&#10;-XX:MaxPermSize=256M&#10;-XX:PermSize=128m&#10;-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog&#10;-Dorg.apache.commons.logging.simplelog.defaultlog=fatal&#10;-Dpython.cachedir.skip=true"/>
 <stringAttribute key="pde.version" value="3.3"/>

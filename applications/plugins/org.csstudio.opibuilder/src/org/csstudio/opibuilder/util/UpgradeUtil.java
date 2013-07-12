@@ -41,7 +41,7 @@ public final class UpgradeUtil {
 						if (value_end > 0) {
 							String value_text = pvName.substring(value_start + 1,
 									value_end);
-							if (!value_text.matches("\".+\"") && //$NON-NLS-1$ 
+							if (!value_text.matches("\".*\"") && //$NON-NLS-1$ 
 									!value_text.matches(doubleArrayPattern)) { // if it is not number array
 								try {
 									Double.parseDouble(value_text);

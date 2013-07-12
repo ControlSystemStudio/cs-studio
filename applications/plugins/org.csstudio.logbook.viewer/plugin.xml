@@ -42,6 +42,16 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logbook.ui.LogTableView">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+               label="Create New LogEntry"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -69,6 +79,12 @@
             id="org.csstudio.logbook.viewer.OpenLogViewer"
             name="Search Logbook">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
    </extension>
 
 </plugin>

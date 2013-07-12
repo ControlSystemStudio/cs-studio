@@ -17,6 +17,9 @@ package org.csstudio.scan.server.app;
 
 import java.util.List;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.MacroTable;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
@@ -61,6 +64,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tinfo            - Scan server info\n");
         buf.append("\tdevices         - List default devices\n");
         buf.append("\tdevices ID      - List devices used by scan with given ID\n");
+        buf.append("\tmacros          - List macros\n");
         buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
@@ -101,7 +105,6 @@ public class ConsoleCommands implements CommandProvider
         return null;
     }
 
-
     /** 'info' command */
     public Object _info(final CommandInterpreter intp)
     {
@@ -115,7 +118,6 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-
 
     /** 'devices' command */
     public Object _devices(final CommandInterpreter intp)
@@ -143,6 +145,22 @@ public class ConsoleCommands implements CommandProvider
         return null;
     }
 
+    /** 'macros' command */
+    public Object _macros(final CommandInterpreter intp)
+    {
+        try
+        {
+            final IMacroTableProvider macros = new MacroTable(ScanSystemPreferences.getMacros());
+            intp.println(macros);
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+            return null;
+        }
+
+        return null;
+    }
 
     /** 'commands' command */
     public Object _commands(final CommandInterpreter intp)
@@ -167,7 +185,6 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-
     
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
@@ -210,7 +227,6 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-
 
     /** 'pause' command */
     public Object _pause(final CommandInterpreter intp)

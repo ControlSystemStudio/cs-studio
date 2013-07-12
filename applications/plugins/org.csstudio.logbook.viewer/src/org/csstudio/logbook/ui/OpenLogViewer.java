@@ -3,57 +3,59 @@
  */
 package org.csstudio.logbook.ui;
 
-import java.util.List;
-
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.ui.util.AbstractAdaptedHandler;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.swt.widgets.Event;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
  * 
  */
-public class OpenLogViewer extends AbstractAdaptedHandler<LogEntry> {
+public class OpenLogViewer extends AbstractHandler {
+
+    public final static String ID = "org.csstudio.logbook.viewer.OpenLogViewer";
 
     public OpenLogViewer() {
-	super(LogEntry.class);
+	super();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    protected void execute(List<LogEntry> data, ExecutionEvent event)
-	    throws Exception {
-
-	if (data == null || data.isEmpty()) {
-	    // Get data from command event
-	    Object trigger = event.getTrigger();
-	    if (trigger instanceof Event) {
-		Object eventData = ((Event) trigger).data;
-		if (eventData instanceof List) {
-		    data = (List<LogEntry>) eventData;
-		}
-	    }
-	}
-	if (data == null || data.isEmpty()) {
-	    LogViewer.createInstance();
-	} else if (data.size() == 1) {
-	    LogViewer
-		    .createInstance(new LogViewerModel(data.iterator().next()));
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+	final IWorkbench workbench = PlatformUI.getWorkbench();
+	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+	ISelection selection;
+	if (HandlerUtil.getActiveMenuSelection(event) != null) {
+	    selection = HandlerUtil.getActiveMenuSelection(event);
 	} else {
-	    // Throw exception
+	    selection = window.getActivePage().getSelection(LogTableView.ID);
+	}
+	if (selection instanceof IStructuredSelection) {
+	    IStructuredSelection strucSelection = (IStructuredSelection) selection;
+	    if (strucSelection.getFirstElement() instanceof LogEntry) {
+		LogViewer.createInstance(new LogViewerModel(
+			(LogEntry) strucSelection.getFirstElement()));
+	    } else {
+		LogViewer.createInstance();
+	    }
+	} else {
+	    LogViewer.createInstance();
 	}
 	try {
-	    final IWorkbench workbench = PlatformUI.getWorkbench();
-	    final IWorkbenchWindow window = workbench
-		    .getActiveWorkbenchWindow();
 	    workbench.showPerspective(LogViewerPerspective.ID, window);
+	    window.getActivePage().showView(LogTableView.ID);
 	} catch (Exception ex) {
-	    // never mind
+	    ExceptionDetailsErrorDialog.openError(
+		    HandlerUtil.getActiveShell(event),
+		    "Error executing command...", ex);
 	}
+	return null;
     }
-
 }

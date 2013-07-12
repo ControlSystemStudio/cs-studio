@@ -64,8 +64,9 @@ public class LogConfigurator
         // Forward Eclipse ILog messages to Logger
         if (ilog_listener == null)
         {   // .. but only once
-            ilog_listener = new PluginLogListener();
-            Platform.addLogListener(ilog_listener);
+            final PluginLogListener listener = new PluginLogListener();
+            Platform.addLogListener(listener);
+            ilog_listener = listener; // Findbugs: Set static var. after initialized
         }
     }
 
@@ -100,11 +101,12 @@ public class LogConfigurator
             final int max_bytes, final int max_files,
             final Formatter formatter) throws Exception
     {
-        if (file_handler != null)
+        final FileHandler copy = file_handler;
+        file_handler = null;
+        if (copy != null)
         {
-            root.removeHandler(file_handler);
-            file_handler.close();
-            file_handler = null;
+            root.removeHandler(copy);
+            copy.close();
         }
         if (file_pattern.isEmpty()  ||  level.intValue() >= Level.OFF.intValue())
             return;
@@ -126,11 +128,12 @@ public class LogConfigurator
             final String topic,
             final Formatter formatter) throws Exception
     {
-        if (jms_handler != null)
+        final JMSLogHandler copy = jms_handler;
+        jms_handler = null;
+        if (copy != null)
         {
-            root.removeHandler(jms_handler);
-            jms_handler.close();
-            jms_handler = null;
+            root.removeHandler(copy);
+            copy.close();
         }
         if (jms_url.isEmpty()  ||  level.intValue() >= Level.OFF.intValue())
             return;

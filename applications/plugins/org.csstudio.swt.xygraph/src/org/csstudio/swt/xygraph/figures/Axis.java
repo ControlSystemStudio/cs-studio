@@ -150,7 +150,7 @@ public class Axis extends LinearScale{
 		listeners.add(listener);
 	}
 
-	public boolean removeListenr(final IAxisListener listener){
+	public boolean removeListener(final IAxisListener listener){
 		return listeners.remove(listener);
 	}
 

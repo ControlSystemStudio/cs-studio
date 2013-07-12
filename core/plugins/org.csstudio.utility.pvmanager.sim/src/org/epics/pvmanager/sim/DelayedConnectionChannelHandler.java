@@ -7,6 +7,8 @@ package org.epics.pvmanager.sim;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.util.FunctionParser;
@@ -20,8 +22,9 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
     
     private final Object initialValue;
     private final double delayInSeconds;
+    private final ScheduledExecutorService exec;
 
-    DelayedConnectionChannelHandler(String channelName) {
+    DelayedConnectionChannelHandler(String channelName, ScheduledExecutorService exec) {
         super(channelName);
         String errorMessage = "Incorrect syntax. Must match delayedConnectionChannel(delayInSeconds, value)";
         List<Object> tokens = FunctionParser.parseFunctionAnyParameter(channelName);
@@ -29,7 +32,7 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
             throw new IllegalArgumentException(errorMessage);
         }
         if (tokens.size() == 2) {
-            initialValue = "Initial Value";
+            initialValue = "Initial value";
         } else {
             Object value = FunctionParser.asScalarOrList(tokens.subList(2, tokens.size()));
             if (value == null) {
@@ -38,17 +41,23 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
             initialValue = ValueFactory.wrapValue(value);
         }
         delayInSeconds = (Double) tokens.get(1);
+        this.exec = exec;
     }
 
     @Override
     public void connect() {
-        try {
-            Thread.sleep((long) (delayInSeconds * 1000));
-        } catch(Exception ex) {
-        }
-        
-        processConnection(new Object());
-        processMessage(initialValue);
+        exec.schedule(new Runnable() {
+
+            @Override
+            public void run() {
+                synchronized(DelayedConnectionChannelHandler.this) {
+                    if (getUsageCounter() > 0) {
+                        processConnection(new Object());
+                        processMessage(initialValue);
+                    }
+                }
+            }
+        }, (long) delayInSeconds * 1000, TimeUnit.MILLISECONDS);
     }
 
     @Override

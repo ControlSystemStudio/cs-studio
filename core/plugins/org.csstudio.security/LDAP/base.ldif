@@ -1,0 +1,17 @@
+# Initially, establish hierarchy for holding user info
+
+dn: dc=css-demo,dc=org
+objectclass: dcObject
+objectClass: organization
+objectClass: top
+o: Demo
+dc: css-demo
+
+dn: ou=Users,dc=css-demo,dc=org
+objectClass: organizationalUnit
+ou: Users
+
+dn: ou=Groups,dc=css-demo,dc=org
+objectClass: organizationalUnit
+ou: Users
+

@@ -1,4 +1,5 @@
 com.google.common
+edu.msu.frib.scanserver.api
 edu.msu.nscl.olog.api
 gov.bnl.channelfinder.api
 javax.mail
@@ -41,6 +42,7 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.examples
 org.csstudio.frib.product
 org.csstudio.frib.startup.intro
 org.csstudio.frib.startuphelper
@@ -50,7 +52,9 @@ org.csstudio.imagej
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
+org.csstudio.logbook.olog.properties
 org.csstudio.logbook.ui
+org.csstudio.logbook.ui.extra
 org.csstudio.logbook.viewer
 org.csstudio.logging
 org.csstudio.logging.ui
@@ -75,10 +79,10 @@ org.csstudio.platform.libs.jersey
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.utility.jms
+org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
 org.csstudio.scan
 org.csstudio.scan.client
-org.csstudio.scan.custom
 org.csstudio.scan.ui
 org.csstudio.scan.ui.plot
 org.csstudio.scan.ui.scandata
@@ -88,6 +92,7 @@ org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.service.channelfinder
 org.csstudio.service.math
+org.csstudio.service.scanserver
 org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
@@ -112,6 +117,7 @@ org.csstudio.utility.channel.adapters
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
+org.csstudio.utility.httpd
 org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
 org.csstudio.utility.pv
@@ -120,6 +126,7 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.extra
+org.csstudio.utility.pvmanager.file
 org.csstudio.utility.pvmanager.graphene
 org.csstudio.utility.pvmanager.jms
 org.csstudio.utility.pvmanager.loc
@@ -134,6 +141,8 @@ org.csstudio.utility.singlesource
 org.csstudio.utility.singlesource.rcp
 org.csstudio.utility.speech
 org.csstudio.workspace
+org.eclipse.nebula.jface.gridviewer
+org.eclipse.nebula.widgets.grid
 org.epics.graphene
 org.epics.pvaccess
 org.epics.pvdata

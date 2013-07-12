@@ -205,7 +205,7 @@ public class DetailsPanel extends Composite {
 		future = null;
 	}
 	
-	
+	private int nRows = 0;
 	private void setChannelProperties(ChannelHandler handler) {
 		if (handler != null) {
 
@@ -227,9 +227,14 @@ public class DetailsPanel extends Composite {
 			connectionField.setText(handler.isConnected() + " - " + writeConnected);
 			channelPropertiesField.setText(builder.toString());
 			showSection(channelSection);
+			if (nRows != sortedProperties.size()) {
+				this.getParent().layout();
+			}
+			nRows = sortedProperties.size();
 		} else {
 			channelPropertiesField.setText(""); //$NON-NLS-1$
 			hideSection(channelSection);
+			nRows = 0;
 		}
 	}
 	

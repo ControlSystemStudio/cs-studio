@@ -59,6 +59,13 @@ public class ListNumbers {
         return view;
     }
     
+    /**
+     * Finds the value in the list, or the one right below it.
+     * 
+     * @param values a list of values
+     * @param value a value
+     * @return the index of the value
+     */
     public static int binarySearchValueOrLower(ListNumber values, double value) {
         if (value <= values.getDouble(0)) {
             return 0;
@@ -75,7 +82,14 @@ public class ListNumbers {
         
         return index;
     }
-    
+
+    /**
+     * Finds the value in the list, or the one right above it.
+     * 
+     * @param values a list of values
+     * @param value a value
+     * @return the index of the value
+     */
     public static int binarySearchValueOrHigher(ListNumber values, double value) {
         if (value <= values.getDouble(0)) {
             return 0;

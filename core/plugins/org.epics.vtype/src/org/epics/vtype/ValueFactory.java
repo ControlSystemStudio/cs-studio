@@ -38,6 +38,18 @@ public class ValueFactory {
     public static VString newVString(final String value, final Alarm alarm, final Time time) {
         return new IVString(value, alarm, time);
     }
+    
+    /**
+     * Creates a new VBoolean.
+     * 
+     * @param value the boolean value
+     * @param alarm the alarm
+     * @param time the time
+     * @return the new value
+     */
+    public static VBoolean newVBoolean(final boolean value, final Alarm alarm, final Time time) {
+        return new IVBoolean(value, alarm, time);
+    }
 
     
     /**

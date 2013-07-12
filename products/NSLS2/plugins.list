@@ -41,6 +41,7 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.examples
 org.csstudio.graphene
 org.csstudio.graphene.opiwidgets
 org.csstudio.java
@@ -48,6 +49,7 @@ org.csstudio.logbook
 org.csstudio.logbook.olog
 org.csstudio.logbook.olog.properties
 org.csstudio.logbook.ui
+org.csstudio.logbook.ui.extra
 org.csstudio.logbook.viewer
 org.csstudio.logging
 org.csstudio.logging.ui
@@ -63,8 +65,8 @@ org.csstudio.opibuilder.examples
 org.csstudio.opibuilder.imagelib
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
-org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.extra
+org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.symbol
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
@@ -124,6 +126,8 @@ org.csstudio.utility.singlesource
 org.csstudio.utility.singlesource.rcp
 org.csstudio.utility.speech
 org.csstudio.workspace
+org.eclipse.nebula.jface.gridviewer
+org.eclipse.nebula.widgets.grid
 org.epics.graphene
 org.epics.pvaccess
 org.epics.pvdata

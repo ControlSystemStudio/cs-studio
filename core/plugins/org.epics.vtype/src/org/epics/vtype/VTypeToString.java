@@ -7,6 +7,7 @@ package org.epics.vtype;
 import java.util.AbstractList;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
+import org.epics.vtype.table.VTableFactory;
 
 /**
  * Helper class that provides default implementation of toString for VTypes.
@@ -66,6 +67,24 @@ public class VTypeToString {
                 .append(vString.getValue());
         appendAlarm(builder, vString);
         appendTime(builder, vString);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    /**
+     * Default toString implementation for VBoolean.
+     *
+     * @param vBoolean the object
+     * @return the string representation
+     */
+    public static String toString(VBoolean vBoolean) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vBoolean);
+        builder.append(type.getSimpleName())
+                .append("[")
+                .append(vBoolean.getValue());
+        appendAlarm(builder, vBoolean);
+        appendTime(builder, vBoolean);
         builder.append(']');
         return builder.toString();
     }
@@ -171,18 +190,7 @@ public class VTypeToString {
                 .append("x")
                 .append(vTable.getRowCount())
                 .append(", ");
-        builder.append(format.format(ValueFactory.newVStringArray(new AbstractList<String>() {
-
-            @Override
-            public String get(int index) {
-                return vTable.getColumnName(index);
-            }
-
-            @Override
-            public int size() {
-                return vTable.getColumnCount();
-            }
-        }, ValueFactory.alarmNone(), ValueFactory.timeNow())));
+        builder.append(format.format(ValueFactory.newVStringArray(VTableFactory.columnNames(vTable), ValueFactory.alarmNone(), ValueFactory.timeNow())));
         builder.append(']');
         return builder.toString();
     }

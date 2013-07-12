@@ -3,8 +3,11 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookBuilder;
@@ -62,10 +65,12 @@ public class LogEntryWidgetTest extends ApplicationWindow {
 			    .addLogbook(LogbookBuilder.logbook("test3"))
 			    .addLogbook(LogbookBuilder.logbook("test4"))
 			    .addLogbook(LogbookBuilder.logbook("test5"))
+			    .attach(AttachmentBuilder.attachment(
+				    "plugin.properties").inputStream(
+				    new FileInputStream("plugin.properties")))
 			    .build();
 		    logEntryWidget.setLogEntry(logEntry);
 		} catch (IOException e1) {
-		    // TODO Auto-generated catch block
 		    e1.printStackTrace();
 		}
 	    }

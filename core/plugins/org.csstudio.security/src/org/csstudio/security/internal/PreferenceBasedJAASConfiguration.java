@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.security.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -19,7 +20,6 @@ import org.csstudio.java.string.StringSplitter;
 
 /** JAAS Configuration based on Eclipse preferences
  * 
- *  
  *  @author Kay Kasemir
  *  @author Xihui Chen - org.csstudio.platform.internal.jassauthentication.preference.PreferencesHelper
  */
@@ -81,8 +81,23 @@ public class PreferenceBasedJAASConfiguration extends Configuration
 	}
 
 	@Override
-	public AppConfigurationEntry[] getAppConfigurationEntry(String name)
+	public AppConfigurationEntry[] getAppConfigurationEntry(final String name)
 	{
+	    // Use the currently logged-in user on Linux and Mac OS X?
+	    if ("unix".equals(name))
+	        return new AppConfigurationEntry[]
+            {
+	            new AppConfigurationEntry("com.sun.security.auth.module.UnixLoginModule", LoginModuleControlFlag.REQUIRED, Collections.<String,String>emptyMap())
+            };
+	    else if ("windows".equals(name))
+            return new AppConfigurationEntry[]
+            {
+                new AppConfigurationEntry("com.sun.security.auth.module.NTLoginModule", LoginModuleControlFlag.REQUIRED, Collections.<String,String>emptyMap())
+            };
+	    
+	    // Else: Ignore the name.
+	    // Not using a JAAS config file with named entries, but
+	    // received the configurations to use in a 'jaas_config' preference.
 		return configurations;
 	}
 }   

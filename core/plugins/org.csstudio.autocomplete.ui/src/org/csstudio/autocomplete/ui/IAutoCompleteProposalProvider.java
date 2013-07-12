@@ -9,8 +9,8 @@ package org.csstudio.autocomplete.ui;
 
 public interface IAutoCompleteProposalProvider {
 
-	public void getProposals(String contents, int position, int max,
-			IContentProposalSearchHandler handler);
+	public void getProposals(final String contents,
+			final IContentProposalSearchHandler handler);
 
 	public boolean hasProviders();
 

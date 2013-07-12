@@ -250,9 +250,8 @@ public class XMLUtil {
 
 	/**Convert XML Element to a widget model.
 	 * @param element
-	 * @param displayModel If root of the element is a display, use this display model as root model 
-	 * instead of creating a new one. If this is null, a new one will be created. If root of the element
-	 * is not a display, it will be ignored.
+	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
+	 * instead of creating a new one. If this is null, a new one will be created. 
 	 * @return the root widget model
 	 * @throws Exception
 	 */
@@ -308,7 +307,7 @@ public class XMLUtil {
 				}
 			}else if(subElement.getName().equals(XMLTAG_WIDGET)){
 				if(rootWidgetModel instanceof AbstractContainerModel){
-					AbstractWidgetModel child =XMLElementToWidget(subElement);
+					AbstractWidgetModel child =XMLElementToWidget(subElement, displayModel);
 					if(child != null)
 						((AbstractContainerModel) rootWidgetModel).addChild(child);
 				}
@@ -320,8 +319,8 @@ public class XMLUtil {
 				}				
 			}
 		}
-		
-		rootWidgetModel.processVersionDifference();
+		if(displayModel !=null)
+			rootWidgetModel.processVersionDifference(displayModel.getBOYVersion());
 		
 		return rootWidgetModel;
 	}

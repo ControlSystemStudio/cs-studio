@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 public class Service {
     static Pattern namePattern = Pattern.compile("[a-zA-Z_]\\w*");
     
-    private String name;
-    private String description;
-    private Map<String, ServiceMethod> serviceMethods;
+    private final String name;
+    private final String description;
+    private final Map<String, ServiceMethod> serviceMethods;
 
     public Service(ServiceDescription serviceDescription) {
         this.name = serviceDescription.name;

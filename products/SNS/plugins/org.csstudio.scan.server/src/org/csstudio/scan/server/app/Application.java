@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
+import org.csstudio.scan.server.pvaccess.PVAccessServer;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -84,6 +85,8 @@ public class Application implements IApplication
 	        server.start();
 	        log.info("Scan Server running on port " + port + " (REST interface)");
 	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
+	        final PVAccessServer pva = new PVAccessServer(server);
+	        pva.initializeServerContext();
         
 	        // Register console commands
 	        ConsoleCommands commands = new ConsoleCommands(server);
@@ -95,6 +98,7 @@ public class Application implements IApplication
 	        server.stop();
 
 	        httpd.stop();
+	        pva.destroyServerContext();
 	        // Release commands
 	        commands = null;
     	}

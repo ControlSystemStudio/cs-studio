@@ -7,36 +7,60 @@
  ******************************************************************************/
 package org.csstudio.autocomplete;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AutoCompleteResult {
 
-	private Set<String> results;
+	private List<Proposal> proposals;
+	private List<Proposal> topProposals;
 	private int count;
 	private String provider;
 
 	public AutoCompleteResult() {
-		this.results = new LinkedHashSet<String>();
+		this.proposals = new LinkedList<Proposal>();
+		this.topProposals = new LinkedList<Proposal>();
 		this.count = 0;
 	}
 
-	public void merge(AutoCompleteResult other, int limit) {
-		this.results.addAll(other.getResults());
-		Set<String> tmpSet = new LinkedHashSet<String>();
-		for (String pv : results)
-			if (tmpSet.size() <= limit)
-				tmpSet.add(pv);
-		this.results = tmpSet;
-		this.count = this.count + other.getCount();
-	}
-
+	/**
+	 * @see AutoCompleteResult#addProposal(Proposal)
+	 */
+	@Deprecated
 	public void add(String name) {
-		results.add(name);
+		Proposal proposal = new Proposal(name, false);
+		proposals.add(proposal);
 	}
 
-	public Set<String> getResults() {
-		return results;
+	public void addProposal(Proposal p) {
+		proposals.add(p);
+	}
+
+	public void addTopProposal(Proposal p) {
+		topProposals.add(p);
+	}
+
+	public List<String> getProposalsAsString() {
+		List<String> strList = new ArrayList<>();
+		for (Proposal p : proposals)
+			strList.add(p.getValue());
+		return strList;
+	}
+
+	public List<String> getTopProposalsAsString() {
+		List<String> strList = new ArrayList<>();
+		for (Proposal p : topProposals)
+			strList.add(p.getValue());
+		return strList;
+	}
+
+	public List<Proposal> getProposals() {
+		return proposals;
+	}
+
+	public List<Proposal> getTopProposals() {
+		return topProposals;
 	}
 
 	public int getCount() {

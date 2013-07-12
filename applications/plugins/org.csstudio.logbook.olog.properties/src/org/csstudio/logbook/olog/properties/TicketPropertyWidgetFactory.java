@@ -6,10 +6,6 @@ package org.csstudio.logbook.olog.properties;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
 import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.csstudio.logbook.ui.PropertyWidgetFactory;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -20,12 +16,12 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TicketPropertyWidgetFactory implements PropertyWidgetFactory {
 
-	public TicketPropertyWidgetFactory() {
-	}
+    public TicketPropertyWidgetFactory() {
+    }
 
-	@Override
-	public AbstractPropertyWidget create(Composite parent, int SWT,
-			LogEntryChangeset logEntryChangeset) {
-		return new TicketPropertyWidget(parent, SWT, logEntryChangeset);
-	}
+    @Override
+    public AbstractPropertyWidget create(Composite parent, int SWT,
+	    LogEntryChangeset logEntryChangeset) {
+	return new TicketPropertyWidget(parent, SWT, logEntryChangeset);
+    }
 }

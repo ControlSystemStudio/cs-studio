@@ -35,6 +35,7 @@ import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -77,14 +78,16 @@ public class ScanServerImpl implements ScanServer
         return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
     			start_time,
     			ScanSystemPreferences.getBeamlineConfigPath(),
-    			ScanSystemPreferences.getSimulationConfigPath());
+    			ScanSystemPreferences.getSimulationConfigPath(),
+    			ScanSystemPreferences.getScriptPaths(),
+    			ScanSystemPreferences.getMacros());
     }
 
     /** Query server for devices used by a scan
      * 
      *  <p>Meant to be called only inside the scan server.
      *  
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            or -1 for default devices
      *  @return {@link Device}s
      *  @see #getDeviceInfos(long) for similar method that is exposed to clients
@@ -136,10 +139,13 @@ public class ScanServerImpl implements ScanServer
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
+            
+            // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-            List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
+            List<ScanCommandImpl<?>> scan = tool.implement(commands, jython);
 
             // Setup simulation log
             ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
@@ -267,6 +273,19 @@ public class ScanServerImpl implements ScanServer
             throw new Exception("Commands not available for logged scan");
     }
 
+    /** Obtain scan context.
+     *  @param id ID that uniquely identifies a scan
+     *  @return {@link ScanContext} or <code>null</code> if ID does not refer to an active scan
+     *  @throws Exception
+     */
+    public ScanContext getScanContext(final long id) throws Exception
+    {
+        final ScanContext scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
+            return scan;
+        return null;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws Exception

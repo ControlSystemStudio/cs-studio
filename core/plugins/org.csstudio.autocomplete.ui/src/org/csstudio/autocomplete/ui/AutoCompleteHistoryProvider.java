@@ -8,11 +8,17 @@
 package org.csstudio.autocomplete.ui;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.Preferences;
+import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.ProposalStyle;
+import org.csstudio.autocomplete.TopProposalFinder;
+import org.eclipse.swt.SWT;
 
 public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 
@@ -22,8 +28,9 @@ public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 	public AutoCompleteResult listResult(final String type, final String name,
 			final int limit) {
 		AutoCompleteResult result = new AutoCompleteResult();
-		Pattern p = AutoCompleteHelper.convertToPattern(name);
-		if (p == null)
+		String cleanedName = AutoCompleteHelper.clean(name);
+		Pattern namePattern = AutoCompleteHelper.convertToPattern(Pattern.quote(cleanedName));
+		if (namePattern == null)
 			return result;
 
 		int added = 0;
@@ -32,15 +39,24 @@ public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 		if (fifo == null)
 			return result; // Empty result
 		for (String entry : fifo) {
-			if (p.matcher(entry).matches()) {
+			Matcher m = namePattern.matcher(entry);
+			if (m.find()) {
 				if (added < limit) {
-					result.add(entry);
+					Proposal proposal = new Proposal(entry, false);
+					proposal.addStyle(new ProposalStyle(m.start(), m.end() - 1,
+							SWT.BOLD, SWT.COLOR_BLUE));
+					result.addProposal(proposal);
 					added++;
 				}
 				count++;
 			}
 		}
 		result.setCount(count);
+
+		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
+		for (Proposal p : trf.getTopProposals(Pattern.quote(cleanedName), fifo))
+			result.addTopProposal(p);
+
 		return result;
 	}
 
