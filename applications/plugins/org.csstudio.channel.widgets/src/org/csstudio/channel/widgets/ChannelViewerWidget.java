@@ -182,7 +182,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			}
 		};
 		TableColumn tblclmnChannelName = channelNameColumn.getColumn();
-		tblclmnChannelName.setText("Channel Name");
+		tblclmnChannelName.setText("Name");
 
 		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
