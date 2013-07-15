@@ -20,8 +20,8 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
-abstract public class ModelItem
-{
+abstract public class ModelItem implements Cloneable
+{	
     /** Name by which the item is identified: PV name, formula */
     private String name;
 
@@ -318,4 +318,21 @@ abstract public class ModelItem
         // which does nothing.
         setWaveformIndex(waveform_index);
     }
+    
+	public ModelItem clone() {
+		try {
+			ModelItem ret = (ModelItem)super.clone();
+			ret.name = name;
+			ret.model = model;
+			ret.display_name = display_name;
+			ret.visible = visible;
+			ret.rgb = rgb;
+			ret.line_width = line_width;
+			ret.trace_type = trace_type;
+			ret.axis = axis;
+			return ret;
+		} catch (CloneNotSupportedException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 }
