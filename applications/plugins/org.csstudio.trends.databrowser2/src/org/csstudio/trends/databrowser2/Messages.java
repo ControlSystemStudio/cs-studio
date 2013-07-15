@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
+    public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
@@ -73,6 +74,7 @@ public class Messages extends NLS
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
+    public static String EditItem;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;

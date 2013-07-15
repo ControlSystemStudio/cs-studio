@@ -436,27 +436,26 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			boolean concatenate = (Boolean) getWidgetModel().getProperty(
 					XYGraphModel.makeTracePropID(TraceProperty.CONCATENATE_DATA.propIDPre, i)).getPropertyValue();
 			for(TraceProperty traceProperty : TraceProperty.values()){
-				String propID = XYGraphModel.makeTracePropID(
+				final String propID = XYGraphModel.makeTracePropID(
 					traceProperty.propIDPre, i);
 				final IWidgetPropertyChangeHandler handler = new TracePropertyChangeHandler(i, traceProperty);
-
+				
 				if(concatenate){
 					//cannot use setPropertyChangeHandler because the PV value has to be buffered
 					//which means that it cannot be ignored.
 					getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
 						public void propertyChange(final PropertyChangeEvent evt) {
 							UIBundlingThread.getInstance().addRunnable(
-									getViewer().getControl().getDisplay(), new Runnable() {
-								public void run() {
-									handler.handleChange(
+								getViewer().getControl().getDisplay(), new Runnable() {
+									public void run() {
+										handler.handleChange(
 											evt.getOldValue(), evt.getNewValue(), getFigure());
 									}
-							});
+								});
 						}
 					});
 				}else
 					setPropertyChangeHandler(propID, handler);
-
 			}
 		}
 		for(int i=XYGraphModel.MAX_TRACES_AMOUNT -1; i>= model.getTracesAmount(); i--){
@@ -628,5 +627,23 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		for(int i=0; i<getWidgetModel().getTracesAmount(); i++){
 			((CircularBufferDataProvider)traceList.get(i).getDataProvider()).clearTrace();
 		}
+	}
+	
+	public double[] getXBuffer(int i){
+		CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)traceList.get(i).getDataProvider();
+		double[] XBuffer = new double[dataProvider.getSize()];
+		for (int j = 0; j < dataProvider.getSize(); j++) {
+			XBuffer[j] = dataProvider.getSample(j).getXValue();
+		}
+		return XBuffer;
+	}
+	
+	public double[] getYBuffer(int i){
+		CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)traceList.get(i).getDataProvider();
+		double[] YBuffer = new double[dataProvider.getSize()];
+		for (int j = 0; j < dataProvider.getSize(); j++) {
+			YBuffer[j] = dataProvider.getSample(j).getXValue();
+		}
+		return YBuffer;
 	}
 }
