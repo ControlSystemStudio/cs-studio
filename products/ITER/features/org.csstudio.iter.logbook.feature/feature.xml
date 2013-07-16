@@ -52,6 +52,8 @@ of the distribution package.
       <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.nebula.jface.gridviewer" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.nebula.widgets.grid" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -125,6 +127,13 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.logbook.ui.extra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.logbook.viewer"
          download-size="0"
          install-size="0"
@@ -147,6 +156,20 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.olog.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.nebula.jface.gridviewer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.grid"
          download-size="0"
          install-size="0"
          version="0.0.0"
