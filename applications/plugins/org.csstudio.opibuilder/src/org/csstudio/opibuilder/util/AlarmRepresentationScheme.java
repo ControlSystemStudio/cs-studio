@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
-import org.csstudio.data.values.ISeverity;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.vtype.AlarmSeverity;
 
 /**The scheme for alarm color which provide unified colors and borders for alarms.
  * @author Xihui Chen
@@ -36,16 +36,19 @@ public class AlarmRepresentationScheme {
 	 * @param severity
 	 * @return RGB color of the given alarm severity. Null if alarm severity is "OK".
 	 */
-	public static RGB getAlarmColor(ISeverity severity) {
-		if (severity.isOK()) {
-			return null;
-		} else if (severity.isMajor()) {
+	public static RGB getAlarmColor(AlarmSeverity severity) {
+		switch (severity) {
+		case MAJOR:
 			return getMajorColor();
-		} else if (severity.isMinor()) {
+		case NONE:
+			return null;
+		case MINOR:
 			return getMinorColor();
-		} else {
+		case INVALID:
+		case UNDEFINED:
+		default:
 			return getInValidColor();
-		}
+		}		
 	}
 
 	public static RGB getMajorColor(){

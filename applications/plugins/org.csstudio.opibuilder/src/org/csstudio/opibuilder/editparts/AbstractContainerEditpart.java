@@ -26,7 +26,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.scriptUtil.WidgetUtil;
 import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -120,7 +120,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	 */
 	public Set<String> getAllRuntimePVNames(){
 		Set<String> result = new HashSet<String>();
-		Map<String, PV> allPVs = getAllPVs();
+		Map<String, IPV> allPVs = getAllPVs();
 		if(allPVs != null && !allPVs.isEmpty())
 			result.addAll(getAllPVs().keySet());
 		for(Object child: getChildren()){

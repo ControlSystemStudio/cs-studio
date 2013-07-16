@@ -150,12 +150,11 @@ public class PreferencesHelper {
     	return ConsolePopupLevel.valueOf(popupLevelString);
     }
 
-    public static PVConnectionLayer getPVConnectionLayer(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	String preStr = service.getString(
-    			OPIBuilderPlugin.PLUGIN_ID, PV_CONNECTION_LAYER,
-    			PVConnectionLayer.PV_MANAGER.toString(), null);
-    	return PVConnectionLayer.valueOf(preStr);
+    /**
+     * @return the pv factory id of the pv connection layer.
+     */
+    public static String getPVConnectionLayer(){
+    	return getString(PV_CONNECTION_LAYER);
     }
 
     public static boolean isAdvancedGraphicsDisabled(){

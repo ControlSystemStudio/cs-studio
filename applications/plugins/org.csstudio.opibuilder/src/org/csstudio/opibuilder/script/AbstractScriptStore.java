@@ -19,9 +19,9 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
@@ -40,7 +40,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
 	private String errorSource;
 
-	private Map<PV, PVListener> pvListenerMap;
+	private Map<IPV, IPVListener> pvListenerMap;
 
 	private boolean errorInScript;
 
@@ -50,16 +50,16 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	/**
 	 * A map to see if a PV was triggered before, this is used to skip the first trigger.
 	 */
-	private Map<PV, Boolean> pvTriggeredMap;
+	private Map<IPV, Boolean> pvTriggeredMap;
 
 	private boolean triggerSuppressed = false;
 	
 	private ScriptData scriptData;
 	private AbstractBaseEditPart editPart;
-	private PV[] pvArray;
+	private IPV[] pvArray;
 	
 	public AbstractScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final PV[] pvArray) throws Exception {		
+			final IPV[] pvArray) throws Exception {		
 		
 		this.scriptData = scriptData;
 		this.editPart = editpart;
@@ -99,25 +99,22 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		}		
 
 
-		pvListenerMap = new HashMap<PV, PVListener>();
-		pvTriggeredMap = new HashMap<PV, Boolean>();
+		pvListenerMap = new HashMap<IPV, IPVListener>();
+		pvTriggeredMap = new HashMap<IPV, Boolean>();
 
-		PVListener suppressPVListener = new PVListener() {
+		IPVListener suppressPVListener = new IPVListener.Stub() {
 
-			public synchronized void pvValueUpdate(PV pv) {
+			public synchronized void valueChanged(IPV pv) {
 				if (triggerSuppressed && checkPVsConnected(scriptData, pvArray)) {
 					executeScriptInUIThread(pv);
 					triggerSuppressed = false;
 				}
 			}
-
-			public void pvDisconnected(PV pv) {
-
-			}
+			
 		};
 
-		PVListener triggerPVListener = new PVListener() {
-			public synchronized void pvValueUpdate(PV pv) {
+		IPVListener triggerPVListener = new IPVListener.Stub() {
+			public synchronized void valueChanged(IPV pv) {
 
 				// skip the first trigger if it is needed.
 				if (scriptData.isSkipPVsFirstConnection()
@@ -137,13 +134,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
 				executeScriptInUIThread(pv);
 			}
-
-			public void pvDisconnected(PV pv) {
-			}
+			
 		};
 		//register pv listener
 		int i=0;
-		for(PV pv : pvArray){
+		for(IPV pv : pvArray){
 			if(pv == null)
 				continue;
 			if(!scriptData.getPVList().get(i++).trigger){
@@ -181,9 +176,9 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	 * Execute the script with script engine.
 	 * @param triggerPV  the PV that triggers this execution.
 	 */
-	protected abstract void execScript(final PV triggerPV) throws Exception;
+	protected abstract void execScript(final IPV triggerPV) throws Exception;
 	
-	private void executeScriptInUIThread(final PV triggerPV) {
+	private void executeScriptInUIThread(final IPV triggerPV) {
 		Display display = editPart.getRoot().getViewer().getControl().getDisplay();
 		UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 			public void run() {
@@ -207,10 +202,10 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		});
 	}
 
-	private boolean checkPVsConnected(ScriptData scriptData, PV[] pvArray){
+	private boolean checkPVsConnected(ScriptData scriptData, IPV[] pvArray){
 		if(!scriptData.isCheckConnectivity())
 			return true;
-		for(PV pv : pvArray){
+		for(IPV pv : pvArray){
 			if(!pv.isConnected())
 				return false;
 		}
@@ -220,7 +215,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
 	public void unRegister() {
 		unRegistered = true;
-		for(Entry<PV, PVListener> entry :  pvListenerMap.entrySet()){
+		for(Entry<IPV, IPVListener> entry :  pvListenerMap.entrySet()){
 			entry.getKey().removeListener(entry.getValue());
 		}
 	}
@@ -252,7 +247,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	/**
 	 * @return the pvArray
 	 */
-	public PV[] getPvArray() {
+	public IPV[] getPvArray() {
 		return pvArray;
 	}
 

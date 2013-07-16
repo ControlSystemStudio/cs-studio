@@ -7,12 +7,8 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -22,21 +18,24 @@ import org.csstudio.opibuilder.widgets.symbol.util.IImageLoadedListener;
 import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VType;
 
 /**
  * @author Fred Arnaud (Sopra Group)
  */
 public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart {
 
-	private PVListener loadItemsFromPVListener;
-	private IEnumeratedMetaData meta = null;
+	private IPVListener loadItemsFromPVListener;
+	private List<String> meta = null;
 	
 	private int maxAttempts;
 
@@ -122,7 +121,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		super.deactivate();
 		((CommonMultiSymbolFigure) getFigure()).disposeAll();
 		if (getWidgetModel().isItemsFromPV()) {
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if (pv != null && loadItemsFromPVListener != null) {
 				pv.removeListener(loadItemsFromPVListener);
 			}
@@ -137,29 +136,20 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		// load items from PV
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			if (getWidgetModel().isItemsFromPV()) {
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if (pv != null) {
 					if (loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
-								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData) {
-									IEnumeratedMetaData new_meta = (IEnumeratedMetaData) value.getMetaData();
+						loadItemsFromPVListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
+								if (value != null && value instanceof VEnum) {
+									List<String> new_meta = ((VEnum)value).getLabels();
 									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;
-										List<String> itemsFromPV = new ArrayList<String>();
-										for (String writeValue : meta.getStates()) {
-											itemsFromPV.add(writeValue);
-										}
+										meta = new_meta;										
 										getWidgetModel()
-												.setPropertyValue(
-														CommonMultiSymbolModel.PROP_ITEMS,
-														itemsFromPV);
+												.setPropertyValue(CommonMultiSymbolModel.PROP_ITEMS, meta);
 									}
 								}
-							}
-
-							public void pvDisconnected(PV pv) {
 							}
 						};
 					pv.addListener(loadItemsFromPVListener);
@@ -183,15 +173,13 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if (newValue != null && newValue instanceof IValue) {
+				if (newValue != null && newValue instanceof VType) {
 					CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) refreshableFigure;
-					if (newValue instanceof IDoubleValue) {
-						Double doubleValue = ValueUtil
-								.getDouble((IValue) newValue);
+					if (newValue instanceof VNumber) {
+						Double doubleValue = VTypeHelper.getDouble((VType) newValue);
 						symbolFigure.setState(doubleValue);
 					} else {
-						String stringValue = ValueUtil
-								.getString((IValue) newValue);
+						String stringValue = VTypeHelper.getString((VType) newValue);
 						symbolFigure.setState(stringValue);
 					}
 					autoSizeWidget(symbolFigure);
@@ -210,7 +198,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 					CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) refreshableFigure;
 					symbolFigure.setStates(((List<String>) newValue));
 					if (getWidgetModel().isItemsFromPV()) {
-						symbolFigure.setState(ValueUtil.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+						symbolFigure.setState(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
 						autoSizeWidget(symbolFigure);
 					}
 				}
