@@ -4,9 +4,7 @@
  */
 package org.epics.pvmanager.formula;
 
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.CircularBufferDouble;
-import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListMath;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
 
@@ -21,48 +19,55 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
      * Creates a new set.
      */
     public ArrayFunctionSet() {
-	super(new FormulaFunctionSetDescription("array",
-		"Aggregation and calculations on arrays")
-		.addFormulaFunction(new ArrayOfNumberFormulaFunction())
-		.addFormulaFunction(new ArrayOfStringFormulaFunction())
-		.addFormulaFunction(
-			new TwoArgArrayFormulaFunction("+", "Add Two Arrays",
-				"arg1", "arg2") {
+	super(
+		new FormulaFunctionSetDescription("array",
+			"Aggregation and calculations on arrays")
+			.addFormulaFunction(new ArrayOfNumberFormulaFunction())
+			.addFormulaFunction(new ArrayOfStringFormulaFunction())
+			.addFormulaFunction(new RescaleArrayFormulaFunction())
+			.addFormulaFunction(
+				new TwoArgArrayFormulaFunction("+",
+					"Add Two Arrays", "arg1", "arg2") {
 
-			    @Override
-			    ListDouble calculate(ListNumber arg1,
-				    ListNumber arg2) {
-				if (arg1.size() != arg2.size()) {
-				    throw new RuntimeException(
-					    "Invalid arguments: size of two arrays is not equal");
-				}
-				double[] result = new double[arg1.size()];
-				for (int i = 0; i < arg1.size(); i++) {
-				    result[i] = arg1.getDouble(i)
-					    + arg2.getDouble(i);
-				}
-				return new ArrayDouble(result);
-			    }
-			})
-		.addFormulaFunction(
-			new TwoArgArrayFormulaFunction("-",
-				"Subtract Two Arrays", "arg1", "arg2") {
+				    @Override
+				    ListNumber calculate(ListNumber arg1,
+					    ListNumber arg2) {
+					return ListMath.sum(arg1, arg2);
+				    }
+				})
+			.addFormulaFunction(
+				new TwoArgArrayFormulaFunction("-",
+					"Subtract Two Arrays", "arg1", "arg2") {
 
-			    @Override
-			    ListDouble calculate(ListNumber arg1,
-				    ListNumber arg2) {
-				if (arg1.size() != arg2.size()) {
-				    throw new RuntimeException(
-					    "Invalid arguments: size of two arrays is not equal");
-				}
-				double[] result = new double[arg1.size()];
-				for (int i = 0; i < arg1.size(); i++) {
-				    result[i] = arg1.getDouble(i)
-					    - arg2.getDouble(i);
-				}
-				return new ArrayDouble(result);
-			    }
-			}));
+				    @Override
+				    ListNumber calculate(ListNumber arg1,
+					    ListNumber arg2) {
+				return ListMath.subtract(arg1, arg2);
+				    }
+				})
+			.addFormulaFunction(
+				new TwoArgArrayNumberFormulaFunction("*",
+					"Multiply an array with a number",
+					"arg1", "arg2") {
+
+				    @Override
+				    ListNumber calculate(ListNumber arg1,
+					    Number arg2) {
+					return ListMath.rescale(arg1,
+						arg2.doubleValue(), 0.0);
+				    }
+				})
+			.addFormulaFunction(
+				new TwoArgArrayNumberFormulaFunction("/",
+					"Divide an array with a number",
+					"arg1", "arg2") {
+
+				    @Override
+				    ListNumber calculate(ListNumber arg1,
+					    Number arg2) {
+					return ListMath.rescale(arg1,
+						(1 / arg2.doubleValue()), 0.0);
+				    }
+				}));
     }
-
 }
