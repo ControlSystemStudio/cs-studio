@@ -29,6 +29,11 @@ import org.osgi.framework.Version;
  */
 public class TextInputModel extends TextUpdateModel {
 	
+	/**
+	 * Version less than this has no style property.
+	 */
+	private static final Version VERSION_BEFORE_STYLE = new Version(3, 1, 5);
+
 	public enum FOCUS_TRAVERSE {
 		LOSE("Lose Focus"),
 		KEEP("Keep Focus"),
@@ -178,7 +183,7 @@ public class TextInputModel extends TextUpdateModel {
 	@Override
 	public void processVersionDifference(Version boyVersionOnFile) {
 		super.processVersionDifference(boyVersionOnFile);
-		if(boyVersionOnFile.getMajor()<2){			
+		if(boyVersionOnFile.compareTo(VERSION_BEFORE_STYLE)<0){			
 			if(getWidgetType().equals("Text") || //$NON-NLS-1$
 					getWidgetType().equals("Native Text")){ //$NON-NLS-1$
 				setPropertyValue(PROP_WIDGET_TYPE, "Text Input"); //$NON-NLS-1$

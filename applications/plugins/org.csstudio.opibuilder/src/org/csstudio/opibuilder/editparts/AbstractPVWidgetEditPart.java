@@ -8,11 +8,11 @@
 package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.VType;
 
 /**The abstract edit part for all PV armed widgets.
  * Widgets inheritate this class will have the CSS context menu on it.
@@ -91,7 +91,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
-	public PV getControlPV(){
+	public IPV getControlPV(){
 		return delegate.getControlPV();
 	}
 
@@ -100,7 +100,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 * @return the PV corresponding to the <code>PV Name</code> property. 
 	 * null if PV Name is not configured for this widget.
 	 */
-	public PV getPV(){
+	public IPV getPV(){
 		return delegate.getPV();
 	}
 
@@ -108,7 +108,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 * @param pvPropId the PV property id.
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
 	 */
-	public PV getPV(String pvPropId){
+	public IPV getPV(String pvPropId){
 		return delegate.getPV(pvPropId);
 	}
 	
@@ -129,7 +129,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
 	 * @return the {@link IValue} of the PV.
 	 */
-	public IValue getPVValue(String pvPropId){
+	public VType getPVValue(String pvPropId){
 		return delegate.getPVValue(pvPropId);
 	}
 	

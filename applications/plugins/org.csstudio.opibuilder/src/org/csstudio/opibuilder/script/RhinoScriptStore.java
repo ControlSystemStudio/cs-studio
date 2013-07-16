@@ -11,10 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -38,7 +37,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 
 
 	public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final PV[] pvArray) throws Exception {		
+			final IPV[] pvArray) throws Exception {		
 		super(scriptData, editpart, pvArray);		
 		
 	}
@@ -74,7 +73,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 	}
 
 	@Override
-	protected void execScript(final PV triggerPV) throws Exception {
+	protected void execScript(final IPV triggerPV) throws Exception {
 		ScriptableObject.putProperty(scriptScope, 
 				ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
 		script.exec(scriptContext, scriptScope);

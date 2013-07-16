@@ -223,7 +223,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		optionTabComposite.setLayout(new GridLayout(1, false));
 		optionTab.setControl(optionTabComposite);
 		skipFirstExecutionButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
-		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections.");
+		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first value.");
 		skipFirstExecutionButton.setToolTipText(
 			"Skip the script executions triggered by PVs' first connections during OPI startup.\n" +
 			"This is useful if you want to trigger a script from user inputs only.");

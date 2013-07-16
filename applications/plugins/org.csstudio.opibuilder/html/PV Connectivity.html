@@ -32,14 +32,25 @@
     <h3>Disconnected Status</h3>
     
     <p>
-There is a common look for all the diconnected PV widgets:
+	There is a common look for all the disconnected PV widgets. It will show this disconnection border if any one of the PVs on
+	the widget is disconnected. The information about the disconnected PVs will show in the tooltip.
 
     </p>
     <p>  <img src ="img/Disconnected.png">  </p>
 
+  <h3>Null value border</h3>
+    
+    <p>
+	If any one of the PVs on the widget has null value, it will show a dotted invalid border as below.
+	The information about the null value PVs will show in the tooltip. If the null value PV
+	is the main PV of the widget, the value displayed in the widget is meaningless.
+    </p>
+    <p>  <img src ="img/nullValueBorder.png">  </p>
+
     <h3>PV Security</h3>
 
-<p>If the PV is not  allowed to write, the control widgets will be disabled.</p>
+<p>If the main PV (specified by <code>PV Name</code> property) of the widget is not  allowed to write,
+ the control widgets will be disabled.</p>
 
 
     <p><img src ="img/Write_forbidden.png"> </p>
