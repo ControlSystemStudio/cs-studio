@@ -3,46 +3,38 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.ConfigurableWidget;
-import org.csstudio.ui.util.widgets.ErrorBar;
-import org.csstudio.ui.util.widgets.RangeListener;
-import org.csstudio.ui.util.widgets.StartEndRangeWidget;
-import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
-import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.AxisRanges;
 import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
+import org.epics.util.array.ArrayDouble;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VTable;
+import org.epics.vtype.ValueFactory;
+import org.epics.vtype.table.VTableFactory;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs
@@ -50,281 +42,232 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class LineGraph2DWidget extends AbstractGraph2DWidget implements
-	ISelectionProvider, ConfigurableWidget {
+public class LineGraph2DWidget
+		extends
+		AbstractPointDatasetGraph2DWidget<LineGraph2DRendererUpdate, LineGraph2DExpression>
+		implements ConfigurableWidget, ISelectionProvider {
+	
+	private PVWriter<Object> selectionValueWriter;
 
-    private VImageDisplay imageDisplay;
-    private LineGraph2DExpression plot;
-    private ErrorBar errorBar;
-    private boolean showAxis = true;
-    private StartEndRangeWidget yRangeControl;
-    private StartEndRangeWidget xRangeControl;
-
-    public LineGraph2DWidget(Composite parent, int style) {
-	super(parent, style);
-
-	// Close PV on dispose
-	addDisposeListener(new DisposeListener() {
-
-	    @Override
-	    public void widgetDisposed(DisposeEvent e) {
-		if (pv != null) {
-		    pv.close();
-		    pv = null;
-		}
-	    }
-	});
-
-	setLayout(new FormLayout());
-
-	errorBar = new ErrorBar(this, SWT.NONE);
-	FormData fd_errorBar = new FormData();
-	fd_errorBar.left = new FormAttachment(0, 2);
-	fd_errorBar.right = new FormAttachment(100, -2);
-	fd_errorBar.top = new FormAttachment(0, 2);
-	errorBar.setLayoutData(fd_errorBar);
-
-	errorBar.setMarginBottom(5);
-
-	yRangeControl = new StartEndRangeWidget(this, SWT.NONE);
-	FormData fd_yRangeControl = new FormData();
-	fd_yRangeControl.top = new FormAttachment(errorBar, 2);
-	fd_yRangeControl.left = new FormAttachment(0, 2);
-	fd_yRangeControl.bottom = new FormAttachment(100, -15);
-	fd_yRangeControl.right = new FormAttachment(0, 13);
-	yRangeControl.setLayoutData(fd_yRangeControl);
-	yRangeControl.setOrientation(ORIENTATION.VERTICAL);
-	yRangeControl.addRangeListener(new RangeListener() {
-
-	    @Override
-	    public void rangeChanged() {
-		if (plot != null) {
-		    double invert = yRangeControl.getMin()
-			    + yRangeControl.getMax();
-		    plot.update(new LineGraph2DRendererUpdate()
-			    .yAxisRange(AxisRanges.absolute(invert
-				    - yRangeControl.getSelectedMax(), invert
-				    - yRangeControl.getSelectedMin())));
-		}
-	    }
-	});
-	yRangeControl.setVisible(showAxis);
-
-	imageDisplay = new VImageDisplay(this);
-	FormData fd_imageDisplay = new FormData();
-	fd_imageDisplay.top = new FormAttachment(errorBar, 2);
-	fd_imageDisplay.right = new FormAttachment(100, -2);
-	fd_imageDisplay.left = new FormAttachment(yRangeControl, 2);
-	imageDisplay.setLayoutData(fd_imageDisplay);
-	imageDisplay.setStretched(SWT.HORIZONTAL);
-
-	imageDisplay.addControlListener(new ControlListener() {
-
-	    @Override
-	    public void controlResized(ControlEvent e) {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
-			    .imageHeight(imageDisplay.getSize().y)
-			    .imageWidth(imageDisplay.getSize().x)
-			    .interpolation(InterpolationScheme.LINEAR));
-		}
-	    }
-
-	    @Override
-	    public void controlMoved(ControlEvent e) {
-		// Nothing to do
-	    }
-	});
-
-	xRangeControl = new StartEndRangeWidget(this, SWT.NONE);
-	fd_imageDisplay.bottom = new FormAttachment(xRangeControl, -2);
-	FormData fd_xRangeControl = new FormData();
-	fd_xRangeControl.left = new FormAttachment(0, 15);
-	fd_xRangeControl.top = new FormAttachment(100, -13);
-	fd_xRangeControl.right = new FormAttachment(100, -2);
-	fd_xRangeControl.bottom = new FormAttachment(100, -2);
-	xRangeControl.setLayoutData(fd_xRangeControl);
-	xRangeControl.addRangeListener(new RangeListener() {
-
-	    @Override
-	    public void rangeChanged() {
-		if (plot != null) {
-		    plot.update(new LineGraph2DRendererUpdate()
-			    .xAxisRange(AxisRanges.absolute(
-				    xRangeControl.getSelectedMin(),
-				    xRangeControl.getSelectedMax())));
-		}
-	    }
-	});
-	xRangeControl.setVisible(showAxis);
-
-	addPropertyChangeListener(new PropertyChangeListener() {
-
-	    @Override
-	    public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("processVariable")
-			|| event.getPropertyName().equals("xProcessVariable")) {
-		    reconnect();
-		} else if (event.getPropertyName().equals("showAxis")) {
-		    xRangeControl.setVisible(showAxis);
-		    yRangeControl.setVisible(showAxis);
-		    redraw();
-		}
-
-	    }
-	});
-    }
-    
-    @Override
-    public void setMenu(Menu menu) {
-	super.setMenu(menu);
-	imageDisplay.setMenu(menu);
-    }
-
-
-    private PVReader<Graph2DResult> pv;
-
-    public boolean isShowAxis() {
-	return showAxis;
-    }
-
-    public void setShowAxis(boolean showAxis) {
-	boolean oldValue = this.showAxis;
-	this.showAxis = showAxis;
-	changeSupport.firePropertyChange("showAxis", oldValue, this.showAxis);
-    }
-
-    private void setLastError(Exception lastException) {
-	errorBar.setException(lastException);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    void reconnect() {
-	if (pv != null) {
-	    pv.close();
-	    imageDisplay.setVImage(null);
-	    setLastError(null);
-	    plot = null;
-	    resetRange(xRangeControl);
-	    resetRange(yRangeControl);
-	}
-
-	if (getPvName() == null || getPvName().isEmpty()) {
-	    return;
-	}
-
-	if (getXpvName() != null && !getXpvName().isEmpty()) {
-	    plot = ExpressionLanguage
-		    .lineGraphOf(
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getXpvName()),
-			    (DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-				    .formula(getPvName()));
-	} else {
-	    plot = ExpressionLanguage
-		    .lineGraphOf((DesiredRateExpression<? extends VNumberArray>) org.epics.pvmanager.formula.ExpressionLanguage
-			    .formula(getPvName()));
-	}
-	plot.update(new LineGraph2DRendererUpdate()
-		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x)
-		.interpolation(InterpolationScheme.LINEAR));
-	pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
-		.readListener(new PVReaderListener<Graph2DResult>() {
-		    @Override
-		    public void pvChanged(PVReaderEvent<Graph2DResult> event) {
-			Exception ex = pv.lastException();
-
-			if (ex != null) {
-			    setLastError(ex);
+	public LineGraph2DWidget(Composite parent, int style) {
+		super(parent, style);
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+				}
+				
 			}
-			if (pv.getValue() != null) {
-			    setRange(xRangeControl, pv.getValue().getxRange());
-			    setRange(yRangeControl, pv.getValue().getyRange());
-			    imageDisplay.setVImage(pv.getValue().getImage());
+		});
+		getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
+			
+			@Override
+			public void mouseMove(MouseEvent e) {
+				if (isHighlightSelectionValue() && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+				}
+			}
+		});
+		
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
+					if (selectionValueWriter != null) {
+						selectionValueWriter.close();
+						selectionValueWriter = null;
+					}
+					
+					if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
+						return;
+					}
+					
+					selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
+							.writeListener(new PVWriterListener<Object>() {
+								@Override
+								public void pvChanged(
+										PVWriterEvent<Object> event) {
+									if (event.isWriteFailed()) {
+										Logger.getLogger(LineGraph2DWidget.class.getName())
+										.log(Level.WARNING, "Line graph selection notification failed", event.getPvWriter().lastWriteException());
+									}
+								}
+							})
+							.async();
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
+					}
+							
+				}
+				
+			}
+		});
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
+					}
+				}
+				
+			}
+		});
+	}
+
+	protected LineGraph2DExpression createGraph() {
+		LineGraph2DExpression graph = ExpressionLanguage.lineGraphOf(
+				formula(getDataFormula()), formulaArg(getXColumnFormula()),
+				formulaArg(getYColumnFormula()),
+				formulaArg(getTooltipColumnFormula()));
+		graph.update(graph.newUpdate()
+				.interpolation(InterpolationScheme.LINEAR)
+				.highlightFocusValue(isHighlightSelectionValue()));
+		return graph;
+	}
+	
+	private boolean highlightSelectionValue = false;
+	private VTable selectionValue;
+	private String selectionValuePv;
+	
+	public String getSelectionValuePv() {
+		return selectionValuePv;
+	}
+	
+	public void setSelectionValuePv(String selectionValuePv) {
+		String oldValue = this.selectionValuePv;
+		this.selectionValuePv = selectionValuePv;
+		changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
+	}
+	
+	public boolean isHighlightSelectionValue() {
+		return highlightSelectionValue;
+	}
+	
+	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
+		boolean oldValue = this.highlightSelectionValue;
+		this.highlightSelectionValue = highlightSelectionValue;
+		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
+	}
+	
+	public VTable getSelectionValue() {
+		return selectionValue;
+	}
+	
+	private void setSelectionValue(VTable selectionValue) {
+		VTable oldValue = this.selectionValue;
+		this.selectionValue = selectionValue;
+		changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+	}
+	
+	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
+	
+	@Override
+	public void loadState(IMemento memento) {
+		super.loadState(memento);
+		if (memento != null) {
+			if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
+				setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
+			}
+		}
+	}
+	
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
+	}
+	
+	@Override
+	protected void processInit() {
+		super.processInit();
+		processValue();
+	}
+	
+	@Override
+	protected void processValue() {
+		Graph2DResult result = getCurrentResult();
+		if (result == null || result.getData() == null) {
+			setSelectionValue(null);
+		} else {
+			int index = result.focusDataIndex();
+			if (index == -1) {
+				setSelectionValue(null);
 			} else {
-			    imageDisplay.setVImage(null);
+				if (result.getData() instanceof VTable) {
+					VTable data = (VTable) result.getData();
+					setSelectionValue(VTableFactory.extractRow(data, index));
+					return;
+				}
+				if (result.getData() instanceof VNumberArray) {
+					VNumberArray data = (VNumberArray) result.getData();
+					VTable selection = ValueFactory.newVTable(Arrays.<Class<?>>asList(double.class, double.class),
+							Arrays.asList("X", "Y"), 
+							Arrays.<Object>asList(new ArrayDouble(index), new ArrayDouble(data.getData().getDouble(index))));
+					setSelectionValue(selection);
+					return;
+				}
+				setSelectionValue(null);
 			}
-		    }
-		}).maxRate(ofHertz(50));
-    }
-
-    /** Memento tag */
-    private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
-
-    public void saveState(IMemento memento) {
-	if (getPvName() != null) {
-	    memento.putString(MEMENTO_PVNAME, getPvName());
+		}
 	}
-    }
 
-    public void loadState(IMemento memento) {
-	if (memento != null) {
-	    if (memento.getString(MEMENTO_PVNAME) != null) {
-		setPvName(memento.getString(MEMENTO_PVNAME));
-	    }
+	@Override
+	public ISelection getSelection() {
+		return new StructuredSelection(new LineGraph2DSelection(this));
 	}
-    }
 
-    @Override
-    public ISelection getSelection() {
-	if (getPvName() != null) {
-	    return new StructuredSelection(new LineGraph2DSelection(
-		    new ProcessVariable(getPvName()),
-		    getXpvName() != null ? new ProcessVariable(getXpvName())
-			    : null, this));
+	@Override
+	public void addSelectionChangedListener(
+			final ISelectionChangedListener listener) {
 	}
-	return null;
-    }
 
-    @Override
-    public void addSelectionChangedListener(
-	    final ISelectionChangedListener listener) {
-    }
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+	}
 
-    @Override
-    public void removeSelectionChangedListener(
-	    ISelectionChangedListener listener) {
-    }
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
 
-    @Override
-    public void setSelection(ISelection selection) {
-	throw new UnsupportedOperationException("Not implemented yet");
-    }
+	private boolean configurable = true;
 
-    private boolean configurable = true;
+	private LineGraph2DConfigurationDialog dialog;
 
-    private Graph2DConfigurationDialog dialog;
+	@Override
+	public boolean isConfigurable() {
+		return this.configurable;
+	}
 
-    @Override
-    public boolean isConfigurable() {
-	return this.configurable;
-    }
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldValue = this.configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldValue,
+				this.configurable);
+	}
 
-    @Override
-    public void setConfigurable(boolean configurable) {
-	boolean oldValue = this.configurable;
-	this.configurable = configurable;
-	changeSupport.firePropertyChange("configurable", oldValue,
-		this.configurable);
-    }
+	@Override
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new LineGraph2DConfigurationDialog(this, "Configure Line Graph");
+		dialog.open();
+	}
 
-    @Override
-    public void openConfigurationDialog() {
-	if (dialog != null)
-	    return;
-	dialog = new Graph2DConfigurationDialog(this, "Configure Line Graph");
-	dialog.open();
-    }
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
 
-    @Override
-    public boolean isConfigurationDialogOpen() {
-	return dialog != null;
-    }
-
-    @Override
-    public void configurationDialogClosed() {
-	dialog = null;
-    }
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
+	}
 }

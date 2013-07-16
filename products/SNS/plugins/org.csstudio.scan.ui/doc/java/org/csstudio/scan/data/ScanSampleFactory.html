@@ -136,15 +136,23 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Number...)">createSample</a></strong>(java.util.Date&nbsp;timestamp,
             long&nbsp;serial,
             java.lang.Number...&nbsp;numbers)</code>
-<div class="block">Create ScanSample for plain number or text value</div>
+<div class="block">Create ScanSample for plain number</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object[])">createSample</a></strong>(java.util.Date&nbsp;timestamp,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.Object...)">createSample</a></strong>(java.util.Date&nbsp;timestamp,
             long&nbsp;serial,
-            java.lang.Object[]&nbsp;values)</code>
+            java.lang.Object...&nbsp;values)</code>
 <div class="block">Create ScanSample for plain number or text value</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html#createSample(java.util.Date, long, java.lang.String...)">createSample</a></strong>(java.util.Date&nbsp;timestamp,
+            long&nbsp;serial,
+            java.lang.String...&nbsp;values)</code>
+<div class="block">Create ScanSample for strings</div>
 </td>
 </tr>
 </table>
@@ -196,14 +204,31 @@ extends java.lang.Object</pre>
                       long&nbsp;serial,
                       java.lang.Number...&nbsp;numbers)
                                throws java.lang.IllegalArgumentException</pre>
-<div class="block">Create ScanSample for plain number or text value</div>
+<div class="block">Create ScanSample for plain number</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd><dd><code>numbers</code> - <code>Number</code>s</dd>
 <dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><code>ScanSample</code></a></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.IllegalArgumentException</code> - if the value type is not handled</dd></dl>
 </li>
 </ul>
-<a name="createSample(java.util.Date, long, java.lang.Object[])">
+<a name="createSample(java.util.Date, long, java.lang.String...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createSample</h4>
+<pre>public static&nbsp;<a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a>&nbsp;createSample(java.util.Date&nbsp;timestamp,
+                      long&nbsp;serial,
+                      java.lang.String...&nbsp;values)
+                               throws java.lang.IllegalArgumentException</pre>
+<div class="block">Create ScanSample for strings</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd><dd><code>values</code> - <code>String</code>s</dd>
+<dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><code>ScanSample</code></a></dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - if the value type is not handled</dd></dl>
+</li>
+</ul>
+<a name="createSample(java.util.Date, long, java.lang.Object...)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -211,10 +236,10 @@ extends java.lang.Object</pre>
 <h4>createSample</h4>
 <pre>public static&nbsp;<a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</a>&nbsp;createSample(java.util.Date&nbsp;timestamp,
                       long&nbsp;serial,
-                      java.lang.Object[]&nbsp;values)
+                      java.lang.Object...&nbsp;values)
                                throws java.lang.IllegalArgumentException</pre>
 <div class="block">Create ScanSample for plain number or text value</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd><dd><code>values</code> - Values</dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd><dd><code>values</code> - Values, must all have the same type</dd>
 <dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><code>ScanSample</code></a></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.IllegalArgumentException</code> - if the value type is not handled</dd></dl>

@@ -51,7 +51,7 @@
     <widget_type>Gauge</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>138</width>
     <show_lolo>true</show_lolo>
@@ -87,7 +87,7 @@
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <ramp_gradient>true</ramp_gradient>
@@ -137,7 +137,7 @@ $(pv_value)</tooltip>
     <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>163</width>
     <show_lolo>true</show_lolo>
@@ -173,7 +173,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <ramp_gradient>true</ramp_gradient>
@@ -195,51 +195,52 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)&#xD;
 $(pv_value)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
     <multiline_input>false</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3dc5</wuid>
     <show_native_border>false</show_native_border>
     <auto_size>false</auto_size>
     <scripts />
     <height>25</height>
     <password_input>false</password_input>
-    <name>Text</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text></text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>5ec8b324:13880ba2d91:-3dc5</wuid>
+    <style>1</style>
+    <name>Text</name>
     <format_type>0</format_type>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <precision_from_pv>true</precision_from_pv>
     <pv_name>loc://test</pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Text</widget_type>
-    <text></text>
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>100</width>
-    <border_style>0</border_style>
     <confirm_message></confirm_message>
     <rules />
-    <pv_value />
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>0</horizontal_alignment>
     <border_color>
@@ -251,51 +252,52 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
     <multiline_input>false</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3d97</wuid>
     <show_native_border>false</show_native_border>
     <auto_size>false</auto_size>
     <scripts />
     <height>25</height>
     <password_input>false</password_input>
-    <name>Text_1</name>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text></text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>5ec8b324:13880ba2d91:-3d97</wuid>
+    <style>1</style>
+    <name>Text_1</name>
     <format_type>0</format_type>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <precision_from_pv>true</precision_from_pv>
     <pv_name>sim://noise</pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Text</widget_type>
-    <text></text>
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>100</width>
-    <border_style>0</border_style>
     <confirm_message></confirm_message>
     <rules />
-    <pv_value />
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>0</horizontal_alignment>
     <border_color>
@@ -307,120 +309,52 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
-    <multiline_input>true</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3d77</wuid>
-    <show_native_border>true</show_native_border>
-    <auto_size>false</auto_size>
-    <scripts />
-    <height>261</height>
-    <name>Label</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <format_type>0</format_type>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name></pv_name>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <background_color>
-      <color name="Label Background" red="255" green="255" blue="212" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Label</widget_type>
-    <text>Step1. Open the OPI Editor perspective from Menu: &#xD;
-Window-&gt;Open Perscpective-&gt;Other..-&gt;OPI Editor&#xD;
-&#xD;
-Step2. Create a new OPI file from Menu&#xD;
-File-&gt;new-&gt;Others...-&gt;BOY-&gt;OPI File&#xD;
-&#xD;
-Step3. Click "Text Update" widget on the palette, then click or drag a rectangle in the editing area to place the widget on the editing area.  &#xD;
-&#xD;
-Step4. Go to the properties view, set "PV Name" to "sim://noise"&#xD;
-&#xD;
-Step5. Save file by pressing "Ctrl+S". Click the "Run OPI" button on the toolbar or press "Ctrl+G" to run the OPI in the editor. Now you are successful to see the value update in the widget!&#xD;
-&#xD;
-You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...) by following the same steps.</text>
-    <precision>0</precision>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>552</width>
-    <border_style>0</border_style>
-    <confirm_message></confirm_message>
-    <rules />
-    <pv_value />
-    <show_h_scroll>false</show_h_scroll>
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
-    <show_v_scroll>false</show_v_scroll>
-    <limits_from_pv>false</limits_from_pv>
-    <horizontal_alignment>0</horizontal_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>121</y>
-    <actions hook="false" hook_all="false" />
-    <wrap_words>true</wrap_words>
-    <x>7</x>
-    <tooltip></tooltip>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <read_only>true</read_only>
-    <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
     <multiline_input>false</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3d23</wuid>
     <show_native_border>false</show_native_border>
     <auto_size>false</auto_size>
     <scripts />
     <height>25</height>
     <password_input>false</password_input>
-    <name>Text_2</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text>Example1: Display PV value in a Text Update widget.</text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>433</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>5ec8b324:13880ba2d91:-3d23</wuid>
+    <style>1</style>
+    <name>Text_2</name>
     <format_type>0</format_type>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <precision_from_pv>true</precision_from_pv>
     <pv_name></pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Text</widget_type>
-    <text>Example1: Display PV value in a Text Update widget.</text>
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>433</width>
-    <border_style>0</border_style>
     <confirm_message></confirm_message>
     <rules />
-    <pv_value />
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>1</horizontal_alignment>
     <border_color>
@@ -432,114 +366,52 @@ You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <read_only>true</read_only>
     <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
-    <multiline_input>true</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3d02</wuid>
-    <show_native_border>true</show_native_border>
-    <auto_size>false</auto_size>
-    <scripts />
-    <height>143</height>
-    <name>Label_11</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <format_type>0</format_type>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name></pv_name>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <background_color>
-      <color name="Label Background" red="255" green="255" blue="212" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Label</widget_type>
-    <text>Step1. Create a Knob widget in the editing area.&#xD;
-&#xD;
-Step2. Set the properties of "Control PV" and "Readback PV" to "loc://test"&#xD;
-&#xD;
-Step3. Set "Limits From PV" property to no.&#xD;
-&#xD;
-Step4. Run OPI and then you can set the PV value by dragging the thumb on the knob</text>
-    <precision>0</precision>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>552</width>
-    <border_style>0</border_style>
-    <confirm_message></confirm_message>
-    <rules />
-    <pv_value />
-    <show_h_scroll>false</show_h_scroll>
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
-    <show_v_scroll>false</show_v_scroll>
-    <limits_from_pv>false</limits_from_pv>
-    <horizontal_alignment>0</horizontal_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>415</y>
-    <actions hook="false" hook_all="false" />
-    <wrap_words>true</wrap_words>
-    <x>7</x>
-    <tooltip></tooltip>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <read_only>true</read_only>
-    <visible>true</visible>
-    <minimum>-1.7976931348623157E308</minimum>
-    <next_focus>0</next_focus>
-    <show_units>true</show_units>
     <multiline_input>false</multiline_input>
-    <wuid>5ec8b324:13880ba2d91:-3cf6</wuid>
     <show_native_border>false</show_native_border>
     <auto_size>false</auto_size>
     <scripts />
     <height>26</height>
     <password_input>false</password_input>
-    <name>Text_3</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text>Example2: Set PV value from Knob widget</text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>375</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>5ec8b324:13880ba2d91:-3cf6</wuid>
+    <style>1</style>
+    <name>Text_3</name>
     <format_type>0</format_type>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <precision_from_pv>true</precision_from_pv>
     <pv_name></pv_name>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
-    <widget_type>Text</widget_type>
-    <text>Example2: Set PV value from Knob widget</text>
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>375</width>
-    <border_style>0</border_style>
     <confirm_message></confirm_message>
     <rules />
-    <pv_value />
-    <maximum>1.7976931348623157E308</maximum>
-    <border_width>1</border_width>
     <limits_from_pv>false</limits_from_pv>
     <horizontal_alignment>1</horizontal_alignment>
     <border_color>
@@ -576,11 +448,12 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>765</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -590,51 +463,52 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>7</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <read_only>true</read_only>
       <visible>true</visible>
-      <minimum>-1.7976931348623157E308</minimum>
-      <next_focus>0</next_focus>
-      <show_units>true</show_units>
       <multiline_input>false</multiline_input>
-      <wuid>6d4582ac:1389581a6f9:-7ab4</wuid>
       <show_native_border>false</show_native_border>
       <auto_size>false</auto_size>
       <scripts />
       <height>33</height>
       <password_input>false</password_input>
-      <name>Label_11</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <precision_from_pv>true</precision_from_pv>
+      <background_color>
+        <color name="Header Background" red="94" green="151" blue="230" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Text Input</widget_type>
+      <text>Examples</text>
+      <font>
+        <opifont.name fontName="Segoe UI" height="17" style="1">Header 1</opifont.name>
+      </font>
+      <width>396</width>
+      <border_style>0</border_style>
+      <pv_value />
+      <maximum>1.7976931348623157E308</maximum>
+      <border_width>1</border_width>
+      <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
+      <show_units>true</show_units>
+      <wuid>6d4582ac:1389581a6f9:-7ab4</wuid>
+      <style>1</style>
+      <name>Label_11</name>
       <format_type>0</format_type>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <precision_from_pv>true</precision_from_pv>
       <pv_name></pv_name>
       <foreground_color>
         <color name="Header MainColor" red="255" green="255" blue="255" />
       </foreground_color>
-      <background_color>
-        <color name="Header Background" red="94" green="151" blue="230" />
-      </background_color>
-      <enabled>true</enabled>
-      <widget_type>Text</widget_type>
-      <text>Examples</text>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
-      </font>
-      <width>396</width>
-      <border_style>0</border_style>
       <confirm_message></confirm_message>
       <rules />
-      <pv_value />
-      <maximum>1.7976931348623157E308</maximum>
-      <border_width>1</border_width>
       <limits_from_pv>false</limits_from_pv>
       <horizontal_alignment>1</horizontal_alignment>
       <border_color>
@@ -645,51 +519,52 @@ $(pv_value)</tooltip>
       <x>352</x>
       <tooltip></tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <read_only>true</read_only>
       <visible>true</visible>
-      <minimum>-1.7976931348623157E308</minimum>
-      <next_focus>0</next_focus>
-      <show_units>true</show_units>
       <multiline_input>false</multiline_input>
-      <wuid>6d4582ac:1389581a6f9:-7ab3</wuid>
       <show_native_border>false</show_native_border>
       <auto_size>false</auto_size>
       <scripts />
       <height>33</height>
       <password_input>false</password_input>
-      <name>Label_12</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <precision_from_pv>true</precision_from_pv>
+      <background_color>
+        <color name="Header Background" red="94" green="151" blue="230" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Text Input</widget_type>
+      <text>Best OPI Yet (BOY)</text>
+      <font>
+        <opifont.name fontName="Segoe UI" height="17" style="1">Header 1</opifont.name>
+      </font>
+      <width>396</width>
+      <border_style>0</border_style>
+      <pv_value />
+      <maximum>1.7976931348623157E308</maximum>
+      <border_width>1</border_width>
+      <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
+      <show_units>true</show_units>
+      <wuid>6d4582ac:1389581a6f9:-7ab3</wuid>
+      <style>1</style>
+      <name>Label_12</name>
       <format_type>0</format_type>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <precision_from_pv>true</precision_from_pv>
       <pv_name></pv_name>
       <foreground_color>
         <color name="Header MainColor" red="255" green="255" blue="255" />
       </foreground_color>
-      <background_color>
-        <color name="Header Background" red="94" green="151" blue="230" />
-      </background_color>
-      <enabled>true</enabled>
-      <widget_type>Text</widget_type>
-      <text>Best OPI Yet (BOY)</text>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
-      </font>
-      <width>396</width>
-      <border_style>0</border_style>
       <confirm_message></confirm_message>
       <rules />
-      <pv_value />
-      <maximum>1.7976931348623157E308</maximum>
-      <border_width>1</border_width>
       <limits_from_pv>false</limits_from_pv>
       <horizontal_alignment>1</horizontal_alignment>
       <border_color>
@@ -700,51 +575,52 @@ $(pv_value)</tooltip>
       <x>352</x>
       <tooltip></tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <read_only>true</read_only>
       <visible>true</visible>
-      <minimum>-1.7976931348623157E308</minimum>
-      <next_focus>0</next_focus>
-      <show_units>true</show_units>
       <multiline_input>false</multiline_input>
-      <wuid>6d4582ac:1389581a6f9:-7ab1</wuid>
       <show_native_border>false</show_native_border>
       <auto_size>false</auto_size>
       <scripts />
       <height>38</height>
       <password_input>false</password_input>
-      <name>Label_14</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <precision_from_pv>true</precision_from_pv>
+      <background_color>
+        <color name="Header Background" red="94" green="151" blue="230" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Text Input</widget_type>
+      <text>Start Up</text>
+      <font>
+        <opifont.name fontName="Segoe UI" height="17" style="1">Header 1</opifont.name>
+      </font>
+      <width>202</width>
+      <border_style>0</border_style>
+      <pv_value />
+      <maximum>1.7976931348623157E308</maximum>
+      <border_width>1</border_width>
+      <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
+      <show_units>true</show_units>
+      <wuid>6d4582ac:1389581a6f9:-7ab1</wuid>
+      <style>1</style>
+      <name>Label_14</name>
       <format_type>0</format_type>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <precision_from_pv>true</precision_from_pv>
       <pv_name></pv_name>
       <foreground_color>
         <color name="Header SubColor" red="255" green="255" blue="0" />
       </foreground_color>
-      <background_color>
-        <color name="Header Background" red="94" green="151" blue="230" />
-      </background_color>
-      <enabled>true</enabled>
-      <widget_type>Text</widget_type>
-      <text>Start Up</text>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
-      </font>
-      <width>202</width>
-      <border_style>0</border_style>
       <confirm_message></confirm_message>
       <rules />
-      <pv_value />
-      <maximum>1.7976931348623157E308</maximum>
-      <border_width>1</border_width>
       <limits_from_pv>false</limits_from_pv>
       <horizontal_alignment>1</horizontal_alignment>
       <border_color>
@@ -755,51 +631,52 @@ $(pv_value)</tooltip>
       <x>56</x>
       <tooltip></tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <read_only>true</read_only>
       <visible>true</visible>
-      <minimum>-1.7976931348623157E308</minimum>
-      <next_focus>0</next_focus>
-      <show_units>true</show_units>
       <multiline_input>false</multiline_input>
-      <wuid>6d4582ac:1389581a6f9:-7ab2</wuid>
       <show_native_border>false</show_native_border>
       <auto_size>false</auto_size>
       <scripts />
       <height>32</height>
       <password_input>false</password_input>
-      <name>Label_13</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <precision_from_pv>true</precision_from_pv>
+      <background_color>
+        <color name="Header Background" red="94" green="151" blue="230" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Text Input</widget_type>
+      <text>Yes, that is easy!</text>
+      <font>
+        <opifont.name fontName="Segoe UI" height="9" style="1">Default Bold</opifont.name>
+      </font>
+      <width>202</width>
+      <border_style>0</border_style>
+      <pv_value />
+      <maximum>1.7976931348623157E308</maximum>
+      <border_width>1</border_width>
+      <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
+      <show_units>true</show_units>
+      <wuid>6d4582ac:1389581a6f9:-7ab2</wuid>
+      <style>1</style>
+      <name>Label_13</name>
       <format_type>0</format_type>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <precision_from_pv>true</precision_from_pv>
       <pv_name></pv_name>
       <foreground_color>
         <color red="128" green="255" blue="0" />
       </foreground_color>
-      <background_color>
-        <color name="Header Background" red="94" green="151" blue="230" />
-      </background_color>
-      <enabled>true</enabled>
-      <widget_type>Text</widget_type>
-      <text>Yes, that is easy!</text>
       <precision>0</precision>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Sans" height="10" style="1">Default Bold</opifont.name>
-      </font>
-      <width>202</width>
-      <border_style>0</border_style>
       <confirm_message></confirm_message>
       <rules />
-      <pv_value />
-      <maximum>1.7976931348623157E308</maximum>
-      <border_width>1</border_width>
       <limits_from_pv>false</limits_from_pv>
       <horizontal_alignment>1</horizontal_alignment>
       <border_color>
@@ -837,7 +714,7 @@ $(pv_value)</tooltip>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>118</width>
     <border_style>0</border_style>
@@ -891,7 +768,7 @@ $(pv_value)</tooltip>
     <text>See All Widgets</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>171</width>
     <border_style>0</border_style>
@@ -918,5 +795,139 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>592</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <read_only>true</read_only>
+    <visible>true</visible>
+    <multiline_input>true</multiline_input>
+    <show_native_border>true</show_native_border>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>143</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color name="Label Background" red="255" green="255" blue="212" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text>Step1. Create a Knob widget in the editing area.&#xD;
+&#xD;
+Step2. Set the properties of "Control PV" and "Readback PV" to "loc://test"&#xD;
+&#xD;
+Step3. Set "Limits From PV" property to no.&#xD;
+&#xD;
+Step4. Run OPI and then you can set the PV value by dragging the thumb on the knob</text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>552</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <show_h_scroll>false</show_h_scroll>
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <show_v_scroll>false</show_v_scroll>
+    <wrap_words>true</wrap_words>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>-2d7b3317:13eb2e92883:-6b9e</wuid>
+    <style>1</style>
+    <name>Label_11</name>
+    <format_type>0</format_type>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <precision>0</precision>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <confirm_message></confirm_message>
+    <rules />
+    <limits_from_pv>false</limits_from_pv>
+    <horizontal_alignment>0</horizontal_alignment>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>415</y>
+    <actions hook="false" hook_all="false" />
+    <x>7</x>
+    <tooltip></tooltip>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <read_only>true</read_only>
+    <visible>true</visible>
+    <multiline_input>true</multiline_input>
+    <show_native_border>true</show_native_border>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>261</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color name="Label Background" red="255" green="255" blue="212" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Text Input</widget_type>
+    <text>Step1. Open the OPI Editor perspective from Menu: &#xD;
+Window-&gt;Open Perscpective-&gt;Other..-&gt;OPI Editor&#xD;
+&#xD;
+Step2. Create a new OPI file from Menu&#xD;
+File-&gt;new-&gt;Others...-&gt;BOY-&gt;OPI File&#xD;
+&#xD;
+Step3. Click "Text Update" widget on the palette, then click or drag a rectangle in the editing area to place the widget on the editing area.  &#xD;
+&#xD;
+Step4. Go to the properties view, set "PV Name" to "sim://noise"&#xD;
+&#xD;
+Step5. Save file by pressing "Ctrl+S". Click the "Run OPI" button on the toolbar or press "Ctrl+G" to run the OPI in the editor. Now you are successful to see the value update in the widget!&#xD;
+&#xD;
+You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...) by following the same steps.</text>
+    <font>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>552</width>
+    <border_style>0</border_style>
+    <pv_value />
+    <show_h_scroll>false</show_h_scroll>
+    <maximum>1.7976931348623157E308</maximum>
+    <border_width>1</border_width>
+    <show_v_scroll>false</show_v_scroll>
+    <wrap_words>true</wrap_words>
+    <minimum>-1.7976931348623157E308</minimum>
+    <next_focus>0</next_focus>
+    <show_units>true</show_units>
+    <wuid>-2d7b3317:13eb2e92883:-6b9d</wuid>
+    <style>1</style>
+    <name>Label</name>
+    <format_type>0</format_type>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <precision>0</precision>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <confirm_message></confirm_message>
+    <rules />
+    <limits_from_pv>false</limits_from_pv>
+    <horizontal_alignment>0</horizontal_alignment>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>121</y>
+    <actions hook="false" hook_all="false" />
+    <x>7</x>
+    <tooltip></tooltip>
   </widget>
 </display>

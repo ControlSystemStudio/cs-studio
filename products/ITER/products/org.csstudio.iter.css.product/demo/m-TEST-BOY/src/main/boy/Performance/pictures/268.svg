@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0106.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.374724in"
+		height="0.491654in" viewBox="0 0 26.9802 35.3991" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st3 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st4 {fill:#000000}
+		.st5 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+	]]>
+	</style>
+	<defs id="Masters">
+		<symbol id="master4" v:mID="4" class="st2">
+			<title>FL_EF0106</title>
+			<g id="group7-7" v:mID="7" v:groupContext="group">
+				<title>FL_EF0106</title>
+				<g id="master-shape8-8" v:mID="8" v:groupContext="shape" transform="translate(-22.6431,35.3991) rotate(-90)">
+					<title>Feuille.8</title>
+					<path d="M8.5 26.9 L0 22.64 L0 31.15 L8.5 26.9 Z M8.5 26.9 L4.25 35.4 L12.76 35.4 L8.5 26.9 Z" class="st3"/>
+				</g>
+				<g id="master-shape9-10" v:mID="9" v:groupContext="shape" transform="translate(-5.09592E-014,-8.50394)">
+					<title>Feuille.9</title>
+					<path d="M11.91 30.3 L9.35 29.45 L9.35 30.3 L11.91 30.3 Z M11.91 30.3 L9.35 30.3 L9.35 31.15 L11.91 30.3 Z"
+							class="st4"/>
+					<path d="M7.19 23.6 L0.85 28.21" class="st5"/>
+					<path d="M2.54 23.58 L5.75 21.24" class="st5"/>
+					<path d="M11.91 30.3 L9.35 29.45 L9.35 30.3 L11.91 30.3" class="st5"/>
+					<path d="M11.91 30.3 L9.35 30.3 L9.35 31.15 L11.91 30.3" class="st5"/>
+					<path d="M9.35 30.3 L6.8 30.3" class="st5"/>
+					<path d="M8.5 26.04 L0 32.85" class="st5"/>
+					<path d="M4.25 35.4 L4.25 18.39" class="st5"/>
+				</g>
+			</g>
+		</symbol>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group6-1" transform="translate(0.72,-0.72)" v:mID="6" v:groupContext="group">
+			<title>Feuille.6</title>
+			<g id="shape4-2" v:mID="4" v:groupContext="shape" transform="translate(-6.18646E-016,-33.9307)">
+				<title>Feuille.4</title>
+				<rect x="0" y="35.3707" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+			<g id="shape5-4" v:mID="5" v:groupContext="shape" transform="translate(25.5118,0)">
+				<title>Feuille.5</title>
+				<rect x="0" y="35.3707" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+		</g>
+		<use id="shape7-6" v:mID="7" xlink:href="#master4" transform="translate(9.23811,-9.16724)">
+			<title>FL_EF0106</title>
+		</use>
+	</g>
+</svg>

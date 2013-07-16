@@ -36,7 +36,7 @@ public class LogEntryBuilderDialog extends Dialog {
     private final IPreferencesService service = Platform
 	    .getPreferencesService();
     private boolean authenticate = true;
-    private String defaultLogbook;
+    private String defaultLogbook = "";
     private ErrorBar errorBar;
 
     public LogEntryBuilderDialog(Shell parentShell,
@@ -75,6 +75,7 @@ public class LogEntryBuilderDialog extends Dialog {
 	GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
 		true, 1, 1);
 	gd_logEntryWidget.heightHint = 450;
+	gd_logEntryWidget.widthHint = 450;
 	logEntryWidget.setLayoutData(gd_logEntryWidget);
 	if (this.logEntryBuilder != null) {
 	    try {

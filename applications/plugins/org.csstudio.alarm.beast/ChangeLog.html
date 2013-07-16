@@ -13,6 +13,12 @@ by all other alarm system tools.
 Revisions before 3.1.0 refer to the associated SNS CSS update.
 </p>
 
+<h2>3.2.0 - 2013-04-22</h2>
+<ul>
+  <li>Prevent renaming item to existing item (Must not have entries with same name within one configuration).</li>
+  <li>RDB state updates are batched (faster).</li>
+</ul>
+
 <h2>3.1.4 - 2012-10-02</h2>
 <ul>
   <li>AlarmClientModel: After reading new PV config, only sends new alarm state to listeners (GUI, ..) if it actually changed.</li>

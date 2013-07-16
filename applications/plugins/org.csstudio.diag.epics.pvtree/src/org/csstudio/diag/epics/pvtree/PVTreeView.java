@@ -9,7 +9,8 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.IMenuListener;
@@ -25,10 +26,12 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -49,12 +52,12 @@ public class PVTreeView extends ViewPart
 
     // Memento tags
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
-    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    // private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
 
     private IMemento memento;
 
     /** The root PV name. */
-    private Combo pv_name;
+    private Text pv_name;
 
     private PVTreeModel model;
 
@@ -63,7 +66,7 @@ public class PVTreeView extends ViewPart
     /** Allows 'zoom in' and then going back up via context menu. */
     private DrillDownAdapter drillDownAdapter;
 
-    private ComboHistoryHelper pv_name_helper;
+    // private ComboHistoryHelper pv_name_helper;
     
     /** @return New unique code to allow multiple instances of this view */
     public static String newInstance()
@@ -115,20 +118,26 @@ public class PVTreeView extends ViewPart
         gd = new GridData();
         l.setLayoutData(gd);
 
-        pv_name = new Combo(parent, SWT.LEFT);
-        pv_name.setToolTipText(Messages.PV_TT);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        pv_name.setLayoutData(gd);
-        pv_name_helper =
-            new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-                                   PV_LIST_TAG, pv_name)
-        {
-            @Override
-            public void newSelection(String new_pv_name)
-            {   setPVName(new_pv_name); }
-        };
+		pv_name = new Text(parent, SWT.LEFT | SWT.BORDER);
+		pv_name.setToolTipText(Messages.PV_TT);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		pv_name.setLayoutData(gd);
+		pv_name.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				setPVName(pv_name.getText());
+			}
+		});
+		new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
+		// pv_name_helper =
+		// new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+		// PV_LIST_TAG, pv_name)
+		// {
+		// @Override
+		// public void newSelection(String new_pv_name)
+		// { setPVName(new_pv_name); }
+		// };
 
         final Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
@@ -179,12 +188,12 @@ public class PVTreeView extends ViewPart
             public void widgetDisposed(DisposeEvent e)
             {
                 model.dispose();
-                pv_name_helper.saveSettings();
+                // pv_name_helper.saveSettings();
             }
         });
 
         // Populate PV list
-        pv_name_helper.loadSettings();
+        // pv_name_helper.loadSettings();
 
         if (memento != null)
         {
@@ -216,7 +225,7 @@ public class PVTreeView extends ViewPart
         if (! pv_name.getText().equals(new_pv_name))
         {
             pv_name.setText(new_pv_name);
-            pv_name_helper.addEntry(new_pv_name);
+            // pv_name_helper.addEntry(new_pv_name);
         }
         model.setRootPV(new_pv_name);
     }

@@ -15,11 +15,13 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.NameDefinedCategory;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
@@ -28,6 +30,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Version;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -173,16 +176,16 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {
-		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_X_PV_NAME, "Horizon Profile X PV", 
+		addPVProperty(new PVNameProperty(PROP_HORIZON_PROFILE_X_PV_NAME, "Horizon Profile X PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_X_PV_VALUE, null));
 
-		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_X_PV_NAME, "Vertical Profile X PV", 
+		addPVProperty(new PVNameProperty(PROP_VERTICAL_PROFILE_X_PV_NAME, "Vertical Profile X PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_X_PV_VALUE, null));
 		
-		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_Y_PV_NAME, "Horizon Profile Y PV", 
+		addPVProperty(new PVNameProperty(PROP_HORIZON_PROFILE_Y_PV_NAME, "Horizon Profile Y PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_Y_PV_VALUE, null));
 
-		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_Y_PV_NAME, "Vertical Profile Y PV", 
+		addPVProperty(new PVNameProperty(PROP_VERTICAL_PROFILE_Y_PV_NAME, "Vertical Profile Y PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_Y_PV_VALUE, null));
 	
 		
@@ -232,6 +235,25 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, CustomMediaFactory.COLOR_CYAN), true);
 		
 		addAxisProperties();
+	}
+	
+	@Override
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
+			setPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
+			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME)));	
+			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME)));	
+			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME)));	
+		}
 	}
 
 	public static String makeAxisPropID(String axisID, String propIDPre){

@@ -12,7 +12,9 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.ui.util,
  org.csstudio.ui.util.dialogs,
  org.csstudio.ui.util.dnd,
+ org.csstudio.ui.util.helpers,
  org.csstudio.ui.util.swt.stringtable,
- org.csstudio.ui.util.thread
+ org.csstudio.ui.util.thread,
+ org.csstudio.ui.util.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.ui.util.Activator

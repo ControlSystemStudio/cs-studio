@@ -9,7 +9,7 @@
 #
 # Kay Kasemir
 
-source settings.sh
+source ./settings.sh
 
 type javac
 java -version
@@ -33,7 +33,7 @@ do
 	  -Dbuilder=`pwd`/$PROD \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
-	  -Dbase=$ECLIPSE_BASE \
+	  -Dbase=$ECLIPSE \
 	  -Ddeltapack=$DELTAPACK \
 	  -Dqualifier=$QUALIFIER \
 	   > $BUILDDIR/$PROD.log 2>&1
@@ -50,7 +50,7 @@ do
 	  -Dbuilder=`pwd`/$FEAT \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
-	  -Dbase=$ECLIPSE_BASE \
+	  -Dbase=$ECLIPSE \
 	  -Ddeltapack=$DELTAPACK \
 	  -Dqualifier=$QUALIFIER \
 	   > $BUILDDIR/$FEAT.log 2>&1

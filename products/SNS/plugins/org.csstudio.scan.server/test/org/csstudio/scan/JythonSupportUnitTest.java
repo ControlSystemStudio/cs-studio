@@ -21,6 +21,7 @@ import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.log.MemoryDataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.junit.Test;
+import org.epics.util.time.TimeDuration;
 
 /** JUnit test of {@link JythonSupport}
  *  @author Kay Kasemir
@@ -28,7 +29,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class JythonSupportUnitTest
 {
-    @Test(timeout=10000)
+    @Test//(timeout=10000)
     public void testJythonSupport() throws Exception
     {
         TestSettings.init();
@@ -62,7 +63,7 @@ public class JythonSupportUnitTest
 
             @Override
             public void write(String device_name, Object value, String readback,
-                    boolean wait, double tolerance, double timeout) throws Exception
+                    boolean wait, double tolerance, TimeDuration timeout) throws Exception
             {
                 // NOP
             }
@@ -70,7 +71,7 @@ public class JythonSupportUnitTest
             @Override
             public void logData(final String device, final Object value) throws Exception
             {
-                log.log(device, ScanSampleFactory.createSample(new Date(), 1, new Number[] { (Number)value }));
+                log.log(device, ScanSampleFactory.createSample(new Date(), 1, value));
             }
         };
         script.run(context);
@@ -80,5 +81,6 @@ public class JythonSupportUnitTest
         assertEquals(1, samples.size());
         System.out.println("Value: " + samples.get(0));
         assertEquals(42.0, (Double) samples.get(0).getValues()[0], 0.01);
+        log.close();
     }
 }

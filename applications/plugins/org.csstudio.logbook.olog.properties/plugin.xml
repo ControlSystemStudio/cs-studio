@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.logbook.ui.propertywidget">
+      <propertywidgetfactory
+            propertyName="Context"
+            propertywidgetfactory="org.csstudio.logbook.olog.properties.ContextPropertyWidgetFactory">
+      </propertywidgetfactory>
+      <propertywidgetfactory
+            propertyName="Ticket"
+            propertywidgetfactory="org.csstudio.logbook.olog.properties.TicketPropertyWidgetFactory">
+      </propertywidgetfactory>
+   </extension>
+
+</plugin>

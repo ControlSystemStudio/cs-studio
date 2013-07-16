@@ -28,6 +28,7 @@ import org.epics.util.time.Timestamp;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
 public class ServerCommunicator extends JMSCommunicationWorkQueueThread
@@ -257,7 +258,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         idle_timer.reset();
     }
 
-    /** Notify clients of new alarm state
+    /** Notify clients of new alarm state.
      *  @param pv PV that changes alarm state
      *  @param current_severity Current severity of the PV
      *  @param current_message Current message of the PV
@@ -278,7 +279,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-                try
+            	try
                 {
                     final MapMessage map = createAlarmMessage(
                             AlarmLogic.getMaintenanceMode()
@@ -303,7 +304,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         idle_timer.reset();
     }
 
-    /** Notify 'global' clients of new alarm state
+    /** Notify 'global' clients of new alarm state.
      *  @param pv PV that changes alarm state
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
@@ -320,7 +321,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-                try
+            	try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
                     map.setString(JMSLogMessage.NAME, pv.getPathName());
@@ -328,7 +329,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));  
                     global_producer.send(map);
                 }
                 catch (Exception ex)
@@ -338,7 +339,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             }
         });
     }
-
+    
     /** Notify clients of enablement state
      *  @param pv PV that is now enabled/disabled
      *  @param enabled Enabled?

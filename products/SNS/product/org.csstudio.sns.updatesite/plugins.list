@@ -7,6 +7,7 @@ org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
 org.csstudio.alarm.beast.msghist/**
 org.csstudio.alarm.beast.notifier/**
+org.csstudio.alarm.beast.notifier.intro/**
 org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
@@ -28,8 +29,9 @@ org.csstudio.archive.writer/**
 org.csstudio.archive.writer.rdb/**
 org.csstudio.archive.writer.test/**
 org.csstudio.archive.vtype/**
-org.csstudio.auth/**
-org.csstudio.auth.ui/**
+org.csstudio.autocomplete/**
+org.csstudio.autocomplete.logbook/**
+org.csstudio.autocomplete.ui/**
 org.csstudio.basic.epics.product/**
 org.csstudio.csdata/**
 org.csstudio.csdata.clipboard/**
@@ -51,6 +53,7 @@ org.csstudio.display.pvtable/**
 org.csstudio.display.rdbtable/**
 org.csstudio.email/**
 org.csstudio.email.ui/**
+org.csstudio.examples/**
 org.csstudio.imagej/**
 org.csstudio.java/**
 org.csstudio.logbook/**
@@ -85,12 +88,8 @@ org.csstudio.platform.libs.jmock/**
 org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
-org.csstudio.pvnames/**
-org.csstudio.pvnames.ui/**
 org.csstudio.scan/**
 org.csstudio.scan.client/**
-org.csstudio.scan.custom/**
-org.csstudio.scan.custom.impl/**
 org.csstudio.scan.server/**
 org.csstudio.scan.log/**
 org.csstudio.scan.log.derby/**
@@ -99,6 +98,8 @@ org.csstudio.scan.ui.plot/**
 org.csstudio.scan.ui.scandata/**
 org.csstudio.scan.ui.scanmonitor/**
 org.csstudio.scan.ui.scantree/**
+org.csstudio.security/**
+org.csstudio.security.ui/**
 org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.ldapAuthorization/**
@@ -140,6 +141,7 @@ org.csstudio.utility.pvmanager.extra/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
+org.csstudio.utility.pvmanager.widgets/**
 org.csstudio.utility.pvmanager.vtype/**
 org.csstudio.utility.singlesource/**
 org.csstudio.utility.singlesource.rcp/**

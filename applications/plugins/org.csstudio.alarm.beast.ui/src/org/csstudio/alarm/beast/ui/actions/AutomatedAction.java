@@ -7,7 +7,6 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.ui.actions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,15 +21,12 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 
 /** Automated actions executed for notifications.
  *  @author Fred Arnaud (Sopra Group)
@@ -58,14 +54,20 @@ public class AutomatedAction extends Action
 		setText(auto_action.getTeaser());
 		setImageDescriptor(AlarmTreeActionIcon.createIcon("icons/command.gif", //$NON-NLS-1$
 				tree_item.getPosition()));
+		
+		// automated actions are disabled in RAP version
+		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+			setEnabled(false);
+		}
     }
     
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
 	public void run() {
-    	final MessageConsoleStream console_out = getConsole().newMessageStream();
-		console_out.println(getText() + ": (" + item + ") '" + auto_action + "'");
+		SingleSourcePlugin.getUIHelper().writeToConsole(CONSOLE_NAME,
+				getImageDescriptor(),
+				getText() + ": (" + item + ") '" + auto_action + "'");
 		try {
 			// Initialize factory
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
@@ -92,10 +94,6 @@ public class AutomatedAction extends Action
 					NLS.bind(Messages.AutoActionErrorFmt, new Object[] {
 							auto_action, "-", ex.getMessage() }));
 		}
-		try { console_out.close();
-		} catch (IOException e) {
-			// Ignored
-		}
 	}
     
 	private void findPVs(AlarmTreeItem item, List<PVSnapshot> snapshots) {
@@ -111,31 +109,5 @@ public class AutomatedAction extends Action
 	private String getInfos() {
 		return item.getName() + ": " + auto_action.getTitle();
 	}
-    
-    /** Get a console in the Eclipse Console View for dumping the output
-     *  of invoked alarm actions.
-     *  <p>
-     *  Code based on
-     *  http://wiki.eclipse.org/FAQ_How_do_I_write_to_the_console_from_a_plug-in%3F
-     *
-     *  @return MessageConsole, newly created or one that already existed.
-     */
-    private MessageConsole getConsole()
-    {
-		final ConsolePlugin plugin = ConsolePlugin.getDefault();
-		final IConsoleManager manager = plugin.getConsoleManager();
-		final IConsole[] consoles = manager.getConsoles();
-		for (int i = 0; i < consoles.length; i++)
-			if (CONSOLE_NAME.equals(consoles[i].getName()))
-				return (MessageConsole) consoles[i];
-		// no console found, so create a new one
-		final MessageConsole myConsole = new MessageConsole(CONSOLE_NAME, this.getImageDescriptor());
-		// There is no default console buffer limit in chars or lines?
-		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871
-		// 2k char limit, keep 1k
-		myConsole.setWaterMarks(1024, 2048);
-		manager.addConsoles(new IConsole[] { myConsole });
-		return myConsole;
-    }
     
 }

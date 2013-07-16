@@ -14,6 +14,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
+import org.epics.util.time.TimeDuration;
 
 /** Context in which a {@link ScriptCommand}'s script is executed
  *
@@ -115,7 +116,7 @@ abstract public class ScanScriptContext
      */
     public void write(final String device_name, final Object value, final boolean wait) throws Exception
     {
-    	write(device_name, value, device_name, wait, 0.1, 0.0);
+    	write(device_name, value, device_name, wait, 0.1, null);
     }
 
     /** Write to device, using alternate readback device
@@ -127,7 +128,7 @@ abstract public class ScanScriptContext
     public void write(final String device_name, final Object value,
             final String readback) throws Exception
     {
-    	write(device_name, value, readback, true, 0.1, 0.0);
+    	write(device_name, value, readback, true, 0.1, null);
     }
 
     /** Write to device
@@ -136,10 +137,10 @@ abstract public class ScanScriptContext
 	 *  @param readback Readback device
 	 *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, 0 as "forever"
+     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
 	 */
 	abstract public void write(final String device_name, final Object value,
 	        final String readback, final boolean wait,
-            final double tolerance, final double timeout) throws Exception;
+            final double tolerance, final TimeDuration timeout) throws Exception;
 }

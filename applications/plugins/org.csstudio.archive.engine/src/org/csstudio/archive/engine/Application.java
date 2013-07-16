@@ -20,11 +20,14 @@ import org.csstudio.archive.config.ArchiveConfigFactory;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.EngineServer;
 import org.csstudio.logging.LogConfigurator;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - added "-skip_last" option.
  */
 public class Application implements IApplication
 {
@@ -36,10 +39,13 @@ public class Application implements IApplication
 
     /** Application model */
     private EngineModel model;
+    
+    /** Option: if skip reading last sample time or not */
+    private boolean skip_last = false;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
-     *  @return <code>true</code> if OK.
+     *  @return <code>true</code> if continue, <code>false</code> to end application
      */
     @SuppressWarnings("nls")
     private boolean getSettings(final String args[])
@@ -47,11 +53,15 @@ public class Application implements IApplication
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
-                    "Display Help");
+                "Display Help");
+        final BooleanOption skip_last_opt = new BooleanOption(parser, "-skip_last",
+                "Skip reading last sample time from RDB on start-up");
         final IntegerOption port_opt = new IntegerOption(parser, "-port", "4812",
                     "HTTP server port", 4812);
         final StringOption engine_name_opt = new StringOption(parser,
                     "-engine", "demo_engine", "Engine config name", null);
+        final StringOption set_password_opt = new StringOption(parser,
+                "-set_password", "plugin/key=value", "Set secure preferences", null);
         parser.addEclipseParameters();
         try
         {
@@ -70,6 +80,32 @@ public class Application implements IApplication
         }
 
         // Check arguments
+        String option = set_password_opt.get();
+		if (option != null)
+        {	// Split "plugin/key=value"
+        	final String pref, value;
+        	final int sep = option.indexOf("=");
+        	if (sep >= 0)
+        	{
+        		pref = option.substring(0, sep);
+        		value = option.substring(sep + 1);
+        	}
+        	else
+        	{
+        		pref = option;
+        		value = PasswordInput.readPassword("Value for " + pref + ":");
+        	}
+        	try
+        	{
+        		SecurePreferences.set(pref, value);
+        	}
+        	catch (Exception ex)
+        	{
+        		ex.printStackTrace();
+        	}
+        	return false;
+        }
+        
         if (engine_name_opt.get() == null)
         {
             System.out.println("Missing option " + engine_name_opt.getOption());
@@ -80,6 +116,7 @@ public class Application implements IApplication
         // Copy stuff from options into member vars.
         port = port_opt.get();
         engine_name = engine_name_opt.get();
+        skip_last = skip_last_opt.get();
         return true;
     }
 
@@ -125,7 +162,7 @@ public class Application implements IApplication
                 try
                 {
                     config = ArchiveConfigFactory.getArchiveConfig();
-                    model.readConfig(config, engine_name, port);
+                    model.readConfig(config, engine_name, port, skip_last);
                 }
                 catch (final Exception ex)
                 {

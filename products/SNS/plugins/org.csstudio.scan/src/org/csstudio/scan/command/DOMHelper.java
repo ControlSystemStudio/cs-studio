@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -180,7 +183,12 @@ public class DOMHelper
         }
         catch (NumberFormatException ex)
         {
-            throw new Exception("Missing numeric value for '" + element_name + "'");
+            // String should be quoted, non-string should be a number,
+            // but older clients might send unquoted text, so
+            // treat non-parsable number as text.
+            Logger.getLogger(DOMHelper.class.getName())
+                .log(Level.WARNING, "Expected numeric value for <" + element_name + ">, treating as string \"" + text + "\"");
+            return text;
         }
     }
     
@@ -198,16 +206,33 @@ public class DOMHelper
     public static final int getSubelementInt(
           final Element element, final String element_name, final int default_value)  throws Exception
     {
-        final String s = getSubelementString(element, element_name, "");
-        if (s.length() < 1)
-            return default_value;
-        try
-        {
-            return Integer.parseInt(s);
-        }
-        catch (NumberFormatException ex)
-        {
-            throw new Exception("Missing numeric value for '" + element_name + "'");
-        }
+        return (int) getSubelementLong(element, element_name, default_value);
     }
+
+    /** Locate a sub-element tagged 'name', return its long integer value.
+    *
+    *  <p>Will only go one level down, not search the whole tree.
+    *
+    *  @param element Element where to start looking. May be null.
+    *  @param element_name Name of sub-element to locate.
+    *  @param default_value Result in case sub-element isn't found.
+    *
+    *  @return Returns number found in the sub-element.
+    *  @throws Exception when nothing found
+    */
+   public static final long getSubelementLong(
+         final Element element, final String element_name, final long default_value)  throws Exception
+   {
+       final String s = getSubelementString(element, element_name, "");
+       if (s.length() < 1)
+           return default_value;
+       try
+       {
+           return Long.parseLong(s);
+       }
+       catch (NumberFormatException ex)
+       {
+           throw new Exception("Missing numeric value for '" + element_name + "'");
+       }
+   }
 }

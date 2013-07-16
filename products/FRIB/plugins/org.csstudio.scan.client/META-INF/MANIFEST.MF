@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan Client API
+Bundle-SymbolicName: org.csstudio.scan.client
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.0",
+ org.python;bundle-version="2.5.2",
+ org.csstudio.scan;bundle-version="1.0.0"
+Export-Package: org.csstudio.scan.client
+Bundle-ClassPath: .

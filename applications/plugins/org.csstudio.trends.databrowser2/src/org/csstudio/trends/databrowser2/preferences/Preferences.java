@@ -51,7 +51,9 @@ public class Preferences
 			PROMPT_FOR_ERRORS = "prompt_for_errors",
 			ARCHIVE_RESCALE = "archive_rescale",
 			USE_AUTO_SCALE = "use_auto_scale",
-			EMAIL_DEFAULT_SENDER = "email_default_sender";
+			EMAIL_DEFAULT_SENDER = "email_default_sender",
+			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
+			SECURE_DATA_BROWSER = "secure_data_browser";
 
     public static double getTimeSpan()
     {
@@ -103,13 +105,23 @@ public class Preferences
         return prefs.getInt(Activator.PLUGIN_ID, PLOT_BINS, 800, null);
     }
 
-    public static String[] getArchiveServerURLs()
+    public static ArchiveServerURL[] getArchiveServerURLs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
         if (urls.length() <= 0)
-            return new String[0];
-        return urls.split("\\*");
+            return null;
+        
+        ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>(); 
+        for (String fragment : urls.split("\\*")) {
+        	String[] strs = fragment.split("\\|");
+        	if (strs.length == 1) {
+        		list.add(new ArchiveServerURL(strs[0], null));
+        	} else if (strs.length >= 2) {
+        		list.add(new ArchiveServerURL(strs[0], strs[1]));
+        	}
+        }
+        return list.toArray(new ArchiveServerURL[list.size()]);
     }
 
     public static ArchiveDataSource[] getArchives()
@@ -206,4 +218,26 @@ public class Preferences
 			return null;
 		return prefs.getString(Activator.PLUGIN_ID, EMAIL_DEFAULT_SENDER, null, null);
 	}
+    
+    /** @return <code>true</code> to hide search view on rap version.
+     */
+    public static boolean hideSearchView()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
+    }
+    
+    /** @return <code>true</code> to authentication is required to open data browser in rap.
+     */
+    public static boolean isDataBrowserSecured()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
+    }
+    
+    
 }

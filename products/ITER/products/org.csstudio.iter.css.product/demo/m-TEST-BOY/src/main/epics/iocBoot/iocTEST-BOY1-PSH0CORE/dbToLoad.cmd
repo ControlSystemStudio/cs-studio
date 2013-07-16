@@ -5,6 +5,7 @@
 cd $(TOP)/iocBoot/$(IOC)
 dbLoadTemplate("PSH0-rndm_v1.substitution")
 dbLoadTemplate("PSH0-switch-state_v1.substitution")
+dbLoadTemplate("PSH0-ramp_v1.substitution")
 
 
 

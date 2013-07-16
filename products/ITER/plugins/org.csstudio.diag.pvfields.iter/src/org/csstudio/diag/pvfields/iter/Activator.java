@@ -11,5 +11,5 @@ package org.csstudio.diag.pvfields.iter;
 public class Activator {
 
 	// The plug-in ID
-	public static final String ID = "org.csstudio.diag.pvfield.iter"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.diag.pvfields.iter"; //$NON-NLS-1$
 }

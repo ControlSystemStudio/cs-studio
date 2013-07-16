@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!-- Alarm configuration Root: demo WARNING: This is an automatically generated 
+	file. PLEASE DO NOT MODIFY. -->
+
+<config name="demo">
+	<component name="CWS-TCPH">
+		<component name="CWS-TCPH">
+			<component name="CWS-TCPH-Fxxx">
+				<automated_action>
+					<title>Send Summary Email</title>
+
+					<details>mailto:ich-ro@iter.org?cc=ich-support@iter.org&amp;amp;bcc=
+						john.doe@iter.org</details>
+
+					<delay>86400</delay>
+				</automated_action>
+
+				<pv name="CWS-TCPH-Fxxx:ACQ-STATE">
+					<latching>true</latching>
+				</pv>
+
+				<pv name="CWS-TCPH-Fxxx:TEMP">
+					<description>Temperature problem</description>
+
+					<latching>true</latching>
+
+					<delay>5</delay>
+
+					<count>3</count>
+
+					<guidance>
+						<title>Temperature problem</title>
+
+						<details>Temperature outside the limits;
+							Purpose of alarm: The controlled temperature is outside the limits;
+							Alarm response action: Try to switch off the equipment;
+							Failure consequence: If the alarm does not recover within 15 minutes,
+							the system will be stopped;
+							Operator response time available: 10 minutes;
+							Alarm limits: HIHI=9 MAJOR, HIGH=8 MINOR, LOW=-8 MINOR, LOLO=-9 MAJOR;
+							Engineer to contact: operator in duty;
+							Alternate help:
+							https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx
+						</details>
+					</guidance>
+
+					<display>
+						<title>More Information</title>
+
+						<details>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx&lt;/details&gt;
+						</details>
+					</display>
+
+					<command>
+						<title>Switch Off</title>
+
+						<details>caput CWS-TCPH-Fxxx:START_ACQ 0</details>
+					</command>
+
+					<automated_action>
+						<title>Send automatically an email when raised</title>
+
+						<details>mailto:rf_support@iter.org;
+							rf_operator@iter.org?cc=rf.ro@iter.org&amp;amp;subject=RF Source
+							1 in error&amp;amp;body=Major Alarm raised</details>
+
+						<delay>120</delay>
+					</automated_action>
+
+					<automated_action>
+						<title>Send automatically a SMS after half an hour</title>
+
+						<details>sms:+33442176421?body=Major Alarm raised</details>
+
+						<delay>1800</delay>
+					</automated_action>
+
+					<automated_action>
+						<title>Sending a complete email</title>
+
+						<details>mailto:Email.address1@mailto.co.uk;?cc=EmailCc1.address@mailto.co.uk;&amp;bcc=EmailBCc1.address@mailto.co.uk;&amp;subject=This
+							is the subject line&amp;body=This is the text line one. %0AThis
+							is the text line two</details>
+
+						<delay>12345</delay>
+					</automated_action>
+				</pv>
+			</component>
+		</component>
+	</component>
+</config>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0607.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.472719in"
+		height="0.610551in" viewBox="0 0 34.0357 43.9597" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.01}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st3 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+	]]>
+	</style>
+	<defs id="Masters">
+		<symbol id="master7" v:mID="7" class="st2">
+			<title>FL_EF0607</title>
+			<g id="master-shape5-7" v:mID="5" v:groupContext="shape">
+				<title>Feuille.5</title>
+				<path d="M4.39 43.96 L4.39 35.46 L4.39 33.26 L8.5 31.2 L0 26.95 L8.5 22.7 L0 18.45 L8.5 14.2 L4.25 12.07 L4.25 1.44"
+						class="st3"/>
+			</g>
+		</symbol>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group3-1" transform="translate(0.01,-0.782992)" v:mID="3" v:groupContext="group">
+			<title>Feuille.3</title>
+			<g id="shape1-2" v:mID="1" v:groupContext="shape" transform="translate(0,-42.4283)">
+				<title>Feuille.1</title>
+				<rect x="0" y="43.9313" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+			<g id="shape2-4" v:mID="2" v:groupContext="shape" transform="translate(33.9874,7.10543E-015)">
+				<title>Feuille.2</title>
+				<rect x="0" y="43.9313" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+		</g>
+		<use id="shape4-6" v:mID="4" xlink:href="#master7" transform="translate(12.7659,-0.72)">
+			<title>FL_EF0607</title>
+		</use>
+	</g>
+</svg>

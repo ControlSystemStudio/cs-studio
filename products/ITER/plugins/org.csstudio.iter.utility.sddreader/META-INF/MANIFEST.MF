@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SDD Reader
+Bundle-SymbolicName: org.csstudio.iter.utility.sddreader;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.iter.utility.sddreader.Activator
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.autocomplete,
+ org.csstudio.platform.utility.rdb,
+ org.csstudio.security;bundle-version="1.0.0"
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.iter.utility.sddreader
+Service-Component: OSGI-INF/*.xml

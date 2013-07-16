@@ -26,6 +26,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
@@ -33,6 +34,7 @@ import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.RefreshAction;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
@@ -45,6 +47,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -58,6 +61,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -66,6 +70,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -79,6 +84,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  plugin.xml registers this as an editor for data browser configuration
  *  files.
  *  @author Kay Kasemir
+ *  @author Xihui Chen (Adjustment to make it work like a view in RAP)
  */
 public class DataBrowserEditor extends EditorPart
 {
@@ -133,7 +139,23 @@ public class DataBrowserEditor extends EditorPart
      */
     public static DataBrowserEditor createInstance()
     {
-    	return createInstance(new EmptyEditorInput());
+    	if(SingleSourcePlugin.isRAP()){
+    		if(Preferences.isDataBrowserSecured() &&
+    				!SingleSourcePlugin.getUIHelper().rapIsLoggedIn(Display.getCurrent())){
+    			if(!SingleSourcePlugin.getUIHelper().rapAuthenticate(Display.getCurrent()))
+    				return null;
+    		}
+    			
+    	}
+    	
+    	return createInstance(new EmptyEditorInput(){
+    		@Override
+    		public String getName() {
+    			if(SingleSourcePlugin.isRAP())
+    				return "Data Browser";
+    			return super.getName();
+    		}
+    	});
     }
 
     /** @return Model displayed/edited by this EditorPart */
@@ -355,40 +377,49 @@ public class DataBrowserEditor extends EditorPart
 	        }
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
+        mm.add(new RefreshAction(controller));
         if (is_rcp)
 		{
-			mm.add(new Separator());
-			open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-	                    Messages.OpenPropertiesView, activator
-	                            .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
-			mm.add(open_properties); 
-			mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-					activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
+			mm.add(new Separator());			
+			 		
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
+        open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
+                Messages.OpenPropertiesView, activator
+                        .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+        mm.add(open_properties);
+        if(is_rcp || !Preferences.hideSearchView())
+        	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
+		
+		mm.add(new OpenPerspectiveAction(activator
+				.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
+				Messages.OpenDataBrowserPerspective, Perspective.ID));
+		mm.add(new OpenViewAction(WaveformView.ID,
+				Messages.OpenWaveformView, activator
+						.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$		
 		if (is_rcp)
-		{
-			mm.add(new OpenViewAction(WaveformView.ID,
-					Messages.OpenWaveformView, activator
-							.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
-			mm.add(new OpenPerspectiveAction(activator
-					.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
-					Messages.OpenDataBrowserPerspective, Perspective.ID));
+		{					
 			mm.add(new Separator());
 			if (EMailSender.isEmailSupported())
 				mm.add(new SendEMailAction(shell, plot.getXYGraph()));
-		}
-		mm.add(new PrintAction(shell, plot.getXYGraph()));
-
+			mm.add(new PrintAction(shell, plot.getXYGraph()));
+		}		
+		
+		mm.add(new Separator());
+		mm.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
+        
+        if(is_rcp && SendToElogAction.isElogAvailable()) {
+        	mm.add(new SendToElogAction(shell, plot.getXYGraph()));
+        }
 
-		if (is_rcp) {
-			getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
-		}
+		getSite().registerContextMenu(mm, null);
     }
 
     /** {@inheritDoc} */
@@ -414,7 +445,9 @@ public class DataBrowserEditor extends EditorPart
     /** {@inheritDoc} */
     @Override
     public boolean isDirty()
-    {
+    {	
+    	if(SingleSourcePlugin.isRAP()) //always not savable in RAP
+    		return false;
         return is_dirty;
     }
 

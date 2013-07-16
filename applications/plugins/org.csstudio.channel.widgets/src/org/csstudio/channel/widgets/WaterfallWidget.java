@@ -1,12 +1,12 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
@@ -27,6 +27,7 @@ import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -46,11 +47,11 @@ import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VImage;
 import org.epics.pvmanager.extra.ColorScheme;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.util.time.TimeDuration;
+import org.epics.vtype.VImage;
 
 public class WaterfallWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget, ISelectionProvider {

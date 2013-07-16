@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
@@ -55,7 +56,7 @@ public class WritePVAction extends AbstractWidgetAction {
 
 	@Override
 	protected void configureProperties() {
-		addProperty(new StringProperty(PROP_PVNAME, "PV Name",
+		addProperty(new PVNameProperty(PROP_PVNAME, "PV Name",
 				WidgetPropertyCategory.Basic, "$(pv_name)")); //$NON-NLS-1$
 		addProperty(new StringProperty(PROP_VALUE, "Value",
 				WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$

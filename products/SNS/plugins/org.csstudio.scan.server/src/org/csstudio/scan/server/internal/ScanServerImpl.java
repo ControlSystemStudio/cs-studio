@@ -17,13 +17,6 @@ package org.csstudio.scan.server.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.net.BindException;
-import java.net.InetAddress;
-import java.rmi.RemoteException;
-import java.rmi.ServerException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,10 +32,10 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -50,117 +43,57 @@ import org.csstudio.scan.server.SimulationContext;
 import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.server.app.Application;
 
-/** Server-side implementation of the {@link ScanServer} interface
- *  that the remote client invokes.
- *
+/** Implementation of the {@link ScanServer}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class ScanServerImpl implements ScanServer
 {
-    final private int port;
-
     /** {@link ScanEngine} used by this server */
     final private ScanEngine scan_engine = new ScanEngine();
 
     /** Time when this scan server was started */
-    private Date start_time;
+    private Date start_time = null;
 
-    /** RMI registry */
-    private Registry registry;
-
-    /** Initialize
-     *  @param port TCP port for server
-     */
-    public ScanServerImpl(final int port)
-    {
-        this.port = port;
-    }
-
-    /** Initialize with default port */
-    public ScanServerImpl()
-    {
-        this(ScanServer.DEFAULT_PORT);
-    }
-
-    /** Start the scan server (allow clients to connect) */
+    /** Start the scan server */
     public void start() throws Exception
     {
-        if (registry != null)
+        if (start_time != null)
             throw new Exception("Already started");
 
         scan_engine.start(true);
-        
-        // RMI replies to clients with this address.
-        // If /etc/hosts defines that as 127.0.0.1,
-        // remote(!) clients will connect to 127.0.0.1,
-        // and then people will be unhappy and waste hours
-        // looking for the problem.
-        final String localhost = InetAddress.getLocalHost().getHostAddress();
-        if ("127.0.0.1".equals(localhost))
-        {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                "This host's local address is set to " + localhost + "\n" +
-                "Remote clients will not be able to connect until it is configured to a real IP address");
-        }
-
-        try
-        {
-            registry = LocateRegistry.createRegistry(port);
-        }
-        catch (RemoteException ex)
-        {
-            if (ex.getCause() instanceof BindException)
-                throw new Exception("Cannot start Scan Server on port " + port, ex);
-            else
-                throw ex;
-        }
         start_time = new Date();
-
-        final ScanServer stub = (ScanServer) UnicastRemoteObject.exportObject(this, port+1);
-        registry.rebind(ScanServer.RMI_SCAN_SERVER_NAME, stub);
     }
 
     /** Stop the scan server */
     public void stop()
     {
-        if (registry != null)
-        {
-            try
-            {
-                registry.unbind(ScanServer.RMI_SCAN_SERVER_NAME);
-            }
-            catch (Throwable ex)
-            {
-                // Ignore, shutting down anyway
-            }
-            registry = null;
-        }
-
         scan_engine.stop();
     }
 
     /** {@inheritDoc} */
     @Override
-    public ScanServerInfo getInfo() throws RemoteException
+    public ScanServerInfo getInfo() throws Exception
     {
-        return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION + " (" + Application.getBundleVersion() + ")",
+        return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
     			start_time,
     			ScanSystemPreferences.getBeamlineConfigPath(),
-    			ScanSystemPreferences.getSimulationConfigPath());
+    			ScanSystemPreferences.getSimulationConfigPath(),
+    			ScanSystemPreferences.getScriptPaths(),
+    			ScanSystemPreferences.getMacros());
     }
 
     /** Query server for devices used by a scan
      * 
      *  <p>Meant to be called only inside the scan server.
      *  
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param id ID that uniquely identifies a scan
      *            or -1 for default devices
      *  @return {@link Device}s
      *  @see #getDeviceInfos(long) for similar method that is exposed to clients
-     *  @throws RemoteException on error in remote access
+     *  @throws Exception on error
      */
-     public Device[] getDevices(final long id) throws RemoteException
+     public Device[] getDevices(final long id) throws Exception
     {
     	if (id >= 0)
     	{   // Get devices for specific scan
@@ -187,32 +120,32 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException
+    public DeviceInfo[] getDeviceInfos(final long id) throws Exception
     {    	
     	final Device[] devices = getDevices(id);
     	// Turn Device[] into DeviceInfo[]
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
     	for (int i = 0; i < infos.length; i++)
-    	{
-    		final Device device = devices[i];
-			infos[i] = device.getInfo();
-    	}
+    	    infos[i] = devices[i];
     	return infos;
     }
 
 	/** {@inheritDoc} */
     @Override
     public SimulationResult simulateScan(final String commands_as_xml)
-            throws RemoteException
+            throws Exception
     {
         try
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
+            
+            // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-            List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
+            List<ScanCommandImpl<?>> scan = tool.implement(commands, jython);
 
             // Setup simulation log
             ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
@@ -238,14 +171,14 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            throw new ServerException("Scan Engine error while simulating scan", ex);
+            throw new Exception("Scan Engine error while simulating scan", ex);
         }
     }
 
 	/** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name, final String commands_as_xml)
-            throws RemoteException
+            throws Exception
     {
     	cullScans();
 
@@ -283,15 +216,13 @@ public class ScanServerImpl implements ScanServer
         catch (Exception ex)
         {
         	Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
-        	// Cannot wrap any Exception ex into RemoteExcetion because
-        	// ex may not serialize. So include the name.
-            throw new RemoteException("Scan Engine error while submitting scan: " +
-            		ex.getClass().getName() + " " + ex.getMessage());
+            throw new Exception("Scan Engine error while submitting scan: " +
+            		ex.getClass().getName(), ex);
         }
     }
 
     /** If memory consumption is high, remove (one) older scan */
-	private void cullScans() throws RemoteException
+	private void cullScans() throws Exception
     {
 	    final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
 		while (getInfo().getMemoryPercentage() > threshold)
@@ -304,7 +235,7 @@ public class ScanServerImpl implements ScanServer
 
 	/** {@inheritDoc} */
     @Override
-    public List<ScanInfo> getScanInfos() throws RemoteException
+    public List<ScanInfo> getScanInfos() throws Exception
     {
         final List<LoggedScan> scans = scan_engine.getScans();
         final List<ScanInfo> infos = new ArrayList<ScanInfo>(scans.size());
@@ -316,7 +247,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public ScanInfo getScanInfo(final long id) throws RemoteException
+    public ScanInfo getScanInfo(final long id) throws Exception
     {
         final LoggedScan scan = scan_engine.getScan(id);
         return scan.getScanInfo();
@@ -324,7 +255,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public String getScanCommands(final long id) throws RemoteException
+    public String getScanCommands(final long id) throws Exception
     {
         final ExecutableScan scan = scan_engine.getExecutableScan(id);
         if (scan != null)
@@ -335,30 +266,39 @@ public class ScanServerImpl implements ScanServer
             }
             catch (Exception ex)
             {
-                throw new RemoteException(ex.getMessage(), ex);
+                throw new Exception(ex.getMessage(), ex);
             }
         }
         else
-            throw new RemoteException("Commands not available for logged scan");
+            throw new Exception("Commands not available for logged scan");
     }
 
+    /** Obtain scan context.
+     *  @param id ID that uniquely identifies a scan
+     *  @return {@link ScanContext} or <code>null</code> if ID does not refer to an active scan
+     *  @throws Exception
+     */
+    public ScanContext getScanContext(final long id) throws Exception
+    {
+        final ScanContext scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
+            return scan;
+        return null;
+    }
+    
     /** {@inheritDoc} */
     @Override
-    public long getLastScanDataSerial(final long id) throws RemoteException
+    public long getLastScanDataSerial(final long id) throws Exception
     {
-        final ExecutableScan scan = scan_engine.getExecutableScan(id);
+        final LoggedScan scan = scan_engine.getScan(id);
         if (scan != null)
-        {
-            final DataLog log = scan.getDataLog();
-            if (log != null)
-                return log.getLastScanDataSerial();
-        }
-        return 0;
+            return scan.getLastScanDataSerial();
+        return -1;
     }
 
     /** {@inheritDoc} */
 	@Override
-    public ScanData getScanData(final long id) throws RemoteException
+    public ScanData getScanData(final long id) throws Exception
     {
         try
         {
@@ -367,14 +307,14 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-        	throw new RemoteException("Error retrieving log data", ex);
+        	throw new Exception("Error retrieving log data", ex);
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateScanProperty(final long id, final long address,
-            final String property_id, final Object value) throws RemoteException
+            final String property_id, final Object value) throws Exception
     {
         final ExecutableScan scan = scan_engine.getExecutableScan(id);
         if (scan != null)
@@ -383,7 +323,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public void pause(final long id) throws RemoteException
+    public void pause(final long id) throws Exception
     {
         if (id >= 0)
         {
@@ -401,7 +341,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public void resume(final long id) throws RemoteException
+    public void resume(final long id) throws Exception
     {
         if (id >= 0)
         {
@@ -418,7 +358,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public void abort(final long id) throws RemoteException
+    public void abort(final long id) throws Exception
     {
     	if (id >= 0)
     	{
@@ -435,7 +375,7 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public void remove(final long id) throws RemoteException
+    public void remove(final long id) throws Exception
     {
         final LoggedScan scan = scan_engine.getScan(id);
         try
@@ -445,13 +385,13 @@ public class ScanServerImpl implements ScanServer
         catch (Exception ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing scan", ex);
-            throw new RemoteException("Error removing scan", ex);
+            throw new Exception("Error removing scan", ex);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeCompletedScans() throws RemoteException
+    public void removeCompletedScans() throws Exception
     {
         try
         {
@@ -460,7 +400,7 @@ public class ScanServerImpl implements ScanServer
         catch (Exception ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing completed scans", ex);
-            throw new RemoteException("Error removing completed scans", ex);
+            throw new Exception("Error removing completed scans", ex);
         }
     }
 }

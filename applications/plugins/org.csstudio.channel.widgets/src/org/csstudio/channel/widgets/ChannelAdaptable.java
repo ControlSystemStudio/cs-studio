@@ -4,6 +4,8 @@ import gov.bnl.channelfinder.api.Channel;
 
 import java.util.Collection;
 
+import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
+
 
 /**
  * 

@@ -162,9 +162,10 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	
 	
 	@Override
-	public void processVersionDifference() {		
+	public void processVersionDifference(Version boyVersionOnFile) {		
+		super.processVersionDifference(boyVersionOnFile);
 		//There was no style property before 2.0.0
-		if(getVersionOnFile().getMajor() <2){			
+		if(boyVersionOnFile.getMajor() <2){			
 			// convert native button widget to native style		
 			if (getWidgetType().equals("Button")){ //$NON-NLS-N$
 				setStyle(Style.NATIVE);

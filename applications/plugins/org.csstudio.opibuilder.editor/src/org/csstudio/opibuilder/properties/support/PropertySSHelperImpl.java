@@ -107,6 +107,13 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 	}
 
 	@Override
+	public PropertyDescriptor getPVNamePropertyDescriptor(String prop_id,
+			String description, String detaileDescription) {
+		return new PVNamePropertyDescriptor(prop_id, description, detaileDescription);
+	}
+
+	
+	@Override
 	public PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
 			String description, TitlesProvider tilesProvider) {
 		return new StringTablePropertyDescriptor(prop_id, description, tilesProvider);
@@ -127,7 +134,6 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 	@Override
 	public PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
 			String description) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

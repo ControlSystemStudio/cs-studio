@@ -11,8 +11,8 @@ import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
+import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.junit.Test;
 
 /** JUnit test of the {@link SNSPVListProvider}
@@ -24,11 +24,11 @@ public class SNSPVListProviderUnitTest
     @Test
     public void locatePVName()
     {
-        final IPVListProvider provider = new SNSPVListProvider();
-        PVListResult pvs = provider.listPVs("DTL_LLRF:IOC1:L*", 10);
+        final IAutoCompleteProvider provider = new SNSPVListProvider();
+        AutoCompleteResult pvs = provider.listResult("PV", "DTL_LLRF:IOC1:L*", 10);
         System.out.println("Matching PVs: " + pvs.getCount());
-        System.out.println(pvs.getPvs());
-        assertThat(pvs.getPvs().size(), greaterThan(1));
-        assertThat(pvs.getPvs().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
+        System.out.println(pvs.getProposalsAsString());
+        assertThat(pvs.getCount(), greaterThan(1));
+        assertThat(pvs.getProposalsAsString().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
     }
 }

@@ -275,6 +275,8 @@ public class PVManagerHelper{
 			}
 			return sb.toString();			
 		}else{		
+		   if(data.size()<=0)
+			   return "[]"; //$NON-NLS-1$
 		   sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
            for(int i=1; i<data.size(); i++){        	   	
         	   	sb.append(ARRAY_ELEMENT_SEPARATOR);

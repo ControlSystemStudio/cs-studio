@@ -25,6 +25,8 @@ import gov.aps.jca.event.PutListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
@@ -54,6 +56,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     private volatile Channel channel;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
+    private volatile boolean sentReadOnlyException = false;
     private final boolean putCallback;
     private final boolean longString;
     
@@ -62,6 +65,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     
     public static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
     private final static Pattern hasOptions = Pattern.compile("(.*) (\\{.*\\})");
+    
+    private final static Logger log = Logger.getLogger(JCAChannelHandler.class.getName());
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
@@ -146,7 +151,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     @Override
-    public void connect() {
+    public synchronized void connect() {
+        needsMonitor = true;
+        needsAccessChangeListener.set(true);
+        
         try {
             // Give the listener right away so that no event gets lost
 	    // If it's a large array, connect using lower priority
@@ -155,8 +163,6 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 	    } else {
                 channel = jcaDataSource.getContext().createChannel(getJcaChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
 	    }
-            needsMonitor = true;
-            needsAccessChangeListener.set(true);
         } catch (CAException ex) {
             throw new RuntimeException("JCA Connection failed", ex);
         }
@@ -167,6 +173,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
             @Override
             public void putCompleted(PutEvent ev) {
+                if (log.isLoggable(Level.FINEST)) {
+                    log.log(Level.FINEST, "JCA putCompleted for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                }
+                
                 if (ev.getStatus().isSuccessful()) {
                     callback.channelWritten(null);
                 } else {
@@ -174,11 +184,26 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 }
             }
         };
+        // If it's a ListNumber, extract the array
+        if (newValue instanceof ListNumber) {
+            ListNumber data = (ListNumber) newValue;
+            Object wrappedArray = CollectionNumbers.wrappedArray(data);
+            if (wrappedArray == null) {
+                newValue = CollectionNumbers.doubleArrayCopyOf(data);
+            } else {
+                newValue = wrappedArray;
+            }
+        }
         if (newValue instanceof String) {
             if (isLongString()) {
                 channel.put(toBytes(newValue.toString()), listener);
             } else {
-                channel.put(newValue.toString(), listener);
+                if (channel.getFieldType().isBYTE() && channel.getElementCount() > 1) {
+                    log.warning("You are writing the String " + newValue + " to BYTE channel " + getChannelName() + ": use {\"longString\":true} for support");
+                    channel.put(toBytes(newValue.toString()), listener);
+                } else {
+                    channel.put(newValue.toString(), listener);
+                }
             }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue, listener);
@@ -212,12 +237,35 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 newValue = wrappedArray;
             }
         }
+        if (newValue instanceof Double[]) {
+            log.warning("You are writing a Double[] to channel " + getChannelName() + ": use org.epics.util.array.ListDouble instead");
+            final Double dbl[] = (Double[]) newValue;
+            final double val[] = new double[dbl.length];
+            for (int i = 0; i < val.length; ++i) {
+                val[i] = dbl[i].doubleValue();
+            }
+            newValue = val;
+        }
+        if (newValue instanceof Integer[]) {
+            log.warning("You are writing a Integer[] to channel " + getChannelName() + ": use org.epics.util.array.ListInt instead");
+            final Integer ival[] = (Integer[]) newValue;
+            final int val[] = new int[ival.length];
+            for (int i = 0; i < val.length; ++i) {
+                val[i] = ival[i].intValue();
+            }
+            newValue = val;
+        }
         
         if (newValue instanceof String) {
             if (isLongString()) {
                 channel.put(toBytes(newValue.toString()));
             } else {
-                channel.put(newValue.toString());
+                if (channel.getFieldType().isBYTE() && channel.getElementCount() > 1) {
+                    log.warning("You are writing the String " + newValue + " to BYTE channel " + getChannelName() + ": use {\"longString\":true} for support");
+                    channel.put(toBytes(newValue.toString()));
+                } else {
+                    channel.put(newValue.toString());
+                }
             }
         } else if (newValue instanceof byte[]) {
             channel.put((byte[]) newValue);
@@ -255,6 +303,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 @Override
                 public void getCompleted(GetEvent ev) {
                     synchronized(JCAChannelHandler.this) {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA metadata getCompleted for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+                        
                         // In case the metadata arrives after the monitor
                         MonitorEvent event = null;
                         if (getLastMessagePayload() != null) {
@@ -280,6 +332,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                 @Override
                 public void monitorChanged(MonitorEvent ev) {
                     synchronized(JCAChannelHandler.this) {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA metadata monitorChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+                        
                         // In case the metadata arrives after the monitor
                         MonitorEvent event = null;
                         if (getLastMessagePayload() != null) {
@@ -301,6 +357,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             public void connectionChanged(ConnectionEvent ev) {
                 synchronized(JCAChannelHandler.this) {
                     try {
+                        if (log.isLoggable(Level.FINEST)) {
+                            log.log(Level.FINEST, "JCA connectionChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                        }
+
                         // Take the channel from the event so that there is no
                         // synchronization problem
                         Channel channel = (Channel) ev.getSource();
@@ -314,10 +374,19 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                             return;
                         }
 
-                        // Setup monitors on connection
                         processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
                         if (ev.isConnected()) {
+                            // If connected, no write access and exception was not sent, notify writers
+                            if (!channel.getWriteAccess() && !sentReadOnlyException) {
+                                reportExceptionToAllWriters(createReadOnlyException());
+                                sentReadOnlyException = true;
+                            }
+                            
+                            // Setup monitors on connection
                             setup(channel);
+                        } else {
+                            // Next connection, resend the read only exception if that's the case
+                            sentReadOnlyException = false;
                         }
                         
                     } catch (Exception ex) {
@@ -342,6 +411,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
 
                             @Override
                             public void accessRightsChanged(AccessRightsEvent ev) {
+                                if (log.isLoggable(Level.FINEST)) {
+                                    log.log(Level.FINEST, "JCA accessRightsChanged for channel {0} event {1}", new Object[] {getChannelName(), ev});
+                                }
+                                
                                 // Some JNI implementation lock if calling getState
                                 // from within this callback. We context switch in that case
                                 final Channel channel = (Channel) ev.getSource();
@@ -351,8 +424,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
                                     public void run() {
                                         synchronized(JCAChannelHandler.this) {
                                             processConnection(new JCAConnectionPayload(JCAChannelHandler.this, channel, getConnectionPayload()));
-                                            if (!channel.getWriteAccess()) {
-                                                reportExceptionToAllWriters(new RuntimeException("'" + getJcaChannelName() + "' is read-only"));
+                                            if (!sentReadOnlyException && !channel.getWriteAccess()) {
+                                                reportExceptionToAllWriters(createReadOnlyException());
+                                                sentReadOnlyException = true;
                                             }
                                         }
                                     }
@@ -376,6 +450,10 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
         @Override
         public void monitorChanged(MonitorEvent event) {
             synchronized(JCAChannelHandler.this) {
+                if (log.isLoggable(Level.FINEST)) {
+                    log.log(Level.FINEST, "JCA value monitorChanged for channel {0} event {1}", new Object[] {getChannelName(), event});
+                }
+                
                 DBR metadata = null;
                 if (getLastMessagePayload() != null) {
                     metadata = getLastMessagePayload().getMetadata();
@@ -386,8 +464,9 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     };
 
     @Override
-    public void disconnect() {
+    public synchronized void disconnect() {
         try {
+            channel.removeConnectionListener(connectionListener);
             // Close the channel
             if (channel.getConnectionState() != Channel.ConnectionState.CLOSED) {
                 channel.destroy();
@@ -396,6 +475,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
             throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
             channel = null;
+            sentReadOnlyException = false;
             processConnection(null);
         }
     }
@@ -423,20 +503,37 @@ class JCAChannelHandler extends MultiplexedChannelHandler<JCAConnectionPayload, 
     }
 
     @Override
+    protected synchronized void addWriter(ChannelHandlerWriteSubscription subscription) {
+        super.addWriter(subscription);
+        // If already connected and read only, we need to notify this writer
+        if (sentReadOnlyException) {
+            subscription.getExceptionWriteFunction().writeValue(createReadOnlyException());
+        }
+    }
+    
+    private Exception createReadOnlyException() {
+        return new RuntimeException("'" + getJcaChannelName() + "' is read-only");
+    }
+
+    @Override
     public synchronized Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<String, Object>();
         if (channel != null) {
-            properties.put("Channel name", channel.getName());
-            properties.put("Connection state", channel.getConnectionState().getName());
+            properties.put("CA Channel name", channel.getName());
+            properties.put("CA Connection state", channel.getConnectionState().getName());
             if (channel.getConnectionState() == Channel.ConnectionState.CONNECTED) {
-                properties.put("Hostname", channel.getHostName());
-                properties.put("Channel type", channel.getFieldType().getName());
-                properties.put("Element count", channel.getElementCount());
-                properties.put("Read access", channel.getReadAccess());
-                properties.put("Write access", channel.getWriteAccess());
+                properties.put("CA Hostname", channel.getHostName());
+                properties.put("CA Channel type", channel.getFieldType().getName());
+                properties.put("CA Element count", channel.getElementCount());
+                properties.put("CA Read access", channel.getReadAccess());
+                properties.put("CA Write access", channel.getWriteAccess());
             }
             properties.put("isLongString", isLongString());
             properties.put("isPutCallback", isPutCallback());
+            properties.put("Connected", isConnected());
+            properties.put("Write Connected", isWriteConnected());
+            properties.put("Connection payload", getConnectionPayload());
+            properties.put("Last message payload", getLastMessagePayload());
         }
         return properties;
     }

@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2;
 
 import org.csstudio.trends.databrowser2.exportview.ExportView;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
 import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
@@ -50,21 +51,30 @@ public class Perspective implements IPerspectiveFactory
         //      |
         //      +-------------
         //      | bottom
+		final boolean rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+		
         String editor = layout.getEditorArea();
-        IFolderLayout left = layout.createFolder("left",
-                        IPageLayout.LEFT, 0.25f, editor);
+		// Stuff for 'left'
+        IFolderLayout left = null;
+		if (rcp || !Preferences.hideSearchView()) {
+			left = layout.createFolder("left", IPageLayout.LEFT,
+					0.25f, editor);
+		}
+		
         IFolderLayout bottom = layout.createFolder("bottom",
                         IPageLayout.BOTTOM, 0.66f, editor);
 
-        // Stuff for 'left'
-        left.addView(SearchView.ID);
-        
-		final boolean rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
-        if (rcp)
-			left.addView(IPageLayout.ID_RES_NAV);
 
+		if (left != null) {
+			left.addView(SearchView.ID);
+			if (rcp) {
+				left.addView(IPageLayout.ID_RES_NAV);
+			}
+		}
+		
         // Stuff for 'bottom'
         bottom.addView(IPageLayout.ID_PROP_SHEET);
+        
         if (rcp)
         	bottom.addView(ExportView.ID);
         
@@ -74,10 +84,10 @@ public class Perspective implements IPerspectiveFactory
         	bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Populate the "Window/Views..." menu with suggested views
-		if (rcp)
+		if (rcp) {
 			layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-		
-        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
-        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+	        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+	        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+		}
     }
 }

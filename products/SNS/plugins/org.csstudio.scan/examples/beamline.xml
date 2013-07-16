@@ -50,10 +50,8 @@
              The tools we create for now should ignore those levels of hierarchy
              and concentrate on the elements of interest.
              
-             For example, the Scan Server and Aggregator simply
-             look for <pv> anywhere below <device>:
-             The Aggregator logs any <pv> that has a <log/> flag.
-             The Scan Server allows access to all PVs with a <scan/> flag,
+             For example, the Scan Server simply
+             look for <pv> anywhere below <device>,
              optionally using their alias instead of the "real" name.
              
              The IOC control tools don't care about the PV names, they only
@@ -74,14 +72,13 @@
 
             <!-- PVs provided by the soft IOC that are of interest
                  to Scan Server, Aggregator, maybe more:
-                 Name, optional alias, scannable? loggable?
+                 Name, optional alias
              -->            
-            <pv><name>active</name><alias>active</alias><scan/></pv>
-            <pv><name>neutrons</name><log/></pv>
-            <pv><name>pcharge</name><log/></pv>
-            <pv><name>shutter</name><log/><scan/></pv>
-            <pv><name>motor_x</name><alias>xpos</alias><log/><scan/></pv>
-            <pv><name>motor_y</name><alias>ypos</alias><log/><scan/></pv>
+            <pv><name>neutrons</name></pv>
+            <pv><name>pcharge</name></pv>
+            <pv><name>shutter</name></pv>
+            <pv><name>motor_x</name><alias>xpos</alias></pv>
+            <pv><name>motor_y</name><alias>ypos</alias></pv>
         </device>
         
         <!-- In this example the 'setpoint' PV can be scanned,
@@ -91,8 +88,8 @@
             <name>Deep frying heater</name>
             <!-- IOC without script is actually ignored -->            
             <ioc><name>ics-bl99-dfh-ioc</name></ioc>
-            <pv><name>setpoint</name><alias>setpoint</alias><scan/></pv>
-            <pv><name>readback</name><alias>readback</alias><log/></pv>
+            <pv><name>setpoint</name><alias>setpoint</alias></pv>
+            <pv><name>readback</name><alias>readback</alias></pv>
         </device>
 
         <!-- Device that can be used on the beam line,
@@ -108,8 +105,8 @@
                 <console>4813</console>
             </ioc>
             <!--
-            <pv><name>IOC:m1</name><alias>IOC:m1</alias><scan/></pv>
-            <pv><name>IOC:m1.RBV</name><alias>IOC:m1.RBV</alias><log/></pv>
+            <pv><name>IOC:m1</name><alias>IOC:m1</alias></pv>
+            <pv><name>IOC:m1.RBV</name><alias>IOC:m1.RBV</alias></pv>
             -->
         </device>
     </devices>

@@ -11,13 +11,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.auth.security.Credentials;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.security.UiLoginCallbackHandler;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.workspace.RelaunchConstants;
+import org.csstudio.security.authentication.LoginJob;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
-import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
@@ -43,24 +40,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Workbench implements WorkbenchExtPoint
 {
-	/** Attempt to authenticate user.
-	 *  Allows entry of different name/password on error.
-	 *  @param username
-	 *  @param password
-	 */
-	private static void authenticate(final String username, final String password)
-	{
-		Credentials defaultCredentials;
-		if(username == null)
-			defaultCredentials = Credentials.ANONYMOUS;
-		else
-			defaultCredentials = new Credentials(username, password);
-    	final SecurityFacade sf = SecurityFacade.getInstance();
-		sf.setLoginCallbackHandler(new UiLoginCallbackHandler(Messages.StartupAuthenticationHelper_Login,
-				Messages.StartupAuthenticationHelper_LoginTip, defaultCredentials));
-		sf.authenticateApplicationUser();
-	}
-
     /** {@inheritDoc} */
 	@Override
     public Object afterWorkbenchCreation(final Display display, final IApplicationContext context,
@@ -102,11 +81,7 @@ public class Workbench implements WorkbenchExtPoint
 	    final Logger logger = Logger.getLogger(getClass().getName());
 
         //authenticate user
-        Object o = parameters.get(LoginExtPoint.USERNAME);
-		final String username = o != null ? (String)o : null;
-		o = parameters.get(LoginExtPoint.PASSWORD);
-		final String password = o != null ? (String)o : null;
-        authenticate(username, password);
+	    LoginJob.forCurrentUser().schedule();
 
         final OpenDocumentEventProcessor openDocProcessor =
     	  (OpenDocumentEventProcessor) parameters.get(

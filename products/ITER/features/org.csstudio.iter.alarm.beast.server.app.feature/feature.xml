@@ -2,75 +2,37 @@
 <feature
       id="org.csstudio.iter.alarm.beast.server.app.feature"
       label="CSS Alarm Server Component"
-      version="1.0.0"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      version="3.2.0.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2013 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
 
    <requires>
-      <import plugin="org.apache.lucene"/>
-      <import plugin="org.apache.lucene.analysis"/>
-      <import plugin="org.csstudio.alarm.beast"/>
-      <import plugin="org.csstudio.alarm.beast.server"/>
-      <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.csstudio.auth"/>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.data"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.logging"/>
-      <import plugin="org.csstudio.platform.libs.epics"/>
-      <import plugin="org.csstudio.platform.libs.jdbc"/>
-      <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.csstudio.workspace"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.epics"/>
-      <import plugin="org.csstudio.utility.pvmanager.loc"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.filebuffers"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.base"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.update.configurator"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
-      <import plugin="org.junit"/>
       <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.csstudio.alarm.beast.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.alarm.beast.server.product"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.csstudio.alarm.beast"
@@ -80,7 +42,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.alarm.beast.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.apputil"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.alarm.beast.server.product"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -31,5 +31,12 @@
             name="BOY Examples">
       </wizard>
    </extension>
+   <extension
+         point="org.csstudio.examples.sampleset">
+      <sampleset
+            name="BOY Examples"
+            sampleset="org.csstudio.opibuilder.examples.Basic">
+      </sampleset>
+  org.csstudio.opibuilder.examples.Basic </extension>
 
 </plugin>

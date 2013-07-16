@@ -7,10 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,6 +70,12 @@ public abstract class AbstractScriptStore implements IScriptStore{
 			if(!absoluteScriptPath.isAbsolute()){
 				absoluteScriptPath = ResourceUtil.buildAbsolutePath(
 						editpart.getWidgetModel(), absoluteScriptPath);
+				if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
+					//search from OPI search path
+					absoluteScriptPath = ResourceUtil.getFileOnSearchPath(scriptData.getPath(), true);
+					if(absoluteScriptPath == null)
+						throw new FileNotFoundException(scriptData.getPath().toString());
+				}
 			}
 		}
 		
@@ -88,13 +92,10 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		else{			
 			//read file
 			InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(inputStream));
 
 			//compile
-			compileReader(reader); //$NON-NLS-1$
+			compileInputStream(inputStream);
 			inputStream.close();
-			reader.close();
 		}		
 
 
@@ -170,11 +171,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	 */
 	protected abstract void compileString(String string) throws Exception;
 
-	/**Compile reader with script engine.
+	/**Compile InputStream with script engine. The stream will be closed by this method.
 	 * @param reader
 	 * @throws Exception
 	 */
-	protected abstract void compileReader(Reader reader) throws Exception;
+	protected abstract void compileInputStream(InputStream s) throws Exception;
 	
 	/**
 	 * Execute the script with script engine.

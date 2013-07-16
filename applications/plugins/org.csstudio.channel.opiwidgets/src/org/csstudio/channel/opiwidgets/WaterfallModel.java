@@ -10,6 +10,10 @@ import org.epics.util.time.TimeDuration;
 
 public class WaterfallModel extends AbstractChannelWidgetModel {
 	
+	public WaterfallModel() {
+		super(true);
+	}
+	
 	public final String ID = "org.csstudio.channel.opiwidgets.Waterfall"; //$NON-NLS-1$
 	
 	public static final String SORT_PROPERTY = "sort_property"; //$NON-NLS-1$	

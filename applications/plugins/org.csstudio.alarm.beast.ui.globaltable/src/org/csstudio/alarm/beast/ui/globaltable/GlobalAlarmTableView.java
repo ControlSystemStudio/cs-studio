@@ -14,6 +14,8 @@ import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModel;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModelListener;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -99,7 +101,9 @@ public class GlobalAlarmTableView extends ViewPart
     private void addContextMenu(final TableViewer table_viewer,
             final IWorkbenchPartSite site)
     {
-        final Table table = table_viewer.getTable();
+		final Table table = table_viewer.getTable();
+		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+				.getUI());
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -114,8 +118,10 @@ public class GlobalAlarmTableView extends ViewPart
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
                 new ContextMenuHelper(null, manager, table.getShell(), items, false);
                 manager.add(new Separator());
-                manager.add(new AlarmPerspectiveAction());
-                manager.add(new Separator());
+                if(isRcp) {
+                    manager.add(new AlarmPerspectiveAction());
+                    manager.add(new Separator());
+                }
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });

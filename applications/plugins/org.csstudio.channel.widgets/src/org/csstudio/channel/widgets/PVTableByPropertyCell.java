@@ -81,7 +81,7 @@ public class PVTableByPropertyCell implements ChannelQueryAdaptable {
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return AdaptableUtilities.toProcessVariables(toChannels());
 	}
 

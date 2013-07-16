@@ -9,15 +9,19 @@ package org.csstudio.utility.dbparser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.utility.dbparser.data.Record;
+import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.ProposalStyle;
+import org.csstudio.autocomplete.TopProposalFinder;
+import org.csstudio.autocomplete.data.Record;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.swt.SWT;
 
 /**
  * DB context management in a {@link ThreadLocal} thread. This context is
@@ -32,7 +36,37 @@ public class DBContext implements Serializable {
 	private Map<String, List<Record>> records;
 
 	public DBContext() {
-		records = new HashMap<String, List<Record>>();
+		records = new TreeMap<String, List<Record>>();
+	}
+	
+	public List<Proposal> findProposals(Pattern p, int limit) {
+		List<Proposal> result = new ArrayList<Proposal>();
+		for (String rec : records.keySet()) {
+			Matcher m = p.matcher(rec);
+			if (m.find()) {
+				Proposal proposal = new Proposal(rec, false);
+				proposal.addStyle(new ProposalStyle(m.start(), m.end() - 1,
+						SWT.BOLD, SWT.COLOR_BLUE));
+				result.add(proposal);
+			}
+			if (result.size() >= limit)
+				return result;
+		}
+		return result;
+	}
+
+	public int countProposals(Pattern p) {
+		int count = 0;
+		for (String rec : records.keySet()) {
+			Matcher m = p.matcher(rec);
+			if (m.find())
+				count++;
+		}
+		return count;
+	}
+	
+	public List<Proposal> findTopProposals(TopProposalFinder trf, String name) {
+		return trf.getTopProposals(name, records.keySet());
 	}
 
 	public List<Record> findRecord(String name) {
@@ -49,7 +83,7 @@ public class DBContext implements Serializable {
 	}
 
 	public void addRecord(IFile file, Record record) {
-		record.setFile(file);
+		record.setFile(file.getFullPath());
 		if (records.get(record.getName()) == null)
 			records.put(record.getName(), new ArrayList<Record>());
 		records.get(record.getName()).add(record);

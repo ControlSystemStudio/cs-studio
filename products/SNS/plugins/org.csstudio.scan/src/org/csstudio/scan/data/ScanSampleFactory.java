@@ -23,7 +23,7 @@ import java.util.Date;
 @SuppressWarnings("nls")
 public class ScanSampleFactory
 {
-    /** Create ScanSample for plain number or text value
+    /** Create ScanSample for plain number
 	 *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
 	 *  @param numbers {@link Number}s
@@ -38,20 +38,39 @@ public class ScanSampleFactory
 		return new NumberScanSample(timestamp, serial, numbers);
 	}
 
-    /** Create ScanSample for plain number or text value
+    /** Create ScanSample for strings
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
-     *  @param values Values
+     *  @param values {@link String}s
      *  @return {@link ScanSample}
      *  @throws IllegalArgumentException if the value type is not handled
      */
     public static ScanSample createSample(final Date timestamp,
-            final long serial, final Object[] values) throws IllegalArgumentException
+            final long serial, final String... values) throws IllegalArgumentException
     {
         if (values.length <= 0)
             throw new IllegalArgumentException("Missing values");
-        if (values[0] instanceof Number)
+        return new StringScanSample(timestamp, serial, values);
+    }
+	
+    /** Create ScanSample for plain number or text value
+     *  @param timestamp Time stamp
+     *  @param serial Serial to identify when the sample was taken
+     *  @param values Values, must all have the same type
+     *  @return {@link ScanSample}
+     *  @throws IllegalArgumentException if the value type is not handled
+     */
+    public static ScanSample createSample(final Date timestamp,
+            final long serial, final Object... values) throws IllegalArgumentException
+    {
+        if (values.length <= 0)
+            throw new IllegalArgumentException("Missing values");
+        if (values instanceof Number[])
             return new NumberScanSample(timestamp, serial, (Number[]) values);
+        else if (values instanceof String[])
+            return new StringScanSample(timestamp, serial, (String[]) values);
+        else if (values.length == 1  &&  values[0] instanceof Double)
+            return new NumberScanSample(timestamp, serial, (Double) values[0]);
         throw new IllegalArgumentException("Cannot handle values of type " + values[0].getClass().getName());
     }
 }

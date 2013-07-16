@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.security.ui.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
@@ -56,19 +56,19 @@ public class PreferencePage extends FieldEditorPreferencePage
     protected void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-
+        
         // Overall configuration name
         addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
 
         // RDB Server
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Preferences_RDB_URL, parent));
-        addField(new PasswordFieldEditor(Preferences.RDB_USER, Messages.Preferences_RDB_User, parent,PREF_QUALIFIER_ID, false));
-        addField(new PasswordFieldEditor(Preferences.RDB_PASSWORD, Messages.Preferences_RDB_Password, parent, PREF_QUALIFIER_ID));
+        addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Preferences_RDB_User, parent));
+        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.RDB_PASSWORD, Messages.Preferences_RDB_Password, parent));
 
         // JMS Connection
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
-        addField(new PasswordFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_User, parent, PREF_QUALIFIER_ID, false));
-        addField(new PasswordFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_Password, parent, PREF_QUALIFIER_ID));
+        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_User, parent));
+        addField(new PasswordFieldEditor(PREF_QUALIFIER_ID, Preferences.JMS_PASSWORD, Messages.Preferences_JMS_Password, parent));
         final IntegerFieldEditor timeout = new IntegerFieldEditor(
             Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
         timeout.setValidRange(0, 60*60);

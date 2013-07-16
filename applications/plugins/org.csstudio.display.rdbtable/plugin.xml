@@ -11,7 +11,17 @@
             icon="html/icon.gif"
             id="org.csstudio.display.rdbtable.ui.editor"
             name="%RDBTableEditor">
+         <contentTypeBinding
+               contentTypeId="org.csstudio.display.rdbtable" />
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type id="org.csstudio.display.rdbtable"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="rdb"
+            name="RDB File">
+      </content-type>
    </extension>
    <extension
            point="org.eclipse.help.toc">

@@ -2,5 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.csstudio.utility.pvmanager.datasource" name="PVManager DataSource" schema="schema/org.csstudio.utility.pvmanager.datasource.exsd"/>
+   <extension-point id="org.csstudio.utility.pvmanager.service" name="PVManager Service" schema="schema/org.csstudio.utility.pvmanager.service.exsd"/>
 
 </plugin>

@@ -60,11 +60,9 @@ execCmd mvn iter:newioc -Dioc=TEST-BOY0-PSH0SYSM -Dtype=generic  -Dapp=TEST-BOY0
 execCmd mvn iter:newioc -Dioc=TEST-BOY1-PSH0CORE -Dtype=generic  -Dapp=TEST-BOY1
 execCmd mvn iter:newioc -Dioc=TEST-BOY1-PSH0SYSM -Dtype=generic  -Dapp=TEST-BOY1
 
-execCmd mvn iter:include -Dtype=beast -Dconfiguration=TEST-BOY0-beast.xml
-execCmd mvn iter:include -Dtype=beast -Dconfiguration=TEST-BOY1-beast.xml
+execCmd mvn iter:include -Dtype=beast -Dconfiguration=TEST-beast.xml
 
-execCmd mvn iter:include -Dtype=beauty -Dconfiguration=TEST-BOY0-beauty.xml
-execCmd mvn iter:include -Dtype=beauty -Dconfiguration=TEST-BOY1-beauty.xml
+execCmd mvn iter:include -Dtype=beauty -Dconfiguration=TEST-beauty.xml
 
 execCmd cp -r "${UNITBASEDIR}/src" .
 

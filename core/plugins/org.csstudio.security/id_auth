@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Script for ScriptAuthorizationProvider
+#
+# Invoked with user name, it lists all authentications.
+#
+# This implementation uses the group names of the user
+# as authorization identifiers.
+# Usable on Linux or Mac OS X
+
+if [ $# -ne 1 ]
+then
+   echo "USAGE: id_auth user_name" 1>&2
+   exit -1
+else
+   id -G -n "$@"
+fi

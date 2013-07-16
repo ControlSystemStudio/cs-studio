@@ -22,6 +22,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.epics.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that sets a device to a value
  *  @author Kay Kasemir
@@ -43,19 +44,19 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         final String readback = command.getReadback();
         if (readback.isEmpty())
-            return new String[] { command.getDeviceName() };
-        return new String[] { command.getDeviceName(), readback };
+            return new String[] { context.resolveMacros(command.getDeviceName()) };
+        return new String[] { context.resolveMacros(command.getDeviceName()), context.resolveMacros(readback) };
     }
 
 	/** {@inheritDoc} */
 	@Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(command.getDeviceName());
+		final SimulatedDevice device = context.getDevice(context.resolveMacros(command.getDeviceName()));
 
 		// Get previous and desired values
 		final double original = device.readDouble();
@@ -76,7 +77,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	    command.appendConditionDetail(buf);
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
-    	context.logExecutionStep(buf.toString(), time_estimate);
+    	context.logExecutionStep(context.resolveMacros(buf.toString()), time_estimate);
 
     	// Set to (simulated) new value
     	device.write(command.getValue());
@@ -89,7 +90,8 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	    ScanCommandUtil.write(context,
 	            command.getDeviceName(), command.getValue(),
 				command.getReadback(), command.getWait(),
-				command.getTolerance(), command.getTimeout());
+				command.getTolerance(),
+				TimeDuration.ofSeconds(command.getTimeout()));
 		context.workPerformed(1);
     }
 }

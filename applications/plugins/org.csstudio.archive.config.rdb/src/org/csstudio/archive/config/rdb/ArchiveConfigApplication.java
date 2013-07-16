@@ -21,6 +21,8 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.logging.LogConfigurator;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -70,6 +72,8 @@ public class ArchiveConfigApplication implements IApplication
                 "-rdb_password", "password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  rdb_schema = new StringOption(parser,
                 "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
+        final StringOption set_password = new StringOption(parser,
+                "-set_password", "plugin/key=value", "Set secure preferences", null);
         final BooleanOption version = new BooleanOption(parser,
                 "-version", "show version info");
         parser.addEclipseParameters();
@@ -97,6 +101,25 @@ public class ArchiveConfigApplication implements IApplication
             return IApplication.EXIT_OK;
         }
 
+        String option = set_password.get();
+		if (option != null)
+        {	// Split "plugin/key=value"
+        	final String pref, value;
+        	final int sep = option.indexOf("=");
+        	if (sep >= 0)
+        	{
+        		pref = option.substring(0, sep);
+        		value = option.substring(sep + 1);
+        	}
+        	else
+        	{
+        		pref = option;
+        		value = PasswordInput.readPassword("Value for " + pref + ":");
+        	}
+    		SecurePreferences.set(pref, value);
+            return IApplication.EXIT_OK;
+        }
+        
         if (!list.get() && engine_name.get().length() <= 0)
         {
             System.err.println("Missing option " + engine_name.getOption());

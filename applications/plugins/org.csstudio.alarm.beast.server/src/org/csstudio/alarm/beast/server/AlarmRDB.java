@@ -20,11 +20,13 @@ import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.TreeItem;
+import org.csstudio.alarm.beast.server.AlarmServer.Update;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Alarm RDB Handler
  *  @author Kay Kasemir
  *  @author Lana Abadie - Disable autocommit as needed.
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
 public class AlarmRDB
@@ -283,7 +285,7 @@ public class AlarmRDB
      *  @param timestamp
      *  @throws Exception on error
      */
-    public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
+    private void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
             String current_message, final SeverityLevel severity, String message,
             final String value, final org.epics.util.time.Timestamp timestamp) throws Exception
     {
@@ -292,12 +294,6 @@ public class AlarmRDB
             message = SeverityLevel.OK.getDisplayName();
         if (current_message == null  ||  current_message.isEmpty())
             current_message = SeverityLevel.OK.getDisplayName();
-
-        // According to JProfiler, this is the part of the code
-        // that uses most of the CPU:
-        // Compared to receiving updates from PVs and sending them
-        // to JMS clients, the (Oracle) RDB update dominates
-        // the combined time spent in CPU usage and network I/O.
 
         // These are usually quick accesses to local caches,
         // but could fail when trying to add new values to RDB, so give detailed error
@@ -337,41 +333,88 @@ public class AlarmRDB
         {
             throw new Exception("Failed to map alarm message " + message + ": " + ex.getMessage(), ex);
         }
+        
+        updateStateStatement.setInt(1, current_severity_id);
+        updateStateStatement.setInt(2, current_message_id);
+        updateStateStatement.setInt(3, severity_id);
+        updateStateStatement.setInt(4, message_id);
+        //Truncate the value to avoid Truncation Exception thrown by some SQL Servers
+        String newValue = value;
+        if (newValue != null && newValue.length() > 100)
+        {
+            newValue = newValue.substring(0,99);
+            Activator.getLogger().log(Level.WARNING,
+                "Value truncated. Too many characters: " + pv.getName() + "; " + timestamp.toDate() + " " + value);
+        }
+        updateStateStatement.setString(5, newValue);
+        Timestamp sql_time = TimestampHelper.toSQLTime(timestamp);
+        if (sql_time.getTime() == 0)
+        {    // MySQL will throw Data Truncation exception on 0 time stamps
+            sql_time = new Timestamp(new Date().getTime());
+            Activator.getLogger().log(Level.INFO,
+                    "State update for {0} corrects time stamp {1} to now",
+                    new Object[] { pv.getPathName(), timestamp });
+        }
+        updateStateStatement.setTimestamp(6, sql_time);
+        updateStateStatement.setInt(7, pv.getID());
+        updateStateStatement.addBatch();
+    }
 
-        // The isConnected() check in here is expensive, but what's
-        // the alternative if we want convenient auto-reconnect?
+    /** Persists all the updates into DB.
+     *  @param updates the updates to persist
+     *  @param batchSize maximum batch size
+     * 
+     *  @throws Exception
+     */
+    public void persistAllStates(final Update[] updates, final int batchSize) throws Exception
+    {    
         final Connection actual_connection = rdb.getConnection();
         actual_connection.setAutoCommit(false);
+     
+        // New or changed connection?
+        if (actual_connection != connection  ||  updateStateStatement == null)
+        {
+            connection = actual_connection;
+            updateStateStatement = null;
+            updateStateStatement = actual_connection.prepareStatement(sql.update_pv_state);
+        }
         try
         {
-            if (actual_connection != connection  ||  updateStateStatement == null)
-            {   // (Re-)create statement on new connection
-                connection = actual_connection;
-                updateStateStatement = null;
-                updateStateStatement = connection.prepareStatement(sql.update_pv_state);
+            int count = 0;
+            for (Update u : updates)
+            {            
+                try
+                {
+                    writeStateUpdate(u.pv, u.currentSeverity, u.currentMessage, u.alarmSeverity,
+                            u.alarmMessage, u.value, u.timestamp);
+                    count++;
+                }
+                catch (Exception ex)
+                {
+                    //this is about 4-times faster than StringBuilder
+                    String s = "Error updating state: current severity=" + u.currentSeverity + 
+                                "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
+                                "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
+                                "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
+                    Activator.getLogger().log(Level.SEVERE, s, ex);
+                }
+                if (count == batchSize)
+                {	// Periodically submit as batch
+                    updateStateStatement.executeBatch();
+                    actual_connection.commit();
+                    count = 0;
+                }
             }
-            // Bulk of the time is spent in execute() & commit
-            updateStateStatement.setInt(1, current_severity_id);
-            updateStateStatement.setInt(2, current_message_id);
-            updateStateStatement.setInt(3, severity_id);
-            updateStateStatement.setInt(4, message_id);
-            updateStateStatement.setString(5, value);
-            Timestamp sql_time = TimestampHelper.toSQLTime(timestamp);
-            if (sql_time.getTime() == 0)
-            {    // MySQL will throw Data Truncation exception on 0 time stamps
-                sql_time = new Timestamp(new Date().getTime());
-                Activator.getLogger().log(Level.INFO,
-                        "State update for {0} corrects time stamp {1} to now",
-                        new Object[] { pv.getPathName(), timestamp });
-            }
-            updateStateStatement.setTimestamp(6, sql_time);
-            updateStateStatement.setInt(7, pv.getID());
-            updateStateStatement.execute();
-            actual_connection.commit();
+            // Submit remaining statements
+            if (count > 0)
+            {
+                updateStateStatement.executeBatch();
+                actual_connection.commit();
+            }            
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-        	actual_connection.rollback();
+            rollbackBatchUpdate(actual_connection,updateStateStatement);
             throw e;
         }
         finally
@@ -380,33 +423,63 @@ public class AlarmRDB
         }
     }
 
-    /** Update 'global' alarm indicator in RDB
-     *  @param pv
-     *  @param active Is there an active 'global' alarm on the PV?
-     *  @throws Exception on error
+    /** Persists all the global updates in batches of the given size.
+     * 
+     *  @param updates the updates to persist
+     *  @param batchSize maximum batch size
+     * 
+     *  @throws Exception
      */
-    public void writeGlobalUpdate(final AlarmPV pv, final boolean active) throws Exception
+    public void persistGlobalUpdates(final Update[] updates, final int batchSize) throws Exception
     {
-        // The isConnected() check in here is expensive, but what's
-        // the alternative if we want convenient auto-reconnect?
         final Connection actual_connection = rdb.getConnection();
         actual_connection.setAutoCommit(false);
+            
         try
         {
+            int count = 0;
             if (actual_connection != connection  ||  updateGlobalStatement == null)
             {   // (Re-)create statement on new connection
                 connection = actual_connection;
                 updateGlobalStatement = null;
                 updateGlobalStatement = connection.prepareStatement(sql.update_global_state);
             }
-            updateGlobalStatement.setBoolean(1, active);
-            updateGlobalStatement.setInt(2, pv.getID());
-            updateGlobalStatement.execute();
-            actual_connection.commit();
+            
+            for (Update u : updates)
+            {
+                try
+                {
+                    updateGlobalStatement.setBoolean(1, u.currentSeverity.isActive());
+                    updateGlobalStatement.setInt(2, u.pv.getID());
+                    updateGlobalStatement.addBatch();
+                    count++;
+                }
+                catch (Exception ex)
+                {
+                    //this is about 4-times faster than StringBuilder
+                    String s = "Error updating global state: current severity=" + u.currentSeverity + 
+                                "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
+                                "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
+                                "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
+                    Activator.getLogger().log(Level.SEVERE, s, ex);
+                }
+                if (count == batchSize)
+                {
+                    updateGlobalStatement.executeBatch();
+                    actual_connection.commit();
+                    count = 0;
+                } 
+            }
+            // Submit remaining batch
+            if (count > 0)
+            {
+                updateGlobalStatement.executeBatch();
+                actual_connection.commit();
+            }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-        	actual_connection.rollback();
+            rollbackBatchUpdate(actual_connection, updateGlobalStatement);
             throw e;
         }
         finally
@@ -444,6 +517,19 @@ public class AlarmRDB
         {
             update_enablement_statement.close();
             actual_connection.setAutoCommit(true);
+        }
+    }
+
+    private void rollbackBatchUpdate(final Connection actualConnection, final PreparedStatement statement)
+    {
+        try
+        {
+            statement.clearBatch();
+            actualConnection.rollback();
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.SEVERE, "State update rollback error.", ex);
         }
     }
 

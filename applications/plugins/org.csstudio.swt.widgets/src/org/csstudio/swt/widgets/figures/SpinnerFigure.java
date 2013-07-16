@@ -80,6 +80,8 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	
 	private boolean arrowButtonsOnLeft = true;
 	
+	private boolean arrowButtonsHorizontal = false;
+	
 	private int buttonWidth = 20;
 	
 	private NumericFormatType formatType;
@@ -295,24 +297,51 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	public boolean isArrowButtonsOnLeft() {
 		return arrowButtonsOnLeft;
 	}
+	
+	/**
+	 * @return true if arrow buttons layout is horizontal.
+	 */
+	public boolean isArrowButtonsHorizontal() {
+		return arrowButtonsHorizontal;
+	}
 
 	@Override
 	protected void layout() {
 		Rectangle clientArea = getClientArea();
 		if(arrowButtonsOnLeft){
-			labelFigure.setBounds(new Rectangle(clientArea.x+1 + buttonWidth, clientArea.y, 
-					clientArea.width - buttonWidth-1, clientArea.height));
-			buttonUp.setBounds(new Rectangle(clientArea.x,
-					clientArea.y, buttonWidth, clientArea.height/2));
-			buttonDown.setBounds(new Rectangle(clientArea.x,
-					clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+			if(arrowButtonsHorizontal){
+				labelFigure.setBounds(new Rectangle(clientArea.x+1 + 2 * buttonWidth, clientArea.y, 
+						clientArea.width - 2 * buttonWidth-1, clientArea.height));
+				buttonUp.setBounds(new Rectangle(clientArea.x,
+						clientArea.y, buttonWidth, clientArea.height));
+				buttonDown.setBounds(new Rectangle(clientArea.x + buttonWidth,
+						clientArea.y, buttonWidth, clientArea.height));
+			}
+			else{
+				labelFigure.setBounds(new Rectangle(clientArea.x+1 + buttonWidth, clientArea.y, 
+						clientArea.width - buttonWidth-1, clientArea.height));
+				buttonUp.setBounds(new Rectangle(clientArea.x,
+						clientArea.y, buttonWidth, clientArea.height/2));
+				buttonDown.setBounds(new Rectangle(clientArea.x,
+						clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+			}
 		}else{
-			labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
-					clientArea.width - buttonWidth, clientArea.height));
-			buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
-					clientArea.y, buttonWidth, clientArea.height/2));
-			buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
-					clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+			if(arrowButtonsHorizontal){
+				labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
+						clientArea.width - 2 * buttonWidth, clientArea.height));
+				buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - 2 * buttonWidth,
+						clientArea.y, buttonWidth, clientArea.height));
+				buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+						clientArea.y, buttonWidth, clientArea.height));
+			}
+			else{
+				labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
+						clientArea.width - buttonWidth, clientArea.height));
+				buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+						clientArea.y, buttonWidth, clientArea.height/2));
+				buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+						clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+			}
 		}
 		super.layout();
 	}
@@ -353,6 +382,14 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	 */
 	public void setArrowButtonsOnLeft(boolean arrowButtonsOnLeft) {
 		this.arrowButtonsOnLeft = arrowButtonsOnLeft;
+		revalidate();
+	}
+	
+	/**Set the layout of the arrow buttons
+	 * @param arrowButtonsHorizontal true if horizontal.
+	 */
+	public void setArrowButtonsHorizontal(boolean arrowButtonsHorizontal) {
+		this.arrowButtonsHorizontal = arrowButtonsHorizontal;
 		revalidate();
 	}
 	

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.swt.SWT;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -28,6 +29,8 @@ public class SingleSourcePlugin implements BundleActivator
     final public static String EXT_ID = "org.csstudio.utility.singlesource.helpers";
     
     private static ResourceHelper resources;
+    
+    private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
     
     private static UIHelper ui;
 
@@ -72,4 +75,12 @@ public class SingleSourcePlugin implements BundleActivator
     {
         return SingleSourcePlugin.ui;
     }
+    
+	/**
+	 * @return true if this is running in RAP.
+	 */
+	public static boolean isRAP() {
+		return isRAP;
+	}
+	
 }

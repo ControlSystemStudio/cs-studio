@@ -21,7 +21,6 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
-import org.csstudio.alarm.beast.ReplacableRunnable;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
@@ -39,10 +38,93 @@ import org.epics.util.time.Timestamp;
  *  display the alarm state of PVs.
  *
  *  @author Kay Kasemir, Xihui Chen
+ *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
-public class AlarmServer
+public class AlarmServer implements Runnable 
 {
+	/** BatchUpdater takes care of periodic updates of alarm states into the RDB and
+	 *  to the JMS. This allows for the updates to queue up to sizable number.
+	 *  Then they are sent in batches, which allows for better performance. 
+	 */
+	private class BatchUpdater extends Thread
+	{
+		boolean run = true;
+		
+		public BatchUpdater()
+		{
+			setDaemon(true);
+			setPriority(MIN_PRIORITY);
+		}
+		
+		@Override
+		public void run()
+		{
+			try
+			{
+				while (run)
+				{
+					work_queue.executeIfNotPending(AlarmServer.this);
+					Thread.sleep(updatePeriod);
+				}
+			}
+			catch (InterruptedException e)
+			{
+				// Ignore: Server has been terminated, there is no need for further updates
+			}
+		}
+		
+		public void terminate()
+		{
+			run = false;
+			this.interrupt();
+		}
+	}
+	
+	/** Update is a wrapper about a single PV update received by the server.
+	 *  It is used to queue data for later processing.*
+	 */
+	static class Update
+	{
+    	public final AlarmPV pv;
+    	public final SeverityLevel currentSeverity;
+    	public final String currentMessage;
+    	public final SeverityLevel alarmSeverity;
+    	public final String alarmMessage;
+    	public final String value;
+    	public final Timestamp timestamp;
+    	
+    	public Update(final AlarmPV pv,
+    			final SeverityLevel currentSeverity, final String currentMessage,
+    			final SeverityLevel alarmSeverity, final String alarmMessage,
+    			final String value, final Timestamp timestamp)
+    	{
+    		this.pv = pv;
+    		this.currentSeverity = currentSeverity;
+    		this.currentMessage = currentMessage;
+    		this.alarmSeverity = alarmSeverity;
+    		this.alarmMessage = alarmMessage;
+    		this.value = value;
+    		this.timestamp = timestamp;
+    	}
+    }
+	
+	/** A list holding all the updates, which have not yet been send to the JMS queue */
+	private List<Update> queuedUpdates = new ArrayList<Update>();
+	
+	/** A list holding all the global updates, which have not yet been send to the JMS queue */
+	private List<Update> queuedGlobalUpdates = new ArrayList<Update>();
+	
+    /** Updates to be persisted in the RDB, mapping the 'latest' by PV.
+     *  While queuedUpdates contains all recent updates, the map only
+     *  retains the most recent update for each PV
+     *  because we only need to store the latest updates of the same PV.
+     */
+    private Map<String,Update> queuedRDBUpdates = new HashMap<String,Update>();
+    
+    /** Global updates to be persisted in the RDB, mapping the 'latest' by PV */
+    private Map<String,Update> queuedRDBGlobalUpdates = new HashMap<String,Update>();
+	
     /** Name of alarm tree root element */
     final String root_name;
 
@@ -76,6 +158,12 @@ public class AlarmServer
     /** Indicator for communication errors */
     private volatile boolean had_RDB_error = false;
 
+    /** Updater thread */
+    private BatchUpdater batchExecutor;
+    /** The period of the updater thread - how frequently it executes message persisting */
+    private final long updatePeriod;
+    /** The maximum size of batches when persisting messages */
+    private final int batchSize;
 
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
@@ -87,6 +175,8 @@ public class AlarmServer
     {
         this.root_name = root_name;
         this.work_queue = work_queue;
+        this.updatePeriod = (long)(Preferences.getBatchUpdatePeriod()*1000);
+        this.batchSize = Preferences.getBatchSize();
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(),
         		Preferences.getRDB_Password(),
@@ -233,6 +323,11 @@ public class AlarmServer
             });
             nag_timer.start();
         }
+
+        if (batchExecutor != null)
+        	batchExecutor.terminate();
+        batchExecutor = new BatchUpdater();
+        batchExecutor.start();
     }
 
     /** Start PVs */
@@ -279,6 +374,18 @@ public class AlarmServer
         messenger.sendAnnunciation("Alarm server exiting");
         stopPVs();
         messenger.stop();
+        if (batchExecutor != null)
+        	batchExecutor.terminate();
+        try
+        {
+        	//send pending updates
+        	sendQueuedUpdates();
+        }
+        catch (Exception e)
+        {
+        	Activator.getLogger().log(Level.SEVERE, "Error commiting state update batches.",e);
+        	had_RDB_error = true;
+        } 
     }
 
     /** Stop PVs */
@@ -431,34 +538,15 @@ public class AlarmServer
             final String message,
             final String value, final Timestamp timestamp)
     {
-    	messenger.sendStateUpdate(pv, current_severity, current_message,
-    	        severity, message, value, timestamp);
-        // Move the persistence of states into separate queue & thread
-        // so that it won't delay the alarm server from updating.
-
-    	// ReplacableRunnable:
-    	// If there is already an update request for this PV on the queue,
-    	// replace it with the new one because it's out of date and no
-    	// longer needs to be writting to the RDB anyway.
-        work_queue.executeReplacable(new ReplacableRunnable<AlarmPV>(pv)
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                	rdb.writeStateUpdate(pv, current_severity, current_message,
-                			severity, message, value, timestamp);
-                    recoverFromRDBErrors();
-                }
-                catch (Exception ex)
-                {
-                    // Remember that there was an error
-                    had_RDB_error = true;
-                    Activator.getLogger().log(Level.SEVERE, "Exception during alarm state update", ex);
-                }
-            }
-        });
+    	synchronized(queuedRDBUpdates)
+    	{
+    		final Update u = new Update(pv, current_severity,
+    				current_message, severity, message, value, timestamp);
+    		// We are only interested in the latest update of a particular PV
+    		// the rest don't need to be persisted
+    		queuedRDBUpdates.put(pv.getName(), u);
+    		queuedUpdates.add(u);
+    	}
     }
 
     /** Update 'global' JMS clients and RDB
@@ -473,28 +561,15 @@ public class AlarmServer
             final String message,
             final String value, final Timestamp timestamp)
     {
-        // Send to JMS
-        messenger.sendGlobalUpdate(pv, severity, message, value, timestamp);
-        // Persist global alarm state change in separate queue & thread
-        // so that it won't delay the alarm server from updating
-        work_queue.execute(new Runnable()
+        synchronized (queuedRDBGlobalUpdates)
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    rdb.writeGlobalUpdate(pv, severity.isActive());
-                    recoverFromRDBErrors();
-                }
-                catch (Exception ex)
-                {
-                    // Remember that there was an error
-                    had_RDB_error = true;
-                    Activator.getLogger().log(Level.SEVERE, "Exception during global alarm update", ex);
-                }
-            }
-        });
+        	final Update u = new Update(pv, severity,
+    				message, severity, message, value, timestamp);
+    		// We are only interested in the latest update of a particular PV
+    		// the rest don't need to be persisted
+        	queuedRDBGlobalUpdates.put(pv.getName(), u);
+        	queuedGlobalUpdates.add(u);
+		}
     }
 
     /** Update JMS clients and RDB about 'enabled' state of PV
@@ -554,4 +629,75 @@ public class AlarmServer
         had_RDB_error = false;
         messenger.sendReloadMessage();
     }
+    
+    /** Send all queue updates to RDB as well as JMS */
+    private void sendQueuedUpdates()
+    {
+    	// Create thread-save copy
+    	Update[] updates = null;
+		Update[] rdbUpdates = null;
+		synchronized (queuedRDBUpdates)
+		{
+			rdbUpdates = queuedRDBUpdates.values().toArray(new Update[queuedRDBUpdates.size()]);
+			queuedRDBUpdates.clear();
+			updates = queuedUpdates.toArray(new Update[queuedUpdates.size()]);
+			queuedUpdates.clear();
+		}
+		
+		if (rdbUpdates.length > 0)
+		{					
+			try
+			{
+	        	rdb.persistAllStates(rdbUpdates, batchSize);
+	        	recoverFromRDBErrors();
+	        }
+			catch (Exception e)
+			{
+	        	Activator.getLogger().log(Level.SEVERE, "Error commiting state update batches.", e);
+	        	had_RDB_error = true;
+	        }
+		}
+		
+		for (Update u : updates)
+		{
+			messenger.sendStateUpdate(u.pv, u.currentSeverity, u.currentMessage,
+    	        u.alarmSeverity, u.alarmMessage, u.value, u.timestamp);
+		}
+		
+		Update[] rdbGlobals = null;
+		Update[] globals = null;
+		synchronized(queuedRDBGlobalUpdates)
+		{
+			rdbGlobals = queuedRDBGlobalUpdates.values().toArray(new Update[queuedRDBGlobalUpdates.size()]);
+			queuedRDBGlobalUpdates.clear();
+			globals = queuedGlobalUpdates.toArray(new Update[queuedGlobalUpdates.size()]);
+			queuedGlobalUpdates.clear();
+		}
+		
+		if (rdbGlobals.length > 0)
+		{
+			try
+			{
+	        	rdb.persistGlobalUpdates(rdbGlobals,batchSize);
+	        	recoverFromRDBErrors();
+	        }
+			catch (Exception e)
+			{
+	        	Activator.getLogger().log(Level.SEVERE,"Error commiting global update batches.",e);
+	        	had_RDB_error = true;
+	        }
+		}
+		
+		for (Update u : globals)
+		{
+			messenger.sendGlobalUpdate(u.pv, u.alarmSeverity, u.alarmMessage, u.value, u.timestamp);
+		}
+    }
+
+    /** Runnable entry point used by BatchUpdater */
+	@Override
+	public void run()
+	{
+		sendQueuedUpdates();		
+	}
 }

@@ -16,9 +16,10 @@ Require-Bundle: org.junit,
  org.csstudio.utility.pvmanager.epics;bundle-version="2.0.0";resolution:=optional,
  org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0",
- org.csstudio.platform.utility.rdb;bundle-version="1.6.0";visibility:=reexport
+ org.csstudio.platform.utility.rdb;bundle-version="1.6.0";visibility:=reexport,
+ org.csstudio.autocomplete.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.diag.pvfields
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Dave Purcell <purcelljd@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Description: Display fields of an EPICS record, both live value and original value from 'IRMIS' type database

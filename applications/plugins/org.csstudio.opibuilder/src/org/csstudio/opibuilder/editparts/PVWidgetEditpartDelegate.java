@@ -44,7 +44,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
 
-public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
+public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
@@ -58,6 +58,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		}
 
 		public void pvDisconnected(PV pv) {
+			lastWriteAccess = null;
 		}
 
 		public void pvValueUpdate(PV pv) {
@@ -83,7 +84,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 		@Override
 		public void pvChanged(PVWriterEvent<Object> event) {
-			updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
+			if(isControlPV)
+				updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
 		}
 	}
 	//invisible border for no_alarm state, this can prevent the widget from resizing
@@ -107,7 +109,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	 * is not useful. Ignore the old pv value will help to reduce memory usage.
 	 */
 	private boolean ignoreOldPVValue =true;
-	private boolean isBackColorrAlarmSensitive;
+	private boolean isBackColorAlarmSensitive;
 
 	private boolean isBorderAlarmSensitive;
 	private boolean isForeColorAlarmSensitive;
@@ -161,6 +163,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	private boolean isAllValuesBuffered;
 	
 	private ListenerList setPVValueListeners;
+	private ListenerList alarmSeverityListeners;
 	
 	/**
 	 * @param editpart the editpart to be delegated. 
@@ -292,7 +295,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	public void initFigure(IFigure figure){		
 		//initialize frequent used variables
 		isBorderAlarmSensitive = getWidgetModel().isBorderAlarmSensitve();
-		isBackColorrAlarmSensitive = getWidgetModel().isBackColorAlarmSensitve();
+		isBackColorAlarmSensitive = getWidgetModel().isBackColorAlarmSensitve();
 		isForeColorAlarmSensitive = getWidgetModel().isForeColorAlarmSensitve();
 
 		if(isBorderAlarmSensitive
@@ -355,52 +358,67 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure figure) {
-
-				if(!isBorderAlarmSensitive && !isBackColorrAlarmSensitive &&
-						!isForeColorAlarmSensitive)
-					return false;
-				ISeverity newSeverity = ((IValue)newValue).getSeverity();
-				if(newSeverity.isOK() && alarmSeverity.isOK())
-					return false;
-				else if(newSeverity.isOK() && !alarmSeverity.isOK()){
-					alarmSeverity.copy(newSeverity);
-					restoreFigureToOKStatus(figure);
-					return true;
-				}
-				if(newSeverity.isMajor() && alarmSeverity.isMajor())
-					return false;
-				if(newSeverity.isMinor() && alarmSeverity.isMinor())
-					return false;
-				if(newSeverity.isInvalid() && alarmSeverity.isInvalid())
+				// No valid value is given. Do nothing.
+				if (newValue == null || !(newValue instanceof IValue))
 					return false;
 				
+				ISeverity newSeverity = ((IValue)newValue).getSeverity();
 				alarmSeverity.copy(newSeverity);
 				
-				RGB alarmColor;
-				if(newSeverity.isMajor()){
-					alarmColor = AlarmRepresentationScheme.getMajorColor();
-				}else if(newSeverity.isMinor()){
-					alarmColor = AlarmRepresentationScheme.getMinorColor();
-				}else{
-					alarmColor = AlarmRepresentationScheme.getInValidColor();
+				// Old value is not set. Force triggering listeners.
+				if (oldValue == null || !(oldValue instanceof IValue)) {
+					fireAlarmSeverityChanged(newSeverity, figure);
+					return true;
 				}
-				
-				if(isBorderAlarmSensitive){
-					editpart.setFigureBorder(editpart.calculateBorder());
-				}
-				if(isBackColorrAlarmSensitive){
-					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
-				}
-				if(isForeColorAlarmSensitive){
-					figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
-				}
-				
+
+				// Compare the old severity with the new severity.
+				// Trigger listeners only when they are different. 
+				ISeverity oldSeverity = ((IValue)oldValue).getSeverity();
+				if (oldSeverity.isOK() == newSeverity.isOK() &&
+					oldSeverity.isMinor() == newSeverity.isMinor() &&
+					oldSeverity.isMajor() == newSeverity.isMajor() &&
+					oldSeverity.isInvalid() == newSeverity.isInvalid())
+					return false;
+					
+				fireAlarmSeverityChanged(newSeverity, figure);
 				return true;
 			}
-
-
 		};
 		editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
+		
+		// Border Alarm Sensitive
+		addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!isBorderAlarmSensitive)
+					return false;
+				
+				editpart.setFigureBorder(editpart.calculateBorder());
+				return true;
+			}
+		});
+		
+		// BackColor Alarm Sensitive
+		addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!isBackColorAlarmSensitive)
+					return false;
+				figure.setBackgroundColor(calculateBackColor());
+				return true;
+			}
+		});
+		
+		// ForeColor Alarm Sensitive
+		addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(ISeverity severity, IFigure figure) {
+				if (!isForeColorAlarmSensitive)
+					return false;
+				figure.setForegroundColor(calculateForeColor());
+				return true;
+			}
+		});
 
 		class PVNamePropertyChangeHandler implements IWidgetPropertyChangeHandler{
 			private String pvNamePropID;
@@ -482,18 +500,19 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		IWidgetPropertyChangeHandler backColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				isBackColorrAlarmSensitive = (Boolean)newValue;
-				return false;
+				isBackColorAlarmSensitive = (Boolean)newValue;
+				figure.setBackgroundColor(calculateBackColor());
+				return true;
 			}
 		};
-
 		editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BACKCOLOR_ALARMSENSITIVE, backColorAlarmSensitiveHandler);
 
 		IWidgetPropertyChangeHandler foreColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				isForeColorAlarmSensitive = (Boolean)newValue;
-				return false;
+				figure.setForegroundColor(calculateForeColor());
+				return true;
 			}
 		};
 
@@ -501,15 +520,6 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 	}
 	
-	private void restoreFigureToOKStatus(IFigure figure) {		
-		if(isBorderAlarmSensitive)
-			editpart.setFigureBorder(editpart.calculateBorder());
-		if(isBackColorrAlarmSensitive)
-			figure.setBackgroundColor(saveBackColor);
-		if(isForeColorAlarmSensitive)
-			figure.setForegroundColor(saveForeColor);
-	}
-
 	private void saveFigureOKStatus(IFigure figure) {
 		saveForeColor = figure.getForegroundColor();
 		saveBackColor = figure.getBackgroundColor();
@@ -553,7 +563,29 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 		}
 	}
 	
+	public Color calculateBackColor() {
+		return calculateAlarmColor(isBackColorAlarmSensitive, saveBackColor);
+	}
 	
+	public Color calculateForeColor() {
+		return calculateAlarmColor(isForeColorAlarmSensitive, saveForeColor);
+	}
+	
+	public Color calculateAlarmColor(boolean isSensitive, Color saveColor) {
+		if (!isSensitive) {
+			return saveColor;
+		} else {
+			RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
+			if (alarmColor != null) {
+				// Alarm severity is either "Major", "Minor" or "Invalid.
+				return CustomMediaFactory.getInstance().getColor(alarmColor);
+			} else {
+				// Alarm severity is "OK".
+				return saveColor;
+			}
+		}
+	}
+
 	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
 	 * @param pvPropId
 	 * @param value
@@ -665,5 +697,19 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 
 		}
 	}
+
+	public void addAlarmSeverityListener(AlarmSeverityListener listener) {
+		if(alarmSeverityListeners == null){
+			alarmSeverityListeners = new ListenerList();
+		}
+		alarmSeverityListeners.add(listener);		
+	}
 	
+	private void fireAlarmSeverityChanged(ISeverity severity, IFigure figure) {
+		if(alarmSeverityListeners == null)
+			return;
+		for(Object listener: alarmSeverityListeners.getListeners()){
+			((AlarmSeverityListener)listener).severityChanged(severity, figure);
+		}
+	}
 }

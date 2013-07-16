@@ -25,10 +25,10 @@ public class LogEntryBuilder {
     private Date createdDate;
     private Date modifiedDate;
 
-    private Collection<TagBuilder> tags = new ArrayList<TagBuilder>();
-    private Collection<LogbookBuilder> logbooks = new ArrayList<LogbookBuilder>();
-    private Collection<PropertyBuilder> properties = new ArrayList<PropertyBuilder>();
-    private Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
+    private Map<String, TagBuilder> tags = new HashMap<String, TagBuilder>();
+    private Map<String, LogbookBuilder> logbooks = new HashMap<String, LogbookBuilder>();
+    private Map<String, PropertyBuilder> properties = new HashMap<String, PropertyBuilder>();
+    private Map<String, AttachmentBuilder> attachments = new HashMap<String, AttachmentBuilder>();
 
     private LogEntryBuilder(String text) {
 	this.text = text;
@@ -87,7 +87,18 @@ public class LogEntryBuilder {
      * @return LogEntryBuilder
      */
     public LogEntryBuilder addTag(TagBuilder tagBuilder) {
-	this.tags.add(tagBuilder);
+	this.tags.put(tagBuilder.build().getName(), tagBuilder);
+	return this;
+    }
+
+    /**
+     * Remove the tag with the name _tagName_
+     * 
+     * @param tagName
+     * @return LogEntryBuilder
+     */
+    public LogEntryBuilder removeTag(String tagName) {
+	this.tags.remove(tagName);
 	return this;
     }
 
@@ -98,7 +109,10 @@ public class LogEntryBuilder {
      * @return LogEntryBuilder
      */
     public LogEntryBuilder setTags(Collection<TagBuilder> tags) {
-	this.tags = new ArrayList<TagBuilder>(tags);
+	this.tags = new HashMap<String, TagBuilder>(tags.size());
+	for (TagBuilder tagBuilder : tags) {
+	    this.tags.put(tagBuilder.build().getName(), tagBuilder);
+	}
 	return this;
     }
 
@@ -110,7 +124,7 @@ public class LogEntryBuilder {
      * @return LogEntryBuilder
      */
     public LogEntryBuilder addProperty(PropertyBuilder propertyBuilder) {
-	this.properties.add(propertyBuilder);
+	this.properties.put(propertyBuilder.build().getName(), propertyBuilder);
 	return this;
     }
 
@@ -121,7 +135,18 @@ public class LogEntryBuilder {
      * @return LogEntryBuilder
      */
     public LogEntryBuilder addLogbook(LogbookBuilder logbookBuilder) {
-	this.logbooks.add(logbookBuilder);
+	this.logbooks.put(logbookBuilder.build().getName(), logbookBuilder);
+	return this;
+    }
+
+    /**
+     * Reomve the logbook identified by _logbookName_
+     * 
+     * @param logbookName
+     * @return
+     */
+    public LogEntryBuilder removeLogbook(String logbookName) {
+	this.logbooks.remove(logbookName);
 	return this;
     }
 
@@ -132,7 +157,10 @@ public class LogEntryBuilder {
      * @return
      */
     public LogEntryBuilder setLogbooks(Collection<LogbookBuilder> logbooks) {
-	this.logbooks = new ArrayList<LogbookBuilder>(logbooks);
+	this.logbooks = new HashMap<String, LogbookBuilder>(logbooks.size());
+	for (LogbookBuilder logbookBuilder : logbooks) {
+	    this.logbooks.put(logbookBuilder.build().getName(), logbookBuilder);
+	}
 	return this;
     }
 
@@ -141,9 +169,22 @@ public class LogEntryBuilder {
      * 
      * @param attachment
      * @return LogEntryBuilder
+     * @throws IOException
      */
-    public LogEntryBuilder attach(AttachmentBuilder attachment) {
-	this.attachments.add(attachment);
+    public LogEntryBuilder attach(AttachmentBuilder attachment)
+	    throws IOException {
+	this.attachments.put(attachment.build().getFileName(), attachment);
+	return this;
+    }
+
+    /**
+     * Remove the attachment identified by the name _name_
+     * 
+     * @param name
+     * @return
+     */
+    public LogEntryBuilder removeAttachment(String name) {
+	this.attachments.remove(name);
 	return this;
     }
 
@@ -152,10 +193,16 @@ public class LogEntryBuilder {
      * 
      * @param attachments
      * @return LogEntryBuilder
+     * @throws IOException
      */
     public LogEntryBuilder setAttachments(
-	    Collection<AttachmentBuilder> attachments) {
-	this.attachments = attachments;
+	    Collection<AttachmentBuilder> attachments) throws IOException {
+	this.attachments = new HashMap<String, AttachmentBuilder>(
+		attachments.size());
+	for (AttachmentBuilder attachmentBuilder : attachments) {
+	    this.attachments.put(attachmentBuilder.build().getFileName(),
+		    attachmentBuilder);
+	}
 	return this;
     }
 
@@ -180,17 +227,19 @@ public class LogEntryBuilder {
 	}
 
 	for (Tag tag : logEntry.getTags()) {
-	    logEntryBuilder.tags.add(TagBuilder.tag(tag));
+	    logEntryBuilder.tags.put(tag.getName(), TagBuilder.tag(tag));
 	}
 	for (Logbook logbook : logEntry.getLogbooks()) {
-	    logEntryBuilder.logbooks.add(LogbookBuilder.logbook(logbook));
+	    logEntryBuilder.logbooks.put(logbook.getName(),
+		    LogbookBuilder.logbook(logbook));
 	}
 	for (Property property : logEntry.getProperties()) {
-	    logEntryBuilder.properties.add(PropertyBuilder.property(property));
+	    logEntryBuilder.properties.put(property.getName(),
+		    PropertyBuilder.property(property));
 	}
 	for (Attachment attachment : logEntry.getAttachment()) {
-	    logEntryBuilder.attachments.add(AttachmentBuilder
-		    .attachment(attachment));
+	    logEntryBuilder.attachments.put(attachment.getFileName(),
+		    AttachmentBuilder.attachment(attachment));
 	}
 	return logEntryBuilder;
     }
@@ -199,11 +248,12 @@ public class LogEntryBuilder {
      * Build LogEntry object using the parameters set in the builder
      * 
      * @return LogEntry - a immutable instance of the {@link LogEntry}
-     * @throws IOException 
+     * @throws IOException
      */
     public LogEntry build() throws IOException {
 	return new LogEntryImpl(id, text, owner, createdDate, modifiedDate,
-		tags, logbooks, properties, attachments);
+		tags.values(), logbooks.values(), properties.values(),
+		attachments.values());
     }
 
     /**
@@ -234,7 +284,7 @@ public class LogEntryBuilder {
 	 * @param tags
 	 * @param logbooks
 	 * @param properties
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public LogEntryImpl(Object id, String text, String owner,
 		Date createdDate, Date modifiedDate,

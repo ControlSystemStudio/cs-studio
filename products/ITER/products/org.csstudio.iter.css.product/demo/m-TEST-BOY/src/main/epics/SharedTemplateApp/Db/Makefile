@@ -10,6 +10,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install) into <top>/db
 # databases, templates, substitutions like this
+DB += ramp_v1.template
 DB += rndm_v1.template
 DB += switch-state_v1.template
 

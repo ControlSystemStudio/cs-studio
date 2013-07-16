@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Version;
 
 /**The model for array widget.
  * @author Xihui Chen
@@ -201,6 +202,11 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
 		return ArrayDataType.values()[(Integer)getPropertyValue(PROP_DATA_TYPE)];
 	}
 	
+	@Override
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		delegate.processVersionDifference(boyVersionOnFile);
+	}
 	
 	
 	

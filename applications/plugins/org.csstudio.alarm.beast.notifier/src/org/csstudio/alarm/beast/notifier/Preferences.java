@@ -7,7 +7,6 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
-import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -57,11 +56,5 @@ public class Preferences {
 		if (service == null)
 			return 100; // default
 		return service.getInt(Activator.ID, THREAD_THRESHOLD, 100, null);
-	}
-
-	@SuppressWarnings("unused")
-	private static String getSecureString(final String setting) {
-		String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);
-		return value;
 	}
 }

@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
+    public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
@@ -73,6 +74,7 @@ public class Messages extends NLS
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
+    public static String EditItem;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -185,6 +187,8 @@ public class Messages extends NLS
     public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
+    public static String Refresh;
+
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
@@ -218,6 +222,7 @@ public class Messages extends NLS
     public static String SearchPatternTT;
     public static String SearchTT;
     public static String SendToElog;
+    public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
     public static String StartEndDialogBtn;

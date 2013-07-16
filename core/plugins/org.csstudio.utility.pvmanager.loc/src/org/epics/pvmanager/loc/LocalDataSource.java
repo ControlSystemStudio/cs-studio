@@ -46,54 +46,64 @@ public final class LocalDataSource extends DataSource {
         List<Object> parsedTokens = parseName(channelName);
         
         LocalChannelHandler channel = new LocalChannelHandler(parsedTokens.get(0).toString());
-        if (parsedTokens.size() > 1) {
-            channel.setInitialValue(parsedTokens.get(1));
-        } else {
-            channel.setInitialValue(0.0);
-        }
         return channel;
     }
     
     private List<Object> parseName(String channelName) {
-        // Parse the channel name
-        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
-        if (parsedTokens != null && parsedTokens.size() <= 2) {
-            return parsedTokens;
+        List<Object> tokens = FunctionParser.parseFunctionWithScalarOrArrayArguments(".+", channelName, CHANNEL_SYNTAX_ERROR_MESSAGE);
+        String nameAndType = tokens.get(0).toString();
+        String name = nameAndType;
+        String type = null;
+        int index = nameAndType.lastIndexOf('<');
+        if (nameAndType.endsWith(">") && index != -1) {
+            name = nameAndType.substring(0, index);
+            type = nameAndType.substring(index + 1, nameAndType.length() - 1);
         }
-        
-        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof Double) {
-            double[] data = new double[parsedTokens.size() - 1];
-            for (int i = 1; i < parsedTokens.size(); i++) {
-                Object value = parsedTokens.get(i);
-                if (value instanceof Double) {
-                    data[i-1] = (Double) value;
-                } else {
-                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
-                }
-            }
-            return Arrays.asList(parsedTokens.get(0), new ArrayDouble(data));
+        List<Object> newTokens = new ArrayList<>();
+        newTokens.add(name);
+        newTokens.add(type);
+        if (tokens.size() > 1) {
+            newTokens.addAll(tokens.subList(1, tokens.size()));
         }
-        
-        if (parsedTokens != null && parsedTokens.size() > 2 && parsedTokens.get(1) instanceof String) {
-            List<String> data = new ArrayList<>();
-            for (int i = 1; i < parsedTokens.size(); i++) {
-                Object value = parsedTokens.get(i);
-                if (value instanceof String) {
-                    data.add((String) value);
-                } else {
-                    throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
-                }
-            }
-            return Arrays.asList(parsedTokens.get(0), data);
-        }
-        
-        throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
+        return newTokens;
     }
 
     @Override
     protected String channelHandlerLookupName(String channelName) {
         List<Object> parsedTokens = parseName(channelName);
         return parsedTokens.get(0).toString();
+    }
+    
+    private void initialize(String channelName) {
+        List<Object> parsedTokens = parseName(channelName);
+
+        LocalChannelHandler channel = (LocalChannelHandler) getChannels().get(channelHandlerLookupName(channelName));
+        channel.setType((String) parsedTokens.get(1));
+        if (parsedTokens.size() > 2) {
+            if (channel != null) {
+                channel.setInitialValue(parsedTokens.get(2));
+            }
+        }
+    }
+
+    @Override
+    public void connectRead(ReadRecipe readRecipe) {
+        super.connectRead(readRecipe);
+        
+        // Initialize all values
+        for (ChannelReadRecipe channelReadRecipe : readRecipe.getChannelReadRecipes()) {
+            initialize(channelReadRecipe.getChannelName());
+        }
+    }
+
+    @Override
+    public void connectWrite(WriteRecipe writeRecipe) {
+        super.connectWrite(writeRecipe);
+        
+        // Initialize all values
+        for (ChannelWriteRecipe channelWriteRecipe : writeRecipe.getChannelWriteRecipes()) {
+            initialize(channelWriteRecipe.getChannelName());
+        }
     }
 
 }

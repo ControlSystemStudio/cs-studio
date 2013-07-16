@@ -92,12 +92,12 @@
          <action
                class="org.csstudio.opibuilder.actions.OpenTopOPIsAction"
                icon="icons/OPIRunner.png"
-               id="org.csstudio.opibuilder.action1"
-               label="Top OPIs"
+               id="org.csstudio.opibuilder.openTopFileAction"
+               label="Top Files"
                pulldown="true"
                style="pulldown"
                toolbarPath="Normal/addtions"
-               tooltip="Open Top OPIs in run mode">
+               tooltip="Open top files in editor. e.g. Open OPIs in run mode">
          </action>
          <action
                class="org.csstudio.opibuilder.actions.CompactModeAction"
@@ -299,4 +299,13 @@
             file_extension="opi">
       </openDisplay>
    </extension>
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="opi"
+            id="org.csstudio.iter.xmleditor.content.opi"
+            name="OPI Files"
+            priority="low" />
+   </extension>
+
 </plugin>

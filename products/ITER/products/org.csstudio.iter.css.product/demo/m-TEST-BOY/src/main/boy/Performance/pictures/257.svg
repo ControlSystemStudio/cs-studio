@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 One_Line_01.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.728673in"
+		height="0.374331in" viewBox="0 0 52.4645 26.9518" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
+	<title>document de base</title>
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="TagSeparator" v:prompt="" v:val="VT4(-)"/>
+		</v:userDefs>
+	</v:documentProperties>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
+		.st2 {fill:none}
+		.st3 {stroke:#000000;stroke-dasharray:1.44,0.72;stroke-linecap:butt;stroke-width:0.72}
+		.st4 {fill:#000000;stroke:none;stroke-width:1}
+		.st5 {stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
+		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group226-1" transform="translate(0.72,-0.72)" v:mID="226" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="guid" v:prompt="" v:val="VT4({E6F58D6C-D638-426B-924E-437303DE8840})"/>
+				<v:ud v:nameU="GUID_M" v:prompt="" v:val="VT4({E6F58D6C-D638-426B-924E-437303DE8840})"/>
+				<v:ud v:nameU="Bob_Guid" v:prompt="" v:val="VT4()"/>
+				<v:ud v:nameU="Xpo_Guid" v:prompt="" v:val="VT4({E6F58D6C-D638-426B-924E-437303DE8840})"/>
+			</v:userDefs>
+			<title>SV_GROUP</title>
+			<g id="shape229-2" v:mID="229" v:groupContext="shape" transform="translate(43.7345,-6.37795)">
+				<title>forme8</title>
+				<path d="M0 14.2 L7.29 14.2 L0 26.95 L7.29 26.95 L0 14.2 Z" class="st1"/>
+			</g>
+			<g id="shape230-4" v:mID="230" v:groupContext="shape" transform="translate(33.1087,-12.6992)">
+				<title>forme4</title>
+				<path d="M0 26.95 L12.76 26.95 L0 26.95 Z" class="st2"/>
+				<path d="M0 26.95 L12.76 26.95" class="st3"/>
+			</g>
+			<g id="group231-7" transform="translate(44.2448,-12.0224)" v:mID="231" v:groupContext="group">
+				<title>forme7</title>
+				<g id="shape232-8" v:mID="232" v:groupContext="shape">
+					<title>Feuille.232</title>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48 L0 26.95 Z" class="st4"/>
+				</g>
+				<g id="shape233-10" v:mID="233" v:groupContext="shape">
+					<title>Feuille.233</title>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48 L0 26.95 Z" class="st2"/>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48" class="st5"/>
+				</g>
+			</g>
+			<g id="group234-13" transform="translate(34.1735,-12.0224)" v:mID="234" v:groupContext="group">
+				<title>forme6</title>
+				<g id="shape235-14" v:mID="235" v:groupContext="shape" transform="translate(2.11,-1.77636E-014) scale(-1,1)">
+					<title>Feuille.235</title>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48 L0 26.95 Z" class="st4"/>
+				</g>
+				<g id="shape236-16" v:mID="236" v:groupContext="shape" transform="translate(2.11,-1.77636E-014) scale(-1,1)">
+					<title>Feuille.236</title>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48 L0 26.95 Z" class="st2"/>
+					<path d="M0 26.95 L2.11 26.22 L0 25.48" class="st5"/>
+				</g>
+			</g>
+			<g id="shape237-19" v:mID="237" v:groupContext="shape" transform="translate(17.0079,-3.19744E-014)">
+				<title>forme2</title>
+				<path d="M0 26.95 L0 20.57 L0 26.95 Z" class="st2"/>
+				<path d="M0 26.95 L0 20.57" class="st5"/>
+			</g>
+			<g id="shape238-22" v:mID="238" v:groupContext="shape" transform="translate(17.0079,-19.1318)">
+				<title>forme1</title>
+				<path d="M0 20.57 L0 26.95 L0 20.57 Z" class="st2"/>
+				<path d="M0 20.57 L0 26.95" class="st5"/>
+			</g>
+			<g id="shape239-25" v:mID="239" v:groupContext="shape" transform="translate(-6.39488E-014,-6.37615)">
+				<title>forme3</title>
+				<rect x="0" y="14.1959" width="34.0157" height="12.7559" class="st1"/>
+			</g>
+		</g>
+	</g>
+</svg>

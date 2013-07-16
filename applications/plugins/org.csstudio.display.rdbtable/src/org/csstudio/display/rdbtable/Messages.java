@@ -19,7 +19,6 @@ public class Messages extends NLS
     public static String ErrorTitle;
     public static String InfoWritingTable;
     public static String LoginCancelled;
-    public static String LoginMsg;
     public static String LoginTitle;
     public static String NewColumnDataFmt;
     public static String RowDeleted_TT;

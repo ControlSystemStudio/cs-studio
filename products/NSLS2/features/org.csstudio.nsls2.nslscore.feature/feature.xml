@@ -77,28 +77,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.graphene"
+         id="org.csstudio.security"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.jaasAuthentication"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.jaasAuthentication.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.dummyauthorization"
+         id="org.csstudio.security.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

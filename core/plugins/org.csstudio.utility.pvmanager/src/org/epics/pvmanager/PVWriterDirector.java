@@ -98,7 +98,7 @@ public class PVWriterDirector<T> {
     }
     
     /**
-     * Simulate a static connection in which the channel name as one exception
+     * Simulate a static connection in which the channel name has one exception
      * and the connection will never change.
      * <p>
      * This is a temporary method an will be subject to change in the future.

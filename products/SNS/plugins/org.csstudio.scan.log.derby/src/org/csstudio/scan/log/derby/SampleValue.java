@@ -54,9 +54,11 @@ public class SampleValue implements Serializable
 	 */
     public SampleValue(final Object[] values)
 	{
-        if (! (values[0] instanceof Number))
+        if (values instanceof Number[]  ||
+            values instanceof String[])
+            this.values = values;
+        else
             throw new IllegalArgumentException("Cannot handle " + values[0].getClass().getName());
-	    this.values = values;
 	}
 
 	/** @return First array element */

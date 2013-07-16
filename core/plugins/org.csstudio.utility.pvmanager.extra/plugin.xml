@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.csstudio.utility.pvmanager.functionset" name="PVManager Formula Set" schema="schema/org.csstudio.utility.pvmanager.functionset.exsd"/>
+
    <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.csstudio.utility.pvmanager.functionset">
+      <functionset
+            functionset="org.epics.pvmanager.formula.MathFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.math">
+      </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.ArrayFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.array">
+      </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.NumberOperatorFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.numberOperator">
+      </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.TableFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.table">
+      </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.StringFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.string">
+      </functionset>
    </extension>
 
 </plugin>

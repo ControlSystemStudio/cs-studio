@@ -253,6 +253,7 @@ public class AlarmClientModel
 		    	communicator = null;
 	    	}
         }
+    	server_alive = false;
 
         // Load new configuration:
         // Create new JMS communicator, read from RDB, fire events, ...

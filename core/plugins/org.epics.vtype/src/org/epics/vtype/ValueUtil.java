@@ -4,13 +4,16 @@
  */
 package org.epics.vtype;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.epics.util.array.ListNumber;
 import org.epics.util.text.NumberFormats;
@@ -32,7 +35,7 @@ public class ValueUtil {
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
             VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
-            VStatistics.class, VString.class, VStringArray.class, VTable.class);
+            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class);
 
     /**
      * Returns the type of the object by returning the class object of one
@@ -70,9 +73,34 @@ public class ValueUtil {
      * @return the alarm information for the object
      */
     public static Alarm alarmOf(Object obj) {
+        if (obj == null) {
+            return ValueFactory.alarmNone();
+        }
         if (obj instanceof Alarm)
             return (Alarm) obj;
         return null;
+    }
+    
+    /**
+     * Extracts the alarm information if present, based on value
+     * and connection status.
+     * 
+     * @param value a value
+     * @param connected the connection status
+     * @return the alarm information
+     */
+    public static Alarm alarmOf(Object value, boolean connected) {
+        if (value != null) {
+            if (value instanceof Alarm) {
+                return (Alarm) value;
+            } else {
+                return ValueFactory.alarmNone();
+            }
+        } else if (connected) {
+            return ValueFactory.newAlarm(AlarmSeverity.INVALID, "No value");
+        } else {
+            return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected");
+        }
     }
 
     /**
@@ -178,6 +206,10 @@ public class ValueUtil {
             }
         }
         
+        if (obj instanceof VBoolean) {
+            return (double) (((VBoolean) obj).getValue() ? 1 : 0);
+        }
+        
         if (obj instanceof VEnum) {
             return (double) ((VEnum) obj).getIndex();
         }
@@ -268,6 +300,49 @@ public class ValueUtil {
     private static volatile TimestampFormat defaultTimestampFormat = new TimestampFormat();
     private static volatile NumberFormat defaultNumberFormat = NumberFormats.toStringFormat();
     private static volatile ValueFormat defaultValueFormat = new SimpleValueFormat(3);
+    private static volatile Map<AlarmSeverity, Integer> rgbSeverityColor = createDefaultSeverityColorMap();
+    
+    private static Map<AlarmSeverity, Integer> createDefaultSeverityColorMap() {
+        Map<AlarmSeverity, Integer> colorMap = new EnumMap<>(AlarmSeverity.class);
+        colorMap.put(AlarmSeverity.NONE, Color.GREEN.getRGB());
+        colorMap.put(AlarmSeverity.MINOR, Color.YELLOW.getRGB());
+        colorMap.put(AlarmSeverity.MAJOR, Color.RED.getRGB());
+        colorMap.put(AlarmSeverity.INVALID, Color.MAGENTA.getRGB());
+        colorMap.put(AlarmSeverity.UNDEFINED, Color.DARK_GRAY.getRGB());
+        return colorMap;
+    }
+    
+    /**
+     * Changes the color map for AlarmSeverity. The new color map must be complete
+     * and not null;
+     * 
+     * @param map the new color map
+     */
+    public static void setAlarmSeverityColorMap(Map<AlarmSeverity, Integer> map) {
+        if (map == null) {
+            throw new IllegalArgumentException("Alarm severity color map can't be null");
+        }
+        
+        for (AlarmSeverity alarmSeverity : AlarmSeverity.values()) {
+            if (!map.containsKey(alarmSeverity)) {
+                throw new IllegalArgumentException("Missing color for AlarmSeverity." + alarmSeverity);
+            }
+        }
+        
+        Map<AlarmSeverity, Integer> colorMap = new EnumMap<>(AlarmSeverity.class);
+        colorMap.putAll(map);
+        rgbSeverityColor = colorMap;
+    }
+    
+    /**
+     * Returns the rgb value for the given severity.
+     * 
+     * @param severity an alarm severity
+     * @return the rgb color
+     */
+    public static int colorFor(AlarmSeverity severity) {
+        return rgbSeverityColor.get(severity);
+    }
     
     /**
      * The default object to format and parse timestamps.
@@ -321,6 +396,33 @@ public class ValueUtil {
      */
     public static void setDefaultValueFormat(ValueFormat defaultValueFormat) {
         ValueUtil.defaultValueFormat = defaultValueFormat;
+    }
+    
+    /**
+     * Extracts the values of a column, making sure it contains
+     * numeric values.
+     * 
+     * @param table a table
+     * @param columnName the name of the column to extract
+     * @return the values; null if the columnName is null or is not found
+     * @throws IllegalArgumentException if the column is found but does not contain numeric values
+     */
+    public static ListNumber numericColumnOf(VTable table, String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (columnName.equals(table.getColumnName(i))) {
+                if (table.getColumnType(i).isPrimitive()) {
+                    return (ListNumber) table.getColumnData(i);
+                } else {
+                    throw new IllegalArgumentException("Column '" + columnName +"' is not numeric (contains " + table.getColumnType(i).getSimpleName() + ")");
+                }
+            }
+        }
+        
+        throw new IllegalArgumentException("Column '" + columnName +"' was not found");
     }
     
 }

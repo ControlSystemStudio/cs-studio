@@ -17,7 +17,7 @@ do
   git commit -a -m "$PRODUCT: preparing for release $VERSION"
 done < release.products
 
-cd $BUILD_DIR
+cd "$BUILD_DIR"
 
 echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
@@ -28,7 +28,10 @@ git push origin CSS-$VERSION
 echo ::: Build all products :::
 while read PRODUCT
 do
+  cd "$BUILD_DIR"
   ./build.sh $PRODUCT
+  cd ../products/$PRODUCT
+  ./publish.sh $VERSION
 done < release.products
 
 echo ::: Release Done :::

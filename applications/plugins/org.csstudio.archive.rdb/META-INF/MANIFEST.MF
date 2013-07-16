@@ -7,7 +7,7 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Archive RDB support library
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.help,
- org.csstudio.auth;bundle-version="3.0.0"
+ org.csstudio.security;bundle-version="1.0.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.csstudio.archive.rdb

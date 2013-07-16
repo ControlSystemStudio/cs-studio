@@ -13,15 +13,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.autocomplete.AutoCompleteHelper;
+import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.csstudio.platform.utility.rdb.RDBCache;
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
 
 /** PV Name lookup for SNS 'signal' database
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SNSPVListProvider implements IPVListProvider
+public class SNSPVListProvider implements IAutoCompleteProvider
 {
     /** Cached RDB connection */
     private RDBCache cache = null;
@@ -38,12 +39,13 @@ public class SNSPVListProvider implements IPVListProvider
 
     /** {@inheritDoc} */
     @Override
-    public PVListResult listPVs(final String name, final int limit)
+	public AutoCompleteResult listResult(final String type, final String name, final int limit)
     {
         // Create RDB pattern from *, ? wildcards
-        final String like = name.replace("*", "%").replace("?", "_");
+    	final String like = AutoCompleteHelper.convertToSQL(name);
     
-        final PVListResult pvs = new PVListResult();
+        final AutoCompleteResult pvs = new AutoCompleteResult();
+        pvs.setProvider("SNS");
         try
         {
             if (cache == null)
@@ -68,7 +70,7 @@ public class SNSPVListProvider implements IPVListProvider
      *  @param limit Maximum number of PVs to return
      *  @throws Exception on error
      */
-    private void lookup(final PVListResult pvs, final String like, int limit) throws Exception
+    private void lookup(final AutoCompleteResult pvs, final String like, int limit) throws Exception
     {
         // Count PVs
         try

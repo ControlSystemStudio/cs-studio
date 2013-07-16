@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: FRIB Templates
+Bundle-Description: FRIB Templates
+Bundle-SymbolicName: org.csstudio.frib.opiTemplate;singleton:=true
+Bundle-Version: 3.2.0.qualifier
+Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
+Bundle-Vendor: berryman
+Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.frib.opiTemplate.actions
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.csstudio.csdata,
+ org.csstudio.opibuilder.preferences
+Require-Bundle: org.csstudio.opibuilder,
+ org.csstudio.opibuilder.widgets;bundle-version="3.1.2",
+ org.csstudio.utility.channel;bundle-version="1.0.0",
+ org.csstudio.utility.channelfinder;bundle-version="1.1.0",
+ gov.bnl.channelfinder.api;bundle-version="2.2.0",
+ org.csstudio.channel.widgets;bundle-version="1.1.3",
+ org.csstudio.channel.views;bundle-version="1.1.2"

@@ -2,32 +2,28 @@
 <feature
       id="org.csstudio.iter.debugging.rdbshell.feature"
       label="CSS RDB Shell Component"
-      version="1.0.0"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      version="3.2.0.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2013 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
 
    <requires>
-      <import plugin="org.csstudio.platform.libs.jdbc"/>
-      <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.filebuffers"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.update.configurator"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
