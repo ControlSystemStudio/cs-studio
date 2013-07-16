@@ -367,7 +367,7 @@ public class VTableFactory {
             if (names != null) {
                 names = new ArrayList<>(names);
             }
-            for (int i = 0; i < values.size(); i++) {
+            for (int i = values.size() - 1; i >=0; i--) {
                 if (values.get(i) == null) {
                     values.remove(i);
                     if (names != null) {
