@@ -12,29 +12,23 @@ import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel.Style;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
+import org.csstudio.simplepv.FormatEnum;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure.SelectorType;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
@@ -47,6 +41,7 @@ import org.epics.vtype.Array;
 import org.epics.vtype.Scalar;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 
 /**
  * The editpart for text input widget.)
@@ -58,8 +53,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
 	private static final char SPACE = ' '; //$NON-NLS-1$
 	private static DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
-	private PVListener pvLoadLimitsListener;
-	private INumericMetaData meta = null;
+	private IPVListener pvLoadLimitsListener;
+	private org.epics.vtype.Display meta = null;
 	
 	private ITextInputEditPartDelegate delegate;
 
@@ -137,30 +132,26 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final TextInputModel model = getWidgetModel();
 			if (model.isLimitsFromPV()) {
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if (pv != null) {
 					if (pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
+						pvLoadLimitsListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
 								if (value != null
-										&& value.getMetaData() instanceof INumericMetaData) {
-									INumericMetaData new_meta = (INumericMetaData) value
-											.getMetaData();
+										&& VTypeHelper.getDisplayInfo(value)!=null) {
+									org.epics.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
 									if (meta == null || !meta.equals(new_meta)) {
 										meta = new_meta;
 										model.setPropertyValue(
 												TextInputModel.PROP_MAX,
-												meta.getDisplayHigh());
+												meta.getUpperDisplayLimit());
 										model.setPropertyValue(
 												TextInputModel.PROP_MIN,
-												meta.getDisplayLow());
+												meta.getLowerDisplayLimit());
 									}
 								}
-							}
-
-							public void pvDisconnected(PV pv) {
-							}
+							}							
 						};
 					pv.addListener(pvLoadLimitsListener);
 				}
@@ -310,11 +301,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	 */
 	private Object parseStringArray(final String text) throws ParseException{	
 		String[] texts = text.split(" +"); //$NON-NLS-1$
-		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
-		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
-				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))
-				||(pvValue instanceof PMObjectValue && 
-					((PMObjectValue)pvValue).getLatestValue() instanceof VNumberArray)){
+		VType pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		if(pvValue instanceof VNumberArray){
 			double[] result = new double[texts.length];
 			for (int i = 0; i < texts.length; i++) {
 				Object o = parseString(texts[i]);
@@ -325,9 +313,6 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			}
 			return result;
 		}
-//		if(pvValue instanceof IStringValue && ((IStringValue)pvValue).getValues().length>1){
-//			return texts;
-//		}
 		
 		return parseString(text);
 	}
@@ -340,21 +325,20 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	 * @throws ParseException
 	 */
 	private Object parseString(final String text) throws ParseException {
-		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		VType pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		FormatEnum formatEnum = getWidgetModel().getFormat();
 		
 		if(pvValue == null)
 			return text;
 		
-		if(pvValue instanceof PMObjectValue){
-			return parseStringForPVManagerPV(formatEnum, text, ((PMObjectValue) pvValue).getLatestValue());
-		}else
-			return parseStringForUtilityPV(formatEnum, text, pvValue);
+		
+		return parseStringForPVManagerPV(formatEnum, text, pvValue);
+		
 
 	}
 	
 	private Object parseStringForPVManagerPV(FormatEnum formatEnum,
-			final String text, Object pvValue) throws ParseException {
+			final String text, VType pvValue) throws ParseException {
 		if(pvValue instanceof Scalar){
 			Object value = ((Scalar)pvValue).getValue();
 			if (value instanceof Number) {
@@ -426,83 +410,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		return text;
 	}
 
-	private Object parseStringForUtilityPV(FormatEnum formatEnum,
-			final String text, IValue pvValue) throws ParseException {
-		if (pvValue instanceof IStringValue) {
-			return text;
-		}
-		if (pvValue instanceof IDoubleValue) {
-			switch (formatEnum) {
-			case HEX:
-			case HEX64:
-				return parseHEX(text, true);
-			case STRING:
-				if (((IDoubleValue) pvValue).getValues().length > 1) {
-					return parseCharArray(text, ((IDoubleValue) pvValue).getValues().length);
-				} else
-					return text;
-			case DECIMAL:
-			case EXP:
-			case COMPACT:
-				return parseDouble(text, true);
-			case DEFAULT:
-			default:
-				try {
-					return parseDouble(text, true);
-				} catch (ParseException e) {
-					return text;
-				}
-			}
-		}
-
-		if (pvValue instanceof ILongValue) {
-			switch (formatEnum) {
-			case HEX:
-			case HEX64:
-				return parseHEX(text, true);
-			case STRING:
-				if (((ILongValue) pvValue).getValues().length > 1) {
-					return parseCharArray(text,((ILongValue) pvValue).getValues().length );
-				} else
-					return text;
-			case DECIMAL:
-			case EXP:
-			case COMPACT:
-				return parseDouble(text, true);
-			case DEFAULT:
-			default:
-				try {
-					return parseDouble(text, true);
-				} catch (ParseException e) {
-					return text;
-				}
-			}
-		}
-
-		if (pvValue instanceof IEnumeratedValue) {
-			switch (formatEnum) {
-			case HEX:
-			case HEX64:
-				return parseHEX(text, true);
-			case STRING:
-				return text;
-			case DECIMAL:
-			case EXP:
-			case COMPACT:
-				return parseDouble(text, true);
-			case DEFAULT:
-			default:
-				try {
-					return parseDouble(text, true);
-				} catch (ParseException e) {
-					return text;
-				}
-			}
-		}
-
-		return text;
-	}
-
+	
 	private int[] parseCharArray(final String text, int currentLength) {
 		int[] iString = new int[currentLength];
 		char[] textChars = text.toCharArray();

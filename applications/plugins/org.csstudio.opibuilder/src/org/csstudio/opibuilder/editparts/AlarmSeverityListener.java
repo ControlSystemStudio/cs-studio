@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.editparts;
 
-import org.csstudio.data.values.ISeverity;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * Interface for listening to changes of alarm severity.
@@ -14,5 +14,5 @@ public interface AlarmSeverityListener {
 	 * @param figure Figure related to the subjected PV.
 	 * @return True if some actions are performed.
 	 */
-	public boolean severityChanged(final ISeverity severity, final IFigure figure);
+	public boolean severityChanged(final AlarmSeverity severity, final IFigure figure);
 }

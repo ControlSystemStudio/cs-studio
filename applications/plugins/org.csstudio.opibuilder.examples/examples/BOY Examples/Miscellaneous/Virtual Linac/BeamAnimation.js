@@ -15,6 +15,8 @@ runnable = {
 			for(var i=0; i<disArray.length-1; i++){
 				if(disArray[i+1]!=10){
 					for(var j=0; j<density; j++){
+						if(!display.isActive())
+							return;
 						var x0 = disArray[i];
 						var x1 = disArray[i+1]
 						var y0 = yPosArray[i];

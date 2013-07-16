@@ -9,11 +9,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -21,13 +18,15 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VType;
 
 /**The abstract editpart of choice widget.
  *
@@ -36,9 +35,7 @@ import org.eclipse.draw2d.IFigure;
  */
 public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
-	private PVListener loadItemsFromPVListener;
-
-	private IEnumeratedMetaData meta = null;
+	private IPVListener loadItemsFromPVListener;
 
 
 	/**
@@ -96,26 +93,18 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		//load items from PV
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			if(getWidgetModel().isItemsFromPV()){
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){
 					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
-								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
-									IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
-									if(meta  == null || !meta.equals(new_meta)){
-										meta = new_meta;
-										List<String> itemsFromPV = new ArrayList<String>();
-										for(String writeValue : meta.getStates()){
-											itemsFromPV.add(writeValue);
-										}
-										getWidgetModel().setPropertyValue(
-												AbstractChoiceModel.PROP_ITEMS, itemsFromPV);
-									}
+						loadItemsFromPVListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
+								if (value != null && value instanceof VEnum){
+									List<String> new_meta = ((VEnum)value).getLabels();
+									getWidgetModel().setPropertyValue(
+												AbstractChoiceModel.PROP_ITEMS, new_meta);									
 								}
 							}
-							public void pvDisconnected(PV pv) {}
 						};
 					pv.addListener(loadItemsFromPVListener);
 				}
@@ -127,7 +116,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 	protected void doDeActivate() {
 		super.doDeActivate();
 		if(getWidgetModel().isItemsFromPV()){
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null && loadItemsFromPVListener != null){
 				pv.removeListener(loadItemsFromPVListener);
 			}
@@ -152,8 +141,8 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof IValue){
-					String stringValue = ValueUtil.getString((IValue)newValue);
+				if(newValue != null && newValue instanceof VType){
+					String stringValue = VTypeHelper.getString((VType)newValue);
 					((AbstractChoiceFigure)refreshableFigure).setState(stringValue);
 				}
 				return false;
@@ -171,7 +160,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 							((List<String>)newValue));
 					if(getWidgetModel().isItemsFromPV())
 						((AbstractChoiceFigure)refreshableFigure).
-							setState(ValueUtil.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+							setState(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
 				}
 				return true;
 			}

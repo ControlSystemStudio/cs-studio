@@ -20,7 +20,6 @@ import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.opibuilder.widgets.model.ActionButtonModel.Style;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;

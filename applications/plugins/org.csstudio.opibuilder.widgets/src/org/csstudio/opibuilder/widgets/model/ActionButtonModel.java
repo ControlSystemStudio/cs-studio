@@ -54,6 +54,11 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	}
 	
 	/**
+	 * Version less than this has no style property.
+	 */
+	private static final Version VERSION_BEFORE_STYLE = new Version(3, 1, 5);
+	
+	/**
 	 * Button Style
 	 */
 	public static final String PROP_STYLE = "style"; //$NON-NLS-1$
@@ -164,8 +169,8 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	@Override
 	public void processVersionDifference(Version boyVersionOnFile) {		
 		super.processVersionDifference(boyVersionOnFile);
-		//There was no style property before 2.0.0
-		if(boyVersionOnFile.getMajor() <2){			
+		//There was no style property before 3.1.5
+		if(boyVersionOnFile.compareTo(VERSION_BEFORE_STYLE)<0){			
 			// convert native button widget to native style		
 			if (getWidgetType().equals("Button")){ //$NON-NLS-N$
 				setStyle(Style.NATIVE);
