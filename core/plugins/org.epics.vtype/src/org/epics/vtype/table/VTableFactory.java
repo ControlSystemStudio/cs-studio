@@ -80,12 +80,15 @@ public class VTableFactory {
         }
         
         // Find rows
+        boolean done = false;
         List<BufferInt> rowIndexes = new ArrayList<>();
         for (int i = 0; i < tables.length; i++) {
             rowIndexes.add(new BufferInt());
+            if (tables[i].getRowCount() == 0) {
+                done = true;
+            }
         }
         int[] currentIndexes = new int[tables.length];
-        boolean done = false;
         while (!done) {
             boolean match = true;
             for (EqualValueFilter filter : filters) {
