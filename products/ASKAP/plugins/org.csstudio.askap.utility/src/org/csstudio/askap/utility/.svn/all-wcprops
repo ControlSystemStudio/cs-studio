@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/askapsoft/!svn/ver/17640/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility
+END
+AskapHelper.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/AskapHelper.java
+END
+ASKAPApplicationPreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/ASKAPApplicationPreferencePage.java
+END
+Preferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/Preferences.java
+END
+ElementFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/ElementFactory.java
+END
+InstallAskapAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/askapsoft/!svn/ver/17640/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/InstallAskapAction.java
+END
+AskapEditorInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/AskapEditorInput.java
+END
+PreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/PreferencePage.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/askapsoft/!svn/ver/17344/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility/src/org/csstudio/askap/utility/Activator.java
+END

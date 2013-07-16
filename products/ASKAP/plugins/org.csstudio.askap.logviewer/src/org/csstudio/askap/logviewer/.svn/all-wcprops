@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer
+END
+Preferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/Preferences.java
+END
+LogViewer.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/LogViewer.java
+END
+OpenLogViewer.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/OpenLogViewer.java
+END
+LogQuery.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/LogQuery.java
+END
+LogQueryResultViewer.java
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/LogQueryResultViewer.java
+END
+OpenLogQueryResult.java
+K 25
+svn:wc:ra_dav:version-url
+V 157
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/OpenLogQueryResult.java
+END
+Perspective.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/Perspective.java
+END
+PreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/PreferencePage.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.logviewer/src/org/csstudio/askap/logviewer/Activator.java
+END

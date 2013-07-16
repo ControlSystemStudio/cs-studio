@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.navigator
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/askapsoft/!svn/ver/16865/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.navigator/.classpath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/askapsoft/!svn/ver/16717/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.navigator/.project
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.navigator/build.properties
+END
+plugin.xml
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.navigator/plugin.xml
+END

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.askap.logviewer.LogViewer"
+            default="false"
+            icon="icons/log_icon_20x20.png"
+            id="org.csstudio.askap.logviewer.logviewer"
+            name="Log Viewer">
+      </editor>
+      <editor
+            class="org.csstudio.askap.logviewer.LogQueryResultViewer"
+            default="false"
+            icon="icons/log_icon_query.png"
+            id="org.csstudio.askap.logviewer.LogQueryResultViewer"
+            name="Log Query Result Viewer">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.askap"
+            class="org.csstudio.askap.logviewer.LogQuery"
+            icon="icons/log_icon_query.png"
+            id="org.csstudio.askap.logviewer.LogQuery"
+            name="Log Query"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.askap.logviewer.Perspective"
+            icon="icons/log_icon_query.png"
+            id="org.csstudio.askap.logviewer.Perspective"
+            name="Log Viewer">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.csstudio.askap.logviewer.toolbar">
+            <command
+                  commandId="org.csstudio.askap.logviewer.OpenLogViewer"
+                  icon="icons/log_icon_20x20.png"
+                  label="Log Viewer"
+                  style="push"
+                  tooltip="Open Realtime Log Viewer">
+            </command>
+            <command
+                  commandId="org.csstudio.askap.logviewer.OpenLogQueryResult"
+                  icon="icons/log_icon_query.png"
+                  label="Log Query Result Viewer"
+                  style="push"
+                  tooltip="Open Log Query Result">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.askap.logviewer.OpenLogViewer"
+            id="org.csstudio.askap.logviewer.OpenLogViewer"
+            name="Log Viewer">
+      </command>
+      <command
+            defaultHandler="org.csstudio.askap.logviewer.OpenLogQueryResult"
+            id="org.csstudio.askap.logviewer.OpenLogQueryResult"
+            name="Log Query Result">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.askap"
+            class="org.csstudio.askap.logviewer.PreferencePage"
+            id="org.csstudio.askap.logviewer.preferences"
+            name="Log Viewer">
+      </page>
+   </extension>
+
+</plugin>

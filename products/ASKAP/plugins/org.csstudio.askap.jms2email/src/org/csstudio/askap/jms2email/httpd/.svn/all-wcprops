@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd
+END
+HTMLWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd/HTMLWriter.java
+END
+AbstractServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd/AbstractServlet.java
+END
+MainServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd/MainServlet.java
+END
+StopServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd/StopServlet.java
+END
+ConfigurationServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/src/org/csstudio/askap/jms2email/httpd/ConfigurationServlet.java
+END

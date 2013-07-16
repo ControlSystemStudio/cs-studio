@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ASKAP Utilities
+Bundle-SymbolicName: org.csstudio.askap.utility;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.askap.utility.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.101"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: askap.datapublisher,
+ askap.logger,
+ askap.util,
+ org.csstudio.askap.utility;
+  uses:="org.eclipse.jface.action,
+   org.eclipse.jface.preference,
+   org.eclipse.ui,
+   org.eclipse.jface.viewers,
+   org.eclipse.ui.plugin,
+   org.osgi.framework"
+Bundle-ClassPath: lib/java-askap.jar,
+ .

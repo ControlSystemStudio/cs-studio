@@ -1,0 +1,11 @@
+This is the plugin to access archive data from Monica and present them to databrowser. 
+(Feature #4372: Develop an extension plug-in to query monitoring data from Monica).
+
+There is a lib directory which contains all the jar files required to communicate Monica. 
+It contains the following jar files:
+- Ice.jar
+- log4j-1.2.15.jar
+- open-monica.jar
+
+These jar files are are copied from: 
+CSS/3rdParty/open-monica/open-monica-r425/install/lib

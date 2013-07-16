@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/askapsoft/!svn/ver/18626/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat
+END
+GroupMemberLabelProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/askapsoft/!svn/ver/18592/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/GroupMemberLabelProvider.java
+END
+Preferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/askapsoft/!svn/ver/18613/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/Preferences.java
+END
+ChatMessageHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/askapsoft/!svn/ver/18592/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/ChatMessageHandler.java
+END
+ChatListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/askapsoft/!svn/ver/18956/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/ChatListener.java
+END
+GroupChatView.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/askapsoft/!svn/ver/18956/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/GroupChatView.java
+END
+PreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/askapsoft/!svn/ver/18613/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/PreferencePage.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/askapsoft/!svn/ver/18592/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/Activator.java
+END
+JMSChatMessageHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/askapsoft/!svn/ver/18956/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/JMSChatMessageHandler.java
+END
+MessageTable.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/askapsoft/!svn/ver/18956/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.chat/src/org/csstudio/askap/chat/MessageTable.java
+END

@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/askapsoft/!svn/ver/17541/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb
+END
+PerspectiveFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/PerspectiveFactory.java
+END
+Preferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/Preferences.java
+END
+SBMaintenanceView.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/askapsoft/!svn/ver/17541/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/SBMaintenanceView.java
+END
+SBExecutionView.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/SBExecutionView.java
+END
+OpenSBMaintenanceView.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/OpenSBMaintenanceView.java
+END
+OpenSBExecutionView.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/OpenSBExecutionView.java
+END
+SBTemplateView.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/SBTemplateView.java
+END
+PreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/PreferencePage.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/askapsoft/!svn/ver/17382/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.sb/src/org/csstudio/askap/sb/Activator.java
+END

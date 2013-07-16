@@ -1,0 +1,4 @@
+# Default ICE Manager
+# @author Xinyu Wu
+icestorm_topicmanager_name=IceStorm/TopicManager@IceStorm.TopicManager
+ice_properties="Ice.Default.Locator", "IceGrid/Locator:tcp -h mtos1.atnf.csiro.au -p 4061" | "RealtimeLogSubscriber.Endpoints","tcp" | "Ice.MessageSizeMax","2048"

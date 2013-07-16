@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.askap.applications.feature"
+      label="Feature"
+      version="1.0.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      CSS applications for ASKAP
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.csstudio.opibuilder.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.trends.databrowser2.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.appserver"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro" version="3.4.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro.universal" version="3.2.500" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="1.0.6" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets" version="1.0.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.diag.epics.pvtree"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.probe"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.trends.databrowser2.opiwidget"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.clock"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.eliza"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.logviewer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.navigator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility.pv.ice"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility.icemanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.sb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

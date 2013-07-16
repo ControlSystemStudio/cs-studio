@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.pv.ice/src/org/csstudio/askap/utility/pv/ice
+END
+IceStormPVFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.pv.ice/src/org/csstudio/askap/utility/pv/ice/IceStormPVFactory.java
+END
+IceManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.pv.ice/src/org/csstudio/askap/utility/pv/ice/IceManager.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.pv.ice/src/org/csstudio/askap/utility/pv/ice/Activator.java
+END
+Value.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.pv.ice/src/org/csstudio/askap/utility/pv/ice/Value.java
+END

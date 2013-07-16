@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/askapsoft/!svn/ver/17518/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager
+END
+preferences.ini
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/askapsoft/!svn/ver/17518/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager/preferences.ini
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/askapsoft/!svn/ver/16717/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager/.classpath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/askapsoft/!svn/ver/16717/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager/.project
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/askapsoft/!svn/ver/17384/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager/build.properties
+END
+plugin.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/askapsoft/!svn/ver/17454/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.utility.icemanager/plugin.xml
+END

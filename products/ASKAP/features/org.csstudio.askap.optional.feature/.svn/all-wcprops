@@ -1,0 +1,27 @@
+K 26
+svn:wc:ra_dav:activity-url
+V 20
+/askapsoft/!svn/act/
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/askapsoft/!svn/ver/18592/Src/trunk/Code/Components/CSS/current/features/org.csstudio.askap.optional.feature
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/features/org.csstudio.askap.optional.feature/.project
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/features/org.csstudio.askap.optional.feature/build.properties
+END
+feature.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/askapsoft/!svn/ver/18592/Src/trunk/Code/Components/CSS/current/features/org.csstudio.askap.optional.feature/feature.xml
+END

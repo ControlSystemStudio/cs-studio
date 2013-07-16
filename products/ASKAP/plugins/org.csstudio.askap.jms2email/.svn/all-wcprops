@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/askapsoft/!svn/ver/17121/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email
+END
+preferences.ini
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/preferences.ini
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/askapsoft/!svn/ver/16717/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/.classpath
+END
+JMS2EMAIL.product
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/askapsoft/!svn/ver/17121/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/JMS2EMAIL.product
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/askapsoft/!svn/ver/16717/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/.project
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/build.properties
+END
+plugin.xml
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.askap.jms2email/plugin.xml
+END

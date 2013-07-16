@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.askap.utility.actionSet"
+            label="askap"
+            visible="true">
+         <action
+               class="org.csstudio.askap.utility.InstallAskapAction"
+               id="org.csstudio.askap.utility.InstallAskapAction"
+               label="Install ASKAP OPIs"
+               menubarPath="css/"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.askap"
+            class="org.csstudio.askap.utility.PreferencePage"
+            id="org.csstudio.askap.utility.preferences"
+            name="ASKAP General Config">
+      </page>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.askap.utility.ASKAPApplicationPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.askap"
+            name="ASKAP">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.askap"
+            name="ASKAP">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.askap.utility.ElementFactory"
+            id="org.csstudio.askap.utility.ElementFactory">
+      </factory>
+   </extension>
+
+</plugin>

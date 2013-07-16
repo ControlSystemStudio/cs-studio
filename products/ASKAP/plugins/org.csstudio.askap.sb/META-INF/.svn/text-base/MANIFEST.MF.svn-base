@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ASKAP Scheduling Block Management
+Bundle-SymbolicName: org.csstudio.askap.sb;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.askap.sb.Activator
+Bundle-Vendor: CASS CSIRO
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.askap.utility;bundle-version="1.0.0",
+ org.csstudio.askap.utility.icemanager;bundle-version="1.0.0",
+ org.csstudio.ui.util;bundle-version="3.1.0",
+ org.eclipse.jface.text;bundle-version="3.7.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

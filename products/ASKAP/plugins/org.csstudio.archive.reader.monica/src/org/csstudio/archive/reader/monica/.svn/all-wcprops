@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/askapsoft/!svn/ver/17644/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica
+END
+Preferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/askapsoft/!svn/ver/17644/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/Preferences.java
+END
+MonicaPreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/MonicaPreferencePage.java
+END
+MonicaArchiveReaderFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/MonicaArchiveReaderFactory.java
+END
+TestValueIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/TestValueIterator.java
+END
+MonicaArchiveClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/MonicaArchiveClient.java
+END
+MonicaArchiveReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/MonicaArchiveReader.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/Activator.java
+END
+MonicaValueIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/askapsoft/!svn/ver/16713/Src/trunk/Code/Components/CSS/current/plugins/org.csstudio.archive.reader.monica/src/org/csstudio/archive/reader/monica/MonicaValueIterator.java
+END
