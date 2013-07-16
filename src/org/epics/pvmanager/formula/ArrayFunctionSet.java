@@ -34,7 +34,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
 				    ListNumber arg2) {
 				if (arg1.size() != arg2.size()) {
 				    throw new RuntimeException(
-					    "Invalid arguments: size of two arrays is nor equal");
+					    "Invalid arguments: size of two arrays is not equal");
 				}
 				double[] result = new double[arg1.size()];
 				for (int i = 0; i < arg1.size(); i++) {
@@ -53,7 +53,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
 				    ListNumber arg2) {
 				if (arg1.size() != arg2.size()) {
 				    throw new RuntimeException(
-					    "Invalid arguments: size of two arrays is nor equal");
+					    "Invalid arguments: size of two arrays is not equal");
 				}
 				double[] result = new double[arg1.size()];
 				for (int i = 0; i < arg1.size(); i++) {
