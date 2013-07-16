@@ -1,6 +1,0 @@
-# Default ASKAp General settings
-# @author Xinyu Wu
-
-opi_file_directory=/askap/css/default/lib/opi
-date_time_format=LOCAL
-navigator_config_file=

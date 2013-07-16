@@ -1,8 +1,0 @@
-# Default Log Viewer settings
-# @author Xinyu Wu
-log_message_topic_name=logger
-log_query_adaptor_name=LogQueryService@LogArchiverAdapter
-max_num_messages=1000
-log_subscriber_name=RealtimeLogSubscriber
-log_query_max_messages_per_query=100
-log_view_refresh_period=500
