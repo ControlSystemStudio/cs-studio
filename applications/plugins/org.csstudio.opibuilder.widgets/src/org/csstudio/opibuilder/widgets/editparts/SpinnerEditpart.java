@@ -36,6 +36,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 
+
 /**The editpart for spinner widget.
  * @author Xihui Chen
  *
@@ -63,6 +64,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setFormatType(getWidgetModel().getFormat());
 		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
 		spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
+		spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
@@ -305,6 +307,15 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
 			
+			handler = new IWidgetPropertyChangeHandler() {
+
+				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+					((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
+					return false;
+				}
+			};
+			setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
+			
 
 	}
 
@@ -334,9 +345,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	}
 
 	protected void performDirectEdit(){
-		new TextEditManager(this,
+		new SpinnerTextEditManager(this,
 				new LabelCellEditorLocator(
-						((SpinnerFigure)getFigure()).getLabelFigure()), false).show();
+						((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();	
 	}
 
 	@Override

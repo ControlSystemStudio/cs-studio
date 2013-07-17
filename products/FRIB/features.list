@@ -6,6 +6,7 @@ org.csstudio.frib.feature.core
 org.csstudio.frib.feature.eclipse
 org.csstudio.frib.fribcore.feature
 org.csstudio.frib.product.feature
+org.csstudio.logbook.viewer.feature
 org.csstudio.olog.feature
 org.csstudio.opibuilder.feature
 org.csstudio.scan.ui.feature

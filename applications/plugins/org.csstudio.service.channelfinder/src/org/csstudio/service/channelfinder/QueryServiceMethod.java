@@ -80,7 +80,7 @@ public class QueryServiceMethod extends ServiceMethod {
 		    List<Object> values = new ArrayList<Object>();
 
 		    // Add Channel Name column
-		    names.add("Channel Name");
+		    names.add("Name");
 		    types.add(String.class);
 		    values.add(Lists.transform(channels,
 			    new Function<Channel, String>() {

@@ -42,6 +42,8 @@ public class SpinnerModel extends LabelModel {
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
 	public static final String PROP_PRECISION_FROM_PV = "precision_from_pv";	//$NON-NLS-1$
 	public static final String PROP_BUTTONS_ON_LEFT= "buttons_on_left";	//$NON-NLS-1$
+	
+	public static final String PROP_HORIZONTAL_BUTTONS_LAYOUT= "horizontal_buttons_layout";	//$NON-NLS-1$
 
 
 
@@ -99,6 +101,8 @@ public class SpinnerModel extends LabelModel {
 		addProperty(new BooleanProperty(PROP_BUTTONS_ON_LEFT, "Buttons on Left", 
 				WidgetPropertyCategory.Display, false));
 		
+		addProperty(new BooleanProperty(PROP_HORIZONTAL_BUTTONS_LAYOUT, "Horizontal Buttons Layout",
+				WidgetPropertyCategory.Display, false));
 
 
 	}	
@@ -147,6 +151,10 @@ public class SpinnerModel extends LabelModel {
 	
 	public boolean isButtonsOnLeft(){
 		return (Boolean)getPropertyValue(PROP_BUTTONS_ON_LEFT);
+	}
+	
+	public boolean isHorizontalButtonsLayout(){
+		return (Boolean)getPropertyValue(PROP_HORIZONTAL_BUTTONS_LAYOUT);
 	}
 		
 	@Override

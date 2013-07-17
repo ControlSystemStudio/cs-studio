@@ -32,6 +32,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
+import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.util.IFileUtil;
@@ -47,7 +48,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -73,16 +73,16 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-
-import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author shroffk
@@ -116,13 +116,14 @@ public class LogEntryWidget extends Composite {
 	    this);
     private Button btnAddLogbook;
     private Button btnAddTags;
-    final private FormData empty;
 
     private CTabFolder tabFolder;
     private Composite tbtmImgAttachmentsComposite;
     private CTabItem tbtmAttachments;
     private Composite tbtmFileAttachmentsComposite;
     private CTabItem tbtmFileAttachments;
+    private Composite tbtmPropertyTreeComposite;
+    private CTabItem tbtmPropertyTree;
 
     private ImageStackWidget imageStackWidget;
     private Button btnAddImage;
@@ -144,6 +145,9 @@ public class LogEntryWidget extends Composite {
     private Label label;
     private LinkTable linkTable;
     private Button removeSelectedButton;
+    private Button addFileButton;
+    private Button btnCurrentContext;
+    private PropertyTree propertyTree;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -579,11 +583,88 @@ public class LogEntryWidget extends Composite {
 	fd_errorBar.left = new FormAttachment(0, 2);
 	errorBar.setLayoutData(fd_errorBar);
 
+	btnCurrentContext = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	btnCurrentContext.setVisible(editable);
+	btnCurrentContext.setText("Attach context");
+	btnCurrentContext.setToolTipText("Attach the in focus CS-Studio file");
+
+	FormData fd_btnCurrentContext = new FormData();
+	fd_btnCurrentContext.left = new FormAttachment(0, 5);
+	fd_btnCurrentContext.bottom = new FormAttachment(100, -5);
+	fd_btnCurrentContext.right = new FormAttachment(32);
+	btnCurrentContext.setLayoutData(fd_btnCurrentContext);
+
+	btnCurrentContext.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		IEditorInput input = PlatformUI.getWorkbench()
+			.getActiveWorkbenchWindow().getActivePage()
+			.getActiveEditor().getEditorInput();
+		IFile editorFile = (IFile) input.getAdapter(IFile.class);
+		if (editorFile != null) {
+		    try {
+			File file = new File(editorFile.getLocationURI());
+			if (file != null) {
+			    LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				    .logEntry(logEntryChangeset.getLogEntry())
+				    .attach(AttachmentBuilder.attachment(
+					    file.getName()).inputStream(
+					    new FileInputStream(file)));
+			    logEntryChangeset
+				    .setLogEntryBuilder(logEntryBuilder);
+			}
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
+		}
+	    }
+	});
+
+	addFileButton = new Button(tbtmFileAttachmentsComposite, SWT.NONE);
+	addFileButton.setVisible(editable);
+	addFileButton.setText("Attach file");
+	addFileButton.setToolTipText("Add a file attachment");
+	FormData fd_btnAddFileButtonButton = new FormData();
+	fd_btnAddFileButtonButton.left = new FormAttachment(33);
+	fd_btnAddFileButtonButton.bottom = new FormAttachment(100, -5);
+	fd_btnAddFileButtonButton.right = new FormAttachment(65);
+	addFileButton.setLayoutData(fd_btnAddFileButtonButton);
+	addFileButton.addSelectionListener(new SelectionListener() {
+
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		final FileDialog fileDialog = new FileDialog(getShell(),
+			SWT.SAVE);
+		final String filename = fileDialog.open();
+		if (filename != null) {
+		    try {
+			File file = new File(filename);
+			LogEntryBuilder logEntryBuilder = LogEntryBuilder
+				.logEntry(logEntryChangeset.getLogEntry())
+				.attach(AttachmentBuilder.attachment(
+					file.getName()).inputStream(
+					new FileInputStream(file)));
+			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		    } catch (IOException e1) {
+			setLastException(e1);
+		    }
+		}
+
+	    }
+
+	    @Override
+	    public void widgetDefaultSelected(SelectionEvent e) {
+
+	    }
+	});
+
 	removeSelectedButton = new Button(tbtmFileAttachmentsComposite,
 		SWT.NONE);
 	removeSelectedButton.setVisible(editable);
-	removeSelectedButton.setText("Remove selected attachments");
+	removeSelectedButton.setText("Remove selected");
+	removeSelectedButton.setToolTipText("Remove the selected attachments");
 	FormData fd_btnRemoveSelectedButton = new FormData();
+	fd_btnRemoveSelectedButton.left = new FormAttachment(66);
 	fd_btnRemoveSelectedButton.bottom = new FormAttachment(100, -5);
 	fd_btnRemoveSelectedButton.right = new FormAttachment(100, -5);
 	removeSelectedButton.setLayoutData(fd_btnRemoveSelectedButton);
@@ -653,11 +734,19 @@ public class LogEntryWidget extends Composite {
 	fd_linkTable.left = new FormAttachment(0, 2);
 	linkTable.setLayoutData(fd_linkTable);
 
-	empty = new FormData();
-	empty.top = new FormAttachment(0);
-	empty.bottom = new FormAttachment(0);
-	empty.left = new FormAttachment(0);
-	empty.right = new FormAttachment(0);
+	tbtmPropertyTree = new CTabItem(tabFolder, SWT.NONE);
+	tbtmPropertyTree.setText("Properties");
+	tabFolder.setSelection(tbtmPropertyTree);
+
+	tbtmPropertyTreeComposite = new Composite(tabFolder, SWT.NONE);
+	tbtmPropertyTree.setControl(tbtmPropertyTreeComposite);
+	tbtmPropertyTreeComposite.setLayout(new GridLayout());
+
+	propertyTree = new PropertyTree(tbtmPropertyTreeComposite, SWT.NONE);
+	propertyTree
+		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+	tabFolder.showItem(tbtmAttachments);
 
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -824,7 +913,8 @@ public class LogEntryWidget extends Composite {
 	// Dispose the contributed tabs, only keep the default attachments tab
 	for (CTabItem cTabItem : tabFolder.getItems()) {
 	    if (!cTabItem.equals(tbtmAttachments)
-		    && !cTabItem.equals(tbtmFileAttachments)) {
+		    && !cTabItem.equals(tbtmFileAttachments)
+		    && !cTabItem.equals(tbtmPropertyTree)) {
 		cTabItem.dispose();
 	    }
 	}
@@ -851,12 +941,16 @@ public class LogEntryWidget extends Composite {
 	    multiSelectionComboTag.setSelection(LogEntryUtil
 		    .getTagNames(logEntry));
 
-	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
+		tabFolder.setSelection(tbtmAttachments);
+	    } else if (logEntry.getProperties().size() > 0) {
+		setExpanded(true);
+		tabFolder.setSelection(tbtmPropertyTree);
 	    } else {
 		setExpanded(false);
 	    }
+	    Map<String, InputStream> imageInputStreamsMap = new HashMap<String, InputStream>();
 	    for (Attachment attachment : logEntry.getAttachment()) {
 		if (Arrays.asList(supportedImageTypes).contains(
 			"*"
@@ -886,6 +980,8 @@ public class LogEntryWidget extends Composite {
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
 		    .getAttachment()));
+	    propertyTree.setProperties(new ArrayList<Property>(logEntry
+		    .getProperties()));
 	} else {
 	    text.setText("");
 	    multiSelectionComboLogbook.setItems(Collections

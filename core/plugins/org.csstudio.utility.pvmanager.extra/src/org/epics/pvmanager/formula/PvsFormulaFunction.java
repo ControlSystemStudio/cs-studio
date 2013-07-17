@@ -120,7 +120,7 @@ class PvsFormulaFunction extends DynamicFormulaFunction {
             }
         }
         
-        return VTableFactory.valueTable(values);
+        return VTableFactory.valueTable(previousNames, values);
     }
 
     @Override

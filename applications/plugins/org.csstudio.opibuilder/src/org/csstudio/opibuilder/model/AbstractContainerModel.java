@@ -137,8 +137,8 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 */
 	public List<AbstractWidgetModel> getAllDescendants(){
 		List<AbstractWidgetModel> allDescendants = new ArrayList<AbstractWidgetModel>();
-		allDescendants.addAll(childrenList);
-		for(AbstractWidgetModel widget : childrenList){
+		allDescendants.addAll(getChildren());
+		for(AbstractWidgetModel widget : getChildren()){
 			if(widget instanceof AbstractContainerModel){
 				allDescendants.addAll(((AbstractContainerModel) widget).getAllDescendants());
 			}

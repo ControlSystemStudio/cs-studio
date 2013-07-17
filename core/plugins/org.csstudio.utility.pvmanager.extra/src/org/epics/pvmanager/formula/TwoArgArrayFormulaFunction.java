@@ -4,16 +4,16 @@
  */
 package org.epics.pvmanager.formula;
 
+import static org.epics.vtype.ValueFactory.alarmNone;
+import static org.epics.vtype.ValueFactory.displayNone;
+import static org.epics.vtype.ValueFactory.newVNumberArray;
+import static org.epics.vtype.ValueFactory.timeNow;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueFactory;
-import static org.epics.vtype.ValueFactory.alarmNone;
-import static org.epics.vtype.ValueFactory.timeNow;
-import static org.epics.vtype.ValueFactory.displayNone;
 
 /**
  * @author shroffk
@@ -113,13 +113,13 @@ public abstract class TwoArgArrayFormulaFunction implements FormulaFunction {
      */
     @Override
     public Object calculate(List<Object> args) {
-	return ValueFactory.newVDoubleArray(
+	return newVNumberArray(
 		calculate(((VNumberArray) args.get(0)).getData(),
 			((VNumberArray) args.get(1)).getData()), alarmNone(),
 		timeNow(), displayNone());
 
     }
 
-    abstract ListDouble calculate(ListNumber arg1, ListNumber arg2);
+    abstract ListNumber calculate(ListNumber arg1, ListNumber arg2);
 
 }
