@@ -13,6 +13,7 @@ import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -274,6 +275,23 @@ public class ValueFactory {
         return displayNone;
     }
     
+    /**
+     * Creates a new VNumber based on the type of the data
+     * 
+     * @param value
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumber newVNumber(Number value, Alarm alarm, Time time, Display display){
+	if(value instanceof Double){
+	    return newVDouble((Double) value, alarm, time, display);
+	}else if(value instanceof Integer){
+	    return newVInt((Integer)value, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
+    }
     
     /**
      * Creates a new VDouble.
@@ -379,6 +397,24 @@ public class ValueFactory {
      */
     public static VDoubleArray newVDoubleArray(final double[] values, final ListInt sizes, Alarm alarm, Time time, Display display) {
         return new IVDoubleArray(new ArrayDouble(values), sizes, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VNumberArray based on the type of the data.
+     * 
+     * @param data
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumberArray newVNumberArray(final ListNumber data, final Alarm alarm, final Time time, final Display display){
+	if(data instanceof ListDouble){
+	    return newVDoubleArray((ListDouble)data, alarm, time, display);
+	}else if(data instanceof ListInt){
+	    return newVIntArray((ListInt)data, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
     }
     
     /**

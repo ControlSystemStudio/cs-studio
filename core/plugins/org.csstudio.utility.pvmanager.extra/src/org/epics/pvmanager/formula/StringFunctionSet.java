@@ -11,7 +11,7 @@ package org.epics.pvmanager.formula;
 public class StringFunctionSet extends FormulaFunctionSet {
 
     public StringFunctionSet() {
-	super(new FormulaFunctionSetDescription("String",
+	super(new FormulaFunctionSetDescription("string",
 		"Function to aggregate and manipulate strings")
 		.addFormulaFunction(new ConcatStringArrayFunction())
 		.addFormulaFunction(new ConcatStringsFunction())
