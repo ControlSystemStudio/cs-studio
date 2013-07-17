@@ -12,18 +12,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 /** Annunciator that uses an external command
  *  @author Kay Kasemir
  */
 class ExternalAnnunciator extends BaseAnnunciator
 {
-    /** External command used to perform the annunciation.
-     *  Must take the text as an argument.
-     */
-    private static final String SAY = "say"; //$NON-NLS-1$
-
     /** Timeout for the command to finish */
     private static final long TIMEOUT_MILLI = 60*1000;
+    
+    private String say_command = "say";
 
     /** Helper for dumping any output of the command to stdout */
     static class StreamDumper extends Thread
@@ -56,7 +56,14 @@ class ExternalAnnunciator extends BaseAnnunciator
                 ex.printStackTrace();
             }
         }
-
+    }
+    
+    
+    public ExternalAnnunciator()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+        	say_command = prefs.getString(Plugin.ID, "command", "say", null);
     }
 
     /** {@inheritDoc} */
@@ -67,7 +74,7 @@ class ExternalAnnunciator extends BaseAnnunciator
         final String text = applyTranslations(something);
 
         // Start external command
-        final String command[] = new String[] { SAY, text };
+        final String command[] = new String[] { say_command, text };
         final Process process = new ProcessBuilder(command).start();
         // Read its output to prevent potential block
         final StreamDumper stderr = new StreamDumper(process.getErrorStream());

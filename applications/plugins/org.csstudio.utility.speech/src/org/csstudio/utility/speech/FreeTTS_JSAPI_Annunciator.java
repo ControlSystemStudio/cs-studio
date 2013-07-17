@@ -29,7 +29,7 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
     final private static boolean debug = false;
     final private Synthesizer synthesizer;
 
-    public FreeTTS_JSAPI_Annunciator() throws Exception
+    public FreeTTS_JSAPI_Annunciator(final String voice_name) throws Exception
     {
         FreeTTSHacks.perform();
 
@@ -41,11 +41,8 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         // List/set voice
         if (debug)
             listTTSVoices();
-        // "kevin" - default
-        // "kevin16" - sounds clearer
-        // "alan" -falls back to "kevin" ?
         final Voice voice = new Voice(
-                "kevin16", Voice.AGE_DONT_CARE,
+        		voice_name, Voice.AGE_DONT_CARE,
                  Voice.GENDER_DONT_CARE, null);
         synthesizer.getSynthesizerProperties().setVoice(voice);
 
