@@ -124,8 +124,10 @@ public class PVTreeView extends ViewPart
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		pv_name.setLayoutData(gd);
-		pv_name.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
+		pv_name.addListener(SWT.DefaultSelection, new Listener()
+		{
+			@Override
+            public void handleEvent(Event e) {
 				setPVName(pv_name.getText());
 			}
 		});
