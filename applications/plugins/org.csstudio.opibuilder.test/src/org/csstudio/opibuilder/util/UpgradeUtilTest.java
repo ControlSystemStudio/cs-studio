@@ -22,6 +22,9 @@ public class UpgradeUtilTest {
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(12.34)"));
 		assertEquals("loc://myPV(12,34,2.3,4.56)",
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(12,34,2.3,4.56)"));
+		assertEquals("loc://myPV",
+				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV"));
+		
 		//macro should not be converted
 		assertEquals("loc://my$(DID)PV(\"fred\")",
 				UpgradeUtil.convertUtilityPVNameToPM("loc://my$(DID)PV(fred)"));		
@@ -67,25 +70,4 @@ public class UpgradeUtilTest {
 		
 	}
 	
-	@Test
-	public void testConvertPMPVToUtilityPVName(){
-		assertEquals("123.45678",
-				UpgradeUtil.convertPMPVToUtilityPVName("=123.45678"));
-		
-		assertEquals("\"abcd\"",
-				UpgradeUtil.convertPMPVToUtilityPVName("=\"abcd\""));
-		
-		assertEquals("const://array(1, 23, 34,12.345)",
-				UpgradeUtil.convertPMPVToUtilityPVName("sim://const(1, 23, 34,12.345)"));	
-		
-		
-		//regular pv
-		assertEquals("fred:current",
-				UpgradeUtil.convertPMPVToUtilityPVName("fred:current"));	
-				
-	}
-	
-
-
-
 }

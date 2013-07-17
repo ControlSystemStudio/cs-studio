@@ -14,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -24,14 +26,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.Util;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.progress.UIJob;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * A service help to maintain the color macros.
@@ -44,7 +48,7 @@ public final class MediaService {
 	public static final String DEFAULT_FONT = "Default"; //$NON-NLS-1$
 
 	public static final String DEFAULT_BOLD_FONT = "Default Bold"; //$NON-NLS-1$
-	
+
 	public static final String HEADER1 = "Header 1"; //$NON-NLS-1$
 	public static final String HEADER2 = "Header 2"; //$NON-NLS-1$
 	public static final String HEADER3 = "Header 3"; //$NON-NLS-1$
@@ -76,28 +80,23 @@ public final class MediaService {
 	public MediaService() {
 		colorMap = new LinkedHashMap<String, OPIColor>();
 		fontMap = new LinkedHashMap<String, OPIFont>();
-		loadColorFile();
-		loadFontFile();
+		reloadColorFile();
+		reloadFontFile();
 	}
 
 	private void loadPredefinedColors() {
-		colorMap.put(AlarmRepresentationScheme.MAJOR, new OPIColor(
-				AlarmRepresentationScheme.MAJOR, CustomMediaFactory.COLOR_RED,
-				true));
-		colorMap.put(AlarmRepresentationScheme.MINOR, new OPIColor(
-				AlarmRepresentationScheme.MINOR,
+		colorMap.put(AlarmRepresentationScheme.MAJOR, new OPIColor(AlarmRepresentationScheme.MAJOR,
+				CustomMediaFactory.COLOR_RED, true));
+		colorMap.put(AlarmRepresentationScheme.MINOR, new OPIColor(AlarmRepresentationScheme.MINOR,
 				CustomMediaFactory.COLOR_ORANGE, true));
 		colorMap.put(AlarmRepresentationScheme.INVALID, new OPIColor(
-				AlarmRepresentationScheme.INVALID,
-				CustomMediaFactory.COLOR_PINK, true));
+				AlarmRepresentationScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
 		colorMap.put(AlarmRepresentationScheme.DISCONNECTED, new OPIColor(
-				AlarmRepresentationScheme.DISCONNECTED,
-				CustomMediaFactory.COLOR_PINK, true));
+				AlarmRepresentationScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
 	}
 
 	private void loadPredefinedFonts() {
-		FontData defaultFont = Display.getDefault().getSystemFont()
-				.getFontData()[0];
+		FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0];
 		// String osName = getOSName();
 		//		if(osName.equals("linux_gtk")) //$NON-NLS-1$
 		//			defaultFont = new FontData("Sans", 10, SWT.NORMAL); //$NON-NLS-1$
@@ -114,12 +113,12 @@ public final class MediaService {
 		fontMap.put(HEADER2, new OPIFont(HEADER2, header2));
 		FontData header3 = new FontData(defaultFont.getName(), height + 2, SWT.BOLD);
 		fontMap.put(HEADER3, new OPIFont(HEADER3, header3));
-		FontData finePrint = new FontData(defaultFont.getName(), height -2, SWT.NORMAL);
+		FontData finePrint = new FontData(defaultFont.getName(), height - 2, SWT.NORMAL);
 		fontMap.put(FINE_PRINT, new OPIFont(FINE_PRINT, finePrint));
 	}
 
 	/**
-	 * Reload color and font files.
+	 * Reload color and font files. Should be called in UI thread.
 	 */
 	public synchronized void reload() {
 		reloadColorFile();
@@ -127,42 +126,90 @@ public final class MediaService {
 	}
 
 	/**
-	 * Reload predefined colors from color file.
+	 * Reload predefined colors from color file in a background job.
 	 */
 	public synchronized void reloadColorFile() {
+		colorFilePath = PreferencesHelper.getColorFilePath();
+		final CountDownLatch latch = new CountDownLatch(1);
 
-		Job job = new Job("Load Color File") {
-
+		final Job job = new Job("Load Color File") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + colorFilePath,
-						IProgressMonitor.UNKNOWN);
+				monitor.beginTask("Connecting to " + colorFilePath, IProgressMonitor.UNKNOWN);
 				colorMap.clear();
 				loadColorFile();
+				latch.countDown();
 				monitor.done();
 				return Status.OK_STATUS;
 			}
 		};
 		job.schedule();
+		try {
+			if (!latch.await(2000, TimeUnit.MILLISECONDS)) {
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						MessageDialog.openWarning(null, "Warning", NLS.bind(
+								"Failed to load OPI color file {0} in 2 seconds. "
+										+ "It will continue to load it in a background job.",
+								colorFilePath));
+					}
+				});
+
+			}
+		} catch (InterruptedException e) {
+		}
+
 	}
 
 	/**
-	 * Reload predefined fonts from font file.
+	 * Reload predefined fonts from font file in a background job. 
 	 */
 	public synchronized void reloadFontFile() {
-		UIJob job = new UIJob("Load Font File") {	
 
+		if (Display.getCurrent() != null) {
+			loadPredefinedFonts();
+		} else
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					loadPredefinedFonts();
+				}
+			});
+
+		fontFilePath = PreferencesHelper.getFontFilePath();
+
+		final CountDownLatch latch = new CountDownLatch(1);
+		Job job = new Job("Load Font File") {
 			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + fontFilePath,
-						IProgressMonitor.UNKNOWN);
+			public IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
 				fontMap.clear();
 				loadFontFile();
+				latch.countDown();
 				monitor.done();
 				return Status.OK_STATUS;
 			}
 		};
 		job.schedule();
+
+		try {
+			if (!latch.await(2000, TimeUnit.MILLISECONDS)) {
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						MessageDialog.openWarning(null, "Warning", NLS.bind(
+								"Failed to load OPI font file {0} in 2 seconds. "
+										+ "It will continue to load it in a background job.",
+								fontFilePath));
+					}
+				});
+			}
+		} catch (InterruptedException e) {
+		}
 	}
 
 	/**
@@ -173,18 +220,16 @@ public final class MediaService {
 
 		colorFilePath = PreferencesHelper.getColorFilePath();
 		if (colorFilePath == null || colorFilePath.isEmpty()) {
-//			String message = "No color definition file was found.";
-//			ConsoleService.getInstance().writeInfo(message);
+			// String message = "No color definition file was found.";
+			// ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
 		try {
 			// read file
-			InputStream inputStream = ResourceUtil.pathToInputStream(
-					colorFilePath, false);
+			InputStream inputStream = ResourceUtil.pathToInputStream(colorFilePath, false);
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					inputStream));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			String line;
 			// fill the color map.
 			while ((line = reader.readLine()) != null) {
@@ -195,14 +240,12 @@ public final class MediaService {
 				if ((i = line.indexOf('=')) != -1) {
 					String name = line.substring(0, i).trim();
 					try {
-						RGB color = StringConverter.asRGB(line.substring(i + 1)
-								.trim());
+						RGB color = StringConverter.asRGB(line.substring(i + 1).trim());
 
 						colorMap.put(name, new OPIColor(name, color, true));
 					} catch (DataFormatException e) {
 						String message = "Format error in color definition file.";
-						OPIBuilderPlugin.getLogger().log(Level.WARNING,
-								message, e);
+						OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 						ConsoleService.getInstance().writeError(message);
 					}
 				}
@@ -217,24 +260,20 @@ public final class MediaService {
 	}
 
 	private void loadFontFile() {
-		
-		loadPredefinedFonts();	
 		Map<String, OPIFont> rawFontMap = new LinkedHashMap<String, OPIFont>();
 		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();
 		if (fontFilePath == null || fontFilePath.isEmpty()) {
-//			String message = "No font definition file was found.";
-//			ConsoleService.getInstance().writeInfo(message);
+			// String message = "No font definition file was found.";
+			// ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
 		try {
 			// read file
-			InputStream inputStream = ResourceUtil.pathToInputStream(
-					fontFilePath, false);
+			InputStream inputStream = ResourceUtil.pathToInputStream(fontFilePath, false);
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					inputStream));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			String line;
 			// fill the font map.
 			while ((line = reader.readLine()) != null) {
@@ -249,17 +288,15 @@ public final class MediaService {
 						trimmedName = name.substring(0, name.indexOf("(")); //$NON-NLS-1$
 					trimmedNameSet.add(trimmedName);
 					try {
-						FontData fontdata = StringConverter.asFontData(line
-								.substring(i + 1).trim());
+						FontData fontdata = StringConverter
+								.asFontData(line.substring(i + 1).trim());
 						if (fontdata.getName().equals("SystemDefault")) //$NON-NLS-1$
-							fontdata.setName(Display.getDefault()
-									.getSystemFont().getFontData()[0].getName());
-						rawFontMap
-								.put(name, new OPIFont(trimmedName, fontdata));
+							fontdata.setName(Display.getDefault().getSystemFont().getFontData()[0]
+									.getName());
+						rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
 					} catch (DataFormatException e) {
 						String message = "Format error in font definition file.";
-						OPIBuilderPlugin.getLogger().log(Level.WARNING,
-								message, e);
+						OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 						ConsoleService.getInstance().writeError(message);
 					}
 				}
@@ -312,10 +349,15 @@ public final class MediaService {
 	public OPIColor getOPIColor(String name) {
 		return getOPIColor(name, DEFAULT_UNKNOWN_COLOR);
 	}
-	
-	/**Get OPIColor based on name. If no such name exist, use the rgb value as its color.
-	 * @param name name of OPIColor
-	 * @param rgb rgb value in case the name is not exist.
+
+	/**
+	 * Get OPIColor based on name. If no such name exist, use the rgb value as
+	 * its color.
+	 * 
+	 * @param name
+	 *            name of OPIColor
+	 * @param rgb
+	 *            rgb value in case the name is not exist.
 	 * @return the OPIColor.
 	 */
 	public OPIColor getOPIColor(String name, RGB rgb) {
@@ -347,20 +389,24 @@ public final class MediaService {
 			return fontMap.get(name).getFontData();
 		return DEFAULT_UNKNOWN_FONT;
 	}
-	
-	/**Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a name is found.
+
+	/**
+	 * Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a
+	 * name is found.
+	 * 
 	 * @param name
 	 * @return
 	 * @see #getOPIFont(String, FontData)
 	 */
-	public OPIFont getOPIFont(String name){
+	public OPIFont getOPIFont(String name) {
 		return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
 	}
-	
 
-	/**Get the OPIFont based on name. Use the provided fontData if no
-	 * such a name is found.
-	 * @param name 
+	/**
+	 * Get the OPIFont based on name. Use the provided fontData if no such a
+	 * name is found.
+	 * 
+	 * @param name
 	 * @param fontData
 	 * @return
 	 */
@@ -378,12 +424,12 @@ public final class MediaService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @param name
 	 * @return true if the OPI color is defined.
 	 */
-	public boolean isColorNameDefined(String name){
+	public boolean isColorNameDefined(String name) {
 		return colorMap.containsKey(name);
 	}
 

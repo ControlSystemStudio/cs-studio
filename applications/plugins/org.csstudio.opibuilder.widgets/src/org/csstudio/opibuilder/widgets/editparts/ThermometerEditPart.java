@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.data.values.ISeverity;
 import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -15,6 +14,7 @@ import org.csstudio.opibuilder.widgets.model.ThermometerModel;
 import org.csstudio.swt.widgets.figures.ThermometerFigure;
 import org.csstudio.swt.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between
@@ -129,9 +129,10 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		setPropertyChangeHandler(ThermometerModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
 		
 		// Change fill color when alarm severity changes.
-		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
+		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {		
+
 			@Override
-			public boolean severityChanged(ISeverity severity, IFigure figure) {
+			public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
 				if (!getWidgetModel().isFillColorAlarmSensitive())
 					return false;
 				ThermometerFigure thermo = (ThermometerFigure) figure;
