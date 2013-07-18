@@ -15,7 +15,6 @@ import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
-import org.epics.pvmanager.PV;
 import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.AlarmSeverity;
