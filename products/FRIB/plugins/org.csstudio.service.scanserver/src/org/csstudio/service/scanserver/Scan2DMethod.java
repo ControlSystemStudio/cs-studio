@@ -13,26 +13,26 @@ import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.ValueFactory;
 
+import edu.msu.frib.scanserver.api.ScanServer;
 import edu.msu.frib.scanserver.api.ScanServerClient;
 import edu.msu.frib.scanserver.api.ScanServerClientImpl.SSCBuilder;
 import edu.msu.frib.scanserver.api.commands.CommandSet;
 import edu.msu.frib.scanserver.api.commands.DelayCommand;
 import edu.msu.frib.scanserver.api.commands.LogCommand;
 import edu.msu.frib.scanserver.api.commands.LoopCommand;
-import edu.msu.frib.scanserver.api.commands.LoopCommand.Builder;
-import static edu.msu.frib.scanserver.api.commands.LoopCommand.builder;;
 
 
 public class Scan2DMethod extends ServiceMethod{
 
 	public Scan2DMethod() {
 		super(new ServiceMethodDescription("scan2d", "Queues a 2D scan to the scan server")
+			.addArgument("server", "scan server (optional)", VString.class)
 			.addArgument("positioner", "Positioner PV", VString.class)
 			.addArgument("detector", "Detector PV", VString.class)
 			.addArgument("start", "Start location", VNumber.class)
 			.addArgument("end", "End location", VNumber.class)
 			.addArgument("step", "Step size", VNumber.class)
-			.addArgument("delay", "delay before logging", VNumber.class)
+			.addArgument("delay", "delay before logging (optional)", VNumber.class)
 			.addResult("result", "id of queued scan", VNumber.class));
 	    }
 
@@ -40,11 +40,16 @@ public class Scan2DMethod extends ServiceMethod{
 	public void executeMethod(Map<String, Object> parameters,
 			WriteFunction<Map<String, Object>> callback,
 			WriteFunction<Exception> errorCallback) {
+
+		ScanServerClient ssc = null;
+		if (((VString) parameters.get("server")) != null){
+			String server = ((VString) parameters.get("server")).getValue();
+			ssc = SSCBuilder.serviceURL(server)
+					.create();
+		} else {
+			ssc = ScanServer.getClient();
+		}
 		
-		ScanServerClient ssc;
-        ssc = SSCBuilder.serviceURL("http://localhost:4810")
-                .create();
-        
         String positioner = ((VString) parameters.get("positioner")).getValue();
         String detector = ((VString) parameters.get("detector")).getValue();
         Number start = ((VNumber) parameters.get("start")).getValue();
