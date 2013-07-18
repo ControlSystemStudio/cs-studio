@@ -3,12 +3,10 @@ package org.csstudio.opibuilder.widgets.extra;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
@@ -18,7 +16,7 @@ import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.ValueUtil;
 
-public class VTableDisplayEditPart extends AbstractWidgetEditPart {
+public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTableDisplayFigure, VTableDisplayModel> {
 
 	/**
 	 * Create and initialize figure.
@@ -38,23 +36,13 @@ public class VTableDisplayEditPart extends AbstractWidgetEditPart {
 	}
 
 	@Override
-	public VTableDisplayModel getWidgetModel() {
-		VTableDisplayModel widgetModel = (VTableDisplayModel) super
-				.getWidgetModel();
-		return widgetModel;
-	}
-
-	@Override
 	protected void registerPropertyChangeHandlers() {
 		// The handler when PV value changed.
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
-				configure(
-						((AbstractSWTWidgetFigure<VTableWidget>) getFigure())
-								.getSWTWidget(), getWidgetModel(),
-						((VTableDisplayFigure) getFigure()).isRunMode());
+				configure(getFigure().getSWTWidget(), getWidgetModel(),
+						getFigure().isRunMode());
 				return false;
 			}
 		};
