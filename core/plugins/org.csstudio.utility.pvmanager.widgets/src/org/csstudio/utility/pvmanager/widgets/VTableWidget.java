@@ -27,7 +27,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.formula.ExpressionLanguage;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
