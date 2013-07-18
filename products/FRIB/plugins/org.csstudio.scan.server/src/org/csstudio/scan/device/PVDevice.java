@@ -33,6 +33,7 @@ import org.epics.vtype.Time;
 import org.epics.vtype.VByteArray;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV
@@ -71,7 +72,7 @@ public class PVDevice extends Device
     {
 	    super(info);
     }
-
+	
 	/** {@inheritDoc} */
 	@Override
     public void start() throws Exception
@@ -87,26 +88,42 @@ public class PVDevice extends Device
 				synchronized (PVDevice.this)
 				{					
 					if (error != null)
+					{
 						value = DISCONNECTED;
+                        Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                            "PV " + getName() + " error",
+                            error);
+					}
 					else
 					{
 						value = pv.getValue();
-						Logger.getLogger(getClass().getName()).log(Level.FINER,
-					        "PV {0} received {1}", new Object[] { getInfo().getName(), value });
-						
-						if (value == null)
-							value = DISCONNECTED;
-						
-						if (TREAD_BYTES_AS_STRING  &&
-						    value instanceof VByteArray)
+						final Alarm alarm = ValueUtil.alarmOf(value);
+						if (!pv.isConnected()  ||
+						    (alarm != null   &&  alarm.getAlarmSeverity() == AlarmSeverity.UNDEFINED))
 						{
-						    is_byte_array = true;
-						    final VByteArray barray = (VByteArray) value;
-						    value = ValueFactory.newVString(
-					            ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
-
-						    Logger.getLogger(getClass().getName()).log(Level.FINER,
-	                              "PV BYTE[] converted to {0}", value);
+						    value = DISCONNECTED;
+						    Logger.getLogger(getClass().getName()).log(Level.WARNING,
+						            "PV {0} disconnected", getName());
+						}
+						else
+						{
+    						Logger.getLogger(getClass().getName()).log(Level.FINER,
+    					        "PV {0} received {1}", new Object[] { getName(), value });
+    						
+    						if (value == null)
+    							value = DISCONNECTED;
+    						
+    						if (TREAD_BYTES_AS_STRING  &&
+    						    value instanceof VByteArray)
+    						{
+    						    is_byte_array = true;
+    						    final VByteArray barray = (VByteArray) value;
+    						    value = ValueFactory.newVString(
+    					            ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
+    
+    						    Logger.getLogger(getClass().getName()).log(Level.FINER,
+    	                              "PV BYTE[] converted to {0}", value);
+    						}
 						}
 					}
 				}
@@ -115,7 +132,10 @@ public class PVDevice extends Device
 		};
 		synchronized (this)
 		{
-			pv = PVManager.readAndWrite(latestValueOf(vType(getInfo().getName()))).readListener(listener).asynchWriteAndMaxReadRate(ofSeconds(0.1));
+			pv = PVManager
+		        .readAndWrite(latestValueOf(vType(getName())))
+		        .readListener(listener)
+		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
 		}
 	}
 
@@ -126,7 +146,17 @@ public class PVDevice extends Device
         return value != DISCONNECTED  &&  pv != null  && pv.isConnected();
     }
 
-	/** {@inheritDoc} */
+	/** @return Human-readable device status */
+    @Override
+    public synchronized String getStatus()
+    {
+        if (pv == null)
+            return "no PV";
+        else
+            return VTypeHelper.toString(value);
+    }
+
+    /** {@inheritDoc} */
 	@Override
     public void stop()
 	{
@@ -149,7 +179,7 @@ public class PVDevice extends Device
     {
 		final VType current = this.value;
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
-				new Object[] { getInfo().getName(), current });
+				new Object[] { getName(), current });
 		return current;
     }
 
@@ -167,28 +197,6 @@ public class PVDevice extends Device
 			pv.write(value);
 		}
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
-				new Object[] { getInfo().getName(), value });
-    }
-
-	/** @return Human-readable representation of this device */
-    @Override
-    public synchronized String toString()
-    {
-        final StringBuilder buf = new StringBuilder();
-        buf.append(super.toString());
-    	if (pv == null)
-            buf.append(", no PV");
-    	else
-    	{
-    	    buf.append(", PV '").append(pv.getName()).append("'");
-
-    	    final VType current;
-    	    synchronized (this)
-            {
-                current = this.value;
-            }
-    	    buf.append(" = ").append(VTypeHelper.toString(current));
-    	}
-    	return buf.toString();
+				new Object[] { getName(), value });
     }
 }

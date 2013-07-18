@@ -18,7 +18,7 @@ package org.csstudio.scan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.scan.condition.Condition;
+import org.csstudio.scan.condition.DeviceCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
@@ -36,11 +36,11 @@ public class WaitForDevicesConditionHeadlessTest
     {
         final Device[] devices =
         {
-                new PVDevice(new DeviceInfo("motor_x", "xpos", true, true)),
-                new PVDevice(new DeviceInfo("motor_y", "ypos", true, true)),
+                new PVDevice(new DeviceInfo("motor_x", "xpos")),
+                new PVDevice(new DeviceInfo("motor_y", "ypos")),
         };
 
-        final Condition connect = new WaitForDevicesCondition(devices);
+        final DeviceCondition connect = new WaitForDevicesCondition(devices);
 
         System.out.println(connect);
         assertTrue(connect.toString().startsWith("Waiting for device "));

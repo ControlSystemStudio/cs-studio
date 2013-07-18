@@ -95,17 +95,18 @@ public class VTypeHelper
         // Log anything numeric as NumberSample
     	if (value instanceof VNumber)
         	return ScanSampleFactory.createSample(date, serial, ((VNumber) value).getValue());
+    	else if (value instanceof VString)
+            return ScanSampleFactory.createSample(date, serial, ((VString) value).getValue());
         else if (value instanceof VNumberArray) 
-        {
+        {   // Handle any numeric array as such
         	final ListNumber list = ((VNumberArray) value).getData();
-        	final Number[] numbers = new Number[list.size()];
+        	final Object[] numbers = new Number[list.size()];
         	for (int i=0; i<numbers.length; ++i)
         		numbers[i] = list.getDouble(i);
         	return ScanSampleFactory.createSample(date, serial, numbers);
         }
         else
-            // String arrays are not really handled when this is written, but ...
-            return ScanSampleFactory.createSample(date, serial, new String[] { toString(value) });
+            return ScanSampleFactory.createSample(date, serial, toString(value));
     }
 
     /** @param value {@link VType}

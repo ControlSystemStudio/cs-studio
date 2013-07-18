@@ -111,7 +111,7 @@ class PVTreeItem
         // Is this a link to follow, or just a constant to display?
         // Hardware links "@vme..." or constant numbers "-12.3"
         // cause us to stop here:
-        if (pv_name.startsWith("@") || pv_name.matches("^-?[0-9]"))
+        if (! PVNameFilter.isPvName(pv_name))
         {
             pv = null;
             return;

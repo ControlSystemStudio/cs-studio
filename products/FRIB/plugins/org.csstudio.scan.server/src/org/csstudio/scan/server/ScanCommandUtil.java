@@ -8,10 +8,13 @@
 package org.csstudio.scan.server;
 
 import org.csstudio.scan.command.Comparison;
-import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.condition.DeviceCondition;
+import org.csstudio.scan.condition.NumericValueCondition;
+import org.csstudio.scan.condition.TextValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VType;
 
 /** Utilities for command implementations
@@ -21,7 +24,23 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class ScanCommandUtil
 {
-    /** Write to device with optional readback, logging if the context
+    /** Write to device with readback, waiting forever, logging if the context
+     *  was configured to auto-log
+     *
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
+     *  @throws Exception on error
+     */
+    public static void write(final ScanContext context,
+            final String device_name, final Object value,
+            final double tolerance, final TimeDuration timeout) throws Exception
+    {
+    	write(context, device_name, value, device_name, true, tolerance, timeout);
+    }
+	
+	/** Write to device with optional readback, logging if the context
      *  was configured to auto-log
      *
      *  @param device_name Name of device
@@ -29,34 +48,37 @@ public class ScanCommandUtil
      *  @param readback Readback device
      *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, 0 as "forever"
+     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
             final String device_name, final Object value, final String readback_name,
-            final boolean wait, final double tolerance, final double timeout) throws Exception
+            final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
     {
-        final Device device = context.getDevice(device_name);
+        final Device device = context.getDevice(context.resolveMacros(device_name));
 
         // Separate read-back device, or use 'set' device?
         final Device readback;
         if (readback_name.isEmpty())
             readback = device;
         else
-            readback = context.getDevice(readback_name);
+            readback = context.getDevice(context.resolveMacros(readback_name));
 
         //  Wait for the device to reach the value?
-        final DeviceValueCondition condition;
+        final DeviceCondition condition;
         if (wait)
         {
-            final double desired;
             if (value instanceof Number)
-                desired = ((Number)value).doubleValue();
+            {
+                final double desired = ((Number)value).doubleValue();
+                condition = new NumericValueCondition(readback, Comparison.EQUALS, desired,
+                        tolerance, timeout);
+            }
             else
-                throw new Exception("Value must be numeric to support 'wait'");
-
-            condition = new DeviceValueCondition(readback, Comparison.EQUALS, desired,
-                    tolerance, timeout);
+            {
+                final String desired = value.toString();
+                condition = new TextValueCondition(readback, Comparison.EQUALS, desired, timeout);
+            }
         }
         else
             condition = null;
@@ -74,7 +96,7 @@ public class ScanCommandUtil
             final VType log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();
-            log.log(readback.getInfo().getAlias(), VTypeHelper.createSample(serial, log_value));
+            log.log(readback.getAlias(), VTypeHelper.createSample(serial, log_value));
         }
     }
 }

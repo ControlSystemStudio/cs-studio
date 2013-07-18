@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="3.2.1.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -31,20 +31,14 @@
       <plugin id="javax.servlet"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.csstudio.apputil"/>
-      <plugin id="org.csstudio.apputil.test" fragment="true"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.java"/>
-      <plugin id="org.csstudio.java.test" fragment="true"/>
       <plugin id="org.csstudio.logging"/>
-      <plugin id="org.csstudio.logging.test" fragment="true"/>
       <plugin id="org.csstudio.ndarray"/>
       <plugin id="org.csstudio.numjy"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.scan"/>
-      <plugin id="org.csstudio.scan.custom"/>
-      <plugin id="org.csstudio.scan.custom.impl"/>
       <plugin id="org.csstudio.scan.log"/>
       <plugin id="org.csstudio.scan.log.derby"/>
       <plugin id="org.csstudio.scan.server"/>
@@ -66,6 +60,8 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.epics.pvaccess"/>
+      <plugin id="org.epics.pvdata"/>
       <plugin id="org.epics.util"/>
       <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>

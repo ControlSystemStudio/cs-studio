@@ -7,16 +7,15 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.eclipse.swt.widgets.Display;
 
 /** Model of the Plot's data
@@ -204,12 +203,12 @@ public class PlotDataModel implements Runnable
             {   // Get data for scan
                 try
                 {   // Check if there is new data
-                    final ScanServer server = model.getServer();
-                    final long current_serial = server.getLastScanDataSerial(scan.getId());
+                    final ScanClient client = model.getScanClient();
+                    final long current_serial = client.getLastScanDataSerial(scan.getId());
                     if (last_serial != current_serial)
                     {
+                        final ScanData scan_data = client.getScanData(scan.getId());
                         last_serial = current_serial;
-                        final ScanData scan_data = server.getScanData(scan.getId());
                         if (scan_data == null)
                             devices = null;
                         else
@@ -222,9 +221,9 @@ public class PlotDataModel implements Runnable
                             }
                         }
                     }
-                    // else: Skip fetching the same data. No plot_data.update, no events
+                    // else: Skip fetching the same data. No data.update, no events
                 }
-                catch (RemoteException ex)
+                catch (Exception ex)
                 {
                     Logger.getLogger(getClass().getName()).log(Level.WARNING, "Plot data error", ex);
                     devices = null;

@@ -9,6 +9,7 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -147,7 +148,7 @@ public class GenericCommandAdapter implements IPropertySource
      */
     private PropertyDescriptor createDevicePropertyDescriptor(final String id, final String label)
     {
-        final DeviceInfo[] devices = editor.getDevices();
+        final Collection<DeviceInfo> devices = editor.getDevices();
         if (devices != null)
             return new DeviceInfoPropertyDescriptor(id, label, devices);
         // Fall back to editing device names as string

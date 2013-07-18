@@ -15,22 +15,28 @@
  ******************************************************************************/
 package org.csstudio.scan.client;
 
-import static org.junit.Assert.assertEquals;
-
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.DelayCommand;
-import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
-/** JUnit demo of the scan client
+import static org.junit.Assert.assertThat;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+/** JUnit demo of the {@link ScanClient}
  *
  *  <p>The Scan server must be running!
  *
@@ -39,132 +45,136 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanClientDemo
 {
-    /** Helper to dump info about all scans on server
-     *  @param server
-     *  @throws Exception
-     */
-    private void dumpInfos(final ScanServer server) throws Exception
+    private ScanClient getScanClient()
     {
-        System.out.println("----------------------");
-        System.out.println("Scan Infos");
-        final List<ScanInfo> infos = server.getScanInfos();
-        for (ScanInfo info : infos)
-            System.out.println(info);
-        System.out.println("----------------------");
+        return new ScanClient();
     }
 
-    /** Test basic scan */
+
     @Test(timeout=10000)
-    public void testScan() throws Exception
+    public void getServerInfo() throws Exception
     {
-        final ScanServer server = ScanServerConnector.connect();
-        System.out.println(server.getInfo());
-
-        final CommandSequence commands = new CommandSequence(
-            new SetCommand("xpos", 2),
-            new SetCommand("ypos", 3),
-            new SetCommand("setpoint", 5),
-            new DelayCommand(1.0),
-            new LogCommand("xpos", "ypos", "setpoint", "readback"),
-            new WaitCommand("readback", 5.0),
-            new LogCommand("xpos", "ypos", "setpoint", "readback")
-        );
-
-        final long id = server.submitScan("Client Demo", commands.getXML());
-
-        while (true)
-        {
-            final ScanInfo info = server.getScanInfo(id);
-            System.out.println(info);
-            if (info.getState().isDone())
-                break;
-            Thread.sleep(100);
-        }
-        dumpInfos(server);
-        ScanServerConnector.disconnect(server);
+        final ScanClient client = getScanClient();
+        final ScanServerInfo info = client.getServerInfo();
+        System.out.println(info);
+        assertThat(info.getMemoryPercentage(), greaterThan(0.0));
     }
 
-    /** Test pausing a scan */
-    @Test(timeout=5000)
-    public void testPause() throws Exception
+    
+    @Test(timeout=10000)
+    public void listScanInfos() throws Exception
     {
-        final ScanServer server = ScanServerConnector.connect();
+        final ScanClient client = getScanClient();
+        final List<ScanInfo> infos = client.getScanInfos();
+        for (ScanInfo info : infos)
+            System.out.println(info + " @ " + info.getCurrentCommand() + " (" + info.getCurrentAddress() + ")");
+        
+        assertThat(infos.size(), greaterThan(0));
+        final ScanInfo other = client.getScanInfo(infos.get(0).getId());
+        assertThat(other.getId(), equalTo(infos.get(0).getId()));
+        assertThat(other.getName(), equalTo(infos.get(0).getName()));
+        assertThat(other, not(sameInstance(infos.get(0))));
+    }
+    
 
-        final CommandSequence commands = new CommandSequence(
-            new LoopCommand("xpos", 1, 5, 1, new LogCommand("xpos")) );
-
-        final long id = server.submitScan("Pause Demo", commands.getXML());
-
-        // Wait for it to run
-        while (true)
-        {
-            final ScanInfo info = server.getScanInfo(id);
-            if (info.getState() == ScanState.Running)
-                break;
-            Thread.sleep(10);
-        }
-
-        // Pause for 3 seconds
-        server.pause(id);
+    @Test(timeout=10000)
+    public void getScanCommands() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        final List<ScanInfo> infos = client.getScanInfos();
+        assertThat(infos.size(), greaterThan(0));
         try
         {
-            dumpInfos(server);
-            for (int i=0; i<3; ++i)
-            {
-                final ScanInfo info = server.getScanInfo(id);
-                System.out.println(info);
-                assertEquals(ScanState.Paused, info.getState());
-                Thread.sleep(1000);
-            }
+            final String xml = client.getScanCommands(infos.get(0).getId());
+            System.out.println(xml);
+            assertThat(xml, containsString("<commands>"));
         }
-        finally
-        {   // Don't leave it paused on timeout!
-            server.resume(id);
-        }
-        // Finish
-        while (true)
+        catch (Exception ex)
         {
-            final ScanInfo info = server.getScanInfo(id);
-            System.out.println(info);
-            if (info.getState().isDone())
-                break;
-            Thread.sleep(100);
+            // If server was just re-started and only contains logged scans,
+            // there may not be any commands.
+            assertThat(ex.getMessage(), containsString("not available"));
+            assertThat(ex.getMessage(), containsString("logged"));
         }
-        dumpInfos(server);
-
-        ScanServerConnector.disconnect(server);
     }
 
-    /** Test aborting a scan */
-    @Test(timeout=5000)
-    public void testAbort() throws Exception
+
+    @Test// (timeout=10000)
+    public void getScanData() throws Exception
     {
-        final ScanServer server = ScanServerConnector.connect();
+        final ScanClient client = getScanClient();
+        final List<ScanInfo> infos = client.getScanInfos();
+        assertThat(infos.size(), greaterThan(0));
 
+        final ScanData data = client.getScanData(infos.get(0).getId());
+        System.out.println(Arrays.toString(data.getDevices()));
+        
+        final ScanDataIterator iterator = new ScanDataIterator(data);
+        iterator.printTable(System.out);
+    }
+
+    
+    @Test(timeout=10000)
+    public void submitScan() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        
         final CommandSequence commands = new CommandSequence(
-            new LoopCommand("xpos", 1, 5, 1, new LogCommand("xpos")) );
-
-        // Try to abort a scan right away
-        long id = server.submitScan("Abort Demo1", commands.getXML());
-        server.abort(id);
-        dumpInfos(server);
-        ScanInfo info = server.getScanInfo(id);
-        assertEquals(ScanState.Aborted, info.getState());
-
-        // Abort another scan after it ran for some time
-        id = server.submitScan("Abort Demo2", commands.getXML());
-        while (true)
+            new DelayCommand(1.0));
+        final long id = client.submitScan("SubmitDemo", commands.getXML());
+        
+        ScanInfo info = client.getScanInfo(id);
+        System.out.println(info);
+        
+        assertThat(info.getName(), equalTo("SubmitDemo"));
+        assertThat(info.getId(), equalTo(id));
+        
+        // Wait for scan to finish
+        while (!info.getState().isDone())
         {
-            info = server.getScanInfo(id);
-            if (info.getPercentage() > 0)
-                break;
-            Thread.sleep(100);
+            TimeUnit.SECONDS.sleep(1);
+            info = client.getScanInfo(id);
+            System.out.println(info);
         }
-        server.abort(id);
-        dumpInfos(server);
-        info = server.getScanInfo(id);
-        assertEquals(ScanState.Aborted, info.getState());
+    }
+    
+    
+    @Test(timeout=10000)
+    public void controlScan() throws Exception
+    {
+        final ScanClient client = getScanClient();
+        
+        final CommandSequence commands = new CommandSequence(
+            new LoopCommand("loc://x", 1, 1000, 1,
+                new DelayCommand(1.0)
+            ));
+        final long id = client.submitScan("ControlDemo", commands.getXML());
+        
+        ScanInfo info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getName(), equalTo("ControlDemo"));
+        assertThat(info.getId(), equalTo(id));
+        // Wait for scan to start (may initially be Idle)
+        while (info.getState() != ScanState.Running)
+        {
+            TimeUnit.SECONDS.sleep(1);
+            info = client.getScanInfo(id);
+            System.out.println(info);
+        }
+        
+        client.pauseScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Paused));
 
-        ScanServerConnector.disconnect(server);
+        client.resumeScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Running));
+
+        client.abortScan(id);
+        info = client.getScanInfo(id);
+        System.out.println(info);
+        assertThat(info.getState(), equalTo(ScanState.Aborted));
     }
 }
