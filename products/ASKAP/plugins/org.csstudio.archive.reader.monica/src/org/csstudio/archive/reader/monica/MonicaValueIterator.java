@@ -1,20 +1,28 @@
 package org.csstudio.archive.reader.monica;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
-import org.csstudio.archive.reader.Severity;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.epics.util.text.NumberFormats;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.Time;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 import atnf.atoms.mon.PointData;
 
 public class MonicaValueIterator implements ValueIterator {
+	
+    private static final Display DisplayNone = ValueFactory.newDisplay(Double.NaN, Double.NaN, 
+            Double.NaN, "", NumberFormats.toStringFormat(), Double.NaN, Double.NaN,
+            Double.NaN, Double.NaN, Double.NaN);
+
 
 	private int currentIndex = 0;
 	private Vector<PointData> monicaValues;
@@ -36,7 +44,7 @@ public class MonicaValueIterator implements ValueIterator {
 	}
 
 	@Override
-	public IValue next() throws Exception {
+	public VType next() throws Exception {
 		PointData pointData = monicaValues.get(currentIndex);
 		currentIndex++;
 		return pointDatatToIValue(pointData);
@@ -47,65 +55,53 @@ public class MonicaValueIterator implements ValueIterator {
 		currentIndex = 0;
 	}
 	
-	private IValue pointDatatToIValue(PointData pointData) {
+	private VType pointDatatToIValue(PointData pointData) {
 		
-		double sec = pointData.getTimestamp().getAsDate().getTime()/1000;
+		Date date = pointData.getTimestamp().getAsDate();
 				
-		ITimestamp timeStamp =  TimestampFactory.fromDouble(sec);
+		Time timeStamp =  ValueFactory.newTime(Timestamp.of(date));
 		
 		Object value = pointData.getData();
-		ISeverity severity = null;
+		
+		Alarm alarm = null;
 		
 		if (pointData.isValid()) {
 			if (pointData.getAlarm())
-				severity = new Severity("MAJOR");
+				alarm = ValueFactory.newAlarm(AlarmSeverity.MAJOR, "ALARM");
 			else
-				severity = new Severity("OK");
+				alarm = ValueFactory.newAlarm(AlarmSeverity.NONE, "OK");
 			
 		} else {
-			severity = new Severity("INVALID");
+			alarm = ValueFactory.newAlarm(AlarmSeverity.INVALID, "INVALID");
 		}
 		
-		IValue ivalue = null;
+		VType ivalue = null;
 
 		
 		if (pointData.getData()==null) {
-			ivalue = ValueFactory.createLongValue(timeStamp, severity, 
-					"Connected",
-					null,
-					Quality.Original,
-					new long[]{0});
-			
+			ivalue = ValueFactory.newVInt(0, alarm, timeStamp, DisplayNone);
 			return ivalue;
 		}
 		
 		if (value instanceof Float || value instanceof Double) {
 			double v = ((Number) value).doubleValue();
-			ivalue = ValueFactory.createDoubleValue(timeStamp, severity, 
-					"Connected",
-					null,
-					Quality.Original,
-					new double[]{v});
+			ivalue = ValueFactory.newVDouble(v, alarm, timeStamp, DisplayNone);
+			
 		} else if (value instanceof Integer || value instanceof Long) {
 			long v = ((Number) value).longValue();
-			ivalue = ValueFactory.createLongValue(timeStamp, severity, 
-					"Connected",
-					null,
-					Quality.Original,
-					new long[]{v});
+			ivalue = ValueFactory.newVDouble((double) v, alarm, timeStamp, DisplayNone);
+			
 		} else if (value instanceof Boolean) {
-			IEnumeratedMetaData booleanMetaData = ValueFactory.createEnumeratedMetaData(new String[]{"true", "false"});
+			List<String> labels = new ArrayList<>();
+			labels.add("true");
+			labels.add("false");
+			
 			int v = ((Boolean) value).booleanValue() ? 0:1;
-			ivalue = ValueFactory.createEnumeratedValue(timeStamp, severity, 
-					"Connected",
-					booleanMetaData,
-					Quality.Original,
-					new int[]{v});
-		} else if (value instanceof String) {
-			ivalue = ValueFactory.createStringValue(timeStamp, severity, 
-					"Connected",
-					Quality.Original,
-					new String[]{value.toString()});
+			ivalue = ValueFactory.newVEnum(v, labels, alarm, timeStamp);
+			
+		} else if (value instanceof String) {			
+			ivalue = ValueFactory.newVString(value.toString(), alarm, timeStamp);
+			
 		} else {
 			//TODO: AbsTime RelTime Angle are not supported at the moment.
 			System.out.println("Unknow type- " + value.toString());			

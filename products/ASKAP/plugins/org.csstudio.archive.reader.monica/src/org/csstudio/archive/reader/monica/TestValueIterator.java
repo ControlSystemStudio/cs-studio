@@ -1,21 +1,28 @@
 package org.csstudio.archive.reader.monica;
 
+import java.util.Date;
+
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
+import org.epics.util.text.NumberFormats;
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.Display;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 public class TestValueIterator implements ValueIterator {
 
+    private static final Display DisplayNone = ValueFactory.newDisplay(Double.NaN, Double.NaN, 
+            Double.NaN, "", NumberFormats.toStringFormat(), Double.NaN, Double.NaN,
+            Double.NaN, Double.NaN, Double.NaN);
+
 	private int maxCount = -1;
 	private int currentIndex = 0;
-	private ITimestamp startTimeStamp = null;
-	private ITimestamp endTimeStamp = null;
+	private Timestamp startTimeStamp = null;
+	private Timestamp endTimeStamp = null;
 
-	public TestValueIterator(int maxCount, ITimestamp start, ITimestamp end) {
+	public TestValueIterator(int maxCount, Timestamp start, Timestamp end) {
 		this.maxCount  = maxCount;
 		this.startTimeStamp = start;
 		this.endTimeStamp = end;
@@ -30,46 +37,18 @@ public class TestValueIterator implements ValueIterator {
 	}
 
 	@Override
-	public IValue next() throws Exception {
-		double dTime = startTimeStamp.toDouble();
-		double eTime = endTimeStamp.toDouble();
+	public VType next() throws Exception {
+		long dTime = startTimeStamp.toDate().getTime();
+		long eTime = endTimeStamp.toDate().getTime();
 		
-		double time = dTime + currentIndex * (eTime-dTime)/maxCount;
+		long time = dTime + currentIndex * (eTime-dTime)/maxCount;
 		
-		ITimestamp timeStamp =  TimestampFactory.fromDouble(time);
+		Timestamp timeStamp =  Timestamp.of(new Date(time));
 				
-		IValue value = ValueFactory.createLongValue(timeStamp,
-				new ISeverity() {
-					
-					@Override
-					public boolean isOK() {
-						return true;
-					}
-					
-					@Override
-					public boolean isMinor() {
-						return false;
-					}
-					
-					@Override
-					public boolean isMajor() {
-						return false;
-					}
-					
-					@Override
-					public boolean isInvalid() {
-						return true;
-					}
-					
-					@Override
-					public boolean hasValue() {
-						return true;
-					}
-				},
-				"Connected",
-				null,
-				Quality.Original,
-				new long[]{currentIndex});
+		VInt value = ValueFactory.newVInt(new Integer(currentIndex), 
+				ValueFactory.newAlarm(AlarmSeverity.NONE, "NONE"), 
+				ValueFactory.newTime(timeStamp), 
+				DisplayNone);
 
 		currentIndex++;
 		

@@ -13,8 +13,8 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.ITimestamp.Format;
+import org.csstudio.askap.utility.AskapHelper;
+import org.epics.util.time.Timestamp;
 
 import atnf.atoms.mon.PointData;
 import atnf.atoms.mon.PointDescription;
@@ -120,16 +120,16 @@ public class MonicaArchiveReader implements ArchiveReader {
 	}
 
 	@Override
-	public ValueIterator getRawValues(int key, String name, ITimestamp start,
-			ITimestamp end) throws UnknownChannelException, Exception {
+	public ValueIterator getRawValues(int key, String name, Timestamp start,
+			Timestamp end) throws UnknownChannelException, Exception {
 		
 		String monicaName = pvToMonicaNameMap.get(name.toUpperCase());
 		logger.log(Level.INFO, "Get Raw values for pv: " + name + " monicaName: " + monicaName 
-				+ " for time interval:" + start.format(Format.DateTimeSeconds) + " to " 
-				+ end.format(Format.DateTimeSeconds));
+				+ " for time interval:" + AskapHelper.getFormatedData(start.toDate(), null) + " to " 
+				+ AskapHelper.getFormatedData(end.toDate(), null));
 		
-		AbsTime startTime = AbsTime.factory(new Date((long)start.toDouble()*1000));
-		AbsTime endTime = AbsTime.factory(new Date((long)end.toDouble()*1000));
+		AbsTime startTime = AbsTime.factory(start.toDate());
+		AbsTime endTime = AbsTime.factory(end.toDate());
 		
 		Vector<PointData> monicaValues = monicaIceClient.getArchiveData(monicaName, startTime, endTime);
 		
@@ -141,7 +141,7 @@ public class MonicaArchiveReader implements ArchiveReader {
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name,
-			ITimestamp start, ITimestamp end, int count)
+			Timestamp start, Timestamp end, int count)
 			throws UnknownChannelException, Exception {
 		
 		// TODO: I'm not sure how optimizedValues work, so I'm just going to return normal values
