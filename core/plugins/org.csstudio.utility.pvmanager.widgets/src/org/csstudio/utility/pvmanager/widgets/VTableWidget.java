@@ -3,12 +3,16 @@ package org.csstudio.utility.pvmanager.widgets;
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
@@ -26,7 +30,7 @@ import org.epics.vtype.ValueUtil;
  * 
  * @author carcassi
  */
-public class VTableWidget extends BeanComposite {
+public class VTableWidget extends BeanComposite implements ISelectionProvider {
 
 	private String pvFormula;
 	private PVReader<?> pv;
@@ -62,6 +66,12 @@ public class VTableWidget extends BeanComposite {
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		tableDisplay.setMenu(menu);
 	}
 
 	private VTableDisplay tableDisplay;
@@ -114,6 +124,27 @@ public class VTableWidget extends BeanComposite {
 			return ValueFactory.alarmNone();
 		}
 		return ValueUtil.alarmOf(getValue(), pv.isConnected());
+	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		tableDisplay.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return tableDisplay.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		tableDisplay.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		tableDisplay.setSelection(selection);
 	}
 
 }
