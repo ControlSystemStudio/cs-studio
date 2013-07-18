@@ -47,8 +47,6 @@ public abstract class AbstractSelectionWidgetEditpart
 
 	@Override
 	public VType toVType() {
-		System.out.println("Adapting to VType");
-		System.out.println("Adapted " + selectionToTypeSingle(VType.class));
 		return selectionToTypeSingle(VType.class);
 	}
 
