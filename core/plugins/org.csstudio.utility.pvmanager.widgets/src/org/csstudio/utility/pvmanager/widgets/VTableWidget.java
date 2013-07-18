@@ -1,11 +1,18 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -56,6 +63,7 @@ public class VTableWidget extends BeanComposite implements ISelectionProvider {
 		tableDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
 		forwardPropertyChange(tableDisplay, "vTable", "value");
+		forwardPropertyChangeToSelection("value");
 		addDisposeListener(new DisposeListener() {
 			
 			@Override
@@ -119,32 +127,58 @@ public class VTableWidget extends BeanComposite implements ISelectionProvider {
 		return tableDisplay.getVTable();
 	}
 	
+	VTableDisplayCell getCell() {
+		if (tableDisplay.getSelection().isEmpty()) {
+			return null;
+		} else {
+			return (VTableDisplayCell) ((StructuredSelection) tableDisplay.getSelection()).getFirstElement();
+		}
+	}
+	
 	public Alarm getAlarm() {
 		if (pv == null) {
 			return ValueFactory.alarmNone();
 		}
 		return ValueUtil.alarmOf(getValue(), pv.isConnected());
 	}
+	
+	private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		tableDisplay.addSelectionChangedListener(listener);
+		selectionChangedListeners.add(listener);
 	}
 
 	@Override
 	public ISelection getSelection() {
-		return tableDisplay.getSelection();
+		return new StructuredSelection(new VTableWidgetSelection(this));
 	}
 
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
-		tableDisplay.removeSelectionChangedListener(listener);
+		selectionChangedListeners.remove(listener);
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
-		tableDisplay.setSelection(selection);
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	private void fireSelectionChangedListener() {
+		for (ISelectionChangedListener listener : selectionChangedListeners) {
+			listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));
+		}
+	}
+	
+	protected void forwardPropertyChangeToSelection(String propertyName) {
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent arg0) {
+				fireSelectionChangedListener();
+			}
+		});
 	}
 
 }

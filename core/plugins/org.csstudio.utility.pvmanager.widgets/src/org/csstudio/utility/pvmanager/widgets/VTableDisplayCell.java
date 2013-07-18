@@ -8,7 +8,6 @@ public class VTableDisplayCell implements VTypeAdaptable {
 	private final int column;
 	
 	public VTableDisplayCell(VTableDisplay vTable, int row, int column) {
-		System.out.println("Creating selection " + vTable.getVTable());
 		this.vTable = vTable;
 		this.row = row;
 		this.column = column;
@@ -24,7 +23,6 @@ public class VTableDisplayCell implements VTypeAdaptable {
 
 	@Override
 	public VType toVType() {
-		System.out.println("Adapting to Table " + vTable.getVTable());
 		return vTable.getVTable();
 	}
 }
