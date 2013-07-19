@@ -28,9 +28,19 @@ public class DerbyDataLog extends DataLog
 	/** Initialize
 	 *  @param scan_id ID of scan for which this logger should operate
 	 */
-	public DerbyDataLog(final long scan_id)
+	public DerbyDataLog(final long scan_id) throws Exception
     {
 		this.scan_id = scan_id;
+		// Initialize sample serial
+		final RDBDataLogger logger = new DerbyDataLogger();
+		try
+		{
+		    last_serial = logger.getLastScanDataSerial(scan_id);
+		}
+		finally
+		{
+		    logger.close();
+		}
     }
 
     /** {@inheritDoc} */

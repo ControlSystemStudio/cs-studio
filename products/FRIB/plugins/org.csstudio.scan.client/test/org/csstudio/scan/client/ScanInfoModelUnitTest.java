@@ -15,7 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.client;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.sameInstance;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -38,7 +39,7 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
     {
         final ScanInfoModel model = ScanInfoModel.getInstance();
         final ScanInfoModel model2 = ScanInfoModel.getInstance();
-        assertSame(model, model2);
+        assertThat(model, sameInstance(model2));
         model2.release();
 
         // Adding the listener will trigger an immediate update
@@ -66,7 +67,7 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
     @Override
     public void connectionError()
     {
-        System.out.println("Initial Connection error?");
+        System.out.println("Connection error");
     }
 
     @Ignore

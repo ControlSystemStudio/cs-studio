@@ -16,14 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.junit.Test;
@@ -39,14 +38,12 @@ public class PlotDataModelHeadlessTest
      */
     private long startDemoScan() throws Exception
     {
-        final ScanServer server = ScanServerConnector.connect();
-
+        final ScanClient client = new ScanClient();
         final List<ScanCommand> commands = new ArrayList<ScanCommand>();
         commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
                                      new LogCommand("xpos", "readback"),
                                      new DelayCommand(2.0)));
-        final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
-        ScanServerConnector.disconnect(server);
+        final long id = client.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
         // Scan continues...
         return id;
     }

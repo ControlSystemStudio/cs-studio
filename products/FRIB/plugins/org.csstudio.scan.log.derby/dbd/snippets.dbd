@@ -34,15 +34,21 @@ INSERT INTO samples(scan_id, device_id, serial, timestamp, value)
  
 SELECT * FROM samples;
 
+# Locate all device names of a log
 SELECT DISTINCT d.name
   FROM samples s
   JOIN devices d ON s.device_id = d.id
   WHERE scan_id=1;
 
+# Dump all samples of a scan
 SELECT serial, timestamp, value, d.name 
  FROM samples s
  JOIN devices d ON s.device_id = d.id
  WHERE scan_id=1
  ORDER BY serial; 
 
+# Determine last sample serial
+SELECT MAX(serial)
+ FROM samples s
+ WHERE scan_id=1; 
  

@@ -82,8 +82,6 @@ public class LogCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<log>");
         writeIndent(out, level+1);
-        out.println("<address>" + getAddress() + "</address>");
-        writeIndent(out, level+1);
         out.println("<devices>");
         for (String device : device_names)
         {
@@ -101,7 +99,6 @@ public class LogCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         final List<String> devices = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
         if (node == null)

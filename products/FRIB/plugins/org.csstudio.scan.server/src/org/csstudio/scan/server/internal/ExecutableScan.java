@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +29,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
@@ -40,10 +44,11 @@ import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
+import org.epics.util.time.TimeDuration;
 
 /** Scan that can be executed: Commands, device context, state
  *
@@ -57,42 +62,62 @@ import org.csstudio.scan.server.ScanState;
 @SuppressWarnings("nls")
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     /** Commands to execute */
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
+    /** Macros for resolving device names */
+    final private MacroStack macros;
+    
     /** Devices used by the scan */
-    final protected transient DeviceContext devices;
+    final protected DeviceContext devices;
 
     /** Log each device access, or require specific log command? */
-    private volatile transient boolean automatic_log_mode = false;
+    private volatile boolean automatic_log_mode = false;
 
-    /** Data logger, non-null while when executing the scan */
-    private volatile transient DataLog data_logger = null;
+    /** Data logger, non-null while when executing the scan
+     *  SYNC on this for access
+     */
+    private DataLog data_logger = null;
 
-    final protected transient AtomicLong work_performed = new AtomicLong();
+    /** Total number of commands to execute */
+    final private long total_work_units;
+
+    /** Commands executed so far */
+    final protected AtomicLong work_performed = new AtomicLong();
 
     /** State of this scan
      *  SYNC on this for access
      */
-    private transient ScanState state = ScanState.Idle;
+    private ScanState state = ScanState.Idle;
 
-    private volatile transient String error = null;
+    private volatile String error = null;
 
-    private volatile transient long start_ms = 0;
+    /** Start time, set when execution starts */
+    private volatile long start_ms = 0;
 
-    private volatile transient long end_ms = 0;
+    /** Actual or estimated end time */
+    private volatile long end_ms = 0;
 
-    final private transient long total_work_units;
-
-    private volatile transient ScanCommandImpl<?> current_command = null;
-
+    /** Last valid address
+     *  <p>The current_command may be within an IncludeCommand,
+     *  where addresses are no longer set.
+     *  This address tracks the most recent valid address.
+     */
+    private volatile long current_address = -1;
+    
+    /** Currently executed command or <code>null</code> */
+    private volatile ScanCommandImpl<?> current_command = null;
+    
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
-    private volatile transient Future<Object> future = null;
+    private volatile Future<Object> future = null;
 
-    /** Initialize
+    /** Device Names for status PVs */
+	private String device_active = null, device_status = null, device_progress = null, device_finish = null;
+
+	/** Timeout for updating the status PVs */
+	final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
+
+	/** Initialize
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
@@ -136,6 +161,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         super(scan);
+        this.macros = new MacroStack(ScanSystemPreferences.getMacros());
         this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
@@ -175,32 +201,45 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public ScanInfo getScanInfo()
     {
+        final long address = current_address;
         final ScanCommandImpl<?> command = current_command;
-
-        final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
         final ScanState state = getScanState();
-        if (state == ScanState.Finished)
-        {
-            command_name = "- end -";
-        }
-        else if (command != null)
-            command_name = command.toString();
-        else
-            command_name = "";
-        return new ScanInfo(this, state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
-    }
+        final long runtime;
+        final long performed_work_units;
 
-    /** @return Runtime of this scan (so far) in millisecs. 0 if not started */
-    private long computeRuntime()
-    {
-        final long start = start_ms;
-        final long end = end_ms;
-        if (end > 0)
-            return end - start;
-        if (start > 0)
-            return System.currentTimeMillis() - start_ms;
-        return 0;
+        if (start_ms <= 0)
+        {   // Not started
+            command_name = "";
+            runtime = 0;
+            performed_work_units = 0;
+        }
+        else if (state.isDone())
+        {   // Finished, aborted
+            command_name = "- end -";
+            runtime = end_ms - start_ms;
+            performed_work_units = total_work_units;
+        }
+        else
+        {   // Running
+            command_name = command == null ? "" : command.toString();
+            final long now = System.currentTimeMillis();
+            runtime = now - start_ms;
+            performed_work_units = work_performed.get();
+            
+            // Estimate end time
+            final long finish_estimate = performed_work_units <= 0
+                ? now
+                : start_ms + runtime*total_work_units/performed_work_units;
+            
+            // Somewhat smoothly update end time w/ estimate
+            if (end_ms <= 0)
+                end_ms = finish_estimate;
+            else
+                end_ms = 4*(end_ms/5) + finish_estimate/5;
+        }
+
+        return new ScanInfo(this, state, error, runtime, end_ms, performed_work_units, total_work_units, address, command_name);
     }
 
     /** @return Commands executed by this scan */
@@ -215,13 +254,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     /** @param address Command address
      *  @return ScanCommand with that address
-     *  @throws RemoteException when not found
+     *  @throws Exception when not found
      */
-    public ScanCommand getCommandByAddress(final long address) throws RemoteException
+    public ScanCommand getCommandByAddress(final long address) throws Exception
     {
         final ScanCommand found = findCommandByAddress(getScanCommands(), address);
         if (found == null)
-            throw new RemoteException("Invalid command address " + address);
+            throw new Exception("Invalid command address " + address);
         return found;
     }
 
@@ -252,10 +291,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      *  @param address Address of the command
      *  @param property_id Property to update
      *  @param value New value for the property
-     *  @throws RemoteException on error
+     *  @throws Exception on error
      */
     public void updateScanProperty(final long address, final String property_id,
-        final Object value) throws RemoteException
+        final Object value) throws Exception
     {
         final ScanCommand command = getCommandByAddress(address);
         try
@@ -264,9 +303,30 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         catch (Exception ex)
         {
-            throw new RemoteException("Cannot update " + property_id + " of " +
+            throw new Exception("Cannot update " + property_id + " of " +
                     command.getCommandName(), ex);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String resolveMacros(final String text) throws Exception
+    {
+        return MacroUtil.replaceMacros(text, macros);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void pushMacros(String names_and_values) throws Exception
+    {
+        this.macros.push(names_and_values);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void popMacros()
+    {
+        macros.pop();
     }
 
     /** Obtain devices used by this scan.
@@ -305,11 +365,29 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
 	/** {@inheritDoc} */
     @Override
-    public DataLog getDataLog()
+    public synchronized DataLog getDataLog()
     {
         return data_logger;
     }
-
+    
+    /** {@inheritDoc} */
+    @Override
+    public synchronized long getLastScanDataSerial() throws Exception
+    {
+        if (data_logger == null)
+            return super.getLastScanDataSerial();
+        return data_logger.getLastScanDataSerial();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public synchronized ScanData getScanData() throws Exception
+    {
+        if (data_logger == null)
+            return super.getScanData();
+        return data_logger.getScanData();
+    }
+    
     /** Callable for executing all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
@@ -319,9 +397,15 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0}", getName());
 
         try
+        (
+            final DataLog logger = DataLogFactory.getDataLog(this);
+        )
         {
-            // Open logger for execution of scan
-            data_logger = DataLogFactory.getDataLog(this);
+            // Set logger for execution of scan
+            synchronized (this)
+            {
+                data_logger = logger;
+            }
             execute_or_die_trying();
         }
         catch (InterruptedException ex)
@@ -340,11 +424,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         	}
             error = ex.getMessage();
         }
-        // Close data logger
-        final DataLog copy = data_logger;
-        data_logger = null;
-        copy.close();
-
+        // Set actual end time, not estimated
+        end_ms = System.currentTimeMillis();
+        // Un-set data logger
+        synchronized (this)
+        {
+            data_logger = null;
+        }
         return null;
     }
 
@@ -365,6 +451,23 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 	        state = ScanState.Running;
     	}
     	start_ms = System.currentTimeMillis();
+    	
+        // Locate devices for status PVs
+        final String prefix = ScanSystemPreferences.getStatusPvPrefix();
+        if (prefix != null   &&   !prefix.isEmpty())
+        {
+        	device_active = prefix + "Active";
+	        devices.addPVDevice(new DeviceInfo(device_active));
+	        
+	        device_status = prefix + "Status";
+	        devices.addPVDevice(new DeviceInfo(device_status));
+
+	        device_progress = prefix + "Progress";
+	        devices.addPVDevice(new DeviceInfo(device_progress));
+
+	        device_finish = prefix + "Finish";
+	        devices.addPVDevice(new DeviceInfo(device_finish));
+        }
 
         // Inspect all commands before executing them:
         // Add devices that are not available (via alias)
@@ -372,40 +475,51 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         final Set<String> required_devices = new HashSet<String>();
         for (ScanCommandImpl<?> command : pre_scan)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         for (ScanCommandImpl<?> command : implementations)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         for (ScanCommandImpl<?> command : post_scan)
         {
-            for (String device_name : command.getDeviceNames())
+            for (String device_name : command.getDeviceNames(this))
                 required_devices.add(device_name);
         }
         // Add required devices
         for (String device_name : required_devices)
         {
+            final String expanded_name = MacroUtil.replaceMacros(device_name, macros);
             try
             {
-                if (devices.getDeviceByAlias(device_name) != null)
+                if (devices.getDeviceByAlias(expanded_name) != null)
                     continue;
             }
             catch (Exception ex)
             {   // Add PV device, no alias, for unknown device
-                devices.addPVDevice(new DeviceInfo(device_name, device_name, true, true));
+                devices.addPVDevice(new DeviceInfo(expanded_name));
             }
         }
 
         // Start Devices
         devices.startDevices();
-
+        
         // Execute commands
         try
         {
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
+            
+            // Initialize scan status PVs. Error will prevent scan from starting.
+            if (device_active != null)
+            {
+            	getDevice(device_status).write(getName());
+            	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1, timeout);
+            	getDevice(device_finish).write("Starting ...");
+            }
+            
             try
             {
                 // Execute pre-scan commands
@@ -444,9 +558,19 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 	state = saved_state;
                 }
             }
+            
+            // Final status PV update. Error will be reported via exception.
+            if (device_active != null)
+            {
+                getDevice(device_status).write("");
+                getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
+                ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
+                ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
+            }            
         }
         finally
         {
+            current_address = -1;
             current_command = null;
             end_ms = System.currentTimeMillis();
             // Stop devices
@@ -488,8 +612,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             retry = false;
             try
             {
+                // Update current command, but only track address if valid.
+                // Will NOT update the address when going into IncludeCommand.
                 current_command = command;
-        		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
+                if (current_command.getCommand().getAddress() >= 0)
+                    current_address = current_command.getCommand().getAddress();
+                Logger.getLogger(getClass().getName()).log(Level.FINE, "@{0}: {1}", new Object[] { current_address, command });
                 command.execute(this);
             }
             catch (InterruptedException abort)
@@ -515,6 +643,21 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                     retry = true;
                 }
             }
+            
+            // Try to update Scan PVs on progress. Log errors, but continue scan
+			if (device_status != null)
+	        {
+			    final ScanInfo info = getScanInfo();
+			    try
+			    {
+                	ScanCommandUtil.write(this, device_progress, Double.valueOf(info.getPercentage()), 0.1, timeout);
+                	getDevice(device_finish).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
+			    }
+			    catch (Exception ex)
+			    {
+                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating status PVs", ex);
+			    }
+	        }
         }
         while (retry);
     }
@@ -552,15 +695,5 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public void workPerformed(final int work_units)
     {
         work_performed.addAndGet(work_units);
-    }
-
-    // Compare by ID
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (! (obj instanceof ExecutableScan))
-            return false;
-        final ExecutableScan other = (ExecutableScan) obj;
-        return getId() == other.getId();
     }
 }

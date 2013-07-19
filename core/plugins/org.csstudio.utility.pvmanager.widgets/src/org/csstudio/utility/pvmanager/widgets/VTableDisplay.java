@@ -80,7 +80,7 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 					if (header)
 						row = -1;
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});
@@ -94,7 +94,7 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 				} else {
 					int row = ((VTableContentProvider.VTableRow) cell.getElement()).getRow();
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});

@@ -1,14 +1,17 @@
 package org.csstudio.opibuilder.widgets.extra;
 
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
-public class VTableDisplayModel extends AbstractWidgetModel {
+public class VTableDisplayModel extends AbstractSelectionWidgetModel {
 	
+	public VTableDisplayModel() {
+		super(false);
+	}
+
 	public final String ID = "org.csstudio.opibuilder.widgets.VTableDisplay"; //$NON-NLS-1$
 	
 	@Override

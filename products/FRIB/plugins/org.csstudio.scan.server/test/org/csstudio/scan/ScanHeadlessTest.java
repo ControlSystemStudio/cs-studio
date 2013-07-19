@@ -15,9 +15,12 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.logging.Handler;
@@ -68,21 +71,21 @@ public class ScanHeadlessTest
         boolean got_setpoint = false;
         for (Device device : device_infos)
         {
-            final String alias = device.getInfo().getAlias();
+            final String alias = device.getAlias();
             System.out.println(alias);
             if ("motor_x".equals(alias))
                 got_motor_x = true;
             if ("setpoint".equals(alias))
                 got_setpoint = true;
         }
-        assertEquals(2, device_infos.length);
-        assertTrue(got_motor_x);
-        assertTrue(got_setpoint);
+        assertThat(device_infos.length, greaterThanOrEqualTo(2));
+        assertThat(got_motor_x, equalTo(true));
+        assertThat(got_setpoint, equalTo(true));
     }
 
 
-    /** Scan takes about 20 seconds */
-    @Test(timeout=40000)
+    /** Scan takes about 30 seconds */
+    @Test(timeout=50000)
     public void testScanner() throws Exception
     {
         // Logger setup
@@ -92,14 +95,14 @@ public class ScanHeadlessTest
 
         // Configure devices for beamline
         final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice(new DeviceInfo("motor_x", "xpos", true, true));
-        devices.addPVDevice(new DeviceInfo("motor_y", "ypos", true, true));
-        devices.addPVDevice(new DeviceInfo("setpoint", "setpoint", true, true));
-        devices.addPVDevice(new DeviceInfo("readback", "readback", true, true));
+        devices.addPVDevice(new DeviceInfo("motor_x", "xpos"));
+        devices.addPVDevice(new DeviceInfo("motor_y", "ypos"));
+        devices.addPVDevice(new DeviceInfo("setpoint", "setpoint"));
+        devices.addPVDevice(new DeviceInfo("readback", "readback"));
 
         // Configure a scan
         final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0,
-                new LoopCommand("ypos", 1.0, 5.0, 1.0,
+                new LoopCommand("ypos", 1.0, 4.0, 1.0,
                         new SetCommand("setpoint", 0),
                         new WaitCommand("readback", Comparison.EQUALS, 0, 0.2, 0.0),
                         new SetCommand("setpoint", 1.0, "readback", true, 0.1, 0.0),
@@ -109,30 +112,30 @@ public class ScanHeadlessTest
 
         final ExecutableScan scan = new ExecutableScan("Scan Test", devices, new LoopCommandImpl(command));
         final List<ScanCommand> commands = scan.getScanCommands();
-        assertEquals(1, commands.size());
-        assertSame(command, commands.get(0));
+        assertThat(commands.size(), equalTo(1));
+        assertThat(command, sameInstance(commands.get(0)));
 
         // Check addressing and updating of command property
         final SetCommand set = (SetCommand)scan.getCommandByAddress(4);
-        assertEquals(1.0, (Double)set.getValue(), 0.1);
+        assertThat((Double)set.getValue(), equalTo(1.0));
         scan.updateScanProperty(4, "value", 0.5);
-        assertEquals(0.5, (Double)set.getValue(), 0.1);
+        assertThat((Double)set.getValue(), equalTo(0.5));
 
         // Check Idle state
         ScanInfo info = scan.getScanInfo();
-        assertEquals(ScanState.Idle, info.getState());
-        assertEquals(0, info.getPercentage());
+        assertThat(info.getState(), equalTo(ScanState.Idle));
+        assertThat(info.getPercentage(), equalTo(0));
         // Execute the scan
         scan.call();
         // Check Finish state
         info = scan.getScanInfo();
-        assertEquals(ScanState.Finished, info.getState());
-        assertEquals(100, info.getPercentage());
+        assertThat(info.getState(), equalTo(ScanState.Finished));
+        assertThat(info.getPercentage(), equalTo(100));
 
         // Dump data
         final ScanData data = scan.getScanData();
         new ScanDataIterator(data).printTable(System.out);
-        assertTrue(data.getSamples("xpos").size() > 1);
-        assertTrue(data.getSamples("ypos").size() > 1);
+        assertThat(data.getSamples("xpos").size(), greaterThan(1));
+        assertThat(data.getSamples("ypos").size(), greaterThan(1));
     }
 }

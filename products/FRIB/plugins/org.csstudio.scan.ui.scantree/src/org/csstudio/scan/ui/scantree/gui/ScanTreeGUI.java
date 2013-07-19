@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.scantree.gui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -471,7 +472,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
      */
     protected String getAlias(final String name)
     {
-        final DeviceInfo[] devices = editor.getDevices();
+        final Collection<DeviceInfo> devices = editor.getDevices();
         if (devices != null)
         {
             for (DeviceInfo device : devices)

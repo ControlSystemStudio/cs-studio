@@ -41,6 +41,14 @@
     For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
    
     </li>
+    <li>
+    	Use <code>org.epics.vtype</code> value inside BOY instead of <code>org.csstudio.data.values.IValue</code>. 
+    	<b><font color="red">Note: this change may break your customized widgets if the widgets have code handling IValue!</font></b>
+    	See <a href=https://groups.google.com/d/msg/css-boy/ntuGAtbDCbE/qfjZvQURS-AJ>here</a> for more details.
+    	
+    </li>
+    
+    
     <li>Shows null value border if one of the PVs on the widget has null value.
     If the null value PV is the main PV of the widget, the value displayed in the widget is meaningless.
      <p>  <img src ="img/nullValueBorder.png">  </p>

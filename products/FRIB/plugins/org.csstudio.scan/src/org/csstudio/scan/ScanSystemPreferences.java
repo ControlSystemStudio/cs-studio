@@ -8,7 +8,6 @@
 package org.csstudio.scan;
 
 import org.csstudio.java.string.StringSplitter;
-import org.csstudio.scan.server.ScanServer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -28,7 +27,46 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class ScanSystemPreferences extends SystemSettings
 {
-	/** @return Path to the default beamline information file */
+    /** Default host for scan server */
+    final public static String DEFAULT_HOST = "localhost";
+
+    /** Default port used by scan server's REST interface */
+    final public static int DEFAULT_PORT = 4810;
+
+    /** System property for overriding the scan server host */
+    final public static String HOST_PROPERTY = "ScanServerHost";
+
+    /** System property for overriding the scan server port */
+    final public static String PORT_PROPERTY = "ScanServerPort";
+    
+	/** @param path_spec Path elements joined by ","
+     *  @return Separate path elements
+     *  @throws Exception on parse error (missing end of quoted string)
+     */
+    public static String[] splitPath(final String path_spec) throws Exception
+    {
+        if (path_spec == null)
+            return new String[0];
+        return StringSplitter.splitIgnoreInQuotes(path_spec, ',', true);
+
+    }
+
+    /** @param paths Path elements
+     *  @return Path elements joined by ","
+     */
+    public static String joinPaths(final String[] paths)
+    {
+        final StringBuilder buf = new StringBuilder();
+        for (String path : paths)
+        {
+            if (buf.length() > 0)
+                buf.append(", ");
+            buf.append(path);
+        }
+        return buf.toString();
+    }
+
+    /** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
@@ -49,9 +87,7 @@ public class ScanSystemPreferences extends SystemSettings
     {
         final IPreferencesService service = Platform.getPreferencesService();
         final String list = service.getString(Activator.ID, "pre_scan", "platform:/plugin/org.csstudio.scan/examples/pre_scan.scn", null);
-        if (list == null)
-            return new String[0];
-        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
+        return splitPath(list);
     }
 
     /** @return Paths to post-scan commands
@@ -61,19 +97,19 @@ public class ScanSystemPreferences extends SystemSettings
     {
         final IPreferencesService service = Platform.getPreferencesService();
         final String list = service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
-        if (list == null)
-            return new String[0];
-        return StringSplitter.splitIgnoreInQuotes(list, ',', true);
+        return splitPath(list);
     }
-
-    /** @return Scan script search paths */
-    public static String[] getScriptPaths()
+    
+    /** @return Search paths for scan scripts and 'included' scans
+     *  @throws Exception on parse error (missing end of quoted string)
+     */
+    public static String[] getScriptPaths() throws Exception
     {
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return new String[0];
         final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
-        return pref.split("\\s*,\\s*");
+        return splitPath(pref);
     }
 
     /** @return Memory threshold for removing older scans */
@@ -103,17 +139,37 @@ public class ScanSystemPreferences extends SystemSettings
     	return period;
 	}
 
-    /** Set system properties (which are in the end what's actually used)
+    /** @return Prefix to scan server status PVs */
+	public static String getStatusPvPrefix()
+	{
+		String prefix = "Demo:Scan:";
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	if (service != null)
+    		prefix = service.getString(Activator.ID, "status_pv_prefix", prefix, null);
+    	return prefix;
+	}
+
+	/** @return Macros. Not <code>null</code> */
+    public static String getMacros()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String macros = service.getString(Activator.ID, "macros", "", null);
+        if (macros == null)
+            return "";
+        return macros;
+    }
+	
+	/** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)
      */
     public static void setSystemPropertiesFromPreferences()
     {
         final IPreferencesService service = Platform.getPreferencesService();
-        System.setProperty(ScanServer.HOST_PROPERTY,
-                service.getString(Activator.ID, "server_host", ScanServer.DEFAULT_HOST, null));
-        System.setProperty(ScanServer.PORT_PROPERTY,
+        System.setProperty(HOST_PROPERTY,
+                service.getString(Activator.ID, "server_host", DEFAULT_HOST, null));
+        System.setProperty(PORT_PROPERTY,
                 Integer.toString(
-                        service.getInt(Activator.ID, "server_port", ScanServer.DEFAULT_PORT, null)));
+                        service.getInt(Activator.ID, "server_port", DEFAULT_PORT, null)));
     }
 }

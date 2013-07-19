@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -96,16 +96,11 @@
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd>java.io.Serializable</dd>
-</dl>
 <hr>
 <br>
 <pre>public class <span class="strong">ScanServerInfo</span>
 extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></pre>
 <div class="block">Scan server info</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../serialized-form.html#org.csstudio.scan.server.ScanServerInfo">Serialized Form</a></dd></dl>
 </li>
 </ul>
 </div>
@@ -128,6 +123,16 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
               java.util.Date&nbsp;start_time,
               java.lang.String&nbsp;beamline_config,
               java.lang.String&nbsp;simulation_config)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
+              java.util.Date&nbsp;start_time,
+              java.lang.String&nbsp;beamline_config,
+              java.lang.String&nbsp;simulation_config,
+              long&nbsp;used_mem,
+              long&nbsp;max_mem)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -198,7 +203,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ScanServerInfo</h4>
 <pre>public&nbsp;ScanServerInfo(java.lang.String&nbsp;version,
@@ -207,6 +212,22 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
               java.lang.String&nbsp;simulation_config)</pre>
 <div class="block">Initialize</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>beamline_config</code> - </dd><dd><code>simulation_config</code> - </dd></dl>
+</li>
+</ul>
+<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ScanServerInfo</h4>
+<pre>public&nbsp;ScanServerInfo(java.lang.String&nbsp;version,
+              java.util.Date&nbsp;start_time,
+              java.lang.String&nbsp;beamline_config,
+              java.lang.String&nbsp;simulation_config,
+              long&nbsp;used_mem,
+              long&nbsp;max_mem)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>beamline_config</code> - </dd><dd><code>simulation_config</code> - </dd><dd><code>used_mem</code> - Used memory (kB)</dd><dd><code>max_mem</code> - Maximum available memory (kB)</dd></dl>
 </li>
 </ul>
 </li>
@@ -295,7 +316,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
