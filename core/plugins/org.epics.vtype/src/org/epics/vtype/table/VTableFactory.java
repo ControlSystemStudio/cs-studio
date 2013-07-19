@@ -150,6 +150,15 @@ public class VTableFactory {
         return ValueFactory.newVTable(columnTypes, columnNames, columnData);
     }
     
+    private static Object selectColumnData(VTable table, int column, ListInt indexes) {
+        Class<?> type = table.getColumnType(column);
+        if (type.isPrimitive()) {
+            return createView((ListNumber) table.getColumnData(column), indexes);
+        } else {
+            return createView((List<?>) table.getColumnData(column), indexes);
+        }
+    }
+    
     private static <T> List<T> createView(final List<T> list, final ListInt indexes) {
         return new AbstractList<T>() {
 
@@ -180,6 +189,23 @@ public class VTableFactory {
         };
     }
     
+    public static VTable select(final VTable table, final ListInt indexes) {
+        List<String> names = columnNames(table);
+        List<Class<?>> types = columnTypes(table);
+        List<Object> data = new AbstractList<Object>() {
+
+            @Override
+            public Object get(int index) {
+                return selectColumnData(table, index, indexes);
+            }
+
+            @Override
+            public int size() {
+                return table.getColumnCount();
+            }
+        };
+        return ValueFactory.newVTable(types, names, data);
+    }
     
     public static VTable newVTable(Column... columns) {
         List<String> columnNames = new ArrayList<>();
@@ -347,6 +373,20 @@ public class VTableFactory {
             @Override
             public String get(int index) {
                 return vTable.getColumnName(index);
+            }
+
+            @Override
+            public int size() {
+                return vTable.getColumnCount();
+            }
+        };
+    }
+    
+    public static List<Class<?>> columnTypes(final VTable vTable) {
+        return new AbstractList<Class<?>>() {
+            @Override
+            public Class<?> get(int index) {
+                return vTable.getColumnType(index);
             }
 
             @Override
