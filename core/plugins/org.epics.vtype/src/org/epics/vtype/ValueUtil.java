@@ -120,6 +120,9 @@ public class ValueUtil {
      * @return the display information for the object
      */
     public static Display displayOf(Object obj) {
+        if (obj instanceof VBoolean) {
+            return ValueFactory.displayBoolean();
+        }
         if (!(obj instanceof Display))
             return null;
         Display display = (Display) obj;
