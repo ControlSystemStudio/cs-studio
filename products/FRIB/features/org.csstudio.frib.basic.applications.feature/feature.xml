@@ -77,13 +77,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.logbook.viewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.graphene.opiwidgets"
          download-size="0"
          install-size="0"
@@ -92,6 +85,20 @@
 
    <plugin
          id="org.csstudio.opibuilder.widgets.extra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv.pvmanager"
          download-size="0"
          install-size="0"
          version="0.0.0"
