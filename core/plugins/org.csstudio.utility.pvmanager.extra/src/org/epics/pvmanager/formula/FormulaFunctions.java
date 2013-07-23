@@ -110,7 +110,7 @@ public class FormulaFunctions {
         return sb.toString();
     }
     
-    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|<=|>=|<|>|==|!=|\\|\\||&&");
+    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|\\*\\*|<=|>=|<|>|==|!=|\\|\\||&&|\\||&");
     private static Pattern prefixOneArg = Pattern.compile("-|!");
 
     /**
