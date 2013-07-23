@@ -122,6 +122,8 @@ org.csstudio.utility.clock
 org.csstudio.utility.httpd
 org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
+org.csstudio.utility.pv
+org.csstudio.utility.pv.epics
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.extra
