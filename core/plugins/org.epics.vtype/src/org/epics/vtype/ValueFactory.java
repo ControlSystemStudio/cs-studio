@@ -104,6 +104,8 @@ public class ValueFactory {
     }
     
     private static final Alarm alarmNone = newAlarm(AlarmSeverity.NONE, "NONE");
+    private static final Display displayBoolean = newDisplay(0.0, 0.0, 0.0, "", NumberFormats.toStringFormat(),
+            1.0, 1.0, 1.0, 0.0, 1.0);
     
     /**
      * No alarm.
@@ -273,6 +275,15 @@ public class ValueFactory {
      */
     public static Display displayNone() {
         return displayNone;
+    }
+    
+    /**
+     * Returns a display from 0 to 1, suitable for booleans.
+     * 
+     * @return a display for boolean
+     */
+    public static Display displayBoolean() {
+        return displayBoolean;
     }
     
     /**
