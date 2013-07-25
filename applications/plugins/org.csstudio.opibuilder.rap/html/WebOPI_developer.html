@@ -27,7 +27,9 @@ Read this article to get CSS source code:
 http://sourceforge.net/apps/trac/cs-studio/wiki/SourceRepository</a>.
 After you got the source code, you need to import these plugins to your workspace:
 <ul>
-
+<li>core\plugins\org.antlr.runtime</li>
+<li>core\plugins\org.csstudio.autocomplete</li>
+<li>core\plugins\org.csstudio.autocomplete.ui</li>
 <li>core\plugins\org.csstudio.csdata</li>
 <li>core\plugins\org.csstudio.data</li>
 <li>core\plugins\org.csstudio.java</li>
@@ -38,10 +40,13 @@ After you got the source code, you need to import these plugins to your workspac
 <li>core\plugins\org.csstudio.platform.libs.epics.linux</li>
 <li>core\plugins\org.csstudio.platform.libs.epics.macosx</li>
 <li>core\plugins\org.csstudio.platform.libs.epics.win32</li>
-<li>core\plugins\org.csstudio.utility.pv</li>
-<li>core\plugins\org.csstudio.utility.pv.epics</li>
-<li>core\plugins\org.csstudio.utility.pv.simu</li>
+<li>core\plugins\org.csstudio.simplepv</li>
+<li>core\plugins\org.csstudio.utility.singlesource</li>
+<li>core\plugins\org.csstudio.utility.singlesource.rap</li>
 <li>core\plugins\org.csstudio.ui.menu</li>
+<li>core\plugins\org.epics.util</li>
+<li>core\plugins\org.epics.vtype</li>
+<li>applications\plugins\org.apache.batik</li>
 <li>applications\plugins\org.csstudio.apputil</li>
 <li>applications\plugins\org.csstudio.opibuilder</li>
 <li>applications\plugins\org.csstudio.opibuilder.rap</li>
@@ -51,10 +56,36 @@ After you got the source code, you need to import these plugins to your workspac
 <li>applications\plugins\org.csstudio.swt.widgets</li>
 <li>applications\plugins\org.csstudio.swt.xygraph</li>
 <li>applications\plugins\org.csstudio.swt.xygraph.rap</li>
-<li>applications\plugins\org.apache.batik</li>
 <li>applications\plugins\org.jdom</li>
 <li>applications\plugins\org.python</li>
 </ul>
+<p>
+If you want to use utility_pv as pv connection layer, import following plugins:
+</p>
+<ul>
+<li>applications\plugins\org.csstudio.simplepv.utilitypv</li>
+<li>core\plugins\org.csstudio.utility.pv</li>
+<li>core\plugins\org.csstudio.utility.pv.epics</li>
+<li>core\plugins\org.csstudio.utility.pv.simu</li>
+</ul>
+<p>
+If you want to use pvmanager as pv connection layer, import following plugins:
+</p>
+<ul>
+<li>applications\plugins\org.csstudio.simplepv.pvmanager</li>
+<li>core\plugins\org.csstudio.utility.pvmanager</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.epics</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.extra</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.loc</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.sim</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.sys</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.ui</li>
+<li>core\plugins\org.csstudio.utility.pvmanager.vtype</li>
+</ul>
+
+<p>You may import both utilty_pv and pvmanager plugins and choose one to use from preference
+<code>org.csstudio.opibuilder/pv_connection_layer</code>
+</p>
 
 <h3>Set Target Platform</h3>
  <p>
