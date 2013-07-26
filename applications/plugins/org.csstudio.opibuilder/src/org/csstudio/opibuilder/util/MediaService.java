@@ -167,18 +167,20 @@ public final class MediaService {
 	 * Reload predefined fonts from font file in a background job. 
 	 */
 	public synchronized void reloadFontFile() {
-
-		if (Display.getCurrent() != null) {
+		final StringBuilder systemFontName = new StringBuilder();
+		if (Display.getCurrent()!= null) {
 			loadPredefinedFonts();
-		} else
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-
+			systemFontName.append(Display.getCurrent().getSystemFont().getFontData()[0]
+					.getName());
+		} else{			
+			DisplayUtils.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					loadPredefinedFonts();
 				}
 			});
-
+			systemFontName.append("Verdana"); //$NON-NLS-1$
+		}
 		fontFilePath = PreferencesHelper.getFontFilePath();
 
 		final CountDownLatch latch = new CountDownLatch(1);
@@ -187,7 +189,7 @@ public final class MediaService {
 			public IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
 				fontMap.clear();
-				loadFontFile();
+				loadFontFile(systemFontName.toString());
 				latch.countDown();
 				monitor.done();
 				return Status.OK_STATUS;
@@ -259,7 +261,7 @@ public final class MediaService {
 		}
 	}
 
-	private void loadFontFile() {
+	private void loadFontFile(String systemFontName) {
 		Map<String, OPIFont> rawFontMap = new LinkedHashMap<String, OPIFont>();
 		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();
@@ -291,8 +293,7 @@ public final class MediaService {
 						FontData fontdata = StringConverter
 								.asFontData(line.substring(i + 1).trim());
 						if (fontdata.getName().equals("SystemDefault")) //$NON-NLS-1$
-							fontdata.setName(Display.getDefault().getSystemFont().getFontData()[0]
-									.getName());
+							fontdata.setName(systemFontName);
 						rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
 					} catch (DataFormatException e) {
 						String message = "Format error in font definition file.";
