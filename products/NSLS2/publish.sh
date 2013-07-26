@@ -22,6 +22,7 @@ if [[ ! -d jdk_linux_x86 ]]
 cp -r jdk_linux_x86/jre css-nsls2/
 zip -r CSS-NSLSI-linux32-$VERSION.zip css-nsls2
 rm -rf css-nsls2
+rm -rf CSS-NSLSII-linux.gtk.x86.zip
 
 unzip CSS-NSLSII-linux.gtk.x86_64.zip
 if [[ ! -d jdk_linux_x64 ]]
@@ -32,6 +33,7 @@ if [[ ! -d jdk_linux_x64 ]]
 cp -r jdk_linux_x64/jre css-nsls2/
 zip -r CSS-NSLSII-linux64-$VERSION.zip css-nsls2
 rm -rf css-nsls2
+rm -rf CSS-NSLSII-linux.gtk.x86_64.zip
 
 mv CSS-NSLSII-macosx.cocoa.x86.zip CSS-NSLSII-macosx-$VERSION.zip
 mv CSS-NSLSII-win32.win32.x86.zip CSS-NSLSII-win32-$VERSION.zip
