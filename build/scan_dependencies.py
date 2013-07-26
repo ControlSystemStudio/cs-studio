@@ -5,6 +5,7 @@ Created on Apr 24, 2013
 '''
 import os.path
 import re
+import traceback
 from xml.dom import minidom
 import sys
 from optparse import OptionParser
@@ -170,35 +171,39 @@ if __name__ == '__main__':
     parser.add_option('-p', '--productDir', \
                       action='store', type='string', dest='productDir', \
                       help='the productDir')
+    parser.add_option('-c', '--confBuildDir', \
+                      action='store', type='string', dest='confBuildDir', \
+                      help='the build directory containing build.properties')
     opts, args = parser.parse_args()
     repoDir = ifNoneReturnDefault(opts.repoDir, repoDir)
     productDir = ifNoneReturnDefault(opts.productDir, 'C:\git\cs-studio\products\NSLS2')
     buildDir = ifNoneReturnDefault(opts.buildDir, 'C:\git\cs-studio\build')
+    confBuildDir = ifNoneReturnDefault(opts.confBuildDir, productDir)
 
     '''
     find the build.properties
     '''  
     cf = SafeConfigParser()
-    cf.readfp(FakeSecHead(open(os.path.join(productDir, 'build.properties'), 'r')))
+    cf.readfp(FakeSecHead(open(os.path.join(confBuildDir, 'build.properties'), 'r')))
     topLevelElementType = cf.get('FakeSection', 'topLevelElementType')
     topLevelElementId = cf.get('FakeSection', 'topLevelElementId')
     productFileName = os.path.split(os.path.normpath(cf.get('FakeSection', 'product')))[1]
     if not str(productFileName).endswith('.product'):
         print 'Invalid product specified in build.properties'
         sys.exit(-1)
-    
     '''
     Find the product file for the product specified in the build.properties
     '''
     for dirpath, dirnames, filenames in os.walk(os.path.normpath(productDir)):
         l = [ os.path.join(dirpath, f) for f in filenames if f == productFileName]
         if len(l) == 1:
-            productFilePath = l[0]
+           productFilePath = l[0]
         elif len(l) > 1:
             print 'Found more than one copy of ', productFileName, 'at:'
             for f in l:
-                print f
-    print 'Building:', productFilePath              
+               print f
+    print 'Building:', productFilePath
+
     '''
     TODO: need to include the plugin on the product and explicitly include the dependencies defined there.
     TODO: handle optional dependencies
@@ -214,20 +219,21 @@ if __name__ == '__main__':
         Get the product file and get the features needs from 
         *.product
         '''
-        
-        xmldoc = minidom.parse(productFilePath)
         reqFeatures = []
-        for features in xmldoc.getElementsByTagName('features'):
-            for feature in features.getElementsByTagName('feature'):
-                reqFeatures.append(feature._attrs[u'id'].value)
-        '''Add the top level element if it is a feature'''
+        reqPlugins = []
+        if productFilePath:
+            xmldoc = minidom.parse(productFilePath)
+            for features in xmldoc.getElementsByTagName('features'):
+                for feature in features.getElementsByTagName('feature'):
+                    reqFeatures.append(feature._attrs[u'id'].value)
+                    '''Add the top level element if it is a feature'''
+            for plugins in xmldoc.getElementsByTagName('plugins'):
+                for plugin in plugins.getElementsByTagName('plugin'):
+                    reqPlugins.append(plugin._attrs[u'id'].value)
+        
         if topLevelElementType == 'feature':
             reqFeatures.append(topLevelElementId)
-        reqPlugins = []
-        for plugins in xmldoc.getElementsByTagName('plugins'):
-            for plugin in plugins.getElementsByTagName('plugin'):
-                reqPlugins.append(plugin._attrs[u'id'].value)
-             
+            
         '''
         Since our products are feature based products we will use the features to make the two lists
         1. feature.list : all the features to be packaged with this product
@@ -240,7 +246,7 @@ if __name__ == '__main__':
         featureList.sort()
         '''this is feature.list'''
         print featureList     
-        featureListFile = open(os.path.join(productDir, 'features.list'), 'w')
+        featureListFile = open(os.path.join(confBuildDir, 'features.list'), 'w')
         for feature in featureList:
             '''
             This additional step is to check id feature folder name is different from feature id
@@ -269,7 +275,7 @@ if __name__ == '__main__':
         This is the plugin.list consisting of source plugins from the cs-studio repo
         '''
         sourcePluginList = [ plugin for plugin in pluginList if plugin in dependencyMap.keys() ]
-        pluginListFile = open(os.path.join(productDir, 'plugins.list'), 'w')
+        pluginListFile = open(os.path.join(confBuildDir, 'plugins.list'), 'w')
         for plugin in sourcePluginList:
             '''
             This additional step is to check id plugin folder name is different from plugin id
@@ -308,5 +314,6 @@ if __name__ == '__main__':
                 print str(dependentPlugins.get(missingDependency)).strip('[]')
     except:
         print 'Exception'
+        traceback.print_exc()
         sys.exit(-1)   
     pass
