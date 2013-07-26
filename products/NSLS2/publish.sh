@@ -20,7 +20,7 @@ if [[ ! -d jdk_linux_x86 ]]
     tar -xvf jdk_linux_x86.tar.gz
   fi
 cp -r jdk_linux_x86/jre css-nsls2/
-zip -r CSS-NSLSI-linux32-$VERSION.zip css-nsls2
+zip -r CSS-NSLSII-linux32-$VERSION.zip css-nsls2
 rm -rf css-nsls2
 rm -rf CSS-NSLSII-linux.gtk.x86.zip
 
