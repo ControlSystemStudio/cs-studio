@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.common.product.feature"
-      label="Control System Studio"
+      id="org.csstudio.common.ca.feature"
+      label="Channel Access (Epics 3) support"
       version="3.2.0.qualifier"
       provider-name="CSS Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -18,7 +18,21 @@
    </license>
 
    <plugin
-         id="org.csstudio.common.product"
+         id="org.csstudio.platform.libs.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.epics"
          download-size="0"
          install-size="0"
          version="0.0.0"

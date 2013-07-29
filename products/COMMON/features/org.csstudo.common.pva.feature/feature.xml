@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.common.product.feature"
-      label="Control System Studio"
+      id="org.csstudo.common.pva.feature"
+      label="PVAccess (Epics 4) support"
       version="3.2.0.qualifier"
       provider-name="CSS Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -18,7 +18,21 @@
    </license>
 
    <plugin
-         id="org.csstudio.common.product"
+         id="org.csstudio.utility.pvmanager.pva"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvdata"
          download-size="0"
          install-size="0"
          version="0.0.0"

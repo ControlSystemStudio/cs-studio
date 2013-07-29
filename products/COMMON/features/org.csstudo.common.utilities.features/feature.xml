@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.common.product.feature"
-      label="Control System Studio"
+      id="org.csstudo.common.utilities.features"
+      label="CS-Studio utilties"
       version="3.2.0.qualifier"
       provider-name="CSS Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="org.csstudio.common.product"
+         id="org.csstudio.diag.pvmanager.probe"
          download-size="0"
          install-size="0"
          version="0.0.0"
