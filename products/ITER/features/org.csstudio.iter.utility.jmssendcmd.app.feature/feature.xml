@@ -3,11 +3,7 @@
       id="org.csstudio.iter.utility.jmssendcmd.app.feature"
       label="CSS Jmssendcmd Component"
       version="3.2.0.qualifier"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      provider-name="ITER">
 
    <copyright>
       Copyright (c) : 2010-2013 ITER Organization,
