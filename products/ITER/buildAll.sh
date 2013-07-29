@@ -17,6 +17,10 @@ cd $REPO_DIR/build
 function buildProduct {
   echo ==== Start building $2
   ./build.sh $1 -c -p $2
+  if [ $? -ne "0" ]; then
+    echo Build failed: $2.
+    exit 1;
+  fi
   mkdir $DIST/$2
   cp build/BuildDirectory/I.*/*.zip $DIST/$2/
   cp -r build/*Repository $DIST/$2/
@@ -25,6 +29,10 @@ function buildWebProduct {
   warproduct=`basename $2`
   echo ==== Start building $warproduct
   ./build_web.sh $1 $2
+  if [ $? -ne "0" ]; then
+    echo Build failed: $2.
+    exit 1;
+  fi
   mkdir $DIST/$warproduct
   cp build/BuildDirectory/*.war $DIST/$warproduct/
 }

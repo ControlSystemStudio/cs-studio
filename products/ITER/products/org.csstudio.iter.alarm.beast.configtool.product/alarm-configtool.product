@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm Configuration Tool" uid="org.csstudio.iter.product.alarm.beast.configtool.product" id="org.csstudio.iter.alarm.beast.configtool.product.product" application="org.csstudio.alarm.beast.configtool.application" version="3.2.6.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Alarm Configuration Tool" uid="org.csstudio.iter.product.alarm.beast.configtool.product" id="org.csstudio.iter.alarm.beast.configtool.product.product" application="org.csstudio.alarm.beast.configtool.application" version="3.2.8.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -51,14 +51,5 @@ of the distribution package.
       <feature id="org.eclipse.iter.feature"/>
       <feature id="org.eclipse.rcp"/>
    </features>
-
-   <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="5" />
-      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <property name="org.eclipse.update.reconcile" value="false" />
-   </configurations>
 
 </product>
