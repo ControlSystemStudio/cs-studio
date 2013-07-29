@@ -10,11 +10,18 @@ package org.csstudio.opibuilder.scriptUtil;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.BOYPVFactory;
-import org.csstudio.opibuilder.widgetActions.WritePVAction;
+import org.csstudio.opibuilder.util.DisplayUtils;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
+import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
+import org.eclipse.swt.widgets.Display;
 import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.AlarmSeverity;
@@ -269,16 +276,36 @@ public class PVUtil{
      * @param pvName name of the PV.
      * @param value value to write.
      * @param timeout maximum time to try connection.
-     * @param confirmMessage if this is not empty, a confirm dialog will popup before writing.
      */
-    public final static void writePV(String pvName, Object value,
-    		int timeout, String confirmMessage){
-    	WritePVAction action = new WritePVAction();
-    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
-    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
-    	action.setPropertyValue(WritePVAction.PROP_TIMEOUT, timeout);
-    	action.setPropertyValue(WritePVAction.PROP_CONFIRM_MESSAGE, confirmMessage);
-    	action.run();
+    public final static void writePV(final String pvName, final Object value,
+    		final int timeout){
+    	final Display display = DisplayUtils.getDisplay();
+		Job job = new Job("Writing PV: " + pvName) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {			
+					
+				try {
+					IPV pv = BOYPVFactory.createPV(pvName);
+					if(!pv.setValue(value, timeout*1000))
+						throw new Exception("Write Failed!");
+				} catch (final Exception e) {
+					UIBundlingThread.getInstance().addRunnable(
+							display, new Runnable() {
+								public void run() {
+									String message = "Failed to write PV:" + pvName
+											+ "\n" + 
+											(e.getCause() != null? e.getCause().getMessage():e.getMessage());
+									ErrorHandlerUtil.handleError(message, e, true, true);
+								}
+							});
+					return Status.CANCEL_STATUS;
+				}		
+				return Status.OK_STATUS;				
+			}
+
+		};
+
+		job.schedule();
     }
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
@@ -288,10 +315,7 @@ public class PVUtil{
      * @param value value to write.  
      */
     public final static void writePV(String pvName, Object value){
-    	WritePVAction action = new WritePVAction();
-    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
-    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
-    	action.run();
+    	writePV(pvName, value, 10);
     }
 
 }
