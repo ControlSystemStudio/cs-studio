@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="common product" id="org.csstudio.common.product.product" application="org.csstudio.common.product.application" useFeatures="false" includeLaunchers="true">
+<product name="common product" id="org.csstudio.common.product.product" application="org.csstudio.common.product.application" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -62,6 +62,16 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
    </plugins>
+
+   <features>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.csstudio.common.product.feature"/>
+      <feature id="org.csstudio.common.core.feature"/>
+      <feature id="org.csstudio.common.ca.feature"/>
+      <feature id="org.csstudo.common.utilities.features"/>
+   </features>
 
 
 </product>

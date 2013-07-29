@@ -17,6 +17,16 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import feature="org.csstudio.common.core.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvdata" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvaccess" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.csstudio.utility.pvmanager.pva"
          download-size="0"
