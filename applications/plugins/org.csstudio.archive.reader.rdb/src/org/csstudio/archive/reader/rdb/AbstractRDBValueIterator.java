@@ -223,9 +223,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     protected AlarmSeverity filterSeverity(final AlarmSeverity severity, final String status)
     {
         // Hard-coded knowledge:
-        // When the severity is INVALID and the status indicates
+        // When the status indicates
         // that the archive is off or channel was disconnected,
-        // we use the special INVALID severity that marks a sample
+        // we use the special severity that marks a sample
         // without a value.
         if (status.equalsIgnoreCase("Archive_Off") ||
             status.equalsIgnoreCase("Disconnected") ||
