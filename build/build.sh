@@ -66,7 +66,7 @@ done
 BUILD="build"
 
 # Clean up
-rm -rf $BUILD
+rm -rf "$BUILD"
 
 # Install Eclipse if not there
 if [[ -d ext/eclipse ]]
@@ -103,21 +103,21 @@ function copyIfNotExists {
   listfile=$1;
   source=$2;
   target=$3;
-  for dir in `cat $listfile`
+  for dir in `cat "$listfile"`
   do
     if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
     then
-      cp -R $source/$dir $target
+      cp -R "$source/$dir" "$target"
     fi
   done
 }
 
 if [ -z "$PRODUCT_ID" ]; then
   productPath=`cd "../products/$ORGANIZATION";pwd`
-  confBuildDir=$productPath
+  confBuildDir="$productPath"
 else
   productPath=`cd "../products/$ORGANIZATION/products/$PRODUCT_ID";pwd`
-  confBuildDir=$productPath/build
+  confBuildDir="$productPath/build"
 fi
 
 if [ $computedeps -ne 0 ]; then
@@ -125,43 +125,43 @@ if [ $computedeps -ne 0 ]; then
   echo "Compute plugins and features list"
   buildPath=`pwd`
   repoPath=`cd "..";pwd`
-  python scan_dependencies.py -p $productPath -b $buildPath -r $repoPath --confBuildDir $confBuildDir
+  python scan_dependencies.py -p "$productPath" -b "$buildPath" -r "$repoPath" --confBuildDir "$confBuildDir"
 fi
 
 # Copy product sources
 echo "Prepare sources"
 
-cp -R ../products/$ORGANIZATION $BUILD
+cp -R "../products/$ORGANIZATION" "$BUILD"
 
-cp $confBuildDir/build.properties $BUILD/
-cp $confBuildDir/plugins.list $BUILD/
-cp $confBuildDir/features.list $BUILD/
-
-if [[ "$ORGANIZATION" = "ITER" ]]
-then
-  copyIfNotExists $confBuildDir/plugins.list ../products/$ORGANIZATION/products $BUILD/plugins
-fi
-
-copyIfNotExists $confBuildDir/plugins.list ../core/plugins $BUILD/plugins
-copyIfNotExists $confBuildDir/plugins.list ../applications/plugins $BUILD/plugins
+cp "$confBuildDir/build.properties" "$BUILD/"
+cp "$confBuildDir/plugins.list" "$BUILD/"
+cp "$confBuildDir/features.list" "$BUILD/"
 
 if [[ "$ORGANIZATION" = "ITER" ]]
 then
-  copyIfNotExists $confBuildDir/plugins.list ../products/DESY/plugins $BUILD/plugins
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/$ORGANIZATION/products" "$BUILD/plugins"
 fi
-copyIfNotExists $confBuildDir/features.list ../core/features $BUILD/features
-copyIfNotExists $confBuildDir/features.list ../applications/features $BUILD/features
+
+copyIfNotExists "$confBuildDir/plugins.list" "../core/plugins" "$BUILD/plugins"
+copyIfNotExists "$confBuildDir/plugins.list" "../applications/plugins" "$BUILD/plugins"
+
+if [[ "$ORGANIZATION" = "ITER" ]]
+then
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/DESY/plugins" "$BUILD/plugins"
+fi
+copyIfNotExists "$confBuildDir/features.list" "../core/features" "$BUILD/features"
+copyIfNotExists "$confBuildDir/features.list" "../applications/features" "$BUILD/features"
 
 
 # Check if all required features and plugins was found
-for dir in `cat $confBuildDir/plugins.list`
+for dir in `cat "$confBuildDir/plugins.list"`
 do
   if [[ ! -d "$BUILD/plugins/$dir" ]]
   then
     echo Plugin $dir not found.
   fi
 done
-for dir in `cat $confBuildDir/features.list`
+for dir in `cat "$confBuildDir/features.list"`
 do
   if [[ ! -d "$BUILD/features/$dir" ]]
   then
@@ -169,8 +169,8 @@ do
   fi
 done
 
-mkdir $BUILD/BuildDirectory
-cd $BUILD
+mkdir "$BUILD/BuildDirectory"
+cd "$BUILD"
 mv features BuildDirectory
 mv plugins BuildDirectory
 cd ..

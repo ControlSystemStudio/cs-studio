@@ -4,37 +4,37 @@ ORIGIN_DIR=`pwd`
 # Absolute path to this script.
 SCRIPT=$(readlink -f $0)
 # Absolute path this script is in.
-SCRIPTPATH=`dirname $SCRIPT`
+SCRIPTPATH=`dirname "$SCRIPT"`
 
 REPO_DIR=`cd "$SCRIPTPATH/../..";pwd`
-DIST=$REPO_DIR/dist
+DIST="$REPO_DIR/dist"
 
-rm -rf $DIST
-mkdir $DIST
+rm -rf "$DIST"
+mkdir "$DIST"
 
-cd $REPO_DIR/build
+cd "$REPO_DIR/build"
 
 function buildProduct {
   echo ==== Start building $2
-  ./build.sh $1 -c -p $2
-  if [ $? -ne "0" ]; then
+  ./build.sh "$1" -c -p "$2"
+  if [ "$?" -ne "0" ]; then
     echo Build failed: $2.
     exit 1;
   fi
-  mkdir $DIST/$2
-  cp build/BuildDirectory/I.*/*.zip $DIST/$2/
-  cp -r build/*Repository $DIST/$2/
+  mkdir "$DIST/$2"
+  cp build/BuildDirectory/I.*/*.zip "$DIST/$2/"
+  cp -r build/*Repository "$DIST/$2/"
 }
 function buildWebProduct {
-  warproduct=`basename $2`
+  warproduct=`basename "$2"`
   echo ==== Start building $warproduct
-  ./build_web.sh $1 $2
-  if [ $? -ne "0" ]; then
+  ./build_web.sh "$1" "$2"
+  if [ "$?" -ne "0" ]; then
     echo Build failed: $2.
     exit 1;
   fi
-  mkdir $DIST/$warproduct
-  cp build/BuildDirectory/*.war $DIST/$warproduct/
+  mkdir "$DIST/$warproduct"
+  cp build/BuildDirectory/*.war "$DIST/$warproduct/"
 }
 
 buildProduct ITER org.csstudio.iter.css.product
@@ -51,4 +51,4 @@ buildWebProduct ITER ../applications/plugins/org.csstudio.opibuilder.rap/webopi.
 buildWebProduct ITER ../applications/plugins/org.csstudio.trends.databrowser2.rap/webdatabrowser.warproduct
 buildWebProduct ITER ../applications/plugins/org.csstudio.alarm.beast.ui.rap/webalarm.warproduct
 
-cd $ORIGIN_DIR
+cd "$ORIGIN_DIR"
