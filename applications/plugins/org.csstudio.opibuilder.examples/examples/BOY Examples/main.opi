@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-693d</wuid>
-  <boy_version>3.2.0.qualifier</boy_version>
+  <boy_version>3.2.6.qualifier</boy_version>
   <scripts>
     <path pathString="EmbeddedJs" checkConnect="true" sfe="false" seoe="false">
       <scriptName>checkVersion</scriptName>
@@ -19,7 +19,7 @@ var BOYVersion = ScriptUtil.getBOYVersion();
 if(opiVersion.compareTo(BOYVersion)<0)
 	MessageDialog.openInformation(
 			null, "Tip", "Your BOY Examples are outdated. To enjoy the latest examples, please delete and install them again.");]]></scriptText>
-      <pv trig="true">1</pv>
+      <pv trig="true">=1</pv>
     </path>
   </scripts>
   <show_ruler>false</show_ruler>
@@ -72,7 +72,7 @@ if(opiVersion.compareTo(BOYVersion)<0)
     <enabled>true</enabled>
     <text>Xihui Chen     SNS/ORNL     chenx1@ornl.gov</text>
     <font>
-      <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+      <opifont.name fontName="Segoe UI" height="11" style="1">Header 3</opifont.name>
     </font>
     <width>757</width>
     <border_style>14</border_style>
@@ -113,7 +113,7 @@ if(opiVersion.compareTo(BOYVersion)<0)
     <enabled>true</enabled>
     <text>BOY (Best OPI,Yet) Examples</text>
     <font>
-      <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
+      <opifont.name fontName="Segoe UI" height="17" style="1">Header 1</opifont.name>
     </font>
     <width>757</width>
     <border_style>14</border_style>
@@ -154,11 +154,12 @@ if(opiVersion.compareTo(BOYVersion)<0)
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>755</width>
     <border_style>14</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -194,7 +195,7 @@ if(opiVersion.compareTo(BOYVersion)<0)
       <text>Widgets</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -248,7 +249,7 @@ $(pv_value)</tooltip>
       <text>Border</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -302,7 +303,7 @@ $(pv_value)</tooltip>
       <text>Widget Property</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -356,7 +357,7 @@ $(pv_value)</tooltip>
       <text>Color Font Macro</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -410,7 +411,7 @@ $(pv_value)</tooltip>
       <text>Macro</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -464,7 +465,7 @@ $(pv_value)</tooltip>
       <text>Rules and Scripts</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -518,7 +519,7 @@ $(pv_value)</tooltip>
       <text>Actions</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -572,7 +573,7 @@ $(pv_value)</tooltip>
       <text>Use OPI Editor</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -626,7 +627,7 @@ $(pv_value)</tooltip>
       <text>OPI Editor Perspective</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -680,7 +681,7 @@ $(pv_value)</tooltip>
       <text>Start Up</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -733,7 +734,7 @@ $(pv_value)</tooltip>
     <widget_type>Image</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
     </font>
     <width>735</width>
     <no_animation>false</no_animation>

@@ -15,13 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.csstudio.scan.server.ScanServer;
 
 /** Data set taken by a scan.
  *
@@ -30,11 +27,8 @@ import org.csstudio.scan.server.ScanServer;
  *
  *  @author Kay Kasemir
  */
-public class ScanData implements Serializable
+public class ScanData
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     /** Map from device name to list of samples for that device */
     final private Map<String, List<ScanSample>> device_logs;
 

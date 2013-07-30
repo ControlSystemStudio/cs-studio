@@ -1,23 +1,69 @@
 package org.csstudio.scan.server.pvaccess;
 
-import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
-import org.csstudio.scan.server.internal.LoggedScan;
+import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.epics.pvaccess.PVFactory;
-import org.epics.pvaccess.client.*;
+import org.epics.pvaccess.client.AccessRights;
+import org.epics.pvaccess.client.Channel;
+import org.epics.pvaccess.client.ChannelArray;
+import org.epics.pvaccess.client.ChannelArrayRequester;
+import org.epics.pvaccess.client.ChannelFind;
+import org.epics.pvaccess.client.ChannelFindRequester;
+import org.epics.pvaccess.client.ChannelGet;
+import org.epics.pvaccess.client.ChannelGetRequester;
+import org.epics.pvaccess.client.ChannelProcess;
+import org.epics.pvaccess.client.ChannelProcessRequester;
+import org.epics.pvaccess.client.ChannelProvider;
+import org.epics.pvaccess.client.ChannelPut;
+import org.epics.pvaccess.client.ChannelPutGet;
+import org.epics.pvaccess.client.ChannelPutGetRequester;
+import org.epics.pvaccess.client.ChannelPutRequester;
+import org.epics.pvaccess.client.ChannelRPC;
+import org.epics.pvaccess.client.ChannelRPCRequester;
+import org.epics.pvaccess.client.ChannelRequest;
+import org.epics.pvaccess.client.ChannelRequester;
+import org.epics.pvaccess.client.GetFieldRequester;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.monitor.Monitor;
 import org.epics.pvdata.monitor.MonitorElement;
 import org.epics.pvdata.monitor.MonitorRequester;
-import org.epics.pvdata.pv.*;
+import org.epics.pvdata.pv.Convert;
+import org.epics.pvdata.pv.Field;
+import org.epics.pvdata.pv.FieldCreate;
+import org.epics.pvdata.pv.MessageType;
+import org.epics.pvdata.pv.PVDataCreate;
+import org.epics.pvdata.pv.PVDoubleArray;
+import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVScalarArray;
+import org.epics.pvdata.pv.PVString;
+import org.epics.pvdata.pv.PVStringArray;
+import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.Scalar;
+import org.epics.pvdata.pv.ScalarArray;
+import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Status.StatusType;
+import org.epics.pvdata.pv.StatusCreate;
+import org.epics.pvdata.pv.Structure;
+import org.epics.pvdata.pv.Type;
 
 
 /**
@@ -40,7 +86,7 @@ public class ChannelProviderImpl implements ChannelProvider {
     private static final Status destroyedStatus =
             statusCreate.createStatus(StatusType.ERROR, "channel destroyed", null);
     private static final Status illegalRequestStatus =
-            statusCreate.createStatus(StatusType.ERROR, "illegal pvRequest", null);
+            statusCreate.createStatus(StatusType.WARNING, "illegal pvRequest", null);
     private static final Status capacityImmutableStatus =
             statusCreate.createStatus(StatusType.ERROR, "capacity is immutable", null);
     private static final Status subFieldDoesNotExistStatus =
@@ -78,7 +124,7 @@ public class ChannelProviderImpl implements ChannelProvider {
 
     private final HashMap<String, PVTopStructure> tops = new HashMap<String, PVTopStructure>();
 
-    private synchronized PVTopStructure getTopStructure(String channelName)
+    private synchronized PVTopStructure getTopStructure(String channelName) throws NumberFormatException, IllegalArgumentException, Exception
     {
         //synchronized (tops) {
         PVTopStructure cached = tops.get(channelName);
@@ -113,41 +159,60 @@ public class ChannelProviderImpl implements ChannelProvider {
 			if(paramValue.containsKey("id")){
 					id = Long.parseLong(paramValue.get("id"));
 			}else{
-				// return empty table?
-				return new PVTopStructure(pvTop);
+
+				throw new IllegalArgumentException("param");
 			}
 
             // need to talk to Matej about timestamps and units in a table
             String [] timestampLabel = {"Timestamp"};
-            try {
+            
             	final ScanData data = scan_server.getScanData(id);
             	
-
-            	labelsArray.put(0, 1, timestampLabel, 0);
-            	labelsArray.put(0, data.getDevices().length, data.getDevices(), 0);
-
-            	for (String device : data.getDevices()){
-                    ScalarArray doubleColumnField = fieldCreate.createScalarArray(ScalarType.pvDouble);
-                    PVDoubleArray valuesArrayD = (PVDoubleArray) pvDataCreate.createPVScalarArray(doubleColumnField);
-            		List<ScanSample> samples = data.getSamples(device);
-            		double[] arrD = new double[samples.size()];
-            		int i = 0;
-            		for (ScanSample sample : samples){
-            			arrD[i]=ScanSampleFormatter.asDouble(sample);
-            			i++;
+            	Device[] devices = scan_server.getDevices(id);
+            	
+            	if (devices.length > 0){
+            		String[] labels = new String[devices.length];
+                    int i = 0;
+            		for(Device device: devices){
+            			labels[i]=device.getName();
+            			ScalarArray doubleColumnField = fieldCreate.createScalarArray(ScalarType.pvDouble);
+                        PVDoubleArray valuesArrayD = (PVDoubleArray) pvDataCreate.createPVScalarArray(doubleColumnField);
+                        double[] arrD = new double[0];
+                        valuesArrayD.put(0,0,arrD,0);
+                		pvValue.appendPVField(device.getName(), valuesArrayD);
+                		i++;
             		}
-            		valuesArrayD.put(0,samples.size(),arrD,0);
-            		pvValue.appendPVField(device, valuesArrayD);	
+            		labelsArray.put(0, 1, timestampLabel, 0);
+                	labelsArray.put(0, devices.length, labels, 0);
+            	} else {
+            		labelsArray.put(0, 1, timestampLabel, 0);
+                	labelsArray.put(0, data.getDevices().length, data.getDevices(), 0);
+            		for (String device : data.getDevices()){
+                        ScalarArray doubleColumnField = fieldCreate.createScalarArray(ScalarType.pvDouble);
+                        PVDoubleArray valuesArrayD = (PVDoubleArray) pvDataCreate.createPVScalarArray(doubleColumnField);
+                		List<ScanSample> samples = data.getSamples(device);
+                		double[] arrD = new double[samples.size()];
+                		int i = 0;
+                		for (ScanSample sample : samples){
+                			arrD[i]=ScanSampleFormatter.asDouble(sample);
+                			i++;
+                		}
+                		valuesArrayD.put(0,samples.size(),arrD,0);
+                		pvValue.appendPVField(device, valuesArrayD);	
+                	}
             	}
             	
             	retVal = new PVTopStructure(pvTop);
-            	LoggedScan loggedscan = scan_server.getLoggedScan(id);	
-            	loggedscan.addScanContextListener(new LogDataVTable(retVal));
-
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-
+            	final ScanContext scan_context = scan_server.getScanContext(id);
+            	if (scan_context != null)
+            	{
+            	    final DataLog log = scan_context.getDataLog();
+            	    if (log != null)
+            	    {
+            	        // TODO: Remember 'log', remove listener when done
+            	        log.addDataLogListener(new LogDataVTable(retVal));
+            	    }
+            	}
 
         }
 
@@ -164,12 +229,11 @@ public class ChannelProviderImpl implements ChannelProvider {
             PVStructure pvTop = pvDataCreate.createPVStructure(top);
 
         	retVal = new PVTopStructure(pvTop);
-           // retVal =  new PVTopStructure(fieldCreate.createScalar(ScalarType.pvDouble));
+
         }
 
-        //synchronized (tops) {
+
         tops.put(channelName, retVal);
-        //}
 
         return retVal;
     }
@@ -226,11 +290,44 @@ public class ChannelProviderImpl implements ChannelProvider {
                 priority > ChannelProvider.PRIORITY_MAX)
             throw new IllegalArgumentException("priority out of range");
         
-        	
-        Channel channel = isSupported(channelName) ?
-                new ChannelImpl(channelName, channelRequester, getTopStructure(channelName)) :
-                null;
+    	Channel channel = null;
+    	Structure value = fieldCreate.createStructure(new String[0],
+				new Field[0]);
+		Structure top = fieldCreate.createStructure(
+				"uri:ev4:nt/2012/pwd:NTTable",
+				new String[] { "labels", "value" },
+				new Field[] {fieldCreate.createScalarArray(ScalarType.pvString), value});
 
+        PVStructure pvTop = pvDataCreate.createPVStructure(top);
+    	
+    	try{ 	
+    		channel = isSupported(channelName) ?
+    				new ChannelImpl(channelName, channelRequester, getTopStructure(channelName)) :
+    					null;
+    				
+    	// these don't work as expected, I was trying to return an empty table with warning, but doesn't show up in probe
+        // Changed all to "ERROR" so they don't connect, because adding a column is considered a structure change and structures are immutable
+    	} catch(NumberFormatException e){
+    		channel = isSupported(channelName) ?
+    				new ChannelImpl(channelName, channelRequester, new PVTopStructure(pvTop)) :
+    					null;
+        	channelRequester.channelCreated(illegalRequestStatus, channel);
+        	return channel;
+
+    	} catch(IllegalArgumentException e){
+    		channel = isSupported(channelName) ?
+    				new ChannelImpl(channelName, channelRequester, new PVTopStructure(pvTop)) :
+    					null;
+    		channelRequester.channelCreated(illegalRequestStatus, channel);
+        	return channel;
+
+    	} catch(Exception e){
+    		channel = isSupported(channelName) ?
+    				new ChannelImpl(channelName, channelRequester, new PVTopStructure(pvTop)) :
+    					null;
+    		channelRequester.channelCreated(subFieldDoesNotExistStatus, channel);
+        	return channel;
+    	}
         Status status = (channel == null) ? channelNotFoundStatus : okStatus;
         channelRequester.channelCreated(status, channel);
 

@@ -81,6 +81,8 @@ org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.service.channelfinder
 org.csstudio.service.math
+org.csstudio.simplepv
+org.csstudio.simplepv.pvmanager
 org.csstudio.startup
 org.csstudio.swt.chart
 org.csstudio.swt.widgets

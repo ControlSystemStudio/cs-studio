@@ -4,10 +4,8 @@
  */
 package org.epics.vtype;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,7 +89,11 @@ public class ValueUtil {
      */
     public static Alarm alarmOf(Object value, boolean connected) {
         if (value != null) {
-            return alarmOf(value);
+            if (value instanceof Alarm) {
+                return (Alarm) value;
+            } else {
+                return ValueFactory.alarmNone();
+            }
         } else if (connected) {
             return ValueFactory.newAlarm(AlarmSeverity.INVALID, "No value");
         } else {
@@ -118,6 +120,9 @@ public class ValueUtil {
      * @return the display information for the object
      */
     public static Display displayOf(Object obj) {
+        if (obj instanceof VBoolean) {
+            return ValueFactory.displayBoolean();
+        }
         if (!(obj instanceof Display))
             return null;
         Display display = (Display) obj;
@@ -300,11 +305,11 @@ public class ValueUtil {
     
     private static Map<AlarmSeverity, Integer> createDefaultSeverityColorMap() {
         Map<AlarmSeverity, Integer> colorMap = new EnumMap<>(AlarmSeverity.class);
-        colorMap.put(AlarmSeverity.NONE, Color.GREEN.getRGB());
-        colorMap.put(AlarmSeverity.MINOR, Color.YELLOW.getRGB());
-        colorMap.put(AlarmSeverity.MAJOR, Color.RED.getRGB());
-        colorMap.put(AlarmSeverity.INVALID, Color.MAGENTA.getRGB());
-        colorMap.put(AlarmSeverity.UNDEFINED, Color.DARK_GRAY.getRGB());
+        colorMap.put(AlarmSeverity.NONE, 0xFF00FF00); // Color.GREEN
+        colorMap.put(AlarmSeverity.MINOR, 0xFFFFFF00); // Color.YELLOW
+        colorMap.put(AlarmSeverity.MAJOR, 0xFFFF0000); // Color.RED
+        colorMap.put(AlarmSeverity.INVALID, 0xFFFF00FF); // Color.MAGENTA
+        colorMap.put(AlarmSeverity.UNDEFINED, 0xFF404040); // Color.DARK_GRAY
         return colorMap;
     }
     

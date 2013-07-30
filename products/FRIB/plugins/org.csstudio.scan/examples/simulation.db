@@ -13,8 +13,8 @@ record(calc, "beam_sim")
 record(bi, "beam_on")
 {
     field(INP,  "beam_sim")
-    field(ZNAM, "Beam On")
-    field(ONAM, "Beam Off")
+    field(ZNAM, "Beam Off")
+    field(ONAM, "Beam On")
 }
 
 # Shutter, received neutrons
@@ -66,16 +66,6 @@ record(calc, "neutrons")
     field(INPC, "neutrons")
     field(CALC, "(A&B)?C+2*RNDM:C")
     field(SCAN, ".1 second")
-}
-
-# Scan 'active'?
-record(bi, "active")
-{
-    field(DESC, "Take data?")
-    field(INP,  "0")
-    field(PINI, "YES")
-    field(ZNAM, "Idle")
-    field(ONAM, "Scanning")
 }
 
 # X, Y motor

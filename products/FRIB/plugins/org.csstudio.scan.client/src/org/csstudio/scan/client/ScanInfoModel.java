@@ -4,18 +4,9 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * The scan engine idea is based on the "ScanEngine" developed
- * by the Software Services Group (SSG),  Advanced Photon Source,
- * Argonne National Laboratory,
- * Copyright (c) 2011 , UChicago Argonne, LLC.
- *
- * This implementation, however, contains no SSG "ScanEngine" source code
- * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan.client;
 
-import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,17 +15,13 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.SystemSettings;
-import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model of scan information on scan server
  *
- *  <p>The scan server has (at this time) a simple RMI
- *  interface that only offers polling access.
- *
- *  This model periodically polls the scan server for its
+ *  <p>Based on the {@link ScanClient},
+ *  this model periodically polls the scan server for its
  *  state and sends updates to a (GUI) listener.
  *
  *  <p>Singleton to allow multiple views to monitor
@@ -52,24 +39,22 @@ public class ScanInfoModel
     /** Reference count */
     private int references = 0;
 
-    /** Connection to remote scan server.
-     *  Maintained by the <code>poller</code> thread.
-     */
-    private ScanServer server = null;
+    /** Client to the scan server */
+    final private ScanClient client;
 
     /** Thread that polls the <code>server</code>.
      *  Set to <code>null</code> to stop.
      */
     private volatile Thread poller;
 
-    /** Most recent infos from <code>server</code> */
-    private volatile List<ScanInfo> infos = Collections.emptyList();
-
+    /** Has poller received anything in last request to server? */
+    private volatile boolean is_connected = false;
+    
     /** Most recent server info from <code>server</code> */
     private volatile ScanServerInfo server_info = null;
-
-    /** Are we currently connected? */
-    private volatile boolean is_connected = false;
+    
+    /** Most recent infos from <code>server</code> */
+    private volatile List<ScanInfo> infos = Collections.emptyList();
 
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
@@ -122,7 +107,9 @@ public class ScanInfoModel
      */
     private ScanInfoModel()
     {
-        // NOP
+        final String host = SystemSettings.getServerHost();
+        final int port = SystemSettings.getServerPort();
+        client = new ScanClient(host, port);
     }
 
     /** @param listener Listener to add */
@@ -130,10 +117,7 @@ public class ScanInfoModel
     {
         listeners.add(listener);
         // Initial update
-        if (is_connected)
-            listener.scanUpdate(getInfos());
-        else
-            listener.connectionError();
+        listener.scanUpdate(getInfos());
     }
 
     /** @param listener Listener to remove */
@@ -151,18 +135,6 @@ public class ScanInfoModel
             @Override
             public void run()
             {
-                // Attempt initial connection.
-                // Poll() loop will then handle errors and
-                // re-connects
-                try
-                {
-                    reconnect();
-                }
-                catch (Exception ex)
-                {
-                    Logger.getLogger(ScanInfoModel.class.getName()).
-                        log(Level.FINE, "Cannot connect to Scan Server", ex);
-                }
                 while (poller != null)
                 {
                     try
@@ -189,40 +161,10 @@ public class ScanInfoModel
         poller = null;
     }
 
-    /** (Re-) connect to the server
-     *  @throws Exception on error
-     */
-    private void reconnect() throws Exception
+    /** @return {@link ScanClient} */
+    public ScanClient getScanClient()
     {
-    	// Only briefly synchronize.
-    	// Connection can take a long time, so do that outside of the sync block.
-    	final ScanServer old_server;
-    	synchronized (this)
-        {
-	        old_server = server;
-	        server = null;
-        }
-        if (old_server != null)
-            ScanServerConnector.disconnect(old_server);
-        // Connect to server
-        final ScanServer new_server = ScanServerConnector.connect();
-        synchronized (this)
-        {
-	        server = new_server;
-        }
-    }
-
-    /** @return Server
-     *  @throws RemoteException when not connected to server
-     */
-    public synchronized ScanServer getServer() throws RemoteException
-    {
-        if (server == null)
-            throw new RemoteException(
-        		"Not connected to Scan Server " +
-        				SystemSettings.getServerHost() +
-        				":" + SystemSettings.getServerPort());
-        return server;
+        return client;
     }
 
     /** Poll the server for info
@@ -232,14 +174,13 @@ public class ScanInfoModel
     {
         try
         {
-            final ScanServer current_server = getServer();
             // General server info, always inform listeners
-            server_info = current_server.getInfo();
+            server_info = client.getServerInfo();
             for (ScanInfoModelListener listener : listeners)
                 listener.scanServerUpdate(server_info);
 
             // List of scans. Suppress updates if there is no change
-			final List<ScanInfo> update = current_server.getScanInfos();
+			final List<ScanInfo> update = client.getScanInfos();
             if (update.equals(infos) && is_connected)
                 return;
 
@@ -249,7 +190,7 @@ public class ScanInfoModel
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot poll ScanServer", ex);
             infos = Collections.emptyList();
@@ -260,23 +201,7 @@ public class ScanInfoModel
                     listener.connectionError();
             }
             // Wait a little
-            Thread.sleep(1000);
-            try
-            {
-                reconnect();
-            }
-            catch (Exception ex2)
-            {
-                // Wait a lot longer
-                Thread.sleep(5000);
-            }
-        }
-        catch (Throwable ex)
-        {
-            Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
-            infos = Collections.emptyList();
-            for (ScanInfoModelListener listener : listeners)
-                listener.connectionError();
+            Thread.sleep(5000);
         }
     }
 
@@ -284,21 +209,6 @@ public class ScanInfoModel
     public ScanServerInfo getServerInfo()
     {
     	return server_info;
-    }
-
-    /** @return Scan Server info
-	 *  @throws RemoteException on error in remote access
-     */
-    public String getServerInfoText() throws RemoteException
-    {
-    	final StringBuilder buf = new StringBuilder();
-    	buf.append(server_info).append("\n");
-    	buf.append("\n");
-    	buf.append("Devices:\n");
-    	final DeviceInfo[] devices = getServer().getDeviceInfos(-1);
-    	for (DeviceInfo device : devices)
-    		buf.append(device).append("\n");
-    	return buf.toString();
     }
 
 	/** @return Most recent infos obtained from server */

@@ -13,7 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.DefaultProposalStyle;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.ProposalStyle;
 
 import com.google.common.base.Joiner;
 
@@ -72,24 +75,42 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 			includedValues);
 		if (value.startsWith(valuePattern.trim())) {
 		    proposedValues.add(value);
-		    result.add(fixedFirstPart + ' '
-			    + Joiner.on(',').join(proposedValues));
+		    String entry = fixedFirstPart + ' '
+			    + Joiner.on(',').join(proposedValues);
+		    Proposal proposal = new Proposal(entry, false);
+		    proposal.addStyle(new DefaultProposalStyle(fixedFirstPart
+			    .length(), fixedFirstPart.length()
+			    + (valuePattern.length() - 1)));
+		    result.addProposal(proposal);
 		    result.setCount(result.getCount() + 1);
 		}
 	    }
 	}
 	// use the last word of the String to check for keywords
 	fixedFirstPart = searchString.substring(0, searchString
-		.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') : 0);
-	String lastPart = searchString
-		.substring(searchString.lastIndexOf(' ') + 1);
-	for (String key : keyValueMap.keySet()) {
-	    if (lastPart.length() > 0
-		    && key.startsWith(lastPart.substring(0,
-			    lastPart.length() - 1))) {
-		result.add(fixedFirstPart + ' ' + key + ":");
-		result.setCount(result.getCount() + 1);
+		.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') + 1 : 0);
+	if (!fixedFirstPart.isEmpty()) {
+	    String lastPart = searchString.substring(searchString
+		    .lastIndexOf(' ') + 1);
+	    for (String key : keyValueMap.keySet()) {
+		if (lastPart.length() > 0
+			&& key.startsWith(lastPart.substring(0,
+				lastPart.length()))) {
+		    String entry = fixedFirstPart + key + ":";
+		    Proposal proposal = new Proposal(entry, true);
+		    proposal.addStyle(new DefaultProposalStyle(fixedFirstPart
+			    .length(), fixedFirstPart.length()
+			    + (lastPart.length() - 1)));
+		    result.addProposal(proposal);
+		    result.setCount(result.getCount() + 1);
+		}
 	    }
+	}
+	for (String key : keyValueMap.keySet()) {
+	    result.addProposal(new Proposal(searchString + ' ' + key + ":",
+		    false));
+	    result.setCount(result.getCount() + 1);
+
 	}
 	return result;
     }

@@ -8,7 +8,7 @@
  <body>
 <h1>BOY Changelog</h1>
 <ul>
-<li><a href="#kek_3.2.0">Snapshot for KEK CSS 3.2.0</a></li>
+<li><a href="#3.2.7">Version 3.2.7</a></li>
 <li><a href="#3.1.4">Version 3.1.4</a></li>
 <li><a href="#3.1.3">Version 3.1.3</a></li>
 <li><a href="#3.1.2">Version 3.1.2</a></li>
@@ -19,10 +19,41 @@
 <li><a href="#1.0.6">Version 1.0.6</a></li>
 </ul>
 
-<A NAME="kek_3.2.0"></A>
-<h2>Snapshot for KEK CSS 3.2.0</h2>
+<A NAME="3.2.7"></A>
+<h2>Version 3.2.8</h2>
 <ul>
-	<li>Spinner widget: up/down and page up/page down buttons increase/decrease the value for a set step/page in the text editor.</li>
+ <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
+    It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
+    PVManager has lots of advantages such as better performance on array type of PV, update rate throttling, formula support and so on.
+    With PVManager, there are some differences with Utility PV on local and simulated PV:
+    <ul>
+    	<li>The default initial value of local pv such as <code>loc://fred</code> is null.
+    	 To give an initial value such as 0 to the local pv, the syntax is <code>loc://fred(0)</code>.
+    	<b><font color="red">Note: this difference may break your existing OPIs that used uninitialized local PV!!!</font></b>
+    	</li> 
+       <li>Constant PV such as <code>1</code> or <code>"fred"</code> must be prefixed with <code>=</code>. For example, <code>=1</code> and <code>="fred"</code>.</li>
+       <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
+       <li>Initial string value should be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
+       <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
+       <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
+    </ul> 
+    In most cases, BOY will automatically convert existing local PV names to new syntax for old OPIs except the PV names embedded in scripts. 
+    For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
+   
+    </li>
+    <li>
+    	Use <code>org.epics.vtype</code> value inside BOY instead of <code>org.csstudio.data.values.IValue</code>. 
+    	<b><font color="red">Note: this change may break your customized widgets if the widgets have code handling IValue!</font></b>
+    	See <a href=https://groups.google.com/d/msg/css-boy/ntuGAtbDCbE/qfjZvQURS-AJ>here</a> for more details.
+    	
+    </li>
+    
+    
+    <li>Shows null value border if one of the PVs on the widget has null value.
+    If the null value PV is the main PV of the widget, the value displayed in the widget is meaningless.
+     <p>  <img src ="img/nullValueBorder.png">  </p>
+     </li>
+     <li>Spinner widget: up/down and page up/page down buttons increase/decrease the value for a set step/page in the text editor.</li>
 	<li>Spinner widget: option for horizontal arrow buttons layout added.
 	<p><img src="img/SpinnerHorizontalButtons.png"></p>
 	</li>
@@ -44,22 +75,7 @@
 	(Primarily contributed by ITER).
 	<p><img src="img/autocomplete.png"</p>
 	
-	</li> 
-    <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
-    It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
-    PVManager has lots of advantages such as better performance on array type of PV, maximum updating rate throttling, formula support and so on.
-    With PVManager, there are few differences with Utility PV on local and simulation PV syntax:
-    <ul>
-       <li>Constant PV such as <code>1</code> or <code>"fred"</code> must be prefixed with <code>=</code>. For example, <code>=1</code> and <code>="fred"</code>.</li>
-       <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
-       <li>Initial string value should be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
-       <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
-       <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
-    </ul> 
-    BOY will automatically convert existing local PV names to new syntax for old OPIs except the PV names embedded in scripts. 
-    For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
-   
-    </li>
+	</li>    
     
     <li>Add authentication support to WebOPI so that you can protect the whole site or only OPIs in a particular directory with password.
     You can provide user name and password either from preference file, LDAP server or Kerberos. 

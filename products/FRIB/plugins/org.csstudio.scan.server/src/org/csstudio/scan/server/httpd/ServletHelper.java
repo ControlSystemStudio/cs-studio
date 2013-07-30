@@ -20,11 +20,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,6 +51,67 @@ public class ServletHelper
         }
     }
     
+    /** Create XML element for string
+     *  @param doc Parent document
+     *  @param name Name of XML element
+     *  @param text Text content
+     *  @return XML element
+     */
+    public static Element createXMLElement(final Document doc,
+            final String name, final String text)
+    {
+        final Element el = doc.createElement(name);
+        el.appendChild(doc.createTextNode(text));
+        return el;
+    }
+
+    /** Create XML element for number
+     *  @param doc Parent document
+     *  @param name Name of XML element
+     *  @param number Number content
+     *  @return XML element
+     */
+    public static Element createXMLElement(final Document doc,
+            final String name, final Long number)
+    {
+        return createXMLElement(doc, name, Long.toString(number));
+    }
+
+    /** Create XML element for date, encoded as milliseconds since epoch
+     *  @param doc Parent document
+     *  @param name Name of XML element
+     *  @param date Date content
+     *  @return XML element
+     */
+    public static Element createXMLElement(final Document doc,
+            final String name, final Date date)
+    {
+        return createXMLElement(doc, name, date.getTime());
+    }
+    
+    /** Create XML content for scan server info
+     *  @param doc XML {@link Document}
+     *  @param info {@link ScanServerInfo}
+     *  @return XML {@link Element} for the server info
+     */
+    public static Element createXMLElement(final Document doc, final ScanServerInfo info)
+    {
+        final Element server = doc.createElement("server");
+        server.appendChild(createXMLElement(doc, "version", info.getVersion()));
+        server.appendChild(createXMLElement(doc, "start_time", info.getStartTime()));
+        server.appendChild(createXMLElement(doc, "beamline_config", info.getBeamlineConfig()));
+        server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
+        
+        server.appendChild(createXMLElement(doc, "script_paths", ScanSystemPreferences.joinPaths(info.getScriptPaths())));
+        server.appendChild(createXMLElement(doc, "macros", info.getMacros()));
+        
+        
+        
+        server.appendChild(createXMLElement(doc, "used_mem", info.getUsedMem()));
+        server.appendChild(createXMLElement(doc, "max_mem", info.getMaxMem()));
+        return server;
+    }
+
     /** Create XML content for scan info
      *  @param doc XML {@link Document}
      *  @param info {@link ScanInfo}
@@ -58,49 +121,28 @@ public class ServletHelper
     {
         final Element scan = doc.createElement("scan");
         
-        Element el = doc.createElement("id");
-        el.appendChild(doc.createTextNode(Long.toString(info.getId())));
-        scan.appendChild(el);
-        
-        el = doc.createElement("name");
-        el.appendChild(doc.createTextNode(info.getName()));
-        scan.appendChild(el);
+        scan.appendChild(createXMLElement(doc, "id", info.getId()));
+        scan.appendChild(createXMLElement(doc, "name", info.getName()));
+        scan.appendChild(createXMLElement(doc, "created", info.getCreated()));
+        scan.appendChild(createXMLElement(doc, "state", info.getState().name()));
+        scan.appendChild(createXMLElement(doc, "runtime", info.getRuntimeMillisecs()));
 
-        el = doc.createElement("created");
-        el.appendChild(doc.createTextNode(Long.toString(info.getCreated().getTime())));
-        scan.appendChild(el);
-
-        el = doc.createElement("state");
-        el.appendChild(doc.createTextNode(info.getState().name()));
-        scan.appendChild(el);
-
-        el = doc.createElement("runtime");
-        el.appendChild(doc.createTextNode(Long.toString(info.getRuntimeMillisecs())));
-        scan.appendChild(el);
-
-        el = doc.createElement("percentage");
-        el.appendChild(doc.createTextNode(Integer.toString(info.getPercentage())));
-        scan.appendChild(el);
-
-        final Date finish = info.getFinishTime();
-        if (finish != null)
+        if (info.getTotalWorkUnits() > 0)
         {
-            el = doc.createElement("finish");
-            el.appendChild(doc.createTextNode(Long.toString(finish.getTime())));
-            scan.appendChild(el);
+            scan.appendChild(createXMLElement(doc, "total_work_units", info.getTotalWorkUnits()));
+            scan.appendChild(createXMLElement(doc, "performed_work_units", info.getPerformedWorkUnits()));
         }
         
-        el = doc.createElement("command");
-        el.appendChild(doc.createTextNode(info.getCurrentCommand()));
-        scan.appendChild(el);
+        final Date finish = info.getFinishTime();
+        if (finish != null)
+            scan.appendChild(createXMLElement(doc, "finish", finish));
+
+        scan.appendChild(createXMLElement(doc, "address", info.getCurrentAddress()));
+        scan.appendChild(createXMLElement(doc, "command", info.getCurrentCommand()));
         
         final String error = info.getError();
         if (error != null)
-        {
-            el = doc.createElement("error");
-            el.appendChild(doc.createTextNode(error));
-            scan.appendChild(el);
-        }
+            scan.appendChild(createXMLElement(doc, "error", error));
 
         return scan;
     }
@@ -113,48 +155,53 @@ public class ServletHelper
     public static Node createXMLElement(final Document doc, final ScanData data)
     {
         final Element result = doc.createElement("data");
+       
+        for (String device_name : data.getDevices())
+        {
+            final Element device = doc.createElement("device");
+            device.appendChild(createXMLElement(doc, "name", device_name));
         
-        // Return data in spreadsheet-arrangement
-        final ScanDataIterator sheet = new ScanDataIterator(data);
-
-        // List all devices
-        final Element devices = doc.createElement("devices");
-        for (String device : sheet.getDevices())
-        {
-            final Element dev_node = doc.createElement("device");
-            dev_node.setTextContent(device);
-            devices.appendChild(dev_node);
-        }
-        result.appendChild(devices);
-
-        final Element samples = doc.createElement("samples");
-        while (sheet.hasNext())
-        {
-            // One 'values' element with <time><value><value>...
-            final ScanSample[] line = sheet.getSamples();
-
-            final Element values = doc.createElement("values");
-            
-            final Element time = doc.createElement("time");
-            time.setTextContent(ScanSampleFormatter.format(sheet.getTimestamp()));
-            values.appendChild(time);
-            
-            for (ScanSample sample : line)
+            final Element samples = doc.createElement("samples");
+            for (ScanSample data_sample : data.getSamples(device_name))
             {
-                final Element value = doc.createElement("value");
-                value.setTextContent(ScanSampleFormatter.asString(sample));
-                values.appendChild(value);
+                final Element sample = doc.createElement("sample");
+                sample.setAttribute("id", Long.toString(data_sample.getSerial()));
+                sample.appendChild(createXMLElement(doc, "time", data_sample.getTimestamp()));
+                sample.appendChild(createXMLElement(doc, "value", ScanSampleFormatter.asString(data_sample)));
+                samples.appendChild(sample);
             }
-            samples.appendChild(values);
+            
+            device.appendChild(samples);
+            result.appendChild(device);
         }
-        result.appendChild(samples);
+        return result;
+    }
+
+    /** Create XML content for device infos
+     *  @param doc XML {@link Document}
+     *  @param devices {@link DeviceInfo}s
+     *  @return XML {@link Element} for the device infos
+     */
+    public static Node createXMLElement(final Document doc, final DeviceInfo... devices)
+    {
+        final Element result = doc.createElement("devices");
+        
+        for (DeviceInfo info : devices)
+        {
+            final Element device = doc.createElement("device");
+            device.appendChild(createXMLElement(doc, "name", info.getName()));
+            device.appendChild(createXMLElement(doc, "alias", info.getAlias()));
+            if (! info.getStatus().isEmpty())
+                device.appendChild(createXMLElement(doc, "status", info.getStatus()));
+            result.appendChild(device);
+        }
 
         return result;
     }
 
-    /** Submit XML HTTP client
+    /** Submit XML to HTTP client
      *  @param doc {@link Document} to submit
-     *  @param response {@link HttpServletResponse}
+     *  @param response {@link HttpServletResponse} to which XML is submitted
      *  @throws Exception on error
      */
     public static void submitXML(final Document doc, final HttpServletResponse response) throws Exception

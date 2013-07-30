@@ -41,9 +41,9 @@ public class ResumeAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
         if (infos == null)
-            model.getServer().resume(-1);
+            model.getScanClient().resumeScan(-1);
         else
             for (ScanInfo info : infos)
-                model.getServer().resume(info.getId());
+                model.getScanClient().resumeScan(info.getId());
     }
 }

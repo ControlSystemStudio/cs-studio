@@ -184,12 +184,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">write</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">write</a></strong>(java.lang.String&nbsp;device_name,
      java.lang.Object&nbsp;value,
      java.lang.String&nbsp;readback,
      boolean&nbsp;wait,
      double&nbsp;tolerance,
-     double&nbsp;timeout)</code>
+     TimeDuration&nbsp;timeout)</code>
 <div class="block">Write to device</div>
 </td>
 </tr>
@@ -357,7 +357,7 @@ extends java.lang.Object</pre>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
 </ul>
-<a name="write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">
+<a name="write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -368,10 +368,10 @@ extends java.lang.Object</pre>
          java.lang.String&nbsp;readback,
          boolean&nbsp;wait,
          double&nbsp;tolerance,
-         double&nbsp;timeout)
+         TimeDuration&nbsp;timeout)
                     throws java.lang.Exception</pre>
 <div class="block">Write to device</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, 0 as "forever"</dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, <code>null</code> as "forever"</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>

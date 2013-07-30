@@ -10,12 +10,10 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
@@ -23,7 +21,7 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
@@ -36,6 +34,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen
@@ -122,17 +121,16 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if(newValue == null || !(newValue instanceof IValue))
+				if(newValue == null)
 					return false;
-				IValue value = (IValue)newValue;
-				if(value instanceof PMObjectValue){
-					Object obj = ((PMObjectValue)value).getLatestValue();
-					if(obj instanceof VNumberArray){
-						setValue(((VNumberArray)obj).getData());
+				VType value = (VType)newValue;
+				
+					if(value instanceof VNumberArray){
+						setValue(((VNumberArray)value).getData());
 						return false;
 					}
-				}				
-				((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDoubleArray(value));
+							
+				((IntensityGraphFigure)figure).setDataArray(VTypeHelper.getDoubleArray(value));
 
 				return false;
 			}

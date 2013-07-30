@@ -23,6 +23,10 @@
             file="toc.xml"
             primary="true">
       </toc>
+      <toc
+            file="tocChangelog.xml"
+            primary="false">
+      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

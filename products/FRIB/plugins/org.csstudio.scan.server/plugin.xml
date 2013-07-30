@@ -29,6 +29,11 @@
    <extension
          point="org.csstudio.scan.server.scancommandimpl">
       <imp_factory
+            command="org.csstudio.scan.command.CommentCommand"
+            factory="org.csstudio.scan.commandimpl.CommentCommandImplFactory"
+            name="Comment">
+      </imp_factory>
+      <imp_factory
             command="org.csstudio.scan.command.ConfigLogCommand"
             factory="org.csstudio.scan.commandimpl.ConfigLogCommandImplFactory"
             name="ConfigLog">
@@ -37,6 +42,11 @@
             command="org.csstudio.scan.command.DelayCommand"
             factory="org.csstudio.scan.commandimpl.DelayCommandImplFactory"
             name="Delay">
+      </imp_factory>
+      <imp_factory
+            command="org.csstudio.scan.command.IncludeCommand"
+            factory="org.csstudio.scan.commandimpl.IncludeCommandImplFactory"
+            name="Include">
       </imp_factory>
       <imp_factory
             command="org.csstudio.scan.command.LogCommand"

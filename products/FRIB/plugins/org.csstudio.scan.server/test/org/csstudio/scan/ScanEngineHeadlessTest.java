@@ -65,8 +65,8 @@ public class ScanEngineHeadlessTest
     private DeviceContext getDemoDevices() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice(new DeviceInfo("motor_x", "xpos", true, true));
-        devices.addPVDevice(new DeviceInfo("motor_y", "ypos", true, true));
+        devices.addPVDevice(new DeviceInfo("motor_x", "xpos"));
+        devices.addPVDevice(new DeviceInfo("motor_y", "ypos"));
         return devices;
     }
 

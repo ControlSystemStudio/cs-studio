@@ -47,6 +47,7 @@ org.csstudio.display.rdbtable/**
 org.csstudio.dummyauthorization/**
 org.csstudio.email.ui/**
 org.csstudio.email/**
+org.csstudio.examples/**
 org.csstudio.java/**
 org.csstudio.kek.build/**
 org.csstudio.kek.product.office/**

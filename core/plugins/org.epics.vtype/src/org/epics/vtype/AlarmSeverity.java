@@ -4,6 +4,9 @@
  */
 package org.epics.vtype;
 
+import java.util.AbstractList;
+import java.util.List;
+
 /**
  * Severity of an alarm.
  * <p>
@@ -58,4 +61,27 @@ public enum AlarmSeverity {
      * or connected with no read access. The value is either stale or invalid.
      */
     UNDEFINED;
+    
+    private static final List<String> labels = new AbstractList<String>() {
+        @Override
+        public String get(int index) {
+            return AlarmSeverity.values()[index].name();
+        }
+
+        @Override
+        public int size() {
+            return AlarmSeverity.values().length;
+        }
+    };
+    
+    /**
+     * Returns the list of labels for the severity.
+     * <p>
+     * This is useful to create VEnums containing severities.
+     * 
+     * @return an immutable list with the labels
+     */
+    public static List<String> labels() {
+        return labels;
+    }
 }

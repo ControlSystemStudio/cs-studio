@@ -18,17 +18,12 @@ package org.csstudio.scan.data;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.csstudio.scan.server.ScanServer;
-
 /** Scan sample for numbers
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class NumberScanSample extends ScanSample
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private Number[] values;
 
     /** Initialize
@@ -37,7 +32,7 @@ public class NumberScanSample extends ScanSample
      *  @param number Number
      */
 	public NumberScanSample(final Date timestamp,
-	        final long serial, final Number[] values)
+	        final long serial, final Number... values)
 	{
 		super(timestamp, serial);
 		this.values = values;

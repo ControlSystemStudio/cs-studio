@@ -80,12 +80,15 @@ public class VTableFactory {
         }
         
         // Find rows
+        boolean done = false;
         List<BufferInt> rowIndexes = new ArrayList<>();
         for (int i = 0; i < tables.length; i++) {
             rowIndexes.add(new BufferInt());
+            if (tables[i].getRowCount() == 0) {
+                done = true;
+            }
         }
         int[] currentIndexes = new int[tables.length];
-        boolean done = false;
         while (!done) {
             boolean match = true;
             for (EqualValueFilter filter : filters) {
@@ -147,6 +150,15 @@ public class VTableFactory {
         return ValueFactory.newVTable(columnTypes, columnNames, columnData);
     }
     
+    private static Object selectColumnData(VTable table, int column, ListInt indexes) {
+        Class<?> type = table.getColumnType(column);
+        if (type.isPrimitive()) {
+            return createView((ListNumber) table.getColumnData(column), indexes);
+        } else {
+            return createView((List<?>) table.getColumnData(column), indexes);
+        }
+    }
+    
     private static <T> List<T> createView(final List<T> list, final ListInt indexes) {
         return new AbstractList<T>() {
 
@@ -177,6 +189,23 @@ public class VTableFactory {
         };
     }
     
+    public static VTable select(final VTable table, final ListInt indexes) {
+        List<String> names = columnNames(table);
+        List<Class<?>> types = columnTypes(table);
+        List<Object> data = new AbstractList<Object>() {
+
+            @Override
+            public Object get(int index) {
+                return selectColumnData(table, index, indexes);
+            }
+
+            @Override
+            public int size() {
+                return table.getColumnCount();
+            }
+        };
+        return ValueFactory.newVTable(types, names, data);
+    }
     
     public static VTable newVTable(Column... columns) {
         List<String> columnNames = new ArrayList<>();
@@ -353,17 +382,43 @@ public class VTableFactory {
         };
     }
     
+    public static List<Class<?>> columnTypes(final VTable vTable) {
+        return new AbstractList<Class<?>>() {
+            @Override
+            public Class<?> get(int index) {
+                return vTable.getColumnType(index);
+            }
+
+            @Override
+            public int size() {
+                return vTable.getColumnCount();
+            }
+        };
+    }
+    
     public static VTable valueTable(List<? extends VType> values) {
+        return valueTable(null, values);
+    }
+    
+    public static VTable valueTable(List<String> names, List<? extends VType> values) {
         int nullValue = values.indexOf(null);
         if (nullValue != -1) {
             values = new ArrayList<>(values);
-            while (values.remove(null)) {
-                // Removing null values;
+            if (names != null) {
+                names = new ArrayList<>(names);
+            }
+            for (int i = values.size() - 1; i >=0; i--) {
+                if (values.get(i) == null) {
+                    values.remove(i);
+                    if (names != null) {
+                        names.remove(i);
+                    }
+                }
             }
         }
         
         if (values.isEmpty()) {
-            return valueNumberTable(values);
+            return valueNumberTable(names, values);
         }
         
         if (values.get(0) instanceof VNumber) {
@@ -372,13 +427,13 @@ public class VTableFactory {
                     throw new IllegalArgumentException("Values do not match (VNumber and " + ValueUtil.typeOf(vType).getSimpleName());
                 }
             }
-            return valueNumberTable(values);
+            return valueNumberTable(names, values);
         }
         
         throw new IllegalArgumentException("Type " + ValueUtil.typeOf(values.get(0)).getSimpleName() + " not supported for value table");
     }
     
-    private static VTable valueNumberTable(List<? extends VType> values) {
+    private static VTable valueNumberTable(List<String> names, List<? extends VType> values) {
         double[] data = new double[values.size()];
         List<String> severity = new ArrayList<>();
         List<String> status = new ArrayList<>();
@@ -390,8 +445,15 @@ public class VTableFactory {
             status.add(vNumber.getAlarmName());
         }
         
-        return newVTable(column("Value", newVDoubleArray(new ArrayDouble(data), alarmNone(), timeNow(), displayNone())),
-                column("Severity", newVStringArray(severity, alarmNone(), timeNow())),
-                column("Status", newVStringArray(status, alarmNone(), timeNow())));
+        if (names == null) {
+            return newVTable(column("Value", newVDoubleArray(new ArrayDouble(data), alarmNone(), timeNow(), displayNone())),
+                    column("Severity", newVStringArray(severity, alarmNone(), timeNow())),
+                    column("Status", newVStringArray(status, alarmNone(), timeNow())));
+        } else {
+            return newVTable(column("Name", newVStringArray(names, alarmNone(), timeNow())),
+                    column("Value", newVDoubleArray(new ArrayDouble(data), alarmNone(), timeNow(), displayNone())),
+                    column("Severity", newVStringArray(severity, alarmNone(), timeNow())),
+                    column("Status", newVStringArray(status, alarmNone(), timeNow())));
+        }
     }
 }

@@ -15,21 +15,18 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /** Information about a Scan
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanInfo extends Scan implements Serializable
+public class ScanInfo extends Scan
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     final private ScanState state;
     final private String error;
     final private long runtime_ms;
+    final private long finishtime_ms;
     final private long performed_work_units;
     final private long total_work_units;
     final private long current_address;
@@ -41,7 +38,7 @@ public class ScanInfo extends Scan implements Serializable
      */
     public ScanInfo(final Scan scan, final ScanState state)
     {
-        this(scan, state, null, 0, 0, 0, 0, "");
+        this(scan, state, null, 0, 0, 0, 0, 0, "");
     }
 
     /** Initialize
@@ -49,12 +46,14 @@ public class ScanInfo extends Scan implements Serializable
      *  @param state Scan state
      *  @param error Error or <code>null</code>
      *  @param runtime_ms Runtime in millisecs
+     *  @param finishtime_ms (Estimated) finish time in millisecs
      *  @param performed_work_units Work units performed so far
      *  @param total_work_units Total number of work units
      *  @param current_commmand Description of current command
      */
     public ScanInfo(final Scan scan, final ScanState state,
             final String error, final long runtime_ms,
+            final long finishtime_ms,
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
     {
@@ -62,6 +61,7 @@ public class ScanInfo extends Scan implements Serializable
         this.state = state;
         this.error = error;
         this.runtime_ms = runtime_ms;
+        this.finishtime_ms = finishtime_ms;
         this.performed_work_units = performed_work_units;
         this.total_work_units = total_work_units;
         this.current_address = current_address;
@@ -125,18 +125,8 @@ public class ScanInfo extends Scan implements Serializable
     /** @return (Estimated) finish time or <code>null</code> */
     public Date getFinishTime()
     {
-        if (state.isDone())
-            return new Date(getCreated().getTime() + runtime_ms);
-        if (state.isActive())
-        {
-            // Better estimate based on total_work_units?
-            if (performed_work_units <= 0)
-                return getCreated();
-
-            // Will need runtime_ms*total_work_units/performed_work_units
-            final Date finish = new Date(getCreated().getTime() + runtime_ms*total_work_units/performed_work_units);
-            return finish;
-        }
+        if (finishtime_ms > 0)
+            return new Date(finishtime_ms);
         return null;
     }
 
@@ -170,7 +160,9 @@ public class ScanInfo extends Scan implements Serializable
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof ScanInfo))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         final ScanInfo other = (ScanInfo) obj;
         return getId() == other.getId()  &&
