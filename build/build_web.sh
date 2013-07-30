@@ -85,8 +85,9 @@ function copyIfNotExists {
 
 mkdir $BUILD
 
+ORGANIZATION_tolower=`echo $ORGANIZATION | awk '{print tolower($0)}'`
 warproductname=`grep '<product' $WARPRODUCT | sed -e 's/.*name="\([^"]*\)".*/\1/' | awk '{print tolower($0)}'`
-featureid=org.csstudio.iter.${warproductname}.feature
+featureid=org.csstudio.${ORGANIZATION_tolower}.${warproductname}.feature
 
 pluginlist=`grep '<plugin id=".*"/>' $WARPRODUCT | sed -e 's,.*<plugin id="\([^"]*\)".*,\1,g'`
 pluginlist=`echo $pluginlist | sed -e 's,org.csstudio.platform.libs.epics.macosx ,,g'`
