@@ -50,16 +50,21 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
 			.getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
 
-	@SuppressWarnings("serial")
 	public Menu getMenu(Control parent) {
 		dispose();
+		opiListMenu = new Menu(parent);
 		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
 		if (topOPIs == null)
 			return null;
-		opiListMenu = new Menu(parent);
+		
+		fillMenu(topOPIs, opiListMenu);
+		return opiListMenu;
+	}
+
+	public static void fillMenu(final Map<IPath, MacrosInput> topOPIs, Menu menu) {
 		for (final IPath path : topOPIs.keySet()) {
 			if (path != null) {
-				MenuItem item = new MenuItem(opiListMenu, SWT.PUSH);
+				MenuItem item = new MenuItem(menu, SWT.PUSH);
 				String alias = topOPIs.get(path).getMacrosMap().get(ALIAS_KEY);
 				if (alias != null)
 					item.setText(alias);
@@ -92,7 +97,6 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 				});
 			}
 		}
-		return opiListMenu;
 	}
 
 	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
@@ -131,7 +135,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	/**
 	 * @return the top OPIs from preference settings
 	 */
-	private Map<IPath, MacrosInput> loadTopOPIs() {
+	public static Map<IPath, MacrosInput> loadTopOPIs() {
 		final Map<IPath, MacrosInput> topOPIs;
 		try {
 			topOPIs = PreferencesHelper.getTopOPIs();

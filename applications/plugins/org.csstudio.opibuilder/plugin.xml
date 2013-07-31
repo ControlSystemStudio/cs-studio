@@ -96,7 +96,7 @@
                label="Top Files"
                pulldown="true"
                style="pulldown"
-               toolbarPath="Normal/addtions"
+               toolbarPath="Normal/additions"
                tooltip="Open top files in editor. e.g. Open OPIs in run mode">
          </action>
          <action
@@ -234,6 +234,42 @@
             </objectState>
          </visibility>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.openRuntimePerspective"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIRuntimePerspectiveAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.openRuntimePerspective"
+               label="OPI Runtime Perspective"
+               menubarPath="ui">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="RUN_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.showNavigator"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.ShowNavigatorAction"
+               icon="icons/filenav_nav.gif"
+               id="org.csstudio.opibuilder.openRuntimePerspective"
+               label="Show Navigator"
+               menubarPath="ui">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="RUN_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.help.index">
@@ -276,6 +312,18 @@
                style="push"
                tooltip="Send PV name to OPI Probe">
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:file?after=new.ext">
+         <menu
+               icon="icons/OPIRunner.png"
+               label="Top Files">
+            <dynamic
+                  class="org.csstudio.opibuilder.actions.TopFilesContributionItem"
+                  id="org.csstudio.opibuilder.topfiles">
+            </dynamic>
+         </menu>
       </menuContribution>
    </extension>
    
