@@ -215,7 +215,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         final ArrayList<VType> values = new ArrayList<VType>();
         while (result.next())
         {
-            final VType value = decodeSampleTableValue(result);
+            final VType value = decodeSampleTableValue(result, false);
             values.add(value);
         }
         return values;

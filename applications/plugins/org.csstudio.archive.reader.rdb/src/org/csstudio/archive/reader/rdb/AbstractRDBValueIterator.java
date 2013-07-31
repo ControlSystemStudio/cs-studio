@@ -165,10 +165,11 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 
     /** Extract value from SQL result
      *  @param result ResultSet that must contain contain time, severity, ..., value
+     *  @param handle_array Try to read array elements, or only a scalar value?
      *  @return IValue Decoded IValue
      *  @throws Exception on error, including cancellation
      */
-    protected VType decodeSampleTableValue(final ResultSet result) throws Exception
+    protected VType decodeSampleTableValue(final ResultSet result, final boolean handle_array) throws Exception
     {
         // Get time stamp
         final java.sql.Timestamp stamp = result.getTimestamp(1);
@@ -191,14 +192,19 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // because the meta data would be wrong for double values.
             if (labels != null)
             	return new ArchiveVEnum(time, severity, status, labels, (int) dbl0);
-            // Double data. Get array elements - if any.
-            final double data[] = reader.useArrayBlob()
-        		? readBlobArrayElements(dbl0, result)
-				: readArrayElements(time, dbl0, severity);
-    		if (data.length == 1)
-    			return new ArchiveVNumber(time, severity, status, display, data[0]);
-    		else
-    			return new ArchiveVNumberArray(time, severity, status, display, data);
+            // Double data.
+            if (handle_array)
+            {   // Get array elements - if any.
+                final double data[] = reader.useArrayBlob()
+            		? readBlobArrayElements(dbl0, result)
+    				: readArrayElements(time, dbl0, severity);
+        		if (data.length == 1)
+        			return new ArchiveVNumber(time, severity, status, display, data[0]);
+        		else
+        			return new ArchiveVNumberArray(time, severity, status, display, data);
+            }
+            else
+                return new ArchiveVNumber(time, severity, status, display, dbl0);
         }
 
         // Try integer
