@@ -28,7 +28,7 @@ public class ServiceRegistry {
     }
     
     public void registerServices(ServiceFactory serviceFactory) {
-        for (Service service : serviceFactory.createServives()) {
+        for (Service service : serviceFactory.createServices()) {
             registerService(service);
         }
     }
