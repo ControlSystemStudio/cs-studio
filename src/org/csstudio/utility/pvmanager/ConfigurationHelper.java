@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.service.Service;
+import org.epics.pvmanager.service.ServiceFactory;
 import org.epics.pvmanager.service.ServiceRegistry;
 
 /**
@@ -78,7 +79,7 @@ public class ConfigurationHelper {
     }
 
     /**
-     * Retrieves the data sources that have been registered through the
+     * Retrieves the services that have been registered through the
      * extension point.
      * 
      * @return the registered data sources
@@ -104,6 +105,32 @@ public class ConfigurationHelper {
 	    return Collections.emptyList();
 	}
 
+    }
+
+    /**
+     * Retrieves the service factories that have been registered through the
+     * extension point.
+     * 
+     * @return the registered data sources
+     */
+    public static List<ServiceFactory> configuredServiceFactories() {
+		try {
+		    List<ServiceFactory> services = new ArrayList<ServiceFactory>();
+		    IConfigurationElement[] config = Platform.getExtensionRegistry()
+			    .getConfigurationElementsFor(
+				    "org.csstudio.utility.pvmanager.servicefactory");
+	
+		    for (IConfigurationElement iConfigurationElement : config) {
+				final Object o = iConfigurationElement.createExecutableExtension("servicefactory");
+				if (o instanceof ServiceFactory) {
+				    services.add((ServiceFactory) o);
+				}
+		    }
+		    return services;
+		} catch (Exception e) {
+		    log.log(Level.SEVERE, "Could not retrieve configured ServiceFactory for PVManager", e);
+		    return Collections.emptyList();
+		}
     }
 
 }
