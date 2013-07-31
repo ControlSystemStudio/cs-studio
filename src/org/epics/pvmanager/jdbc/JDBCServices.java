@@ -102,7 +102,7 @@ public class JDBCServices {
             
             return new JDBCService(service);
         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
-            Logger.getLogger(JDBCServices.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JDBCServices.class.getName()).log(Level.FINEST, "Couldn't create service", ex);
             throw new IllegalArgumentException("Couldn't create service", ex);
         }
     }
