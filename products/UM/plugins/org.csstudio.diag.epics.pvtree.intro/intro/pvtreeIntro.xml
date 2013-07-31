@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.diag.epics.pvtree.intro" style="css/intro.css" name="PVTree intro Extension" path="tutorials/@">
+		<group style-id="content-group" id="org.csstudio.diag.epics.pvtree.intro-group">
+       		<link label="Epics PVTree"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.diag.epics.pvtree/html/pv_tree.html&amp;embed=true"
+       		id="pvtree-Link" style-id="content-link">
+          		<text>This tool displays a Process Variable's value and the value of its inputs.</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>
