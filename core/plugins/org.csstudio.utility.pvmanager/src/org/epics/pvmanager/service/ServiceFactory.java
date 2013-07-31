@@ -18,6 +18,6 @@ public interface ServiceFactory {
      * 
      * @return an immutable collection of services; never null
      */
-    public Collection<Service> createServives();
+    public Collection<Service> createServices();
     
 }
