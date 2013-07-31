@@ -47,8 +47,8 @@ buildProduct ITER org.csstudio.iter.archive.engine.product
 buildProduct ITER org.csstudio.iter.jms2rdb.product
 buildProduct ITER org.csstudio.iter.utility.jmssendcmd.product
 
-buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webopi/webopi.warproduct
-buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webdatabrowser/webdatabrowser.warproduct
-buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webalarm/webalarm.warproduct
+buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webopi/webopi.warproduct.path
+buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webdatabrowser/webdatabrowser.warproduct.path
+buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webalarm/webalarm.warproduct.path
 
 cd "$ORIGIN_DIR"
