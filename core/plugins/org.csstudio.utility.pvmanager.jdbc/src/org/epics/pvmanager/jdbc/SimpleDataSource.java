@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 /**
+ * A simple implementation of DataSource that wraps around a JDBC url.
  *
  * @author carcassi
  */

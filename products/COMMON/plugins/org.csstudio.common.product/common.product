@@ -70,7 +70,7 @@
       <feature id="org.csstudio.common.product.feature"/>
       <feature id="org.csstudio.common.core.feature"/>
       <feature id="org.csstudio.common.ca.feature"/>
-      <feature id="org.csstudo.common.utilities.features"/>
+      <feature id="org.csstudio.common.utilities.features"/>
    </features>
 
 

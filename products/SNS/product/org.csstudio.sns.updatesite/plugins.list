@@ -98,6 +98,8 @@ org.csstudio.scan.ui.plot/**
 org.csstudio.scan.ui.scandata/**
 org.csstudio.scan.ui.scanmonitor/**
 org.csstudio.scan.ui.scantree/**
+org.csstudio.simplepv/**
+org.csstudio.simplepv.pvmanager/**
 org.csstudio.security/**
 org.csstudio.security.ui/**
 org.csstudio.sns.dummyAuthorization/**
@@ -149,6 +151,8 @@ org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**
 org.csstudio.workspace/**
+org.epics.pvaccess/**
+org.epics.pvdata/**
 org.epics.util/**
 org.epics.vtype/**
 org.hamcrest/**

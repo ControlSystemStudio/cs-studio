@@ -26,16 +26,22 @@ import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 
 /**
+ * The implementation of a JDBC service method.
  *
  * @author carcassi
  */
-public class JDBCServiceMethod extends ServiceMethod {
+class JDBCServiceMethod extends ServiceMethod {
     
     private final DataSource dataSource;
     private final ExecutorService executorService;
     private final String query;
     private final List<String> parameterNames;
 
+    /**
+     * Creates a new service method.
+     * 
+     * @param serviceMethodDescription a method description
+     */
     JDBCServiceMethod(JDBCServiceMethodDescription serviceMethodDescription) {
         super(serviceMethodDescription.serviceMethodDescription);
         this.dataSource = serviceMethodDescription.dataSource;
@@ -99,6 +105,9 @@ public class JDBCServiceMethod extends ServiceMethod {
         });
     }
 
+    /**
+     * Maps a result set to a VTable
+     */
     static VTable resultSetToVTable(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int nColumns = metaData.getColumnCount();

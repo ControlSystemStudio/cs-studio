@@ -300,7 +300,6 @@ public class RDBArchiveWriter implements ArchiveWriter
             switch (rdb.getDialect())
             {
             case Oracle:
-                // TODO Oracle case not tested
                 insert_double_sample.setString(6, " ");
                 insert_double_sample.setNull(7, Types.BLOB);
                 break;
