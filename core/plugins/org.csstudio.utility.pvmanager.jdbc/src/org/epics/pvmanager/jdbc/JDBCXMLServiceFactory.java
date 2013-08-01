@@ -16,13 +16,22 @@ import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceFactory;
 
 /**
- *
+ * A service factory that crawls a directory for xml files, and creates
+ * a JDBC service from each of them.
+ * 
  * @author carcassi
  */
 public class JDBCXMLServiceFactory implements ServiceFactory {
     
     private final File directory;
 
+    /**
+     * Creates a new factory that reads from the given directory.
+     * <p>
+     * If the directory does not exist, it simply returns an empty set.
+     * 
+     * @param directory a directory
+     */
     public JDBCXMLServiceFactory(File directory) {
         this.directory = directory;
         if (directory.exists() && !directory.isDirectory()) {
@@ -30,6 +39,13 @@ public class JDBCXMLServiceFactory implements ServiceFactory {
         }
     }
     
+    /**
+     * Crawls the directory and creates JDBC services.
+     * <p>
+     * XML files that do not parse correctly are skipped.
+     * 
+     * @return the created services
+     */
     @Override
     public Collection<Service> createServices() {
         List<Service> services = new ArrayList<>();
