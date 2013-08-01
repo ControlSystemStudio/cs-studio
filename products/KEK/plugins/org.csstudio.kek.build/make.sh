@@ -15,8 +15,8 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-#for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
-for prod in css
+for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
+#for prod in css
 do
 	echo Building $prod Product
 	$ECLIPSE_ANT \

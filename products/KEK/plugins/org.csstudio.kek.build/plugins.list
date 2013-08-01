@@ -1,5 +1,6 @@
 com.google.common/**
 javax.mail/**
+gov.bnl.channelfinder.api/**
 org.antlr.runtime/**
 org.apache.batik/**
 org.csstudio.alarm.beast.annunciator/**
@@ -48,6 +49,8 @@ org.csstudio.dummyauthorization/**
 org.csstudio.email.ui/**
 org.csstudio.email/**
 org.csstudio.examples/**
+org.csstudio.graphene/**
+org.csstudio.graphene.opiwidgets/**
 org.csstudio.java/**
 org.csstudio.kek.build/**
 org.csstudio.kek.product.office/**
@@ -64,6 +67,7 @@ org.csstudio.opibuilder.editor/**
 org.csstudio.opibuilder.examples/**
 org.csstudio.opibuilder.imagelib/**
 org.csstudio.opibuilder.rcp/**
+org.csstudio.opibuilder.widgets.extra/**
 org.csstudio.opibuilder.widgets.rcp/**
 org.csstudio.opibuilder.widgets.symbol/**
 org.csstudio.opibuilder.widgets/**
@@ -76,6 +80,7 @@ org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.epics.win32/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.jdbc/**
+org.csstudio.platform.libs.jersey/**
 org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
@@ -83,6 +88,7 @@ org.csstudio.rap.core/**
 org.csstudio.rap.ui.util/**
 org.csstudio.security.ui/**
 org.csstudio.security/**
+org.csstudio.simplepv/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.startuphelper/**
 org.csstudio.startup/**
@@ -111,6 +117,7 @@ org.csstudio.utility.pv.simu/**
 org.csstudio.utility.pv/**
 org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.extra/**
+org.csstudio.utility.pvmanager.graphene/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.probe/**
 org.csstudio.utility.pvmanager.sim/**
@@ -124,6 +131,7 @@ org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**
 org.csstudio.workspace/**
+org.epics.graphene/**
 org.epics.util/**
 org.epics.vtype/**
 org.jdom/**
