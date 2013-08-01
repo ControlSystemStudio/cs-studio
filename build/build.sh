@@ -1,16 +1,72 @@
 #!/bin/bash
 
-# Check parameters
-PRODUCT=$1
-BUILD="build"
-if [ -z "$PRODUCT" ]
-then 
-  echo You must provide the product
-exit -1
+function show_usage {
+cat <<EOF
+Usage:
+    build.sh <ORGANIZATION> [options]
+
+Options:
+    -p, --product PRODUCT
+         Product id (path in ../products/<ORGANIZATION>/products/) to build.
+         The product path must contains a 'build' folder with build.properties
+         plugins.list and features.list inside.
+         If this option is not set, the above files must be in
+         ../products/<ORGANIZATION>/ directory.
+         
+    -c, --compute-deps
+         Compute dependencies before build and save it
+         in plugins.list and features.list
+EOF
+}
+
+# parse command line
+computedeps=0
+
+LONGOPTS="help \
+product: \
+computedeps"
+
+ORGANIZATION=$1
+shift
+if [ -z "$ORGANIZATION" ]
+then
+  show_usage
+  exit 1
 fi
 
+ARGS=`getopt -o hcp: -l "${LONGOPTS}" -- "$@"`
+eval set -- "$ARGS"
+
+while [ $# -gt 0 ]
+do
+  case "$1" in
+      -p|--product)
+          PRODUCT_ID=$2
+          shift
+          ;;
+      -c|--compute-deps)
+          computedeps=1
+          ;;
+      -h|--help)
+          show_usage
+          exit 2
+          ;;
+      --)
+          ;;
+      *)
+          echo "Unrecognized option: $1"
+          echo ""
+          show_usage
+          exit 1
+          ;;
+  esac
+  shift
+done
+
+BUILD="build"
+
 # Clean up
-rm -rf $BUILD
+rm -rf "$BUILD"
 
 # Install Eclipse if not there
 if [[ -d ext/eclipse ]]
@@ -20,21 +76,18 @@ else
   mkdir -p ext
   cd ext
 
-  if [[ ! -f eclipse-rcp-indigo-linux-gtk.tar.gz ]]
+  if [[ ! -f eclipse-rcp-indigo-SR2-linux-gtk.tar.gz ]]
     then
       wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
     fi
-  if [[ ! -f eclipse-delta-pack.zip ]]
+  if [[ ! -f eclipse-3.7.2-delta-pack.zip ]]
   then
-#    wget http://download.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
-#    wget http://archive.eclipse.org/eclipse/downloads/drops/S-3.7RC3-201105261708/eclipse-3.7RC3-delta-pack.zip
-#    wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7-201106131736/eclipse-3.7-delta-pack.zip
      wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
   unzip -o eclipse-3.7.2-delta-pack.zip
 
-  if [ "$PRODUCT" = "ITER" ]
+  if [ "$ORGANIZATION" = "ITER" ]
   then 
     if [[ ! -f org.tigris.subclipse-site-1.6.18.zip ]]
     then
@@ -50,41 +103,65 @@ function copyIfNotExists {
   listfile=$1;
   source=$2;
   target=$3;
-  for dir in `cat $listfile`
+  for dir in `cat "$listfile"`
   do
     if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
     then
-      cp -R $source/$dir $target
+      cp -R "$source/$dir" "$target"
     fi
   done
 }
 
+if [ -z "$PRODUCT_ID" ]; then
+  productPath=`cd "../products/$ORGANIZATION";pwd`
+  confBuildDir="$productPath"
+else
+  productPath=`cd "../products/$ORGANIZATION/products/$PRODUCT_ID";pwd`
+  confBuildDir="$productPath/build"
+fi
+
+if [ $computedeps -ne 0 ]; then
+  ## Generate plugins.list and features.list
+  echo "Compute plugins and features list"
+  buildPath=`pwd`
+  repoPath=`cd "..";pwd`
+  python scan_dependencies.py -p "$productPath" -b "$buildPath" -r "$repoPath" --confBuildDir "$confBuildDir"
+fi
+
 # Copy product sources
-cp -R ../products/$PRODUCT $BUILD
-if [[ "$PRODUCT" = "ITER" ]]
+echo "Prepare sources"
+
+cp -R "../products/$ORGANIZATION" "$BUILD"
+
+cp "$confBuildDir/build.properties" "$BUILD/"
+cp "$confBuildDir/plugins.list" "$BUILD/"
+cp "$confBuildDir/features.list" "$BUILD/"
+
+if [[ "$ORGANIZATION" = "ITER" ]]
 then
-  copyIfNotExists $BUILD/plugins.list ../products/$PRODUCT/products $BUILD/plugins
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/$ORGANIZATION/products" "$BUILD/plugins"
 fi
 
-copyIfNotExists $BUILD/plugins.list ../core/plugins $BUILD/plugins
-copyIfNotExists $BUILD/plugins.list ../applications/plugins $BUILD/plugins
+copyIfNotExists "$confBuildDir/plugins.list" "../core/plugins" "$BUILD/plugins"
+copyIfNotExists "$confBuildDir/plugins.list" "../applications/plugins" "$BUILD/plugins"
 
-if [[ "$PRODUCT" = "ITER" ]]
+if [[ "$ORGANIZATION" = "ITER" ]]
 then
-  copyIfNotExists $BUILD/plugins.list ../products/DESY/plugins $BUILD/plugins
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/DESY/plugins" "$BUILD/plugins"
 fi
-copyIfNotExists $BUILD/features.list ../core/features $BUILD/features
-copyIfNotExists $BUILD/features.list ../applications/features $BUILD/features
+copyIfNotExists "$confBuildDir/features.list" "../core/features" "$BUILD/features"
+copyIfNotExists "$confBuildDir/features.list" "../applications/features" "$BUILD/features"
+
 
 # Check if all required features and plugins was found
-for dir in `cat $BUILD/plugins.list`
+for dir in `cat "$confBuildDir/plugins.list"`
 do
   if [[ ! -d "$BUILD/plugins/$dir" ]]
   then
     echo Plugin $dir not found.
   fi
 done
-for dir in `cat $BUILD/features.list`
+for dir in `cat "$confBuildDir/features.list"`
 do
   if [[ ! -d "$BUILD/features/$dir" ]]
   then
@@ -92,8 +169,8 @@ do
   fi
 done
 
-mkdir $BUILD/BuildDirectory
-cd $BUILD
+mkdir "$BUILD/BuildDirectory"
+cd "$BUILD"
 mv features BuildDirectory
 mv plugins BuildDirectory
 cd ..
@@ -101,8 +178,13 @@ cd ..
 # Run the build
 # XXX Doing it in the plugin directory: it was breaking otherwise
 ABSOLUTE_DIR=$PWD
+echo "Start build"
 echo $ABSOLUTE_DIR
-java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.ant.core.antRunner -buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml -Dbuilder="$ABSOLUTE_DIR"/build -Dbuild.dir="$ABSOLUTE_DIR"
+java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar \
+	-application org.eclipse.ant.core.antRunner \
+	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml \
+	-Dbuilder="$ABSOLUTE_DIR"/build \
+	-Dbuild.dir="$ABSOLUTE_DIR"
 
 # read properties from the build.properties and set up variable for each of them
 #TEMPFILE=$(mktemp)

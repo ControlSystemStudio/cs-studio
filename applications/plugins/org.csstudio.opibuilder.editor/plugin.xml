@@ -227,6 +227,23 @@
             </and>
          </visibility>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.editor.openPerspective"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIPerspectiveAction"
+               icon="icons/OPIBuilder.png"
+               id="org.csstudio.opibuilder.editor.openPerspective"
+               label="OPI Editor Perspective">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.decorators">

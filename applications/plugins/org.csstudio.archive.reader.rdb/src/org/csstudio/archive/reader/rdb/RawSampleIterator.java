@@ -120,7 +120,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         result_set = sel_samples.executeQuery();
         // Get first sample
         if (result_set.next())
-            value = decodeSampleTableValue(result_set);
+            value = decodeSampleTableValue(result_set, true);
         // else leave value null to indicate end of samples
     }
 
@@ -146,7 +146,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         try
         {
             if (result_set.next())
-                value = decodeSampleTableValue(result_set);
+                value = decodeSampleTableValue(result_set, true);
             else
                 close();
         }

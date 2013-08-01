@@ -84,10 +84,12 @@ public class SQL
 	    switch (dialect)
 	    {
     	case Oracle:
+    	    // Order of initial columns must match for all dialects
+    	    // 6th parameter is 'nanosecs' for all but Oracle
     		sample_insert_double_blob =
     		"INSERT INTO " + schema + "sample " +
     				"(channel_id, smpl_time, severity_id, status_id, float_val, datatype, array_val)" +
-    				" VALUES (?,?,?,?,?,?,?,?)";
+    				" VALUES (?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
                 " (channel_id, smpl_time, severity_id, status_id, float_val)" +
