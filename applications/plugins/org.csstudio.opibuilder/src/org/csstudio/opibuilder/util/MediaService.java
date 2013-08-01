@@ -167,6 +167,7 @@ public final class MediaService {
 	 * Reload predefined fonts from font file in a background job. 
 	 */
 	public synchronized void reloadFontFile() {
+		fontMap.clear();
 		final StringBuilder systemFontName = new StringBuilder();
 		if (Display.getCurrent()!= null) {
 			loadPredefinedFonts();
@@ -186,9 +187,8 @@ public final class MediaService {
 		final CountDownLatch latch = new CountDownLatch(1);
 		Job job = new Job("Load Font File") {
 			@Override
-			public IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
-				fontMap.clear();
+			public IStatus run(IProgressMonitor monitor) {				monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
+				
 				loadFontFile(systemFontName.toString());
 				latch.countDown();
 				monitor.done();
