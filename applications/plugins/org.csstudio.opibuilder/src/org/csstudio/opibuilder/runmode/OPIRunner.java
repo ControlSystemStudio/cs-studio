@@ -127,6 +127,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 
 	public void setWorkbenchPartName(String name) {
 		setPartName(name);
+		setTitleToolTip(getEditorInput().getToolTipText());
 	}
 
 	public OPIRuntimeDelegate getOPIRuntimeDelegate() {
