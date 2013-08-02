@@ -29,7 +29,6 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.widgets.model.ArrayModel;
 import org.csstudio.opibuilder.widgets.model.ArrayModel.ArrayDataType;
-import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
 import org.csstudio.simplepv.BasicDataType;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
@@ -58,7 +57,6 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
-import org.epics.util.array.ListNumber;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -634,7 +632,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 							if(wrappedArray!=null)
 								setValue(wrappedArray);
 							else
-								setValue(((VNumberArray)value).getData());
+								setValue(VTypeHelper.getDoubleArray(value));
 						} else{
 							if(value instanceof VEnum)						
 								setValue(new String[]{((VEnum)value).getValue()});
@@ -822,10 +820,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@Override
 	public void setValue(Object value) {
 		if (value == null)
-			return;
-		int index = getArrayFigure().getIndex();
-		if (value.getClass().isArray()) {
-			this.valueArray = value;			
+			return;		
+		if (value.getClass().isArray()) {	
+			int index = getArrayFigure().getIndex();
+			this.valueArray = value;	
 			if (value instanceof String[]) {
 				String[] a = (String[])value;
 				setChildrenValue(index, Arrays.asList(a), ArrayDataType.STRING_ARRAY);
@@ -846,11 +844,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				setChildrenValue(index, new IntArrayWrapper((int[])value), ArrayDataType.INT_ARRAY);
 			}			
 			return;
-		}
-		if(value instanceof ListNumber){
-			setChildrenValue(index, new ListNumberWrapper((ListNumber)value), ArrayDataType.DOUBLE_ARRAY);
-			return;
-		}
+		}		
 		super.setValue(value);
 	}
 
