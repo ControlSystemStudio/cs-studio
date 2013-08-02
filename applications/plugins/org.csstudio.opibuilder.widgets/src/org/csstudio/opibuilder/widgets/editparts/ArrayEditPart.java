@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.widgets.model.ArrayModel;
 import org.csstudio.opibuilder.widgets.model.ArrayModel.ArrayDataType;
+import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
 import org.csstudio.simplepv.BasicDataType;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
@@ -57,6 +58,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
+import org.epics.util.array.ListNumber;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -627,9 +629,13 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				VType value = (VType) newValue;
 				
 						
-						if (value instanceof VNumberArray)
-							setValue(VTypeHelper.getWrappedArray(((VNumberArray)value)));						
-						else{
+						if (value instanceof VNumberArray) {
+							Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
+							if(wrappedArray!=null)
+								setValue(wrappedArray);
+							else
+								setValue(((VNumberArray)value).getData());
+						} else{
 							if(value instanceof VEnum)						
 								setValue(new String[]{((VEnum)value).getValue()});
 							else if(value instanceof VString)						
@@ -817,9 +823,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	public void setValue(Object value) {
 		if (value == null)
 			return;
+		int index = getArrayFigure().getIndex();
 		if (value.getClass().isArray()) {
-			this.valueArray = value;
-			int index = getArrayFigure().getIndex();
+			this.valueArray = value;			
 			if (value instanceof String[]) {
 				String[] a = (String[])value;
 				setChildrenValue(index, Arrays.asList(a), ArrayDataType.STRING_ARRAY);
@@ -838,8 +844,11 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				setChildrenValue(index,new ShortArrayWrapper((short[])value), ArrayDataType.SHORT_ARRAY);
 			} else if (value instanceof int[]) {
 				setChildrenValue(index, new IntArrayWrapper((int[])value), ArrayDataType.INT_ARRAY);
-			}
-			
+			}			
+			return;
+		}
+		if(value instanceof ListNumber){
+			setChildrenValue(index, new ListNumberWrapper((ListNumber)value), ArrayDataType.DOUBLE_ARRAY);
 			return;
 		}
 		super.setValue(value);
