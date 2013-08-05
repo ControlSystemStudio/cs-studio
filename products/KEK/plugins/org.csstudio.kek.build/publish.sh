@@ -167,7 +167,15 @@ echo "#####################################################"
 echo " Publishing the source"
 echo "#####################################################"
 echo "Copying css_kek_$VERSION-src.zip to ${DEST}/apps"
-cp ${CYGDRIVE}${BUILDDIR}/css_kek_$VERSION-src.zip ${DEST}/apps/css_kek_${VERSION}-src_${DATE}.zip
+
+ZIPBINARY=${DEST}/apps/css_kek_${VERSION}-src_${DATE}.zip
+cp ${CYGDRIVE}${BUILDDIR}/css_kek_$VERSION-src.zip ${ZIPBINARY}
+
+# Add README file to source tar ball.
+cd ${SCRIPTDIR}/source
+zip ${ZIPBINARY} README
+cd ${PREV_DIR}
+
 DOWNLOAD_LINKS="$DOWNLOAD_LINKS<li><a href=\"apps/css_kek_$VERSION-src_${DATE}.zip\">Source</a></li>\n"
 
 # Archive built plugins
