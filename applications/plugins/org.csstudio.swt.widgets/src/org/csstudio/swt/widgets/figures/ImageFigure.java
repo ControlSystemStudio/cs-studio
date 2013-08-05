@@ -43,6 +43,7 @@ import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -635,6 +636,12 @@ public final class ImageFigure extends Figure implements Introspectable {
 		resizeImage();
 	}
 
+	@Override
+	public void setBorder(Border border) {
+		super.setBorder(border);
+		resizeImage();
+	}
+	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
