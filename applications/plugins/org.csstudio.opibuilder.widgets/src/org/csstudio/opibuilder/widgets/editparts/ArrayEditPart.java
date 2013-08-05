@@ -627,9 +627,13 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				VType value = (VType) newValue;
 				
 						
-						if (value instanceof VNumberArray)
-							setValue(VTypeHelper.getWrappedArray(((VNumberArray)value)));						
-						else{
+						if (value instanceof VNumberArray) {
+							Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
+							if(wrappedArray!=null)
+								setValue(wrappedArray);
+							else
+								setValue(VTypeHelper.getDoubleArray(value));
+						} else{
 							if(value instanceof VEnum)						
 								setValue(new String[]{((VEnum)value).getValue()});
 							else if(value instanceof VString)						
@@ -816,10 +820,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@Override
 	public void setValue(Object value) {
 		if (value == null)
-			return;
-		if (value.getClass().isArray()) {
-			this.valueArray = value;
+			return;		
+		if (value.getClass().isArray()) {	
 			int index = getArrayFigure().getIndex();
+			this.valueArray = value;	
 			if (value instanceof String[]) {
 				String[] a = (String[])value;
 				setChildrenValue(index, Arrays.asList(a), ArrayDataType.STRING_ARRAY);
@@ -838,10 +842,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				setChildrenValue(index,new ShortArrayWrapper((short[])value), ArrayDataType.SHORT_ARRAY);
 			} else if (value instanceof int[]) {
 				setChildrenValue(index, new IntArrayWrapper((int[])value), ArrayDataType.INT_ARRAY);
-			}
-			
+			}			
 			return;
-		}
+		}		
 		super.setValue(value);
 	}
 

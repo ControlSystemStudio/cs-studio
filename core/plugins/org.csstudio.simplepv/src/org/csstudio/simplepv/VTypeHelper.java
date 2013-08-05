@@ -387,7 +387,7 @@ public class VTypeHelper {
 		StringBuilder sb = new StringBuilder(data.size());
 		if (formatEnum == FormatEnum.STRING) {
 			for (int i = 0; i < data.size(); i++) {
-				final char c = getDisplayChar((char) data.getInt(i));
+				final char c = (char) data.getInt(i);
 				if (c == 0)
 					break;
 				sb.append(c);
@@ -528,26 +528,10 @@ public class VTypeHelper {
 		case HEX64:
 			return HEX_PREFIX + Long.toHexString(numValue.longValue());
 		case STRING:
-			return new String(new char[] { getDisplayChar((char) numValue.intValue()) });
+			return new String(new char[] { (char) numValue.intValue()});
 		}
 	}
 
-	/**
-	 * Convert char into printable character for Format.String
-	 * 
-	 * @param c
-	 *            Char, 0 for end-of-string
-	 * @return Printable version
-	 */
-	private static char getDisplayChar(final char c) {
-		if (c == 0) {
-			return 0;
-		}
-		if (Character.getType(c) != Character.CONTROL) {
-			return c;
-		}
-		return '?';
-	}
 
 	private static double[] ListNumberToDoubleArray(ListNumber listNumber) {
 		Object wrappedArray = CollectionNumbers.wrappedArray(listNumber);
