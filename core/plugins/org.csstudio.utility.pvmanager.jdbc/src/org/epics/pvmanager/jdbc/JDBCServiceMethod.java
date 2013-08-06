@@ -128,13 +128,19 @@ class JDBCServiceMethod extends ServiceMethod {
                     break;
                     
                 case Types.LONGNVARCHAR:
+                case Types.CHAR:
                 case Types.VARCHAR:
                     types.add(String.class);
                     data.add(new ArrayList<String>());
                     break;
                     
                 default:
-                    throw new IllegalArgumentException("Unsupported type " + metaData.getColumnTypeName(j));
+                    if ("java.lang.String".equals(metaData.getColumnClassName(j))) {
+                        types.add(String.class);
+                        data.add(new ArrayList<String>());
+                    } else {
+                        throw new IllegalArgumentException("Unsupported type " + metaData.getColumnTypeName(j));
+                    }
 
             }
         }
