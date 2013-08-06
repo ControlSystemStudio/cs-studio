@@ -331,12 +331,15 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param gfx
 	 *            The {@link Graphics} to use
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public synchronized void paintFigure(final Graphics gfx) {
 		if(loadingImage)
 			return;
 		Rectangle bound = getBounds().getCopy();
 		bound.crop(this.getInsets());
+		if(bound.width<=0 || bound.height<=0)
+			return;
 		if (loadingError) {
 			if (staticImage != null) {
 				staticImage.dispose();
