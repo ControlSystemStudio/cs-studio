@@ -8,12 +8,24 @@ BUILD="build"
 if [ -z "$ORGANIZATION" ]
 then 
   echo You must provide the ORGANIZATION
-exit -1
+  exit -1
 fi
 if [ -z "$WARPRODUCT" ]
 then 
   echo "You must provide the WARPRODUCT file path"
-exit -1
+  exit -1
+fi
+
+# If WARPRODUCT end with .path, the file only contains the path to the real war product file
+if [ `echo "$WARPRODUCT" | grep "\.path$"` ]; then
+  pathToWarProduct=`cat "$WARPRODUCT"`
+  warProductDir=`dirname "$WARPRODUCT"`
+  WARPRODUCT=`readlink -f "$warProductDir/$pathToWarProduct"`
+fi
+if [ ! -f "$WARPRODUCT" ]
+then 
+  echo "File '$WARPRODUCT' not found."
+  exit -1
 fi
 
 # Clean up

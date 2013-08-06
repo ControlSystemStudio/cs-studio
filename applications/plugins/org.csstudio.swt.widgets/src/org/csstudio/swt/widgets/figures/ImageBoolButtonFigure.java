@@ -146,6 +146,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		if(loadingImage)
 			return;
 		Rectangle clientArea = getClientArea();
+		if(clientArea.width <=0 || clientArea.height <=0)
+			return;
 		Image temp;
 		if (booleanValue)
 			temp = onImage;

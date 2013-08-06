@@ -82,8 +82,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		initScriptEngine();
 		
 		errorInScript = false;
-		errorSource = scriptData instanceof RuleScriptData ?
-				((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
+		errorSource =(scriptData instanceof RuleScriptData ?
+				((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString())
+				+ " on " +
+						editpart.getWidgetModel().getName() ;
+		
 
 		if(scriptData instanceof RuleScriptData){
 			compileString(((RuleScriptData)scriptData).getScriptString());

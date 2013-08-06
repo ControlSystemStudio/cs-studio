@@ -51,7 +51,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 		buttonFigure.setText(model.getText());
 		buttonFigure.setToggleStyle(model.isToggleButton());
 		buttonFigure.setImagePath(model.getImagePath());
-		editpart.updatePropSheet(model.isToggleButton());	
+		editpart.updatePropSheet();	
 		return buttonFigure;
 	}
 	
@@ -138,7 +138,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
 				figure.setToggleStyle((Boolean) newValue);				
-				editpart.updatePropSheet((Boolean) newValue);
+				editpart.updatePropSheet();
 				return true;
 			}
 
