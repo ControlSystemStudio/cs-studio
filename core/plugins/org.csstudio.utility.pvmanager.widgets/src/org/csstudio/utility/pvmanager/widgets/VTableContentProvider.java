@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.epics.util.array.ListNumber;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.VTable;
 
 public class VTableContentProvider implements IStructuredContentProvider {
@@ -33,7 +34,9 @@ public class VTableContentProvider implements IStructuredContentProvider {
 				return ((ListNumber) vTable.getColumnData(column)).getDouble(row);
 			} else if (vTable.getColumnType(column).equals(String.class)) {
 				return ((List<?>) vTable.getColumnData(column)).get(row).toString();
-			} else {
+			} else if (vTable.getColumnType(column).equals(Timestamp.class)){
+			 	return ((List<?>) vTable.getColumnData(column)).get(row);
+		 	} else {
 				throw new RuntimeException("Table contain unsupported type " + vTable.getColumnType(column).getName());
 			}
 		}

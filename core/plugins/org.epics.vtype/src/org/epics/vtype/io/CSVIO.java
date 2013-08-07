@@ -18,6 +18,7 @@ import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 import org.epics.util.text.StringUtil;
+import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.Time;
@@ -222,6 +223,11 @@ public class CSVIO {
         }
         if (clazz.equals(Integer.TYPE)) {
             return Integer.toString(((ListInt) table.getColumnData(column)).getInt(row));
+        }
+        if (clazz.equals(Timestamp.class)) {
+            @SuppressWarnings("unchecked")
+            List<?> timestamp = (List<?>) table.getColumnData(column);
+            return "\"" + timeFormat.format(timestamp.get(row)) + "\"";
         }
         throw new UnsupportedOperationException("Can't export columns of type " + clazz.getSimpleName());
     }
