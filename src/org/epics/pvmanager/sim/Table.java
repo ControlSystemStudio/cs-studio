@@ -34,7 +34,7 @@ public class Table extends SimFunction<VTable> {
         }
     }
     
-    private final List<Class<?>> types = Arrays.asList((Class<?>) String.class, Double.TYPE, Integer.TYPE);
+    private final List<Class<?>> types = Arrays.asList((Class<?>) String.class, Double.TYPE, Integer.TYPE, Timestamp.class);
     
 
     @Override
