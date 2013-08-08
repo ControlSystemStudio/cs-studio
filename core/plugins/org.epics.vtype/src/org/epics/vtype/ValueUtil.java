@@ -263,7 +263,9 @@ public class ValueUtil {
      */
     public static VImage toVImage(BufferedImage image) {
         if (image.getType() != BufferedImage.TYPE_3BYTE_BGR) {
-            throw new IllegalArgumentException("Only BufferedImages of type TYPE_3BYTE_BGR can currently be converted to VImage");
+            BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            newImage.getGraphics().drawImage(image, 0, 0, null);
+            image = newImage;
         }
 
         byte[] buffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
