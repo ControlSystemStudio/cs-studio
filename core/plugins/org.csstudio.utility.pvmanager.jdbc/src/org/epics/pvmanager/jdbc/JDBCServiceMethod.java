@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import javax.sql.DataSource;
 import org.epics.pvmanager.WriteFunction;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.util.array.CircularBufferDouble;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
@@ -119,6 +121,9 @@ class JDBCServiceMethod extends ServiceMethod {
             switch (metaData.getColumnType(j)) {
                 case Types.DOUBLE:
                 case Types.FLOAT:
+                    // XXX: NUMERIC should be BigInteger
+                case Types.NUMERIC:
+                    // XXX: Integers should be Long/Int
                 case Types.INTEGER:
                 case Types.TINYINT:
                 case Types.BIGINT:
@@ -130,8 +135,16 @@ class JDBCServiceMethod extends ServiceMethod {
                 case Types.LONGNVARCHAR:
                 case Types.CHAR:
                 case Types.VARCHAR:
+                    // XXX: should be a booloean
+                case Types.BOOLEAN:
+                case Types.BIT:
                     types.add(String.class);
                     data.add(new ArrayList<String>());
+                    break;
+                    
+                case Types.TIMESTAMP:
+                    types.add(Timestamp.class);
+                    data.add(new ArrayList<Timestamp>());
                     break;
                     
                 default:
@@ -152,6 +165,15 @@ class JDBCServiceMethod extends ServiceMethod {
                     @SuppressWarnings("unchecked")
                     List<String> strings = (List<String>) data.get(i);
                     strings.add(resultSet.getString(i+1));
+                } else if (type.equals(Timestamp.class)) {
+                    @SuppressWarnings("unchecked")
+                    List<Timestamp> timestamps = (List<Timestamp>) data.get(i);
+                    java.sql.Timestamp sqlTimestamp = resultSet.getTimestamp(i+1);
+                    if (sqlTimestamp == null) {
+                        timestamps.add(null);
+                    } else {
+                        timestamps.add(Timestamp.of(new Date(sqlTimestamp.getTime())));
+                    }
                 } else if (type.equals(double.class)) {
                     ((CircularBufferDouble) data.get(i)).addDouble(resultSet.getDouble(i+1));
                 }
