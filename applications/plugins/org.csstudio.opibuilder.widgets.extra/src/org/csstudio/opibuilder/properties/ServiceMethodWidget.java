@@ -3,6 +3,8 @@
  */
 package org.csstudio.opibuilder.properties;
 
+import static org.csstudio.opibuilder.properties.ServiceMethodDescription.createServiceMethodDescription;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,39 +12,37 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.csstudio.ui.util.composites.BeanComposite;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceRegistry;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 /**
  * @author shroffk
  * 
  */
 public class ServiceMethodWidget extends BeanComposite {
-	
+
     private Text text_method;
     private Text text_arg_prefix;
     private Text text_result_prefix;
@@ -51,21 +51,42 @@ public class ServiceMethodWidget extends BeanComposite {
     private final String DEFAULT_PREFIX = "loc://${DID}";
     // Model
     private Map<String, Service> services;
+    private String description;
+    private String argumentPrefix;
+    private String resultPrefix;
     private ServiceMethodDescription serviceMethodDescription;
-    
+
     private Table argumentPvTable;
     private Table resultPvTable;
     private TableViewer argumentPvTableViewer;
     private TableViewer resultPvTableViewer;
+    private Composite resultPvTableViewerComposite;
+    private Composite argumentPvTableViewerComposite;
 
     public ServiceMethodWidget(Composite parent, int style) {
 	super(parent, style);
-	setLayout(new GridLayout(3, false));
+	setLayout(new FormLayout());
 
 	Label lblMethodName = new Label(this, SWT.NONE);
+	FormData fd_lblMethodName = new FormData();
+	fd_lblMethodName.top = new FormAttachment(0, 10);
+	fd_lblMethodName.left = new FormAttachment(0, 5);
+	lblMethodName.setLayoutData(fd_lblMethodName);
 	lblMethodName.setText("Method Name:");
-	
-	text_method = new Text(this, SWT.BORDER);	
+
+	Button btnNewButton = new Button(this, SWT.NONE);
+	FormData fd_btnNewButton = new FormData();
+	fd_btnNewButton.top = new FormAttachment(0, 5);
+	fd_btnNewButton.right = new FormAttachment(100, -5);
+	btnNewButton.setLayoutData(fd_btnNewButton);
+	btnNewButton.setText("Search");
+
+	text_method = new Text(this, SWT.BORDER);
+	FormData fd_text_method = new FormData();
+	fd_text_method.right = new FormAttachment(btnNewButton, -5);
+	fd_text_method.left = new FormAttachment(lblMethodName, 5);
+	fd_text_method.top = new FormAttachment(0, 7);
+	text_method.setLayoutData(fd_text_method);
 	text_method.addKeyListener(new KeyAdapter() {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
@@ -81,240 +102,285 @@ public class ServiceMethodWidget extends BeanComposite {
 				    .getDefault().findService(serviceName));
 			}
 		    }
-		    String service = text_method.getText().split("/")[0];
-		    String method = text_method.getText().split("/")[1];
-		    ServiceMethod serviceMethod = services.get(service)
-			    .getServiceMethods().get(method);
-		    if (serviceMethod != null) {
-			serviceMethodDescription = ServiceMethodDescription
-				.createServiceMethodDescription(service, serviceMethod);
-			updateServiceMethodDescription();
-			resetArgumentPvs();
-			resetResultPvs();
-		    }else{
-			serviceMethodDescription = null;
-			updateServiceMethodDescription();
-			resetArgumentPvs();
-			resetResultPvs();
-		    }
-		}
-	    }	    
-	});
-	text_method.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
+		    String[] sm = text_method.getText().split("/");
+		    String service = "";
+		    ServiceMethod serviceMethod = null;
+		    if (sm.length == 2) {
+			service = sm[0];
+			serviceMethod = services.get(service) != null ? services
+				.get(service).getServiceMethods().get(sm[1])
+				: null;
+			if (serviceMethod != null) {
+			    serviceMethodDescription = createServiceMethodDescription(
+				    service, serviceMethod);
+			    description = serviceMethod.getDescription();
+			    argumentPrefix = DEFAULT_PREFIX + "_"
+				    + serviceMethodDescription.getService()
+				    + "_"
+				    + serviceMethodDescription.getMethod()
+				    + "_";
+			    resultPrefix = DEFAULT_PREFIX + "_"
+				    + serviceMethodDescription.getService()
+				    + "_"
+				    + serviceMethodDescription.getMethod()
+				    + "_";
+			    resetArgumentPvs();
+			    resetResultPvs();
+			    updateUI();
 
-	Button btnNewButton = new Button(this, SWT.NONE);
-	btnNewButton.setText("Search");
+			} else {
+			    description = "Unknown Service/Method "
+				    + text_method.getText();
+			    serviceMethodDescription = createServiceMethodDescription();
+			    argumentPrefix = "";
+			    resultPrefix = "";
+			    resetArgumentPvs();
+			    resetResultPvs();
+			    updateUI();
+			}
+		    } else {
+			lblServiceMethodDescription
+				.setText("Invalid Service/Method name");
+		    }
+
+		}
+	    }
+	});
 
 	lblServiceMethodDescription = new Label(this, SWT.NONE);
-	lblServiceMethodDescription.setLayoutData(new GridData(SWT.LEFT,
-		SWT.CENTER, false, false, 3, 1));
+	FormData fd_lblServiceMethodDescription = new FormData();
+	fd_lblServiceMethodDescription.right = new FormAttachment(100, -5);
+	fd_lblServiceMethodDescription.top = new FormAttachment(0, 40);
+	fd_lblServiceMethodDescription.left = new FormAttachment(0, 5);
+	lblServiceMethodDescription
+		.setLayoutData(fd_lblServiceMethodDescription);
 
 	Label lblNewLabel_1 = new Label(this, SWT.NONE);
-	lblNewLabel_1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-		false, 3, 1));
+	FormData fd_lblNewLabel_1 = new FormData();
+	fd_lblNewLabel_1.top = new FormAttachment(0, 65);
+	fd_lblNewLabel_1.left = new FormAttachment(0, 5);
+	lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
 	lblNewLabel_1.setText("Arguments:");
 
 	Label lblNewLabel_2 = new Label(this, SWT.NONE);
-	lblNewLabel_2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-		false, 1, 1));
+	FormData fd_lblNewLabel_2 = new FormData();
+	fd_lblNewLabel_2.top = new FormAttachment(0, 93);
+	fd_lblNewLabel_2.left = new FormAttachment(0, 5);
+	lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
 	lblNewLabel_2.setText("Argument Prefix:");
 
 	text_arg_prefix = new Text(this, SWT.BORDER);
+	FormData fd_text_arg_prefix = new FormData();
+	fd_text_arg_prefix.right = new FormAttachment(100, -5);
+	fd_text_arg_prefix.top = new FormAttachment(0, 90);
+	fd_text_arg_prefix.left = new FormAttachment(0, 120);
+	text_arg_prefix.setLayoutData(fd_text_arg_prefix);
 	text_arg_prefix.setEnabled(false);
 	text_arg_prefix.addKeyListener(new KeyAdapter() {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		// argument prefix set
 		if (e.keyCode == SWT.CR) {
+		    argumentPrefix = text_arg_prefix.getText();
 		    resetArgumentPvs();
 		}
 	    }
 	});
-	text_arg_prefix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 2, 1));
-	
-	Composite composite = new Composite(this, SWT.NONE);
-	composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
-	TableColumnLayout tcl_composite = new TableColumnLayout();
-	composite.setLayout(tcl_composite);
-	
-	argumentPvTableViewer = new TableViewer(composite, SWT.BORDER | SWT.FULL_SELECTION);
-	argumentPvTable = argumentPvTableViewer.getTable();
-	argumentPvTable.setHeaderVisible(true);
-	argumentPvTable.setLinesVisible(true);
-	
-	TableViewerColumn tableViewerColumn = new TableViewerColumn(argumentPvTableViewer, SWT.NONE);
-	tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-		public Image getImage(Object element) {
-			return null;
-		}
-		
-		@SuppressWarnings("unchecked")
-		public String getText(Object element) {
-		    if(element != null && element instanceof Entry){
-			return ((Entry<String, String>)element).getKey();
-		    }
-		    return "";
-		}
-	});
-	TableColumn tblclmnNewColumn = tableViewerColumn.getColumn();
-	tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(50, 100, true) );
-	tblclmnNewColumn.setText("argument name");
-	
-	TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(argumentPvTableViewer, SWT.NONE);
-	tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
-		public Image getImage(Object element) {
-			return null;
-		}
-		
-		@SuppressWarnings("unchecked")
-		public String getText(Object element) {
-		    if(element != null && element instanceof Entry){
-			return ((Entry<String, String>)element).getValue();
-		    }
-		    return "";
-		}
-	});
-	TableColumn tblclmnNewColumn_1 = tableViewerColumn_1.getColumn();
-	tcl_composite.setColumnData(tblclmnNewColumn_1, new ColumnWeightData(50, 100, true));
-	tblclmnNewColumn_1.setText("pv/formula");
-	argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
 
-	Label lblNewLabel_3 = new Label(this, SWT.NONE);
-	lblNewLabel_3.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-		false, 3, 1));
-	lblNewLabel_3.setText("Results:");
+	resultPvTableViewerComposite = new Composite(this, SWT.NONE);
+	FormData fd_composite_1 = new FormData();
+	fd_composite_1.bottom = new FormAttachment(100, -5);
+	fd_composite_1.right = new FormAttachment(100, -5);
+	fd_composite_1.left = new FormAttachment(0, 5);
+	resultPvTableViewerComposite.setLayoutData(fd_composite_1);
+	TableColumnLayout tcl_composite_1 = new TableColumnLayout();
+	resultPvTableViewerComposite.setLayout(tcl_composite_1);
 
-	Label lblResultPrefix = new Label(this, SWT.NONE);
-	lblResultPrefix.setText("Result Prefix:");
+	resultPvTableViewer = new TableViewer(resultPvTableViewerComposite,
+		SWT.BORDER | SWT.FULL_SELECTION);
+	resultPvTable = resultPvTableViewer.getTable();
+	resultPvTable.setHeaderVisible(true);
+	resultPvTable.setLinesVisible(true);
+
+	TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
+		resultPvTableViewer, SWT.NONE);
+	tableViewerColumn_2.setLabelProvider(new ColumnLabelProvider() {
+	    public Image getImage(Object element) {
+		return null;
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    public String getText(Object element) {
+		if (element != null && element instanceof Entry) {
+		    return ((Entry<String, String>) element).getKey();
+		}
+		return "";
+	    }
+	});
+	TableColumn tblclmnNewColumn_2 = tableViewerColumn_2.getColumn();
+	tcl_composite_1.setColumnData(tblclmnNewColumn_2, new ColumnWeightData(
+		50, 100, true));
+	tblclmnNewColumn_2.setText("result");
+
+	TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(
+		resultPvTableViewer, SWT.NONE);
+	tableViewerColumn_3.setLabelProvider(new ColumnLabelProvider() {
+	    public Image getImage(Object element) {
+		return null;
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    public String getText(Object element) {
+		if (element != null && element instanceof Entry) {
+		    return ((Entry<String, String>) element).getValue();
+		}
+		return "";
+	    }
+	});
+	TableColumn tblclmnNewColumn_3 = tableViewerColumn_3.getColumn();
+	tcl_composite_1.setColumnData(tblclmnNewColumn_3, new ColumnWeightData(
+		50, 100, true));
+	tblclmnNewColumn_3.setText("pv/formula");
+	resultPvTableViewer.setContentProvider(new ArrayContentProvider());
 
 	text_result_prefix = new Text(this, SWT.BORDER);
+	FormData fd_text_result_prefix = new FormData();
+	fd_text_result_prefix.bottom = new FormAttachment(resultPvTableViewerComposite, -5);
+	fd_text_result_prefix.right = new FormAttachment(100, -5);
+	fd_text_result_prefix.left = new FormAttachment(0, 120);
+	text_result_prefix.setLayoutData(fd_text_result_prefix);
 	text_result_prefix.setEnabled(false);
 	text_result_prefix.addKeyListener(new KeyAdapter() {
-	    
+
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		// result prefix
 		if (e.keyCode == SWT.CR) {
+		    resultPrefix = text_result_prefix.getText();
 		    resetResultPvs();
 		}
 	    }
 	});
-	text_result_prefix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-		true, false, 2, 1));
-	
-	Composite composite_1 = new Composite(this, SWT.NONE);
-	composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
-	TableColumnLayout tcl_composite_1 = new TableColumnLayout();
-	composite_1.setLayout(tcl_composite_1);
-	
-	resultPvTableViewer = new TableViewer(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
-	resultPvTable = resultPvTableViewer.getTable();
-	resultPvTable.setHeaderVisible(true);
-	resultPvTable.setLinesVisible(true);
-	
-	TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(resultPvTableViewer, SWT.NONE);
-	tableViewerColumn_2.setLabelProvider(new ColumnLabelProvider() {
-		public Image getImage(Object element) {
-			return null;
+
+	Label lblResultPrefix = new Label(this, SWT.NONE);
+	FormData fd_lblResultPrefix = new FormData();
+	fd_lblResultPrefix.top = new FormAttachment(text_result_prefix, 3,
+		SWT.CENTER);
+	fd_lblResultPrefix.left = new FormAttachment(0, 5);
+	lblResultPrefix.setLayoutData(fd_lblResultPrefix);
+	lblResultPrefix.setText("Result Prefix:");
+
+	Label lblNewLabel_3 = new Label(this, SWT.NONE);
+	FormData fd_lblNewLabel_3 = new FormData();
+	fd_lblNewLabel_3.bottom = new FormAttachment(text_result_prefix);
+	fd_lblNewLabel_3.left = new FormAttachment(0, 5);
+	lblNewLabel_3.setLayoutData(fd_lblNewLabel_3);
+	lblNewLabel_3.setText("Results:");
+
+	argumentPvTableViewerComposite = new Composite(this, SWT.NONE);
+	FormData fd_composite = new FormData();
+	fd_composite.bottom = new FormAttachment(lblNewLabel_3, -5);
+	fd_composite.right = new FormAttachment(100, -5);
+	fd_composite.top = new FormAttachment(0, 121);
+	fd_composite.left = new FormAttachment(0, 5);
+	argumentPvTableViewerComposite.setLayoutData(fd_composite);
+	TableColumnLayout tcl_composite = new TableColumnLayout();
+	argumentPvTableViewerComposite.setLayout(tcl_composite);
+
+	argumentPvTableViewer = new TableViewer(argumentPvTableViewerComposite,
+		SWT.BORDER | SWT.FULL_SELECTION);
+	argumentPvTable = argumentPvTableViewer.getTable();
+	argumentPvTable.setHeaderVisible(true);
+	argumentPvTable.setLinesVisible(true);
+
+	TableViewerColumn tableViewerColumn = new TableViewerColumn(
+		argumentPvTableViewer, SWT.NONE);
+	tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+	    public Image getImage(Object element) {
+		return null;
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    public String getText(Object element) {
+		if (element != null && element instanceof Entry) {
+		    return ((Entry<String, String>) element).getKey();
 		}
-		
-		@SuppressWarnings("unchecked")
-		public String getText(Object element) {
-		    if(element != null && element instanceof Entry){
-			return ((Entry<String, String>)element).getKey();
-		    }
-		    return "";
-		}
+		return "";
+	    }
 	});
-	TableColumn tblclmnNewColumn_2 = tableViewerColumn_2.getColumn();
-	tcl_composite_1.setColumnData(tblclmnNewColumn_2, new ColumnWeightData(50, 100, true));
-	tblclmnNewColumn_2.setText("result");
-	
-	TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(resultPvTableViewer, SWT.NONE);
-	tableViewerColumn_3.setLabelProvider(new ColumnLabelProvider() {
-		public Image getImage(Object element) {
-			return null;
+	TableColumn tblclmnNewColumn = tableViewerColumn.getColumn();
+	tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(50,
+		100, true));
+	tblclmnNewColumn.setText("argument name");
+
+	TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
+		argumentPvTableViewer, SWT.NONE);
+	tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+	    public Image getImage(Object element) {
+		return null;
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    public String getText(Object element) {
+		if (element != null && element instanceof Entry) {
+		    return ((Entry<String, String>) element).getValue();
 		}
-		
-		@SuppressWarnings("unchecked")
-		public String getText(Object element) {
-		    if(element != null && element instanceof Entry){
-			return ((Entry<String, String>)element).getValue();
-		    }
-		    return "";
-		}
+		return "";
+	    }
 	});
-	TableColumn tblclmnNewColumn_3 = tableViewerColumn_3.getColumn();
-	tcl_composite_1.setColumnData(tblclmnNewColumn_3, new ColumnWeightData(50, 100, true));
-	tblclmnNewColumn_3.setText("pv/formula");
-	resultPvTableViewer.setContentProvider(new ArrayContentProvider());
+	TableColumn tblclmnNewColumn_1 = tableViewerColumn_1.getColumn();
+	tcl_composite.setColumnData(tblclmnNewColumn_1, new ColumnWeightData(
+		50, 100, true));
+	tblclmnNewColumn_1.setText("pv/formula");
+	argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
     }
-    
-    private void updateServiceMethodDescription() {
-	if(serviceMethodDescription != null){
-//	    lblServiceMethodDescription.setText(serviceMethodDescription
-//		    .getMethodDescription().trim());
+
+    private void updateUI() {
+	if (serviceMethodDescription != null) {
+	    text_method.setText(serviceMethodDescription.getService() + "/"
+		    + serviceMethodDescription.getMethod());
+	    lblServiceMethodDescription.setText(description);
 	    text_arg_prefix.setEnabled(true);
-	    text_arg_prefix.setText(DEFAULT_PREFIX + "_"
-		    + serviceMethodDescription.getService() + "_"
-		    + serviceMethodDescription.getMethod() + "_");
+	    text_arg_prefix.setText(argumentPrefix);
+	    argumentPvTableViewer.setInput(serviceMethodDescription
+		    .getArgumentPvs().entrySet());
 	    text_result_prefix.setEnabled(true);
-	    text_result_prefix.setText(DEFAULT_PREFIX + "_"
-		    + serviceMethodDescription.getService() + "_"
-		    + serviceMethodDescription.getMethod() + "_");
-	}else{
+	    text_result_prefix.setText(resultPrefix);
+	    resultPvTableViewer.setInput(serviceMethodDescription
+		    .getResultPvs().entrySet());
+	    layout();
+	} else {
 	    lblServiceMethodDescription.setText("");
 	    text_arg_prefix.setEnabled(false);
 	    text_arg_prefix.setText("");
+	    argumentPvTableViewer.setInput(null);
 	    text_result_prefix.setEnabled(false);
-	    text_result_prefix.setText("");	 
+	    text_result_prefix.setText("");
+	    resultPvTableViewer.setInput(null);
+	    layout();
 	}
-	update();
+	getShell().pack();
     }
-    
-    private void updateUI(){
-	if(serviceMethodDescription != null){
-	    text_arg_prefix.setEnabled(true);
-	    text_arg_prefix.setText(DEFAULT_PREFIX + "_"
-		    + serviceMethodDescription.getService() + "_"
-		    + serviceMethodDescription.getMethod() + "_");
-	    text_result_prefix.setEnabled(true);
-	    text_result_prefix.setText(DEFAULT_PREFIX + "_"
-		    + serviceMethodDescription.getService() + "_"
-		    + serviceMethodDescription.getMethod() + "_");
-	}else{
-	    lblServiceMethodDescription.setText("");
-	    text_arg_prefix.setEnabled(false);
-	    text_arg_prefix.setText("");
-	    text_result_prefix.setEnabled(false);
-	    text_result_prefix.setText("");	 
-	}
-	update();
-    }
-    
+
     /**
      * recreates all the argument pvs using the prefix
      */
-    private void resetArgumentPvs(){
-	for (String argument : serviceMethodDescription.getArgumentPvs().keySet()) {
-	    serviceMethodDescription.setArgumentPv(argument,
-		    text_arg_prefix.getText() + argument);
+    private void resetArgumentPvs() {
+	for (String argument : serviceMethodDescription.getArgumentPvs()
+		.keySet()) {
+	    serviceMethodDescription.setArgumentPv(argument, argumentPrefix
+		    + argument);
 	}
-	argumentPvTableViewer.setInput(serviceMethodDescription.getArgumentPvs().entrySet());
-	argumentPvTable.getParent().layout();
+	updateUI();
     }
-    
-    private void resetResultPvs(){	
+
+    private void resetResultPvs() {
 	for (String result : serviceMethodDescription.getResultPvs().keySet()) {
-	    serviceMethodDescription.setResultPv(result,
-		    text_result_prefix.getText() + result);
+	    serviceMethodDescription.setResultPv(result, resultPrefix + result);
 	}
-	resultPvTableViewer.setInput(serviceMethodDescription.getResultPvs().entrySet());
-	resultPvTable.getParent().layout();    
+	updateUI();
     }
-    
+
     /**
      * @return the serviceMethodDescription
      */
