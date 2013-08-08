@@ -1004,17 +1004,20 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		if(colorMapRamp.isVisible())
 			width += (colorMapRamp.getPreferredSize(
 				getClientArea().width, getClientArea().height).width + GAP);
-		if(yAxis.isVisible()){
+		//This is a temporary fix of cursor value problem when the axes are invisible
+		boolean yVisible = true;// yAxis.isVisible();
+		boolean xVisible = true;// xAxis.isVisible();
+		if(yVisible){
 			width += yAxis.getPreferredSize(getClientArea().width, getClientArea().height).width;
 			height += yAxis.getMargin();
-			if(!xAxis.isVisible())
+			if(!xVisible)
 				height += yAxis.getMargin();
 		}
-		if(xAxis.isVisible()){
+		if(xVisible){
 			height += xAxis.getPreferredSize(getClientArea().width, getClientArea().height).height;
 			if(!colorMapRamp.isVisible())
 				width += xAxis.getMargin();
-			if(!yAxis.isVisible())
+			if(!yVisible)
 				width += xAxis.getMargin();
 				
 		}
@@ -1077,24 +1080,27 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		Rectangle clientArea = getClientArea().getCopy();	
 
 		Rectangle yAxisBounds = null, xAxisBounds = null, rampBounds;
-		if(yAxis.isVisible()){
+		//This is a temporary fix of cursor value problem when the axes are invisible
+		boolean xVisible = true;// xAxis.isVisible();
+		boolean yVisible = true;//yAxis.isVisible();
+		if(yVisible){
 			Dimension yAxisSize = yAxis.getPreferredSize(clientArea.width, clientArea.height);			
 			yAxisBounds = new Rectangle(clientArea.x, clientArea.y, 
 					yAxisSize.width, yAxisSize.height); // the height is not correct for now
 			clientArea.x += yAxisSize.width;
 			clientArea.y += yAxis.getMargin();	
-			clientArea.height -= xAxis.isVisible()? yAxis.getMargin() : 2*yAxis.getMargin()-1;				
+			clientArea.height -= xVisible? yAxis.getMargin() : 2*yAxis.getMargin()-1;				
 			clientArea.width -= yAxisSize.width;			
 		}
-		if(xAxis.isVisible()){
+		if(xVisible){
 			Dimension xAxisSize = xAxis.getPreferredSize(clientArea.width, clientArea.height);			
 			
-			xAxisBounds = new Rectangle((yAxis.isVisible() ? yAxisBounds.x + yAxisBounds.width - xAxis.getMargin()-1 : clientArea.x), 
+			xAxisBounds = new Rectangle((yVisible ? yAxisBounds.x + yAxisBounds.width - xAxis.getMargin()-1 : clientArea.x), 
 				clientArea.y + clientArea.height - xAxisSize.height,
 				xAxisSize.width, xAxisSize.height); // the width is not correct for now
 			clientArea.height -= xAxisSize.height;	
 			//re-adjust yAxis height					
-			if(yAxis.isVisible()){
+			if(yVisible){
 				yAxisBounds.height -= (xAxisSize.height - yAxis.getMargin()); 
 			}else{
 				clientArea.x +=xAxis.getMargin();
@@ -1109,26 +1115,26 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			colorMapRamp.setBounds(rampBounds);
 			clientArea.width -= (rampSize.width + GAP);
 			//re-adjust xAxis width
-			if(xAxis.isVisible())
-				if(yAxis.isVisible())
+			if(xVisible)
+				if(yVisible)
 					xAxisBounds.width -=(rampSize.width + GAP - 2*xAxis.getMargin());
 				else	
 					xAxisBounds.width -= (rampSize.width + GAP - xAxis.getMargin());
 		}else{
 			//re-adjust xAxis width
-			if(xAxis.isVisible()){
-				if(yAxis.isVisible())
+			if(xVisible){
+				if(yVisible)
 					xAxisBounds.width += xAxis.getMargin();
 				clientArea.width -= xAxis.getMargin();
 			}
 				
 		}
 		
-		if(yAxis.isVisible()){
+		if(yVisible){
 			yAxis.setBounds(yAxisBounds);
 		}
 		
-		if(xAxis.isVisible()){
+		if(xVisible){
 			xAxis.setBounds(xAxisBounds);
 		}
 			
