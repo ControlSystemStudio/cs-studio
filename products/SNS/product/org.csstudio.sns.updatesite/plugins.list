@@ -100,6 +100,7 @@ org.csstudio.scan.ui.scanmonitor/**
 org.csstudio.scan.ui.scantree/**
 org.csstudio.simplepv/**
 org.csstudio.simplepv.pvmanager/**
+org.csstudio.simplepv.utilitypv/**
 org.csstudio.security/**
 org.csstudio.security.ui/**
 org.csstudio.sns.dummyAuthorization/**
