@@ -18,6 +18,7 @@ public class ServiceMethodDescription {
 
     private String service;
     private String method;
+    private String description;
     private Map<String, String> argumentPvs;
     private Map<String, String> resultPvs;
 
@@ -27,31 +28,34 @@ public class ServiceMethodDescription {
      * @param resultPvs
      */
     private ServiceMethodDescription(String service, String method,
-	    Map<String, String> argumentPvs, Map<String, String> resultPvs) {
+	    String description, Map<String, String> argumentPvs,
+	    Map<String, String> resultPvs) {
 	this.service = service;
 	this.method = method;
+	this.description = description;
 	this.argumentPvs = argumentPvs;
 	this.resultPvs = resultPvs;
     }
 
     public static ServiceMethodDescription createServiceMethodDescription() {
-	return new ServiceMethodDescription("", "",
+	return new ServiceMethodDescription("", "", "",
 		Collections.<String, String> emptyMap(),
 		Collections.<String, String> emptyMap());
     }
 
     public static ServiceMethodDescription createServiceMethodDescription(
-	    String service, String method, Map<String, String> argumentPvs, Map<String, String> resultPvs) {
-	return new ServiceMethodDescription(service, method,
+	    String service, String method, String description,
+	    Map<String, String> argumentPvs, Map<String, String> resultPvs) {
+	return new ServiceMethodDescription(service, method, description,
 		new HashMap<String, String>(argumentPvs),
 		new HashMap<String, String>(resultPvs));
     }
-    
+
     public static ServiceMethodDescription createServiceMethodDescription(
 	    String service, ServiceMethod serviceMethod) {
 	return new ServiceMethodDescription(service, serviceMethod.getName(),
-		new HashMap<String, String>(serviceMethod
-			.getArgumentDescriptions()),
+		serviceMethod.getDescription(), new HashMap<String, String>(
+			serviceMethod.getArgumentDescriptions()),
 		new HashMap<String, String>(serviceMethod
 			.getResultDescriptions()));
     }
@@ -62,12 +66,19 @@ public class ServiceMethodDescription {
     public String getService() {
 	return service;
     }
-    
+
     /**
      * @return the method
      */
     public String getMethod() {
-        return method;
+	return method;
+    }    
+    
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -78,10 +89,39 @@ public class ServiceMethodDescription {
     }
 
     /**
+     * @param argumentPvs
+     *            the argumentPvs to set
+     */
+    public void setArgumentPvs(Map<String, String> argumentPvs) {
+	if (this.argumentPvs.keySet().equals(argumentPvs.keySet())) {
+	    this.argumentPvs = argumentPvs;
+	} else {
+	    throw new IllegalArgumentException(
+		    "Invalid set of arguments for method " + service + "/"
+			    + method);
+	}
+
+    }
+
+    /**
      * @return the results
      */
     public Map<String, String> getResultPvs() {
 	return resultPvs;
+    }
+
+    /**
+     * @param resultPvs
+     *            the resultPvs to set
+     */
+    public void setResultPvs(Map<String, String> resultPvs) {
+	if (this.resultPvs.keySet().equals(resultPvs.keySet())) {
+	    this.resultPvs = resultPvs;
+	} else {
+	    throw new IllegalArgumentException(
+		    "Invalid set of results for method " + service + "/"
+			    + method);
+	}
     }
 
     /**

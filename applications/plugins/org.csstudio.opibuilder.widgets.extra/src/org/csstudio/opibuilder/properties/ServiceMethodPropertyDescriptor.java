@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -10,8 +11,11 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class ServiceMethodPropertyDescriptor extends TextPropertyDescriptor {
     
-    public ServiceMethodPropertyDescriptor(Object id, String displayName) {
+    private final AbstractWidgetModel widgetModel;
+
+    public ServiceMethodPropertyDescriptor(final Object id, final String displayName, final AbstractWidgetModel widgetModel) {
 	super(id, displayName);
+	this.widgetModel = widgetModel;
 	setLabelProvider(new LabelProvider(){
 	    @Override
 	    public String getText(Object element) {
@@ -34,9 +38,9 @@ public class ServiceMethodPropertyDescriptor extends TextPropertyDescriptor {
 	    protected void openDialog(Shell parentShell,
 		    String dialogTitle) {
 		ServiceMethodDialog serviceMethodDialog = new ServiceMethodDialog(
-			parentShell);
+			parentShell, widgetModel);
 		serviceMethodDialog.setBlockOnOpen(true);
-		if (serviceMethodDialog.open() == Window.OK) {
+		if (serviceMethodDialog.open() == Window.OK) {		    
 		    serviceMethodDescription = serviceMethodDialog
 			    .getServiceMethodDescription();
 		}

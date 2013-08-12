@@ -5,11 +5,14 @@ package org.csstudio.opibuilder.properties;
 
 import static org.csstudio.opibuilder.properties.ServiceMethodDescription.createServiceMethodDescription;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -18,14 +21,17 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -36,6 +42,10 @@ import org.epics.pvmanager.service.ServiceRegistry;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author shroffk
@@ -47,15 +57,8 @@ public class ServiceMethodWidget extends BeanComposite {
     private Text text_arg_prefix;
     private Text text_result_prefix;
     private Label lblServiceMethodDescription;
-
-    private final String DEFAULT_PREFIX = "loc://${DID}";
-    // Model
-    private Map<String, Service> services;
-    private String description;
-    private String argumentPrefix;
-    private String resultPrefix;
-    private ServiceMethodDescription serviceMethodDescription;
-
+    private Color initialForegroundColor;
+    
     private Table argumentPvTable;
     private Table resultPvTable;
     private TableViewer argumentPvTableViewer;
@@ -63,7 +66,19 @@ public class ServiceMethodWidget extends BeanComposite {
     private Composite resultPvTableViewerComposite;
     private Composite argumentPvTableViewerComposite;
 
-    public ServiceMethodWidget(Composite parent, int style) {
+    private final String DEFAULT_PREFIX = "loc://${DID}";
+    // Model
+    private Map<String, Service> services;
+    
+    private String argumentPrefix;
+    private boolean useArgumentPrefix;
+    private String resultPrefix;
+    private boolean useResultPrefix;
+    private ServiceMethodDescription serviceMethodDescription;
+
+    
+
+    public ServiceMethodWidget(Composite parent, int style, ServiceMethodDescription serviceMethodDescription) {
 	super(parent, style);
 	setLayout(new FormLayout());
 
@@ -82,6 +97,7 @@ public class ServiceMethodWidget extends BeanComposite {
 	btnNewButton.setText("Search");
 
 	text_method = new Text(this, SWT.BORDER);
+	initialForegroundColor = text_method.getForeground();
 	FormData fd_text_method = new FormData();
 	fd_text_method.right = new FormAttachment(btnNewButton, -5);
 	fd_text_method.left = new FormAttachment(lblMethodName, 5);
@@ -91,58 +107,9 @@ public class ServiceMethodWidget extends BeanComposite {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		if (e.keyCode == SWT.CR) {
-		    // search for the service/method
-		    if (services == null) {
-			services = new HashMap<String, Service>();
-			ArrayList<String> serviceNames = new ArrayList<String>(
-				ServiceRegistry.getDefault().listServices());
-			Collections.sort(serviceNames);
-			for (String serviceName : serviceNames) {
-			    services.put(serviceName, ServiceRegistry
-				    .getDefault().findService(serviceName));
-			}
+		    if(text_method.getText().split("/").length == 2){
+			init(text_method.getText().split("/")[0], text_method.getText().split("/")[1]);
 		    }
-		    String[] sm = text_method.getText().split("/");
-		    String service = "";
-		    ServiceMethod serviceMethod = null;
-		    if (sm.length == 2) {
-			service = sm[0];
-			serviceMethod = services.get(service) != null ? services
-				.get(service).getServiceMethods().get(sm[1])
-				: null;
-			if (serviceMethod != null) {
-			    serviceMethodDescription = createServiceMethodDescription(
-				    service, serviceMethod);
-			    description = serviceMethod.getDescription();
-			    argumentPrefix = DEFAULT_PREFIX + "_"
-				    + serviceMethodDescription.getService()
-				    + "_"
-				    + serviceMethodDescription.getMethod()
-				    + "_";
-			    resultPrefix = DEFAULT_PREFIX + "_"
-				    + serviceMethodDescription.getService()
-				    + "_"
-				    + serviceMethodDescription.getMethod()
-				    + "_";
-			    resetArgumentPvs();
-			    resetResultPvs();
-			    updateUI();
-
-			} else {
-			    description = "Unknown Service/Method "
-				    + text_method.getText();
-			    serviceMethodDescription = createServiceMethodDescription();
-			    argumentPrefix = "";
-			    resultPrefix = "";
-			    resetArgumentPvs();
-			    resetResultPvs();
-			    updateUI();
-			}
-		    } else {
-			lblServiceMethodDescription
-				.setText("Invalid Service/Method name");
-		    }
-
 		}
 	    }
 	});
@@ -170,6 +137,13 @@ public class ServiceMethodWidget extends BeanComposite {
 	lblNewLabel_2.setText("Argument Prefix:");
 
 	text_arg_prefix = new Text(this, SWT.BORDER);
+	text_arg_prefix.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseUp(MouseEvent e) {
+		    useArgumentPrefix = true;
+		    updateUI();
+		}
+	});
 	FormData fd_text_arg_prefix = new FormData();
 	fd_text_arg_prefix.right = new FormAttachment(100, -5);
 	fd_text_arg_prefix.top = new FormAttachment(0, 90);
@@ -182,7 +156,7 @@ public class ServiceMethodWidget extends BeanComposite {
 		// argument prefix set
 		if (e.keyCode == SWT.CR) {
 		    argumentPrefix = text_arg_prefix.getText();
-		    resetArgumentPvs();
+		    setArgumentPvs(calculateArgumentPvs(getServiceMethodDescription().getArgumentPvs().keySet(), argumentPrefix));
 		}
 	    }
 	});
@@ -224,6 +198,29 @@ public class ServiceMethodWidget extends BeanComposite {
 
 	TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(
 		resultPvTableViewer, SWT.NONE);
+	tableViewerColumn_3.setEditingSupport(new EditingSupport(
+		resultPvTableViewer) {
+	    protected boolean canEdit(Object element) {
+		return true;
+	    }
+
+	    protected CellEditor getCellEditor(Object element) {
+		return new TextCellEditor(resultPvTableViewer.getTable());
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    protected Object getValue(Object element) {
+		return ((Entry<String, String>) element).getValue();
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    protected void setValue(Object element, Object value) {
+		setResultPv(
+			((Entry<String, String>) element).getKey(),
+			(String) value);
+	    }
+
+	});
 	tableViewerColumn_3.setLabelProvider(new ColumnLabelProvider() {
 	    public Image getImage(Object element) {
 		return null;
@@ -244,8 +241,16 @@ public class ServiceMethodWidget extends BeanComposite {
 	resultPvTableViewer.setContentProvider(new ArrayContentProvider());
 
 	text_result_prefix = new Text(this, SWT.BORDER);
+	text_result_prefix.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseUp(MouseEvent e) {
+		    useResultPrefix = true;
+		    updateUI();
+		}
+	});
 	FormData fd_text_result_prefix = new FormData();
-	fd_text_result_prefix.bottom = new FormAttachment(resultPvTableViewerComposite, -5);
+	fd_text_result_prefix.bottom = new FormAttachment(
+		resultPvTableViewerComposite, -5);
 	fd_text_result_prefix.right = new FormAttachment(100, -5);
 	fd_text_result_prefix.left = new FormAttachment(0, 120);
 	text_result_prefix.setLayoutData(fd_text_result_prefix);
@@ -257,7 +262,7 @@ public class ServiceMethodWidget extends BeanComposite {
 		// result prefix
 		if (e.keyCode == SWT.CR) {
 		    resultPrefix = text_result_prefix.getText();
-		    resetResultPvs();
+		    setResultPvs(calculateResultPvs(getServiceMethodDescription().getResultPvs().keySet(), resultPrefix));
 		}
 	    }
 	});
@@ -312,9 +317,32 @@ public class ServiceMethodWidget extends BeanComposite {
 	tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(50,
 		100, true));
 	tblclmnNewColumn.setText("argument name");
-
 	TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
 		argumentPvTableViewer, SWT.NONE);
+	tableViewerColumn_1.setEditingSupport(new EditingSupport(
+		argumentPvTableViewer) {
+		
+	    protected boolean canEdit(Object element) {
+		return true;
+	    }
+
+	    protected CellEditor getCellEditor(Object element) {
+		return new TextCellEditor(argumentPvTableViewer.getTable());
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    protected Object getValue(Object element) {
+		return ((Entry<String, String>) element).getValue();
+	    }
+
+	    @SuppressWarnings("unchecked")
+	    protected void setValue(Object element, Object value) {
+		setArgumentPv(
+			((Entry<String, String>) element).getKey(),
+			(String) value);
+	    }
+
+	});
 	tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
 	    public Image getImage(Object element) {
 		return null;
@@ -333,18 +361,116 @@ public class ServiceMethodWidget extends BeanComposite {
 		50, 100, true));
 	tblclmnNewColumn_1.setText("pv/formula");
 	argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
+		
+	addPropertyChangeListener(new PropertyChangeListener() {
+	    
+	    @Override
+	    public void propertyChange(PropertyChangeEvent event) {
+		if(event.getPropertyName().equals("serviceMethodDescription")){
+//		    init();
+		    updateUI();
+		}else{
+		    updateUI();
+		}
+	    }
+	});
+	
+	this.serviceMethodDescription = serviceMethodDescription;
+	useArgumentPrefix = false;
+	argumentPrefix = DEFAULT_PREFIX + "_"
+		    + serviceMethodDescription.getService()
+		    + "_"
+		    + serviceMethodDescription.getMethod()
+		    + "_";
+	useResultPrefix = false;
+	resultPrefix = DEFAULT_PREFIX + "_"
+		    + serviceMethodDescription.getService()
+		    + "_"
+		    + serviceMethodDescription.getMethod()
+		    + "_";
+	updateUI();
     }
 
+    
+    private void init(String service, String method){
+	// search for the service/method
+	if (services == null) {
+	    services = new HashMap<String, Service>();
+	    ArrayList<String> serviceNames = new ArrayList<String>(
+		    ServiceRegistry.getDefault().listServices());
+	    Collections.sort(serviceNames);
+	    for (String serviceName : serviceNames) {
+		services.put(serviceName, ServiceRegistry.getDefault()
+			.findService(serviceName));
+	    }
+	}
+	ServiceMethod serviceMethod = null;
+	serviceMethod = services.get(service) != null ? services.get(service)
+		.getServiceMethods().get(method) : null;
+	if (serviceMethod != null) {
+	    serviceMethodDescription = createServiceMethodDescription(service,
+		    serviceMethod);
+	    argumentPrefix = DEFAULT_PREFIX + "_"
+		    + serviceMethodDescription.getService() + "_"
+		    + serviceMethodDescription.getMethod() + "_";
+	    useArgumentPrefix = true;
+	    resultPrefix = DEFAULT_PREFIX + "_"
+		    + serviceMethodDescription.getService() + "_"
+		    + serviceMethodDescription.getMethod() + "_";
+	    useResultPrefix = true;
+	    serviceMethodDescription.setArgumentPvs(calculateArgumentPvs(
+		    getServiceMethodDescription().getArgumentPvs().keySet(),
+		    argumentPrefix));
+	    serviceMethodDescription.setResultPvs(calculateResultPvs(
+		    getServiceMethodDescription().getResultPvs().keySet(),
+		    resultPrefix));
+	    setServiceMethodDescription(serviceMethodDescription);
+	} else {
+	    lblServiceMethodDescription.setText("Invalid Service/Method name");
+	    serviceMethodDescription = createServiceMethodDescription();
+	    argumentPrefix = "";
+	    useArgumentPrefix = false;
+	    resultPrefix = "";
+	    useResultPrefix = false;
+	    setServiceMethodDescription(serviceMethodDescription);
+	}
+	updateUI();
+    }
+    
     private void updateUI() {
 	if (serviceMethodDescription != null) {
 	    text_method.setText(serviceMethodDescription.getService() + "/"
 		    + serviceMethodDescription.getMethod());
-	    lblServiceMethodDescription.setText(description);
+	    lblServiceMethodDescription.setText(serviceMethodDescription.getDescription());
 	    text_arg_prefix.setEnabled(true);
+	    if (useArgumentPrefix) {
+		if (argumentPvTableViewer.isCellEditorActive()) {
+		    useArgumentPrefix = false;
+		    text_arg_prefix.setForeground(getDisplay().getSystemColor(
+			    SWT.COLOR_GRAY));
+		} else {
+		    text_arg_prefix.setForeground(initialForegroundColor);
+		}
+	    } else {
+		text_arg_prefix.setForeground(getDisplay().getSystemColor(
+			SWT.COLOR_GRAY));
+	    }
 	    text_arg_prefix.setText(argumentPrefix);
 	    argumentPvTableViewer.setInput(serviceMethodDescription
 		    .getArgumentPvs().entrySet());
 	    text_result_prefix.setEnabled(true);
+	    if (useResultPrefix) {
+		if (resultPvTableViewer.isCellEditorActive()) {
+		    useResultPrefix = false;
+		    text_result_prefix.setForeground(getDisplay()
+			    .getSystemColor(SWT.COLOR_GRAY));
+		} else {
+		    text_result_prefix.setForeground(initialForegroundColor);
+		}
+	    } else {
+		text_result_prefix.setForeground(getDisplay().getSystemColor(
+			SWT.COLOR_GRAY));
+	    }
 	    text_result_prefix.setText(resultPrefix);
 	    resultPvTableViewer.setInput(serviceMethodDescription
 		    .getResultPvs().entrySet());
@@ -362,25 +488,52 @@ public class ServiceMethodWidget extends BeanComposite {
 	getShell().pack();
     }
 
-    /**
-     * recreates all the argument pvs using the prefix
-     */
-    private void resetArgumentPvs() {
-	for (String argument : serviceMethodDescription.getArgumentPvs()
-		.keySet()) {
-	    serviceMethodDescription.setArgumentPv(argument, argumentPrefix
-		    + argument);
+    
+    private Map<String, String> calculateArgumentPvs(Set<String> argumentNames, String prefix){
+	Map<String, String> argumentPvs = new HashMap<String, String>();
+	for (String argument : argumentNames) {
+	    argumentPvs.put(argument, prefix + argument);
 	}
-	updateUI();
+	return argumentPvs;
+    }
+    
+    private Map<String, String> calculateResultPvs(Set<String> resultNames, String prefix){
+	Map<String, String> resultPvs = new HashMap<String, String>();
+	for (String result : resultNames) {
+	    resultPvs.put(result, prefix + result);
+	}
+	return resultPvs;
+    }
+    
+    private void setArgumentPvs(Map<String, String> argumentPvs){
+	Object oldValue = this.serviceMethodDescription.getArgumentPvs();
+	this.serviceMethodDescription.setArgumentPvs(argumentPvs);
+	changeSupport.firePropertyChange("argumentPvs", oldValue, this.serviceMethodDescription.getArgumentPvs());
+    }
+    
+    private void setArgumentPv(String key, String value) {
+	this.serviceMethodDescription.setArgumentPv(key, value);
+	changeSupport.firePropertyChange("argumentPvs", null, this.serviceMethodDescription.getArgumentPvs());
+    }
+    
+    private void setResultPvs(Map<String, String> resultPvs){
+	Object oldValue = this.serviceMethodDescription.getResultPvs();
+	this.serviceMethodDescription.setResultPvs(resultPvs);
+	changeSupport.firePropertyChange("resultPvs", oldValue, this.serviceMethodDescription.getResultPvs());
+    }
+    
+
+    private void setResultPv(String key, String value) {
+	this.serviceMethodDescription.setResultPv(key, value);
+	changeSupport.firePropertyChange("resultPvs", null, this.serviceMethodDescription.getResultPvs());
     }
 
-    private void resetResultPvs() {
-	for (String result : serviceMethodDescription.getResultPvs().keySet()) {
-	    serviceMethodDescription.setResultPv(result, resultPrefix + result);
-	}
-	updateUI();
+    private void setServiceMethodDescription(ServiceMethodDescription serviceMethodDescription){
+	ServiceMethodDescription oldValue = this.serviceMethodDescription;
+	this.serviceMethodDescription = serviceMethodDescription;
+	changeSupport.firePropertyChange("serviceMethodDescription", oldValue, this.serviceMethodDescription);
     }
-
+    
     /**
      * @return the serviceMethodDescription
      */

@@ -35,12 +35,13 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
 
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
-	return new ServiceMethodPropertyDescriptor(prop_id, description);
+	return new ServiceMethodPropertyDescriptor(prop_id, description, widgetModel);
     }
 
     private static final String XML_ELEMENT_SERVICE_METHOD_DESCRIPTION = "serviceMethodDescription";
     private static final String XML_ELEMENT_SERVICE_NAME = "service";
     private static final String XML_ELEMENT_METHOD_NAME = "method";
+    private static final String XML_ELEMENT_METHOD_DESCRIPTION = "method";
     private static final String XML_ELEMENT_ARGUMENTS = "arguments";
     private static final String XML_ELEMENT_RESULTS = "results";
 
@@ -87,6 +88,7 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
 	if (serviceMethodDescriptionElement != null) {
 	    String service = serviceMethodDescriptionElement.getChild(XML_ELEMENT_SERVICE_NAME).getText();
 	    String method = serviceMethodDescriptionElement.getChild(XML_ELEMENT_METHOD_NAME).getText();	    
+	    String description = serviceMethodDescriptionElement.getChild(XML_ELEMENT_METHOD_DESCRIPTION).getText();
 	    List<Element> arguments = serviceMethodDescriptionElement.getChild(XML_ELEMENT_ARGUMENTS).getChildren();
 	    Map<String, String> argPvs = new HashMap<String, String>();
 	    for (Element argument : arguments) {		
@@ -97,7 +99,7 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
 	    for (Element result : results) {
 		resultPvs.put(result.getChildText("key"), result.getChildText("value"));
 	    }
-	    return ServiceMethodDescription.createServiceMethodDescription(service, method, argPvs, resultPvs);
+	    return ServiceMethodDescription.createServiceMethodDescription(service, method, description, argPvs, resultPvs);
 	}
 	return null;
     }
@@ -117,7 +119,7 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
 		    resultPvs.put(result.getKey(), OPIBuilderMacroUtil.replaceMacros(widgetModel, result.getValue()));
 		}
 	    	
-		return createServiceMethodDescription(value.getService(), value.getMethod(), argumentPvs, resultPvs);
+		return createServiceMethodDescription(value.getService(), value.getMethod(), value.getDescription(), argumentPvs, resultPvs);
 	} else {
 		return super.getPropertyValue();
 	}

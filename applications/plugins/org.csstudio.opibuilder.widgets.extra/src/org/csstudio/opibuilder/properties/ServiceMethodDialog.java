@@ -3,6 +3,8 @@
  */
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.widgets.extra.ServiceButtonModel;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,10 +25,12 @@ import org.eclipse.swt.layout.FormAttachment;
 public class ServiceMethodDialog extends Dialog{
     
     private ServiceMethodWidget serviceMethodWidget;
+    private final AbstractWidgetModel widgetModel;
 
-    protected ServiceMethodDialog(Shell parentShell) {
+    protected ServiceMethodDialog(Shell parentShell, AbstractWidgetModel widgetModel) {
 	super(parentShell);	
 	setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+	this.widgetModel = widgetModel;
     }
     
     @Override
@@ -34,13 +38,12 @@ public class ServiceMethodDialog extends Dialog{
       Composite container = (Composite) super.createDialogArea(parent);      
       container.setLayout(new FormLayout());      
       
-      serviceMethodWidget = new ServiceMethodWidget(container, SWT.NONE);
+      serviceMethodWidget = new ServiceMethodWidget(container, SWT.NONE, (ServiceMethodDescription) widgetModel.getPropertyValue(ServiceButtonModel.SERVICE_METHOD));
       FormData fd_serviceMethodWidget = new FormData();
       fd_serviceMethodWidget.right = new FormAttachment(100);
       fd_serviceMethodWidget.top = new FormAttachment(0);
       fd_serviceMethodWidget.left = new FormAttachment(0);
       serviceMethodWidget.setLayoutData(fd_serviceMethodWidget);
-      
       return container;
     }
     

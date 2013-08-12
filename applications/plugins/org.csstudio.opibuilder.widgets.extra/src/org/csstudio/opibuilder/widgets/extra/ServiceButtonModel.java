@@ -9,7 +9,7 @@ public class ServiceButtonModel extends AbstractWidgetModel {
 
     public final String ID = "org.csstudio.opibuilder.widgets.ServiceButton"; //$NON-NLS-1$
     
-    private static final String SERVICE_METHOD = "service_method";
+    public static final String SERVICE_METHOD = "service_method";
 
     @Override
     protected void configureProperties() {
