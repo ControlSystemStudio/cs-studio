@@ -1426,6 +1426,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			throw new IllegalArgumentException(name + " is not an existing ROI");
 	}
 	
+	public ROIFigure getROI(String name){
+		return roiMap.get(name);
+	}
+	
 	/**
 	 * @param runMode the runMode to set
 	 */
