@@ -41,8 +41,8 @@ import com.google.common.base.Joiner;
 public class ServicesView extends ViewPart {
 
     public static final String ID = "org.csstudio.utility.pvmanager.ui.toolbox.ServicesView"; //$NON-NLS-1$
-    private TreeViewer treeViewer;
-
+    private ServiceTreeWidget serviceTreeWidget;
+    
     /**
      * 
      */
@@ -58,62 +58,8 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-
-	Composite composite = new Composite(parent, SWT.NONE);
-	TreeColumnLayout tcl_composite = new TreeColumnLayout();
-	composite.setLayout(tcl_composite);
-
-	treeViewer = new TreeViewer(composite, SWT.BORDER);
-	Tree tree = treeViewer.getTree();
-	tree.setHeaderVisible(true);
-	tree.setLinesVisible(true);
-
-	TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
-
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getName();
-		} else if (element instanceof ServiceMethod) {
-		    return serviceMethod2String((ServiceMethod) element);
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getKey();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn = treeViewerColumn.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn, new ColumnWeightData(10,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn.setText("Name");
-
-	TreeViewerColumn treeViewerColumn_1 = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
-
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getDescription();
-		} else if (element instanceof ServiceMethod) {
-		    return ((ServiceMethod) element).getDescription();
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getValue();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn_1 = treeViewerColumn_1.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(7,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn_1.setText("Description");
-	treeViewer.setContentProvider(new ServiceTreeContentProvider());
+    	
+    	serviceTreeWidget = new ServiceTreeWidget(parent, SWT.NONE);
 
 	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
 		.getDefault().listServices());
@@ -121,8 +67,8 @@ public class ServicesView extends ViewPart {
 	List<Service> services = new ArrayList<Service>();
 	for (String serviceName : serviceNames) {
 	    services.add(ServiceRegistry.getDefault().findService(serviceName));
-	}
-	treeViewer.setInput(services);
+	}	
+	serviceTreeWidget.setServiceNames(services);
     }
 
     /*
@@ -132,30 +78,7 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void setFocus() {
-	treeViewer.getControl().setFocus();
+	serviceTreeWidget.setFocus();
     }
 
-    private String serviceMethod2String(ServiceMethod serviceMethod) {
-	StringBuffer stringBuffer = new StringBuffer();
-	stringBuffer.append(serviceMethod.getName()).append("(");
-	List<String> arguments = new ArrayList<String>();
-	SortedMap<String, Class<?>> argumentTypesMap = new TreeMap<String, Class<?>>();
-	argumentTypesMap.putAll(serviceMethod.getArgumentTypes());
-	for (Entry<String, Class<?>> argument : argumentTypesMap.entrySet()) {
-	    arguments.add(argument.getValue().getSimpleName() + " "
-		    + argument.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(arguments));
-	stringBuffer.append(")");
-	stringBuffer.append(": ");
-	List<String> results = new ArrayList<String>();
-	SortedMap<String, Class<?>> resultTypesMap = new TreeMap<String, Class<?>>();
-	resultTypesMap.putAll(serviceMethod.getResultTypes());
-	for (Entry<String, Class<?>> result : resultTypesMap.entrySet()) {
-	    results.add(result.getValue().getSimpleName() + " "
-		    + result.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(results));
-	return stringBuffer.toString();
-    }
 }
