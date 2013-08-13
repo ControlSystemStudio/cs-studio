@@ -44,6 +44,9 @@ public class UpgradeUtilTest {
 		assertEquals("=0.0",
 				UpgradeUtil.convertUtilityPVNameToPM("0.0"));
 		
+		assertEquals("=123",
+				UpgradeUtil.convertUtilityPVNameToPM("const://$(DID)_name$(DID)(123)"));
+		
 		
 		//String constants		
 		assertEquals("=\"1.23e23\"",

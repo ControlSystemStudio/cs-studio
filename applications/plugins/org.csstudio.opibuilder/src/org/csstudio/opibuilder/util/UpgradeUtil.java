@@ -58,7 +58,7 @@ public final class UpgradeUtil {
 		
 		
 		if(pvName.startsWith("const://")) {//$NON-NLS-1$			
-			final int value_start = pvName.indexOf('('); //$NON-NLS-1$
+			final int value_start = pvName.lastIndexOf('('); //$NON-NLS-1$
 			if (value_start > 0) {
 				final int value_end = pvName.lastIndexOf(')'); //$NON-NLS-1$
 				if (value_end > 0) {
