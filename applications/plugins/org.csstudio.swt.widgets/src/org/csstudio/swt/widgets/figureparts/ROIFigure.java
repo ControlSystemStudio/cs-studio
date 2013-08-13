@@ -8,11 +8,9 @@ import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IROIListener;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -371,16 +369,21 @@ public class ROIFigure extends Figure {
 			return contain || roiRectFigure.containsPoint(x, y) ;
 		}
 		
+		public String getName() {
+			return name;
+		}
+		
 		@Override
-		protected void layout() {
-			Rectangle clientArea = getClientArea();
+		protected void layout() {			
 			if(roiDataBounds == null){
-				roiGeoBounds = new PrecisionRectangle(clientArea.x + clientArea.width/2 - clientArea.width/10,
-						clientArea.y + clientArea.height/2 - clientArea.height/10,
-						clientArea.width/5, clientArea.height/5);
-				roiDataBounds = getROIFromGeoBounds(new PrecisionRectangle(roiGeoBounds.preciseX() + getBounds().x,
-						roiGeoBounds.preciseY() + getBounds().y, roiGeoBounds.preciseWidth(), roiGeoBounds.preciseHeight()));
-				fireROIUpdated();
+				return;
+//				Rectangle clientArea = getClientArea();
+//				roiGeoBounds = new PrecisionRectangle(clientArea.x + clientArea.width/2 - clientArea.width/10,
+//						clientArea.y + clientArea.height/2 - clientArea.height/10,
+//						clientArea.width/5, clientArea.height/5);
+//				roiDataBounds = getROIFromGeoBounds(new PrecisionRectangle(roiGeoBounds.preciseX() + getBounds().x,
+//						roiGeoBounds.preciseY() + getBounds().y, roiGeoBounds.preciseWidth(), roiGeoBounds.preciseHeight()));
+//				fireROIUpdated();
 			}
 			updateROIGeoBounds();
 			updateChildrenBounds();
@@ -389,7 +392,7 @@ public class ROIFigure extends Figure {
 
 		@Override
 		protected void paintFigure(Graphics graphics) {
-			if(roiInfoProvider!=null){
+			if(roiInfoProvider!=null && roiDataBounds!=null){
 				String text = roiInfoProvider.getROIInfo(roiDataBounds.x, roiDataBounds.y, 
 						roiDataBounds.width, roiDataBounds.height);
 				Dimension size = TextUtilities.INSTANCE.getTextExtents(text, getFont());
@@ -470,6 +473,31 @@ public class ROIFigure extends Figure {
 			roiDataBounds.setBounds(xIndex, yIndex, width, height);		
 			updateROIGeoBounds();
 			updateChildrenBounds();
+		}
+		
+		public void setROIDataBoundsX(int xIndex){
+			if(roiDataBounds == null){
+				roiDataBounds = new PrecisionRectangle();
+			}
+			setROIDataBounds(xIndex, roiDataBounds.y, roiDataBounds.width, roiDataBounds.height);
+		}
+		public void setROIDataBoundsY(int yIndex){
+			if(roiDataBounds == null){
+				roiDataBounds = new PrecisionRectangle();
+			}
+			setROIDataBounds(roiDataBounds.x, yIndex, roiDataBounds.width, roiDataBounds.height);
+		}
+		public void setROIDataBoundsW(int width){
+			if(roiDataBounds == null){
+				roiDataBounds = new PrecisionRectangle();
+			}
+			setROIDataBounds(roiDataBounds.x, roiDataBounds.y, width, roiDataBounds.height);
+		}
+		public void setROIDataBoundsH(int height){
+			if(roiDataBounds == null){
+				roiDataBounds = new PrecisionRectangle();
+			}
+			setROIDataBounds(roiDataBounds.x, roiDataBounds.y, roiDataBounds.width, height);
 		}
 		
 		private void updateROIGeoBounds(){			

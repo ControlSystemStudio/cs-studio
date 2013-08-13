@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.widgets;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.ValueUtil;
 
@@ -15,7 +16,7 @@ public class VTableCellLabelProvider extends CellLabelProvider {
 		Object value = ((VTableContentProvider.VTableRow) cell.getElement()).getValue(cell.getColumnIndex());
 	 	if (value == null || (value instanceof Double && ((Double) value).isNaN())) {
 	 		cell.setText(""); 
-	 	} if (value instanceof TimestampFormat){
+	 	} else if (value instanceof Timestamp){
 	 		cell.setText(ValueUtil.getDefaultTimestampFormat().format(value));
 	 	} else {
 	 		cell.setText(value.toString());

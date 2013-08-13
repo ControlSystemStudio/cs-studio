@@ -14,6 +14,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -85,7 +88,8 @@ public class EMailSenderDialog extends TitleAreaDialog
      *  for a while but still need for example operator displays
      *  to remain responsive.
      */
-	protected void setShellStyle(final int style)
+	@Override
+    protected void setShellStyle(final int style)
 	{
 		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
 	}
@@ -176,6 +180,23 @@ public class EMailSenderDialog extends TitleAreaDialog
         if (image_filename != null)
             image_tabfolder.addImage(image_filename);
         sash.setWeights(new int[] { 80, 20 });
+        
+        // User needs to enter at least a 'to', replacing
+        // the default "<enter email here>".
+        // User is also likely to update the complete default
+        // subject and 'from', so select all on focus:
+        final FocusListener select_all = new FocusAdapter()
+        {
+            @Override
+            public void focusGained(final FocusEvent e)
+            {
+                final Text text = (Text) e.widget;
+                text.selectAll();
+            }
+        };
+        txt_from.addFocusListener(select_all);
+        txt_to.addFocusListener(select_all );
+        txt_subject.addFocusListener(select_all);
 
         txt_to.setFocus();
 

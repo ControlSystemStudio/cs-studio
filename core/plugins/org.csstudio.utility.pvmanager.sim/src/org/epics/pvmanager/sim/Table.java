@@ -41,7 +41,7 @@ public class Table extends SimFunction<VTable> {
     VTable nextValue() {
         return newVTable(types, Arrays.asList("Text", "Value", "Index", "Timestamps"),
                 Arrays.asList((Object) generateStringColumn(10), generateDoubleColumn(10),
-                generateIntegerColumn(10), generateTiemstampColumn(10)));
+                generateIntegerColumn(10), generateTimestampColumn(10)));
     }
     
     private final Random rand = new Random();
@@ -70,7 +70,7 @@ public class Table extends SimFunction<VTable> {
         return Arrays.asList(column);
     }
     
-    List<Timestamp> generateTiemstampColumn(int size) {
+    List<Timestamp> generateTimestampColumn(int size) {
         List<Timestamp> timestamps = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             timestamps.add(Timestamp.now());

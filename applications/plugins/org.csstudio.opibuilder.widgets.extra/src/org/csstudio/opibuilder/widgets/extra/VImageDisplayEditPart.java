@@ -7,7 +7,7 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.utility.pvmanager.widgets.VImageWidget;
 import org.eclipse.draw2d.IFigure;
 
-public class VImageDisplayEditPart extends AbstractWidgetEditPart {
+public class VImageDisplayEditPart extends AbstractSelectionWidgetEditpart<VImageDisplayFigure, VImageDisplayModel> {
 
 	/**
 	 * Create and initialize figure.

@@ -1,17 +1,8 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -40,7 +31,7 @@ import org.epics.vtype.table.VTableFactory;
  * 
  * @author carcassi
  */
-public class VTableWidget extends BeanComposite implements ISelectionProvider {
+public class VTableWidget extends SelectionBeanComposite implements ISelectionProvider {
 
 	private String pvFormula;
 	private PVReader<?> pv;
@@ -165,44 +156,10 @@ public class VTableWidget extends BeanComposite implements ISelectionProvider {
 		}
 		return ValueUtil.alarmOf(getValue(), pv.isConnected());
 	}
-	
-	private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
 	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionChangedListeners.add(listener);
-	}
-
-	@Override
-	public ISelection getSelection() {
-		return new StructuredSelection(new VTableWidgetSelection(this));
-	}
-
-	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-		selectionChangedListeners.remove(listener);
-	}
-
-	@Override
-	public void setSelection(ISelection selection) {
-		throw new UnsupportedOperationException("Not implemented yet");
-	}
-	
-	private void fireSelectionChangedListener() {
-		for (ISelectionChangedListener listener : selectionChangedListeners) {
-			listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));
-		}
-	}
-	
-	protected void forwardPropertyChangeToSelection(String propertyName) {
-		addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent arg0) {
-				fireSelectionChangedListener();
-			}
-		});
+	public Object createSelection() {
+		return new VTableWidgetSelection(this);
 	}
 
 }

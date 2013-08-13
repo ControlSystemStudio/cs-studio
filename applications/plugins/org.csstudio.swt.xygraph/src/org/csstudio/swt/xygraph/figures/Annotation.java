@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
@@ -119,6 +122,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	private final static int ARROW_LINE_LENGTH = 12;
 	private boolean pointerDragged;
 	
+	private List<IAnnotationListener> listeners;
+	
 
 	/**Construct an annotation on a trace.
 	 * @param name the name of the annotation.
@@ -156,6 +161,20 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	
 	
 
+	public synchronized void addAnnotationListener(IAnnotationListener listener){
+		if(listeners == null)
+			listeners = new CopyOnWriteArrayList<IAnnotationListener>();
+		listeners.add(listener);
+	}
+	
+	private void fireAnnotationMoved(double oldX, double oldY, double newX, double newY){
+		if(listeners == null)
+			 return;
+		for(IAnnotationListener listener : listeners){
+			listener.annotationMoved(oldX, oldY, newX, newY);
+		}
+	}
+	
 	@Override
 	public boolean containsPoint(int x, int y) {
 		
@@ -193,26 +212,28 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		
 		if(infoLabelArmed) //draw infoLabel Armed rect
 			graphics.drawRectangle(infoBounds);
-		
-		//draw indicate line
-		graphics.drawLine(currentPosition.x + (int)dx, currentPosition.y + (int)dy, 
-				currentPosition.x, currentPosition.y);
-		//draw Arrow
-		int x1 = (int) (ARROW_LINE_LENGTH*Math.cos(Math.atan(-dy/dx)-Math.PI/9));
-		int y1 = (int) (ARROW_LINE_LENGTH*Math.sin(Math.atan(-dy/dx)-Math.PI/9));
-		if(dx <0){
-			x1 = -x1;
-			y1 = -y1;
-		}			
-		graphics.drawLine(currentPosition.x + x1, currentPosition.y - y1, currentPosition.x, currentPosition.y);
-		x1 = (int) (ARROW_LINE_LENGTH*Math.cos(Math.atan(-dy/dx)+Math.PI/9));
-		y1 = (int) (ARROW_LINE_LENGTH*Math.sin(Math.atan(-dy/dx)+Math.PI/9));
-		if(dx <0){
-			x1 = -x1;
-			y1 = -y1;
-		}	
-		graphics.drawLine(currentPosition.x + x1, currentPosition.y - y1, currentPosition.x, currentPosition.y);
-				
+		if (showName || showPosition || showSampleInfo) {
+			// draw indicate line
+			graphics.drawLine(currentPosition.x + (int) dx, currentPosition.y + (int) dy,
+					currentPosition.x, currentPosition.y);
+			// draw Arrow
+			int x1 = (int) (ARROW_LINE_LENGTH * Math.cos(Math.atan(-dy / dx) - Math.PI / 9));
+			int y1 = (int) (ARROW_LINE_LENGTH * Math.sin(Math.atan(-dy / dx) - Math.PI / 9));
+			if (dx < 0) {
+				x1 = -x1;
+				y1 = -y1;
+			}
+			graphics.drawLine(currentPosition.x + x1, currentPosition.y - y1, currentPosition.x,
+					currentPosition.y);
+			x1 = (int) (ARROW_LINE_LENGTH * Math.cos(Math.atan(-dy / dx) + Math.PI / 9));
+			y1 = (int) (ARROW_LINE_LENGTH * Math.sin(Math.atan(-dy / dx) + Math.PI / 9));
+			if (dx < 0) {
+				x1 = -x1;
+				y1 = -y1;
+			}
+			graphics.drawLine(currentPosition.x + x1, currentPosition.y - y1, currentPosition.x,
+					currentPosition.y);
+		}
 		//draw Cursor Line
 		switch (cursorLineStyle) {
 		case NONE:
@@ -344,6 +365,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	 * move the annotation to the center of the plot area or trace.
 	 */
 	private void updateToDefaultPosition(){	
+		double oldX = xValue;
+		double oldY = yValue;
 		if(trace != null && trace.getHotSampleList().size()>0){
 			currentSnappedSample = trace.getHotSampleList().get(trace.getHotSampleList().size()/2);
 			currentPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
@@ -365,8 +388,9 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));	
-		}
+		}		
 		updateInfoLableText(true);
+		fireAnnotationMoved(oldX, oldY, xValue, yValue);
 	}
 
 	/** Set the position of the annotation based on plot values
@@ -376,6 +400,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	 */
 	public void setValues(final double x, final double y)
 	{
+		double oldX = xValue;
+		double oldY = yValue;
 		xValue = x;
 		yValue = y;
 
@@ -383,6 +409,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 				yAxis.getValuePosition(yValue, false));	
 		
 		updateInfoLableText(true);
+		if(oldX != xValue || oldY != yValue)
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
 	}
 	
 	/**
@@ -559,8 +587,11 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		}
 		this.currentPosition = currentPosition;
 		if(calcValueFromPosition){
+			double oldX=xValue;
+			double oldY=yValue;
 			xValue = xAxis.getPositionValue(currentPosition.x, false);
 			yValue = yAxis.getPositionValue(currentPosition.y, false);
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
 		}
 		updateInfoLableText(keepLablePosition);
 		
@@ -582,11 +613,14 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			this.currentSnappedSample = currentSnappedSample;
 			Point newPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
 				 yAxis.getValuePosition(currentSnappedSample.getYValue(), false));
+			double oldX=xValue;
+			double oldY=yValue;
 			xValue = currentSnappedSample.getXValue();
 			yValue = currentSnappedSample.getYValue();
 			if(Double.isNaN(currentSnappedSample.getXPlusError()))
 				yValue = Double.NaN;
 			setCurrentPosition(newPosition, keepLabelPosition, false);
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
 		}
 		repaint();
 	}
@@ -607,6 +641,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace == null)
 			return;
 		if(trace.getHotSampleList().contains(currentSnappedSample)){
+			double oldX=xValue;
+			double oldY=yValue;
 			if (yValue != currentSnappedSample.getYValue())
 			{	// When waveform index is changed, Y value of the 
 				// snapped sample is also changed. In that case,
@@ -619,7 +655,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 				xValue = currentSnappedSample.getXValue();
 			}
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
-				yAxis.getValuePosition(yValue, false));			
+				yAxis.getValuePosition(yValue, false));		
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
 		} 
 		else if(trace.getHotSampleList().size() > 0){
 			updateToDefaultPosition();	
@@ -841,28 +878,23 @@ class Pointer extends Figure{
 
 public void axisForegroundColorChanged(Axis axis, Color oldColor,
 		Color newColor) {
-	// TODO Auto-generated method stub
-	
+
 }
 
 public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
-	// TODO Auto-generated method stub
 	
 }
 
 public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
 		boolean newAutoScale) {
-	// TODO Auto-generated method stub
 	
 }
 
 public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
-	// TODO Auto-generated method stub
 	
 }
 
 public RGB getAnnotationColorRGB() {
-	// TODO Auto-generated method stub
 	return annotationColorRGB;
 }
 
