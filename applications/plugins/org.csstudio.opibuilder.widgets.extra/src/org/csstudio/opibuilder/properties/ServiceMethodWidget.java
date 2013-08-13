@@ -44,8 +44,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
@@ -90,6 +93,17 @@ public class ServiceMethodWidget extends BeanComposite {
 	lblMethodName.setText("Method Name:");
 
 	Button btnNewButton = new Button(this, SWT.NONE);
+	btnNewButton.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		ServiceTreeDialog serviceTreeDialog = new ServiceTreeDialog(
+			getShell());
+		if (serviceTreeDialog.open() == Window.OK) {
+		    init(serviceTreeDialog.getSelectedServiceMethodDescription().getService(),
+			 serviceTreeDialog.getSelectedServiceMethodDescription().getMethod());
+		}
+	    }
+	});
 	FormData fd_btnNewButton = new FormData();
 	fd_btnNewButton.top = new FormAttachment(0, 5);
 	fd_btnNewButton.right = new FormAttachment(100, -5);
@@ -367,7 +381,6 @@ public class ServiceMethodWidget extends BeanComposite {
 	    @Override
 	    public void propertyChange(PropertyChangeEvent event) {
 		if(event.getPropertyName().equals("serviceMethodDescription")){
-//		    init();
 		    updateUI();
 		}else{
 		    updateUI();
@@ -485,7 +498,7 @@ public class ServiceMethodWidget extends BeanComposite {
 	    resultPvTableViewer.setInput(null);
 	    layout();
 	}
-	getShell().pack();
+	getParent().getShell().pack();
     }
 
     

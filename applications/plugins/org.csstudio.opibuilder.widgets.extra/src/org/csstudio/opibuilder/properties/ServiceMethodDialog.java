@@ -36,8 +36,7 @@ public class ServiceMethodDialog extends Dialog{
     @Override
     protected Control createDialogArea(Composite parent) {
       Composite container = (Composite) super.createDialogArea(parent);      
-      container.setLayout(new FormLayout());      
-      
+      container.setLayout(new FormLayout());            
       serviceMethodWidget = new ServiceMethodWidget(container, SWT.NONE, (ServiceMethodDescription) widgetModel.getPropertyValue(ServiceButtonModel.SERVICE_METHOD));
       FormData fd_serviceMethodWidget = new FormData();
       fd_serviceMethodWidget.right = new FormAttachment(100);
