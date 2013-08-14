@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jersey
-Bundle-SymbolicName: org.csstudio.platform.libs.jersey
+Bundle-SymbolicName: org.csstudio.platform.libs.jersey;singleton:=true
 Bundle-Version: 1.1.5.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jersey.Activator
 Require-Bundle: org.eclipse.ui,
@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.hamcrest.core;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
+ lib/jersey-client-1.11.jar,
+ lib/jersey-core-1.11.jar,
  lib/jsr311-api-1.1.1.jar,
  lib/jersey-multipart-1.8.jar,
  lib/activation-1.1.1.jar,
@@ -20,10 +22,7 @@ Bundle-ClassPath: .,
  lib/jackson-jaxrs-1.9.2.jar,
  lib/jackson-mapper-asl-1.9.2.jar,
  lib/jackson-xc-1.9.2.jar,
- lib/jersey-apache-client-1.17.jar,
- lib/jersey-client-1.17.jar,
- lib/jersey-core-1.17.jar,
- lib/jettison-1.1.jar
+ lib/jersey-apache-client-1.17.jar
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Export-Package: com.sun.activation.registries,
  com.sun.activation.viewers,
@@ -42,6 +41,7 @@ Export-Package: com.sun.activation.registries,
  com.sun.jersey.client.apache.config,
  com.sun.jersey.client.impl,
  com.sun.jersey.client.impl.async,
+ com.sun.jersey.client.osgi,
  com.sun.jersey.client.proxy,
  com.sun.jersey.client.urlconnection,
  com.sun.jersey.core.header,
@@ -131,9 +131,4 @@ Export-Package: com.sun.activation.registries,
  org.codehaus.jackson.type,
  org.codehaus.jackson.util,
  org.codehaus.jackson.xc,
- org.codehaus.jettison,
- org.codehaus.jettison.badgerfish,
- org.codehaus.jettison.json,
- org.codehaus.jettison.mapped,
- org.codehaus.jettison.util,
  org.csstudio.platform.libs.jersey
