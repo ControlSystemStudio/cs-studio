@@ -13,6 +13,10 @@ import java.util.List;
 import org.csstudio.swt.xygraph.linearscale.Range;
 
 
+/**
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 
 	@Override
@@ -30,7 +34,8 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 				"majorTickMarkStepHint",
 				"showMinorTicks",
 				"showScale",
-				"logScale"
+				"logScale",
+				"valueLabelFormat"
 		};
 		return concatenateStringArrays(superPropList.toArray(new String[]{}), scaleProps);
 	}

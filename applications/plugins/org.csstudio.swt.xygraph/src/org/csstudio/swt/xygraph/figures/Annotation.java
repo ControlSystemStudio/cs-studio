@@ -20,7 +20,6 @@ import org.csstudio.swt.xygraph.undo.MovingAnnotationLabelCommand;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.InputEvent;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -859,7 +858,7 @@ class InfoLabelDragger extends MouseMotionListener.Stub implements MouseListener
 			// free
 			if (trace == null) {
 				setCurrentPosition(mouseLocation,
-						me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));
+						me.getState() == (SWT.BUTTON1 | SWT.CONTROL));
 			} else { // snap to trace
 						// double tempX =
 						// xAxis.getPositionValue(me.getLocation().x, false);
@@ -881,10 +880,10 @@ class InfoLabelDragger extends MouseMotionListener.Stub implements MouseListener
 				}
 				if (tempSample != null && currentSnappedSample != tempSample)
 					setCurrentSnappedSample(tempSample,
-							me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));
+							me.getState() == (SWT.BUTTON1 | SWT.CONTROL));
 				else if (tempSample == null) {
 					setCurrentPosition(mouseLocation,
-							me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));
+							me.getState() == (SWT.BUTTON1 | SWT.CONTROL));
 					pointerDragged = true;
 				}
 

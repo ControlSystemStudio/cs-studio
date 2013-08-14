@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.xygraph.linearscale;
 
 import java.text.DecimalFormat;
@@ -328,8 +335,7 @@ public abstract class AbstractScale extends Figure{
 
         if (logScaleEnabled == enabled) {
             return;
-        } 
-        
+        }        
         if(enabled) {
         	if(min == DEFAULT_MIN && max == DEFAULT_MAX) {
         		min = DEFAULT_LOG_SCALE_MIN;
