@@ -342,6 +342,18 @@ public class SpreadSheetTable extends Composite {
 	public int getColumnCount() {
 		return tableViewer.getTable().getColumnCount();
 	}
+	
+	
+	/**Get column headers.
+	 * @return the column headers.
+	 */
+	public String[] getColumnHeaders(){
+		String[] r = new String[getColumnCount()];
+		for(int i=0; i<r.length; i++){
+			r[i] = tableViewer.getTable().getColumn(i).getText();
+		}
+		return r;
+	}
 
 	/**
 	 * Get content of the table in a 2D string array.
@@ -603,8 +615,6 @@ public class SpreadSheetTable extends Composite {
 			tableViewer.getTable().getColumn(i).setText(headers[i]);
 		}
 	}
-	
-	
 
 	/**
 	 * Show/hide table column headers.
