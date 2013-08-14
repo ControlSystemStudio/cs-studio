@@ -10,7 +10,7 @@
 <extensions>
       <page id="firststeps">
          <group path="page-content/top-left">
-            <extension id="org.csstudio.nsls2.intro" importance="high"/>
+            <extension id="org.csstudio.frib.intro" importance="high"/>
          </group>
          <group path="page-content/bottom-left">
             <extension id="org.csstudio.diag.epics.pvtree.intro" importance="medium"/>
