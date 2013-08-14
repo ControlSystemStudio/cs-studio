@@ -3,6 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-multipart-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.1.jar"/>
@@ -14,8 +16,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-xc-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-apache-client-1.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jettison-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
