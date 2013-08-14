@@ -262,13 +262,13 @@ public class LinearScaleTickLabels extends Figure {
 		}
 
 		double gridStep;
-		if (mantissa > 7) {
+		if (mantissa > 7.5) {
 			// 10*10^exp
 			gridStep = 10 * Math.pow(10, exp);
-		} else if (mantissa > 3) {
+		} else if (mantissa > 3.5) {
 			// 5*10^exp
 			gridStep = 5 * Math.pow(10, exp);
-		} else if (mantissa > 1.2) {
+		} else if (mantissa > 1.5) {
 			// 2.0*10^exp
 			gridStep = 2 * Math.pow(10, exp);
 		} else {
