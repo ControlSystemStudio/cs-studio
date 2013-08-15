@@ -103,6 +103,7 @@ public class LogEntryWidget extends Composite {
     // logEntry.
     private List<String> logbookNames = Collections.emptyList();
     private List<String> tagNames = Collections.emptyList();
+    private List<String> levels = Collections.emptyList();
 
     // TODO
     private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
@@ -148,6 +149,7 @@ public class LogEntryWidget extends Composite {
     private Button addFileButton;
     private Button btnCurrentContext;
     private PropertyTree propertyTree;
+    private Combo level;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -326,19 +328,33 @@ public class LogEntryWidget extends Composite {
 	fd_btnAddTags.left = new FormAttachment(100, -40);
 	btnAddTags.setLayoutData(fd_btnAddTags);
 
-	Combo combo = new Combo(composite, SWT.NONE);
-	fd_text.top = new FormAttachment(combo, 6);
-	fd_lblDate.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_textDate.top = new FormAttachment(combo, 4, SWT.TOP);
+	level = new Combo(composite, SWT.NONE);
+	fd_text.top = new FormAttachment(level, 6);
+	fd_lblDate.top = new FormAttachment(level, 4, SWT.TOP);
+	fd_textDate.top = new FormAttachment(level, 4, SWT.TOP);
 	FormData fd_combo = new FormData();
 	fd_combo.top = new FormAttachment(0, 5);
 	fd_combo.right = new FormAttachment(100, -5);
-	combo.setLayoutData(fd_combo);
+	level.setLayoutData(fd_combo);
+	level.addSelectionListener(new SelectionAdapter() {
+	    
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+
+		try {
+		    LogEntryBuilder logEntryBuilder = logEntry(
+			    logEntryChangeset.getLogEntry()).setLevel(level.getItem(level.getSelectionIndex()));
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
+	    }
+	});
 
 	lblNewLabel = new Label(composite, SWT.NONE);
 	FormData fd_lblNewLabel = new FormData();
-	fd_lblNewLabel.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_lblNewLabel.right = new FormAttachment(combo, -5);
+	fd_lblNewLabel.top = new FormAttachment(level, 4, SWT.TOP);
+	fd_lblNewLabel.right = new FormAttachment(level, -5);
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Level:");
 
@@ -743,8 +759,7 @@ public class LogEntryWidget extends Composite {
 	tbtmPropertyTreeComposite.setLayout(new GridLayout());
 
 	propertyTree = new PropertyTree(tbtmPropertyTreeComposite, SWT.NONE);
-	propertyTree
-		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	propertyTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	tabFolder.showItem(tbtmAttachments);
 
@@ -815,6 +830,7 @@ public class LogEntryWidget extends Composite {
 					return input.getName();
 				    };
 				});
+			levels = logbookClient.listLevels();
 			getDisplay().asyncExec(new Runnable() {
 
 			    @Override
@@ -926,7 +942,12 @@ public class LogEntryWidget extends Composite {
 	}
 	if (logEntry != null) {
 	    // Show the logEntry
-	    text.setText(logEntry.getText());
+	    text.setText(logEntry.getText());	    
+	    if(!level.getItems().equals(levels)){
+		level.setItems(levels.toArray(new String[levels.size()]));
+	    }
+	    level.setText(logEntry.getLevel() != null ? logEntry.getLevel() : "");
+//	    level.setEnabled(editable);
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
@@ -984,6 +1005,9 @@ public class LogEntryWidget extends Composite {
 		    .getProperties()));
 	} else {
 	    text.setText("");
+	    //TODO set to default
+	    level.setText("");
+//	    level.setEnabled(editable);
 	    multiSelectionComboLogbook.setItems(Collections
 		    .<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());

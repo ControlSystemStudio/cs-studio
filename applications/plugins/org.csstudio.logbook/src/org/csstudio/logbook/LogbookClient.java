@@ -2,6 +2,7 @@ package org.csstudio.logbook;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * The interface for the logbook client.
@@ -19,6 +20,14 @@ public interface LogbookClient {
      */
     public Collection<Logbook> listLogbooks() throws Exception;
 
+    /**
+     * List all the levels
+     * 
+     * @return
+     * @throws Exception
+     */
+    public List<String> listLevels() throws Exception;
+    
     /**
      * Lists all the Tags
      * 
