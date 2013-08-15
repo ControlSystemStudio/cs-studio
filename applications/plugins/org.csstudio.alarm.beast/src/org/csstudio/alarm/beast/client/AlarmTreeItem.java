@@ -102,6 +102,7 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Alarm tree root element */
+    @Override
     public AlarmTreeRoot getRoot()
     {
         final TreeItem root = super.getRoot();
@@ -111,18 +112,21 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** {@inheritDoc} */
+    @Override
     public AlarmTreeItem getParent()
     {
         return (AlarmTreeItem) super.getParent();
     }
 
     /** {@inheritDoc} */
+    @Override
     public AlarmTreeItem getChild(final int i)
     {
         return (AlarmTreeItem) super.getChild(i);
     }
 
     /** {@inheritDoc} */
+    @Override
     public AlarmTreeItem getChild(final String name)
     {
         return (AlarmTreeItem) super.getChild(name);
@@ -132,6 +136,7 @@ public class AlarmTreeItem extends TreeItem
      *  @param path Path to item
      *  @return Item or <code>null</code> if not found
      */
+    @Override
     public AlarmTreeItem getItemByPath(final String path)
     {
         return (AlarmTreeItem) super.getItemByPath(path);

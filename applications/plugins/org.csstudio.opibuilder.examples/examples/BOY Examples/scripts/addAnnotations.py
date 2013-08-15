@@ -22,9 +22,11 @@ class LeftAnnotationListener(IAnnotationListener):
 		leftPV.setValue(newX)
 		
 leftAnnotation.addAnnotationListener(LeftAnnotationListener())
+leftAnnotation.setValues(2, 5)
 
 rightAnnotation = Annotation("Right", xyGraph.primaryXAxis, xyGraph.primaryYAxis)
 rightAnnotation.setCursorLineStyle(Annotation.CursorLineStyle.UP_DOWN)
+rightAnnotation.setValues(7,5)
 xyGraph.addAnnotation(rightAnnotation);
 
 class RightAnnotationListener(IAnnotationListener):
@@ -39,8 +41,8 @@ currentDisplay = Display.getCurrent()
 class UpdateAnnotationUITask(Runnable):
 	def run(self):
 		#this method must be called in UI thread
-		leftAnnotation.setValues(PVUtil.getDouble(leftPV), 5)
-		rightAnnotation.setValues(PVUtil.getDouble(rightPV), 5)
+		leftAnnotation.setValues(PVUtil.getDouble(leftPV), leftAnnotation.getYValue())
+		rightAnnotation.setValues(PVUtil.getDouble(rightPV), rightAnnotation.getYValue())
 				
 class UpdateAnnotationPVListener(IPVListener):
 	'''Update the ROI while ROI PV value updated'''

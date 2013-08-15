@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.undo;
 
-import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.figures.Axis;
-import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 
 /**The command for graph configuration.

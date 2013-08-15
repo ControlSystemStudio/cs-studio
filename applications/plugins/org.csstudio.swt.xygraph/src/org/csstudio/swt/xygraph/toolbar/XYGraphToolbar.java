@@ -31,7 +31,6 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.ToggleButton;
 import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -147,7 +146,7 @@ public class XYGraphToolbar extends Figure {
 	
 	
 	private void addSnapshotButton() {
-		Button snapShotButton = new Button(XYGraphMediaFactory.getInstance().getImage("images/camera.gif"));
+		Button snapShotButton = new Button(XYGraphMediaFactory.getInstance().getImage("images/camera.png"));
 		snapShotButton.setToolTip(new Label("Save Snapshot to PNG file"));
 		addButton(snapShotButton);
 		snapShotButton.addActionListener(new ActionListener(){
@@ -189,7 +188,7 @@ public class XYGraphToolbar extends Figure {
 					undoButton.setEnabled(true);
 					final String cmd_name = manager.getUndoCommands()[
 					           manager.getUndoCommandsSize() -1].toString();
-                    undoButton.setToolTip(new Label(NLS.bind("Undo {0}", cmd_name)));
+                    undoButton.setToolTip(new Label("Undo"+ cmd_name));
 				}else{
 					undoButton.setEnabled(false);
 					undoButton.setToolTip(new Label("Undo"));
@@ -215,7 +214,7 @@ public class XYGraphToolbar extends Figure {
 					redoButton.setEnabled(true);
 					final String cmd_name = manager.getRedoCommands()[
 					           manager.getRedoCommandsSize() -1].toString();
-                    redoButton.setToolTip(new Label(NLS.bind("Redo {0}", cmd_name)));
+                    redoButton.setToolTip(new Label("Redo" + cmd_name));
 				}else{
 					redoButton.setEnabled(false);
 					redoButton.setToolTip(new Label("Redo"));
