@@ -17,8 +17,6 @@ import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -141,14 +139,8 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 	 * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#workspacePathToSysPath(org.eclipse.core.runtime.IPath)
 	 */
 	@Override
-	public IPath workspacePathToSysPath(IPath path) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    	IWorkspaceRoot root = workspace.getRoot();
-    	IResource resource = root.findMember(path);
-    	if(resource != null)
-    		return resource.getLocation();
-    	else
-    		 return null;    	
+	public IPath workspacePathToSysPath(IPath path) {    	
+    	return ResourcesPlugin.getWorkspace().getRoot().getFile(path).getLocation();
 	}
 	
 	
