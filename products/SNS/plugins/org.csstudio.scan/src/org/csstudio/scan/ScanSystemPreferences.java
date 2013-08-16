@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import org.csstudio.java.string.StringSplitter;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import static org.csstudio.scan.PathUtil.splitPath;
 
 /** Scan system preferences
  *
@@ -27,45 +27,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class ScanSystemPreferences extends SystemSettings
 {
-    /** Default host for scan server */
-    final public static String DEFAULT_HOST = "localhost";
-
-    /** Default port used by scan server's REST interface */
-    final public static int DEFAULT_PORT = 4810;
-
-    /** System property for overriding the scan server host */
-    final public static String HOST_PROPERTY = "ScanServerHost";
-
-    /** System property for overriding the scan server port */
-    final public static String PORT_PROPERTY = "ScanServerPort";
-    
-	/** @param path_spec Path elements joined by ","
-     *  @return Separate path elements
-     *  @throws Exception on parse error (missing end of quoted string)
-     */
-    public static String[] splitPath(final String path_spec) throws Exception
-    {
-        if (path_spec == null)
-            return new String[0];
-        return StringSplitter.splitIgnoreInQuotes(path_spec, ',', true);
-
-    }
-
-    /** @param paths Path elements
-     *  @return Path elements joined by ","
-     */
-    public static String joinPaths(final String[] paths)
-    {
-        final StringBuilder buf = new StringBuilder();
-        for (String path : paths)
-        {
-            if (buf.length() > 0)
-                buf.append(", ");
-            buf.append(path);
-        }
-        return buf.toString();
-    }
-
     /** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
 	{

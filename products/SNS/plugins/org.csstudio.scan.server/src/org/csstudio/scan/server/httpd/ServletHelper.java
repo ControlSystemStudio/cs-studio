@@ -20,7 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.csstudio.scan.ScanSystemPreferences;
+import org.csstudio.scan.PathUtil;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
@@ -102,7 +102,7 @@ public class ServletHelper
         server.appendChild(createXMLElement(doc, "beamline_config", info.getBeamlineConfig()));
         server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
         
-        server.appendChild(createXMLElement(doc, "script_paths", ScanSystemPreferences.joinPaths(info.getScriptPaths())));
+        server.appendChild(createXMLElement(doc, "script_paths", PathUtil.joinPaths(info.getScriptPaths())));
         server.appendChild(createXMLElement(doc, "macros", info.getMacros()));
         
         

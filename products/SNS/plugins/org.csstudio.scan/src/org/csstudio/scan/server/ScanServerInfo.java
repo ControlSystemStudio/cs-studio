@@ -17,7 +17,7 @@ package org.csstudio.scan.server;
 
 import java.util.Date;
 
-import org.csstudio.scan.ScanSystemPreferences;
+import org.csstudio.scan.PathUtil;
 import org.csstudio.scan.data.ScanSampleFormatter;
 
 /** Scan server info
@@ -122,7 +122,7 @@ public class ScanServerInfo extends MemoryInfo
         buf.append("Started: ").append(ScanSampleFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
         buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
-        buf.append("Script paths: ").append(ScanSystemPreferences.joinPaths(script_paths)).append("\n");
+        buf.append("Script paths: ").append(PathUtil.joinPaths(script_paths)).append("\n");
         buf.append("Macros: ").append(macros).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");
         return buf.toString();

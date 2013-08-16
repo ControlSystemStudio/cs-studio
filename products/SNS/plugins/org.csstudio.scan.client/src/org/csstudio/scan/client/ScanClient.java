@@ -32,7 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.csstudio.scan.ScanSystemPreferences;
+import org.csstudio.scan.PathUtil;
 import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.command.DOMHelper;
 import org.csstudio.scan.data.ScanData;
@@ -192,7 +192,7 @@ public class ScanClient
             final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config");
             final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
             final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
-            final String[] paths = ScanSystemPreferences.splitPath(DOMHelper.getSubelementString(root_node, "script_paths", ""));
+            final String[] paths = PathUtil.splitPath(DOMHelper.getSubelementString(root_node, "script_paths", ""));
             final String macros = DOMHelper.getSubelementString(root_node, "macros", "");
             return new ScanServerInfo(version, start_time,
                     beamline_config, simulation_config, paths, macros, used_mem, max_mem);
