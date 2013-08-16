@@ -128,6 +128,7 @@ import java.lang.System as System
 #
 # The most dependable way is to explicitly import one-by-one
 import org.csstudio.scan.command.CommandSequence as CommandSequence
+import org.csstudio.scan.command.CommentCommand as CommentCommand
 import org.csstudio.scan.command.LoopCommand as LoopCommand
 import org.csstudio.scan.command.Comparison as Comparison
 import org.csstudio.scan.command.ScanCommand as ScanCommand
