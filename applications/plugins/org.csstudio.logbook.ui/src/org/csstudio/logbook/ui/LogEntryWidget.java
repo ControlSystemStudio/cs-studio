@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -763,10 +764,13 @@ public class LogEntryWidget extends Composite {
 
 	tabFolder.showItem(tbtmAttachments);
 
+	final AtomicReference<PropertyChangeEvent> eventRef = new AtomicReference<PropertyChangeEvent>();
+	
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
+		eventRef.set(evt);
 		switch (evt.getPropertyName()) {
 		case "expand":
 		    FormData fd = ((FormData) label.getLayoutData());
@@ -781,7 +785,17 @@ public class LogEntryWidget extends Composite {
 		    label.getParent().layout();
 		    break;
 		case "logEntry":
-		    init();
+		    getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+			    if (eventRef.getAndSet(null) == null) {
+				return;
+			    } else {
+				init();
+			    }
+			}
+		    });
 		    break;
 		case "logEntryBuilder":
 		    updateUI();
