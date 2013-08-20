@@ -64,10 +64,12 @@ def __getPluginPath__(plugin):
         return None
 
 scan_plugin = __getPluginPath__("org.csstudio.scan")
+scan_ui_plugin = __getPluginPath__("org.csstudio.scan.ui")
 client_plugin = __getPluginPath__("org.csstudio.scan.client")
-if scan_plugin and client_plugin:
-    logging.debug("Found scan plugins within Eclipse: %s, %s", scan_plugin, client_plugin)
+if scan_plugin and scan_ui_plugin and client_plugin:
+    logging.debug("Found scan plugins within Eclipse: %s, %s, %s", scan_plugin, scan_ui_plugin, client_plugin)
     sys.path.append(scan_plugin)
+    sys.path.append(scan_ui_plugin)
     sys.path.append(client_plugin)
 else:
     scan_client_jar = os.getenv("SCAN_CLIENT")
