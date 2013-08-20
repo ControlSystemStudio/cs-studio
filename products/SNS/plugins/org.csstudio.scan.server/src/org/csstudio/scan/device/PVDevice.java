@@ -27,6 +27,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
@@ -42,6 +44,9 @@ import org.epics.vtype.ValueUtil;
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
+    /** PVManager uses this PV name annotation to enable put-callback */
+    final public static String PUT_CALLBACK_ANNOTATION = " {\"putCallback\":true}";
+
     /** 'compile time' option to treat byte arrays as string */
     final private static boolean TREAD_BYTES_AS_STRING = true;
     
@@ -53,6 +58,14 @@ public class PVDevice extends Device
 	 *  @see #TREAD_BYTES_AS_STRING
 	 */
 	private boolean is_byte_array = false;
+	
+	/** Is PV using a put-callback, i.e. wait in write() until
+	 *  the write confirmation is received?
+	 */
+	final private boolean use_put_callback;
+	
+	/** Flag set when callback is received */
+	private boolean received_put_callback;
 	
 	/** Most recent value of the PV
 	 *  SYNC on this
@@ -71,6 +84,7 @@ public class PVDevice extends Device
 	public PVDevice(final DeviceInfo info) throws Exception
     {
 	    super(info);
+	    use_put_callback = info.getName().endsWith(PUT_CALLBACK_ANNOTATION);
     }
 	
 	/** {@inheritDoc} */
@@ -130,16 +144,30 @@ public class PVDevice extends Device
 				fireDeviceUpdate();
 			}
 		};
+		final PVWriterListener<? extends Object> write_listener = new PVWriterListener<Object>()
+        {
+            @Override
+            public void pvChanged(PVWriterEvent<Object> event)
+            {
+                if (use_put_callback && event.isWriteSucceeded())
+                    synchronized (PVDevice.this)
+                    {
+                        received_put_callback = true;
+                        PVDevice.this.notifyAll();
+                    }
+            }
+        };
 		synchronized (this)
 		{
-			pv = PVManager
+            pv = PVManager
 		        .readAndWrite(latestValueOf(vType(getName())))
 		        .readListener(listener)
+		        .writeListener(write_listener)
 		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
 		}
 	}
 
-	   /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public synchronized boolean isReady()
     {
@@ -175,9 +203,13 @@ public class PVDevice extends Device
 
 	/** {@inheritDoc} */
 	@Override
-    public synchronized VType read() throws Exception
+    public VType read() throws Exception
     {
-		final VType current = this.value;
+		final VType current;
+		synchronized (this)
+        {
+            current = this.value;
+        }
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
 				new Object[] { getName(), current });
 		return current;
@@ -192,9 +224,23 @@ public class PVDevice extends Device
     {
 	    if (is_byte_array  &&  value instanceof String)
 	        value = ByteHelper.toBytes((String) value);
+
+	    final PV<VType, Object> pv; // Copy to access PV outside of lock
 	    synchronized (this)
 		{
-			pv.write(value);
+	        pv = this.pv;
+	        if (use_put_callback)
+	            received_put_callback = false;
+		}
+		pv.write(value);
+		if (use_put_callback)
+		{
+		    synchronized (this)
+            {
+		        // TODO Timeout for put-callback
+                while (! received_put_callback)
+                    wait();
+            }
 		}
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
 				new Object[] { getName(), value });
