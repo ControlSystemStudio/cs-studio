@@ -22,6 +22,7 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -163,7 +164,7 @@ public class PVDevice extends Device
 		        .readAndWrite(latestValueOf(vType(getName())))
 		        .readListener(listener)
 		        .writeListener(write_listener)
-		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
+		        .asynchWriteAndMaxReadRate(ofSeconds(ScanSystemPreferences.getMinPVUpdatePeriod()));
 		}
 	}
 

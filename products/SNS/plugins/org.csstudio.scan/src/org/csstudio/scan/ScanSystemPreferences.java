@@ -119,7 +119,17 @@ public class ScanSystemPreferences extends SystemSettings
             return "";
         return macros;
     }
-	
+
+    /** @return Minimum PV update period [seconds] */
+    public static double getMinPVUpdatePeriod()
+    {
+        double period = 0.01;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            period = service.getDouble(Activator.ID, "pv_min_update_period", period, null);
+        return period;
+    }
+    
 	/** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)
