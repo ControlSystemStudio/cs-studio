@@ -24,7 +24,7 @@ computedeps=0
 
 LONGOPTS="help \
 product: \
-computedeps"
+compute-deps"
 
 ORGANIZATION=$1
 shift
