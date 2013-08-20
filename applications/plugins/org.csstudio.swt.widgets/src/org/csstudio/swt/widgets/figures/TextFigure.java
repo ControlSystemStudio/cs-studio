@@ -12,6 +12,7 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.TextUtilities;
@@ -19,6 +20,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 
 /**
  * A text figure without wrapping capability.
@@ -42,6 +45,11 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	private final Point POINT_ZERO = new Point(0,0);
 	
 	private double rotate = 0;
+	
+	/**
+	 * The real font that is used for drawing. Sometime the font need to be shrinked to fit the widget.
+	 */
+	private Font realFont;
 
 	public TextFigure() {
 		this(false);
@@ -56,14 +64,14 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 		this.runMode = runMode;		
 	}
 
-	protected void calculateTextLocation() {
+	protected void calculateTextLocation(Font font) {
 		if (getRotate() == 0) {
 			if(verticalAlignment == V_ALIGN.TOP && horizontalAlignment == H_ALIGN.LEFT){
 				textLocation = POINT_ZERO;
 				return;
 			}
 			Rectangle textArea = getTextArea();		
-			Dimension textSize = getTextSize();
+			Dimension textSize = getTextSize(font);
 				int x=0;
 					
 			switch (horizontalAlignment) {
@@ -97,7 +105,7 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 		} else {
 			// rotated text
 			Rectangle textArea = getTextArea();		
-			Dimension textSize = getTextSize();
+			Dimension textSize = getTextSize(font);
 			double theta = Math.toRadians(getRotate());
 	
 			int x = textArea.width / 2;
@@ -201,8 +209,8 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 		}
 	}
 
-	protected Dimension calculateTextSize() {
-		return TextUtilities.INSTANCE.getTextExtents(text, getFont());
+	protected Dimension calculateTextSize(Font font) {
+		return TextUtilities.INSTANCE.getTextExtents(text, font);
 	}
 	
 	protected void clearLocationSize(){		
@@ -238,12 +246,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 
 	@Override
 	public Dimension getMinimumSize(int wHint, int hHint) {
-		return getTextSize();
+		return getTextSize(getFont());
 	}
 
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
-		return getTextSize();
+		return getTextSize(getFont());
 
 	}
 
@@ -256,16 +264,19 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	}
 
 	
-	protected Point getTextLocation() {
+	protected Point getTextLocation(Font font) {
 		if (textLocation != null)
 			return textLocation;			
-		calculateTextLocation();
+		calculateTextLocation(font);
 		return textLocation;
 	}	
 	
-	protected Dimension getTextSize() {
+	protected Dimension getTextSize(Font font) {
+		if(font != getFont()){
+			return calculateTextSize(font);
+		}
 		if (textSize == null)
-			textSize = calculateTextSize();
+			textSize = calculateTextSize(font);
 		return textSize;
 	}
 	
@@ -297,22 +308,42 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	}	
 	
 	@Override
-	protected void paintFigure(Graphics graphics) {
+	protected void paintFigure(Graphics graphics) {		
 		super.paintFigure(graphics);
 		if(text.length() == 0)
 			return;
+		Rectangle clientArea = getClientArea();
+		if(realFont == null)
+			realFont = getFont();
+		int h = getTextSize(realFont).height;
+		if (realFont != getFont() && h < clientArea.height-2) {
+			realFont =getFont();
+			h = getTextSize(realFont).height;
+		}
+		Font font = realFont;	
+			
+		int i=0;
+		//shrink font size to fit the figure.
+		while(h > (clientArea.height+2) && h > 10 && i++<20){			
+			FontData fd = font.getFontData()[0];
+			fd.setHeight(fd.getHeight()-1);
+			font = CustomMediaFactory.getInstance().getFont(fd);
+			h = getTextSize(font).height;
+		}
+		realFont = font;
+		graphics.setFont(font);
 		Rectangle textArea = getTextArea();
 		graphics.translate(textArea.x, textArea.y);
 		if(getRotate() ==0)
-			graphics.drawText(text, getTextLocation());
+			graphics.drawText(text, getTextLocation(font));
 		else{
 			//rap doesn't support rotate
 			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-				graphics.drawText(text, getTextLocation());
+				graphics.drawText(text, getTextLocation(font));
 			else{
 				try {
 					graphics.pushState();
-					graphics.translate(getTextLocation());
+					graphics.translate(getTextLocation(font));
 					graphics.rotate((float) getRotate());
 					graphics.drawText(text, 0, 0);
 				} finally{
@@ -323,6 +354,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 			
 		
 		graphics.translate(-textArea.x, -textArea.y);		
+	}
+	
+	@Override
+	public void setFont(Font f) {
+		realFont = f;
+		super.setFont(f);
 	}
 	
 	@Override
@@ -360,8 +397,10 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 			s = "";//$NON-NLS-1$
 		if (text.equals(s))
 			return;
+		if(s.length() !=  text.length())
+			clearLocationSize();
 		text = s;
-		clearLocationSize();
+		
 		repaint();
 	}
 
