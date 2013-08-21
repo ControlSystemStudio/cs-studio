@@ -204,6 +204,11 @@
     		activityId="org.csstudio.iter.css.product.disablextensions"
     		pattern="org.csstudio.ui.menu.app/org.eclipse.ui.views.showView"
     	/>
+    	<!-- Hide JDT coming with Jython -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern="org.eclipse.jdt.*"
+    	/>
     	
     </extension>
    
