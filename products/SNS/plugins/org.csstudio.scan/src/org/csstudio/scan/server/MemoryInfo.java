@@ -75,8 +75,6 @@ public class MemoryInfo
     @Override
     public String toString()
     {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("Memory: ").append(getMemoryInfo()).append("\n");
-        return buf.toString();
+        return "Memory: " + getMemoryInfo();
     }
 }

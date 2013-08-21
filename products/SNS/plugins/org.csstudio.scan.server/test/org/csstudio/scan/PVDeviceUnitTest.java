@@ -24,6 +24,7 @@ import org.csstudio.scan.device.PVDevice;
 import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.jca.JCADataSource;
+import org.epics.pvmanager.loc.LocalDataSource;
 import org.epics.pvmanager.sim.SimulationDataSource;
 import org.epics.vtype.VType;
 import org.junit.Before;
@@ -54,6 +55,7 @@ public class PVDeviceUnitTest implements DeviceListener
         final CompositeDataSource sources = new CompositeDataSource();
         sources.putDataSource("ca", new JCADataSource());
         sources.putDataSource("sim", new SimulationDataSource());
+        sources.putDataSource("loc", new LocalDataSource());
         sources.setDefaultDataSource("ca");
         PVManager.setDefaultDataSource(sources);
     }
@@ -148,6 +150,32 @@ public class PVDeviceUnitTest implements DeviceListener
             final double seconds = (end - start) / 1000.0;
             System.out.format("Write finished in %.2f seconds\n", seconds);
             assertTrue(Math.abs(4.0 - seconds) < 1.0);
+        }
+        finally
+        {
+            device.stop();
+        }
+    }
+    
+    /** Test write with callback to 'local' device */
+    @Test
+    public void testPutCallbackToLocal() throws Exception
+    {
+        final PVDevice device = new PVDevice(new DeviceInfo("loc://x(42)" + PVDevice.PUT_CALLBACK_ANNOTATION, "x"));
+        device.start();
+        try
+        {
+            device.addListener(this);
+            // Wait for initial value
+            awaitUpdates(1);
+            
+            // This should finish right away
+            final long start = System.currentTimeMillis();
+            device.write(Double.valueOf(1.0));
+            final long end = System.currentTimeMillis();
+            final double seconds = (end - start) / 1000.0;
+            System.out.format("Write finished in %.2f seconds\n", seconds);
+            assertTrue(seconds < 1.0);
         }
         finally
         {
