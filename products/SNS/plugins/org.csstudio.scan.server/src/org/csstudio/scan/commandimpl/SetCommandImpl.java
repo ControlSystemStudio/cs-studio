@@ -47,9 +47,9 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     public String[] getDeviceNames(final ScanContext context) throws Exception
     {
         final String readback = command.getReadback();
-        if (readback.isEmpty())
-            return new String[] { context.resolveMacros(command.getDeviceName()) };
-        return new String[] { context.resolveMacros(command.getDeviceName()), context.resolveMacros(readback) };
+        if (command.getWait()  &&  readback.length() > 0)
+            return new String[] { context.resolveMacros(command.getDeviceName()), context.resolveMacros(readback) };
+        return new String[] { context.resolveMacros(command.getDeviceName()) };
     }
 
 	/** {@inheritDoc} */

@@ -48,7 +48,7 @@ public class ScanCommandUtil
      *  @param readback Readback device
      *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
+     *  @param timeout Timeout, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
@@ -84,7 +84,7 @@ public class ScanCommandUtil
             condition = null;
 
         // Perform write
-        device.write(value);
+        device.write(value, timeout);
 
         // Wait?
         if (condition != null)
