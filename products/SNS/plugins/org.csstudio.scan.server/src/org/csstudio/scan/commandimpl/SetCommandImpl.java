@@ -16,6 +16,7 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.SetCommand;
+import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -36,20 +37,34 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         super(command, jython);
     }
 
-    /** Implemet without Jython support */
+    /** Implement without Jython support */
     public SetCommandImpl(final SetCommand command) throws Exception
     {
         this(command, null);
+    }
+    
+    /** Return the device name that's really used.
+     *  Because of PVManager's way of supporting put-callback,
+     *  that might need to be an annotated name.
+     *  @return Device name which may still include macros but ends in proper annotation
+     */
+    private String getRealDeviceName()
+    {
+        final String name = command.getDeviceName();
+        if (command.getCompletion()  &&  !name.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
+            return name + PVDevice.PUT_CALLBACK_ANNOTATION;
+        return name;
     }
     
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final ScanContext context) throws Exception
     {
+        final String device_name = getRealDeviceName();
         final String readback = command.getReadback();
         if (command.getWait()  &&  readback.length() > 0)
-            return new String[] { context.resolveMacros(command.getDeviceName()), context.resolveMacros(readback) };
-        return new String[] { context.resolveMacros(command.getDeviceName()) };
+            return new String[] { context.resolveMacros(device_name), context.resolveMacros(readback) };
+        return new String[] { device_name };
     }
 
 	/** {@inheritDoc} */
@@ -88,7 +103,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     public void execute(final ScanContext context)  throws Exception
     {
 	    ScanCommandUtil.write(context,
-	            command.getDeviceName(), command.getValue(),
+	            getRealDeviceName(), command.getValue(),
 				command.getReadback(), command.getWait(),
 				command.getTolerance(),
 				TimeDuration.ofSeconds(command.getTimeout()));

@@ -59,7 +59,7 @@ public class ScanCommandUtil
 
         // Separate read-back device, or use 'set' device?
         final Device readback;
-        if (readback_name.isEmpty())
+        if (readback_name.isEmpty()  ||  !wait)
             readback = device;
         else
             readback = context.getDevice(context.resolveMacros(readback_name));
@@ -92,7 +92,8 @@ public class ScanCommandUtil
 
         // Log the value?
         if (context.isAutomaticLogMode())
-        {
+        {   // If we're waiting on the readback, log the readback.
+            // Otherwise readback == device, so log that one
             final VType log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();
