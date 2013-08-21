@@ -42,6 +42,7 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.MemoryInfo;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
@@ -394,7 +395,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Object call() throws Exception
     {
-        Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0}", getName());
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0} [{1}]", new Object[] { getName(), new MemoryInfo()});
 
         try
         (
