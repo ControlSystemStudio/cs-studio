@@ -65,10 +65,13 @@ public class DeviceContext
      *  the original device will be replaced.
      *
      *  @param info {@link DeviceInfo}
+     *  @return Device that was added
      */
-    public synchronized void addPVDevice(final DeviceInfo info) throws Exception
+    public synchronized Device addPVDevice(final DeviceInfo info) throws Exception
     {
-        devices.put(info.getAlias(), new PVDevice(info));
+        final PVDevice device = new PVDevice(info);
+        devices.put(device.getAlias(), device);
+        return device;
     }
 
     /** Get a device by alias
@@ -78,10 +81,21 @@ public class DeviceContext
      */
     public synchronized Device getDeviceByAlias(final String alias) throws Exception
     {
-        final Device device = devices.get(alias);
-        if (device == null)
-            throw new Exception("Unknown device '" + alias + "'");
-        return device;
+        Device device = devices.get(alias);
+        if (device != null)
+            return device;
+        // Name could be 'alias {"putCallback":true}' where
+        // the basic alias is known, but without the annotation.
+        // Silently add that as a new device, since PVManager treats it as
+        // separate channel
+        if (alias.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
+        {
+            device = devices.get(alias.substring(0, alias.length() - PVDevice.PUT_CALLBACK_ANNOTATION.length()));
+            if (device != null)
+                return addPVDevice(new DeviceInfo(device.getName() + PVDevice.PUT_CALLBACK_ANNOTATION, alias));
+        }
+        // Not a known alias, nor magically added
+        throw new Exception("Unknown device '" + alias + "'");
     }
 
     /** @return All Devices */
