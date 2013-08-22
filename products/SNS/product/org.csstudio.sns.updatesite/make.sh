@@ -106,3 +106,10 @@ then
     $ANT zip_sources
 fi
 
+
+cd $TOP/products/SNS/plugins/org.csstudio.scan.client
+$ANT clean all
+if [ -f scan.client.jar ]
+then
+   mv scan.client.jar $BUILDDIR/apps/scan_client_$VERSION.jar
+fi
