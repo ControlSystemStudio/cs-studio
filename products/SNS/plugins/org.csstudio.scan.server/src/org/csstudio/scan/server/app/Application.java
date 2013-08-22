@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
@@ -71,7 +72,9 @@ public class Application implements IApplication
 	            bundle_version = context.getBrandingName() + " " + version;
 	            log.info(bundle_version);
 	        }
-	        
+            
+            LogConfigurator.configureFromPreferences();
+            
 	        log.info("Beamline config   : " + ScanSystemPreferences.getBeamlineConfigPath());
 	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
 	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
