@@ -15,8 +15,6 @@ export SCAN_CLIENT=/home/controls/css/scan.client.jar
 # Directory that contains scan_client.py, scan_ui.py
 # from the org.csstudio.scan/jython directory
 export JYTHONPATH="/home/controls/share/scan"
-export JYTHONPATH="/SNS/users/ky9/my_bl7/applications/bl7-ScanSupport/scan"
-
 
 # -----------------------------------------------------------
 # During development, allow usage within the source tree,
