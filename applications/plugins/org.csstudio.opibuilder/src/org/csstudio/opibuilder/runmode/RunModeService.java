@@ -182,6 +182,7 @@ public class RunModeService {
 
 	public static void runOPIInView(final IPath path, 
 			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position){
+		OPIView.setOpenFromUser(true);
 		final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			
