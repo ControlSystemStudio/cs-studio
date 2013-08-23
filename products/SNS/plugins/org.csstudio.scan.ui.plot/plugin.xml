@@ -48,7 +48,7 @@
                   <!-- Enable on 1 ScanInfo, but if the 'active' scan updates,
                        the selection will be empty, so look for 0 or 1
                     -->
-                  <count value="?"/>
+                  <count value="+"/>
                   <iterate>
                      <instanceof value="org.csstudio.scan.server.ScanInfo"/>
                   </iterate>
