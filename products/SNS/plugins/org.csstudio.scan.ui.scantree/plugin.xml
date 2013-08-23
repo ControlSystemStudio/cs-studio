@@ -152,7 +152,7 @@
          <command commandId="org.eclipse.ui.edit.delete"/>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.csstudio.scan.ui.scantree.editor?after=edit">
+            locationURI="popup:org.csstudio.scan.ui.scantree.editor?after=scan">
          <command commandId="org.csstudio.scan.ui.scantree.simulate"
                icon="icons/simulate.gif">
          </command>
@@ -162,7 +162,7 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            locationURI="popup:org.eclipse.ui.popup.any?after=scan">
          <command
                commandId="org.csstudio.scan.ui.scantree.open"
                icon="icons/scantree.gif"

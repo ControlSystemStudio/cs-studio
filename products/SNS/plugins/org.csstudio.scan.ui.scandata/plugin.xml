@@ -19,7 +19,7 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            locationURI="popup:org.eclipse.ui.popup.any?after=scan">
          <command
                commandId="org.csstudio.scan.ui.scandata.open_scan_data"
                icon="icons/scan_data.gif"
