@@ -217,15 +217,15 @@ public class SetCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<completion>true</completion>");
         }
-        if (wait  &&  ! readback.isEmpty())
-        {
-            writeIndent(out, level+1);
-            out.println("<readback>" + readback + "</readback>");
-        }
         if (! wait)
         {
             writeIndent(out, level+1);
             out.println("<wait>" + wait + "</wait>");
+        }
+        if (wait  &&  ! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
         }
         if (tolerance > 0.0)
         {
@@ -249,8 +249,8 @@ public class SetCommand extends ScanCommand
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setValue(DOMHelper.getSubelementStringOrDouble(element, ScanCommandProperty.TAG_VALUE));
         setCompletion(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_COMPLETION, "false")));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         super.readXML(factory, element);

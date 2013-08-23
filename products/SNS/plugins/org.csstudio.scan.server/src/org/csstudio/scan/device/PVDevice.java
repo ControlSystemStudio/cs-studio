@@ -42,7 +42,13 @@ import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
- *  supporting read and write access to that PV
+ *  supporting read and write access to that PV.
+ *  
+ *  <p>The PVManager doesn't have an API for plain write vs. write-with-callback,
+ *  but instead uses an annotation in the PV name.
+ *  This behaves the same way, so a device is either only using plain writes
+ *  or only using write-with-callback, based on the PV name.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -230,6 +236,8 @@ public class PVDevice extends Device
 	    if (is_byte_array  &&  value instanceof String)
 	        value = ByteHelper.toBytes((String) value);
 
+	    Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
+	            new Object[] { getName(), value });
 	    final PV<VType, Object> pv; // Copy to access PV outside of lock
 	    synchronized (this)
 		{
@@ -246,8 +254,7 @@ public class PVDevice extends Device
                     if (wait_time.waitUntilTimeout(this))
                         throw new TimeoutException("Timeout while awaiting write completion for " + getName());
             }
+	        Logger.getLogger(getClass().getName()).log(Level.FINER, "Write completed: PV {0}", getName());
 		}
-		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
-				new Object[] { getName(), value });
     }
 }

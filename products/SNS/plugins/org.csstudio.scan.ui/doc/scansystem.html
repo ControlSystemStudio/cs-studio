@@ -194,6 +194,7 @@ It is at the core of most scans.
 <li>Initial Value: Initial value of the device.</li>
 <li>Final Value: Final value of the device.</li>
 <li>Step Size: Step in which value of device should be changed.</li>
+<li>Wait for completion: Wait for the write to be confirmed? For EPICS, this uses a 'put-callback', which indicates that processing of a record has completed.</li>
 <li>Wait for readback: By default, the loop will wait until the device reaches the commanded value.</li>
 <li>Readback Device: By default, the loop device to which the loop writes is also checked for reaching the commanded value.
     Optionally, a different "read back" device can be used.</li>

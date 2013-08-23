@@ -53,6 +53,7 @@ public class LoopCommand extends ScanCommand
     private volatile double end;
     private volatile double stepsize;
     private volatile String readback = "";
+    private volatile boolean completion = false;
     private volatile boolean wait = true;
     private volatile double tolerance = 0.1;
     private volatile double timeout = 0.0;
@@ -152,6 +153,7 @@ public class LoopCommand extends ScanCommand
         properties.add(new ScanCommandProperty("start", "Initial Value", Double.class));
         properties.add(new ScanCommandProperty("end", "Final Value", Double.class));
         properties.add(new ScanCommandProperty("step_size", "Step Size", Double.class));
+        properties.add(ScanCommandProperty.COMPLETION);
         properties.add(ScanCommandProperty.WAIT);
         properties.add(ScanCommandProperty.READBACK);
         properties.add(ScanCommandProperty.TOLERANCE);
@@ -214,6 +216,18 @@ public class LoopCommand extends ScanCommand
         tolerance = Math.abs(this.stepsize / 10.0);
     }
 
+    /** @return Wait for write completion? */
+    public boolean getCompletion()
+    {
+        return completion;
+    }
+
+    /** @param wait Wait for write completion? */
+    public void setCompletion(final Boolean completion)
+    {
+        this.completion = completion;
+    }
+    
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -293,15 +307,20 @@ public class LoopCommand extends ScanCommand
         out.println("<end>" + end + "</end>");
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
-        if (! readback.isEmpty())
+        if (completion)
         {
             writeIndent(out, level+1);
-            out.println("<readback>" + readback + "</readback>");
+            out.println("<completion>true</completion>");
         }
         if (! wait)
         {
             writeIndent(out, level+1);
             out.println("<wait>" + wait + "</wait>");
+        }
+        if (wait  &&  ! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
         }
         if (tolerance > 0.0)
         {
@@ -336,8 +355,9 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setCompletion(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_COMPLETION, "false")));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
@@ -349,6 +369,12 @@ public class LoopCommand extends ScanCommand
      */
     public void appendConditionDetail(final StringBuilder buf)
     {
+        if (completion)
+        {
+            buf.append(" with completion");
+            if (timeout > 0)
+                buf.append(" in ").append(timeout).append(" sec");
+        }
     	if (wait)
     	{
     		buf.append(" (wait for '");
