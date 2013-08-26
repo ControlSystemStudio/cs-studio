@@ -49,6 +49,8 @@
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.csstudio.nsls2.basic.applications.feature" version="3.1.1.qualifier"/>
+      <feature id="org.csstudio.pvmanager.ca.feature" version="3.2.0.qualifier"/>
+      <feature id="org.csstudio.pvmanager.feature" version="3.2.0.qualifier"/>
    </features>
 
 
