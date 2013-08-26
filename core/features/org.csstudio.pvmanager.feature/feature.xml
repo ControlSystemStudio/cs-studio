@@ -9,7 +9,7 @@
       pvmanager is the connection layer for Control System Studio. It provides support for datasources (real-time publish/subscribe protocols) and services (RPC and command/response protocols).
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright url="http://pvmanager.sourceforge.net/">
       Use is subject to license.
    </copyright>
 
