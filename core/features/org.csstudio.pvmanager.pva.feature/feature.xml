@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.pvmanager.pva.feature"
+      label="PVAccess support (EPIVS v4)"
+      version="3.2.0.qualifier"
+      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
+
+   <description url="http://pvmanager.sourceforge.net/">
+      Support for PV Access (EPICS v4) datasource.
+   </description>
+
+   <copyright url="http://pvmanager.sourceforge.net/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://pvmanager.sourceforge.net/license.html">
+      GPL 2 with Classpath Exception for pvmanager libraries.
+      EPICS license for EPICS v4 libraries.
+   </license>
+
+   <requires>
+      <import feature="org.csstudio.pvmanager.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvdata" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvaccess" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.pva"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
