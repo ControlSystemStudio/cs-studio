@@ -8,7 +8,9 @@
 package org.csstudio.opibuilder.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,8 @@ import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -25,6 +29,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.csstudio.java.thread.ExecutionService;
+import org.csstudio.java.thread.TimedCache;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -46,7 +53,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ResourceUtil {
 
+	private static final int CACHE_TIMEOUT_SECONDS = 120;
+
 	private static final ResourceUtilSSHelper IMPL;
+	
+	/**
+	 *Cache the file from URL. 
+	 */
+	private static final TimedCache<URL, File> URL_CACHE = new TimedCache<>(CACHE_TIMEOUT_SECONDS);
+
 	
 	static {
 		IMPL = (ResourceUtilSSHelper)ImplementationLoader.newInstance(
@@ -77,9 +92,8 @@ public class ResourceUtil {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("nls")
-    public static InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception
-    {
-	   return IMPL.pathToInputStream(path, runInUIJob);
+    public static InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception {	
+    	return IMPL.pathToInputStream(path, runInUIJob);
 	}	
 	
 	
@@ -231,12 +245,52 @@ public class ResourceUtil {
 		return inputStream;
 	}
 	
-	/**Open URL Stream.
+	public static InputStream openURLStream(final URL url) throws IOException{
+		File tempFilePath = URL_CACHE.getValue(url);
+		if(tempFilePath != null){
+			return new FileInputStream(tempFilePath);
+		}else{
+			InputStream inputStream = openRawURLStream(url);			
+			if(inputStream !=null){
+				try {
+					IPath urlPath = new URLPath(url.toString());
+					final File file = File.createTempFile(urlPath.removeFileExtension().lastSegment(), "."+urlPath.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$					
+					file.deleteOnExit();	
+					if(!file.canWrite())
+						throw new Exception("Unable to write temporary file.");
+					FileOutputStream outputStream = new FileOutputStream(file);
+					byte[] buffer = new byte[1024];
+					int bytesRead;
+					while((bytesRead = inputStream.read(buffer))!=-1){
+						outputStream.write(buffer, 0, bytesRead);
+					}					
+					outputStream.close();
+					URL_CACHE.remember(url, file);
+					inputStream.close();
+					ExecutionService.getInstance().getScheduledExecutorService().schedule(new Runnable() {
+						
+						@Override
+						public void run() {
+							file.delete();
+						}
+					}, CACHE_TIMEOUT_SECONDS*2, TimeUnit.SECONDS);
+					return new FileInputStream(file);
+				} catch (Exception e) {
+					OPIBuilderPlugin.getLogger().log(Level.WARNING,
+							"Error to cache file from URL: " + e.getMessage());
+				}	            
+			}			
+			return inputStream;
+		}
+		
+	}
+	
+	/**Open URL Stream from remote.
 	 * @param url
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream openURLStream(final URL url) throws IOException{
+	public static InputStream openRawURLStream(final URL url) throws IOException{
 		if(url.getProtocol().equals("https")){			//$NON-NLS-1$
 			//The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
 	        // Create a trust manager that does not validate certificate chains
@@ -289,7 +343,11 @@ public class ResourceUtil {
 	 */
 	public static boolean isExistingURL(final IPath path, boolean runInUIJob){
 		try {
-			InputStream s = openURLStream(new URL(path.toString()), runInUIJob);
+			
+			URL url = new URL(path.toString());
+			if(URL_CACHE.getValue(url)!= null)
+				return true;
+			InputStream s = openURLStream(url, runInUIJob);
 			if(s != null){
 				s.close();
 				return true;
@@ -307,11 +365,16 @@ public class ResourceUtil {
 	 * @return
 	 */
 	public static boolean isExsitingFile(final IPath absolutePath, boolean runInUIJob){
+		if(absolutePath instanceof URLPath)
+			if(isExistingURL(absolutePath, runInUIJob))
+				return true;
+		
 		if(isExistingWorkspaceFile(absolutePath))
 			return true;
 		if(isExistingLocalFile(absolutePath))
 			return true;
-		if(isExistingURL(absolutePath, runInUIJob))
+		if(!(absolutePath instanceof URLPath)
+				&& isExistingURL(absolutePath, runInUIJob))
 			return true;
 		return false;
 	}
