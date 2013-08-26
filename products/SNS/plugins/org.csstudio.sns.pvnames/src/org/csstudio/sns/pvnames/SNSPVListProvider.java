@@ -62,11 +62,14 @@ public class SNSPVListProvider implements IAutoCompleteProvider
         catch (Throwable ex)
         {
             // Suppress error resulting from call to cancel()
-            if (! ex.getMessage().startsWith("ORA-01013"))
-                logger.log(Level.WARNING, "PV Name lookup failed", ex);
+            if (ex.getMessage().startsWith("ORA-01013"))
+                logger.log(Level.WARNING, "Lookup for {0} cancelled", name);
+            else
+                logger.log(Level.WARNING, "Lookup for " + name + " failed", ex);
+            return pvs;
         }
         if (logger.isLoggable(Level.FINER))
-            logger.log(Level.FINER, "PVs: {0}", pvs.getProposalsAsString());
+            logger.log(Level.FINER, "PVs for {0}: {1}", new Object[] { name, pvs.getProposalsAsString() });
         return pvs;
     }
 
@@ -77,27 +80,13 @@ public class SNSPVListProvider implements IAutoCompleteProvider
      *  @param limit Maximum number of PVs to return
      *  @throws Exception on error
      */
-    private void lookup(final AutoCompleteResult pvs, final String like, int limit) throws Exception
+    private void lookup(final AutoCompleteResult pvs, final String like, final int limit) throws Exception
     {
-        // Count PVs
-        try
-        (
-            final PreparedStatement statement =
-                cache.getConnection().prepareStatement(
-                    "SELECT COUNT(*) FROM EPICS.SGNL_REC WHERE SGNL_ID LIKE ?");
-        )
-        {
-            statement.setString(1, like);
-            setCurrentStatement(statement);
-            final ResultSet result = statement.executeQuery();
-            if (! result.next())
-                throw new Exception("Cannot determine channel count");
-            pvs.setCount(result.getInt(1));
-            result.close();
-            setCurrentStatement(null);
-        }
-        
-        // List channels
+        // Initially, "SELECT COUNT(*) .." obtained count, then fetched actual names in second query.
+        // jProfiler showed that the count took longer (3x !!) than fetching the names.
+        // Even considering that a second query for similar information is likely faster because of caching,
+        // having only one query, counting all but only keeping names up to 'limit', is overall faster.
+        int count = 0;
         try
         (
             final PreparedStatement statement =
@@ -110,13 +99,15 @@ public class SNSPVListProvider implements IAutoCompleteProvider
             final ResultSet result = statement.executeQuery();
             while (result.next())
             {
-                pvs.addProposal(new Proposal(result.getString(1), false));
-                -- limit;
-                if (limit <= 0)
-                    break;
+                if (++count <= limit)
+                    pvs.addProposal(new Proposal(result.getString(1), false));
             }
             result.close();
-            setCurrentStatement(statement);
+        }
+        finally
+        {
+            setCurrentStatement(null);
+            pvs.setCount(count);
         }
     }
 
