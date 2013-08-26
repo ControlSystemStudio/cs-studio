@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.pvmanager.feature"
+      label="Data connection layer (pvmanager)"
+      version="3.2.0.qualifier"
+      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
+
+   <description url="http://pvmanager.sourceforge.net/">
+      pvmanager is the connection layer for Control System Studio. It provides support for datasources (real-time publish/subscribe protocols) and services (RPC and command/response protocols).
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://pvmanager.sourceforge.net/license.html">
+      GPL 2 with Classpath Exception
+   </license>
+
+   <requires>
+      <import plugin="org.epics.util" version="0.2.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.antlr.runtime"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="com.google.common"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.epics.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.extra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.loc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sys"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui.toolbox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.widgets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
