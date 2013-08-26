@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.Proposal;
 import org.csstudio.platform.utility.rdb.RDBCache;
 
 /** PV Name lookup for SNS 'signal' database
@@ -41,6 +42,10 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     @Override
 	public AutoCompleteResult listResult(final String type, final String name, final int limit)
     {
+        final Logger logger = Logger.getLogger(getClass().getName());
+        logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
+                new Object[] { type, name, limit });
+        
         // Create RDB pattern from *, ? wildcards
     	final String like = AutoCompleteHelper.convertToSQL(name);
     
@@ -58,8 +63,10 @@ public class SNSPVListProvider implements IAutoCompleteProvider
         {
             // Suppress error resulting from call to cancel()
             if (! ex.getMessage().startsWith("ORA-01013"))
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, "PV Name lookup failed", ex);
+                logger.log(Level.WARNING, "PV Name lookup failed", ex);
         }
+        if (logger.isLoggable(Level.FINER))
+            logger.log(Level.FINER, "PVs: {0}", pvs.getProposalsAsString());
         return pvs;
     }
 
@@ -103,7 +110,7 @@ public class SNSPVListProvider implements IAutoCompleteProvider
             final ResultSet result = statement.executeQuery();
             while (result.next())
             {
-                pvs.add(result.getString(1));
+                pvs.addProposal(new Proposal(result.getString(1), false));
                 -- limit;
                 if (limit <= 0)
                     break;
@@ -118,9 +125,13 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     public synchronized void cancel()
     {
         if (current_statement == null)
+        {
+            Logger.getLogger(getClass().getName()).fine("Cancelled while idle");
             return;
+        }
         try
         {
+            Logger.getLogger(getClass().getName()).fine("Cancelling ongoing lookup");
             current_statement.cancel();
         }
         catch (Throwable ex)

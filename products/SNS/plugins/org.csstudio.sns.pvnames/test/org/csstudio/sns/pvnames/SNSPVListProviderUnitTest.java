@@ -11,9 +11,14 @@ import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.junit.Test;
+
 
 /** JUnit test of the {@link SNSPVListProvider}
  *  @author Kay Kasemir
@@ -24,6 +29,13 @@ public class SNSPVListProviderUnitTest
     @Test
     public void locatePVName()
     {
+        Logger logger = Logger.getLogger("");
+        Level level = Level.ALL;
+        logger.setLevel(level);
+        for (Handler handler : logger.getHandlers())
+            handler.setLevel(level);
+        Logger.getLogger("javax").setLevel(Level.WARNING);
+        
         final IAutoCompleteProvider provider = new SNSPVListProvider();
         AutoCompleteResult pvs = provider.listResult("PV", "DTL_LLRF:IOC1:L*", 10);
         System.out.println("Matching PVs: " + pvs.getCount());
