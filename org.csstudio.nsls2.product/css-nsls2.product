@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css-nsls2" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.2.8.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="CS-Studio" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.nsls2.product/icons/about.png"/>
@@ -22,10 +22,10 @@
 
    <splash
       location="org.csstudio.nsls2.product"
-      startupProgressRect="5,250,461,15"
-      startupMessageRect="7,230,457,20"
+      startupProgressRect="5,222,470,15"
+      startupMessageRect="7,200,466,20"
       startupForegroundColor="FFFFFF" />
-   <launcher name="css-nsls2">
+   <launcher name="cs-studio">
       <solaris/>
       <win useIco="true">
          <ico path="/org.csstudio.nsls2.product/icons/css.ico"/>
@@ -37,6 +37,13 @@
 
    <vm>
    </vm>
+
+   <license>
+        <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        <text>
+   Eclipse Public License
+         </text>
+   </license>
 
    <plugins>
    </plugins>

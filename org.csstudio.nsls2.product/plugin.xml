@@ -25,10 +25,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.nsls2.product.application"
-            name="Css-nsls2">
+            name="CS-Studio">
          <property
                name="appName"
-               value="Css-nsls2">
+               value="CS-Studio">
          </property>
          <property
                name="introTitle"
@@ -56,11 +56,11 @@
          </property>
          <property
                name="startupMessageRect"
-               value="7,230,457,20">
+               value="7,200,466,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,250,461,15">
+               value="5,222,470,15">
          </property>
          <property
                name="preferenceCustomization"
