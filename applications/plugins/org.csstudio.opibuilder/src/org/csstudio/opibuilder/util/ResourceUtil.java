@@ -217,7 +217,7 @@ public class ResourceUtil {
 	 */
 	public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
 		inputStream = null;
-		if (runInUIJob) {
+		if (runInUIJob && URL_CACHE.getValue(url)== null) {
 			synchronized (lock) {
 				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
 
