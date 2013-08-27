@@ -25,6 +25,7 @@ import org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.gef.GraphicalViewer;
 
 /**The model for linking container widget.
  * @author Xihui Chen
@@ -162,8 +163,13 @@ public class LinkingContainerModel extends AbstractContainerModel {
 			return;
 		//The linking container model doesn't hold its children actually, so it 
 		// has to ask editpart to get its children.
+		GraphicalViewer viewer = getRootDisplayModel().getViewer();
+		if(viewer == null)
+			return;
 		LinkingContainerEditpart editpart = 
-				(LinkingContainerEditpart) getRootDisplayModel().getViewer().getEditPartRegistry().get(this);
+				(LinkingContainerEditpart) viewer.
+				getEditPartRegistry().
+				get(this);
 		Dimension size = getSize();
 		double newWidthRatio = size.width/(double)getOriginSize().width;
 		double newHeightRatio = size.height/(double)getOriginSize().height;
