@@ -1,10 +1,10 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.nsls2.product.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.product.messages"; //$NON-NLS-1$
 
 	public static String Application_DefaultProject;
     public static String Menu_CSS_Alarm;
