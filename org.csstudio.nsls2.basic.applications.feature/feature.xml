@@ -22,13 +22,6 @@
    </url>
 
    <plugin
-         id="org.csstudio.diag.pvmanager.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.graphene"
          download-size="0"
          install-size="0"
