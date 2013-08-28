@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="org.csstudio.nsls2.product.application"
+         id="org.csstudio.product.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -14,9 +14,9 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.nsls2.product.CSSPerspective"
+            class="org.csstudio.product.CSSPerspective"
             icon="icons/css16.png"
-            id="org.csstudio.nsls2.product.CSSPerspective"
+            id="org.csstudio.product.CSSPerspective"
             name="CSS perspective">
       </perspective>
    </extension>
@@ -24,11 +24,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.nsls2.product.application"
-            name="CS-Studio">
+            application="org.csstudio.product.application"
+            name="Cs-studio">
          <property
                name="appName"
-               value="CS-Studio">
+               value="Cs-studio">
          </property>
          <property
                name="introTitle"
@@ -44,7 +44,7 @@
          </property>
          <property
                name="introDescription"
-               value="org.csstudio.nsls2.product.property5">
+               value="org.csstudio.product.property5">
          </property>
          <property
                name="windowImages"
@@ -99,7 +99,7 @@
          point="org.eclipse.ui.intro">
       <introProductBinding
             introId="org.eclipse.ui.intro.universal"
-            productId="org.csstudio.nsls2.product.product">
+            productId="org.csstudio.product.product">
       </introProductBinding>
    </extension>
    <extension
@@ -107,7 +107,7 @@
       <page
             category="org.eclipse.ui.preferencePages.Workbench"
             class="org.eclipse.ui.internal.intro.universal.WelcomeCustomizationPreferencePage"
-            id="org.csstudio.nsls2.product.introCustomization"
+            id="org.csstudio.product.introCustomization"
             name="introCustomizationPreference">
       </page>
    </extension>
