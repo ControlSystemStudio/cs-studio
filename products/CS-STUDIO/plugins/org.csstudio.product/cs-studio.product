@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CS-Studio" id="org.csstudio.nsls2.product.product" application="org.csstudio.nsls2.product.application" version="3.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.nsls2.product/icons/about.png"/>
+      <image path="/org.csstudio.product/icons/about.png"/>
    </aboutInfo>
 
    <configIni use="default">
@@ -18,17 +18,17 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.nsls2.product/icons/css16.png" i32="/org.csstudio.nsls2.product/icons/css32.png" i48="/org.csstudio.nsls2.product/icons/css48.png" i64="/org.csstudio.nsls2.product/icons/css64.png" i128="/org.csstudio.nsls2.product/icons/css128.png"/>
+   <windowImages i16="/org.csstudio.product/icons/css16.png" i32="/org.csstudio.product/icons/css32.png" i48="/org.csstudio.product/icons/css48.png" i64="/org.csstudio.product/icons/css64.png" i128="/org.csstudio.product/icons/css128.png"/>
 
    <splash
-      location="org.csstudio.nsls2.product"
+      location="org.csstudio.product"
       startupProgressRect="5,222,470,15"
       startupMessageRect="7,200,466,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="cs-studio">
       <solaris/>
       <win useIco="true">
-         <ico path="/org.csstudio.nsls2.product/icons/css.ico"/>
+         <ico path="/org.csstudio.product/icons/css.ico"/>
          <bmp/>
       </win>
    </launcher>

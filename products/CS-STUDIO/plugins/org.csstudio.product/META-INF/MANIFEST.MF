@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CS-Studio Product
-Bundle-SymbolicName: org.csstudio.nsls2.product; singleton:=true
+Bundle-SymbolicName: org.csstudio.product; singleton:=true
 Bundle-Version: 3.2.8.qualifier
 Bundle-Activator: org.csstudio.nsls2.product.Activator
 Bundle-Localization: plugin
