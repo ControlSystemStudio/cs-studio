@@ -1,12 +1,12 @@
-package org.csstudio.nsls2.product.startupmodule;
+package org.csstudio.product.startupmodule;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.csstudio.logging.LogConfigurator;
-import org.csstudio.nsls2.product.ApplicationWorkbenchAdvisor;
-import org.csstudio.nsls2.product.Messages;
 import org.csstudio.platform.workspace.RelaunchConstants;
+import org.csstudio.product.ApplicationWorkbenchAdvisor;
+import org.csstudio.product.Messages;
 import org.csstudio.security.authentication.LoginJob;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.LoginExtPoint;

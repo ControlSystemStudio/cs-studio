@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

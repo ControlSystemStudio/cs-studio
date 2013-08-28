@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -13,7 +13,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	// private static final String PERSPECTIVE_ID =
-	// "org.csstudio.nsls2.product.perspective";
+	// "org.csstudio.product.perspective";
 	private OpenDocumentEventProcessor openDocProcessor;
 
     public ApplicationWorkbenchAdvisor(

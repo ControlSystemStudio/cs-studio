@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.product.startupmodule;
+package org.csstudio.product.startupmodule;
 
 import java.io.File;
 import java.io.IOException;
