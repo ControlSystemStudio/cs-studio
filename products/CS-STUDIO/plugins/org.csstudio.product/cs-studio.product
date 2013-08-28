@@ -4,7 +4,10 @@
 <product name="Cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.product/icons/about.png"/>
+      <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
+      <text>
+         %aboutText
+      </text>
    </aboutInfo>
 
    <configIni use="default">

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CS-Studio Product
 Bundle-SymbolicName: org.csstudio.product; singleton:=true
 Bundle-Version: 3.2.8.qualifier
-Bundle-Activator: org.csstudio.nsls2.product.Activator
+Bundle-Activator: org.csstudio.product.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

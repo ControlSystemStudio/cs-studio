@@ -68,7 +68,7 @@
          </property>
          <property
                name="introDescription-overview "
-               value="An overview of the various CSS applications which are part of the css-nsls2 product">
+               value="An overview of the various CSS applications which are part of the cs-studio product">
          </property>
          <property
                name="introDescription-firststeps"
@@ -76,20 +76,24 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/about.png">
+               value="icons/cs-studio-about.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%aboutText">
          </property>
       </product>
    </extension>
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.nsls2.product.startupmodule.StartupParameters">
+            class="org.csstudio.product.startupmodule.StartupParameters">
       </startupParameters>
       <workspace
-            class="org.csstudio.nsls2.product.startupmodule.WorkspacePrompt">
+            class="org.csstudio.product.startupmodule.WorkspacePrompt">
       </workspace>
       <workbench
-            class="org.csstudio.nsls2.product.startupmodule.Workbench">
+            class="org.csstudio.product.startupmodule.Workbench">
       </workbench>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">
