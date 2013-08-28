@@ -14,6 +14,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
+import org.osgi.framework.Bundle;
 
 public class DisplayManager {
 
@@ -33,6 +34,10 @@ public class DisplayManager {
 	
 	@SuppressWarnings("nls")
 	private DisplayManager() {
+		Bundle[] bundles = RAPCorePlugin.getDefault().getBundle().getBundleContext().getBundles();
+		for(Bundle bundle : bundles){
+			RAPCorePlugin.getLogger().log(Level.INFO, bundle.getSymbolicName() + " " + bundle.getState());
+		}
 		RAPCorePlugin.getDefault().getServerHeartBeatThread()
 				.addHeartBeatListener(new HeartBeatListener() {
 
