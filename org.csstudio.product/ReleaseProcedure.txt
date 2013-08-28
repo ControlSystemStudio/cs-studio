@@ -1,5 +1,7 @@
-NSLS-II Product Release Procedure
+Product Release Procedure
 ------------------------------------------------------------
+
+XXX: OLD STUFF TO BE REVIEWED!!!
 
 Pre-release
 * Make sure all the dependencies were released (if possible)
