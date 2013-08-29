@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.pvmanager.ca.feature"
-      label="Channel Access support (EPICS v3)"
+      label="CS-Studio Epics v3 Support (Channel Access)"
       version="3.2.0.qualifier"
-      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://pvmanager.sourceforge.net/">
       Support for Channel Access (EPICS v3) datasource.

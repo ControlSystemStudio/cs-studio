@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.pvmanager.feature"
-      label="Data connection layer (pvmanager)"
+      label="CS-Studio Common Data Layer (pvmanager)"
       version="3.2.0.qualifier"
-      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://pvmanager.sourceforge.net/">
       pvmanager is the connection layer for Control System Studio. It provides support for datasources (real-time publish/subscribe protocols) and services (RPC and command/response protocols).

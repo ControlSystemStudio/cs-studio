@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.pvmanager.pva.feature"
-      label="PVAccess support (EPIVS v4)"
+      label="CS-Studio Epics v4 Support (PVAccess)"
       version="3.2.0.qualifier"
-      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://pvmanager.sourceforge.net/">
       Support for PV Access (EPICS v4) datasource.

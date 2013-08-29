@@ -3,7 +3,7 @@
       id="org.csstudio.libs.feature"
       label="CS-Studio External Library Dependencies"
       version="3.2.0.qualifier"
-      provider-name="Contro System Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
       External libraries needed by CS-Studio. This feature is temporary until the build uses P2 properly.
