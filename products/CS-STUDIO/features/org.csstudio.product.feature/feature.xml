@@ -3,7 +3,8 @@
       id="org.csstudio.product.feature"
       label="CS-Studio Product"
       version="3.2.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL"
+      plugin="org.csstudio.product">
 
    <description url="http://controlsystemstudio.github.io/">
       CS-Studio Product.
