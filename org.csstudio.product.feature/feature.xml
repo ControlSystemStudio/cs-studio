@@ -3,7 +3,7 @@
       id="org.csstudio.product.feature"
       label="CS-Studio Product"
       version="3.2.0.qualifier"
-      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;"
       plugin="org.csstudio.product">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -24,7 +24,6 @@
       <import plugin="org.eclipse.ui.intro" version="3.3.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="1.1.3" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.nsls2.startuphelper" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro.universal" version="3.2.300" match="greaterOrEqual"/>
@@ -33,10 +32,18 @@
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startuphelper" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.csstudio.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"
