@@ -4,11 +4,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.nsls2.startuphelper.PasswordInput;
 import org.csstudio.product.Messages;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.StartupParametersExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
+import org.csstudio.startuphelper.PasswordInput;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
