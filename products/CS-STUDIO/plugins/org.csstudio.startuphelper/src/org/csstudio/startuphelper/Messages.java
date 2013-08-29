@@ -1,9 +1,9 @@
-package org.csstudio.nsls2.startuphelper;
+package org.csstudio.startuphelper;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.csstudio.nsls2.startuphelper.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.csstudio.startuphelper.messages"; //$NON-NLS-1$
 	public static String StartupAuthenticationHelper_Login;
 	public static String StartupAuthenticationHelper_LoginTip;
 	public static String StartupHelper_And;

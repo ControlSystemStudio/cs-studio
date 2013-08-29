@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.startuphelper;
+package org.csstudio.startuphelper;
 
 
 import org.csstudio.platform.workspace.WorkspaceIndependentStore;
