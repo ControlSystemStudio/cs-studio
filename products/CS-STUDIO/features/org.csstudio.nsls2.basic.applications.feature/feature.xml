@@ -21,6 +21,29 @@
       <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
+   <requires>
+      <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.graphene" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="gov.bnl.channelfinder.api" version="2.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.graphene" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.csstudio.opibuilder.widgets" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets.extra" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui.toolbox" version="3.2.0" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.csstudio.graphene"
          download-size="0"
