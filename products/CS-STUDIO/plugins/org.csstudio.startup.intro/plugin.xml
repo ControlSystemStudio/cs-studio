@@ -5,12 +5,12 @@
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
-            content="intro/cssNSLS2Intro.xml"
+            content="intro/cs-studio-into.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="intro/cssNSLS2New.xml">
+            content="intro/cs-studio-new.xml">
       </configExtension>
    </extension>
    <extension
