@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.startup.intro;
+package org.csstudio.startup.intro;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.nsls2.startup.intro";
+	public static final String PLUGIN_ID = "org.csstudio.startup.intro";
 
 	// The shared instance
 	private static Activator plugin;
