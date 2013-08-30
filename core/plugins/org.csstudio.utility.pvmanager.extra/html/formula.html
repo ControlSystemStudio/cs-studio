@@ -14,20 +14,20 @@
         <h2>Simple pvs</h2>
         Any string of text that does not start with = or ' is considered a pv:
 <pre>mypv123    : the pv called "mypv123"
-mypv+123   : the pv called "mypv2+123"
-123        : the pv "mypv+123"</pre>
+mypv+123   : the pv called "mypv+123"
+123        : the pv called "123"</pre>
         Pvs can also be expressed in single quotes:
 <pre>'mypv123'  : the pv called "mypv123"
-'mypv+123' : the pv called "mypv2+123"
-'123'      : the pv "mypv+123"</pre>
+'mypv+123' : the pv called "mypv+123"
+'123'      : the pv called "123"</pre>
         <p>
         <h2>Formulas</h2>
         Any string of text that starts with = must be followed by and expression.
         <p>
             Pvs in expressions must be single quoted:
 <pre>='mypv123'  : the pv called "mypv123"
-='mypv+123' : the pv called "mypv2+123"
-='123'      : the pv "mypv+123"</pre>
+='mypv+123' : the pv called "mypv+123"
+='123'      : the pv called "123"</pre>
             Escaped text is supported within the single quotes with the same
             definitions as in Java. For example \n for new line, \" for double
             quotes, \' for single quotes and so on.
