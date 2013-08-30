@@ -18,8 +18,10 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.systemopen" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.ui"/>
       <import plugin="org.csstudio.csdata" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="0.0.1" match="greaterOrEqual"/>
@@ -33,10 +35,44 @@
    </requires>
 
    <plugin
+         id="org.csstudio.systemopen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.systemopen.win"
+         os="win32"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.systemopen.mac"
+         os="macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.diag.pvmanager.probe"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.systemopen.linux"
+         os="linux"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>
